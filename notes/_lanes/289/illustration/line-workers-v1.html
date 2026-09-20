@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Two workers and a conveyor — line-drawn 3D</title>
+<style>
+  :root { color-scheme: light; }
+  html,body { margin:0; padding:0; background:#F2F2F2; }
+  body { min-height:100vh; display:flex; align-items:center; justify-content:center;
+         font:14px/1.4 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif; color:#111; }
+  .wrap { padding:40px; }
+  .card { width:600px; height:420px; background:#fff; position:relative; }
+  .card canvas { display:block; }
+  .cap { width:600px; margin-top:14px; font:11px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+         letter-spacing:.06em; color:#767676; text-transform:uppercase; }
+  @media print { body { background:#fff; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card"><canvas id="line"></canvas></div>
+    <div class="cap">Fig. 291-L1 &middot; Two workers, one conveyor &middot; hidden-line, 3/4 view, orbit on mouse</div>
+  </div>
+
+<script>
+/* ============================================================
+   291 · L1 — THE LINE SCENE, PEOPLED. Dave: "the line slide - 4.
+   could I have two workers in overalls in the place of the robots
+   that are on slide 05. so two drawings one with humans and one
+   with robots." This is the humans. line.html (289-I4) is the
+   robots and is untouched: the two are meant to be shown as a
+   pair, so everything a viewer would compare — card, camera,
+   conveyor, plate, ink, idle, probes — is identical, and only the
+   ACTORS change.
+
+   WHAT IS CARRIED OVER UNCHANGED from line.html
+     · The projection, the camera, the orbit spring (yaw 35 /
+       pitch 20 at rest, +/-25 and +/-12 on the mouse, critically
+       damped tau = 1.0 s, stays where the mouse left it).
+     · The conveyor: same bed, legs, end rollers, creeping painted
+       centre dashes, same heading PHI = 12 deg on the floor.
+     · The base plate, the fit sweep, the hidden-line pipeline
+       (back-face test, painter's order, the 3D ray classifier),
+       the ink rules, the probe surface.
+     · The art direction. HIDDEN LINE, NOT WIREFRAME. Visible ink
+       is #111 hairline. #BDBDBD dashed ONLY where a line runs
+       inside its OWN body — the standing centre line inside the
+       torso, the shoulder axis inside the chest, the elbow axis
+       inside the elbow, the base plate under the cell. A line
+       behind SOMEONE ELSE's solid is simply not drawn. #9B9B9B
+       dash-dot for those same lines where they are in the open,
+       including ONE axis along the belt's centre. ONE red accent
+       for the WHOLE scene, #DA1A00: the workpiece under the
+       reaching worker. White card, plain canvas 2D, no libraries.
+
+   WHAT CHANGED, AND WHY
+     · makeArm -> makeWorker(Fb, pose, tag, o0, opt). Same contract:
+       a placement frame (position + yaw on the floor, local +x
+       pointing at the belt), a pose, a group tag, a first chain
+       ordinal; returns primitives, three drawn axes and a tip. The
+       two workers are the SAME drawing at two placements and two
+       poses, exactly as the two arms were.
+     · The figure is built only from the primitives the pipeline
+       already understands — boxes and N-gon prisms. Boots, legs,
+       torso, neck, head, and per arm a shoulder ball, an upper
+       arm, an elbow ball, a forearm and a hand. No new geometry
+       kind, no faces, no shading: it has to read as the same
+       family of drawing as the gearbox, the callipers and the
+       catalogue.
+     · THE OVERALLS ARE EDGE LINES, NOT FILL. They are `deco`
+       polylines seated on named faces of the torso box and drawn
+       only when that face is visible: the bib and the fly seam on
+       the FRONT face, the two strap runs over the TOP face, and
+       the crossed straps on the BACK face. So the worker the
+       camera sees from behind reads as overalls too, which a
+       front-only bib would not have managed. One rectangle is the
+       bib — v1 drew a pocket inside it and at 600x420 a rectangle
+       inside a rectangle read as an instrument panel.
+     · THE STANDOFF MOVED IN. The arms stood ARM_D = 250 from the
+       belt centre line because a 1.5 m manipulator reaches that
+       far. A person does not: shoulder to fingertip here is about
+       200 units against a 250 unit reach, so a worker left at the
+       robot's station would be miming. WK_D = 118 puts the torso
+       front 30 clear of the bed edge and the boots 28 clear, and
+       the hand still lands on the belt centre with the elbow
+       bent. The ALONG-BELT stations are the robots' own, ARM_SA
+       and ARM_SB, so the pair keeps its spacing and its
+       composition; only the lateral standoff is human.
+     · THE POSES are solved, not drawn in, same as the arms'.
+       reachArm(fx, fz) runs the two-link closed form in the
+       worker's own sagittal plane and takes the NEGATIVE elbow
+       root deliberately: that is the elbow-behind solution, upper
+       arm hanging, forearm forward and a little down, which is
+       what a person reaching onto a belt actually does. The
+       positive root came out with the elbow above the shoulder
+       and read as a raised salute. Worker A's inspecting pose is
+       two fixed angles, and the part in the hands is placed at
+       the forward kinematics of that pose rather than by eye.
+     · THE RED PART IS PLACED BY THE HAND, not by an offset. The
+       hand keeps the shoulder's lateral offset SH_Y through a
+       planar reach, so the workpiece's station along the belt is
+       read straight off the solved hand position, projected onto
+       the belt axis. Same argument as the arms' TOOL_OFF, one
+       step more honest.
+     · THE OTHER TWO PARTS MOVED DOWNSTREAM, to s = 20 and 250. A
+       box standing on the belt only sorts correctly against the
+       long bed while it is downstream of about s = -7 at the
+       binding orbit corner; the robot scene bought the far
+       stations with a painter's re-seat that cannot be carried
+       over here, and the arithmetic is at paintOrder. Moving them
+       costs the far half of the belt its furniture — worker A and
+       his part stand there instead — and buys a scene with no
+       painter's special case anywhere in it.
+     · THE THREE DRAWN AXES per figure are now the standing centre
+       line, the shoulder transverse axis, and the elbow axis of
+       the designated arm. Same count, same owns[] mapping, so the
+       classifier and the probes are untouched.
+     · THE HOUSING AXLE IS GONE. Its dashed pair was a cylinder
+       running inside a casting; a person has no such thing, and
+       inventing one would have been a robot part with a hand on
+       it. G.axles is empty and the block no-ops. The #BDBDBD
+       dashed language survives in the axes that run inside the
+       torso and the elbow.
+     · PAINTER'S ORDER WITHIN A FIGURE IS PLAIN CENTROID DEPTH,
+       and the arm chain's re-seat is GONE. An arm's links are
+       long and lie along the chain, so a link's centroid says
+       almost nothing about which link is in front — that is why
+       the robot scene re-seated them. A body's parts are short
+       and sit concentrically about their joints, and depth
+       already orders every one of them correctly. Re-seating them
+       anyway was actively wrong: re-seating permutes a group into
+       the SLOTS the global sort handed it, so v1's lateral
+       ordinal carried the near leg and the near arm past their
+       own slots and over the conveyor bed and the end roller,
+       which stand between those limbs and the camera. The
+       ordinals are still assigned, across the body — far arm, far
+       leg, torso, neck, head, held part, near leg, near arm — but
+       only so lineOrder() names the parts.
+     · MIRRORED, as the arms were: worker B's placement frame has
+       its y negated, so both figures step their limbs toward the
+       camera and the pair reads as two people facing each other
+       across the belt rather than one person and his rotated copy.
+
+   IDLE. The reaching worker's shoulder and elbow rock ~2.5 deg on
+   a 13 s cycle and the belt's painted centre dashes creep along
+   it. Both suppressed under prefers-reduced-motion.
+
+   Probes: lineStats(), lineView(), linePose(), lineAxisRuns(),
+   lineOrder(), lineSetMouse(x,y), lineSetTime(t), lineStill().
+   ============================================================ */
+(function(){
+  var cv = document.getElementById('line');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  var INK = '#111', HIDC = '#BDBDBD', CONC = '#9B9B9B', RED = '#DA1A00';
+  var D2R = Math.PI/180;
+
+  /* ---- 0 · small vector algebra --------------------------------------- */
+  function add(p,q){ return [p[0]+q[0], p[1]+q[1], p[2]+q[2]]; }
+  function sub(p,q){ return [p[0]-q[0], p[1]-q[1], p[2]-q[2]]; }
+  function scl(p,k){ return [p[0]*k, p[1]*k, p[2]*k]; }
+  function dot(p,q){ return p[0]*q[0] + p[1]*q[1] + p[2]*q[2]; }
+  function nrm(p){ var L = Math.sqrt(p[0]*p[0]+p[1]*p[1]+p[2]*p[2]) || 1; return scl(p, 1/L); }
+  function lerp(A,B,s){ return [A[0]+(B[0]-A[0])*s, A[1]+(B[1]-A[1])*s, A[2]+(B[2]-A[2])*s]; }
+
+  /* a frame is three orthonormal basis vectors and an origin, in world
+     (a, u, b) with b up. Every link owns one; a joint makes a child. */
+  function F0(){ return {x:[1,0,0], y:[0,1,0], z:[0,0,1], o:[0,0,0]}; }
+  function fp(F,p){
+    return [F.o[0] + F.x[0]*p[0] + F.y[0]*p[1] + F.z[0]*p[2],
+            F.o[1] + F.x[1]*p[0] + F.y[1]*p[1] + F.z[1]*p[2],
+            F.o[2] + F.x[2]*p[0] + F.y[2]*p[1] + F.z[2]*p[2]];
+  }
+  function ftr(F,p){ return {x:F.x, y:F.y, z:F.z, o:fp(F,p)}; }
+  function frY(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* z tips toward x */
+    return {x:add(scl(F.x,c),scl(F.z,-s)), y:F.y, z:add(scl(F.x,s),scl(F.z,c)), o:F.o}; }
+  function frZ(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* x tips toward y */
+    return {x:add(scl(F.x,c),scl(F.y,s)), y:add(scl(F.x,-s),scl(F.y,c)), z:F.z, o:F.o}; }
+  /* a placement transform: stand something at (px,py,pz) facing yaw psi */
+  function place(px,py,pz,psi){ return frZ(ftr(F0(),[px,py,pz]), psi); }
+
+  /* ---- 1 · convex primitives ------------------------------------------ */
+  /* verts in world, faces as index rings. Every face gets its OUTWARD
+     normal by Newell, oriented away from the primitive's centroid — the
+     primitive is convex, so that is unambiguous, and it gives us both the
+     back-face test and the half-space set the ray clip needs. */
+  function mkPrim(verts, faces, ord, opts){
+    var c = [0,0,0], i, j;
+    for (i=0;i<verts.length;i++) c = add(c, verts[i]);
+    c = scl(c, 1/verts.length);
+    var FS = [];
+    for (i=0;i<faces.length;i++){
+      var f = faces[i], n = [0,0,0], cc = [0,0,0];
+      for (j=0;j<f.length;j++){
+        var A = verts[f[j]], B = verts[f[(j+1)%f.length]];
+        n[0] += (A[1]-B[1])*(A[2]+B[2]);
+        n[1] += (A[2]-B[2])*(A[0]+B[0]);
+        n[2] += (A[0]-B[0])*(A[1]+B[1]);
+        cc = add(cc, A);
+      }
+      cc = scl(cc, 1/f.length); n = nrm(n);
+      if (dot(n, sub(cc,c)) < 0) n = scl(n,-1);
+      FS.push({idx:f, n:n, c:cc, d:dot(n,cc)});
+    }
+    return {v:verts, f:FS, ord:ord, o:opts||{}, ctr:c, deco:[], tag:''};
+  }
+  /* box face indices, fixed by the ring order below and relied on by the
+     overalls: 0 = -z, 1 = +z (top), 2 = -y, 3 = +x (front), 4 = +y,
+     5 = -x (back). A mirrored placement frame flips the world side but
+     not the index, so the bib stays on the belt-facing face either way. */
+  var BF_BOT = 0, BF_TOP = 1, BF_FRONT = 3, BF_BACK = 5;
+  function boxP(F, c, h, ord, opts){
+    var S = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+    var v = [], i;
+    for (i=0;i<8;i++) v.push(fp(F, [c[0]+S[i][0]*h[0], c[1]+S[i][1]*h[1], c[2]+S[i][2]*h[2]]));
+    var p = mkPrim(v, [[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]], ord, opts);
+    p.topFace = BF_TOP;                  /* the +local-z face, for deco */
+    return p;
+  }
+  /* an N-gon prism: a cylinder, drawn honestly as a solid of N flats */
+  function prismP(F, c, axis, r, l0, l1, N, ord, opts){
+    var ax = [F.x,F.y,F.z][axis], p = [F.y,F.z,F.x][axis], q = [F.z,F.x,F.y][axis];
+    var base = fp(F,c), v = [], i, a, rr;
+    for (i=0;i<N;i++){ a = i*2*Math.PI/N; rr = add(scl(p, r*Math.cos(a)), scl(q, r*Math.sin(a)));
+      v.push(add(add(base, scl(ax,l0)), rr)); }
+    for (i=0;i<N;i++){ a = i*2*Math.PI/N; rr = add(scl(p, r*Math.cos(a)), scl(q, r*Math.sin(a)));
+      v.push(add(add(base, scl(ax,l1)), rr)); }
+    var fc = [], lo = [], hi = [];
+    for (i=0;i<N;i++) fc.push([i, (i+1)%N, (i+1)%N + N, i + N]);
+    for (i=0;i<N;i++){ lo.push(N-1-i); hi.push(N+i); }
+    fc.push(lo); fc.push(hi);
+    var pr = mkPrim(v, fc, ord, opts);
+    pr.capLo = fc.length-2; pr.capHi = fc.length-1;
+    pr.ax = ax; pr.pp = p; pr.qq = q; pr.rr = r;
+    pr.cLo = add(base, scl(ax,l0)); pr.cHi = add(base, scl(ax,l1));
+    return pr;
+  }
+  /* a circle laid ON a face — a hub, a bearing eye — as a polyline in 3D */
+  function ring(c, p, q, r, n){
+    var out = [], i;
+    for (i=0;i<=n;i++){ var a = i*2*Math.PI/n;
+      out.push(add(c, add(scl(p, r*Math.cos(a)), scl(q, r*Math.sin(a))))); }
+    return out;
+  }
+
+  /* ---- 2 · THE WORKER, as a reusable function -------------------------- */
+  /* model units are the arms' own: roughly 4 mm. The figure stands 418
+     units, about 1.67 m, against a belt surface at 183, about 0.73 m —
+     the belt comes to just below the hip, which is what a picking station
+     is for. Local +x is the way the figure faces: at the belt. */
+  var BOOT_HX = 22, BOOT_HY = 15, BOOT_HZ = 13, BOOT_X = 6;
+  var LEG_Y = 27, LEG_R = 20, LEG_Z0 = 26, LEG_Z1 = 214;
+  var TOR_Z0 = 206, TOR_Z1 = 332, TOR_HX = 26, TOR_HY = 52;
+  var NCK_R = 13, NCK_Z1 = 344;
+  var HEAD_R = 30, HEAD_Z1 = 402;
+  var SH_Y = 52, SH_Z = 318, SHB_R = 15;
+  var UP_L = 92, UP_R = 13, ELB_R = 14, FR_L = 88, FR_R = 11;
+  var HAND_D = 10;                       /* forearm end -> hand centre    */
+  var LF = FR_L + HAND_D;                /* elbow -> hand centre          */
+
+  /* Two-link closed form in the figure's own sagittal plane. Target
+     (fx, fz) in the worker's base frame; fx is forward, fz is height.
+     The NEGATIVE elbow root is taken on purpose — see the header. */
+  function reachArm(fx, fz){
+    var dx = fx, dz = fz - SH_Z, R2 = dx*dx + dz*dz;
+    var cs = (R2 - UP_L*UP_L - LF*LF)/(2*UP_L*LF);
+    if (cs > 1) cs = 1; if (cs < -1) cs = -1;
+    var t3 = -Math.acos(cs);
+    var t2 = Math.atan2(dx,dz) - Math.atan2(LF*Math.sin(t3), UP_L + LF*Math.cos(t3));
+    return {t2:t2, t3:t3};
+  }
+  function armDeg(a,b){ return {t2:a*D2R, t3:b*D2R}; }
+  /* forward kinematics of one arm, in the base frame's (forward, height) */
+  function armFK(p){
+    var s1 = Math.sin(p.t2), c1 = Math.cos(p.t2);
+    var s2 = Math.sin(p.t2+p.t3), c2 = Math.cos(p.t2+p.t3);
+    return [UP_L*s1 + LF*s2, SH_Z + UP_L*c1 + LF*c2];
+  }
+
+  /* THE OVERALLS. Edge lines only, seated on named faces of the torso box
+     and drawn only when that face faces the camera. Sat 0.5 proud of the
+     face so they are never z-fighting the box's own fill. */
+  var BIB_HY = 34, BIB_Z0 = 252, BIB_Z1 = 306, STRAP_Y = 40;
+  function overalls(T, Fb){
+    var xf = TOR_HX + 0.5, xb = -TOR_HX - 0.5, zt = TOR_Z1 + 0.5, s, i;
+    function seg(face, pts){ T.deco.push({face:face, pts:pts.map(function(p){ return fp(Fb,p); }), col:INK}); }
+    /* the bib: a plain rectangle up the chest. v1 had a pocket inside it
+       and at 600x420 the rectangle-in-a-rectangle read as an instrument
+       panel, not a pocket — one rectangle is the bib. */
+    seg(BF_FRONT, [[xf,-BIB_HY,BIB_Z0],[xf,BIB_HY,BIB_Z0],[xf,BIB_HY,BIB_Z1],
+                   [xf,-BIB_HY,BIB_Z1],[xf,-BIB_HY,BIB_Z0]]);
+    /* the fly seam below it */
+    seg(BF_FRONT, [[xf,0,BIB_Z0],[xf,0,TOR_Z0+4]]);
+    /* the straps: front shoulder run, over the top, crossed at the back */
+    for (i=0;i<2;i++){
+      s = i ? 1 : -1;
+      seg(BF_FRONT, [[xf, s*BIB_HY, BIB_Z1], [xf, s*STRAP_Y, TOR_Z1]]);
+      seg(BF_TOP,   [[TOR_HX, s*STRAP_Y, zt], [-16, s*STRAP_Y, zt]]);
+      seg(BF_BACK,  [[xb, s*STRAP_Y, TOR_Z1], [xb, -s*30, BIB_Z0+10]]);
+    }
+  }
+
+  /* makeWorker — ONE drawing, any placement, any pose.
+     Fb   placement frame: where the boots stand on the floor, and which
+          way local +x (the facing direction) points.
+     pose {L:{t2,t3}, R:{t2,t3}} — the arm at local -y and the arm at +y.
+     tag  the group name, so painter's order can keep this figure together
+     o0   the first lateral ordinal
+     opt  {hold:1} puts a part in the hands, {axisArm:+1|-1} names the arm
+          whose elbow carries the drawn axis.
+     Returns {prims, axes, axle, axisDir, tip, hand}. */
+  function makeWorker(Fb, pose, tag, o0, opt){
+    var P = [], i;
+    opt = opt || {};
+    function push(p, k){ p.tag = tag; p.ord = o0 + k; P.push(p); return p; }
+
+    /* boots and legs. Ordinals run ACROSS the body, low y first. */
+    var LEGK = {'-1':2, '1':8}, ARMK = {'-1':1, '1':9};
+    for (i=0;i<2;i++){
+      var sy = i ? 1 : -1, k = LEGK[sy];
+      push(boxP(Fb, [BOOT_X, sy*LEG_Y, BOOT_HZ], [BOOT_HX, BOOT_HY, BOOT_HZ], {}), k);
+      push(prismP(Fb, [0, sy*LEG_Y, 0], 2, LEG_R, LEG_Z0, LEG_Z1, 8, {}), k);
+    }
+
+    /* torso, and the overalls drawn on it */
+    var tor = push(boxP(Fb, [0,0,(TOR_Z0+TOR_Z1)/2],
+                        [TOR_HX, TOR_HY, (TOR_Z1-TOR_Z0)/2], {}), 4);
+    overalls(tor, Fb);
+    push(prismP(Fb, [0,0,0], 2, NCK_R, TOR_Z1-6, NCK_Z1, 8, {}), 5);
+    /* no ring on the crown: v1 had one and the head read as a length of
+       pipe. The prism's own cap edge is the whole of the head's top. */
+    push(prismP(Fb, [0,0,0], 2, HEAD_R, NCK_Z1-2, HEAD_Z1, 12, {}), 6);
+
+    /* the two arms. Shoulder ball, upper arm, elbow ball, forearm, hand —
+       all on ONE ordinal, because within an arm the depth sort is right
+       and the elbow ball covers the only junction that could show. */
+    var elbF = null, hands = {};
+    for (i=0;i<2;i++){
+      var s2 = i ? 1 : -1, kk = ARMK[s2], ap = (s2 < 0) ? pose.L : pose.R;
+      var F2 = frY(ftr(Fb, [0, s2*SH_Y, SH_Z]), ap.t2);
+      push(prismP(F2, [0,0,0], 1, SHB_R, -2*s2-14, -2*s2+14, 8, {}), kk);
+      push(prismP(F2, [0,0,0], 2, UP_R, -4, UP_L, 8, {}), kk);
+      var F3 = frY(ftr(F2, [0,0,UP_L]), ap.t3);
+      push(prismP(F3, [0,0,0], 1, ELB_R, -13, 13, 8, {}), kk);
+      push(prismP(F3, [0,0,0], 2, FR_R, -4, FR_L, 8, {}), kk);
+      push(boxP(F3, [0,0,FR_L+HAND_D], [12,9,12], {}), kk);
+      hands[s2] = fp(F3, [0,0,FR_L+HAND_D]);
+      if (s2 === (opt.axisArm || -1)) elbF = F3;
+    }
+
+    /* the part in the hands, if this figure is the one inspecting: placed
+       at the forward kinematics of the pose, spanning hand to hand */
+    var held = null;
+    if (opt.hold){
+      var hk = armFK(pose.R);
+      /* a crate, not a plank: the hands are a shoulder apart, so a part
+         thin in the other two dimensions read as a board being carried. */
+      held = push(boxP(Fb, [hk[0], 0, hk[1]], [22, SH_Y-9, 22], {}), 7);
+    }
+
+    /* THREE drawn axes per figure — the standing centre line, the
+       shoulder transverse, and one elbow. The 3D classifier decides, per
+       run, which parts are in the open (dash-dot) and which are inside
+       the figure's own body (dashed). */
+    var AX = [
+      [fp(Fb,[0,0,-34]),                fp(Fb,[0,0,HEAD_Z1+26])],
+      [fp(Fb,[0,-SH_Y-70,SH_Z]),        fp(Fb,[0, SH_Y+70,SH_Z])],
+      [fp(elbF,[0,-58,0]),              fp(elbF,[0, 58,0])]
+    ];
+
+    return {prims:P, axes:AX, axle:null, axisDir:Fb.y, tag:tag,
+            tip: hands[opt.axisArm || -1], hands:hands, held:held, pose:pose};
+  }
+
+  /* ---- 3 · THE CELL ---------------------------------------------------- */
+  var PHI = 12*D2R;                 /* the belt's heading on the floor      */
+  var Fc = place(0,0,0, PHI);       /* the conveyor's own frame             */
+  var BED_HL = 280, BED_HW = 62, BED_Z0 = 130, BED_Z1 = 180;
+  var ROL_R = 28, ROL_S = 306, ROL_Z = (BED_Z0+BED_Z1)/2;
+  var TOP = ROL_Z + ROL_R;          /* the belt surface                    */
+  var LEG_S = 222, LEG_W = 44;
+  /* the ALONG-BELT stations are the robots': spaced apart, and not
+     symmetrically, because v2 of the robot scene put the far actor level
+     with the end roller and the two collided in projection.
+     The LATERAL standoff is human — see the header. */
+  var WK_D = 118, ARM_SA = -200, ARM_SB = 66;
+  /* the RED workpiece sits under the FAR worker, which is the reaching
+     one: a near-side figure reaching over the belt puts its own forearm
+     between the camera and its target. From the far side the part stays
+     in clear. Its station along the belt is read off the SOLVED hand, in
+     buildGeom, not written down here. */
+  /* all three DOWNSTREAM of the belt's mid-point — see paintOrder */
+  var WP = [ {s:  20, h:[24,22,18], red:0},
+             {s: 250, h:[24,22,18], red:0},
+             {s: null, h:[27,25,21], red:1} ];
+  var PL_X = 374, PL_Y = 312, PL_Z0 = -16, PL_Z1 = 0;
+  var PERIOD = 13, ROCK2 = 2.5*D2R, ROCK3 = 2.5*D2R, CREEP = 15;
+
+  /* the two placements: mirrored across the belt, spaced along it, each
+     turned so its local +x (the facing) points at the belt's centre line */
+  /* MIRRORED, as the arms were. Turning the second figure through 180 deg
+     would flip the sign of every lateral step, and those steps are the
+     whole reason the across-the-body ordinal is exact. Negating the
+     placement frame's y instead builds a left-handed twin: the figure
+     still faces the belt, but both bodies step their limbs toward the
+     camera, so both sort the same way and the pair reads as two people
+     working opposite each other. */
+  function mirror(F){ return {x:F.x, y:scl(F.y,-1), z:F.z, o:F.o}; }
+  var FwkA =        frZ(ftr(Fc, [ARM_SA,  WK_D, 0]), -Math.PI/2);
+  var FwkB = mirror(frZ(ftr(Fc, [ARM_SB, -WK_D, 0]),  Math.PI/2));
+
+  /* A inspects: both forearms forward and a touch up, a part in the hands.
+     B reaches: one arm solved onto the belt centre at hand height, the
+     other hanging with a natural crook. */
+  /* B reaches with the arm on the CAMERA side of its own body (local +y).
+     v1 gave the reach to the far arm on the robot scene's reasoning that
+     the far side keeps the red part in clear — but that argument is about
+     which side of the BELT the actor stands on, and B already stands on
+     the far side. Within B, the far arm put the shoulder and the whole
+     elbow behind B's own chest and all that came out was a bar through
+     the bib. The near arm is seen whole, and the part stays clear anyway
+     because the reach comes from behind it. */
+  var POSE_A = {L:armDeg(155,-76), R:armDeg(155,-76)};
+  var REACH_Z = TOP + 58;
+  var POSE_B = {L:armDeg(174,-14), R:reachArm(WK_D, REACH_Z)};
+
+  var PLATE = (function(){
+    var V = [[-PL_X,-PL_Y,PL_Z0],[PL_X,-PL_Y,PL_Z0],[PL_X,PL_Y,PL_Z0],[-PL_X,PL_Y,PL_Z0],
+             [-PL_X,-PL_Y,PL_Z1],[PL_X,-PL_Y,PL_Z1],[PL_X,PL_Y,PL_Z1],[-PL_X,PL_Y,PL_Z1]]
+             .map(function(p){ return fp(Fc,p); });
+    var E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    return E.map(function(e){ return [V[e[0]], V[e[1]]]; });
+  })();
+  var BELT_AXIS = [fp(Fc,[-ROL_S-118,0,ROL_Z]), fp(Fc,[ROL_S+118,0,ROL_Z])];
+
+  var ARMS = [], POSE = null;
+
+  function buildGeom(t){
+    var s = 2*Math.PI*t/PERIOD;
+    var pb = {L: POSE_B.L,
+              R:{t2: POSE_B.R.t2 + ROCK2*Math.sin(s),
+                 t3: POSE_B.R.t3 + ROCK3*Math.sin(s+1.2)}};
+    var A = makeWorker(FwkA, POSE_A, 'A', 100, {hold:1, axisArm:1});
+    var B = makeWorker(FwkB, pb,     'B', 100, {axisArm:1});
+    var P = A.prims.concat(B.prims), i;
+
+    /* the conveyor: a shallow bed on four short legs, with the two end
+       rollers as cylinders across it. Nothing interpenetrates. */
+    function cpush(p,k){ p.tag = 'C'; p.ord = k; P.push(p); return p; }
+    var bed = cpush(boxP(Fc, [0,0,(BED_Z0+BED_Z1)/2], [BED_HL, BED_HW, (BED_Z1-BED_Z0)/2], {}), 1);
+    for (i=0;i<4;i++){
+      var ls = (i<2 ? -LEG_S : LEG_S), lw = (i%2 ? -LEG_W : LEG_W);
+      cpush(boxP(Fc, [ls, lw, BED_Z0/2], [11, 11, BED_Z0/2], {}), 2);
+    }
+    cpush(prismP(Fc, [-ROL_S,0,ROL_Z], 1, ROL_R, -BED_HW, BED_HW, 14, {}), 3);
+    cpush(prismP(Fc, [ ROL_S,0,ROL_Z], 1, ROL_R, -BED_HW, BED_HW, 14, {}), 3);
+
+    /* the belt's painted centre dashes, creeping. They live ON the bed's
+       top face, so the bed's painter slot carries them and anything nearer
+       — a workpiece, a hand — fills white over them. */
+    var off = (CREEP*t) % 84, dsh = [];
+    for (i=-8;i<=8;i++){
+      var x0 = -BED_HL + 6 + i*84 + off, x1 = x0 + 46;
+      if (x1 < -BED_HL+4 || x0 > BED_HL-4) continue;
+      if (x0 < -BED_HL+4) x0 = -BED_HL+4; if (x1 > BED_HL-4) x1 = BED_HL-4;
+      dsh.push([fp(Fc,[x0,0,BED_Z1+0.4]), fp(Fc,[x1,0,BED_Z1+0.4])]);
+    }
+    bed.deco = dsh.map(function(d){ return {face:bed.topFace, pts:d, col:INK}; });
+
+    /* the workpieces, plain boxes standing on the belt. The red one takes
+       its station from B's solved hand, projected onto the belt axis. */
+    var RS = dot(sub(B.tip, Fc.o), Fc.x);
+    var reds = [];
+    for (i=0;i<WP.length;i++){
+      var w = WP[i], ws = (w.s === null) ? RS : w.s;
+      var b = boxP(Fc, [ws, 0, TOP + w.h[2]], w.h, 0, w.red ? {all_red:1} : {});
+      b.tag = 'W'; b.ord = 10 + i; P.push(b);
+      if (w.red) reds.push(b);
+    }
+
+    ARMS = [A, B];
+    POSE = {A:POSE_A, B:pb, tipA:A.tip, tipB:B.tip, red_s:RS};
+    return {prims:P, arms:[A,B], axes:A.axes.concat(B.axes), belt:BELT_AXIS,
+            axles:[], red:reds};
+  }
+
+  /* ---- 4 · the camera -------------------------------------------------- */
+  var YAW0 = -35*D2R, PIT0 = 20*D2R, YAW_R = 25*D2R, PIT_R = 12*D2R, TAU = 1.0;
+  var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
+  var VD = [0,0,1];
+  function setView(yaw, pit){
+    var cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pit), sp=Math.sin(pit);
+    m00=cy;      m02=sy;
+    m10=sp*sy;   m11=cp;   m12=-sp*cy;
+    m20=-cp*sy;  m21=sp;   m22=cp*cy;
+    VD = [m20, m22, m21];              /* direction of increasing depth */
+  }
+  function springStep(x, v, target, w, dt){
+    var a = -2*w*v - w*w*(x - target);
+    v += a*dt; x += v*dt;
+    return [x, v];
+  }
+  var mnx = 0, mny = 0, mouseSeen = false;
+  var yawOff = 0, yawVel = 0, pitOff = 0, pitVel = 0;
+  function onMove(e){
+    if (e.pointerType && e.pointerType !== 'mouse') return;
+    var w = window.innerWidth || 1, h = window.innerHeight || 1;
+    mnx = (e.clientX - w/2)/(w/2); mny = (e.clientY - h/2)/(h/2);
+    if (mnx < -1) mnx = -1; else if (mnx > 1) mnx = 1;
+    if (mny < -1) mny = -1; else if (mny > 1) mny = 1;
+    mouseSeen = true;
+  }
+  window.addEventListener('pointermove', onMove, {passive:true});
+  window.addEventListener('mousemove', function(e){ if (e.pointerType === undefined) onMove(e); }, {passive:true});
+  function updateView(dt){
+    var tY = mouseSeen ? mnx*YAW_R : 0, tP = mouseSeen ? -mny*PIT_R : 0;
+    var w = 1/TAU, left = dt, h, A, B;
+    while (left > 1e-5){
+      h = left > 0.008 ? 0.008 : left; left -= h;
+      A = springStep(yawOff, yawVel, tY, w, h); yawOff = A[0]; yawVel = A[1];
+      B = springStep(pitOff, pitVel, tP, w, h); pitOff = B[0]; pitVel = B[1];
+    }
+    setView(YAW0 + yawOff, PIT0 + pitOff);
+  }
+
+  /* ---- 5 · the fit ----------------------------------------------------- */
+  var W = 600, H = 420, DPR = 1, SC = 1, OX = 0, OY = 0, PAD_X = 26, PAD_Y = 20;
+  function everyVertex(cb){
+    var ph, g, i, j;
+    for (ph=0; ph<3; ph++){
+      g = buildGeom(ph*PERIOD/3);
+      for (i=0;i<g.prims.length;i++)
+        for (j=0;j<g.prims[i].v.length;j++) cb(g.prims[i].v[j]);
+      for (i=0;i<g.axes.length;i++){ cb(g.axes[i][0]); cb(g.axes[i][1]); }
+      cb(g.belt[0]); cb(g.belt[1]);
+    }
+    PLATE.forEach(function(s){ cb(s[0]); cb(s[1]); });
+  }
+  function sweepBox(){
+    var lo=[1e9,1e9], hi=[-1e9,-1e9], rlo=[1e9,1e9], rhi=[-1e9,-1e9], i, j;
+    var saved = [m00,m02,m10,m11,m12,m20,m21,m22];
+    function acc(L,Hh){ return function(v){
+      var sx = m00*v[0] + m02*v[1], sy = m10*v[0] + m11*v[2] + m12*v[1];
+      if (sx<L[0]) L[0]=sx; if (sx>Hh[0]) Hh[0]=sx;
+      if (sy<L[1]) L[1]=sy; if (sy>Hh[1]) Hh[1]=sy;
+    };}
+    for (i=-1;i<=1;i++) for (j=-1;j<=1;j++){
+      setView(YAW0 + i*YAW_R, PIT0 + j*PIT_R);
+      everyVertex(acc(lo,hi));
+      if (i===0 && j===0) everyVertex(acc(rlo,rhi));
+    }
+    m00=saved[0]; m02=saved[1]; m10=saved[2]; m11=saved[3];
+    m12=saved[4]; m20=saved[5]; m21=saved[6]; m22=saved[7];
+    return {lo:lo, hi:hi, rlo:rlo, rhi:rhi};
+  }
+  var BOXU = null;
+  function size(){
+    var host = cv.parentNode;
+    W = Math.max(240, host.clientWidth || 600);
+    H = Math.max(200, host.clientHeight || 420);
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    PAD_X = Math.min(22, W*0.037); PAD_Y = Math.min(20, H*0.046);
+    if (!BOXU) BOXU = sweepBox();
+    var K = 0.30;
+    var rw = BOXU.rhi[0]-BOXU.rlo[0], rh = BOXU.rhi[1]-BOXU.rlo[1];
+    var bw = rw + K*((BOXU.hi[0]-BOXU.lo[0]) - rw);
+    var bh = rh + K*((BOXU.hi[1]-BOXU.lo[1]) - rh);
+    SC = Math.min((W - 2*PAD_X)/bw, (H - 2*PAD_Y)/bh) * 0.99;
+    OX = W/2 - (BOXU.rlo[0]+BOXU.rhi[0])/2 * SC;
+    OY = H/2 + (BOXU.rlo[1]+BOXU.rhi[1])/2 * SC;
+  }
+  function sx(v){ return OX + (m00*v[0] + m02*v[1])*SC; }
+  function sy(v){ return OY - (m10*v[0] + m11*v[2] + m12*v[1])*SC; }
+  function depth(v){ return m20*v[0] + m21*v[2] + m22*v[1]; }
+  function sdir(v){ return [(m00*v[0] + m02*v[1])*SC, -(m10*v[0] + m11*v[2] + m12*v[1])*SC]; }
+
+  /* ---- 6 · faces and edges --------------------------------------------- */
+  /* HARD is 0.65: every real crease in this model is 90 deg (dot 0), and an
+     8-gon prism's flats meet at 45 (dot 0.707), so no prism inks its flats
+     however few sides it has. */
+  var HARD = 0.65;
+  var nFace = 0, nBack = 0, nEdge = 0;
+  function prepare(P){
+    var i, j, f = P.f;
+    P.X = []; P.Y = [];
+    for (i=0;i<P.v.length;i++){ P.X.push(sx(P.v[i])); P.Y.push(sy(P.v[i])); }
+    P.bx0 = 1e9; P.bx1 = -1e9; P.by0 = 1e9; P.by1 = -1e9;
+    for (i=0;i<P.X.length;i++){
+      if (P.X[i]<P.bx0) P.bx0=P.X[i]; if (P.X[i]>P.bx1) P.bx1=P.X[i];
+      if (P.Y[i]<P.by0) P.by0=P.Y[i]; if (P.Y[i]>P.by1) P.by1=P.Y[i];
+    }
+    P.vis = []; P.fd = [];
+    for (i=0;i<f.length;i++){
+      P.vis[i] = dot(f[i].n, VD) > 0;
+      P.fd[i] = depth(f[i].c);
+      if (P.vis[i]) nFace++; else nBack++;
+    }
+    var em = {}, key;
+    for (i=0;i<f.length;i++){
+      var idx = f[i].idx;
+      for (j=0;j<idx.length;j++){
+        var a = idx[j], b = idx[(j+1)%idx.length];
+        key = (a<b) ? (a*8192+b) : (b*8192+a);
+        if (em[key]) em[key].push(i); else em[key] = [a, b, i];
+      }
+    }
+    var segs = [], red = !!P.o.all_red;
+    for (key in em){
+      var e = em[key], a2 = e[0], b2 = e[1], f0 = e[2], f1 = e.length > 3 ? e[3] : -1;
+      var v0 = P.vis[f0], v1 = (f1 >= 0) ? P.vis[f1] : false;
+      var ink = (f1 < 0) ? v0 : ((v0 !== v1) || (v0 && v1 && dot(f[f0].n, f[f1].n) < HARD));
+      if (!ink) continue;
+      segs.push([P.X[a2], P.Y[a2], P.X[b2], P.Y[b2], red ? RED : INK]);
+      nEdge++;
+    }
+    P.segs = segs;
+    P.order = [];
+    for (i=0;i<f.length;i++) if (P.vis[i]) P.order.push(i);
+    P.order.sort(function(p,q){ return P.fd[p] - P.fd[q]; });
+    P.cd = depth(P.ctr);
+  }
+
+  /* ---- 7 · the 3D hidden test ------------------------------------------ */
+  /* THREE classes, not two, and that distinction is the whole reason the
+     scene stays readable. A free line is
+        0  IN THE OPEN          -> #9B9B9B dash-dot construction
+        1  inside its OWN object -> #BDBDBD dashed: this is the run that
+                                    EXPLAINS the figure (the standing
+                                    centre line inside the torso, the
+                                    shoulder axis inside the chest)
+        2  behind a DIFFERENT object -> not drawn at all.
+     The robot scene's v2 dashed class 2 as well, and three long grey
+     diagonals ran across the conveyor bed making it look like glass. A
+     line behind someone else's solid is simply hidden. */
+  var OCC = [];
+  function slabHit(P, p){
+    var f = P.f, tin = -1e9, tout = 1e9, i;
+    for (i=0;i<f.length;i++){
+      var num = f[i].d - dot(f[i].n, p), den = dot(f[i].n, VD);
+      if (den > -1e-9 && den < 1e-9){ if (num < -1e-9) return 0; continue; }
+      var t = num/den;
+      if (den > 0){ if (t < tout) tout = t; } else { if (t > tin) tin = t; }
+      if (tin >= tout) return 0;
+    }
+    return (tout > (tin > 0 ? tin : 0) + 1e-6) ? 1 : 0;
+  }
+  function rayClass(p, own){
+    var px = sx(p), py = sy(p), k, cls = 0;
+    for (k=0;k<OCC.length;k++){
+      var P = OCC[k];
+      if (px < P.bx0 || px > P.bx1 || py < P.by0 || py > P.by1) continue;
+      if (!slabHit(P, p)) continue;
+      if (own !== '*' && P.tag !== own) return 2;   /* someone else's solid */
+      cls = 1;                            /* '*' — the plate owns them all */
+    }
+    return cls;
+  }
+  var NS = 36;
+  function splitLine(A, B, own, clear, hid){
+    var i, cls = [], s;
+    for (i=0;i<NS;i++){ s = (i+0.5)/NS; cls.push(rayClass(lerp(A,B,s), own)); }
+    var runs = [], start = 0, cur = cls[0];
+    for (i=1;i<NS;i++){
+      if (cls[i] !== cur){
+        var lo = (i-0.5)/NS, hi = (i+0.5)/NS, k, m;
+        for (k=0;k<10;k++){ m = (lo+hi)/2; if (rayClass(lerp(A,B,m), own) === cur) lo = m; else hi = m; }
+        m = (lo+hi)/2;
+        runs.push([start, m, cur]); start = m; cur = cls[i];
+      }
+    }
+    runs.push([start, 1, cur]);
+    for (i=0;i<runs.length;i++){
+      if (runs[i][2] === 2) continue;
+      if (runs[i][1] - runs[i][0] < 2e-3) continue;
+      var p0 = lerp(A,B,runs[i][0]), p1 = lerp(A,B,runs[i][1]);
+      (runs[i][2] ? hid : clear).push([sx(p0), sy(p0), sx(p1), sy(p1)]);
+    }
+  }
+
+  /* ---- 8 · the ink ------------------------------------------------------ */
+  function strokeSegs(arr, col, dash, w){
+    if (!arr.length) return;
+    ctx.beginPath();
+    for (var i=0;i<arr.length;i++){ ctx.moveTo(arr[i][0],arr[i][1]); ctx.lineTo(arr[i][2],arr[i][3]); }
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  function strokePoly(pts, col, w){
+    if (pts.length < 2) return;
+    ctx.beginPath(); ctx.moveTo(sx(pts[0]), sy(pts[0]));
+    for (var i=1;i<pts.length;i++) ctx.lineTo(sx(pts[i]), sy(pts[i]));
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash([]); ctx.stroke();
+  }
+
+  var drawBox = [0,0,0,0], G = null, RUNS = [], ORDER = [];
+
+  /* PAINTER'S ORDER: sort the whole list by centroid depth, and that is
+     ALL. The robot scene needed two re-seats on top of it; this one needs
+     neither, and both are argued out below. line.html's reseat() helper
+     is not carried over, because nothing here calls it. */
+  function paintOrder(P, arms){
+    var order = P.slice().sort(function(a,b){ return a.cd - b.cd; });
+    /* NO RE-SEAT INSIDE A FIGURE — and that is a difference from the robot
+       scene, not an omission. An arm's links are LONG and lie along the
+       chain, so a link's centroid says almost nothing about which link is
+       in front and the chain had to be re-seated. A body's parts are
+       SHORT and sit concentrically about their joints: the near shoulder
+       ball is nearer than the torso, the far one is further, the neck is
+       nearer than the chest, a leg's top is behind the hip it enters.
+       Centroid depth already tells the truth about every one of them.
+       v1 re-seated the figure laterally anyway, and because re-seating
+       permutes a group into the SLOTS the global sort gave it, the near
+       leg and the near arm were carried past their own slots and over the
+       conveyor bed and the end roller, which stand between them and the
+       camera. Depth alone puts both back behind the belt where they are. */
+    /* THE CONVEYOR-BEFORE-WORKPIECES RE-SEAT IS GONE TOO, and the parts
+       were moved instead. The bed's centroid is a liar against a box
+       standing on it near the far end — that is real, and the robot scene
+       re-seated the whole conveyor-and-workpiece group to answer it. But
+       with people standing a body's width from the belt rather than an
+       arm's reach, the group's slots now straddle the figures, and the
+       re-seat pushed the bed behind worker B's legs (which it stands in
+       front of) and hoisted the near end roller and the red part past his
+       hand. Nor can the bed simply be dropped behind the parts: it has to
+       be behind a box at s = -258 AND in front of B's legs at the same
+       time, which no single painter's slot can be.
+       So the conflict was removed rather than papered over. A part
+       standing on the belt sorts correctly against the bed whenever
+       k*s + sp*(part height above the bed centre) > 0; over the whole
+       orbit the binding case is yaw -60 / pitch 8, where that reads
+       s > -7. All three parts now stand DOWNSTREAM of that, at s = 20,
+       118 and 250. Every primitive in the scene is then at its own
+       honest centroid depth, and there is no special case left at all. */
+    return order;
+  }
+
+  function render(t){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,H);
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
+
+    G = buildGeom(t);
+    nFace = 0; nBack = 0; nEdge = 0;
+    var P = G.prims, i, k;
+    for (i=0;i<P.length;i++) prepare(P[i]);
+    var order = paintOrder(P, G.arms);
+    ORDER = order.map(function(q){ return q.tag + q.ord; });
+    OCC = P;
+
+    /* 1 · the solids, back to front: fill white, then stroke */
+    for (i=0;i<order.length;i++){
+      var Q = order[i];
+      for (k=0;k<Q.order.length;k++){
+        var f = Q.f[Q.order[k]].idx, j;
+        ctx.beginPath();
+        ctx.moveTo(Q.X[f[0]], Q.Y[f[0]]);
+        for (j=1;j<f.length;j++) ctx.lineTo(Q.X[f[j]], Q.Y[f[j]]);
+        ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill();
+      }
+      for (k=0;k<Q.deco.length;k++){
+        var D = Q.deco[k];
+        if (Q.vis[D.face]) strokePoly(D.pts, D.col, 1);
+      }
+      var blk = [], rd = [];
+      for (k=0;k<Q.segs.length;k++) (Q.segs[k][4] === RED ? rd : blk).push(Q.segs[k]);
+      strokeSegs(blk, INK, [], 1);
+      strokeSegs(rd,  RED, [], 1.3);
+    }
+
+    /* 2 · the base plate, classified against the whole cell in 3D */
+    var pClear = [], pHid = [];
+    for (i=0;i<PLATE.length;i++) splitLine(PLATE[i][0], PLATE[i][1], '*', pClear, pHid);
+    strokeSegs(pClear, INK,  [], 1);
+    strokeSegs(pHid,   HIDC, [5,4], 1);
+
+    /* 3 · the robot scene's shoulder-axle pair lived here. A person has no
+       axle in a housing, so G.axles is empty and this no-ops; the dashed
+       ink is carried by the axes that run inside the torso and elbow. */
+    var axl = [];
+    for (k=0;k<G.axles.length;k++){
+      var X = G.axles[k];
+      var blocked = 0;
+      for (i=0;i<=4;i++){
+        var pt = add(X.c, scl(X.dir, X.lo + (X.hi-X.lo)*i/4));
+        if (rayClass(pt, X.tag) === 2){ blocked = 1; break; }
+      }
+      if (blocked) continue;
+      var du = sdir(X.dir), nx = -du[1], ny = du[0];
+      var nl = Math.sqrt(nx*nx+ny*ny) || 1; nx/=nl; ny/=nl;
+      var dp = sdir(X.p), dq = sdir(X.q);
+      var ext = X.r * Math.sqrt(Math.pow(nx*dp[0]+ny*dp[1],2) + Math.pow(nx*dq[0]+ny*dq[1],2));
+      var a0 = add(X.c, scl(X.dir, X.lo)), a1 = add(X.c, scl(X.dir, X.hi));
+      var A0 = [sx(a0), sy(a0)], A1 = [sx(a1), sy(a1)];
+      axl.push([A0[0]+nx*ext, A0[1]+ny*ext, A1[0]+nx*ext, A1[1]+ny*ext]);
+      axl.push([A0[0]-nx*ext, A0[1]-ny*ext, A1[0]-nx*ext, A1[1]-ny*ext]);
+      var cap = ring(a0, X.p, X.q, X.r, 14);
+      for (i=0;i<cap.length-1;i++)
+        axl.push([sx(cap[i]), sy(cap[i]), sx(cap[i+1]), sy(cap[i+1])]);
+    }
+    strokeSegs(axl, HIDC, [5,4], 1);
+
+    /* 4 · the body axes, and the ONE construction axis along the belt */
+    var aClear = [], aHid = [];
+    RUNS = [];
+    var lines = G.axes.concat([G.belt]);
+    var owns = ['A','A','A','B','B','B','C'];
+    for (i=0;i<lines.length;i++){
+      var c0 = aClear.length, h0 = aHid.length;
+      splitLine(lines[i][0], lines[i][1], owns[i], aClear, aHid);
+      RUNS.push({clear:aClear.slice(c0), hid:aHid.slice(h0)});
+    }
+    strokeSegs(aClear, CONC, [9,3,2,3], 1);
+    strokeSegs(aHid,   HIDC, [5,4], 1);
+
+    drawBox = [1e9,1e9,-1e9,-1e9];
+    function hit(x,y){
+      if (x<drawBox[0]) drawBox[0]=x; if (x>drawBox[2]) drawBox[2]=x;
+      if (y<drawBox[1]) drawBox[1]=y; if (y>drawBox[3]) drawBox[3]=y;
+    }
+    for (i=0;i<P.length;i++) for (k=0;k<P[i].X.length;k++) hit(P[i].X[k], P[i].Y[k]);
+    [pClear, pHid, aClear, aHid].forEach(function(g){
+      g.forEach(function(s){ hit(s[0],s[1]); hit(s[2],s[3]); });
+    });
+  }
+
+  /* ---- 9 · the frame ---------------------------------------------------- */
+  var lastT = -1, raf = null, running = false, clock = 0, frozen = null;
+  var _minDt = 1000/30, _lastDraw = 0;
+  function frame(now){
+    if (lastT < 0) lastT = now;
+    var dt = (now-lastT)/1000; lastT = now;
+    if (dt < 0) dt = 0; if (dt > 0.1) dt = 0.1;
+    clock += dt;
+    updateView(dt);
+    render(frozen === null ? clock : frozen);
+  }
+  function loop(now){
+    if (now - _lastDraw >= _minDt - 1){ _lastDraw = now; frame(now); }
+    raf = requestAnimationFrame(loop);
+  }
+  function start(){ if (running || reduce) return; running = true; lastT = -1; raf = requestAnimationFrame(loop); }
+  function stop(){ running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
+  function still(){
+    yawOff = pitOff = yawVel = pitVel = 0;
+    setView(YAW0, PIT0); render(frozen === null ? 0 : frozen);
+  }
+
+  size();
+  setView(YAW0, PIT0); render(0);
+  if (!reduce) start();
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); else start(); });
+  window.addEventListener('blur', stop);
+  window.addEventListener('focus', start);
+  var rt = null;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ size(); render(frozen === null ? clock : frozen); }, 160);
+  });
+
+  /* ---- 10 · the probe surface ------------------------------------------- */
+  window.lineStats = function(){
+    var verts = 0; G.prims.forEach(function(p){ verts += p.v.length; });
+    return {primitives:G.prims.length, vertices:verts, faces_drawn:nFace,
+            faces_culled:nBack, edges_inked:nEdge, free_lines:PLATE.length + G.axes.length + 1,
+            w:W, h:H, dpr:DPR, scale:+SC.toFixed(4),
+            draw_box:drawBox.map(function(v){ return +v.toFixed(1); }),
+            running:running, reduced:reduce};
+  };
+  window.lineView = function(){
+    return {yaw_deg:+((YAW0+yawOff)/D2R).toFixed(2), pitch_deg:+((PIT0+pitOff)/D2R).toFixed(2),
+            workerA_axis_depth:+dot(ARMS[0].axisDir, VD).toFixed(3),
+            workerB_axis_depth:+dot(ARMS[1].axisDir, VD).toFixed(3),
+            tau:TAU, mouse:[mnx,mny], seen:mouseSeen};
+  };
+  window.linePose = function(){
+    function P(p){ return {L:[+(p.L.t2/D2R).toFixed(1), +(p.L.t3/D2R).toFixed(1)],
+                           R:[+(p.R.t2/D2R).toFixed(1), +(p.R.t3/D2R).toFixed(1)]}; }
+    return {A:P(POSE.A), B:P(POSE.B),
+            tipA:POSE.tipA.map(function(v){ return +v.toFixed(1); }),
+            tipB:POSE.tipB.map(function(v){ return +v.toFixed(1); }),
+            red_station:+POSE.red_s.toFixed(1),
+            belt_top:TOP, stand_off:WK_D, figure_height:HEAD_Z1};
+  };
+  window.lineAxisRuns = function(){
+    function L(s){ return +Math.sqrt(Math.pow(s[2]-s[0],2)+Math.pow(s[3]-s[1],2)).toFixed(1); }
+    var nm = ['A-STAND','A-SHOULDER','A-ELBOW','B-STAND','B-SHOULDER','B-ELBOW','BELT'];
+    return RUNS.map(function(r,i){ return {line:nm[i], open:r.clear.map(L), buried:r.hid.map(L)}; });
+  };
+  window.lineOrder = function(){ return ORDER; };
+  window.lineStill = still;
+  window.lineSetTime = function(t){ frozen = t; render(t); };
+  window.lineSetMouse = function(x,y){
+    mnx = x; mny = y; mouseSeen = true;
+    for (var i=0;i<400;i++) updateView(0.016);
+    render(frozen === null ? clock : frozen);
+  };
+  window.lineStop = stop; window.lineStart = start;
+})();
+</script>
+</body>
+</html>

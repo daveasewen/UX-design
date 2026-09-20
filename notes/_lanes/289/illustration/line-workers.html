@@ -1,0 +1,2010 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Two workers and a conveyor — line-drawn 3D</title>
+<style>
+  :root { color-scheme: light; }
+  html,body { margin:0; padding:0; background:#F2F2F2; }
+  body { min-height:100vh; display:flex; align-items:center; justify-content:center;
+         font:14px/1.4 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif; color:#111; }
+  .wrap { padding:40px; }
+  .card { width:600px; height:420px; background:#fff; position:relative; }
+  .card canvas { display:block; }
+  .cap { width:600px; margin-top:14px; font:11px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+         letter-spacing:.06em; color:#767676; text-transform:uppercase; }
+  @media print { body { background:#fff; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card"><canvas id="line"></canvas></div>
+    <div class="cap">Fig. 291-L6 &middot; Two workers, one conveyor &middot; hidden-line, 3/4 view, orbit on mouse</div>
+  </div>
+
+<script>
+/* ============================================================
+   291 · L6 — THE LINE SCENE, PEOPLED, SIXTH PASS: THREE NOTES.
+   v5 is kept whole at line-workers-v5.html (and its renders at
+   line-workers-v5-rest.png / -v5-orbit.png). Dave, looking at v5
+   and at four crops — the shoulders and neck, the torso twice,
+   and the red workpiece — said, verbatim:
+
+     "the top oval facet can just be removed"
+     "the 'corners on the torso that face us can be removed"
+     "hide the box-hands behind the box"
+
+   THREE CHANGES, ONE PER NOTE, AND NOTHING ELSE MOVED.
+
+   1 · THE OVAL ROUND THE NECK IS GONE. The yoke has closed on a
+       POLE since v5 and inks nothing on top, so the closed oval
+       ring sitting on the shoulders in the crop was not a facet
+       of the solid at all — it was the coverall's COLLAR BAND, a
+       drawn seam that ran the full 360 degrees at z 85, and the
+       only line in the drawing that ringed the neck. The band is
+       removed. The yoke's SURFACE is untouched, so it still
+       occludes, still fills white and still carries its own
+       silhouette; the neck simply rises out of the shoulders
+       with no ring line round it. The yoke seam at z 79 stays —
+       it is a back seam, an arc across the shoulders, not a ring
+       — and so do the front opening, the placket, the buttons,
+       both chest pockets and the waistband. Full note in
+       yokeSeams().
+
+   2 · THE TORSO'S FRONT CORNERS ARE NOT INKED. The ribcage block
+       and the pelvis are tapered prisms, so their four vertical
+       edges are 90-degree creases and the ink rule drew every
+       one of them at full strength — including the two that face
+       the camera, which is what read as a box. Both prisms now
+       carry o.silo: a primitive with that flag inks ONLY the
+       edges that bound its own outline (one face toward the
+       camera, one away) and none of its creases, however sharp.
+       The silhouette is untouched, so the figure keeps its
+       shape and its width; what goes is the interior vertical
+       crease down the front. HARD is unchanged at 0.65 and no
+       other solid in the scene is affected — the garment lines
+       are deco, not edges, and the yoke, the arms, the legs and
+       the conveyor all ink exactly as they did. Full note in
+       prepare().
+
+   3 · THE REACHING HAND GOES BEHIND THE PART. B's mitt was
+       solved to the belt's own centre line at z 237 — twelve
+       units ABOVE the red part's top face at 225 — so it was
+       drawn as a box overlapping a box. B stands on the belt's
+       -y side, which at this camera is the FAR side, so the grip
+       moves across to the part's far face and down to z 194:
+       GRIP_X = WK_D - 32, GRIP_Z = 194. The painter's centroid
+       sort then fills the part white over the mitt. Proved with
+       a new probe, window.lineGrip(), which requires BOTH that
+       the mitt sorts behind the part and that all eight of its
+       corners project inside the part's hull: at rest out_px is
+       0.00 and nothing of the hand shows in front of the red
+       outline. IN THE ORBIT A SLIVER SHOWS — about 4.2 px of
+       wrist at yaw -0.8 / pitch 0.5 — and 3.49 units of the mitt
+       sit inside the part, which is the price of reaching zero
+       at rest; backing the grip off to 36 clears the part
+       entirely but puts 1.98 px of wrist on the page at rest.
+       Full note at GRIP_X.
+
+   Everything else is v5 to the decimal: projection, camera, orbit
+   spring, conveyor and its creeping dashes, base plate, fit sweep,
+   the hidden-line pipeline and its three-class ray classifier,
+   painter's order, the three workpieces' sizes, the idle, the
+   construction axes, both standoffs, both stances, the head, the
+   neck, the yoke's rings, the deltoid, the legs, the boots, and
+   every constant of the figure. A's pose and both of A's hands are
+   untouched.
+
+   ------------------------------------------------------------
+   291 · L5 — FIFTH PASS: THREE NOTES.
+   v4 is kept whole at line-workers-v4.html (and its renders at
+   line-workers-v4-rest.png / -v4-orbit.png). Dave, looking at v4
+   and at three crops — both figures' shoulders, and worker A
+   against the conveyor — said, verbatim:
+
+     "set the shoulders down the body a little"
+     "the first body is clashing with the conveyor, he needs to
+      step back a bit"
+     "I don't think we need the flat facet on top of the shoulders"
+
+   THREE CHANGES, ONE PER NOTE, AND NOTHING ELSE MOVED.
+
+   1 · THE SHOULDERS COME DOWN THE BODY. SH_LZ 88 -> 76 — twelve
+       units, a fifth of a head — so the arm root sits BELOW the
+       base of the neck rather than level with it, and the deltoid's
+       widest point is under the top of the shoulder mass, which is
+       where a shoulder joint actually is. The yoke's crest came
+       down with it, 97 -> 88. It could not go the full third of a
+       head: the ribcage block still stops at TOR_HB = 72 and the
+       coverall's chest pockets still top out at z 69, and those
+       are what the yoke's bottom ring is built on. The LAP got
+       BETTER, not worse — the shoulder plane is now where the
+       torso is ay 39.65 rather than 35.0, so the sleeve head laps
+       the body by 8.25 instead of 3.6. SH_Y did not move. Full
+       note at SH_LZ.
+
+   2 · WORKER A STEPS BACK 64. WK_DA 126 -> 190. lineClear() said
+       he stood 14.9 clear of the belt and that was TRUE — in three
+       dimensions. The drawing is flat, and on the page the bed's
+       near edge crossed his CHEST with the upstream roller behind
+       his ribs. So this pass measures the clash where the reader
+       sees it: window.linePage() projects every primitive's convex
+       hull with the live view matrix and separates them with SAT,
+       in CSS px. A's worst page overlap against the conveyor falls
+       from -38.6 px to -29.2, his torso against the bed from -31.2
+       to -13.3, and the belt now crosses him at the HIP — which is
+       where the model always said it should, "the belt comes to
+       the top of the thigh". Zero page overlap is not reachable at
+       this camera by any standoff; what moved is where it crosses.
+       IT COST THE REACHING ARM: at 190 the bed's near edge is past
+       the arm's 169 of reach, the solve clamps to straight, and A
+       LEANS on the rail rather than resting a bent hand on the
+       belt. Full note at WK_DA.
+
+   3 · NO FLAT FACET ON TOP OF THE SHOULDERS. Two solids had one.
+       The YOKE's top ring was 13.5 x 20.0 at z 97 — a real ring,
+       so latheP capped it with a POLYGON, and a 27 x 40 plate
+       cannot hide inside a 20-diameter neck: that plate's rim is
+       the horizontal quad sitting on each shoulder in the crop.
+       The yoke now closes on a POLE at z 88, a triangle fan with
+       no cap and no rim, exactly as v3 closed the head, and the
+       five rings below it are an ellipsoid cap on the widest ring
+       so the trapezius SLOPES into the neck instead of plateauing
+       at it — 16.7 units of neck now show under the chin, against
+       7. The DELTOID cap already closed on a pole, so it had no
+       cap polygon; what it had was a nearly flat CROWN, a first
+       band of slope 3.25 where a sphere of that radius would run
+       about 5.4. One more ring and a steeper first band make it
+       5.78, 2.13, 1.36, 0.88, 0.22 — still monotone, still convex,
+       fan dihedral up to 0.99 from 0.971. Full notes at YOKE and
+       UP_RINGS.
+
+   Everything else is v4 to the decimal: projection, camera, orbit
+   spring, conveyor, base plate, fit sweep, the hidden-line pipeline
+   and its ray classifier, painter's order, the ink rules, the three
+   workpieces, the idle, the construction axes, worker B's standoff
+   and pose, every other constant of the figure. TOR_HB, YOKE_N and
+   the yoke's two lowest rings are untouched, so the corner crease
+   that L4 tuned still survives exactly one band and dies above it.
+
+   ------------------------------------------------------------
+   291 · L4 — FOURTH PASS: THE SHOULDERS.
+   v3 is kept whole at line-workers-v3.html (and its renders at
+   line-workers-v3-rest.png / -v3-orbit.png). Dave, looking at v3
+   and at a crop of one figure's shoulder, said, verbatim:
+
+     "can we get the shoulders looking more natural, and rounded"
+
+   ONE CHANGE, IN TWO HALVES, AND NOTHING ELSE MOVED.
+
+   A · THE RIBCAGE'S TOP IS A YOKE, NOT A LID. In v3 the ribcage
+       was a tapered BLOCK 88 tall: a flat top, and two 90-degree
+       top corners that inked at full strength. The arm root sat
+       on one of them, so the shoulder read exactly as the crop
+       shows it — a box with a tube stuck on. The block now stops
+       at TOR_HB = 72, just above the chest pockets, and a YOKE
+       carries the last 25 units: a six-ring SUPERELLIPSE lathe,
+       drawn at YOKE_N = 12 rather than the body's usual 8, that
+       begins as the block's own rectangle and rounds off ring by
+       ring while falling away in BOTH directions at once — e 20,
+       4.6, 3.0, 2.7, 2.4, 2.2; ax 22.29 down to 13.5; ay 38.95
+       out to 40.0 at the shoulder mass and then down to 20.0.
+       The corner crease therefore survives exactly ONE band, to
+       z 78 (around-ring dihedral 0.649, a hair under HARD 0.65,
+       so the block's four corners run on a little and die), and
+       above that the dome inks nothing around its rings at all —
+       0.795, 0.858, 0.905, 0.948. The trapezius-to-deltoid line
+       is one curve with no corner at the arm root. Twelve facets
+       and not eight because the section is ELONGATED, ay/ax about
+       1.75: at N = 8 an ellipse that long still turns 0.55 from
+       facet to facet and inks a crease down each side however
+       round the maths says it is. Worst band-to-band dihedral
+       0.915, so the dome does not ink across its rings either;
+       worst out-of-plane deviation 0.122 units, under the head's
+       0.138; all 72 vertices on their own convex hull, which is
+       what the half-space clip needs. The shoulder plane is still
+       z 88 — the yoke is 20.6 x 35.0 there — so no proportion
+       moved.
+
+   B · EACH UPPER ARM HAS A DELTOID CAP. v3's upper arm was a
+       frustum starting 10 above its pivot with a buried flat cap,
+       so above the shoulder it ended in a blunt tube. It is now
+       ONE lathe that closes on a POLE DEL_H = 8.5 above the pivot
+       and opens through 6.5, 11.0, 13.9 to DEL_R = 14.6 at the
+       pivot plane before tapering the whole 84 to the elbow — a
+       sleeve cap, in the garment drawing's sense. Profile slopes
+       3.25, 1.67, 1.12, 0.22, -0.038 fall monotonically, so it is
+       convex; every dihedral inside it is above 0.80 and the
+       8-gon's flats meet at 0.707, both above HARD, so NOTHING
+       inside the cap inks. It is silhouette, not a joint marker:
+       no sphere came back, and ballP is still deleted. The cap's
+       crown lands at z 96.5 against the yoke's crest at 97 — just
+       under it, as a deltoid sits just under a trapezius, which
+       is why an earlier DEL_H of 11 read as a pauldron — so it
+       sits OVER the shoulder; its inboard surface is at y 31.4
+       against a yoke 35.0 wide at the shoulder plane, a 3.6 lap,
+       so the sleeve head draws a seam across the dome and no gap
+       can open. THE PIVOT DID NOT MOVE — SH_Y 46, SH_LZ 88,
+       exactly where L3 put it, and every arm axis is still
+       outside the torso.
+
+   THE GARMENT FOLLOWS THE CURVE. The collar notch and the
+   straight shoulder seam were seated on the block's TOP FACE and
+   that face is gone, so three seams are seated on the dome
+   instead and are curved because it is: the coverall's YOKE SEAM
+   at z 83, across the BACK only (it replaces the straight rule
+   that crossed the back at z 70 — wrapped right round it fought
+   the placket, the buttons and both pockets on the chest), the
+   COLLAR band at z 93, and the front OPENING carried up from the
+   placket's top at z 70, which is where the placket now stops. Each is emitted facet by facet
+   and gated on that facet — faceAt() names a lathe's facet the
+   way BF_FRONT names a box's — so a seam stops at the silhouette.
+   The placket's three buttons, both chest pockets, the waistband,
+   the back centre seam and the trousers are untouched.
+
+   WHAT v3 WAS — THE TIDY-UP.
+   v2 is kept whole at line-workers-v2.html (and its renders at
+   line-workers-v2-rest.png / -v2-orbit.png). Dave, looking at v2,
+   gave five notes, verbatim:
+
+     "okay we need to do some tidying up."
+     "we don't need the flat facet of the top of the head."
+     "reposition this body so its at the side of the conveyer"
+     "this arm is coming out of its body"
+     "the ankles could be columns rather than cubes"
+     "lets remove the ball joints"
+
+   FIVE CHANGES, AND NOTHING ELSE IN THE DRAWING MOVED.
+
+   1 · THE HEAD CLOSES SMOOTHLY. v2's egg was a five-ring lathe
+       whose top ring was a 24 x 22 disc, so latheP capped it with
+       a polygon and that cap's rim inked as a flat facet across
+       the crown. latheP now understands a POLE — a ring with
+       ax = ay = 0 is a single vertex and the band into it is a
+       triangle fan, so that end of the lathe has no cap at all
+       and no rim to ink. HEAD_RINGS is seven entries: chin plate,
+       jaw, cheek, brow, upper brow, crown ring, pole. The crown
+       is still 56 above the chin, so nothing in the proportion
+       system moved, the chin cap still inks as the jaw, the
+       profile is convex at every step, and the tightest
+       band-to-band dihedral is 0.86 against HARD = 0.65, so the
+       skull does not ink its own facets.
+
+   2 · WORKER A STANDS BESIDE THE BELT. He was at ARM_SA =
+       -200 on a 280 half-length bed, 80 from the end and
+       106 from the end roller, at a standoff of 104. At this
+       camera the bed's end face and the end roller both crossed
+       his body: the belt ran through his hips and the roller read
+       as a ball in his hand. Two constants move, both his alone.
+       **WK_DA = 126** (B keeps WK_D = 104, because B reaches
+       ACROSS the belt and a longer standoff would straighten his
+       elbow): A's torso front sits 104 out against a bed edge at
+       62 — 42 clear — and his boot toe reaches 92, 30 clear.
+       **ARM_SA = -136** walks him 64 downstream into the middle
+       of the bed's upstream half, so belt runs away on both sides
+       of him and the end of the conveyor is behind him. He is
+       still 202 along the belt from B. His near hand now RESTS ON
+       the belt: RAIL_X = 70 in his own floor frame puts the mitt
+       centre 6 past the near bed edge, and the mitt's underside
+       lands at 183, which is the belt surface.
+
+   3 · THE REACHING ARM LEAVES FROM THE SHOULDER. v2 seated the
+       shoulder pivot at (y 42, z 78) — TEN UNITS BELOW the
+       ribcage top, on a block 38.6 half-wide there — and hung a
+       15-radius tube off it, so half the tube lived inside the
+       chest and, once the arm pitched forward to reach, its near
+       silhouette emerged from the middle of the placket. The
+       pivot is now **SH_LZ = 88, SH_Y = 46**: z 88 IS the
+       ribcage's top face, and it is also where the proportion
+       sheet puts the shoulder plane (1.29 heads from the crown =
+       336 = PEL_Z0 + TOR_LZ + 88). The upper arm is slimmer,
+       UP_R0 = 13, so its inboard surface is at y 33 against a
+       39.7 half-width — tucked UNDER the top corner, not through
+       the chest — and its forward extent at the root is 13
+       against a 22 half-depth, so it cannot break the front face
+       however far it pitches, in rest or anywhere in the orbit.
+       Moving the pivot was only half of it. A two-link arm reaching
+       a point has one degree of freedom left over — the elbow can
+       swing anywhere on a cone about the shoulder-to-hand axis —
+       and solve3 never chose it, it always put the arm in the
+       plane through the base frame's own z. For B reaching ACROSS
+       the belt that plane drops the elbow down the front of the
+       chest, and no target anywhere on the belt gets the arm out
+       of the block: at the best of them the axis is still 2.7
+       inside. So solve3 gained a SWIVEL, one number per solved
+       arm: swivelF rotates the base frame about the target
+       direction before solving, which leaves the hand on exactly
+       the same point — a rotation fixes its own axis — and walks
+       the elbow round the cone. B's reach takes sw = -110, which
+       puts the elbow 54 forward and 56 out on his own side; A's
+       belt hand takes sw = 20. Measured with the new lineClear()
+       probe, all four upper-arm AXES are now outside the ribcage
+       block: A armL 6.0, A armR 6.1, B armL 6.0, B armR 4.9. In v2
+       B's reaching arm was 11.3 INSIDE.
+       A's hand on the hip had to be re-solved with it: v2 wrote
+       that pose down as three angles because solve3 alone could
+       not put a hand back at the waist, and those angles were
+       tuned to the OLD pivot, so after the move the hand sat 11
+       high and 5 wide of the hip. It is a solved reach now,
+       target (10, -28, 216) in his own floor frame at sw 0, which
+       is already the akimbo: elbow 33 back, 46 out.
+
+   4 · THE ANKLES ARE COLUMNS. v2's boot was a sole slab plus an
+       ankle-height BOX, and that box is the cube in the crop. The
+       box is gone. In its place a short frustum built in the
+       SHIN'S OWN FRAME, so it continues the shin's axis rather
+       than sitting across it: ANK_R0 12.6 down to ANK_R1 12.0,
+       starting 16 above the ankle (inside the shin, which is 13.2
+       there) and running 22 below it into a sole block made
+       taller, SOL_H = 7, to receive it. Both caps buried, so the
+       shin and the column read as one continuous leg into the
+       boot, and the step where the sole runs forward past the
+       column is still the heel.
+
+   5 · THE BALL JOINTS ARE GONE. ballP is deleted; there is no
+       sphere at any shoulder, elbow, hip or knee. Those spheres
+       existed to hide the seam between two limb segments, and the
+       seams are closed by OVERLAP instead, which is the same
+       trick the buried cap already made possible:
+         - shoulder: the upper arm starts UP_LIFT = 10 ABOVE its
+           own pivot, so it laps over the ribcage's top corner and
+           makes the deltoid itself.
+         - elbow: the sleeve cuff starts CUF_OV = 12 above the
+           elbow and at r 14 is wider than the 11.5 arm end it
+           swallows, so the outside of the bend closes.
+         - knee: the shin starts KNEE_OV = 14 above the knee and
+           at r 17 is wider than the 16 thigh end.
+         - hip: the ball was entirely inside the pelvis, so
+           deleting it changed no ink at all.
+       The mitt came down with them: HAND_H is 18 x 12 x 22 now
+       (v2: 20 x 14 x 26) — a hand, not a head.
+
+   Everything else is v2 exactly: projection, camera, orbit
+   spring, conveyor and its creeping dashes, base plate, the one
+   red workpiece and the two plain ones, the coverall lines, the
+   hidden-line pipeline, the ink rules, the idle, the probes.
+
+   WHAT v2 WAS — Dave, on v1:
+   "the workers look like robots, here are some images, one is a
+   sketch of a man in overalls, one is a drawing of overalls the
+   other two are human bodies drawn with a construction method".
+
+   v1 is kept whole at line-workers-v1.html. Everything a viewer
+   would compare against the ROBOT drawing (line.html, 289-I4) is
+   still identical — card, camera, orbit spring, conveyor, plate,
+   hidden-line pipeline, ink rules, ONE red accent, probe surface.
+   What changed is the two figures, and only the two figures.
+
+   WHY v1 READ AS A ROBOT, PART BY PART
+     · A cylinder head on a cylinder neck on a box torso. Those are
+       the three shapes a toy robot is made of. No egg, no jaw, no
+       taper anywhere: the silhouette had no human landmark in it.
+     · Equal-diameter limbs. An arm and a leg were the same 8-gon
+       tube at both ends, so nothing narrowed from shoulder to
+       wrist or from thigh to ankle. Tubes of constant diameter are
+       hydraulics.
+     · The attention stance. Both feet flat and level, both legs
+       vertical and parallel, hips level, shoulders level, spine
+       exactly vertical, head facing dead ahead. Every limb was
+       parallel to its opposite number. Nothing alive stands that way.
+     · The bib with straps crossed on the back drew an X on the
+       chest, which at 600x420 reads as a crossed-out box.
+
+   WHAT v2 IS, MEASURED OFF THE REFERENCES
+     · CONSTRUCTION-METHOD BODY, seven and a third heads tall.
+       Head 56 units, figure 408, so 7.29 heads. Measured from the
+       crown down, in heads: chin 1.00, shoulder plane 1.29, waist
+       2.86, hip joint 3.54, knee 5.30, sole 7.29. Shoulder balls
+       outer to outer 112 = exactly 2 heads.
+       - head: a five-ring lathe, an EGG with a jaw. The rings step
+         forward and narrow below the cheek, so the bottom cap is a
+         24x20 chin plate wider than the 20-diameter neck, and its
+         rim inks as the jaw line.
+       - neck: a short cylinder, buried at both ends.
+       - ribcage: a TAPERED block, half-width 40 at the shoulders
+         and 28 at the waist, half-depth 22 to 20.
+       - pelvis: a second tapered block, flaring back out to 33.
+       - ball joints: 8-gon lathes at shoulder, elbow, hip, knee.
+         Four rings, not three, so the band-to-band dihedral stays
+         above HARD and a ball does not ink its own equator.
+       - limbs: FRUSTA. Thigh 22 -> 16, shin 16 -> 12.5, upper arm
+         15 -> 12.5, bare forearm 10 -> 8.5.
+       - boots: a sole block that runs forward past the upper, and
+         an ankle-height upper set back on it. The free foot is
+         pitched toe-down so the heel is off the floor.
+     · POSTURE, NOT ATTENTION. Both feet are PLACED on the floor
+       and both legs are then SOLVED to them, so a foot never
+       floats and a knee bend is a consequence of where the foot
+       is. Weight on one leg (near-straight, 22 deg of knee), the
+       other set back with the heel up (33 deg). The pelvis is
+       shifted laterally over the weight foot, the hips tilt 5 deg,
+       and the shoulder girdle rolls 9 deg the OTHER way, so the
+       two axes counter-tilt. The spine leans forward into the work
+       and twists toward it; the head yaws and pitches to look at
+       the hands. The two figures take opposite weight legs and
+       different arm jobs, so no two limbs in the drawing are
+       parallel.
+     · THE OVERALLS ARE A COVERALL, from the flat garment drawing:
+       collar notch, centre placket with three buttons, two chest
+       pocket rectangles, waistband, slanted hip pockets, a
+       shoulder seam over the top, and a ROLLED CUFF just below the
+       elbow — the cuff is real geometry, a short wide sleeve
+       frustum, and the bare forearm below it is visibly narrower.
+       No bib, no straps, NO X ON THE CHEST.
+     · THE ARMS AND LEGS ARE SOLVED, 3-DOF. solve3() takes a target
+       in the limb's own base frame and returns (abduction, pitch,
+       bend): abduction is the plane the two links swing in, so an
+       elbow can go OUT to the side and a knee can track over the
+       foot. Elbows take the positive bend root (forward), knees
+       the negative (backward). The one arm that is NOT solved is
+       the hand on the hip — that pose is a redundant-arm swivel,
+       not a reach, so its three angles are written down.
+     · STANDOFF: WK_D = 104 units from the belt centre line, in
+       from v1's 118 and a long way in from the robots' 250. The
+       torso front then sits 82 out, 20 clear of the bed edge at
+       62; the boot toe reaches 74, 12 clear. Shoulder-to-hand is
+       171 and the reach to the red part is 150, so the elbow stays
+       honestly bent. The ALONG-BELT stations are still the robots'
+       own, ARM_SA = -200 and ARM_SB = 66.
+     · BURIED CAPS ARE NOT INKED. A thigh top inside a pelvis, a
+       neck inside a head, a pelvis top inside a ribcage: the face
+       is still there for the ray clip and still fills white, but
+       opts.skip drops its edges, so no rim draws a hoop across a
+       belly. This is new and it is what lets the body be built
+       from overlapping solids at all.
+
+   CARRIED OVER UNCHANGED: projection, camera, orbit spring
+   (yaw 35 / pitch 20 at rest, +/-25 and +/-12 on the mouse,
+   critically damped tau = 1.0 s), conveyor and its creeping
+   painted dashes, base plate, fit sweep, hidden-line pipeline
+   (back-face test, painter's order by plain centroid depth with no
+   re-seat anywhere, the 3D three-class ray classifier), the ink:
+   #111 hairline visible, #BDBDBD dashed only inside a body's OWN
+   solid, #9B9B9B dash-dot in the open, ONE red #DA1A00 for the
+   whole scene. White card 600x420, plain canvas 2D, no libraries.
+
+   IDLE. The reaching worker's shoulder and elbow rock ~2.5 deg on
+   a 13 s cycle and the belt's painted dashes creep. Both
+   suppressed under prefers-reduced-motion.
+
+   Probes: lineStats(), lineView(), linePose(), lineAxisRuns(),
+   lineOrder(), lineSetMouse(x,y), lineSetTime(t), lineStill(),
+   and NEW in v3 lineClear() — body against conveyor, arm against
+   its own ribcage, the two numbers this pass exists to prove.
+   ============================================================ */
+(function(){
+  var cv = document.getElementById('line');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  var INK = '#111', HIDC = '#BDBDBD', CONC = '#9B9B9B', RED = '#DA1A00';
+  var D2R = Math.PI/180;
+
+  /* ---- 0 · small vector algebra --------------------------------------- */
+  function add(p,q){ return [p[0]+q[0], p[1]+q[1], p[2]+q[2]]; }
+  function sub(p,q){ return [p[0]-q[0], p[1]-q[1], p[2]-q[2]]; }
+  function scl(p,k){ return [p[0]*k, p[1]*k, p[2]*k]; }
+  function dot(p,q){ return p[0]*q[0] + p[1]*q[1] + p[2]*q[2]; }
+  function nrm(p){ var L = Math.sqrt(p[0]*p[0]+p[1]*p[1]+p[2]*p[2]) || 1; return scl(p, 1/L); }
+  function lerp(A,B,s){ return [A[0]+(B[0]-A[0])*s, A[1]+(B[1]-A[1])*s, A[2]+(B[2]-A[2])*s]; }
+
+  /* a frame is three orthonormal basis vectors and an origin, in world
+     (a, u, b) with b up. Every link owns one; a joint makes a child. */
+  function F0(){ return {x:[1,0,0], y:[0,1,0], z:[0,0,1], o:[0,0,0]}; }
+  function fp(F,p){
+    return [F.o[0] + F.x[0]*p[0] + F.y[0]*p[1] + F.z[0]*p[2],
+            F.o[1] + F.x[1]*p[0] + F.y[1]*p[1] + F.z[1]*p[2],
+            F.o[2] + F.x[2]*p[0] + F.y[2]*p[1] + F.z[2]*p[2]];
+  }
+  function ftr(F,p){ return {x:F.x, y:F.y, z:F.z, o:fp(F,p)}; }
+  function frY(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* z tips toward x */
+    return {x:add(scl(F.x,c),scl(F.z,-s)), y:F.y, z:add(scl(F.x,s),scl(F.z,c)), o:F.o}; }
+  function frZ(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* x tips toward y */
+    return {x:add(scl(F.x,c),scl(F.y,s)), y:add(scl(F.x,-s),scl(F.y,c)), z:F.z, o:F.o}; }
+  function frX(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* y tips toward z */
+    return {x:F.x, y:add(scl(F.y,c),scl(F.z,s)), z:add(scl(F.y,-s),scl(F.z,c)), o:F.o}; }
+  /* the same frame with z pointing DOWN: the natural base for a limb, which
+     hangs. Negating y as well keeps the handedness, so every rotation below
+     composes exactly as it does on an upright frame. */
+  function flipZ(F){ return {x:F.x, y:scl(F.y,-1), z:scl(F.z,-1), o:F.o}; }
+  function toLocal(F,w){ var d = sub(w, F.o); return [dot(F.x,d), dot(F.y,d), dot(F.z,d)]; }
+  /* a placement transform: stand something at (px,py,pz) facing yaw psi */
+  function place(px,py,pz,psi){ return frZ(ftr(F0(),[px,py,pz]), psi); }
+
+  /* ---- 1 · convex primitives ------------------------------------------ */
+  /* verts in world, faces as index rings. Every face gets its OUTWARD
+     normal by Newell, oriented away from the primitive's centroid — the
+     primitive is convex, so that is unambiguous, and it gives us both the
+     back-face test and the half-space set the ray clip needs. */
+  function mkPrim(verts, faces, ord, opts){
+    var c = [0,0,0], i, j;
+    for (i=0;i<verts.length;i++) c = add(c, verts[i]);
+    c = scl(c, 1/verts.length);
+    var FS = [];
+    for (i=0;i<faces.length;i++){
+      var f = faces[i], n = [0,0,0], cc = [0,0,0];
+      for (j=0;j<f.length;j++){
+        var A = verts[f[j]], B = verts[f[(j+1)%f.length]];
+        n[0] += (A[1]-B[1])*(A[2]+B[2]);
+        n[1] += (A[2]-B[2])*(A[0]+B[0]);
+        n[2] += (A[0]-B[0])*(A[1]+B[1]);
+        cc = add(cc, A);
+      }
+      cc = scl(cc, 1/f.length); n = nrm(n);
+      if (dot(n, sub(cc,c)) < 0) n = scl(n,-1);
+      FS.push({idx:f, n:n, c:cc, d:dot(n,cc)});
+    }
+    return {v:verts, f:FS, ord:ord, o:opts||{}, ctr:c, deco:[], tag:'', skip:{}};
+  }
+  /* BURIED FACES. A face listed here still bounds the solid for the ray
+     clip and still fills white, but NONE of its edges ink. That is what
+     lets a body be assembled from overlapping solids: a thigh top inside a
+     pelvis, a neck inside a head, a shin top inside a knee ball. Without
+     it every joint draws a hoop across the part it enters. */
+  function bury(p){
+    for (var i=1;i<arguments.length;i++) p.skip[arguments[i]] = 1;
+    return p;
+  }
+  /* v4 — WHICH FACE DOES A DRAWN SEAM BELONG TO? A garment line seated on a
+     BOX names its face by index (BF_FRONT and the rest) and is drawn only
+     when that face faces the camera. The yoke is a lathe, so its faces have
+     no names: this returns the index of the facet whose centroid is nearest
+     a point, which is the facet the seam is lying on, and the seam then
+     turns on and off with that facet exactly as a placket does with a box
+     face. Seams that wrap the body are emitted one facet at a time. */
+  function faceAt(p, w){
+    var b = 0, bd = 1e18, i, d;
+    for (i=0;i<p.f.length;i++){
+      d = Math.pow(p.f[i].c[0]-w[0],2) + Math.pow(p.f[i].c[1]-w[1],2)
+        + Math.pow(p.f[i].c[2]-w[2],2);
+      if (d < bd){ bd = d; b = i; }
+    }
+    return b;
+  }
+  /* box face indices, fixed by the ring order below and relied on by the
+     overalls: 0 = -z (bottom), 1 = +z (top), 2 = -y, 3 = +x (front),
+     4 = +y, 5 = -x (back). A mirrored placement frame flips the world side
+     but not the index, so the placket stays on the belt-facing face. */
+  var BF_BOT = 0, BF_TOP = 1, BF_NY = 2, BF_FRONT = 3, BF_PY = 4, BF_BACK = 5;
+  var BOX_F = [[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]];
+  function boxP(F, c, h, ord, opts){
+    var S = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+    var v = [], i;
+    for (i=0;i<8;i++) v.push(fp(F, [c[0]+S[i][0]*h[0], c[1]+S[i][1]*h[1], c[2]+S[i][2]*h[2]]));
+    var p = mkPrim(v, BOX_F, ord, opts);
+    p.topFace = BF_TOP;
+    return p;
+  }
+  /* A TAPERED BLOCK: the ribcage and the pelvis. Two rectangles at two
+     levels, each with its own centre and its own half-extents. Every side
+     face is still planar (each face's x or y depends only on the level and
+     the side), so Newell and the half-space clip are exact. Same face
+     index order as boxP, so the overalls address it the same way. */
+  function taperP(F, c0, h0, c1, h1, ord, opts){
+    var S = [[-1,-1],[1,-1],[1,1],[-1,1]], v = [], i;
+    for (i=0;i<4;i++) v.push(fp(F,[c0[0]+S[i][0]*h0[0], c0[1]+S[i][1]*h0[1], c0[2]]));
+    for (i=0;i<4;i++) v.push(fp(F,[c1[0]+S[i][0]*h1[0], c1[1]+S[i][1]*h1[1], c1[2]]));
+    var p = mkPrim(v, BOX_F, ord, opts);
+    p.topFace = BF_TOP;
+    return p;
+  }
+  /* A LATHE: rings of an elliptical section stacked up the frame's local z,
+     each with its own height, forward offset and two semi-axes, plus a cap
+     at each end. A quad between two such rings is planar, so this one
+     builder gives us the cylinder, the frustum, the ball and the egg head,
+     and every one of them is convex and lands in the pipeline exactly as
+     the prisms did. The half-step in the angle puts a FLAT forward rather
+     than an edge, which matters on a face.
+     v3 — A POLE. A ring whose ax and ay are both 0 is a single vertex, and
+     the band into it is a TRIANGLE FAN, not a quad band, so that end of the
+     lathe has NO CAP POLYGON and therefore no cap rim to ink. This is what
+     closes the head: Dave, "we don't need the flat facet of the top of the
+     head". Triangles are planar by construction, the profile stays convex,
+     and the fan's facet-to-facet dihedral at N=8 is 0.96 — far above HARD —
+     so the crown does not ink its own facets either. */
+  /* v4 — a ring may be a SUPERELLIPSE. |x/ax|^e + |y/ay|^e = 1: e = 2 is the
+     ellipse the lathe always drew, e large is a rectangle with its corners
+     just rounded off. That one extra number is what lets the SHOULDER YOKE
+     start as the ribcage block's own rectangle and round, ring by ring, into
+     a dome — Dave: "can we get the shoulders looking more natural, and
+     rounded". A ring with no e is an ellipse exactly as before. */
+  function sup(t, p){ return p === 1 ? t : (t < 0 ? -Math.pow(-t,p) : Math.pow(t,p)); }
+  function latheP(F, c, rings, N, ord, opts){
+    var v = [], idx = [], i, j, a, R, row;
+    for (j=0;j<rings.length;j++){
+      R = rings[j];
+      if (!R.ax && !R.ay){                       /* a POLE: one vertex       */
+        idx.push([v.length]);
+        v.push(fp(F,[c[0]+(R.cx||0), c[1], c[2]+R.z]));
+        continue;
+      }
+      row = [];
+      var pw = R.e ? 2/R.e : 1;                  /* v4: SUPERELLIPSE power   */
+      for (i=0;i<N;i++){ a = (i+0.5)*2*Math.PI/N;
+        row.push(v.length);
+        v.push(fp(F,[c[0]+(R.cx||0)+R.ax*sup(Math.cos(a),pw),
+                     c[1]+R.ay*sup(Math.sin(a),pw), c[2]+R.z])); }
+      idx.push(row);
+    }
+    var fc = [], m = rings.length, A2, B2;
+    for (j=0;j<m-1;j++){
+      A2 = idx[j]; B2 = idx[j+1];
+      if (A2.length === 1)      for (i=0;i<N;i++) fc.push([A2[0], B2[(i+1)%N], B2[i]]);
+      else if (B2.length === 1) for (i=0;i<N;i++) fc.push([A2[i], A2[(i+1)%N], B2[0]]);
+      else                      for (i=0;i<N;i++) fc.push([A2[i], A2[(i+1)%N], B2[(i+1)%N], B2[i]]);
+    }
+    var capLo = -1, capHi = -1, lo = [];
+    if (idx[0].length > 1){
+      for (i=0;i<N;i++) lo.push(idx[0][N-1-i]);
+      fc.push(lo); capLo = fc.length-1;
+    }
+    if (idx[m-1].length > 1){ fc.push(idx[m-1].slice()); capHi = fc.length-1; }
+    var p = mkPrim(v, fc, ord, opts);
+    p.capLo = capLo; p.capHi = capHi;
+    return p;
+  }
+  /* a limb segment: a frustum along the frame's local z (which, on a limb
+     base frame, points DOWN the limb) */
+  function segP(F, r0, r1, z0, z1, N, ord, opts){
+    return latheP(F, [0,0,0], [{z:z0,ax:r0,ay:r0},{z:z1,ax:r1,ay:r1}], N, ord, opts);
+  }
+  /* v3 — ballP IS GONE. Dave: "lets remove the ball joints". v2 drew a
+     sphere at every shoulder, elbow, hip and knee to hide the seam between
+     two limb segments; they read as hardware. The seams are now closed by
+     OVERLAP instead: at the shoulder the upper arm starts 10 units ABOVE
+     its own pivot, at the elbow the sleeve cuff starts 12 above it and is
+     wider than the arm it swallows, at the knee the shin starts 14 above it
+     and is wider than the thigh end, and the hip ball was entirely inside
+     the pelvis anyway. No gap opens anywhere in the orbit. */
+  /* a circle laid ON a face — a hub, a bearing eye — as a polyline in 3D */
+  function ring(c, p, q, r, n){
+    var out = [], i;
+    for (i=0;i<=n;i++){ var a = i*2*Math.PI/n;
+      out.push(add(c, add(scl(p, r*Math.cos(a)), scl(q, r*Math.sin(a))))); }
+    return out;
+  }
+
+  /* ---- 2 · THE WORKER, as a reusable function -------------------------- */
+  /* Model units are the arms' own: roughly 4 mm. The figure stands 408
+     units, about 1.63 m, against a belt surface at 183, about 0.73 m — the
+     belt comes to the top of the thigh, which is what a picking station is
+     for. Local +x is the way the figure faces: at the belt.
+
+     THE PROPORTION SYSTEM, off the reference sheet. Head 56, figure 408,
+     7.29 heads. From the crown down, in heads: chin 1.00, shoulder plane
+     1.29, waist 2.86, hip joint 3.54, knee 5.30, sole 7.29. The shoulder
+     balls span 112, exactly 2 heads. */
+  var HEAD_H   = 56;
+  /* HIP_Y is inboard so the thigh leaves the pelvis from inside the block.
+     v2's hip BALL is gone with the rest of them (it was entirely buried in
+     the pelvis at r 11 on a 17 offset, so removing it changed no ink). */
+  var PEL_Z0   = 194, PEL_H = 60, HIP_LZ = 16, HIP_Y = 17;
+  var PEL_HX0  = 21, PEL_HY0 = 33, PEL_HX1 = 19, PEL_HY1 = 28;
+  var TOR_LZ   = 54, TOR_H = 88;
+  var TOR_HX0  = 20, TOR_HY0 = 28, TOR_HX1 = 22, TOR_HY1 = 40;
+  /* v4 — THE RIBCAGE'S FLAT TOP IS GONE. Dave, on v3: "can we get the
+     shoulders looking more natural, and rounded". The ribcage was a tapered
+     BLOCK 88 tall, so its top was a lid and its two top corners were 90-deg
+     creases that inked at full strength — and the arm root sat right on one
+     of them, which is why a shoulder read as a box with a tube stuck on.
+     The block now STOPS at TOR_HB = 72, below the chest pockets' top, and a
+     YOKE carries the last 25 units: a six-ring superellipse lathe at
+     YOKE_N = 12 facets that starts as the block's own rectangle (e = 20, and
+     3 per cent proud, which is what swallows the block's top corners) and
+     rounds off ring by ring — e 20, 4.6, 3.0, 2.7, 2.4, 2.2 — while falling
+     away in BOTH directions, front-to-back from ax 22.29 to 13.5 and
+     side-to-side from ay 38.95 out to 40.0 and down to 20.0. The corner
+     crease survives exactly one band, to z 78 (around-ring dihedral 0.649,
+     a hair under HARD 0.65), and dissolves above it (0.795, 0.858, 0.905,
+     0.948 — no ink), so the trapezius-to-deltoid line is one continuous
+     curve with no corner at the arm root. TWELVE facets, not the body's
+     usual eight, because the section is elongated — ay/ax about 1.75, and at
+     N = 8 a section that long inks a crease down each side whatever its e.
+     Band-to-band the worst dihedral is 0.915, so the dome never inks across
+     its rings either; worst out-of-plane deviation is 0.122 units, under the
+     head's 0.138; all 72 vertices are on their own convex hull, which is
+     what the half-space clip needs. The shoulder plane is still z 88 — the
+     yoke is ax 20.6, ay 35.0 there. */
+  /* v5 — THE YOKE CLOSES ON A POLE, AND ITS CREST COMES DOWN 9. Dave, on v4:
+     "I don't think we need the flat facet on top of the shoulders" and "set
+     the shoulders down the body a little". v4's top ring was 13.5 x 20.0 at
+     z 97 — a real ring, so latheP capped it with a POLYGON, and a 27 x 40
+     plate is far too wide to hide inside a 20-diameter neck. That plate's rim
+     is the flat facet: the horizontal quad sitting on top of each shoulder in
+     the crop. The yoke now runs to a POLE at z 88 — one vertex, a triangle
+     fan, no cap polygon and no rim to ink — exactly as v3 closed the head.
+     The five rings between z 78 and the pole are an ELLIPSOID CAP on the
+     widest ring: ax = 22.6*f, ay = 40.0*f with f = sqrt(1-u^2), u the
+     fraction of the cap's 10-unit height, and e eased 4.6 -> 2.1 across it.
+     Even curvature, so nothing inks across the rings either.
+     TWO CONSEQUENCES, both wanted. The crest drops 97 -> 88, so the shoulder
+     mass no longer plateaus at the neck: the trapezius SLOPES into it, and
+     the neck's own cylinder (r 10) emerges at about z 87.3 instead of z 97 —
+     16.7 units of visible neck under a chin at 104, against 7 in v4. And the
+     block, the two lowest rings and their proved corner crease DID NOT MOVE:
+     ring 0 is still the block's own rectangle at e 20 and ring 1 still the
+     widest at z 78, so the crease still survives exactly one band (0.649)
+     and dies above it (0.803, 0.889, 0.937, 0.968, 0.987, 0.998). Worst
+     band-to-band is 0.882 (v4: 0.915), worst out-of-plane 0.082 (v4: 0.122),
+     and all 85 vertices are on their own convex hull. */
+  var TOR_HB   = 72;                     /* the block's top; yoke above it  */
+  var YOKE_N   = 12;                     /* the yoke's own facet count      */
+  var YOKE = [{z:72,   ax:22.29, ay:38.95, e:20},
+              {z:78,   ax:22.60, ay:40.00, e:4.6},
+              {z:79.7, ax:22.28, ay:39.44, e:4.18},
+              {z:81.3, ax:21.31, ay:37.71, e:3.77},
+              {z:83.0, ax:19.57, ay:34.64, e:3.35},
+              {z:84.7, ax:16.84, ay:29.81, e:2.93},
+              {z:86.3, ax:12.49, ay:22.11, e:2.52},
+              {z:88.0, ax:0,     ay:0,     e:2.1}];   /* the POLE */
+  /* the yoke's surface, in ribcage-local coords: interpolate the rings by z,
+     then evaluate the superellipse at an angle. k scales it proud of the
+     solid so a drawn seam never z-fights the fill. */
+  function yokeAt(z, a, k){
+    var i = 0, j;
+    for (j=0;j<YOKE.length-1;j++) if (z >= YOKE[j].z) i = j;
+    var A = YOKE[i], B = YOKE[i+1], t = (z - A.z)/(B.z - A.z);
+    var ax = A.ax + (B.ax-A.ax)*t, ay = A.ay + (B.ay-A.ay)*t;
+    var e  = A.e  + (B.e -A.e )*t, p = 2/e;
+    k = k || 1;
+    return [ax*k*sup(Math.cos(a),p), ay*k*sup(Math.sin(a),p), z];
+  }
+  /* the yoke's half-extents at a height — for the clearance probe */
+  function yokeH(z){ var q = yokeAt(z, 0, 1), r = yokeAt(z, Math.PI/2, 1);
+                     return [q[0], r[1]]; }
+  /* v3 — THE SHOULDER PIVOT MOVED TO THE RIBCAGE'S TOP CORNER. Dave, on the
+     reaching arm: "this arm is coming out of its body". In v2 the pivot sat
+     at (y 42, z 78) — 10 units BELOW the ribcage top, on a block whose
+     half-width there is 38.6 — and the upper arm was a 15-radius tube, so
+     half of that tube lived inside the chest and, once the arm swung
+     forward to reach, its near silhouette emerged from the middle of the
+     placket. The pivot is now y 46, z 88: z 88 IS the top face of the
+     ribcage (and it is also where the proportion sheet puts the shoulder
+     plane, 1.29 heads down from the crown = 336, which is exactly
+     PEL_Z0+TOR_LZ+88). The upper arm is slimmer, 13 at the root, so its
+     inboard surface sits at y 33 against a 39.7 half-width — tucked UNDER
+     the shoulder corner, never through the chest — and its own forward
+     extent at the root is 13 against a 22 half-depth, so it cannot break
+     the front face however far it pitches. */
+  /* v5 — THE SHOULDER PIVOT COMES DOWN 12. Dave, on v4: "set the shoulders
+     down the body a little". SH_LZ 88 -> 76. The pivot was ON the shoulder
+     plane of the proportion sheet (1.29 heads from the crown), which put the
+     arm root level with the base of the neck; at 76 it sits 12 lower — a
+     fifth of a head — so the deltoid's widest point is BELOW the top of the
+     shoulder mass, which is where a shoulder joint actually is, and the
+     trapezius reads as mass above the joint rather than beside it. The pivot
+     could not go the full third of a head (18.7) without either the yoke's
+     bottom ring or the chest pockets having to move: the block still stops
+     at TOR_HB 72 and the pockets still top out at z 69.
+     THE LAP GOT BETTER, not worse. The shoulder plane is now z 76, where the
+     torso is ay 39.65 (v4 measured 35.0 at z 88), and the arm's inboard
+     surface is still SH_Y - DEL_R = 31.4, so the sleeve head laps the body
+     by 8.25 rather than 3.6. SH_Y did not move. */
+  var SH_LZ    = 76, SH_Y = 46;
+  var NCK_LZ   = 82, NCK_H = 28, NCK_R = 10, HEAD_LZ = 22;
+  var THIGH_L  = 100, SHIN_L = 84;
+  var THIGH_R0 = 22, THIGH_R1 = 16, SHIN_R0 = 17, SHIN_R1 = 12.5;
+  var KNEE_OV  = 14;                     /* shin starts ABOVE the knee     */
+  var BOOT_LZ  = 30;                     /* ankle point inside the boot    */
+  /* v3 — THE ANKLE IS A COLUMN. Dave: "the ankles could be columns rather
+     than cubes". v2's boot was a sole slab plus an ankle-height BOX, and
+     that box is the cube in the crop. It is now a short frustum built in
+     the SHIN's own frame, so it continues the shin's axis down into the
+     sole rather than sitting across it: it starts ANK_UP above the ankle
+     (inside the shin, which is wider there) and runs ANK_DN below it, into
+     a sole block made taller to receive it. Both caps buried. */
+  var ANK_UP   = 16, ANK_DN = 22, ANK_R0 = 12.6, ANK_R1 = 12.0;
+  var SOL_H    = 7;                      /* half-height of the sole block  */
+  /* v4 — THE DELTOID CAP. v3's upper arm was a plain frustum that started
+     UP_LIFT = 10 above its own pivot with a buried flat cap, so above the
+     shoulder it ended in a tube's blunt end against the block's corner.
+     The upper arm is now ONE lathe whose top is a sleeve cap: a POLE
+     DEL_H = 8.5 above the pivot, opening through 6.5, 11.0 and 13.9 to its
+     widest at DEL_R = 14.6 just below the pivot plane, then tapering the
+     whole 84 to UP_R1 at the elbow. Profile slopes 3.25, 1.67, 1.12, 0.22,
+     -0.038 fall monotonically, so the solid is convex; every band-to-band
+     dihedral is above 0.80 and the 8-gon's own flats meet at 0.707, both
+     above HARD, so NOTHING inside the cap inks — it is silhouette, not a
+     joint marker, and no sphere came back. The cap's crown lands at z 96.5
+     in the ribcage frame against the yoke's crest at 97, so the deltoid sits
+     OVER the shoulder; its inboard surface is at y 31.4 against a yoke 35.0
+     wide at the shoulder plane, a 3.6 lap, so the sleeve head reads as a
+     seam across the dome and no gap can open. The PIVOT DID NOT MOVE:
+     SH_Y 46, SH_LZ 88, exactly where L3 put it. */
+  /* v5 — THE CROWN OF THE CAP IS ROUNDER. The cap already closed on a pole,
+     so it never had a cap POLYGON; what it had was a nearly FLAT crown. The
+     first band out of the pole ran 6.5 of radius in 2 of height — a cone of
+     slope 3.25, which is much flatter than a sphere of this radius (about
+     5.4 one unit below its pole), so the top two units of the sleeve read as
+     a disc with a slight peak: the second thing Dave is pointing at in "I
+     don't think we need the flat facet on top of the shoulders". One more
+     ring near the pole and a steeper first band fix it: slopes are now 5.78,
+     2.13, 1.36, 0.88, 0.22 — still falling monotonically, so the solid is
+     still convex, and the fan at the pole meets at 0.99 (v4: 0.971) while
+     the worst band-to-band dihedral inside the cap rises to 0.884 (v4:
+     0.825). Nothing inside the cap inks, before or after. DEL_H and DEL_R
+     did not move, so the pauldron L4 rejected at DEL_H 11 cannot come back. */
+  var DEL_H    = 8.5, DEL_R = 14.6;      /* cap rise above the pivot, width  */
+  var UP_L     = 84, UP_R1 = 11.5;
+  var UP_RINGS = [{z:-DEL_H, ax:0,    ay:0},
+                  {z:-7.6,   ax:5.2,  ay:5.2},
+                  {z:-6.0,   ax:8.6,  ay:8.6},
+                  {z:-3.8,   ax:11.6, ay:11.6},
+                  {z:-1.2,   ax:13.9, ay:13.9},
+                  {z: 2,     ax:DEL_R,ay:DEL_R},
+                  {z:UP_L,   ax:UP_R1,ay:UP_R1}];
+  var CUF_L    = 20, CUF_R0 = 14, CUF_R1 = 13, CUF_OV = 12;
+  var FRA_L    = 74, FRA_R0 = 10, FRA_R1 = 8.5, HAND_D = 11;
+  var HAND_H   = [9, 6, 11];             /* a mitt, not a ball             */
+  var LF       = FRA_L + HAND_D;         /* elbow -> hand centre           */
+  /* the egg. v2 had five rings and the top one was a 24x22 disc, so the
+     lathe put a CAP POLYGON on the crown and its rim inked as a flat facet
+     across the top of the skull — Dave: "we don't need the flat facet of
+     the top of the head". v3 has SEVEN: chin plate, jaw, cheek (widest),
+     brow, upper brow, crown ring, and then a POLE — a single vertex, no
+     cap, closed by a triangle fan. Nothing inks on top. The rings still
+     step FORWARD as they fall, so the mass under the cheek is a jaw and not
+     a taper, the bottom cap is still a 24x20 plate against a 20-diameter
+     neck — its rim is still the jaw line — and the crown is still 56 above
+     the chin, so no proportion moved. The profile is convex at every step
+     (checked on +x, -x and y) and every band-to-band dihedral is above
+     HARD, the tightest being 0.86 at the 48-to-53 step. */
+  var HEAD_RINGS = [{z: 0,  cx: 4,   ax:12,   ay:10},
+                    {z:16,  cx: 2,   ax:19,   ay:16},
+                    {z:30,  cx: 0,   ax:22,   ay:20},
+                    {z:40,  cx:-1,   ax:21,   ay:19},
+                    {z:48,  cx:-2,   ax:18.5, ay:17},
+                    {z:53,  cx:-3,   ax:13,   ay:12},
+                    {z:56,  cx:-4,   ax: 0,   ay: 0}];   /* the POLE */
+
+  /* THE 3-DOF SOLVE. v is the target in the limb's own base frame, whose
+     z points down the limb and whose x points forward. The chain is
+     frX(abduction) then frY(pitch) then frY(bend): the two links swing in
+     the plane the abduction chose, so an elbow can go OUT to the side and
+     a knee can track over a foot that is not under the hip.
+     sgn = +1 takes the forward bend (an elbow), -1 the backward one (a
+     knee). Out of reach clamps to straight, which is why every foot target
+     below is inside 184 units of its hip. */
+  function solve3(v, L1, L2, sgn){
+    var a = Math.atan2(-v[1], v[2]);
+    var p = v[0], q = -v[1]*Math.sin(a) + v[2]*Math.cos(a);
+    var R2 = p*p + q*q, cs = (R2 - L1*L1 - L2*L2)/(2*L1*L2);
+    if (cs > 1) cs = 1; if (cs < -1) cs = -1;
+    var t3 = sgn*Math.acos(cs);
+    var t2 = Math.atan2(p,q) - Math.atan2(L2*Math.sin(t3), L1 + L2*Math.cos(t3));
+    return {abd:a, t2:t2, t3:t3, tw:0};
+  }
+  /* FOUR links of rotation, not three, and the fourth is what makes a hand
+     on a hip possible. tw is the twist of the upper link about its OWN
+     axis, between the shoulder and the elbow: it aims the elbow HINGE.
+     Without it the hand can only ever lie in the plane the abduction chose,
+     so an arm abducted far enough to put the elbow out to the side could
+     not bring its hand back in to the waist — v1's successor tried, and the
+     upper arm came out as a plank across the chest. A solved reach leaves
+     tw at 0; only the written-down poses use it. */
+  /* v3 — THE SWIVEL, and it is the other half of "this arm is coming out of
+     its body". A two-link arm reaching a point has ONE degree of freedom
+     left over: the elbow can swing anywhere on a cone about the
+     shoulder-to-hand axis. solve3 does not choose it — it always puts the
+     arm in the plane through the base frame's own z, and for B reaching
+     ACROSS the belt that plane drops the elbow straight down the front of
+     the chest, which is why the upper arm's near silhouette started at the
+     placket. swivelF rotates the base frame about the target direction
+     before the solve: the hand lands on EXACTLY the same point, because a
+     rotation about a vector fixes that vector, and the elbow travels round
+     the cone until it is out where an elbow belongs. One number per solved
+     arm, `sw`, in degrees. */
+  function swivelF(F, v, ph){
+    var u = nrm(v), c = Math.cos(ph), s = Math.sin(ph), C = 1-c;
+    var R = [[c+u[0]*u[0]*C, u[0]*u[1]*C-u[2]*s, u[0]*u[2]*C+u[1]*s],
+             [u[1]*u[0]*C+u[2]*s, c+u[1]*u[1]*C, u[1]*u[2]*C-u[0]*s],
+             [u[2]*u[0]*C-u[1]*s, u[2]*u[1]*C+u[0]*s, c+u[2]*u[2]*C]];
+    function col(j){ return add(add(scl(F.x,R[0][j]), scl(F.y,R[1][j])), scl(F.z,R[2][j])); }
+    return {x:col(0), y:col(1), z:col(2), o:F.o};
+  }
+  function limb(base, ang, L1){
+    var F1 = frZ(frY(frX(base, ang.abd), ang.t2), ang.tw || 0);
+    var F2 = frY(ftr(F1,[0,0,L1]), ang.t3);
+    return [F1, F2];
+  }
+
+  /* THE OVERALLS — a COVERALL, off the flat garment drawing: collar notch,
+     centre placket with three buttons, two chest pockets, waistband,
+     slanted hip pockets, a shoulder seam over the top. Edge lines only,
+     seated on named faces and drawn only when that face faces the camera,
+     sat 0.7 proud so they never z-fight the solid's own fill.
+     v1's bib-and-straps is gone: the crossed straps on the back face drew
+     an X on the chest and at 600x420 an X in a rectangle is a crossed-out
+     box, not a garment. The rolled cuff is NOT drawn here — it is real
+     geometry, a short wide sleeve frustum with a narrower bare forearm
+     below it, and it reads in silhouette. */
+  function coverall(T, Ft){
+    var i, s;
+    function fx(z){ return TOR_HX0 + (TOR_HX1-TOR_HX0)*z/TOR_H + 0.7; }
+    function hy(z){ return TOR_HY0 + (TOR_HY1-TOR_HY0)*z/TOR_H; }
+    function seg(face, pts){ T.deco.push({face:face, pts:pts.map(function(p){ return fp(Ft,p); }), col:INK}); }
+    /* centre placket, from the yoke seam down past the waist. v4 — it stops
+       at 70 rather than 74: above 70 the block has given way to the yoke and
+       the front opening is carried over the dome by yoke() below. */
+    seg(BF_FRONT, [[fx(70),0,70],[fx(48),0,48],[fx(20),0,20],[fx(4),0,4]]);
+    /* three buttons on it */
+    for (i=0;i<3;i++){ var bz = 62 - i*19;
+      seg(BF_FRONT, [[fx(bz),-5,bz],[fx(bz),5,bz]]); }
+    for (i=0;i<2;i++){
+      s = i ? 1 : -1;
+      /* chest pocket */
+      var y0 = s*12, y1 = s*30, z0 = 50, z1 = 69;
+      seg(BF_FRONT, [[fx(z0),y0,z0],[fx(z0),y1,z0],[fx(z1),y1,z1],[fx(z1),y0,z1],[fx(z0),y0,z0]]);
+    }
+    /* the waistband: across the front, and turned onto both side faces */
+    seg(BF_FRONT, [[fx(9),-hy(9),9],[fx(9),hy(9),9]]);
+    seg(BF_NY,    [[fx(9)-1, -hy(9)-0.7, 9], [-TOR_HX0*0.7, -hy(9)-0.7, 9]]);
+    seg(BF_PY,    [[fx(9)-1,  hy(9)+0.7, 9], [-TOR_HX0*0.7,  hy(9)+0.7, 9]]);
+    /* THE BACK, from the garment drawing's back view: a yoke across the
+       shoulders and a centre seam down from it. One of the two figures is
+       always seen from behind at this camera, and a coverall with nothing
+       on its back reads as a slab. Nothing crosses anything — v1's crossed
+       straps are what drew the X. */
+    function bx(z){ return -(TOR_HX0 + (TOR_HX1-TOR_HX0)*z/TOR_H) - 0.7; }
+    /* v4 — the straight rule that used to cross the back at z 70 IS the yoke
+       seam, and the yoke is a curved dome now, so the seam went with it: see
+       yokeSeams(), which wraps it right round the body at z 77. */
+    seg(BF_BACK, [[bx(70),0,70],[bx(40),0,40],[bx(8),0,8]]);
+    seg(BF_BACK, [[bx(8),-hy(8),8],[bx(8),hy(8),8]]);
+  }
+  /* v4 — THE GARMENT ON THE DOME. Three seams, all of them lying on the
+     yoke's own surface and so all of them curved: the coverall's YOKE SEAM
+     wrapped right round at z 77, the COLLAR band round the neck root at
+     z 93, and the front OPENING carried up from the placket's top to the
+     collar, opening out as it climbs. Each piece is emitted facet by facet
+     and gated on that facet, so a seam appears exactly where the dome faces
+     the camera and stops at the silhouette, which is what makes it read as
+     lying on a curved surface rather than floating over one. */
+  function yokeSeams(Y, Ft){
+    var N = YOKE_N, i, a0, a1, s, j;
+    function seg(pts){
+      var w = pts.map(function(p){ return fp(Ft,p); });
+      Y.deco.push({face:faceAt(Y, w[(w.length-1)>>1]), pts:w, col:INK});
+    }
+    function band(z, k, half){
+      for (i=0;i<N;i++){
+        a0 = (i+0.5)*2*Math.PI/N; a1 = (i+1.5)*2*Math.PI/N;
+        /* half > 0 keeps only the facets behind the shoulder line: the yoke
+           seam is a BACK seam on a coverall, and the front of the chest
+           already carries the placket, the buttons and both pockets. */
+        if (half && Math.cos((a0+a1)/2) > 0) continue;
+        seg([yokeAt(z,a0,k), yokeAt(z,(a0+a1)/2,k), yokeAt(z,a1,k)]);
+      }
+    }
+    /* v5 — the dome's crest came down from 97 to a pole at 88, so the three
+       seams came down with it. They keep their FRACTIONS of the dome: the
+       yoke seam was 44 per cent up the old 72-97 span and is 44 per cent up
+       the new 72-88 one, the collar band 84 per cent. Nothing else about
+       them changed — same k, same half-gating, same facet-by-facet emit. */
+    /* v6 — THE COLLAR BAND IS GONE. Dave: "the top oval facet can just be
+       removed". The yoke's own top is a POLE since v5 and inks nothing, so
+       the closed oval ring sitting round the neck root in the crop was this
+       band — a full 360-degree seam at z 85, the only line in the drawing
+       that ringed the neck. Removing the DRAWN band leaves the yoke's
+       surface exactly as it was, so it still occludes, still fills white and
+       still carries its own silhouette: the neck now rises out of the
+       shoulders with no ring line round it. The yoke seam at 79 stays (it is
+       a back seam, an arc, not a ring) and so does the front opening. */
+    band(79, 1.015, 1);                     /* the yoke seam, across the back */
+    for (j=0;j<2;j++){                      /* the front opening, both sides */
+      s = j ? 1 : -1;
+      var pts = [[TOR_HX0 + (TOR_HX1-TOR_HX0)*70/TOR_H + 0.7, 0, 70]], z;
+      for (z=73; z<=85; z+=3)
+        pts.push(yokeAt(z, s*(z-70)/15*0.62, 1.02));
+      seg(pts);
+    }
+  }
+  /* the trouser half: fly seam and two slanted hip pockets */
+  function trousers(T, Fp){
+    var i, s;
+    function fx(z){ return PEL_HX0 + (PEL_HX1-PEL_HX0)*z/PEL_H + 0.7; }
+    function seg(face, pts){ T.deco.push({face:face, pts:pts.map(function(p){ return fp(Fp,p); }), col:INK}); }
+    function bx(z){ return -(PEL_HX0 + (PEL_HX1-PEL_HX0)*z/PEL_H) - 0.7; }
+    seg(BF_FRONT, [[fx(54),0,54],[fx(22),0,22]]);
+    for (i=0;i<2;i++){
+      s = i ? 1 : -1;
+      seg(BF_FRONT, [[fx(54), s*15, 54],[fx(30), s*27, 30]]);
+      /* the two back pockets, from the garment drawing's back view */
+      seg(BF_BACK, [[bx(52), s*7,52],[bx(52), s*24,52],[bx(32), s*24,32],
+                    [bx(32), s*7,32],[bx(52), s*7,52]]);
+    }
+    seg(BF_BACK, [[bx(56),0,56],[bx(28),0,28]]);
+  }
+
+  /* makeWorker — ONE drawing, any placement, any pose.
+     Fb   placement frame: the floor under the figure, local +x the facing.
+     pose the posture block — see POSE_A / POSE_B below.
+     tag  the group name, so painter's order can name this figure
+     o0   the first lateral ordinal
+     opt  {axisArm:+1|-1} names the arm whose elbow carries the drawn axis.
+     Returns {prims, axes, axle, axisDir, tip, hands}. */
+  function makeWorker(Fb, pose, tag, o0, opt){
+    var P = [], i;
+    opt = opt || {};
+    function push(p, k){ p.tag = tag; p.ord = o0 + k; P.push(p); return p; }
+
+    /* the spine, as a chain of frames. The pelvis is shifted laterally over
+       the weight foot and rolled; the ribcage sits on it leaning forward,
+       rolled the OTHER way and twisted toward the work; the head is yawed
+       and pitched on top of that. Nothing in this chain is vertical. */
+    var Fpel = frX(ftr(Fb,[pose.px, pose.py, PEL_Z0]), pose.hipTilt*D2R);
+    var Ftor = frZ(frX(frY(ftr(Fpel,[0,0,TOR_LZ]), pose.lean*D2R), pose.roll*D2R), pose.twist*D2R);
+    var Fnck = ftr(Ftor,[0,0,NCK_LZ]);
+    var Fhed = frZ(frY(ftr(Fnck,[0,0,HEAD_LZ]), pose.headPitch*D2R), pose.headYaw*D2R);
+
+    /* ordinals run ACROSS the body, low y first — they only NAME the parts
+       now, since painter's order is plain centroid depth. */
+    var LEGK = {'-1':2, '1':8}, ARMK = {'-1':1, '1':9};
+
+    /* legs. The FOOT is placed on the floor and the leg is solved to it, so
+       a boot never floats and a knee bend is a consequence of the stance. */
+    var feet = {};
+    for (i=0;i<2;i++){
+      var sy = i ? 1 : -1, k = LEGK[sy], LP = (sy < 0) ? pose.legL : pose.legR;
+      var pit = LP.pitch*D2R;
+      var bz  = 30*Math.sin(pit);                 /* lift so the toe lands  */
+      var Fbt = frY(frZ(ftr(Fb,[LP.x, LP.y, bz]), LP.yaw*D2R), pit);
+      var ank = fp(Fbt,[0,0,BOOT_LZ]);
+      var base = flipZ(ftr(Fpel,[0, sy*HIP_Y, HIP_LZ]));
+      var ang  = solve3(toLocal(base, ank), THIGH_L, SHIN_L, -1);
+      var FL   = limb(base, ang, THIGH_L);
+      /* NO hip ball, NO knee ball (v3). The thigh top is inside the pelvis
+         as before; the shin now starts KNEE_OV ABOVE the knee and is wider
+         there (17) than the thigh end (16), so it swallows the thigh's
+         bottom and no gap opens on the outside of the bend. */
+      push(bury(segP(FL[0], THIGH_R0, THIGH_R1, 0, THIGH_L, 8, {}), 8, 9), k);
+      push(bury(segP(FL[1], SHIN_R0, SHIN_R1, -KNEE_OV, SHIN_L, 8, {}), 8, 9), k);
+      /* the boot: a sole block, and an ANKLE COLUMN continuing the shin's
+         own axis down into it. The step where the sole runs forward past
+         the column IS the heel. */
+      push(boxP(Fbt, [8, 0, SOL_H], [22, 13, SOL_H], {}), k);
+      push(bury(segP(FL[1], ANK_R0, ANK_R1, SHIN_L-ANK_UP, SHIN_L+ANK_DN, 8, {}), 8, 9), k);
+      feet[sy] = ank;
+    }
+
+    /* pelvis, ribcage, neck, head */
+    /* v6 — SILO on the pelvis: outline edges only, no crease down the front.
+       See the note in prepare(). */
+    var pel = push(bury(taperP(Fpel, [0,0,0],     [PEL_HX0, PEL_HY0],
+                                     [0,0,PEL_H], [PEL_HX1, PEL_HY1], 0,
+                                     {silo:1}), BF_TOP), 3);
+    trousers(pel, Fpel);
+    /* v4 — the ribcage is a BLOCK up to TOR_HB and a rounded YOKE above it.
+       Both the block's lid and the yoke's own bottom cap are buried, so the
+       seam between them inks nothing; the block's top corners are inside the
+       yoke's lowest ring, so its corner creases stop where the dome starts
+       instead of running out into a lid. The yoke's top cap is buried too —
+       it is a small disc inside the neck. */
+    /* v6 — SILO on the ribcage block: outline edges only. Its two front
+       vertical corners were 90-degree creases inking at full strength; they
+       are off now. See the note in prepare(). */
+    var tor = push(bury(taperP(Ftor, [0,0,0],      [TOR_HX0, TOR_HY0],
+                                     [0,0,TOR_HB], [TOR_HX0 + (TOR_HX1-TOR_HX0)*TOR_HB/TOR_H,
+                                                    TOR_HY0 + (TOR_HY1-TOR_HY0)*TOR_HB/TOR_H],
+                                     0, {silo:1}), BF_BOT, BF_TOP), 4);
+    coverall(tor, Ftor);
+    var yok = latheP(Ftor, [0,0,0], YOKE, YOKE_N, {});
+    push(bury(yok, yok.capLo, yok.capHi), 4);
+    yokeSeams(yok, Ftor);
+    push(bury(segP(Fnck, NCK_R, NCK_R*0.94, 0, NCK_H, 8, {}), 8, 9), 5);
+    /* the head. The crown is a POLE now, so the lathe emits no cap up there
+       and there is nothing to bury: the only cap is the chin plate, whose
+       rim is the jaw. */
+    push(latheP(Fhed, [0,0,0], HEAD_RINGS, 8, {}), 6);
+
+    /* the two arms. Shoulder ball, upper arm, elbow ball, ROLLED CUFF,
+       bare forearm, mitt. The cuff is a short wide frustum and the bare
+       forearm below it is visibly narrower — that step is the rolled
+       sleeve, and it is geometry, not a drawn line. */
+    var elbF = null, hands = {}, ang2 = {}, armAxis = {};
+    for (i=0;i<2;i++){
+      var s2 = i ? 1 : -1, kk = ARMK[s2], AP = (s2 < 0) ? pose.armL : pose.armR;
+      var abase = flipZ(ftr(Ftor,[0, s2*SH_Y, SH_LZ]));
+      var aa;
+      if (AP.target){
+        var tw3 = fp(Fb, AP.target);
+        if (AP.sw) abase = swivelF(abase, toLocal(abase, tw3), AP.sw*D2R);
+        aa = solve3(toLocal(abase, tw3), UP_L, LF, 1);
+      }
+      else           aa = {abd:AP.abd*D2R, t2:AP.t2*D2R, t3:AP.t3*D2R, tw:(AP.tw||0)*D2R};
+      if (AP.rock) aa = {abd:aa.abd, t2:aa.t2 + AP.rock[0], t3:aa.t3 + AP.rock[1], tw:aa.tw};
+      var FA = limb(abase, aa, UP_L);
+      /* NO shoulder ball, NO elbow ball (v3), and in v4 no blunt tube end
+         above the shoulder either: the upper arm is one lathe that closes on
+         a POLE DEL_H above its own pivot and swells to DEL_R at the pivot
+         plane — the deltoid, a sleeve cap that sits OVER the yoke rather
+         than butting into a corner. Its only cap is the elbow end, buried.
+         The cuff still starts CUF_OV above the elbow and at 14 is wider than
+         the 11.5 arm end it swallows, so the bend closes without a sphere. */
+      var upa = latheP(FA[0], [0,0,0], UP_RINGS, 8, {});
+      push(bury(upa, upa.capLo, upa.capHi), kk);
+      push(bury(segP(FA[1], CUF_R0, CUF_R1, -CUF_OV, CUF_L, 8, {}), 8), kk);
+      push(bury(segP(FA[1], FRA_R0, FRA_R1, CUF_L-2, FRA_L, 8, {}), 8), kk);
+      push(bury(boxP(FA[1], [0,0,FRA_L+HAND_D], HAND_H, {}), BF_BOT), kk).hand = 1;
+      armAxis[s2] = [fp(FA[0],[0,0,-DEL_H]), fp(FA[0],[0,0,UP_L])];
+      hands[s2] = fp(FA[1], [0,0,FRA_L+HAND_D]);
+      ang2[s2] = aa;
+      if (s2 === (opt.axisArm || -1)) elbF = FA[1];
+    }
+
+    /* THREE drawn axes per figure — the standing centre line, the shoulder
+       transverse, and one elbow. The 3D classifier decides, per run, which
+       parts are in the open (dash-dot) and which are inside the figure's
+       own body (dashed). */
+    var AX = [
+      [fp(Fb,[pose.px, pose.py, -34]),  fp(Fb,[pose.px, pose.py, 452])],
+      [fp(Ftor,[0,-SH_Y-70,SH_LZ]),     fp(Ftor,[0, SH_Y+70,SH_LZ])],
+      [fp(elbF,[0,-58,0]),              fp(elbF,[0, 58,0])]
+    ];
+
+    return {prims:P, axes:AX, axle:null, axisDir:Ftor.y, tag:tag,
+            tip: hands[opt.axisArm || -1], hands:hands, feet:feet,
+            ang:ang2, pose:pose, Fb:Fb, Ftor:Ftor, armAxis:armAxis};
+  }
+
+  /* ---- 3 · THE CELL ---------------------------------------------------- */
+  var PHI = 12*D2R;                 /* the belt's heading on the floor      */
+  var Fc = place(0,0,0, PHI);       /* the conveyor's own frame             */
+  var BED_HL = 280, BED_HW = 62, BED_Z0 = 130, BED_Z1 = 180;
+  var ROL_R = 28, ROL_S = 306, ROL_Z = (BED_Z0+BED_Z1)/2;
+  var TOP = ROL_Z + ROL_R;          /* the belt surface                    */
+  var LEG_S = 222, LEG_W = 44;
+  /* the ALONG-BELT stations are the robots': spaced apart, and not
+     symmetrically, because v2 of the robot scene put the far actor level
+     with the end roller and the two collided in projection.
+     THE LATERAL STANDOFF IS HUMAN. WK_D = 104 from the belt centre line
+     (v1 had 118, the robots 250). Torso front 82 — 20 clear of the bed
+     edge at 62; boot toe 74 — 12 clear. Shoulder to hand is 171 and the
+     reach onto the part is 150, so the elbow stays honestly bent. */
+  /* v3 — WORKER A STANDS BESIDE THE BELT, NOT AT ITS END. Dave, on the
+     hand-on-hip figure: "reposition this body so its at the side of the
+     conveyer". In v2 A was at s = -200 on a 280 half-length bed, so he
+     stood 80 from the bed's end and 106 from the end roller, and at this
+     camera the bed's end face and that roller both crossed his body — the
+     belt appeared to run through his hips and the roller read as a ball in
+     his hand. Two constants move. WK_DA = 126 (A only; B keeps WK_D = 104,
+     because B REACHES across the belt and a longer standoff straightens his
+     elbow): A's torso front is then 104 out against a bed edge at 62 — 42
+     clear — and his boot toe reaches 92, 30 clear, so nothing of him
+     intersects the bed, the legs or the rollers at any point in the orbit.
+     ARM_SA = -136 walks him 64 downstream, to the middle of the bed's
+     upstream half, where he is flanked by belt on both sides and the end of
+     the conveyor is well behind him. He is still 202 along the belt from B,
+     so the pair does not crowd. */
+  /* v5 — A STEPS BACK ANOTHER 64. Dave, on v4: "the first body is clashing
+     with the conveyor, he needs to step back a bit". lineClear() said A
+     stood 14.9 clear of the belt and that was TRUE — in three dimensions.
+     The drawing is flat. At WK_DA 126 the bed's near top edge projected
+     across A's CHEST and the upstream roller sat behind his ribs, so the
+     page read "man standing in the conveyor" however much 3D air was
+     between them. The fix is not a bigger 3D number, it is a bigger number
+     measured ON THE PAGE, which is what window.linePage() exists to do:
+     projected convex hulls, SAT, answer in CSS px.
+     WK_DA = 190. Because A stands on the CAMERA side of the belt, stepping
+     back carries him down and left on the page while the belt's projected
+     band at his new column rises, and the two separate at about 0.42 px of
+     page gap per unit of standoff. The belt's near edge crosses him at the
+     hip now instead of the chest — which is where the model always said it
+     should be, "the belt comes to the top of the thigh" — and the upstream
+     roller passes BEHIND his hip rather than under his arm. Worst page
+     overlap of any A primitive against the conveyor: -29.2 px, from -38.6;
+     his torso against the bed -13.3 from -31.2; his 3D clearance rises to
+     25.8 from 14.9 as a side effect.
+     WHAT IT COST: the reaching arm. Shoulder to hand is 169 and the near
+     bed edge is now 128 out and 130 down, so the solve CLAMPS to straight
+     and the hand lands ON the bed's near edge rather than 6 past it onto
+     the belt top. A now LEANS on the rail with a straight arm instead of
+     resting a bent one on the belt. RAIL_X tracks the standoff — it is
+     WK_DA - 56 and always has been — so the target still names the same
+     point relative to the belt. Zero page overlap is NOT achievable at this
+     camera by any standoff: the bed is 560 long and fills the frame, so a
+     figure of 408 standing in front of it must cross its band somewhere.
+     What moved is WHERE it crosses. NOTHING ELSE moved: ARM_SA is still
+     -136, so he has not walked along the belt, and B is untouched. */
+  var WK_D = 104, WK_DA = 190, ARM_SA = -136, ARM_SB = 66;
+  /* the RED workpiece sits under the FAR worker, which is the reaching
+     one: a near-side figure reaching over the belt puts its own forearm
+     between the camera and its target. Its station along the belt is read
+     off the SOLVED hand, in buildGeom, not written down here. */
+  /* all three DOWNSTREAM of the belt's mid-point — see paintOrder */
+  /* 110, not 20: the red part's station is READ OFF B's solved hand, and
+     with the reach straightened it lands at 48 — a 24-wide box at 20 and a
+     27-wide box at 20 interpenetrate it and boxes at 110 or 150 crowd it in
+     projection, because the belt runs away from the camera and compresses
+     down-stream. The reach is aimed a little across the body instead, so
+     the red part lands at about 70, and the two plain parts straddle it at
+     0 and 200: 19 units of clear belt upstream, 79 down. Both are still
+     past the s > -7 the painter needs. */
+  var WP = [ {s:   0, h:[24,22,18], red:0},
+             {s: 200, h:[24,22,18], red:0},
+             {s: null, h:[27,25,21], red:1} ];
+  var PL_X = 374, PL_Y = 312, PL_Z0 = -16, PL_Z1 = 0;
+  var PERIOD = 13, ROCK2 = 2.5*D2R, ROCK3 = 2.5*D2R, CREEP = 15;
+
+  /* the two placements: mirrored across the belt, spaced along it, each
+     turned so its local +x (the facing) points at the belt's centre line.
+     MIRRORED, as the arms were. Turning the second figure through 180 deg
+     would flip the sign of every lateral step. Negating the placement
+     frame's y instead builds a left-handed twin: the figure still faces the
+     belt, both bodies step their limbs toward the camera, and the pair
+     reads as two people working opposite each other. */
+  function mirror(F){ return {x:F.x, y:scl(F.y,-1), z:F.z, o:F.o}; }
+  var FwkA =        frZ(ftr(Fc, [ARM_SA,  WK_DA, 0]), -Math.PI/2);
+  var FwkB = mirror(frZ(ftr(Fc, [ARM_SB, -WK_D, 0]),  Math.PI/2));
+
+  /* THE TWO POSTURES. Both are contrapposto and they take OPPOSITE weight
+     legs, so the pair is not one drawing and its mirror.
+       A  — hand on the belt rail, other hand on the hip (the reference
+            sketch's stance). Weight on the +y leg, free foot set back with
+            the heel up.
+       B  — reaching to the red part with the near hand, far arm hanging
+            with a crook. Weight on the -y leg.
+     Feet are PLACED, in the figure's own floor frame; legs are solved. */
+  /* v6 — THE HAND GOES BEHIND THE PART. Dave: "hide the box-hands behind the
+     box". The mitt used to be solved to [WK_D, 6, REACH_Z] — the belt's own
+     centre line at z 237, twelve units ABOVE the red part's top face at 225 —
+     so it was drawn ON TOP of the workpiece, a box overlapping a box. B
+     stands on the belt's -y side, which at this camera is the FAR side, so
+     moving the grip across to the part's far face and down to its mid-height
+     puts the mitt entirely behind the part in projection and the painter's
+     centroid sort fills the part white over it.
+       GRIP_X  WK_D - 32 = 72  ->  belt y -32, gripping the part's far face
+                                   (which stands at -25) from behind
+       GRIP_Z  194             ->  low on that face, 11 above the belt at
+                                   183 and 31 under the part's top at 225
+     Swept on window.lineGrip(), which measures the two things that have to
+     be true at once — the mitt must sort BEHIND the part on centroid depth,
+     and every one of its eight corners must project INSIDE the part's own
+     hull. Eleven (GRIP_X offset, GRIP_Z) pairs were scored; 32/194 is the
+     one that reaches out_px 0.00 at rest with the LEAST of the mitt inside
+     the part (3.49 units) and its lowest corner still clear of the bed's
+     top face at 180. Backing the grip off to 36 keeps the mitt entirely
+     outside the part but then 1.98 px of wrist shows past the red outline;
+     the trade runs about 0.9 px of sliver per unit of standoff.
+     The red part's station is still READ OFF the solved hand, so the part
+     follows the grip along the belt (station 74.5, was 74.1) and the two
+     plain parts still straddle it at 0 and 200. REACH_Z is kept as the name
+     of the old over-the-top height. */
+  var REACH_Z = 237;                /* v5's hand centre, just over the top  */
+  var GRIP_X  = WK_D - 32, GRIP_Y = 6, GRIP_Z = 194;
+  /* v3 — the rail hand RESTS ON THE BELT. In A's own floor frame local +x
+     points at the belt, so the near bed edge is at WK_DA - BED_HW = 64 and
+     the hand centre goes 6 past it, onto the belt top: the mitt is 11 half
+     deep along the forearm, so its underside lands at 183, which is the
+     belt surface. The mitt itself is 18 x 12 x 22 now (v2: 20 x 14 x 26) —
+     a hand, not a head. */
+  /* v5 — RAIL_X tracks WK_DA: the near bed edge is at WK_DA - BED_HW and
+     the target is 6 past it, so RAIL_X = WK_DA - 56. At WK_DA 190 that is
+     134, past the arm's 169 of reach, so the solve clamps straight and the
+     hand comes to rest on the bed's near EDGE — see the WK_DA note. */
+  var RAIL_X  = WK_DA - 56, RAIL_Z = 194;
+
+  var POSE_A = {
+    px:  6, py:  9, hipTilt:  5, lean: 5, roll: -9, twist:  11,
+    headPitch: 13, headYaw: -11,
+    legL: {x: -28, y: -30, yaw: -15, pitch: 15},       /* free, heel up    */
+    legR: {x:   4, y:  22, yaw:   6, pitch:  0},       /* weight           */
+    /* v3 — the hand on the hip is a SOLVED reach now, not three written-down
+       angles. v2 had to write it down because solve3 alone could not put a
+       hand back at the waist; with the swivel it can, and it must be
+       re-solved anyway because change 3 moved the shoulder pivot 10 up and
+       4 out and the old angles put the hand 11 high and 5 wide of the hip.
+       sw 0 is the plain solve and it is already the akimbo: elbow 33 back,
+       46 out, at z 276. */
+    armL: {target:[10, -28, 216], sw: 0},              /* hand on the hip  */
+    armR: {target:[RAIL_X, 30, RAIL_Z], sw: 20}        /* hand on the belt */
+  };
+  var POSE_B = {
+    px: -4, py:-10, hipTilt: -5, lean: 9, roll:  9, twist: -8,
+    headPitch: 16, headYaw: 13,
+    legL: {x:   2, y: -20, yaw:  -5, pitch:  0},       /* weight           */
+    legR: {x: -30, y:  32, yaw:  16, pitch: 16},       /* free, heel up    */
+    armL: {target:[GRIP_X, GRIP_Y, GRIP_Z], sw:-110},  /* behind the part  */
+    armR: {abd: 16, t2:-14, tw: 25, t3: 47}            /* hanging, crooked */
+  };
+
+  var PLATE = (function(){
+    var V = [[-PL_X,-PL_Y,PL_Z0],[PL_X,-PL_Y,PL_Z0],[PL_X,PL_Y,PL_Z0],[-PL_X,PL_Y,PL_Z0],
+             [-PL_X,-PL_Y,PL_Z1],[PL_X,-PL_Y,PL_Z1],[PL_X,PL_Y,PL_Z1],[-PL_X,PL_Y,PL_Z1]]
+             .map(function(p){ return fp(Fc,p); });
+    var E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    return E.map(function(e){ return [V[e[0]], V[e[1]]]; });
+  })();
+  var BELT_AXIS = [fp(Fc,[-ROL_S-118,0,ROL_Z]), fp(Fc,[ROL_S+118,0,ROL_Z])];
+
+  var ARMS = [], POSE = null;
+
+  function buildGeom(t){
+    var s = 2*Math.PI*t/PERIOD, i;
+    /* the idle: the reaching arm's shoulder and elbow rock a couple of
+       degrees. Applied to the SOLVED angles, after the solve. */
+    var pb = {}; for (i in POSE_B) pb[i] = POSE_B[i];
+    pb.armL = {target: POSE_B.armL.target, sw: POSE_B.armL.sw,
+               rock: [ROCK2*Math.sin(s), ROCK3*Math.sin(s+1.2)]};
+    var A = makeWorker(FwkA, POSE_A, 'A', 100, {axisArm:1});
+    var B = makeWorker(FwkB, pb,     'B', 100, {axisArm:-1});
+    var P = A.prims.concat(B.prims);
+
+    /* the conveyor: a shallow bed on four short legs, with the two end
+       rollers as cylinders across it. Nothing interpenetrates. */
+    function cpush(p,k){ p.tag = 'C'; p.ord = k; P.push(p); return p; }
+    var bed = cpush(boxP(Fc, [0,0,(BED_Z0+BED_Z1)/2], [BED_HL, BED_HW, (BED_Z1-BED_Z0)/2], {}), 1);
+    for (i=0;i<4;i++){
+      var ls = (i<2 ? -LEG_S : LEG_S), lw = (i%2 ? -LEG_W : LEG_W);
+      cpush(boxP(Fc, [ls, lw, BED_Z0/2], [11, 11, BED_Z0/2], {}), 2);
+    }
+    cpush(rollerP(-ROL_S), 3);
+    cpush(rollerP( ROL_S), 3);
+
+    /* the belt's painted centre dashes, creeping. They live ON the bed's
+       top face, so the bed's painter slot carries them and anything nearer
+       — a workpiece, a hand — fills white over them. */
+    var off = (CREEP*t) % 84, dsh = [];
+    for (i=-8;i<=8;i++){
+      var x0 = -BED_HL + 6 + i*84 + off, x1 = x0 + 46;
+      if (x1 < -BED_HL+4 || x0 > BED_HL-4) continue;
+      if (x0 < -BED_HL+4) x0 = -BED_HL+4; if (x1 > BED_HL-4) x1 = BED_HL-4;
+      dsh.push([fp(Fc,[x0,0,BED_Z1+0.4]), fp(Fc,[x1,0,BED_Z1+0.4])]);
+    }
+    bed.deco = dsh.map(function(d){ return {face:bed.topFace, pts:d, col:INK}; });
+
+    /* the workpieces, plain boxes standing on the belt. The red one takes
+       its station from B's solved hand, projected onto the belt axis. */
+    var RS = dot(sub(B.tip, Fc.o), Fc.x);
+    var reds = [];
+    for (i=0;i<WP.length;i++){
+      var w = WP[i], ws = (w.s === null) ? RS : w.s;
+      var b = boxP(Fc, [ws, 0, TOP + w.h[2]], w.h, 0, w.red ? {all_red:1} : {});
+      b.tag = 'W'; b.ord = 10 + i; P.push(b);
+      if (w.red) reds.push(b);
+    }
+
+    ARMS = [A, B];
+    POSE = {A:A, B:B, red_s:RS};
+    return {prims:P, arms:[A,B], axes:A.axes.concat(B.axes), belt:BELT_AXIS,
+            axles:[], red:reds};
+  }
+  /* an end roller: a 14-gon cylinder lying across the belt */
+  function rollerP(sx0){
+    var Fr = ftr(Fc,[sx0,0,ROL_Z]);
+    var Fa = {x:Fr.z, y:Fr.x, z:Fr.y, o:Fr.o};       /* local z = belt's y */
+    return latheP(Fa, [0,0,0], [{z:-BED_HW, ax:ROL_R, ay:ROL_R},
+                                {z: BED_HW, ax:ROL_R, ay:ROL_R}], 14, {});
+  }
+
+  /* ---- 4 · the camera -------------------------------------------------- */
+  var YAW0 = -35*D2R, PIT0 = 20*D2R, YAW_R = 25*D2R, PIT_R = 12*D2R, TAU = 1.0;
+  var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
+  var VD = [0,0,1];
+  function setView(yaw, pit){
+    var cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pit), sp=Math.sin(pit);
+    m00=cy;      m02=sy;
+    m10=sp*sy;   m11=cp;   m12=-sp*cy;
+    m20=-cp*sy;  m21=sp;   m22=cp*cy;
+    VD = [m20, m22, m21];              /* direction of increasing depth */
+  }
+  function springStep(x, v, target, w, dt){
+    var a = -2*w*v - w*w*(x - target);
+    v += a*dt; x += v*dt;
+    return [x, v];
+  }
+  var mnx = 0, mny = 0, mouseSeen = false;
+  var yawOff = 0, yawVel = 0, pitOff = 0, pitVel = 0;
+  function onMove(e){
+    if (e.pointerType && e.pointerType !== 'mouse') return;
+    var w = window.innerWidth || 1, h = window.innerHeight || 1;
+    mnx = (e.clientX - w/2)/(w/2); mny = (e.clientY - h/2)/(h/2);
+    if (mnx < -1) mnx = -1; else if (mnx > 1) mnx = 1;
+    if (mny < -1) mny = -1; else if (mny > 1) mny = 1;
+    mouseSeen = true;
+  }
+  window.addEventListener('pointermove', onMove, {passive:true});
+  window.addEventListener('mousemove', function(e){ if (e.pointerType === undefined) onMove(e); }, {passive:true});
+  function updateView(dt){
+    var tY = mouseSeen ? mnx*YAW_R : 0, tP = mouseSeen ? -mny*PIT_R : 0;
+    var w = 1/TAU, left = dt, h, A, B;
+    while (left > 1e-5){
+      h = left > 0.008 ? 0.008 : left; left -= h;
+      A = springStep(yawOff, yawVel, tY, w, h); yawOff = A[0]; yawVel = A[1];
+      B = springStep(pitOff, pitVel, tP, w, h); pitOff = B[0]; pitVel = B[1];
+    }
+    setView(YAW0 + yawOff, PIT0 + pitOff);
+  }
+
+  /* ---- 5 · the fit ----------------------------------------------------- */
+  var W = 600, H = 420, DPR = 1, SC = 1, OX = 0, OY = 0, PAD_X = 26, PAD_Y = 20;
+  function everyVertex(cb){
+    var ph, g, i, j;
+    for (ph=0; ph<3; ph++){
+      g = buildGeom(ph*PERIOD/3);
+      for (i=0;i<g.prims.length;i++)
+        for (j=0;j<g.prims[i].v.length;j++) cb(g.prims[i].v[j]);
+      for (i=0;i<g.axes.length;i++){ cb(g.axes[i][0]); cb(g.axes[i][1]); }
+      cb(g.belt[0]); cb(g.belt[1]);
+    }
+    PLATE.forEach(function(s){ cb(s[0]); cb(s[1]); });
+  }
+  function sweepBox(){
+    var lo=[1e9,1e9], hi=[-1e9,-1e9], rlo=[1e9,1e9], rhi=[-1e9,-1e9], i, j;
+    var saved = [m00,m02,m10,m11,m12,m20,m21,m22];
+    function acc(L,Hh){ return function(v){
+      var sx = m00*v[0] + m02*v[1], sy = m10*v[0] + m11*v[2] + m12*v[1];
+      if (sx<L[0]) L[0]=sx; if (sx>Hh[0]) Hh[0]=sx;
+      if (sy<L[1]) L[1]=sy; if (sy>Hh[1]) Hh[1]=sy;
+    };}
+    for (i=-1;i<=1;i++) for (j=-1;j<=1;j++){
+      setView(YAW0 + i*YAW_R, PIT0 + j*PIT_R);
+      everyVertex(acc(lo,hi));
+      if (i===0 && j===0) everyVertex(acc(rlo,rhi));
+    }
+    m00=saved[0]; m02=saved[1]; m10=saved[2]; m11=saved[3];
+    m12=saved[4]; m20=saved[5]; m21=saved[6]; m22=saved[7];
+    return {lo:lo, hi:hi, rlo:rlo, rhi:rhi};
+  }
+  var BOXU = null;
+  function size(){
+    var host = cv.parentNode;
+    W = Math.max(240, host.clientWidth || 600);
+    H = Math.max(200, host.clientHeight || 420);
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    PAD_X = Math.min(22, W*0.037); PAD_Y = Math.min(20, H*0.046);
+    if (!BOXU) BOXU = sweepBox();
+    var K = 0.30;
+    var rw = BOXU.rhi[0]-BOXU.rlo[0], rh = BOXU.rhi[1]-BOXU.rlo[1];
+    var bw = rw + K*((BOXU.hi[0]-BOXU.lo[0]) - rw);
+    var bh = rh + K*((BOXU.hi[1]-BOXU.lo[1]) - rh);
+    SC = Math.min((W - 2*PAD_X)/bw, (H - 2*PAD_Y)/bh) * 0.99;
+    OX = W/2 - (BOXU.rlo[0]+BOXU.rhi[0])/2 * SC;
+    OY = H/2 + (BOXU.rlo[1]+BOXU.rhi[1])/2 * SC;
+  }
+  function sx(v){ return OX + (m00*v[0] + m02*v[1])*SC; }
+  function sy(v){ return OY - (m10*v[0] + m11*v[2] + m12*v[1])*SC; }
+  function depth(v){ return m20*v[0] + m21*v[2] + m22*v[1]; }
+  function sdir(v){ return [(m00*v[0] + m02*v[1])*SC, -(m10*v[0] + m11*v[2] + m12*v[1])*SC]; }
+
+  /* ---- 6 · faces and edges --------------------------------------------- */
+  /* HARD is 0.65: every real crease in this model is 90 deg (dot 0), an
+     8-gon lathe's flats meet at 45 (dot 0.707) and a joint ball's four
+     bands meet at 38 (dot 0.79), so no smooth solid inks its own facets. */
+  var HARD = 0.65;
+  var nFace = 0, nBack = 0, nEdge = 0;
+  function prepare(P){
+    var i, j, f = P.f;
+    P.X = []; P.Y = [];
+    for (i=0;i<P.v.length;i++){ P.X.push(sx(P.v[i])); P.Y.push(sy(P.v[i])); }
+    P.bx0 = 1e9; P.bx1 = -1e9; P.by0 = 1e9; P.by1 = -1e9;
+    for (i=0;i<P.X.length;i++){
+      if (P.X[i]<P.bx0) P.bx0=P.X[i]; if (P.X[i]>P.bx1) P.bx1=P.X[i];
+      if (P.Y[i]<P.by0) P.by0=P.Y[i]; if (P.Y[i]>P.by1) P.by1=P.Y[i];
+    }
+    P.vis = []; P.fd = [];
+    for (i=0;i<f.length;i++){
+      P.vis[i] = dot(f[i].n, VD) > 0;
+      P.fd[i] = depth(f[i].c);
+      if (P.vis[i]) nFace++; else nBack++;
+    }
+    var em = {}, key;
+    for (i=0;i<f.length;i++){
+      var idx = f[i].idx;
+      for (j=0;j<idx.length;j++){
+        var a = idx[j], b = idx[(j+1)%idx.length];
+        key = (a<b) ? (a*8192+b) : (b*8192+a);
+        if (em[key]) em[key].push(i); else em[key] = [a, b, i];
+      }
+    }
+    var segs = [], red = !!P.o.all_red;
+    for (key in em){
+      var e = em[key], a2 = e[0], b2 = e[1], f0 = e[2], f1 = e.length > 3 ? e[3] : -1;
+      /* a BURIED face inks nothing: see bury() */
+      if (P.skip[f0] || (f1 >= 0 && P.skip[f1])) continue;
+      var v0 = P.vis[f0], v1 = (f1 >= 0) ? P.vis[f1] : false;
+      /* v6 — SILHOUETTE-ONLY. A primitive carrying o.silo inks the edges that
+         bound its own outline (one face toward the camera, one away) and
+         NOTHING else: its creases, however sharp, stay off the page. That is
+         what takes the two 90-degree vertical corners off the FRONT of the
+         ribcage and the pelvis — Dave: "the 'corners on the torso that face
+         us can be removed". The corners that make the outline are silhouette
+         edges and still ink, so the figure keeps its shape; the garment's
+         placket, pockets, waistband and seams are deco, not edges, and are
+         untouched by this. */
+      var ink = (f1 < 0) ? v0
+              : ((v0 !== v1) || (!P.o.silo && v0 && v1 && dot(f[f0].n, f[f1].n) < HARD));
+      if (!ink) continue;
+      segs.push([P.X[a2], P.Y[a2], P.X[b2], P.Y[b2], red ? RED : INK]);
+      nEdge++;
+    }
+    P.segs = segs;
+    P.order = [];
+    for (i=0;i<f.length;i++) if (P.vis[i]) P.order.push(i);
+    P.order.sort(function(p,q){ return P.fd[p] - P.fd[q]; });
+    P.cd = depth(P.ctr);
+  }
+
+  /* ---- 7 · the 3D hidden test ------------------------------------------ */
+  /* THREE classes, not two, and that distinction is the whole reason the
+     scene stays readable. A free line is
+        0  IN THE OPEN          -> #9B9B9B dash-dot construction
+        1  inside its OWN object -> #BDBDBD dashed: this is the run that
+                                    EXPLAINS the figure (the standing
+                                    centre line inside the torso, the
+                                    shoulder axis inside the chest)
+        2  behind a DIFFERENT object -> not drawn at all. */
+  var OCC = [];
+  function slabHit(P, p){
+    var f = P.f, tin = -1e9, tout = 1e9, i;
+    for (i=0;i<f.length;i++){
+      var num = f[i].d - dot(f[i].n, p), den = dot(f[i].n, VD);
+      if (den > -1e-9 && den < 1e-9){ if (num < -1e-9) return 0; continue; }
+      var t = num/den;
+      if (den > 0){ if (t < tout) tout = t; } else { if (t > tin) tin = t; }
+      if (tin >= tout) return 0;
+    }
+    return (tout > (tin > 0 ? tin : 0) + 1e-6) ? 1 : 0;
+  }
+  function rayClass(p, own){
+    var px = sx(p), py = sy(p), k, cls = 0;
+    for (k=0;k<OCC.length;k++){
+      var P = OCC[k];
+      if (px < P.bx0 || px > P.bx1 || py < P.by0 || py > P.by1) continue;
+      if (!slabHit(P, p)) continue;
+      if (own !== '*' && P.tag !== own) return 2;   /* someone else's solid */
+      cls = 1;                            /* '*' — the plate owns them all */
+    }
+    return cls;
+  }
+  var NS = 36;
+  function splitLine(A, B, own, clear, hid){
+    var i, cls = [], s;
+    for (i=0;i<NS;i++){ s = (i+0.5)/NS; cls.push(rayClass(lerp(A,B,s), own)); }
+    var runs = [], start = 0, cur = cls[0];
+    for (i=1;i<NS;i++){
+      if (cls[i] !== cur){
+        var lo = (i-0.5)/NS, hi = (i+0.5)/NS, k, m;
+        for (k=0;k<10;k++){ m = (lo+hi)/2; if (rayClass(lerp(A,B,m), own) === cur) lo = m; else hi = m; }
+        m = (lo+hi)/2;
+        runs.push([start, m, cur]); start = m; cur = cls[i];
+      }
+    }
+    runs.push([start, 1, cur]);
+    for (i=0;i<runs.length;i++){
+      if (runs[i][2] === 2) continue;
+      if (runs[i][1] - runs[i][0] < 2e-3) continue;
+      var p0 = lerp(A,B,runs[i][0]), p1 = lerp(A,B,runs[i][1]);
+      (runs[i][2] ? hid : clear).push([sx(p0), sy(p0), sx(p1), sy(p1)]);
+    }
+  }
+
+  /* ---- 8 · the ink ------------------------------------------------------ */
+  function strokeSegs(arr, col, dash, w){
+    if (!arr.length) return;
+    ctx.beginPath();
+    for (var i=0;i<arr.length;i++){ ctx.moveTo(arr[i][0],arr[i][1]); ctx.lineTo(arr[i][2],arr[i][3]); }
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  function strokePoly(pts, col, w){
+    if (pts.length < 2) return;
+    ctx.beginPath(); ctx.moveTo(sx(pts[0]), sy(pts[0]));
+    for (var i=1;i<pts.length;i++) ctx.lineTo(sx(pts[i]), sy(pts[i]));
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash([]); ctx.stroke();
+  }
+
+  var drawBox = [0,0,0,0], G = null, RUNS = [], ORDER = [];
+
+  /* PAINTER'S ORDER: sort the whole list by centroid depth, and that is
+     ALL — no re-seat anywhere in this scene.
+     A body's parts are SHORT and sit concentrically about their joints: the
+     near shoulder ball is nearer than the ribcage, the far one further, the
+     neck nearer than the chest, a thigh top behind the hip it enters.
+     Centroid depth tells the truth about every one of them, and v1's
+     lateral re-seat was actively wrong — re-seating permutes a group into
+     the SLOTS the global sort gave it, so the near leg and the near arm
+     were carried past their own slots and over the conveyor bed and the
+     end roller, which stand between those limbs and the camera.
+     The conveyor-before-workpieces re-seat is gone too and the PARTS were
+     moved instead: a box standing on the belt sorts correctly against the
+     bed whenever k*s + sp*(height above the bed centre) > 0, and over the
+     whole orbit the binding case is yaw -60 / pitch 8, where that reads
+     s > -7. All three parts stand downstream of that. */
+  function paintOrder(P, arms){
+    return P.slice().sort(function(a,b){ return a.cd - b.cd; });
+  }
+
+  function render(t){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,H);
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
+
+    G = buildGeom(t);
+    nFace = 0; nBack = 0; nEdge = 0;
+    var P = G.prims, i, k;
+    for (i=0;i<P.length;i++) prepare(P[i]);
+    var order = paintOrder(P, G.arms);
+    ORDER = order.map(function(q){ return q.tag + q.ord; });
+    OCC = P;
+
+    /* 1 · the solids, back to front: fill white, then stroke */
+    for (i=0;i<order.length;i++){
+      var Q = order[i];
+      for (k=0;k<Q.order.length;k++){
+        var f = Q.f[Q.order[k]].idx, j;
+        ctx.beginPath();
+        ctx.moveTo(Q.X[f[0]], Q.Y[f[0]]);
+        for (j=1;j<f.length;j++) ctx.lineTo(Q.X[f[j]], Q.Y[f[j]]);
+        ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill();
+      }
+      for (k=0;k<Q.deco.length;k++){
+        var D = Q.deco[k];
+        if (Q.vis[D.face]) strokePoly(D.pts, D.col, 1);
+      }
+      var blk = [], rd = [];
+      for (k=0;k<Q.segs.length;k++) (Q.segs[k][4] === RED ? rd : blk).push(Q.segs[k]);
+      strokeSegs(blk, INK, [], 1);
+      strokeSegs(rd,  RED, [], 1.3);
+    }
+
+    /* 2 · the base plate, classified against the whole cell in 3D */
+    var pClear = [], pHid = [];
+    for (i=0;i<PLATE.length;i++) splitLine(PLATE[i][0], PLATE[i][1], '*', pClear, pHid);
+    strokeSegs(pClear, INK,  [], 1);
+    strokeSegs(pHid,   HIDC, [5,4], 1);
+
+    /* 3 · the robot scene's shoulder-axle pair lived here. A person has no
+       axle in a housing, so G.axles is empty and this no-ops; the dashed
+       ink is carried by the axes that run inside the torso and elbow. */
+    var axl = [];
+    for (k=0;k<G.axles.length;k++){
+      var X = G.axles[k];
+      var blocked = 0;
+      for (i=0;i<=4;i++){
+        var pt = add(X.c, scl(X.dir, X.lo + (X.hi-X.lo)*i/4));
+        if (rayClass(pt, X.tag) === 2){ blocked = 1; break; }
+      }
+      if (blocked) continue;
+      var du = sdir(X.dir), nx = -du[1], ny = du[0];
+      var nl = Math.sqrt(nx*nx+ny*ny) || 1; nx/=nl; ny/=nl;
+      var dp = sdir(X.p), dq = sdir(X.q);
+      var ext = X.r * Math.sqrt(Math.pow(nx*dp[0]+ny*dp[1],2) + Math.pow(nx*dq[0]+ny*dq[1],2));
+      var a0 = add(X.c, scl(X.dir, X.lo)), a1 = add(X.c, scl(X.dir, X.hi));
+      var A0 = [sx(a0), sy(a0)], A1 = [sx(a1), sy(a1)];
+      axl.push([A0[0]+nx*ext, A0[1]+ny*ext, A1[0]+nx*ext, A1[1]+ny*ext]);
+      axl.push([A0[0]-nx*ext, A0[1]-ny*ext, A1[0]-nx*ext, A1[1]-ny*ext]);
+      var cap = ring(a0, X.p, X.q, X.r, 14);
+      for (i=0;i<cap.length-1;i++)
+        axl.push([sx(cap[i]), sy(cap[i]), sx(cap[i+1]), sy(cap[i+1])]);
+    }
+    strokeSegs(axl, HIDC, [5,4], 1);
+
+    /* 4 · the body axes, and the ONE construction axis along the belt */
+    var aClear = [], aHid = [];
+    RUNS = [];
+    var lines = G.axes.concat([G.belt]);
+    var owns = ['A','A','A','B','B','B','C'];
+    for (i=0;i<lines.length;i++){
+      var c0 = aClear.length, h0 = aHid.length;
+      splitLine(lines[i][0], lines[i][1], owns[i], aClear, aHid);
+      RUNS.push({clear:aClear.slice(c0), hid:aHid.slice(h0)});
+    }
+    strokeSegs(aClear, CONC, [9,3,2,3], 1);
+    strokeSegs(aHid,   HIDC, [5,4], 1);
+
+    drawBox = [1e9,1e9,-1e9,-1e9];
+    function hit(x,y){
+      if (x<drawBox[0]) drawBox[0]=x; if (x>drawBox[2]) drawBox[2]=x;
+      if (y<drawBox[1]) drawBox[1]=y; if (y>drawBox[3]) drawBox[3]=y;
+    }
+    for (i=0;i<P.length;i++) for (k=0;k<P[i].X.length;k++) hit(P[i].X[k], P[i].Y[k]);
+    [pClear, pHid, aClear, aHid].forEach(function(g){
+      g.forEach(function(s){ hit(s[0],s[1]); hit(s[2],s[3]); });
+    });
+  }
+
+  /* ---- 9 · the frame ---------------------------------------------------- */
+  var lastT = -1, raf = null, running = false, clock = 0, frozen = null;
+  var _minDt = 1000/30, _lastDraw = 0;
+  function frame(now){
+    if (lastT < 0) lastT = now;
+    var dt = (now-lastT)/1000; lastT = now;
+    if (dt < 0) dt = 0; if (dt > 0.1) dt = 0.1;
+    clock += dt;
+    updateView(dt);
+    render(frozen === null ? clock : frozen);
+  }
+  function loop(now){
+    if (now - _lastDraw >= _minDt - 1){ _lastDraw = now; frame(now); }
+    raf = requestAnimationFrame(loop);
+  }
+  function start(){ if (running || reduce) return; running = true; lastT = -1; raf = requestAnimationFrame(loop); }
+  function stop(){ running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
+  function still(){
+    yawOff = pitOff = yawVel = pitVel = 0;
+    setView(YAW0, PIT0); render(frozen === null ? 0 : frozen);
+  }
+
+  size();
+  setView(YAW0, PIT0); render(0);
+  if (!reduce) start();
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); else start(); });
+  window.addEventListener('blur', stop);
+  window.addEventListener('focus', start);
+  var rt = null;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ size(); render(frozen === null ? clock : frozen); }, 160);
+  });
+
+  /* ---- 10 · the probe surface ------------------------------------------- */
+  window.lineStats = function(){
+    var verts = 0; G.prims.forEach(function(p){ verts += p.v.length; });
+    return {primitives:G.prims.length, vertices:verts, faces_drawn:nFace,
+            faces_culled:nBack, edges_inked:nEdge, free_lines:PLATE.length + G.axes.length + 1,
+            w:W, h:H, dpr:DPR, scale:+SC.toFixed(4),
+            draw_box:drawBox.map(function(v){ return +v.toFixed(1); }),
+            running:running, reduced:reduce};
+  };
+  window.lineView = function(){
+    return {yaw_deg:+((YAW0+yawOff)/D2R).toFixed(2), pitch_deg:+((PIT0+pitOff)/D2R).toFixed(2),
+            workerA_axis_depth:+dot(ARMS[0].axisDir, VD).toFixed(3),
+            workerB_axis_depth:+dot(ARMS[1].axisDir, VD).toFixed(3),
+            tau:TAU, mouse:[mnx,mny], seen:mouseSeen};
+  };
+  window.linePose = function(){
+    function A3(a){ return [+(a.abd/D2R).toFixed(1), +(a.t2/D2R).toFixed(1),
+                            +((a.tw||0)/D2R).toFixed(1), +(a.t3/D2R).toFixed(1)]; }
+    function V(p){ return p.map(function(v){ return +v.toFixed(1); }); }
+    /* hands and feet in the FIGURE'S OWN floor frame: x forward at the
+       belt, y across, z up. That is the frame the poses are written in, so
+       a target and where the hand actually went are directly comparable. */
+    function W(w){ return {armL:A3(w.ang['-1']), armR:A3(w.ang['1']),
+                           handL:V(toLocal(w.Fb, w.hands['-1'])),
+                           handR:V(toLocal(w.Fb, w.hands['1'])),
+                           footL:V(toLocal(w.Fb, w.feet['-1'])),
+                           footR:V(toLocal(w.Fb, w.feet['1']))}; }
+    return {A:W(POSE.A), B:W(POSE.B),
+            red_station:+POSE.red_s.toFixed(1),
+            belt_top:TOP, stand_off_A:WK_DA, stand_off_B:WK_D,
+            station_A:ARM_SA, station_B:ARM_SB,
+            figure_height:PEL_Z0 + TOR_LZ + NCK_LZ + HEAD_LZ + HEAD_H,
+            head_height:HEAD_H};
+  };
+  /* v3 — lineClear(): the two clearances the third pass exists to prove.
+     BODY vs CONVEYOR: every vertex of every one of A's solids, and of B's,
+     expressed in the conveyor's own frame, against the bed slab, the four
+     legs and the two roller cylinders. A NEGATIVE number means that vertex
+     is inside the conveyor — Dave's "reposition this body so its at the
+     side of the conveyer". Hands are excluded, because a hand resting ON
+     the belt is meant to touch it.
+     ARM vs OWN TORSO: the shoulder-to-elbow AXIS of each arm, sampled, in
+     that figure's ribcage frame, against the tapered ribcage block —
+     Dave's "this arm is coming out of its body". POSITIVE means the axis
+     stays outside the block over its whole length, which is the condition
+     for the arm to leave from the shoulder rather than the chest. The
+     upper arm's own 13 of radius is NOT subtracted: the arm is MEANT to
+     lap the top corner of the block, which is the deltoid, and the second
+     number, lap, says by how much (axis clearance minus DEL_R). What must
+     never happen is the AXIS going inside. */
+  window.lineClear = function(){
+    var res = {};
+    ARMS.forEach(function(w){
+      var minC = 1e9, worst = null;
+      w.prims.forEach(function(p){
+        if (p.hand) return;
+        p.v.forEach(function(vw){
+          var q = toLocal(Fc, vw), d;
+          /* bed slab */
+          d = Math.max(Math.abs(q[0])-BED_HL, Math.abs(q[1])-BED_HW,
+                       Math.max(BED_Z0-q[2], q[2]-BED_Z1));
+          if (d < minC){ minC = d; worst = p.tag+':'+p.ord+' bed'; }
+          /* the four legs */
+          for (var i=0;i<4;i++){
+            var ls = (i<2 ? -LEG_S : LEG_S), lw = (i%2 ? -LEG_W : LEG_W);
+            d = Math.max(Math.abs(q[0]-ls)-11, Math.abs(q[1]-lw)-11,
+                         Math.max(-q[2], q[2]-BED_Z0));
+            if (d < minC){ minC = d; worst = p.tag+':'+p.ord+' leg'+i; }
+          }
+          /* the two end rollers, cylinders across the belt */
+          for (i=0;i<2;i++){
+            var rs = i ? ROL_S : -ROL_S;
+            var rr = Math.sqrt(Math.pow(q[0]-rs,2) + Math.pow(q[2]-ROL_Z,2)) - ROL_R;
+            d = Math.max(rr, Math.abs(q[1])-BED_HW);
+            if (d < minC){ minC = d; worst = p.tag+':'+p.ord+' roller'+i; }
+          }
+        });
+      });
+      res[w.tag+'_vs_conveyor'] = {min:+minC.toFixed(1), at:worst};
+      /* each arm against its own ribcage */
+      var arm = {};
+      [-1,1].forEach(function(s2){
+        var ax = w.armAxis[s2], m2 = 1e9, i;
+        for (i=0;i<=20;i++){
+          var q2 = toLocal(w.Ftor, lerp(ax[0], ax[1], i/20));
+          /* v4 — the torso is a block to TOR_HB and the yoke above it, so
+             the probe takes its half-extents from whichever holds at that
+             height. Above the yoke's crest there is no torso at all. */
+          var zc = Math.min(Math.max(q2[2],0), YOKE[YOKE.length-1].z), hx, hy;
+          if (zc <= TOR_HB){
+            hx = TOR_HX0 + (TOR_HX1-TOR_HX0)*zc/TOR_H;
+            hy = TOR_HY0 + (TOR_HY1-TOR_HY0)*zc/TOR_H;
+          } else { var yh = yokeH(zc); hx = yh[0]; hy = yh[1]; }
+          var d2 = Math.max(Math.abs(q2[0])-hx, Math.abs(q2[1])-hy,
+                            Math.max(-q2[2], q2[2]-YOKE[YOKE.length-1].z));
+          if (d2 < m2) m2 = d2;
+        }
+        arm[s2 < 0 ? 'armL' : 'armR'] = {axis:+m2.toFixed(1), lap:+(m2-DEL_R).toFixed(1)};
+      });
+      res[w.tag+'_arm_vs_ribcage'] = arm;
+    });
+    return res;
+  };
+  /* v5 — linePage(): THE CLASH TEST IN PAGE SPACE, NOT IN 3D. Dave, on v4:
+     "the first body is clashing with the conveyor, he needs to step back a
+     bit". lineClear() said A stood 14.9 clear of the conveyor and it was
+     telling the truth — in THREE dimensions. But the drawing is flat, and a
+     figure standing beside a belt at this camera still lands ON the belt's
+     projected band, which is what a reader sees. So this probe measures what
+     the page shows: every worker primitive's projected CONVEX HULL against
+     every conveyor primitive's, with SAT. Negative = the two silhouettes
+     overlap on the page (penetration depth in CSS px); positive = the gap
+     between them, in CSS px. The HAND is excluded, as in lineClear — it is
+     meant to rest on the belt. Run it in the resting view AND in the orbit;
+     the orbit is the harder of the two, because yaw carries the figure back
+     across the belt. */
+  function hull2(pts){
+    var p = pts.slice().sort(function(a,b){ return a[0]-b[0] || a[1]-b[1]; }), i, k;
+    function half(src){
+      var h = [];
+      for (i=0;i<src.length;i++){
+        while (h.length >= 2){
+          var o = h[h.length-2], q = h[h.length-1];
+          if ((q[0]-o[0])*(src[i][1]-o[1]) - (q[1]-o[1])*(src[i][0]-o[0]) <= 0) h.pop();
+          else break;
+        }
+        h.push(src[i]);
+      }
+      h.pop(); return h;
+    }
+    var lo = half(p), hi = half(p.slice().reverse());
+    return lo.concat(hi);
+  }
+  /* SAT on two convex polygons. Returns the signed separation: >= 0 is the
+     widest gap along some separating axis, < 0 is the smallest overlap. */
+  function sat(A2, B2){
+    var best = -1e9, i, j, k, poly, n, a0, a1;
+    for (k=0;k<2;k++){
+      poly = k ? B2 : A2;
+      for (i=0;i<poly.length;i++){
+        a0 = poly[i]; a1 = poly[(i+1)%poly.length];
+        n = [-(a1[1]-a0[1]), a1[0]-a0[0]];
+        var L = Math.sqrt(n[0]*n[0]+n[1]*n[1]); if (L < 1e-9) continue;
+        n = [n[0]/L, n[1]/L];
+        var lo1=1e9,hi1=-1e9,lo2=1e9,hi2=-1e9, d;
+        for (j=0;j<A2.length;j++){ d = A2[j][0]*n[0]+A2[j][1]*n[1];
+          if (d<lo1) lo1=d; if (d>hi1) hi1=d; }
+        for (j=0;j<B2.length;j++){ d = B2[j][0]*n[0]+B2[j][1]*n[1];
+          if (d<lo2) lo2=d; if (d>hi2) hi2=d; }
+        var gap = Math.max(lo2-hi1, lo1-hi2);   /* >0 disjoint on this axis */
+        if (gap > best) best = gap;
+        if (gap > 0) return gap;                /* separated: done */
+      }
+    }
+    return best;                                 /* <= 0: overlapping */
+  }
+  window.linePage = function(){
+    var conv = [], i;
+    conv.push({n:'bed', p:boxP(Fc, [0,0,(BED_Z0+BED_Z1)/2],
+                                  [BED_HL, BED_HW, (BED_Z1-BED_Z0)/2], {})});
+    for (i=0;i<4;i++){
+      var ls = (i<2 ? -LEG_S : LEG_S), lw = (i%2 ? -LEG_W : LEG_W);
+      conv.push({n:'leg'+i, p:boxP(Fc, [ls, lw, BED_Z0/2], [11, 11, BED_Z0/2], {})});
+    }
+    conv.push({n:'roller-up', p:rollerP(-ROL_S)});
+    conv.push({n:'roller-dn', p:rollerP( ROL_S)});
+    var ch = conv.map(function(c){
+      return {n:c.n, h:hull2(c.p.v.map(function(v){ return [sx(v), sy(v)]; }))};
+    });
+    var res = {};
+    ARMS.forEach(function(w){
+      var worst = 1e9, at = null, clash = [];
+      w.prims.forEach(function(p){
+        if (p.hand) return;
+        var h = hull2(p.v.map(function(v){ return [sx(v), sy(v)]; }));
+        if (h.length < 3) return;
+        ch.forEach(function(c){
+          var g = sat(h, c.h);
+          if (g < worst){ worst = g; at = p.tag+':'+p.ord+' vs '+c.n; }
+          if (g < 0) clash.push(p.tag+':'+p.ord+' vs '+c.n+' '+g.toFixed(1));
+        });
+      });
+      res[w.tag+'_on_page'] = {min_px:+worst.toFixed(1), at:at,
+                               clashes:clash.length, worst3:clash.slice(0,3)};
+    });
+    return res;
+  };
+  /* v6 — lineGrip(): IS THE MITT BEHIND THE PART? Dave: "hide the box-hands
+     behind the box". Two things have to be true at once for a box to hide a
+     box in this pipeline, and this probe checks both.
+       1 · DEPTH. The painter sorts on centroid depth and fills white, so the
+           mitt must sort BEHIND the part: hand.cd < red.cd. The margin is
+           reported in depth units.
+       2 · PROJECTION. Every one of the mitt's eight corners must land INSIDE
+           the part's projected convex hull. out_px is the largest distance
+           any corner sticks outside that hull, in CSS px — 0 means nothing
+           of the hand shows in front of the red outline, and a positive
+           number is exactly how far the sliver reaches.
+     Run it in the resting view AND in the orbit. */
+  window.lineGrip = function(){
+    var res = {}, red = null, i;
+    for (i=0;i<OCC.length;i++) if (OCC[i].o && OCC[i].o.all_red) red = OCC[i];
+    if (!red) return {error:'no red part'};
+    var rh = hull2(red.v.map(function(v){ return [sx(v), sy(v)]; }));
+    /* the hull's turn direction, so "inside" has one sign */
+    var s0 = 0;
+    for (i=0;i<rh.length;i++){
+      var a = rh[i], b = rh[(i+1)%rh.length], c = rh[(i+2)%rh.length];
+      s0 += (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+    }
+    var sg = s0 >= 0 ? 1 : -1;
+    OCC.forEach(function(p){
+      if (!p.hand) return;
+      var out = 0, k, j, pen = 0;
+      for (k=0;k<p.v.length;k++){
+        /* how far INSIDE the part is this corner? The part is convex, so
+           the largest of its faces' signed distances is the point's own
+           signed distance; negative means inside. Zero penetration is the
+           rule this file keeps — nothing interpenetrates. */
+        var worstF = -1e9;
+        for (j=0;j<red.f.length;j++){
+          var dd = dot(red.f[j].n, p.v[k]) - red.f[j].d;
+          if (dd > worstF) worstF = dd;
+        }
+        if (-worstF > pen) pen = -worstF;
+        var P2 = [sx(p.v[k]), sy(p.v[k])], worst = -1e9;
+        for (j=0;j<rh.length;j++){
+          var A2 = rh[j], B2 = rh[(j+1)%rh.length];
+          var ex = B2[0]-A2[0], ey = B2[1]-A2[1];
+          var L = Math.sqrt(ex*ex+ey*ey); if (L < 1e-9) continue;
+          /* signed distance OUTSIDE this edge */
+          var d = -sg*((ex*(P2[1]-A2[1]) - ey*(P2[0]-A2[0]))/L);
+          if (d > worst) worst = d;
+        }
+        if (worst > out) out = worst;
+      }
+      var zlo = 1e9; for (k=0;k<p.v.length;k++) if (p.v[k][2] < zlo) zlo = p.v[k][2];
+      res[p.tag+':'+p.ord] = {out_px:+out.toFixed(2),
+                              into_part:+pen.toFixed(2),
+                              z_lo:+zlo.toFixed(1),        /* belt top is 183 */
+                              behind:p.cd < red.cd,
+                              depth_margin:+(red.cd - p.cd).toFixed(1),
+                              hidden:(out <= 0 && p.cd < red.cd)};
+    });
+    res.red_station = +POSE.red_s.toFixed(1);
+    return res;
+  };
+  window.lineAxisRuns = function(){
+    function L(s){ return +Math.sqrt(Math.pow(s[2]-s[0],2)+Math.pow(s[3]-s[1],2)).toFixed(1); }
+    var nm = ['A-STAND','A-SHOULDER','A-ELBOW','B-STAND','B-SHOULDER','B-ELBOW','BELT'];
+    return RUNS.map(function(r,i){ return {line:nm[i], open:r.clear.map(L), buried:r.hid.map(L)}; });
+  };
+  window.lineOrder = function(){ return ORDER; };
+  window.lineStill = still;
+  window.lineSetTime = function(t){ frozen = t; render(t); };
+  window.lineSetMouse = function(x,y){
+    mnx = x; mny = y; mouseSeen = true;
+    for (var i=0;i<400;i++) updateView(0.016);
+    render(frozen === null ? clock : frozen);
+  };
+  window.lineStop = stop; window.lineStart = start;
+})();
+</script>
+</body>
+</html>
