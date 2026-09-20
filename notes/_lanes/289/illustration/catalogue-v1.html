@@ -130,13 +130,7 @@
     return {x:add(scl(F.x,c),scl(F.y,s)), y:add(scl(F.x,-s),scl(F.y,c)), z:F.z, o:F.o}; }
   function frY(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* x tips toward z */
     return {x:add(scl(F.x,c),scl(F.z,s)), y:F.y, z:add(scl(F.x,-s),scl(F.z,c)), o:F.o}; }
-  function frX(F,t){ var c=Math.cos(t), s=Math.sin(t);          /* y tips toward z */
-    return {x:F.x, y:add(scl(F.y,c),scl(F.z,s)), z:add(scl(F.y,-s),scl(F.z,c)), o:F.o}; }
-  /* MIRROR across the spine, y kept: the left page reads the same way up as the
-     right (v1 turned 180 about z, which put the left page's captions ABOVE its
-     cards — Dave: "one page is upside down"). Left-handed frame; normals are fixed
-     by the centroid test in mkPrim, so nothing downstream cares. */
-  function mirrorX(F){ return {x:scl(F.x,-1), y:F.y, z:F.z, o:F.o}; }
+  function turn180(F){ return {x:scl(F.x,-1), y:scl(F.y,-1), z:F.z, o:F.o}; }
   /* the frame whose xy plane is F's x-z plane, extruded along -F.y */
   function frXZ(F){ return {x:F.x, y:F.z, z:scl(F.y,-1), o:F.o}; }
 
@@ -191,33 +185,14 @@
   var Lg = 26, CURL = 5.6;   /* gutter curl: length, lift                   */
 
   function zLin(x){ return TB + TPs + (TPe - TPs)*x/Wp; }
-  /* v2: the leaves BEND INTO THE BOOK at the gutter — the page DIPS by CURL
-     at the spine (v1 rose there; Dave: "the pages seem to turn up in the
-     middle … bent into the book at the middle"). The block's section
-     follows: its spine-side top sits CURL lower, the page curve lies on
-     or above that chord. */
   function zPage(x){
     var u = 1 - x/Lg; if (u < 0) u = 0;
-    return zLin(x) - CURL*u*u;
-  }
-  /* the block's own top line (piecewise straight, the chord of the dip) */
-  function zTop(x){
-    if (x >= Lg) return zLin(x);
-    var z0 = TB + TPs - CURL, z1 = zLin(Lg);
-    return z0 + (z1 - z0)*x/Lg;
+    return zLin(x) + CURL*u*u;
   }
 
-  /* v2: the book is NOT flat. It leans back on a stand at LEAN = 60 deg from the
-     plate (Dave: "it would be better if it wasn't flat, maybe a 60 degree angle"),
-     head up, tail resting on the plate. Fbase is the plate's frame; Fb is the
-     book's, tipped about the across-the-book axis and lifted so the tail edge of
-     the boards sits on the plate top. */
-  var LEAN = 60*D2R;
-  var Fbase = frZ(F0(), PSI);
-  var Fb = frX(Fbase, -LEAN);
-  Fb.o = fp(Fbase, [0, 0, (Dp/2 + OVB)*Math.sin(LEAN)]);
+  var Fb = frZ(F0(), PSI);
   var FR = frY(Fb, TILT);
-  var FL = frY(mirrorX(Fb), TILT);
+  var FL = frY(turn180(Fb), TILT);
 
   /* --- the catalogue grid, in a half's local coordinates --------------- */
   var CX0 = 12, CX1 = 96, NCOL = 3, CGAP = 6;
@@ -239,55 +214,44 @@
     return p;
   }
 
-  /* `mirrored`: on the left page local +x is screen-LEFT, so the caption
-     rule is anchored at x1 to stay LEFT-aligned under its card (Dave:
-     "place the text on the left"). */
-  function halfContent(F, red, mirrored){
-    var out = [], c, r, x0, x1, y0, ra, rb;
+  function halfContent(F, red){
+    var out = [], c, r, x0, x1, y0;
     for (c=0;c<NCOL;c++){
       x0 = CX0 + c*(COLW + CGAP); x1 = x0 + COLW;
-      if (mirrored){ ra = x1 - RULEW; rb = x1; } else { ra = x0; rb = x0 + RULEW; }
       for (r=0;r<NROW;r++){
         y0 = CY0 + r*(ROWH + RGAP);
         var isRed = red && c === 0 && r === 0;
         out.push({pts:cardPts(F, x0, x1, y0, y0 + RECTH), col:isRed ? RED : INK, w:isRed ? 1.4 : 1});
-        out.push({pts:runX(F, ra, rb, y0 + RULEOFF, 4), col:INK, w:1});
+        out.push({pts:runX(F, x0, x0 + RULEW, y0 + RULEOFF, 4), col:INK, w:1});
       }
     }
     return out;
   }
 
   /* --- one half: board, block, top-page surface ------------------------ */
-  function makeHalf(F, red, mirrored){
+  function makeHalf(F, red){
     var board = boxP(F, [(1 + Wp + OVB)/2, 0, TB/2],
                         [(Wp + OVB - 1)/2, Dp/2 + OVB, TB/2], 0, {});
     var G = frXZ(F);
-    /* the block is TWO convex prisms sharing the plane x = Lg: the gutter
-       part, whose top slopes DOWN into the spine, and the outer part */
-    var secG = [[0,TB],[Lg,TB],[Lg,zTop(Lg)],[0,zTop(0)]];
-    var secO = [[Lg,TB],[Wp,TB],[Wp,TB+TPe],[Lg,zTop(Lg)]];
-    var blkG = polyP(G, secG, -Dp/2, Dp/2, 0, {});
-    var blkO = polyP(G, secO, -Dp/2, Dp/2, 0, {});
-    /* face 1 of the outer part is the fore-edge (pt1 → pt2): the page edges */
+    var sec = [[0,TB],[Wp,TB],[Wp,TB+TPe],[0,TB+TPs]];
+    var blk = polyP(G, sec, -Dp/2, Dp/2, 0, {});
+    /* face 1 is the fore-edge (between pt1 and pt2): the page edges */
     var fe = [], z, i;
     for (z = TB + 0.9; z < TB + TPe - 0.5; z += 1.15)
       fe.push([fp(F,[Wp, -Dp/2, z]), fp(F,[Wp, Dp/2, z])]);
-    blkO.deco.push({face:1, segs:fe, col:PAGEC, w:1});
-    /* the head and the tail: the leaves' edges, each at a fixed FRACTION of
-       the block's local height, so they fan down into the gutter with it */
-    function endLines(yy, xa, xb){
-      var s = [], k, f;
+    blk.deco.push({face:1, segs:fe, col:PAGEC, w:1});
+    /* the head and the tail: page edges running spine to fore-edge */
+    function endLines(yy){
+      var s = [], k, zz;
       for (k=0;k<12;k++){
-        f = (0.9 + k*1.15)/TPe;
-        if (f > (TPe - 0.5)/TPe) break;
-        s.push([fp(F,[xa, yy, TB + f*(zTop(xa)-TB)]), fp(F,[xb, yy, TB + f*(zTop(xb)-TB)])]);
+        zz = 0.9 + k*1.15;
+        if (zz > TPe - 0.5) break;
+        s.push([fp(F,[0.5, yy, TB+zz + (TPs-TPe)*0.0]), fp(F,[Wp-0.4, yy, TB+zz])]);
       }
       return s;
     }
-    blkG.deco.push({face:blkG.capLo, segs:endLines(Dp/2, 0.5, Lg),  col:PAGEC, w:1});
-    blkG.deco.push({face:blkG.capHi, segs:endLines(-Dp/2, 0.5, Lg), col:PAGEC, w:1});
-    blkO.deco.push({face:blkO.capLo, segs:endLines(Dp/2, Lg, Wp-0.4),  col:PAGEC, w:1});
-    blkO.deco.push({face:blkO.capHi, segs:endLines(-Dp/2, Lg, Wp-0.4), col:PAGEC, w:1});
+    blk.deco.push({face:blk.capLo, segs:endLines(Dp/2),  col:PAGEC, w:1});
+    blk.deco.push({face:blk.capHi, segs:endLines(-Dp/2), col:PAGEC, w:1});
 
     /* the top page: a swept surface, not a solid */
     var out = runX(F, 0, Wp, -Dp/2, 14);
@@ -306,73 +270,47 @@
     var yy = Dp/2 + OVB;
     var run = [fp(F,[1, -yy, TB]), fp(F,[Wp+OVB, -yy, TB])];
 
-    return {F:F, board:board, blks:[blkG, blkO], surf:out, rul:rul,
-            cards:halfContent(F, red, mirrored), ctr:ctr, run:run};
+    return {F:F, board:board, blk:blk, surf:out, rul:rul,
+            cards:halfContent(F, red), ctr:ctr, run:run};
   }
 
-  var HR = makeHalf(FR, true, false), HL = makeHalf(FL, false, true);
+  var HR = makeHalf(FR, true), HL = makeHalf(FL, false);
 
   /* --- the spine bridge ------------------------------------------------ */
   var spine = boxP(Fb, [0, 0, TB/2], [1.8, Dp/2 + OVB, TB/2 - 0.1], 0, {});
 
-  /* --- the base plate --------------------------------------------------- */
-  var PL_X = Wp + 22, PL_Y = 62, PL_Z0 = -7.5, PL_Z1 = -0.8;
-  var PLATE = (function(){
-    var C = [[-PL_X,-PL_Y,PL_Z0],[PL_X,-PL_Y,PL_Z0],[PL_X,PL_Y,PL_Z0],[-PL_X,PL_Y,PL_Z0],
-             [-PL_X,-PL_Y,PL_Z1],[PL_X,-PL_Y,PL_Z1],[PL_X,PL_Y,PL_Z1],[-PL_X,PL_Y,PL_Z1]];
-    var V = C.map(function(p){ return fp(Fbase,p); });
-    var E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
-    return E.map(function(e){ return [V[e[0]], V[e[1]]]; });
-  })();
-
-  /* --- the stand: a right-triangular wedge under the book ---------------
-     Its hypotenuse IS the book's underside (Fb's z = 0 plane); its back
-     face is vertical, its foot is on the plate. Centred on the spine,
-     STAND_HW either side. A convex prism like the rest, so the plate and
-     the axis are classified against it in 3D. */
-  var STAND_HW = 34, ST_Y0 = -(Dp/2) + 8, ST_Y1 = (Dp/2) - 14;
-  var stand = (function(){
-    var top  = fp(Fb, [0, ST_Y0, -0.15]);            /* under the head end   */
-    var foot = fp(Fb, [0, ST_Y1, -0.15]);            /* under the tail end   */
-    var heel = fp(Fbase, [0, 0, PL_Z1]);
-    heel = [top[0], top[1], heel[2]];                 /* straight below top   */
-    /* project heel onto the plate exactly under `top` in Fbase's xy */
-    var v = [], tri = [top, foot, heel], i;
-    for (i=0;i<3;i++) v.push(add(tri[i], scl(Fbase.x, -STAND_HW)));
-    for (i=0;i<3;i++) v.push(add(tri[i], scl(Fbase.x,  STAND_HW)));
-    return mkPrim(v, [[0,1,2],[3,4,5],[0,1,4,3],[1,2,5,4],[2,0,3,5]], 0, {});
-  })();
-
-  /* --- the ribbon: down the page from the head -------------------------
-     It emerges from the spine at the HEAD, lies down the right page beside
-     the gutter, and past the tail edge it hangs FREE (world-vertical, the
-     book leans so the tail face recedes under it) onto the plate. Dave:
-     "it should come down the page from the top". FILLED white before it is
-     inked, so it occludes the print it lies on the way a real ribbon does. */
-  /* v2: IN THE MIDDLE (Dave) — it lies in the gutter, astride the spine,
-     each edge riding its own half's page surface. */
-  var RIB_W = 7;
+  /* --- the ribbon: a flat strip over the right fore-edge ---------------
+     It lies ASKEW — y drifts from -12.5 at the gutter to +1.5 at the edge —
+     so it can never be mistaken for one of the page's own rules, and it
+     is FILLED white before it is inked, so it occludes the print it
+     lies on the way a real ribbon does. */
+  var RIB_W = 7, RIB_Y0 = -12.5, RIB_Y1 = 1.5;
+  function ribY(x){ return RIB_Y0 + (RIB_Y1 - RIB_Y0)*x/Wp; }
   function ribbonLine(off){
-    var p = [], i, y, n = 10, F = off < 0 ? FL : FR, x = Math.abs(off);
-    for (i=0;i<=n;i++){
-      y = -(Dp/2 + 2) + (Dp + 2)*i/n;
-      p.push(fp(F,[x, y, zPage(x)+0.55]));
-    }
-    var e = fp(F,[x, Dp/2 + 1.4, zPage(x) - 0.4]);
-    p.push(e);
-    var floor = fp(Fbase,[0,0,PL_Z1])[2] + 0.6;
-    p.push([e[0], e[1], floor]);
-    var away = scl(Fbase.y, 7);
-    p.push([e[0] + away[0], e[1] + away[1], floor]);
+    var p = [], i, x, n = 12;
+    for (i=0;i<=n;i++){ x = 3 + (Wp-3)*i/n; p.push(fp(FR,[x, ribY(x)+off, zPage(x)+0.55])); }
+    p.push(fp(FR,[Wp+2.4, ribY(Wp)+off, zPage(Wp)-0.9]));
+    p.push(fp(FR,[Wp+4.0, ribY(Wp)+off, zPage(Wp)-4.2]));
+    p.push(fp(FR,[Wp+4.7, ribY(Wp)+off, -6.0]));
     return p;
   }
   var RIB_A = ribbonLine(-RIB_W/2), RIB_B = ribbonLine(RIB_W/2);
 
   /* --- construction: the spine axis ------------------------------------ */
   var AX_Z = TB/2;   /* the hinge line itself, buried in the blocks */
-  var AXIS = [fp(Fb,[0, -(Dp/2 + 16), AX_Z]), fp(Fb,[0, Dp/2 + 10, AX_Z])];
+  var AXIS = [fp(Fb,[0, -(Dp/2 + 30), AX_Z]), fp(Fb,[0, Dp/2 + 30, AX_Z])];
 
-  var PRIMS = [stand, HL.board, HL.blks[0], HL.blks[1], HR.board, HR.blks[0], HR.blks[1], spine];
+  /* --- the base plate --------------------------------------------------- */
+  var PL_X = Wp + 22, PL_Y = Dp/2 + 20, PL_Z0 = -7.5, PL_Z1 = -0.8;
+  var PLATE = (function(){
+    var C = [[-PL_X,-PL_Y,PL_Z0],[PL_X,-PL_Y,PL_Z0],[PL_X,PL_Y,PL_Z0],[-PL_X,PL_Y,PL_Z0],
+             [-PL_X,-PL_Y,PL_Z1],[PL_X,-PL_Y,PL_Z1],[PL_X,PL_Y,PL_Z1],[-PL_X,PL_Y,PL_Z1]];
+    var V = C.map(function(p){ return fp(Fb,p); });
+    var E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    return E.map(function(e){ return [V[e[0]], V[e[1]]]; });
+  })();
+
+  var PRIMS = [HL.board, HL.blk, HR.board, HR.blk, spine];
 
   /* ---- 3 · the camera -------------------------------------------------- */
   var YAW0 = -35*D2R, PIT0 = 20*D2R, YAW_R = 25*D2R, PIT_R = 12*D2R, TAU = 1.0;
@@ -595,10 +533,9 @@
 
   function drawHalf(Hh){
     drawPrim(Hh.board);
-    var bl = Hh.blks.slice().sort(function(a,b){ return depth(a.ctr) - depth(b.ctr); });
-    drawPrim(bl[0]); drawPrim(bl[1]);
+    drawPrim(Hh.blk);
     /* the board's far long edge, carried on under its own page block */
-    OCC = Hh.blks;
+    OCC = [Hh.blk];
     var bHid = [];
     splitLine(Hh.run[0], Hh.run[1], null, bHid);
     strokeSegs(bHid, HIDC, [5,4], 1);
@@ -627,8 +564,7 @@
     strokeSegs(pHid,   HIDC, [5,4], 1);
     strokeSegs(pClear, INK,  [], 1);
 
-    /* 1 · the stand, the spine bridge, then the two halves back to front */
-    drawPrim(stand);
+    /* 1 · the spine bridge, then the two halves back to front */
     drawPrim(spine);
     var halves = [HL, HR].sort(function(a,b){ return depth(a.ctr) - depth(b.ctr); });
     var nb = 0;
