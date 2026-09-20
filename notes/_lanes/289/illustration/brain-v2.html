@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brain — line-drawn 3D · #289</title>
+<style>
+/* ============================================================
+   THE BRAIN — a line-drawn "engineering" 3D diagram. #289 lane I1.
+   PASS TWO. Pass one is kept beside this file as brain-v1.html.
+
+   Dave, first pass: "the brain isn't quite right", with a side-view
+   reference (DAVE-REF-brain-side-view.png). He was right: pass one was
+   an ellipsoid wearing meridian lines, which reads as a melon.
+
+   What the reference has that the ellipsoid could never have:
+     1. THE SIDE-VIEW SILHOUETTE. A flattened oval cerebrum with a
+        frontal lobe at the front, an occipital bulge at the back, and
+        the TEMPORAL LOBE as a separate lower lobe jutting forward under
+        the Sylvian fissure — so the outline has a notch, a V, at the
+        front-bottom. That notch is what says "brain" at a glance.
+     2. GYRI as short meandering disconnected strokes, not longitude.
+     3. A CEREBELLUM of its own, ribbed with parallel arcs.
+     4. A short angled BRAINSTEM.
+
+   So pass two throws the ellipsoid away and models what the reference
+   actually is: a 2D SIDE PROFILE, given thickness.
+
+   THE SOLID. A closed centripetal Catmull-Rom spline through 31 traced
+   control points is the cerebrum's sagittal outline in the (u,b) plane
+   — u front-back (+u frontal), b up. From that outline a signed
+   DISTANCE FIELD d(u,b) is built once (3-unit grid, brute force against
+   every edge). The solid is then
+
+       |a| <= A(u,b),   A = WMAX * sqrt(q(2-q)),  q = min(1, d/DREF)
+
+   — a body that is flat-sided through the middle (the plateau) and
+   rolls off to zero exactly at the outline (the sqrt gives a circular
+   cross-section at the rim). Two consequences, both wanted:
+
+     · the SILHOUETTE is the outline itself, projected. A = 0 there and
+       the two sheets meet in a crease, and a crease holds the silhouette
+       for any view that is not edge-on. So the drawing's outline IS the
+       traced profile, foreshortened — the notch, the temporal lobe and
+       the occipital bulge survive every orbit position exactly.
+     · the distance field handles the CONCAVE notch correctly, which a
+       radial r(theta) parametrisation cannot: a ray from any centre
+       crosses the notch twice.
+
+   GYRI. ~34 strokes, generated once in the (u,b) plane and only then
+   lifted: a walk of step 4.5 along a line field — arcs concentric about
+   a point on the Sylvian line, so they run front-back over the crown
+   and along the temporal lobe as real gyri do — perturbed by smooth
+   noise so they wander. A spacing grid rejects a stroke that comes
+   within 5 units of ink already down, including the fissure, which is
+   what keeps the field clean rather than hatched. Each is 40-120 units,
+   most carry one short sulcus gap. Lifted to a = +-(A + 1.2): displaced
+   along the normal, so they are ridges. Kept only where the surface
+   normal there faces the camera, so they die off before the rim on
+   their own, and the far sheet is never inked.
+
+   Everything else is the gearbox idiom, kept: hairline #111, #BDBDBD
+   dashed for the run that explains the object (the stem behind the
+   cerebellum), #9B9B9B dash-dot construction, ONE red #DA1A00 accent on
+   a white card — here the LATERAL (Sylvian) FISSURE, the groove the
+   whole silhouette is organised around. Base plate, one construction
+   axis. Critically damped mouse orbit, tau 1.0 s, stays put.
+
+   REST VIEW. yaw 20 / pitch 12, per the brief — only mildly 3/4, so the
+   card reads as the reference side view. Orbit is +-18 yaw (not 25): at
+   25 the near edge of the orbit crosses front-on and the brain flips to
+   face the other way, which is not an orbit, it is a different drawing.
+   ============================================================ */
+:root{
+  --accent:#DA1A00;
+  --ink:#111; --hid:#BDBDBD; --con:#9B9B9B;
+  --g1:#F3F3F3; --g2:#EDEDED; --g6:#767676;
+  --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--g1);font-family:var(--font);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  -webkit-font-smoothing:antialiased;}
+.card{width:600px;height:420px;background:#fff;border:1px solid var(--g2);position:relative;}
+.card canvas{display:block;width:100%;height:100%;}
+.cap{position:absolute;left:0;top:calc(100% + 12px);font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--g6);line-height:1.4;}
+@media (max-width:660px){ .card{width:92vw;height:calc(92vw*0.7);} }
+</style>
+</head>
+<body>
+<div class="card">
+  <canvas id="br"></canvas>
+  <p class="cap">Fig. 1 — cerebrum, cerebellum, brainstem · profile solid, hidden line removed</p>
+</div>
+
+<script>
+(function(){
+  var cv = document.getElementById('br');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ---- 0 · knobs, overridable from the query string so variants can be
+     rendered and compared rather than guessed at. Defaults ARE the
+     shipped drawing. ------------------------------------------------- */
+  var Q = new URLSearchParams(location.search);
+  function num(k,d){ var v=parseFloat(Q.get(k)); return isFinite(v)?v:d; }
+  var CFG = {
+    YAW:  num('yaw', 20),    /* rest yaw, degrees (brain faces left)     */
+    PIT:  num('pit', 12),    /* rest pitch                               */
+    WMAX: num('wmax', 47),   /* cerebrum half-thickness at the plateau   */
+    DREF: num('dref', 36),   /* how fast it reaches that, from the rim   */
+    NGY:  num('ngy', 40),    /* target gyrus count                       */
+    SPC:  num('spc', 7),       /* gyrus spacing, units                     */
+    STEP: num('step', 4.5),  /* gyrus walk step                          */
+    WOB:  num('wob', 0.9),    /* how far the walk wanders off the field   */
+    BIAS: num('bias', 0.26), /* per-stroke tilt, so they are not parallel */
+    RIM:  num('rim', 5),     /* keep gyri this far inside the outline    */
+    SCAL: num('scal', 3.6),  /* gyral lumpiness of the outline itself    */
+    RIB:  num('rib', 8),     /* cerebellar folia                         */
+    SEED: num('seed', 20260920)
+  };
+
+  /* ---- 1 · the profiles -----------------------------------------------
+     Traced off DAVE-REF-brain-side-view.png at 5 px per unit, origin at
+     the centre of the cerebrum. Frontal pole first, over the crown, down
+     the occiput, forward along the underside of the temporal lobe to the
+     temporal pole, UP the anterior temporal edge to the notch apex, then
+     forward along the underside of the frontal lobe. The two points
+     either side of the apex are close together on purpose: that is what
+     keeps the V sharp through the spline. */
+  var CERE_P = [
+    [112,2],[110,16],[107,32],[101,47],[90,62],[74,74],[52,84],[26,88],[0,88],
+    [-26,84],[-50,75],[-70,60],[-86,40],[-96,16],[-99,-8],
+    [-95,-28],[-86,-44],[-76,-55],
+    [-62,-62],[-40,-68],[-10,-73],[18,-75],[40,-72],[52,-64],
+    [54,-56],                       /* temporal pole                     */
+    [62,-36],[70,-14],              /* anterior temporal edge -> apex    */
+    [90,-30],[100,-30],[107,-23],[111,-11]   /* frontal underside         */
+  ];
+  /* the cerebellum: its own lobe, below and behind, tucked under the
+     occipital bulge. Flat on top where the tentorium would be. */
+  var CBL_P = [
+    [-24,-66],[-38,-54],[-58,-50],[-78,-53],[-90,-62],[-94,-76],
+    [-88,-90],[-70,-99],[-48,-98],[-30,-88],[-26,-76]
+  ];
+  /* the brainstem, in the same (u,b) profile plane, lateral 0 */
+  var STEM = {p0:[8,-60], p1:[-14,-136], r:10};
+
+  /* THE ONE COORDINATE RULE. The gearbox's projection puts model axis 1
+     across the screen and model axis 0 into the page, so the SAGITTAL
+     plane — the plane every profile above is drawn in — must be (axis 1,
+     axis 2), and the thickness must lie on axis 0. P3 is the only place
+     that mapping happens: anatomical (u forward, l lateral, b up) goes to
+     the gearbox's [l, -u, b]. The negation puts the frontal pole on the
+     LEFT, as the reference has it. */
+  function P3(u, l, b){ return [l, -u, b]; }
+
+  /* centripetal Catmull-Rom through a closed loop of control points */
+  function spline(P, per){
+    var out=[], n=P.length, i, k;
+    function seg(p0,p1,p2,p3,t){
+      var a=0.5, t0=0, t1=t0+Math.pow(Math.hypot(p1[0]-p0[0],p1[1]-p0[1]),a)||1e-4;
+      var t2=t1+(Math.pow(Math.hypot(p2[0]-p1[0],p2[1]-p1[1]),a)||1e-4);
+      var t3=t2+(Math.pow(Math.hypot(p3[0]-p2[0],p3[1]-p2[1]),a)||1e-4);
+      var tt=t1+(t2-t1)*t, j;
+      function L(A,B,ta,tb){ var f=(tb-tt)/(tb-ta||1e-6), g=(tt-ta)/(tb-ta||1e-6);
+        return [A[0]*f+B[0]*g, A[1]*f+B[1]*g]; }
+      var A1=L(p0,p1,t0,t1), A2=L(p1,p2,t1,t2), A3=L(p2,p3,t2,t3);
+      function L2(A,B,ta,tb){ var f=(tb-tt)/(tb-ta||1e-6), g=(tt-ta)/(tb-ta||1e-6);
+        return [A[0]*f+B[0]*g, A[1]*f+B[1]*g]; }
+      var B1=L2(A1,A2,t0,t2), B2=L2(A2,A3,t1,t3);
+      var f=(t2-tt)/(t2-t1||1e-6), g=(tt-t1)/(t2-t1||1e-6);
+      return [B1[0]*f+B2[0]*g, B1[1]*f+B2[1]*g];
+    }
+    for (i=0;i<n;i++){
+      var p0=P[(i-1+n)%n], p1=P[i], p2=P[(i+1)%n], p3=P[(i+2)%n];
+      for (k=0;k<per;k++) out.push(seg(p0,p1,p2,p3,k/per));
+    }
+    return out;
+  }
+
+  /* ---- 2 · the signed distance field ----------------------------------
+     d > 0 inside. Brute force against every edge, once, on a 3-unit
+     grid, bilinear afterwards. This is what makes the concave temporal
+     notch work: no radial parametrisation survives a re-entrant outline. */
+  function makeBody(ctrl, wmax, dref, per, scal){
+    var poly = spline(ctrl, per||14);
+    var i, lo=[1e9,1e9], hi=[-1e9,-1e9];
+    /* SCALLOP. A smooth brain outline reads as a bean; the reference
+       outline is lumpy, because what meets the silhouette is the crest
+       and trough of gyri. So displace the spline along its own normal by
+       a two-octave wave in arclength — ~26 units per lump, a few units
+       deep. Cheap, and it is the single change that stopped the drawing
+       looking moulded. It goes in BEFORE the distance field, so gyri and
+       thickness inherit it. */
+    if (scal){
+      var N0=poly.length, s=0, arc=[0];
+      for (i=1;i<N0;i++){ s+=Math.hypot(poly[i][0]-poly[i-1][0], poly[i][1]-poly[i-1][1]); arc.push(s); }
+      var tot=s+Math.hypot(poly[0][0]-poly[N0-1][0], poly[0][1]-poly[N0-1][1]);
+      var k=Math.max(6, Math.round(tot/38));     /* whole number of lumps */
+      var out=[];
+      /* DAMP IT AT THE CORNERS. A wave deeper than the local radius of
+         curvature folds the outline into a loop — which is what put a
+         knot in the temporal notch until this was added. */
+      var dmp=new Float64Array(N0);
+      for (i=0;i<N0;i++){
+        var a0=poly[(i-1+N0)%N0], b0=poly[i], c0=poly[(i+1)%N0];
+        var a1=Math.atan2(b0[1]-a0[1], b0[0]-a0[0]);
+        var a2=Math.atan2(c0[1]-b0[1], c0[0]-b0[0]);
+        var da=a2-a1; while (da>Math.PI) da-=2*Math.PI; while (da<-Math.PI) da+=2*Math.PI;
+        var seg=Math.hypot(c0[0]-a0[0], c0[1]-a0[1])/2 || 1;
+        var rad=Math.abs(da)>1e-6 ? seg/Math.abs(da) : 1e6;
+        dmp[i]=Math.max(0, Math.min(1, (rad - 2.2*scal)/(4*scal)));
+      }
+      var dm2=new Float64Array(N0);
+      for (i=0;i<N0;i++){ var acc2=0; for (var q2=-3;q2<=3;q2++) acc2+=dmp[(i+q2+N0)%N0]; dm2[i]=acc2/7; }
+      for (i=0;i<N0;i++){
+        var a=poly[(i-1+N0)%N0], b=poly[(i+1)%N0];
+        var tx=b[0]-a[0], ty=b[1]-a[1], L=Math.hypot(tx,ty)||1;
+        var nx2=ty/L, ny2=-tx/L;               /* outward for a CCW loop */
+        var th=2*Math.PI*k*arc[i]/tot;
+        /* amplitude-modulated and detuned: a plain sine inks a doily */
+        var amp=0.52+0.48*Math.sin(0.37*th+0.8);
+        var w=dm2[i]*amp*(0.62*Math.sin(th) + 0.38*Math.sin(2.31*th+1.1));
+        out.push([poly[i][0]+nx2*scal*w, poly[i][1]+ny2*scal*w]);
+      }
+      poly=out;
+    }
+    for (i=0;i<poly.length;i++){
+      if (poly[i][0]<lo[0]) lo[0]=poly[i][0]; if (poly[i][0]>hi[0]) hi[0]=poly[i][0];
+      if (poly[i][1]<lo[1]) lo[1]=poly[i][1]; if (poly[i][1]>hi[1]) hi[1]=poly[i][1];
+    }
+    var PAD=9, CELL=3;
+    var x0=lo[0]-PAD, y0=lo[1]-PAD;
+    var nx=Math.ceil((hi[0]-lo[0]+2*PAD)/CELL)+1, ny=Math.ceil((hi[1]-lo[1]+2*PAD)/CELL)+1;
+    var F=new Float32Array(nx*ny), N=poly.length, ix, iy, j;
+    for (iy=0; iy<ny; iy++) for (ix=0; ix<nx; ix++){
+      var px=x0+ix*CELL, py=y0+iy*CELL, best=1e9, cross=0;
+      for (j=0;j<N;j++){
+        var a=poly[j], b=poly[(j+1)%N];
+        var vx=b[0]-a[0], vy=b[1]-a[1], wx=px-a[0], wy=py-a[1];
+        var L2=vx*vx+vy*vy||1e-9, t=(wx*vx+wy*vy)/L2;
+        t = t<0?0:(t>1?1:t);
+        var dx=wx-t*vx, dy=wy-t*vy, dd=dx*dx+dy*dy;
+        if (dd<best) best=dd;
+        if ((a[1]>py)!==(b[1]>py)){
+          var xx=a[0]+(py-a[1])/((b[1]-a[1])||1e-9)*(b[0]-a[0]);
+          if (xx>px) cross++;
+        }
+      }
+      F[iy*nx+ix] = (cross&1 ? 1 : -1) * Math.sqrt(best);
+    }
+    function dist(u,b){
+      var fx=(u-x0)/CELL, fy=(b-y0)/CELL;
+      if (fx<0||fy<0||fx>=nx-1||fy>=ny-1) return -60;
+      var i0=Math.floor(fx), j0=Math.floor(fy), sx=fx-i0, sy=fy-j0;
+      var a0=F[j0*nx+i0], a1=F[j0*nx+i0+1], a2=F[(j0+1)*nx+i0], a3=F[(j0+1)*nx+i0+1];
+      return (a0*(1-sx)+a1*sx)*(1-sy) + (a2*(1-sx)+a3*sx)*sy;
+    }
+    function halfW(u,b){
+      var d=dist(u,b); if (d<=0) return 0;
+      var q=d/dref; if (q>1) q=1;
+      return wmax*Math.sqrt(q*(2-q));
+    }
+    return {poly:poly, dist:dist, halfW:halfW, wmax:wmax, dref:dref,
+            lo:lo, hi:hi};
+  }
+  var CERE = makeBody(CERE_P, CFG.WMAX, CFG.DREF, 14, CFG.SCAL);
+  var CBL  = makeBody(CBL_P,  22, 14, 14, CFG.SCAL*0.22);
+
+  /* the outward unit normal of the near sheet l = sgn*A(u,b), in the
+     gearbox's axes (see P3) */
+  function sheetNormal(B, u, b, sgn){
+    var h=1.4;
+    var Au=(B.halfW(u+h,b)-B.halfW(u-h,b))/(2*h);
+    var Ab=(B.halfW(u,b+h)-B.halfW(u,b-h))/(2*h);
+    var n=[sgn, Au, -Ab], L=Math.hypot(n[0],n[1],n[2])||1;
+    return [n[0]/L, n[1]/L, n[2]/L];
+  }
+
+  /* ---- 3 · the camera — the gearbox's ---------------------------------- */
+  var YAW0 = -CFG.YAW*Math.PI/180, PIT0 = CFG.PIT*Math.PI/180;
+  var YAW_R = 18*Math.PI/180, PIT_R = 10*Math.PI/180;
+  var TAU = 1.0;
+  var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
+  function setView(yaw, pit){
+    var cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pit), sp=Math.sin(pit);
+    m00=cy;      m02=sy;
+    m10=sp*sy;   m11=cp;   m12=-sp*cy;
+    m20=-cp*sy;  m21=sp;   m22=cp*cy;
+  }
+  function camVec(){
+    var c=[m22,m20,m21], L=Math.hypot(c[0],c[1],c[2])||1;
+    return [c[0]/L,c[1]/L,c[2]/L];
+  }
+  function springStep(x,v,target,w,dt){
+    var a=-2*w*v - w*w*(x-target); v+=a*dt; x+=v*dt; return [x,v];
+  }
+  var mnx=0,mny=0,mouseSeen=false, yawOff=0,yawVel=0,pitOff=0,pitVel=0;
+  function onMove(e){
+    if (e.pointerType && e.pointerType!=='mouse') return;
+    var w=window.innerWidth||1, h=window.innerHeight||1;
+    mnx=(e.clientX-w/2)/(w/2); mny=(e.clientY-h/2)/(h/2);
+    if (mnx<-1) mnx=-1; else if (mnx>1) mnx=1;
+    if (mny<-1) mny=-1; else if (mny>1) mny=1;
+    mouseSeen=true; wake();
+  }
+  window.addEventListener('pointermove', onMove, {passive:true});
+  window.addEventListener('mousemove', function(e){ if (e.pointerType===undefined) onMove(e); }, {passive:true});
+  function updateView(dt){
+    var tY = mouseSeen ?  mnx*YAW_R : 0;      /* stays where it was left */
+    var tP = mouseSeen ? -mny*PIT_R : 0;
+    var w=1/TAU, left=dt, h, A, B;
+    while (left>1e-5){
+      h = left>0.008?0.008:left; left-=h;
+      A=springStep(yawOff,yawVel,tY,w,h); yawOff=A[0]; yawVel=A[1];
+      B=springStep(pitOff,pitVel,tP,w,h); pitOff=B[0]; pitVel=B[1];
+    }
+    setView(YAW0+yawOff, PIT0+pitOff);
+    return Math.abs(yawOff-tY)+Math.abs(pitOff-tP)+Math.abs(yawVel)+Math.abs(pitVel);
+  }
+
+  /* ---- 4 · the mount ---------------------------------------------------- */
+  var BASE_T=-144, BASE_B=-154;
+  function box(u0,u1,a0,a1,b0,b1){
+    var v=[[u0,a0,b0],[u1,a0,b0],[u1,a1,b0],[u0,a1,b0],
+           [u0,a0,b1],[u1,a0,b1],[u1,a1,b1],[u0,a1,b1]];
+    var e=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    return e.map(function(p){ return [v[p[0]], v[p[1]]]; });
+  }
+  var PLATE = box(-60, 60, -122, 116, BASE_B, BASE_T);
+  function along(f){
+    return P3(STEM.p0[0]+(STEM.p1[0]-STEM.p0[0])*f, 0,
+              STEM.p0[1]+(STEM.p1[1]-STEM.p0[1])*f);
+  }
+  /* ONE construction axis, down the stem and through the plate. A second,
+     down the cerebrum's long axis, was drawn in pass one and cut: it
+     crossed the whole gyral field and read as a scratch. */
+  var AXES = [[along(-0.55), along(1.30)]];
+
+  /* ---- 5 · the strokes, generated ONCE in the (u,b) plane --------------
+     They do not depend on the view; only the lift and the facing test do,
+     so an orbit frame is cheap. */
+  function rng(s){ return function(){ s|=0; s=s+0x6D2B79F5|0;
+    var t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296; }; }
+  function noise(x,y){
+    return ( Math.sin(x*0.0311+1.7)*Math.cos(y*0.0273-0.4)
+           + 0.55*Math.sin(x*0.0714-2.1)*Math.cos(y*0.0631+1.1)
+           + 0.30*Math.sin((x+y)*0.0451+0.6)
+           + 0.22*Math.sin(x*0.121-0.7)*Math.sin(y*0.104+2.3) ) / 2.07;
+  }
+  /* the line field the gyri follow: arcs concentric about a point on the
+     Sylvian line. Over the crown they run front-back, down the temporal
+     lobe they run along it, around the poles they turn — which is what
+     the reference does. Noise makes them wander off it. */
+  var SYL_C = [-4,-8];
+  function fieldAngle(u,b){
+    var ang = Math.atan2(b-SYL_C[1], u-SYL_C[0]) + Math.PI/2;
+    return ang + CFG.WOB*noise(u,b);
+  }
+  /* the lateral fissure: the ONE red line, and the spine of the drawing */
+  var SYLV = (function(){
+    var K=[[70,-19],[58,-23],[42,-21],[24,-15],[4,-7],[-18,2],[-40,9],[-58,14]], out=[], i, t;
+    for (i=0;i<K.length-1;i++) for (t=0;t<6;t++)
+      out.push([K[i][0]+(K[i+1][0]-K[i][0])*t/6, K[i][1]+(K[i+1][1]-K[i][1])*t/6]);
+    out.push(K[K.length-1]); return out;
+  })();
+  /* the fissure's lower lip — the top of the superior temporal gyrus. One
+     hairline, offset 7 units under the red, stopping short at both ends.
+     Without it the red line floats on a wall; with it the TEMPORAL LOBE
+     reads as its own lobe, which is the thing pass one had no way to say. */
+  var TEMP_LIP = (function(){
+    var src=SYLV.slice(5, SYLV.length-11), out=[], i;
+    for (i=0;i<src.length;i++){
+      var a=src[Math.max(0,i-1)], b=src[Math.min(src.length-1,i+1)];
+      var tx=b[0]-a[0], ty=b[1]-a[1], L=Math.hypot(tx,ty)||1;
+      out.push([src[i][0]+ty/L*9, src[i][1]-tx/L*9]);   /* below the groove */
+    }
+    return out;
+  })();
+
+  var GYRI = (function(){
+    var R=rng(CFG.SEED), CELL=CFG.SPC*0.5, out=[];
+    var x0=CERE.lo[0]-12, y0=CERE.lo[1]-12;
+    var nx=Math.ceil((CERE.hi[0]-CERE.lo[0]+24)/CELL)+1,
+        ny=Math.ceil((CERE.hi[1]-CERE.lo[1]+24)/CELL)+1;
+    var occ=new Uint8Array(nx*ny);
+    function mark(p, r){
+      var i0=Math.max(0,Math.floor((p[0]-x0-r)/CELL)), i1=Math.min(nx-1,Math.ceil((p[0]-x0+r)/CELL));
+      var j0=Math.max(0,Math.floor((p[1]-y0-r)/CELL)), j1=Math.min(ny-1,Math.ceil((p[1]-y0+r)/CELL));
+      for (var j=j0;j<=j1;j++) for (var i=i0;i<=i1;i++) occ[j*nx+i]=1;
+    }
+    function hit(p){
+      var i=Math.floor((p[0]-x0)/CELL), j=Math.floor((p[1]-y0)/CELL);
+      if (i<0||j<0||i>=nx||j>=ny) return true;
+      return occ[j*nx+i]===1;
+    }
+    /* the fissure is down first: nothing crosses it, so it stays the one
+       legible groove and the gyri respect it the way sulci do */
+    SYLV.forEach(function(p){ mark(p, CFG.SPC*0.75); });
+    TEMP_LIP.forEach(function(p){ mark(p, CFG.SPC*0.45); });
+
+    function walk(p0, h0, len, sign, bias){
+      var pts=[p0.slice()], p=p0.slice(), h=h0, got=0, i;
+      for (i=0;i<80 && got<len;i++){
+        var f=fieldAngle(p[0],p[1]) + bias;
+        /* the field is a line field: take the branch nearest the heading */
+        while (f-h >  Math.PI/2) f-=Math.PI;
+        while (f-h < -Math.PI/2) f+=Math.PI;
+        h = h + (f-h)*0.55;
+        p = [p[0]+sign*CFG.STEP*Math.cos(h), p[1]+sign*CFG.STEP*Math.sin(h)];
+        if (CERE.dist(p[0],p[1]) < CFG.RIM) break;
+        if (hit(p)) break;
+        pts.push(p.slice()); got+=CFG.STEP;
+      }
+      return pts;
+    }
+    var seeds=[], gx, gy;
+    for (gx=CERE.lo[0]; gx<CERE.hi[0]; gx+=5) for (gy=CERE.lo[1]; gy<CERE.hi[1]; gy+=5)
+      seeds.push([gx+R()*6, gy+R()*6, R()]);
+    seeds.sort(function(a,b){ return a[2]-b[2]; });
+
+    for (var s=0; s<seeds.length && out.length<CFG.NGY; s++){
+      var P=[seeds[s][0], seeds[s][1]];
+      if (CERE.dist(P[0],P[1]) < CFG.RIM+3) continue;
+      if (hit(P)) continue;
+      var target = 26 + R()*40;                 /* half-length, each way  */
+      var bias = (R()*2-1)*CFG.BIAS;
+      var h0 = fieldAngle(P[0],P[1]) + bias;
+      var fwd = walk(P, h0, target, +1, bias), bak = walk(P, h0, target*(0.5+R()*0.8), -1, bias);
+      var line = bak.slice(1).reverse().concat(fwd);
+      var L=0, i;
+      for (i=1;i<line.length;i++) L+=Math.hypot(line[i][0]-line[i-1][0], line[i][1]-line[i-1][1]);
+      if (L < 38) continue;
+      line.forEach(function(p){ mark(p, CFG.SPC*0.5); });
+      /* a short sulcus gap in most of them: a gyrus is not one long wire */
+      if (R() < 0.45 && line.length > 11){
+        var j = 3 + Math.floor(R()*(line.length-7));
+        out.push(line.slice(0,j)); out.push(line.slice(j+1));
+      } else out.push(line);
+    }
+    return out;
+  })();
+
+  /* the cerebellar folia: near-horizontal ribs, bowed, clipped to its
+     own outline. Parallel arcs, nothing else — as in the reference. */
+  var FOLIA = (function(){
+    var out=[], i, t;
+    for (i=0;i<CFG.RIB;i++){
+      var b0 = -56 - i*5.8, line=[];
+      for (t=0;t<=44;t++){
+        var u = -100 + t*(84/44);
+        var bb = b0 - 7*Math.sin(Math.PI*t/44) - 0.10*(u+50);
+        if (CBL.dist(u,bb) > 4) line.push([u,bb]);
+        else if (line.length){ if (line.length>3) out.push(line); line=[]; }
+      }
+      if (line.length>3) out.push(line);
+    }
+    return out;
+  })();
+
+  /* ---- 6 · the ink ------------------------------------------------------ */
+  var SOL=new Float64Array(40000), SOLN=0,
+      HID=new Float64Array( 4000), HIDN=0,
+      CON=new Float64Array( 2000), CONN=0,
+      ACC=new Float64Array( 4000), ACCN=0;
+  function put(A,n,x0,y0,x1,y1){ A[n]=x0;A[n+1]=y0;A[n+2]=x1;A[n+3]=y1; return n+4; }
+  function sol(x0,y0,x1,y1){ if (SOLN<39996) SOLN=put(SOL,SOLN,x0,y0,x1,y1); }
+  function hid(x0,y0,x1,y1){ if (HIDN< 3996) HIDN=put(HID,HIDN,x0,y0,x1,y1); }
+  function con(x0,y0,x1,y1){ if (CONN< 1996) CONN=put(CON,CONN,x0,y0,x1,y1); }
+  function acc(x0,y0,x1,y1){ if (ACCN< 3996) ACCN=put(ACC,ACCN,x0,y0,x1,y1); }
+
+  var W=600,H=420,DPR=1,SC=1,OX=0,OY=0;
+  function sx(p){ return OX + (m00*p[1] + m02*p[0])*SC; }
+  function sy(p){ return OY - (m10*p[1] + m11*p[2] + m12*p[0])*SC; }
+
+  /* is the ray from P toward the camera inside this body further along? */
+  function blocked(P, B, t0, shrink){
+    var cam=camVec(), i, t, q;
+    for (i=0;i<26;i++){
+      t = t0 + i*6;
+      q = [P[0]+cam[0]*t, P[1]+cam[1]*t, P[2]+cam[2]*t];
+      if (Math.abs(q[0]) < B.halfW(-q[1],q[2])*shrink - 0.5) return true;
+    }
+    return false;
+  }
+
+  /* ---- 7 · the drawing -------------------------------------------------- */
+  var COUNT={};
+  /* THE RIM, PROJECTED — the drawing's outline, and also the clip.
+     The near sheet stands up to WMAX in front of the rim, and at yaw 20
+     that is worth ~16 units of sideways shift, so a ridge drawn close to
+     the edge projects OUTSIDE the outline near the poles, where the
+     outline turns. (The crease carries the silhouette everywhere else.)
+     Rather than solve for the true horizon, every surface stroke is
+     clipped to this polygon: nothing may spill past the edge of the
+     body, which is the only thing the eye would have objected to. It
+     also stops the red fissure running out into the notch. */
+  function projRim(B){
+    var a=[], i, n=B.poly.length;
+    for (i=0;i<n;i++){ var P=P3(B.poly[i][0],0,B.poly[i][1]); a.push([sx(P),sy(P)]); }
+    return a;
+  }
+  function inPoly(R, x, y){
+    var c=false, i, j, n=R.length;
+    for (i=0,j=n-1;i<n;j=i++){
+      if ((R[i][1]>y)!==(R[j][1]>y) &&
+          x < (R[j][0]-R[i][0])*(y-R[i][1])/((R[j][1]-R[i][1])||1e-9)+R[i][0]) c=!c;
+    }
+    return c;
+  }
+  function inkOutline(B, blockers, sink){
+    var i, n=B.poly.length, prev=null, prevOK=false, first=null, firstOK=false, c=0;
+    for (i=0;i<=n;i++){
+      var q=B.poly[i%n], P=P3(q[0],0,q[1]);
+      var ok=true, k;
+      if (blockers) for (k=0;k<blockers.length;k++)
+        if (blocked(P, blockers[k], 7, 0.99)){ ok=false; break; }
+      var S=[sx(P),sy(P)];
+      if (i===0){ first=S; firstOK=ok; }
+      if (prev && ok && prevOK){ sink(prev[0],prev[1],S[0],S[1]); c++; }
+      prev=S; prevOK=ok;
+    }
+    return c;
+  }
+  function inkSurface(B, lines, lift, blockers, sink, clip){
+    var cam=camVec(), sgn = cam[0] >= 0 ? 1 : -1, c=0;
+    for (var i=0;i<lines.length;i++){
+      var L=lines[i], prev=null, prevOK=false;
+      for (var j=0;j<L.length;j++){
+        var u=L[j][0], b=L[j][1];
+        if (B.dist(u,b) <= 1) { prevOK=false; continue; }
+        var A=B.halfW(u,b);
+        var P=P3(u, sgn*(A+lift), b);
+        var n=sheetNormal(B,u,b,sgn);
+        var ok = (n[0]*cam[0]+n[1]*cam[1]+n[2]*cam[2]) > 0.05;
+        if (ok && blockers) for (var k=0;k<blockers.length;k++)
+          if (blocked(P, blockers[k], 7, 0.99)){ ok=false; break; }
+        var S=[sx(P),sy(P)];
+        if (ok && clip && !inPoly(clip, S[0], S[1])) ok=false;
+        if (ok && prevOK){ sink(prev[0],prev[1],S[0],S[1]); c++; }
+        prev=S; prevOK=ok;
+      }
+    }
+    return c;
+  }
+  /* the brainstem: a cylinder, drawn the way the gearbox draws a shaft */
+  function stem(){
+    var p0=P3(STEM.p0[0],0,STEM.p0[1]), p1=P3(STEM.p1[0],0,STEM.p1[1]);
+    var s0=[sx(p0),sy(p0)], s1=[sx(p1),sy(p1)];
+    var dx=s1[0]-s0[0], dy=s1[1]-s0[1], L=Math.hypot(dx,dy)||1;
+    var nx=-dy/L, ny=dx/L, i;
+    var ax=[p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2]];
+    var aL=Math.hypot(ax[0],ax[1],ax[2])||1; ax=[ax[0]/aL,ax[1]/aL,ax[2]/aL];
+    var e1=Math.abs(ax[0])<0.9?[1,0,0]:[0,1,0];
+    var c1=[ax[1]*e1[2]-ax[2]*e1[1], ax[2]*e1[0]-ax[0]*e1[2], ax[0]*e1[1]-ax[1]*e1[0]];
+    var l1=Math.hypot(c1[0],c1[1],c1[2]); c1=[c1[0]/l1,c1[1]/l1,c1[2]/l1];
+    var c2=[ax[1]*c1[2]-ax[2]*c1[1], ax[2]*c1[0]-ax[0]*c1[2], ax[0]*c1[1]-ax[1]*c1[0]];
+    var ext=0, ring=[];
+    for (i=0;i<48;i++){
+      var a2=i*2*Math.PI/48, ca=Math.cos(a2), sa=Math.sin(a2);
+      var off=[STEM.r*(c1[0]*ca+c2[0]*sa), STEM.r*(c1[1]*ca+c2[1]*sa), STEM.r*(c1[2]*ca+c2[2]*sa)];
+      var q=[p1[0]+off[0],p1[1]+off[1],p1[2]+off[2]], qs=[sx(q),sy(q)];
+      ring.push(qs);
+      var d2=Math.abs((qs[0]-s1[0])*nx+(qs[1]-s1[1])*ny); if (d2>ext) ext=d2;
+    }
+    var N=44, sgn;
+    for (sgn=-1; sgn<=1; sgn+=2){
+      var prevS=null, prevOK=null;
+      for (i=0;i<=N;i++){
+        var f=i/N;
+        var P=[p0[0]+(p1[0]-p0[0])*f, p0[1]+(p1[1]-p0[1])*f, p0[2]+(p1[2]-p0[2])*f];
+        var vis = !(blocked(P,CBL,0,1.0) || blocked(P,CERE,0,1.0));
+        var S=[sx(P)+sgn*nx*ext, sy(P)+sgn*ny*ext];
+        if (prevS){
+          if (vis && prevOK) sol(prevS[0],prevS[1],S[0],S[1]);
+          else               hid(prevS[0],prevS[1],S[0],S[1]);
+        }
+        prevS=S; prevOK=vis;
+      }
+    }
+    for (i=0;i<ring.length;i++){
+      var j=(i+1)%ring.length;
+      sol(ring[i][0],ring[i][1],ring[j][0],ring[j][1]);
+    }
+  }
+
+  function build(){
+    SOLN=0;HIDN=0;CONN=0;ACCN=0;
+    PLATE.forEach(function(s){
+      var A=[sx([s[0][0],s[0][1],s[0][2]]),sy([s[0][0],s[0][1],s[0][2]])];
+      var B=[sx([s[1][0],s[1][1],s[1][2]]),sy([s[1][0],s[1][1],s[1][2]])];
+      sol(A[0],A[1],B[0],B[1]);
+    });
+    AXES.forEach(function(s){
+      con(sx(s[0]),sy(s[0]),sx(s[1]),sy(s[1]));
+    });
+    var rimC=projRim(CERE), rimB=projRim(CBL);
+    COUNT.gyri     = inkSurface(CERE, GYRI.concat([TEMP_LIP]), 1.2, null, sol, rimC);
+    COUNT.outline  = inkOutline(CERE, null, sol);
+    COUNT.folia    = inkSurface(CBL, FOLIA, 1.0, [CERE], sol, rimB);
+    COUNT.cbl_out  = inkOutline(CBL, [CERE], sol);
+    var n0=SOLN; stem(); COUNT.stem=(SOLN-n0)/4;
+    COUNT.accent   = inkSurface(CERE, [SYLV], 0.6, null, acc, rimC);
+    COUNT.hidden=HIDN/4; COUNT.construction=CONN/4; COUNT.solid=SOLN/4;
+  }
+
+  /* ---- 8 · the fit ------------------------------------------------------ */
+  var BOXU=null;
+  function cloud(){
+    var out=[], i, u, b;
+    for (i=0;i<CERE.poly.length;i+=2){ out.push(P3(CERE.poly[i][0],0,CERE.poly[i][1])); }
+    for (i=0;i<CBL.poly.length;i+=2){ out.push(P3(CBL.poly[i][0],0,CBL.poly[i][1])); }
+    for (u=CERE.lo[0]; u<CERE.hi[0]; u+=10) for (b=CERE.lo[1]; b<CERE.hi[1]; b+=10){
+      var A=CERE.halfW(u,b); if (A>0){ out.push(P3(u,A,b)); out.push(P3(u,-A,b)); }
+    }
+    out.push(P3(STEM.p0[0],0,STEM.p0[1]), P3(STEM.p1[0],0,STEM.p1[1]));
+    PLATE.forEach(function(s){ out.push(s[0],s[1]); });
+    AXES.forEach(function(s){ out.push(s[0],s[1]); });
+    return out;
+  }
+  function sweepBox(){
+    var C=cloud(), i, j, k;
+    var saved=[m00,m02,m10,m11,m12,m20,m21,m22];
+    function run(views){
+      var lo=[1e9,1e9], hi=[-1e9,-1e9];
+      views.forEach(function(v){
+        setView(v[0],v[1]);
+        for (k=0;k<C.length;k++){
+          var X=m00*C[k][1]+m02*C[k][0], Y=m10*C[k][1]+m11*C[k][2]+m12*C[k][0];
+          if (X<lo[0]) lo[0]=X; if (X>hi[0]) hi[0]=X;
+          if (Y<lo[1]) lo[1]=Y; if (Y>hi[1]) hi[1]=Y;
+        }
+      });
+      return {lo:lo,hi:hi};
+    }
+    var all=[];
+    for (i=-1;i<=1;i++) for (j=-1;j<=1;j++) all.push([YAW0+i*YAW_R, PIT0+j*PIT_R]);
+    var full=run(all), rest=run([[YAW0,PIT0]]);
+    m00=saved[0];m02=saved[1];m10=saved[2];m11=saved[3];m12=saved[4];
+    m20=saved[5];m21=saved[6];m22=saved[7];
+    return {full:full, rest:rest};
+  }
+  function size(){
+    var host=cv.parentNode;
+    W=Math.max(240, host.clientWidth||600);
+    H=Math.max(180, host.clientHeight||420);
+    DPR=Math.min(3, window.devicePixelRatio||1);
+    cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    var PAD_X=Math.min(50,W*0.07), PAD_Y=Math.min(30,H*0.07);
+    if (!BOXU) BOXU=sweepBox();
+    var K=0.45;
+    var rw=BOXU.rest.hi[0]-BOXU.rest.lo[0], rh=BOXU.rest.hi[1]-BOXU.rest.lo[1];
+    var bw=rw+K*((BOXU.full.hi[0]-BOXU.full.lo[0])-rw);
+    var bh=rh+K*((BOXU.full.hi[1]-BOXU.full.lo[1])-rh);
+    SC=Math.min((W-2*PAD_X)/bw,(H-2*PAD_Y)/bh)*0.99;
+    OX=W/2-(BOXU.rest.lo[0]+BOXU.rest.hi[0])/2*SC;
+    OY=H/2+(BOXU.rest.lo[1]+BOXU.rest.hi[1])/2*SC;
+  }
+
+  function strokeGroup(A,n,style,dash,w){
+    if (!n) return;
+    ctx.beginPath();
+    for (var i=0;i<n;i+=4){ ctx.moveTo(A[i],A[i+1]); ctx.lineTo(A[i+2],A[i+3]); }
+    ctx.strokeStyle=style; ctx.lineWidth=w; ctx.setLineDash(dash);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    build();
+    strokeGroup(HID,HIDN,'#BDBDBD',[5,4],1);
+    strokeGroup(CON,CONN,'#9B9B9B',[9,3,2,3],1);
+    strokeGroup(SOL,SOLN,'#111',[],1);
+    strokeGroup(ACC,ACCN,'#DA1A00',[],1.4);
+  }
+
+  /* ---- 9 · the loop ----------------------------------------------------- */
+  var raf=null, running=false, lastT=-1, idle=0;
+  function frame(now){
+    if (lastT<0) lastT=now;
+    var dt=(now-lastT)/1000; lastT=now;
+    if (dt<0) dt=0; if (dt>0.1) dt=0.1;
+    var e=updateView(dt); render();
+    if (e<1e-4) idle++; else idle=0;
+    if (idle>4) stop();
+  }
+  var _min=1000/30, _last=0;
+  function loop(now){
+    if (now-_last>=_min-1){ _last=now; frame(now); }
+    if (running) raf=requestAnimationFrame(loop);
+  }
+  function start(){ if (running||reduce) return; running=true; lastT=-1; idle=0; raf=requestAnimationFrame(loop); }
+  function stop(){ running=false; if (raf) cancelAnimationFrame(raf); raf=null; }
+  function wake(){ idle=0; start(); }
+  function still(){ yawOff=pitOff=yawVel=pitVel=0; setView(YAW0,PIT0); render(); }
+
+  size(); setView(YAW0,PIT0); render();
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); });
+  window.addEventListener('blur', stop);
+  var rt=null;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt); rt=setTimeout(function(){ size(); render(); }, 160);
+  });
+
+  /* ---- 10 · the probe surface ------------------------------------------- */
+  window.brStats=function(){
+    return {cfg:CFG, counts:COUNT, w:W, h:H, dpr:DPR, scale:+SC.toFixed(4),
+            gyri:GYRI.length, folia:FOLIA.length};
+  };
+  window.brView=function(){
+    return {yaw_deg:+((YAW0+yawOff)*180/Math.PI).toFixed(2),
+            pitch_deg:+((PIT0+pitOff)*180/Math.PI).toFixed(2),
+            yaw_range_deg:+(YAW_R*180/Math.PI).toFixed(2),
+            pitch_range_deg:+(PIT_R*180/Math.PI).toFixed(2),
+            tau:TAU, mouse:[mnx,mny], seen:mouseSeen, running:running};
+  };
+  window.brSetMouse=function(x,y){
+    mnx=x; mny=y; mouseSeen=true;
+    for (var i=0;i<400;i++) updateView(0.016);
+    render();
+  };
+  window.brStill=still;
+  window.brReady=true;
+})();
+</script>
+</body>
+</html>

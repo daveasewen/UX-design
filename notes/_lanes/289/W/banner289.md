@@ -1,0 +1,9 @@
+> ## ★ LATEST — 2026-09-20 (Sun **#289**, Fable 5.1, 20 Opus lanes, DELEGATED wrap — ★★ **THE STORY IS HIS AND THE PLANT HAS SEVEN DRAWINGS**)
+>
+> - ⓪ ⛔ **DATE SPLIT** — opened Sat 09-19 13:13, ran to Sun 09-20; **#241 shape, nothing re-dated**. ⛔ **NO LANE COMMITTED — this wrap is #289's ONLY commit.** ⛔ **`_HANDOFF-140` FIRST — IT OUTRANKS `_CHAIN.md`**; #130–#139 stand, **2 struck with receipts**. Words: `notes/_lanes/289/`.
+> - ⛔★★★ ① **NO RULING INSCRIBED — `_rulings.json` STAYS 622**, `json.load` here, no `s289-` id. **He did not say *inscribe* on either day**, so every ruling-shaped thing carries as a QUESTION PUT (`s271-D4`).
+> - ★★★ ② **HE WROTE THE DECK'S COPY HIMSELF, IN SEVEN BEATS** — ***"The story is more like this"***: parts bin · robots · inventory · engineer · inspector · build · ask. His board `DAVE-ARC-BOARD-2026-09-19.png`. ⛔ **Quote him, never paraphrase.**
+> - ★★ ③ **THE PLANT HAS SEVEN DRAWINGS — SIX NEW PLUS THE v7 GEARBOX**, measured here: books · brain (six passes, traced from HIS reference and mirrored, *"good for now"*) · arm · line · callipers · catalogue. ⛔ **His stock refs NOT filed — *"I wouldn't copy this in any way"*.**
+> - ★★ ④ **v10 IS THE WORKING DECK** — 12 numbered slides inside 13 sections, measured; the brief declared 12, **both stand** — and **PROPOSAL v2 IS HIS WORDS**. ⬛ **OWED: the catalogue PAGE · v3 with the premise as beat zero · v11's four D2 flags.**
+> - ★★ ⑤ **THE STRAND MAP IS RULED AND THE 25th IS SETTLED** — six strands *"Do it"* (By-Friday items only), the path *"fine"*, index sharding his pick, and ***"the 25th is the internal, but it is still very important"***.
+> - ⚙ ⑥ FILL **435,910 / 133** — ⛔ **the gauge was NEVER READ at his seat and the wrap was called on *"you're getting hot"*.** 180,000 passed by 255,910. BOOT **74,174**, #288's to the token. **subs 2,813,762 DECLARED (n=20)** v **2,336,973 `read_fill` (n=15 readable)**. ⛔ **7 fails at open, 8 at close.** CI + ⏱ DELTA.

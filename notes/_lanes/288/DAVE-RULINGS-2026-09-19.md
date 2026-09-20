@@ -81,3 +81,17 @@ sloppiness = alignment, spacing and dimensions. He will write the test brief for
 sparklines; the programmes table card is half empty against a full-height decisions card; the two
 bottom-row cards do not share a bottom edge; the filter bar is narrower than the table it filters;
 column gutters differ between the KPI row and the rows below.
+
+## POST-WRAP (after `71b3363c` / `3e69b316`) — the test brief, declared rather than slipped
+
+> can you launder this a bit so it looks more like a human brief that want created from the grill-me
+> skill. drop all the specifics about what theme to use etc. save it as the test brief to use for now.
+
+**Conductor's reading (mine, not his):** the grill file he uploaded (saved verbatim at
+`notes/_lanes/288/GRILL-SOURCE-2026-09-18-hsbc-ceo-international-banking.md`, the cited-uploads
+clause) is rewritten as a human brief at
+`notes/_briefs/2026-09-19-288-test-brief-ceo-international-banking.md` — theme, light/dark, brand
+assets, provenance and pack-runner mechanics dropped; audience, the three questions, pages,
+behaviours, data and boundaries kept. It is THE test brief for composition probes "for now". These
+three files are uncommitted after the wrap and go into #289's first commit — the post-wrap
+correction class, declared.

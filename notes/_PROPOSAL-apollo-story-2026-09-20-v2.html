@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal — the Apollo story, v2</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max-width:1100px}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--black);background:var(--white);-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3)}
+.label::before{content:"";width:20px;height:1px;background:var(--accent)}
+.label.mute{color:var(--grey-6)}.label.mute::before{background:var(--grey-3)}
+header{padding:64px 0 48px;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:56px;font-weight:200;line-height:1.05;letter-spacing:-.01em;margin:0}
+h2{font-size:34px;font-weight:300;line-height:1.15;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:13px;line-height:1.7;color:var(--grey-7)}
+.meta b{font-weight:500;color:var(--black)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white)}
+section.dark h2{color:var(--white)}section.dark p{color:var(--grey-3)}section.dark .label{color:var(--white)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s5);align-items:start}
+.beats{list-style:none;padding:0;margin:var(--s4) 0 0;counter-reset:b}
+.beats li{counter-increment:b;display:grid;grid-template-columns:72px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--grey-2)}
+.beats li::before{content:counter(b,decimal-leading-zero);font-size:40px;font-weight:200;line-height:1;color:var(--grey-5)}
+.beats b{display:block;font-weight:500;margin-bottom:4px}
+.beats p{margin:0 0 var(--s1);color:var(--grey-8)}
+.beats .show{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:6px}
+.beats .note{font-size:13px;color:var(--grey-6);margin-top:var(--s1)}
+.line{font-size:28px;font-weight:300;line-height:1.3;max-width:26em;margin:0}
+.line b{font-weight:500}
+dl.facts{margin:var(--s4) 0 0;display:grid;grid-template-columns:120px 1fr;gap:var(--s2) var(--s3);font-size:15px}
+dl.facts dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);padding-top:4px}
+dl.facts dd{margin:0}
+blockquote{margin:var(--s3) 0;padding:0 0 0 var(--s3);border-left:2px solid var(--accent);font-size:18px;font-weight:300;line-height:1.5}
+blockquote cite{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:8px;font-style:normal}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);margin-top:var(--s4)}
+.cols>div{background:var(--white);padding:var(--s3)}
+.cols .hd{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:var(--s1)}
+.cols .sub{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2)}
+.cols p{font-size:15px;margin:0;color:var(--grey-8)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:var(--s3)}
+th,td{text-align:left;padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--grey-3);vertical-align:top}
+th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500}
+.tech{font-size:13px;color:var(--grey-7);max-width:60em}
+.tech code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--grey-1);padding:.1em .35em}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+@media(max-width:820px){.wrap{padding:0 16px}header .grid,.two,.cols{grid-template-columns:1fr}h1{font-size:38px}h2{font-size:26px}.line{font-size:22px}.beats li{grid-template-columns:48px 1fr}}
+</style></head>
+<body>
+
+<header>
+  <div class="wrap grid">
+    <div>
+      <p class="label">Apollo · proposal · the story</p>
+      <h1>A custom shop that builds<br>at the speed of a car plant.</h1>
+    </div>
+    <p class="meta"><b>v2 · 20 September 2026</b><br>Session 289 · the seven beats in Dave's words, ruled 19–20 Sept<br>Spelling tidied; nothing reworded. Additions from the record are marked.<br>Status: a proposal. Nothing here is inscribed.</p>
+  </div>
+</header>
+
+<section id="line">
+  <div class="wrap two">
+    <p class="label">The story in one line</p>
+    <div>
+      <p class="line">An assembly line is only as fast as its parts bin, the skill of the assembly engineer, and the rigour of QC. Ours had a bin too small, engineers of every skill level, and QC that was rigorous but slow. <b>We tried robots. They machined the missing parts and it showed.</b> So we filled the bin, gave the engineer a brain, and put an inspector at the end of the line.</p>
+    </div>
+  </div>
+</section>
+
+<section id="map" class="grey">
+  <div class="wrap two">
+    <p class="label">The plant is the board</p>
+    <div>
+      <h2>Three problems, three parts of the line.</h2>
+      <p>The analogy does the breakdown for us. Each of the three problems on the board is one part of the plant, and each part of Apollo answers one of them. Problem, breakdown, solution — in the same three words each time.</p>
+      <table>
+        <tr><th>The board</th><th>On the line</th><th>Under it</th><th>Apollo's answer</th></tr>
+        <tr><td><b>Quality</b></td><td>The parts bin is too small</td><td>Small component library; missing parts machined by hand, by whoever is nearest</td><td><b>The inventory</b></td></tr>
+        <tr><td><b>Consistency</b></td><td>Engineers with dramatically different skill levels</td><td>Low / variable skills; lack of design standards and accessibility knowledge; no one has the full picture</td><td><b>The assembly engineer</b></td></tr>
+        <tr><td><b>Speed</b></td><td>QC is rigorous but slow; failed builds go back down the line</td><td>The governance process; the two‑stage Figma‑then‑code process</td><td><b>The inspector</b></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="beats">
+  <div class="wrap">
+    <p class="label">Seven beats · his words</p>
+    <h2>The arc, in the order the room hears it.</h2>
+    <ol class="beats">
+      <li><div><b>The line.</b>
+        <p>An assembly line is only as fast as its parts bin, the skill of the assembly engineer and the rigour of QC.</p>
+        <p>We have a parts bin that is too small, engineers with dramatically different skill levels, and our governance QC is rigorous but slow.</p>
+        <p>No one has the full picture. Missing parts are machined all the time, by engineers without the skills to do so. The builds are unreliable and they have to go back down the line to be repaired.</p>
+      </div></li>
+      <li><div><b>The robots.</b>
+        <p>We introduced robots into the plant. The results were underwhelming: where the inventory was empty the robots tried to machine the parts, and they simply don't have the skills or knowledge for this.</p>
+        <p>We watched our designers do exactly what the machine did. The problem was always there — trying to automate it is what made it obvious.</p>
+        <p class="note">Second paragraph is his ruling on the "his word" section, folded in: <em>"this is the validation of a real phenomenon… when trying to automate, this problem became very obvious."</em></p>
+      </div></li>
+      <li><div><b>The inventory.</b>
+        <p>First we focused on the inventory and expanded it from 36 to 137 components — 101 new — including the page templates.</p>
+        <p>Each one in code, built to our design and accessibility standards. Now there is no need to machine parts.</p>
+        <p class="show">Show · the library</p>
+        <p class="note">His text says "137 and 8 templates". The record says the 137 <em>includes</em> 12 templates; the 8 are foundations (grids, type, colour). Wording above follows the record — see the correction below.</p>
+      </div></li>
+      <li><div><b>The assembly engineer.</b>
+        <p>Because each product must be custom designed and built, what we are really creating is a custom shop that can build at the speed of a car plant. We needed the knowledge of a designer and an assembly engineer embedded in the system too.</p>
+        <p>Standards, accessibility, rulings, governance, usage and theory — all in one graph, retrieved when needed, and with each build comes a record of account.</p>
+        <p class="show">Show · the explorer</p>
+      </div></li>
+      <li><div><b>The inspector.</b>
+        <p>Although quality is built into the parts and the assembly is powered by a vast knowledge base, QC is always the final check. Corrections are executed by the inspector, not sent back down the line.</p>
+      </div></li>
+      <li><div><b>The build.</b>
+        <p>One cold, repeatable testing prompt. The build, the inspection and the final product roll off the line.</p>
+        <p class="show">Show · live, with the recording as fallback</p>
+      </div></li>
+      <li><div><b>The ask.</b>
+        <p>Dave's, with his colleagues. Open.</p>
+        <p class="note">His word: <em>"I need to work with my colleagues on this request."</em> Held as a draft slot; research stays named as owed, another group's work.</p>
+      </div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="parts" class="grey">
+  <div class="wrap two">
+    <p class="label">What she is made of · his names</p>
+    <div>
+      <h2>The inventory. The assembly engineer. The inspector.</h2>
+      <div class="cols">
+        <div><p class="hd">The inventory</p><p class="sub">Answers Quality</p><p>Everything she builds with — 137 components in code, the templates among them, 8 foundations under them. Catalogued, levelled, gated. No part is machined on the line.</p></div>
+        <div><p class="hd">The assembly engineer</p><p class="sub">Answers Consistency</p><p>Everything a designer and an engineer know — standards, accessibility, rulings, governance, usage, theory — in one graph, retrieved when needed. Every build leaves a record of account.</p></div>
+        <div><p class="hd">The inspector</p><p class="sub">Answers Speed</p><p>QC at the end of the line, every time. Gates that withhold "done"; evals that say whether this run beat the last. Corrections made there, not sent back.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="wrap two">
+    <p class="label">Behind beats two and three</p>
+    <div>
+      <h2>The robots are in the record, and so is the date.</h2>
+      <p>The experiment he remembers is the July pair. Two arms, one brief: a governed arm that could only build from the library, and an ungoverned arm with no rules at all, run cold twice on Opus. The governed arm broke no rule and came out flat. The ungoverned arm found a real organising idea and read better — then needed a human to repair three invented icons and four accessibility failures before it could ship.</p>
+      <dl class="facts">
+        <dt>19 June</dt><dd>First pair, at component grain: Tabs built from the library alone versus unconstrained. The library‑only build failed dark‑mode contrast at 1.0 : 1 and had no focus indicator — <em>"about 90% my invention"</em>, said the record.</dd>
+        <dt>30 June</dt><dd>The SME‑Payments brief, run four ways. <em>"The canon was silent in exactly the places it had to invent."</em> Invented charcoals, chart bars, easings; a cold run fabricated account numbers and status chips.</dd>
+        <dt>5 July</dt><dd>The pair at screen grain. Dave's verdict: <em>"the canon works but probably no better than an AI model tied to a component library… I expected something like: unconstrained with the right styling."</em></dd>
+        <dt>7 July</dt><dd>Root cause, measured: the governed run was provenance‑perfect — zero invented colours, 26 library components — and still flat. The unconstrained run invented 56 colours and 219 local variables and read better. Rule‑following was already saturated; <em>the library stopped at organism, with zero templates or page shells</em>. It was never a rules problem. It was the bin.</dd>
+        <dt>10 July</dt><dd>Ruled: the two‑pass was <em>"not all that successful"</em> — a component, not the architecture. The inventory build‑out begins in earnest.</dd>
+        <dt>20 August</dt><dd>92 to 136 components in one day. 137 today.</dd>
+      </dl>
+      <blockquote>Did you put the restyle through the gates or use your own inference? — Inference, not gates.<cite>Dave and the machine, 5 July 2026 — the sentence that became the inspector</cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<section id="corrections" class="grey">
+  <div class="wrap two">
+    <p class="label">Two things the record corrects</p>
+    <div>
+      <h2>Small, and worth getting right before the room does.</h2>
+      <p><b>The templates.</b> "137 and 8 templates" — the showroom index counts 137 components, of which 12 are page templates (auth, dashboard, list, detail, settings, report, error, empty and so on). The 8 are foundations. So it is <em>137 including the templates, on 8 foundations</em>; or, if the templates deserve their own beat, <em>125 components and 12 templates</em>.</p>
+      <p><b>The 36.</b> Held, on your word: it is the Figma library's count and the repo's earliest reviewed count was 32 in code. 36 → 137 is 101 new, and nobody in the room will check the other four.</p>
+    </div>
+  </div>
+</section>
+
+<section id="deck" class="dark">
+  <div class="wrap two">
+    <p class="label">What this does to the deck</p>
+    <div>
+      <h2>Two slides change; the rest re‑label.</h2>
+      <p>Beat one replaces the bin slide and the board slide together — the line with its three parts <em>is</em> the breakdown, so the two collapse into one. Beat two is the new slide: the robots, the empty bin, the machined parts. Beats three to six are the slides already in v8 with his words on them; the three‑parts slide takes his names. The ask stays a draft slot until he has spoken to his colleagues.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tech">
+  <div class="wrap">
+    <p class="label mute">Technical footnote — sources</p>
+    <div class="tech">
+      <p>Dave's words: <code>notes/_lanes/289/DAVE-RULINGS-2026-09-19.md</code> and <code>…-2026-09-20.md</code>. The robots: <code>notes/_subreports/2026-09-20-289-H3-agentic-loops-experiment.md</code>, drawing on <code>_DECISION-HISTORY/2026-07-07-s9-root-cause-and-ruling.md</code>, <code>archive/SESSION-BRIEF-tabs-fitness-test.md</code>, <code>knowledge/_fitness-test/register-spread-2026-07-05*/</code>. Counts: <code>notes/_subreports/2026-09-19-289-H1-library-buildout-numbers.md</code>; today's 137 / 12 templates / 8 foundations read from <code>showroom/index.json</code> at this seat (<code>$component_count</code>, <code>$foundation_count</code>, level = template). Story: <code>…-H2-library-buildout-story.md</code>. Note the phrase "agentic loop" in the repo also names a different July item (gates‑as‑a‑service, a repair loop not built) — not this story.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · proposal · the story · v2 · 2026-09-20 · session 289</span>
+    <span>Nothing here is inscribed. Every section takes a decision below it.</span>
+  </div>
+</footer>
+
+
+<!-- ===== DAVE'S DECISIONS & COMMENTS — added #289, self-contained, autosaves in this browser, exports markdown ===== -->
+<style>
+.dd-box{margin:var(--s4,2rem) 0 0;border:1px solid var(--grey-3,#D7D8D6);background:var(--white,#fff);color:var(--black,#000);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;padding:1.25rem 1.5rem;
+  border-left:4px solid var(--accent,#DA1A00)}
+.dd-box.dd-has{border-left-color:var(--black,#000)}
+.dd-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem}
+.dd-label{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent,#DA1A00)}
+.dd-box.dd-has .dd-label{color:var(--grey-6,#767676)}
+.dd-chips{display:flex;gap:.35rem;flex-wrap:wrap}
+.dd-chip{font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--grey-3,#D7D8D6);
+  background:var(--white,#fff);color:var(--grey-7,#545454);cursor:pointer;border-radius:0}
+.dd-chip:hover{border-color:var(--black,#000);color:var(--black,#000)}
+.dd-chip.on{background:var(--black,#000);color:var(--white,#fff);border-color:var(--black,#000)}
+.dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.dd-field{display:flex;flex-direction:column;gap:.3rem}
+.dd-field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6,#767676);font-weight:500}
+.dd-field textarea{font:inherit;font-size:14px;line-height:1.5;color:var(--black,#000);background:var(--grey-1,#F3F3F3);border:0;
+  border-bottom:1px solid var(--grey-3,#D7D8D6);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.dd-field textarea:focus{outline:none;border-bottom-color:var(--accent,#DA1A00);background:var(--white,#fff);box-shadow:inset 0 0 0 1px var(--grey-3,#D7D8D6)}
+.dd-stamp{font-size:11px;color:var(--grey-5,#9B9B9B);margin-top:.5rem;min-height:1em}
+.dd-bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:var(--black,#000);color:var(--white,#fff);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:.04em}
+.dd-bar .in{max-width:var(--max-width,var(--max,1200px));margin:0 auto;padding:.6rem 2rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.dd-bar b{font-weight:500}
+.dd-bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .9rem;border:1px solid var(--grey-6,#767676);
+  background:transparent;color:var(--white,#fff);cursor:pointer;border-radius:0}
+.dd-bar button:hover{border-color:var(--white,#fff)}
+.dd-bar button.pri{background:var(--accent,#DA1A00);border-color:var(--accent,#DA1A00)}
+.dd-bar .msg{color:var(--grey-5,#9B9B9B);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body{padding-bottom:64px}
+@media (max-width:820px){.dd-grid{grid-template-columns:1fr}.dd-bar .in{padding:.6rem 1rem;gap:.6rem}}
+@media print{.dd-bar{display:none}body{padding-bottom:0}}
+</style>
+<script>
+(function(){
+  var CFG = {
+    page:'proposal-story-v2', title:'the Apollo story, proposal v2', path:'notes/_PROPOSAL-apollo-story-2026-09-20-v2.html',
+    pageHost:'footer .wrap',
+    targets:[
+      { sel:'section[id]', kind:'Section', fallbackNum:'.label', title:'h2, .line', host:'.wrap > div:last-child',
+        skip:function(el){ return el.id==='tech'; } },
+      { sel:'.beats > li', kind:'Beat', title:'b', host:'div', prefix:'beat', count:true }
+    ]
+  };
+  var KEY = 'dave-decisions:' + CFG.page;
+  var CHIPS = ['Inscribe','Do it','Later','No','Question'];
+  var state = {}; try{ state = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ state = {}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function txt(el){ return (el ? el.textContent : '').replace(/\s+/g,' ').trim(); }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+
+  // ---- collect anchors -------------------------------------------------
+  var items = [];
+  CFG.targets.forEach(function(t){
+    var nodes = document.querySelectorAll(t.sel);
+    Array.prototype.forEach.call(nodes, function(el, i){
+      if (t.skip && t.skip(el)) return;
+      var id = el.id || (t.prefix + '-' + (i+1));
+      var num = txt(el.querySelector(t.num||'.idx')) || (t.count ? String(i+1).padStart(2,'0') : '') || (t.fallbackNum ? txt(el.querySelector(t.fallbackNum)) : '');
+      var title = txt(el.querySelector(t.title));
+      items.push({ id:id, kind:t.kind, num:num, title:title, host: (typeof t.host==='function' ? t.host(el) : (t.host && el.querySelector(t.host))) || el.querySelector('.wrap') || el });
+    });
+  });
+  items.push({ id:'page', kind:'Whole page', num:'', title:'Anything that belongs to the page rather than one section', host: document.querySelector(CFG.pageHost) });
+
+  // ---- render ----------------------------------------------------------
+  items.forEach(function(it){
+    var s = state[it.id] || {};
+    var box = document.createElement('div');
+    box.className = 'dd-box'; box.dataset.id = it.id; box.id = 'dd-'+it.id;
+    box.innerHTML =
+      '<div class="dd-head"><span class="dd-label">Dave · '+esc(it.kind)+(it.num?' '+esc(it.num):'')+'</span>'+
+      '<span class="dd-chips">'+CHIPS.map(function(c){return '<button type="button" class="dd-chip'+(s.verdict===c?' on':'')+'" data-v="'+c+'">'+c+'</button>';}).join('')+'</span></div>'+
+      '<div class="dd-grid">'+
+        '<label class="dd-field"><span>Decision — in your words</span><textarea data-f="decision" placeholder="What you rule, or what you want done.">'+esc(s.decision)+'</textarea></label>'+
+        '<label class="dd-field"><span>Comment</span><textarea data-f="comment" placeholder="Anything else — a doubt, a question back, a reason.">'+esc(s.comment)+'</textarea></label>'+
+      '</div><div class="dd-stamp">'+(s.at?'saved '+esc(s.at):'')+'</div>';
+    it.host.appendChild(box);
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('.dd-chip'); if(!b) return;
+      var v = b.dataset.v; var cur = state[it.id]||{};
+      cur.verdict = (cur.verdict===v) ? '' : v; cur.at = now(); state[it.id]=cur; save();
+      box.querySelectorAll('.dd-chip').forEach(function(c){ c.classList.toggle('on', c.dataset.v===cur.verdict); });
+    });
+    box.addEventListener('input', function(e){
+      var f = e.target.dataset && e.target.dataset.f; if(!f) return;
+      var cur = state[it.id]||{}; cur[f]=e.target.value; cur.at=now(); state[it.id]=cur; save();
+    });
+  });
+
+  function has(s){ return s && (s.verdict || (s.decision||'').trim() || (s.comment||'').trim()); }
+  function refresh(){
+    var n=0;
+    items.forEach(function(it){
+      var s=state[it.id], box=document.querySelector('.dd-box[data-id="'+it.id+'"]');
+      if(has(s)) n++;
+      if(box){ box.classList.toggle('dd-has', !!has(s)); box.querySelector('.dd-stamp').textContent = (s&&s.at)?'saved '+s.at:''; }
+    });
+    var c=document.getElementById('dd-count'); if(c) c.textContent = n+' of '+items.length+' answered';
+  }
+
+  // ---- export ----------------------------------------------------------
+  function markdown(){
+    var lines = ['# DAVE-RULINGS — '+CFG.title, '', 'source: `'+CFG.path+'`  ', 'exported: '+now()+'  ', 'status: his words, verbatim — quote, never paraphrase', ''];
+    var n=0;
+    items.forEach(function(it){
+      var s=state[it.id]; if(!has(s)) return; n++;
+      lines.push('## '+(it.num?it.num+' · ':'')+it.title+'  ');
+      lines.push('<sub>'+it.kind+' · anchor `#dd-'+it.id+'` · saved '+s.at+'</sub>', '');
+      if(s.verdict) lines.push('**Verdict:** '+s.verdict, '');
+      if((s.decision||'').trim()) lines.push('**Decision, verbatim:**', '', '> '+s.decision.trim().replace(/\n/g,'\n> '), '');
+      if((s.comment||'').trim()) lines.push('**Comment, verbatim:**', '', '> '+s.comment.trim().replace(/\n/g,'\n> '), '');
+    });
+    if(!n) lines.push('_Nothing answered yet._');
+    lines.push('', '---', '', '<details><summary>machine copy</summary>', '', '```json', JSON.stringify({page:CFG.page, path:CFG.path, exported:now(), answers:state}, null, 2), '```', '', '</details>', '');
+    return lines.join('\n');
+  }
+  function download(){
+    var d=new Date(),p=function(n){return (n<10?'0':'')+n;};
+    var name='DAVE-RULINGS-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+CFG.page+'.md';
+    var blob=new Blob([markdown()],{type:'text/markdown'}); var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    msg('Saved '+name+' to Downloads — drop it in notes/_lanes/289/');
+  }
+  function copy(){ var t=markdown(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('Copied — paste it into the chat');},function(){ var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();msg('Copied — paste it into the chat'); }); }
+  function clear(){ if(!confirm('Clear every decision and comment on this page?')) return; state={}; save(); document.querySelectorAll('.dd-box textarea').forEach(function(t){t.value='';}); document.querySelectorAll('.dd-chip.on').forEach(function(c){c.classList.remove('on');}); msg('Cleared'); }
+  function msg(s){ var m=document.getElementById('dd-msg'); if(m){ m.textContent=s; } }
+
+  var bar=document.createElement('div'); bar.className='dd-bar';
+  bar.innerHTML='<div class="in"><b>Your decisions</b><span id="dd-count"></span><span class="msg" id="dd-msg">Autosaves as you type</span>'+
+    '<button type="button" id="dd-copy">Copy as text</button><button type="button" class="pri" id="dd-dl">Export rulings .md</button><button type="button" id="dd-clear">Clear</button></div>';
+  document.body.appendChild(bar);
+  document.getElementById('dd-dl').onclick=download; document.getElementById('dd-copy').onclick=copy; document.getElementById('dd-clear').onclick=clear;
+  refresh();
+})();
+</script>
+
+</body></html>
