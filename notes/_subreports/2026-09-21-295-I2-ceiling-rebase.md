@@ -214,7 +214,104 @@ instant the commit exists** — lane P proved that at `280e4e82` (§ FOR THE NEX
 was fresh in the tree that was committed and stale in the tree the commit produced, in the same
 second, with no edit between"*). **Not repaired here; it is structurally unfinishable.**
 
-<!-- COMMIT-SHAS -->
+### THE COMMITS AND THE PUSH
+
+**`0d487352` — 9 files changed, 404 insertions, 21 deletions, 1 created.**
+
+```
+SESSION_N=295 bash knowledge/_git_commit.sh --reconciled \
+  knowledge/_tmp/msg-295-I2-ceiling-rebase-2041.txt <9 named paths>
+```
+
+Staged: `knowledge/_rulings.json` · `knowledge/_gauge_tokens.py` · `knowledge/_capture_gate.py` ·
+`knowledge/_state.json` · `_CHAIN.md` · `notes/_RULINGS.html` ·
+`notes/_lanes/295/DAVE-RULINGS-2026-09-21.md` (the conductor appended to it) ·
+`notes/_subreports/2026-09-21-295-I2-ceiling-rebase.md` · `notes/_REHEARSAL-LOG.jsonl`.
+**Paths named individually; `add -A` was never used.** Fresh msgfile under a unique name in the
+gitignored `knowledge/_tmp/`, line 1 with **no** `after #N` prefix (the script adds it and
+asserted exactly one). **Gate at the commit seam, DECLARED not-a-wrap (`#74-D1`), red visible not
+blocking: `232 in scope · 1 fail · 368 warn`. Doc-row gate: population 549 · staged-in-THIS-commit
+1 · unrowed 0 · ✅ PASS.**
+
+**⚠ THREE DIRTY PATHS DELIBERATELY NOT STAGED, and they are not this lane's** —
+`notes/_dream/_GRADE-DECISIONS.jsonl` (machine instrumentation whose exclusion policy the script
+itself declares ⬛ DAVE'S and unruled), `notes/_lanes/293/J7-IDEA-jev-selects-over-the-kg.md` and
+`notes/_lanes/294/WRAP-MEMORY-HOOK.md` (both left uncommitted by declaration at #294,
+`_HANDOFF-145` § OWED 13/14). **All three were dirty BEFORE this lane ran any command.**
+
+### ⬛ THE PUSH — THE SANCTIONED ARM WAS TRIED FIRST, IT REFUSED, AND THE FALLBACK IS DECLARED
+
+⛔ **`bash knowledge/_git_commit.sh --push` WAS RUN FIRST AND REFUSED AT THE DIRT GATE — lane P's
+finding reproduced exactly, one seat later, on the identical three paths:**
+
+```
+✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:
+ M notes/_dream/_GRADE-DECISIONS.jsonl
+ M notes/_lanes/293/J7-IDEA-jev-selects-over-the-kg.md
+ M notes/_lanes/294/WRAP-MEMORY-HOOK.md
+```
+
+⛔ **THE PUSH THEREFORE WENT BY PLAIN `git push origin master`, AND THAT IS A DECLARED FALLBACK,
+NOT THE SANCTIONED PATH.** The brief authorised it explicitly and the conductor's verdict is PUSH.
+**The price is named rather than implied: the `s294-D5` expiry gate, the fast-forward-only gate,
+the master-only gate and the script's own post-push verification ALL SKIPPED.** Branch was
+confirmed `master` before the push and the verification was re-done by hand; **the expiry check
+was NOT re-done and nothing here claims it.**
+
+```
+To <redacted>
+   d30aebe1..0d487352  master -> master
+git rev-parse HEAD            → 0d48735236df074a2b73dbb85f68b1c255e1cb68
+git ls-remote origin master   → 0d48735236df074a2b73dbb85f68b1c255e1cb68   ✅ EQUAL
+```
+
+⚠ **THE PUSH CARRIED THREE COMMITS, NOT ONE** — `280e4e82` and `016854c1` (lane P's report and
+its upward correction) were still unpushed at this seat and rode along. **Counted, not hidden.**
+⛔ **The remote URL and its token were never printed: every transcript line that touched them is
+`sed`-redacted.**
+
+### ⬛ CI, READ BACK FOR `0d487352`
+
+**RUN `35646532403` · `head_sha` `0d48735236df074a2b73dbb85f68b1c255e1cb68` · workflow `gates` ·
+created 2026-09-21T19:42:46Z · POLLED TO COMPLETION · RUN CONCLUSION: FAILURE.**
+
+| job | id | colour | failing steps |
+|---|---|---|---|
+| `gates` | `106488243399` | ⛔ **FAILURE** | **5** `Survey the COMMITTED tree — every check/selftest before any regeneration` · **6** `Knowledge build — all derived views + blocking gates` |
+| `release` | `106488243594` | ✅ **SUCCESS** | none |
+| `render` | `106488243579` | ✅ **SUCCESS** | none |
+
+⚠ **`render` stayed `in_progress` for roughly eleven minutes after `gates` and `release` had both
+closed. The verdict above is the one taken AFTER it finished** — lane P's lesson, met a fourth
+time and obeyed.
+
+★★ **NO JOB CHANGED COLOUR against lane P's reading on `d30aebe1`, and the survey count did not
+move:**
+
+```
+#295 lane P (d30aebe1):  SURVEY: 58 pass · 7 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked
+#295 lane I2 (0d487352): SURVEY: 58 pass · 7 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked
+```
+
+**The same seven, BY NAME** (cited by name, never by number — lane P measured that survey step IDs
+move between sessions): `[3]` token blast-radius · `[13]` capture/provenance selftest ·
+`[38]` component-partials sync · `[120]` read chain determinism (stale `_CHAIN.md`) ·
+`[125]` memento schematic determinism · `[128]` memento-package delta-audit ·
+`[136]` governs matcher selftest.
+
+⇒ ⛔ **THE CEILING RE-BASE AND ITS THREE LIVE-CODE CORRECTIONS BROKE NOTHING CI CAN SEE, AND FIXED
+NOTHING CI CAN SEE.** `[13]` is `_capture_gate.py --selftest`, which this lane edited (the
+provenance comment) — **still exit 1 on the same `pre-flight:` stamp arm, no worse and no better,
+exactly as it stood twelve commits ago.** Step 6 aborts at the same
+`help-gate — no entry point may write before it reads argv (#158 class gate)`.
+
+⛔★ **THE CEILING BREACH DOES NOT APPEAR IN CI AT ALL — `grep -c 'CEILING BREACH'` over the whole
+`gates` job log returns 0.** Lane P's finding confirmed at a second seat: **`_capture_gate.py
+--wrap` is not wired into any CI step**, so neither the breach nor its non-closure is visible to
+CI, in either direction. **The only instrument that sees it is the local rehearsal.**
+
+⛔ **NOTHING CI REPORTED WAS REPAIRED** — the brief fences repair, and `[120]`'s stale `_CHAIN.md`
+is the structurally-unfinishable one lane P proved.
 
 ### THE LOCKS — `mv`'D, NEVER `rm`'D
 
