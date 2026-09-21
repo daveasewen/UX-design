@@ -3189,6 +3189,67 @@ def _asserts_enacted(text):
     return False
 
 
+# ════════ `s295-D2` (Dave, #295, *"inscribe"*) — AN ENACTED RULING CARRIES ITS SHA ═══════════
+#
+# THE RULE: when a lane enacts a ruling in code, that lane stamps `status: enacted` in the SAME
+# commit and the evidence pointer is the COMMIT SHA. This arm is the wrap's half of it — every
+# ruling whose status says ENACTED must carry a sha-shaped pointer in its `evidence`, so the
+# claim "this is in the code" has a receipt anyone can `git show`.
+#
+# ⛔ ADVISORY AT BIRTH, BY THE RULING'S OWN WORDS (*"ADVISORY at first"*), and the reason is
+# measured rather than timid: the store's ENACTED population was written across ~295 sessions by
+# a convention that did not exist until today, so a blocking arm could not pass in this repo on
+# the day it was built — the class `BOOT_DOUBLE_COUNT_FROM_SESSION` and `BOOT_CEILING_FROM_SESSION`
+# both exist for [[gate-cannot-pass-in-one-environment]]. Whether it ever BLOCKS is Dave's, not
+# this gate's. The count is published every wrap so the promotion argument can be made on numbers.
+#
+# ⚠ WHAT IT DOES NOT CHECK, said out loud: that the sha is REAL, that it is reachable, or that it
+# is the commit that did the enacting. That needs `git cat-file` per pointer against a repo the
+# gate may be run outside of; the SHAPE is what this arm asserts, and a shaped-but-wrong pointer
+# is a smaller lie than no pointer at all.
+ENACTED_SHA_BLOCKING = False               # `s295-D2` — "ADVISORY at first". Dave's word to move.
+ENACTED_STATUS_RE = re.compile(r"\benacted\b", re.I)
+# a bare 7–40 hex run, or one behind the `commit ` / `sha ` vocabulary `_governs.evidence_form`
+# already blesses. Guarded on both sides so a 40-char word inside prose cannot pass as a sha.
+ENACTED_SHA_RE = re.compile(r"(?<![0-9a-fA-F])[0-9a-f]{7,40}(?![0-9a-fA-F])")
+
+
+def enacted_sha_pointer_check(repo):
+    """(items, notes) — `s295-D2`: every `status: enacted` ruling carries a sha-shaped pointer."""
+    items, notes = [], []
+    path = os.path.join(repo, "knowledge", "_rulings.json")
+    if not os.path.exists(path):
+        return items, ["s295-D2 ENACTED-SHA check SKIPPED — no `knowledge/_rulings.json` in this "
+                       "tree. A fixture tree is not a state the rule has an opinion about."]
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        rows = data["rulings"] if isinstance(data, dict) else data
+    except Exception as e:                                      # noqa: BLE001
+        # UNMEASURED, loud — never "no ruling is unstamped" [[a-crash-is-not-a-fail]].
+        return [f"s295-D2 ENACTED-SHA: `knowledge/_rulings.json` UNREADABLE "
+                f"({type(e).__name__}: {e}) — UNMEASURED, not green."], notes
+    enacted = [r for r in rows if ENACTED_STATUS_RE.search(str(r.get("status", "")))]
+    unproven = [r for r in enacted
+                if not any(ENACTED_SHA_RE.search(str(e)) for e in (r.get("evidence") or []))]
+    if unproven:
+        ids = [str(r.get("id")) for r in unproven]
+        items.append(
+            "s295-D2 ENACTED WITHOUT A SHA: %d of %d ruling(s) with `status: enacted` carry NO "
+            "sha-shaped evidence pointer — %s%s. `s295-D2` (Dave, #295): the lane that enacts a "
+            "ruling in code stamps it in the SAME commit, with the commit sha as the proof. "
+            "⚠ ADVISORY at first by that ruling's own words; this is a COUNT, not a refusal."
+            % (len(unproven), len(enacted), ", ".join(ids[:12]),
+               " …(+%d more)" % (len(ids) - 12) if len(ids) > 12 else ""))
+    notes.append(
+        "s295-D2 ENACTED-SHA: %d ruling(s) read ENACTED of %d in the store; %d carry a "
+        "sha-shaped evidence pointer, %d do not. ADVISORY (`ENACTED_SHA_BLOCKING=%s`) — "
+        "promotion to BLOCKING is Dave's word, and this line is the number it would be argued on."
+        % (len(enacted), len(rows), len(enacted) - len(unproven), len(unproven),
+           ENACTED_SHA_BLOCKING))
+    return items, notes
+
+
 def _rulings_status_map(repo):
     """{ruling id: status string} from `knowledge/_rulings.json`, or (None, reason). Fails LOUD
     and NAMED rather than degrading into an empty map — an unreadable store must read as
@@ -4282,6 +4343,43 @@ def _parse_boot_rows(text):
 # correctly. Same shape and same reason as `BOOT_CEILING_FROM_SESSION`.
 BOOT_DOUBLE_COUNT_FROM_SESSION = 241       # `s241-D2` — first stratum bound by the rule
 
+# ★★ `s295-D1` (Dave, #295, *"inscribe"*) — THE GATE READS THE POST-MORTEM LINE ONLY.
+#
+# ⛔ THE DEFECT, MEASURED BEFORE THE NARROWING: six of the seven inherited wrap-gate fails were
+# this arm, and NOT ONE of them was a session stating its own boot twice. #243 was charged FIVE
+# times because four later strata quote its reading inside a `"#243 form"` CARRY PARAGRAPH
+# (*"⛔ THREE BLOCKING GATE REFUSALS ARE CARRIED IN THE #243 FORM…"*); #264, #273 and #287 were
+# charged because their `wrap-handover: brief-cut …` / delta lines restate the figure the
+# post-mortem line already stated. Every one of those is a session TALKING ABOUT a reading, not
+# TAKING one — and `notes/_GAUGE-LOG.md` is APPEND-ONLY, so the arm's own remedy text
+# (*"delete the restatement"*) asked for the one repair no wrap may make. A gate whose only
+# discharge is forbidden is a gate that gets routed around
+# [[gate-cannot-pass-in-one-environment]] — twenty consecutive wraps took the #243 path past it.
+#
+# ⇒ THE FIX IS AT THE READING RULE, NEVER AT THE LOG. `s241-D2` always named ONE line as the
+# place a session states its first-turn figure — its `post-mortem #N:` line — and this arm simply
+# did not read that clause. It now does: a row counts toward the double-count only if it sits on
+# a post-mortem line WHOSE OWN ORDINAL IS THE SESSION BEING GRADED. Two post-mortem lines for one
+# session still FAIL, which is the defect #240 declared live and the only one this arm ever meant.
+# ⛔ NOTHING ELSE MOVED: `BOOT_CEILING_TK` is untouched and still SHRINK-ONLY, the CEILING BREACH
+# fail stands, `_parse_boot_rows` is unchanged (the band, the drift arm and the delta arm all read
+# it and none of them is narrowed here), and the uncharged repetitions are NOTED with their count
+# rather than made invisible.
+#
+# ⚠ THE LITERAL IN THE RULING IS `post-mortem #N:` WITH A COLON; THE LOG IS NOT SO TIDY. Measured
+# over the live log: #243's line reads `> **post-mortem #243:**` but #264/#272/#273/#274/#287 all
+# read `> **POST-MORTEM #264 — measured, not narrated.**` — UPPER CASE, EM DASH, NO COLON. Five of
+# the six fails would have survived a literal reading of the ruling's own punctuation, so the
+# matcher is case-insensitive and admits `:` or a dash. Said out loud rather than smoothed: this
+# widens the ruling's letter to reach the strata the ruling's SUBJECT names by number.
+BOOT_POST_MORTEM_LINE_RE = re.compile(r"post-?\s?mortem\s*#(\d+)\s*[:—–-]", re.I)
+
+
+def _is_post_mortem_row(row):
+    """True when this reading sits on the `post-mortem #N:` line of its OWN session (`s295-D1`)."""
+    m = BOOT_POST_MORTEM_LINE_RE.search(row["line"])
+    return bool(m) and int(m.group(1)) == row["session"]
+
 
 def boot_stratum_double_count_check(repo):
     """(fails, notes) — a session may state its boot figure ONCE in notes/_GAUGE-LOG.md."""
@@ -4291,8 +4389,12 @@ def boot_stratum_double_count_check(repo):
         return fails, notes          # boot_constant_drift_check already fails loud on absence
     with open(log, encoding="utf-8") as f:
         rows, _refused, _deltas = _parse_boot_rows(f.read())
+    # ★ `s295-D1` — the READING is the post-mortem line; everything else in the log that carries
+    # the same figure is prose ABOUT it and is not a second reading.
+    graded = [r for r in rows if _is_post_mortem_row(r)]
+    uncharged = len(rows) - len(graded)
     by_session = {}
-    for r in rows:
+    for r in graded:
         by_session.setdefault(r["session"], []).append(r)
     dupes = {k: v for k, v in by_session.items() if len(v) > 1}
     bound = {k: v for k, v in dupes.items() if k >= BOOT_DOUBLE_COUNT_FROM_SESSION}
@@ -4300,13 +4402,22 @@ def boot_stratum_double_count_check(repo):
     for sess in sorted(bound):
         rs = bound[sess]
         fails.append(
-            "boot double-count: session #%d states a first-turn figure %d times in "
-            "notes/_GAUGE-LOG.md (`s241-D2`: ONCE, in the `post-mortem #N:` line). One reading "
-            "counted twice displaces a real session from the derived band's window — %s. "
-            "Delete the restatement, or move the figure OUT of the boot vocabulary if it is a "
-            "comparison rather than a reading."
-            % (sess, len(rs),
+            "boot double-count: session #%d carries %d `post-mortem #%d` lines stating a "
+            "first-turn figure in notes/_GAUGE-LOG.md (`s241-D2`: ONCE, in the `post-mortem #N:` "
+            "line; `s295-D1`: that line and no other is read). One reading counted twice "
+            "displaces a real session from the derived band's window — %s. ⛔ THE LOG IS "
+            "APPEND-ONLY: do not edit a written stratum. The fix belongs in the stratum being "
+            "written now — state the figure once, in the post-mortem line."
+            % (sess, len(rs), sess,
                " · ".join("line %d “%s…”" % (r["lineno"], r["line"][:70]) for r in rs)))
+    if uncharged:
+        notes.append(
+            "boot double-count: %d boot reading(s) in notes/_GAUGE-LOG.md sit OUTSIDE a "
+            "`post-mortem #N:` line of their own session and are NOT CHARGED (`s295-D1`, Dave "
+            "#295) — a `wrap-handover: brief-cut …` line or a \"#243 form\" carry paragraph that "
+            "repeats a figure is prose ABOUT a reading, not a second reading. Counted and named "
+            "here rather than made invisible; `derived_boot_band()`'s own dedupe is unchanged."
+            % uncharged)
     if legacy:
         notes.append(
             "boot double-count: %d PRE-RULE session ordinal(s) carry more than one reading "
@@ -6365,6 +6476,12 @@ def wrap_checks(repo, today, lane=False):
         f_, n_ = boot_stratum_double_count_check(repo)  # ★ `s241-D2` (S5) — one stratum, one
         fails += f_                                     # first-turn figure. BLOCKING at birth:
         notes += n_                                     # #240 declared the defect live.
+        i_, n_ = enacted_sha_pointer_check(repo)   # ★ `s295-D2` — an ENACTED ruling carries the
+        (fails if ENACTED_SHA_BLOCKING else warns).extend(i_)   # sha that enacted it. ADVISORY
+        notes += n_                                # AT BIRTH by the ruling's own words; the
+                                                   # store predates the convention by ~295
+                                                   # sessions and a gate that cannot pass gets
+                                                   # routed around.
         i_, n_ = fill_working_ceiling_check(repo)  # ★ `s271-D2` — the DECLARED FILL against
         (fails if FILL_CEILING_BLOCKING else warns).extend(i_)   # BUDGET_WORKING. ADVISORY at
         notes += n_                                # birth BY RULING: whether it ever blocks is
@@ -10982,6 +11099,147 @@ def _carry_gm(latest_items, prior_items, latest_no=189, prior_no=188):
     ]) + "\n"
 
 
+def selftest_boot_double_count_narrowing():
+    """`s295-D1` — the arm reads the `post-mortem #N:` line and NOTHING ELSE.
+
+    Both directions, each naming its control: a stratum that repeats its figure OUTSIDE the
+    post-mortem line must PASS (that is the ruling), and a stratum with TWO post-mortem lines for
+    one session must still FAIL (that is the defect `s241-D2` was built for, undamaged).
+    """
+    failures = []
+
+    def drive(body):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "notes"))
+            with open(os.path.join(td, "notes", "_GAUGE-LOG.md"), "w", encoding="utf-8") as f:
+                f.write(body)
+            return boot_stratum_double_count_check(td)
+
+    HEAD = "#### 2026-09-01 #250\n"
+    PM = "> **post-mortem #250:** boot 61,200 real at turn 1.\n"
+    # the two shapes the LIVE log actually carries, measured at #295 — a `wrap-handover` line and
+    # a `#243 form` carry paragraph. Neither is a reading; both were charged before `s295-D1`.
+    HANDOVER = "> **wrap-handover: brief-cut 180,004 · boot 61,200 · delta 9,100**\n"
+    CARRY = ("> **⛔ TWO BLOCKING GATE REFUSALS ARE CARRIED IN THE #243 FORM RATHER THAN "
+             "REPAIRED** — #243's own boot 68,900 stands as written.\n")
+
+    # ---- (1) THE CONTROL: the post-mortem line ALONE. Green, and nothing uncharged.
+    f_, n_ = drive(HEAD + PM)
+    if f_:
+        failures.append(f"s295-D1 control: a stratum stating its figure ONCE was failed — {f_}")
+
+    # ---- (2) THE RULING: the same figure repeated OUTSIDE the post-mortem line ⇒ PASSES.
+    f_, n_ = drive(HEAD + PM + HANDOVER)
+    if f_:
+        failures.append(f"s295-D1: a figure repeated in a `wrap-handover` line was CHARGED as a "
+                        f"second reading — the arm still reads more than the post-mortem line: "
+                        f"{[x[:160] for x in f_]}")
+    if not any("NOT CHARGED" in x for x in n_):
+        failures.append(f"s295-D1: the uncharged repetition left NO note — an uncounted reading "
+                        f"must be named, never made invisible: {n_}")
+    f_, _ = drive(HEAD + PM + CARRY)
+    if f_:
+        failures.append(f"s295-D1: a `#243 form` carry paragraph quoting another session's boot "
+                        f"was CHARGED — {[x[:160] for x in f_]}")
+    f_, _ = drive(HEAD + PM + HANDOVER + CARRY)
+    if f_:
+        failures.append(f"s295-D1: both repetition shapes together were CHARGED — "
+                        f"{[x[:160] for x in f_]}")
+
+    # ---- (3) THE BITE THAT SURVIVES, and (1) is its control: TWO post-mortem lines, one session.
+    f_, _ = drive(HEAD + PM + "> **post-mortem #250:** boot 59,400 real at turn 1.\n")
+    if not any("boot double-count" in x and "#250" in x for x in f_):
+        failures.append(f"s295-D1: TWO `post-mortem #250` lines did NOT fail — the narrowing ate "
+                        f"the defect `s241-D2` exists for: {f_}")
+    elif not any("APPEND-ONLY" in x for x in f_):
+        failures.append(f"s295-D1: the fail no longer says the log is APPEND-ONLY — it must not "
+                        f"ask for the one repair a wrap may never make: {[x[:160] for x in f_]}")
+
+    # ---- (4) THE LOG'S REAL PUNCTUATION, measured at #295: UPPER CASE and an EM DASH, no colon.
+    # Five of the six live fails wore this shape; a matcher pinned to the ruling's literal colon
+    # would have left them all standing.
+    f_, _ = drive(HEAD + "> **POST-MORTEM #250 — measured, not narrated.** boot 61,200 real\n"
+                  + HANDOVER)
+    if f_:
+        failures.append(f"s295-D1: the live log's `POST-MORTEM #N — …` shape was not recognised "
+                        f"as the post-mortem line: {[x[:160] for x in f_]}")
+
+    # ---- (5) A PRE-RULE stratum is still ungraded, and the 241 boundary did not move.
+    if BOOT_DOUBLE_COUNT_FROM_SESSION != 241:
+        failures.append(f"s295-D1: BOOT_DOUBLE_COUNT_FROM_SESSION moved to "
+                        f"{BOOT_DOUBLE_COUNT_FROM_SESSION} — `s295-D1` narrows WHAT IS READ and "
+                        f"moves no boundary.")
+    f_, _ = drive("#### 2026-08-01 #200\n"
+                  + "> **post-mortem #200:** boot 61,200 real\n"
+                  + "> **post-mortem #200:** boot 59,400 real\n")
+    if f_:
+        failures.append(f"s295-D1: a PRE-#241 stratum was graded — the legacy hold-harmless is "
+                        f"gone: {[x[:160] for x in f_]}")
+    return failures
+
+
+def selftest_enacted_sha_pointer():
+    """`s295-D2` — an ENACTED ruling must carry a sha-shaped evidence pointer. Both directions."""
+    failures = []
+
+    def drive(rows):
+        with tempfile.TemporaryDirectory() as td:
+            os.makedirs(os.path.join(td, "knowledge"))
+            with open(os.path.join(td, "knowledge", "_rulings.json"), "w", encoding="utf-8") as f:
+                json.dump({"rulings": rows}, f)
+            return enacted_sha_pointer_check(td)
+
+    base = {"id": "sT-D1", "date": "2026-09-21", "by": "Dave", "ruled": "x", "says": "y",
+            "governs": [], "evidence": [], "status": "ruled"}
+
+    def row(**kw):
+        r = dict(base)
+        r.update(kw)
+        return r
+
+    # ---- (1) THE CONTROL: an ENACTED ruling WITH a sha ⇒ nothing raised.
+    i_, n_ = drive([row(status="enacted", evidence=["commit f81bbdd4 - the enactment wave"])])
+    if i_:
+        failures.append(f"s295-D2 control: an enacted ruling carrying a sha was raised — {i_}")
+    if not any("1 ruling(s) read ENACTED" in x for x in n_):
+        failures.append(f"s295-D2: the clean case left no counting note — the promotion argument "
+                        f"has no number to stand on: {n_}")
+
+    # ---- (2) THE BITE, and (1) is its control: ENACTED, no sha anywhere in evidence.
+    i_, n_ = drive([row(status="enacted", evidence=["notes/_lanes/294/R/review-page.html"])])
+    if not any("ENACTED WITHOUT A SHA" in x and "sT-D1" in x for x in i_):
+        failures.append(f"s295-D2: an enacted ruling with NO sha pointer was NOT raised — the "
+                        f"arm does not bite: {i_}")
+
+    # ---- (3) NOT ENACTED ⇒ out of scope. A `ruled` record owes nothing yet.
+    i_, _ = drive([row(status="ruled", evidence=["notes/x.md"])])
+    if i_:
+        failures.append(f"s295-D2: a `ruled` (not enacted) record was charged — the arm's scope "
+                        f"is the ENACTED claim, not every ruling: {i_}")
+
+    # ---- (4) A 40-CHAR WORD IS NOT A SHA. The guard on both sides is what makes this pass.
+    i_, _ = drive([row(status="enacted",
+                       evidence=["a sentence of prose with no pointer in it whatsoever"])])
+    if not any("ENACTED WITHOUT A SHA" in x for x in i_):
+        failures.append("s295-D2: prose evidence was read as a sha pointer — the shape check is "
+                        "not checking a shape.")
+
+    # ---- (5) AN UNREADABLE STORE IS UNMEASURED, NEVER GREEN [[a-crash-is-not-a-fail]].
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "knowledge"))
+        with open(os.path.join(td, "knowledge", "_rulings.json"), "w", encoding="utf-8") as f:
+            f.write("{ not json")
+        i_, _ = enacted_sha_pointer_check(td)
+    if not any("UNMEASURED" in x for x in i_):
+        failures.append(f"s295-D2: an unreadable store read as GREEN rather than UNMEASURED: {i_}")
+
+    # ---- (6) ADVISORY AT BIRTH, by the ruling's own words.
+    if ENACTED_SHA_BLOCKING:
+        failures.append("s295-D2: ENACTED_SHA_BLOCKING is True — the ruling says ADVISORY at "
+                        "first, and promotion is Dave's word, not a seat's.")
+    return failures
+
+
 def selftest_carry_gate():
     """s188-D2 — THE CARVE-OUT, BOTH DIRECTIONS. Every bite states its CONTROL.
 
@@ -11136,6 +11394,8 @@ def _selftest_body():
                 + selftest_argv_contract()       # ★ #218 — the #158 write-by-default class
                 + selftest_boot_delta_parse()    # ★ #218 — a delta beside `boot` is not a boot
                 + selftest_boot_ceiling_discharge() # ★ #245 `s244-D1` — ARM 1's discharge form
+                + selftest_boot_double_count_narrowing() # ★ #295 `s295-D1` — post-mortem line only
+                + selftest_enacted_sha_pointer()   # ★ #295 `s295-D2` — an ENACTED ruling's sha
                 + selftest_fill_ceiling()        # ★ #271 `s271-D2` — declared FILL vs WORKING
                 + selftest_hook_open_recheck()   # ★ #271 `s271-D4` — the hook's open list
                 + selftest_governing_join()      # ★ #218 — #212 finding 3, ADVISORY at birth
