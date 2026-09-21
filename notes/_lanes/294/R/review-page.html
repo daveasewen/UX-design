@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twelve Things Only You Can Rule</title>
+<style>
+:root{
+  --accent:#DB0011;
+  --black:#000;--white:#fff;
+  --grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;
+  --max:1200px;--gutter:2rem;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  background:var(--white);color:var(--black);
+  font-size:1rem;font-weight:400;line-height:1.75;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+hr.rule{border:0;border-top:1px solid var(--grey-2);width:100%}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:var(--s3)}
+nav .mark{font-size:.875rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+nav .ctx{font-size:.75rem;color:var(--grey-6);letter-spacing:.04em;text-align:right}
+
+/* label pattern */
+.label{
+  font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);
+}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent);flex:0 0 20px}
+
+/* header */
+header{padding:var(--s7) 0 var(--s6)}
+header h1{font-size:3.5625rem;line-height:1.02;font-weight:400;letter-spacing:0;margin-top:var(--s3);max-width:22ch}
+header .standfirst{margin-top:var(--s4);display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+header .standfirst p{max-width:60ch}
+header .meta{font-size:.875rem;color:var(--grey-7);line-height:1.6}
+header .meta b{font-weight:500;color:var(--black)}
+
+/* answer sheet */
+.sheet{padding:var(--s6) 0}
+.sheet h2{font-size:2.125rem;font-weight:400;line-height:1.15;margin-top:var(--s3)}
+.sheet .how{margin-top:var(--s3);max-width:62ch}
+.sheet ol{list-style:none;margin-top:var(--s5);border-top:1px solid var(--grey-3)}
+.sheet li{
+  display:grid;grid-template-columns:2.5rem 1fr 15rem;gap:var(--s3);
+  padding:var(--s2) 0;border-bottom:1px solid var(--grey-2);align-items:baseline;
+}
+.sheet li .n{font-size:1.1875rem;font-weight:500;color:var(--grey-5)}
+.sheet li .q{line-height:1.5}
+.sheet li .slot{font-size:.875rem;letter-spacing:.04em;color:var(--black);font-weight:500;text-align:right}
+.sheet li .slot span{color:var(--grey-6);font-weight:400}
+
+/* items */
+section.item{padding:var(--s6) 0;border-top:1px solid var(--grey-2)}
+section.item .grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:5.25rem;line-height:.9;font-weight:200;color:var(--grey-3)}
+.aside .kicker{margin-top:var(--s2);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6)}
+.body h3{font-size:2.125rem;font-weight:400;line-height:1.15;letter-spacing:-.01em;max-width:26ch}
+.body p{margin-top:var(--s3);max-width:64ch}
+.rec{margin-top:var(--s4);border-top:1px solid var(--grey-2);padding-top:var(--s3)}
+.rec .h{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6)}
+.rec .t{font-size:1.1875rem;line-height:1.5;margin-top:var(--s1);max-width:58ch}
+.rec .t b{font-weight:700}
+.rulebox{margin-top:var(--s4);border:1px solid var(--grey-3);padding:var(--s3)}
+.rulebox .h{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6)}
+.rulebox .words{margin-top:var(--s1);font-size:1.1875rem;font-weight:500;letter-spacing:.02em}
+.rulebox .words em{font-style:normal;color:var(--grey-5);font-weight:400}
+.tech{margin-top:var(--s4);border-top:1px solid var(--grey-2);padding-top:var(--s2);
+  font-size:.75rem;line-height:1.7;color:var(--grey-7);max-width:80ch}
+.tech b{font-weight:500;color:var(--black);letter-spacing:.1em;text-transform:uppercase}
+code{font-family:"SFMono-Regular",Consolas,monospace;font-size:.92em}
+
+/* group headings */
+.group{padding:var(--s7) 0 0}
+.group .gh{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:end}
+.group h2{font-size:2.6875rem;font-weight:400;line-height:1.1;letter-spacing:-.01em}
+.group .gcount{font-size:.875rem;color:var(--grey-7)}
+
+/* footer */
+footer{margin-top:var(--s7);border-top:1px solid var(--grey-2);background:var(--grey-1);padding:var(--s6) 0}
+footer .split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+footer h2{font-size:2.125rem;font-weight:400;line-height:1.15}
+footer ul{list-style:none;margin-top:var(--s2)}
+footer li{padding:var(--s1) 0;border-bottom:1px solid var(--grey-3);display:grid;grid-template-columns:3.5rem 1fr;gap:var(--s2)}
+footer li b{font-weight:500}
+footer .note{margin-top:var(--s4);font-size:.875rem;color:var(--grey-7);max-width:70ch}
+footer .sig{margin-top:var(--s5);font-size:.75rem;color:var(--grey-6);line-height:1.7}
+
+@media (max-width:860px){
+  header h1{font-size:2.6875rem}
+  header .standfirst,section.item .grid,.group .gh,footer .split{grid-template-columns:1fr;gap:var(--s4)}
+  .sheet li{grid-template-columns:2rem 1fr;}
+  .sheet li .slot{grid-column:2;text-align:left;margin-top:var(--s1)}
+  .idx{font-size:3.5625rem}
+  .group h2{font-size:2.125rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="mark">Apollo · Session 294</span>
+    <span class="ctx">Replaces the #293 dream-enactment audit as the ruling surface</span>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <p class="label">Your judgement, twelve items</p>
+    <h1>Twelve things only you can rule.</h1>
+    <div class="standfirst">
+      <div class="meta">
+        <p><b>Monday 21 September 2026</b><br>Built after the backlog was cut down.</p>
+        <p style="margin-top:var(--s3)"><b>Nothing settled is on this page.</b><br>Thirty-nine dream proposals and eighteen lane questions were examined. Twelve items came through — ten from that examination, and two long-standing housekeeping questions that are yours, added by addition after the first edition. The footer counts the rest and says why each class is gone.</p>
+      </div>
+      <div>
+        <p>You said: <em>“then wen they are cut down lets get a new review page with anything that needs mu judgement on it excluding anything settled”</em>. This is that page. The no-brainers were done first, in one commit, so none of them are here.</p>
+        <p style="margin-top:var(--s3)">Every item is a choice a machine cannot make for you: a number somebody picked, an instrument that is dead or unwired, a stamp that lies, a dependency that would lock other people out. Each one carries what I would do. You can rule the whole page in one reply using the answer sheet below — <b>“3: yes”</b> is a complete answer.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<div class="sheet wrap">
+  <p class="label">Answer sheet</p>
+  <h2>Rule the page in one reply.</h2>
+  <p class="how">Answer with the number and one word. Anything you skip stays open and comes back next session — skipping is a legitimate answer and costs nothing but time.</p>
+  <ol>
+    <li><span class="n">1</span><span class="q">The most-read sentence in the project has gone wrong again</span><span class="slot">generate <span>/</span> pin <span>/</span> leave</span></li>
+    <li><span class="n">2</span><span class="q">Half our own reports don't carry the lines the machine reads</span><span class="slot">enforce <span>/</span> drop <span>/</span> leave</span></li>
+    <li><span class="n">3</span><span class="q">“When was the last wrap?” is answered by the wrong commits</span><span class="slot">fix <span>/</span> retire <span>/</span> leave</span></li>
+    <li><span class="n">4</span><span class="q">Two numbers in the memory grader were picked, not decided</span><span class="slot">keep <span>/</span> change <span>/</span> later</span></li>
+    <li><span class="n">5</span><span class="q">The push credential's scope, before it expires in six weeks</span><span class="slot">yes <span>/</span> no <span>/</span> later</span></li>
+    <li><span class="n">6</span><span class="q">The memory grader is dead and two reviews are owed to you</span><span class="slot">re-point <span>/</span> review</span></li>
+    <li><span class="n">7</span><span class="q">A boot number attributed to a file that no longer exists</span><span class="slot">re-measure <span>/</span> hold</span></li>
+    <li><span class="n">8</span><span class="q">The size figure on the front page: typed by hand or generated</span><span class="slot">generate <span>/</span> stamp</span></li>
+    <li><span class="n">9</span><span class="q">The pre-flight stamp now measures the wrong thing correctly</span><span class="slot">widen <span>/</span> emitter</span></li>
+    <li><span class="n">10</span><span class="q">Jev: a dev-time instrument only, never a dependency</span><span class="slot">yes <span>/</span> no</span></li>
+    <li><span class="n">11</span><span class="q">What a wrap that crosses midnight should stamp</span><span class="slot">session <span>/</span> commit <span>/</span> both</span></li>
+    <li><span class="n">12</span><span class="q">The holding directory nothing is allowed to empty</span><span class="slot">purge <span>/</span> keep <span>/</span> gate</span></li>
+  </ol>
+</div>
+
+<!-- ============ GROUP 1 ============ -->
+<div class="group">
+  <div class="wrap">
+    <div class="gh">
+      <div><p class="label">Group one</p><h2>The dream passes you were never shown</h2></div>
+      <p class="gcount">Five items. Two whole passes — nine and ten — were floated, filed and never put to you. Pass ten's three were digested onto a review page at session 226 and never raised again. Measured ages: pass nine <b>29 days</b>, pass ten <b>22 days</b>, pass six <b>43 days</b>.</p>
+    </div>
+  </div>
+</div>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">01</div><p class="kicker">Pass ten · 22 days</p></div>
+    <div class="body">
+      <h3>The most-read sentence in the project has gone wrong again</h3>
+      <p>The line every reader meets at the top of the chain says <em>“75 of 144 steps green — 69 steps have NEVER been in a green verdict”</em>. The denominator, 144, is generated from the code and moves on its own. The numerator, 75, is frozen against an old commit and does not. So the sentence gets quietly wronger every time the build grows.</p>
+      <p>You already ruled once on this exact shape, at session 125: the count stops being a typed number and becomes a generated one, explicitly <em>over</em> a third re-stamp, because a value that has gone stale twice will go stale a third time. That ruling also left a standing warning that says a future session helpfully hand-correcting the number is enacting the option you rejected — so nobody is allowed to just fix it.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Generate</b> — derive the green count the same way the denominator is derived, so the whole sentence comes from the code rather than half of it.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">generate <em>/</em> pin <em>/</em> leave</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-08-30-proposals.md</code> P3 (dream pass 10, file date 2026-08-30, age <b>22 days</b> measured) · digested to you at #226, no ruling followed · precedent <code>s125-D1</code> (ruled #125, 2026-08-07, age 45 days measured; its <code>watch</code> field forbids the hand-fix by name) · live probe <code>_gen_chain.build_verdict_line()</code> returns “75 of 144 … 69” · pinned sha <code>18c7789</code> · audit finding 9 · searched all <b>622</b> records in <code>knowledge/_rulings.json</code> plus <code>notes/_MEMENTO-DECISIONS.md</code>: no disposition ruling.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">02</div><p class="kicker">Pass ten · 22 days</p></div>
+    <div class="body">
+      <h3>Half our own reports don't carry the lines the machine reads</h3>
+      <p>Every lane report is supposed to end with three machine-readable lines — a counts line, a replay-these block, and a ruling-shaped-questions heading — so that later sessions can find work without reading prose. Measured this morning across all 363 filed reports: the counts line parses in 173, the replay block in 136, the questions heading in 169. Under half, on all three.</p>
+      <p>That is either a contract worth enforcing at the gate, or a contract we should stop pretending to have. Holding it as an unenforced convention is the worst of the three, because every consumer written against it silently reads a partial population.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Enforce</b> — make the three lines a gate condition on a filed report, so a lane cannot close without them.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">enforce <em>/</em> drop <em>/</em> leave</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-08-30-proposals.md</code> P1 (pass 10, age <b>22 days</b> measured) · contract <code>s218-D7</code>, three PARSED lines · re-measured at #293 with the gate's own three regexes over 363 reports → 173 / 136 / 169 (48% · 37% · 47%) · audit finding 9 · no ruling in <code>_rulings.json</code> (622 records, field extraction) or <code>notes/_MEMENTO-DECISIONS.md</code>.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">03</div><p class="kicker">Pass ten · 22 days</p></div>
+    <div class="body">
+      <h3>“When was the last wrap?” is answered by the wrong commits</h3>
+      <p>One constant decides which commit counts as a wrap. It matches the commit-subject shape that our own commit script documents as the <em>non-wrap</em> shape — so it selects the newest commit of any kind. When the pass measured it, it matched 129 of the last 150 commits, only 11 of which were wraps, and it was handing both of its consumers an empty population.</p>
+      <p>This is a one-line pattern with two readers. Left alone it will keep producing confident, empty answers, which is worse than an error.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Fix</b> — point the pattern at the wrap shape the commit script actually writes, and add a bite that fails if it ever matches a non-wrap subject again.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">fix <em>/</em> retire <em>/</em> leave</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-08-30-proposals.md</code> P2 (pass 10, age <b>22 days</b> measured) · <code>WRAP_COMMIT_SUBJECT_RE</code> at <code>knowledge/_capture_gate.py:5694</code>, byte-unchanged since the pass, reads <code>^after\s+#\d+\b</code> · two consumers still read it · audit finding 9 · zero matches for <code>WRAP_COMMIT_SUBJECT</code> across 622 rulings and the decisions ledger — never ruled.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">04</div><p class="kicker">Pass nine · 29 days</p></div>
+    <div class="body">
+      <h3>Two numbers in the memory grader were picked, not decided</h3>
+      <p>The grader calls a memory fact stale after 30 days, and warns you when the graded population moves by 5. Both numbers were picked by a session to get the instrument running, and both are recorded in the store as explicitly yours to set at the memory review. Neither has ever been set.</p>
+      <p>There is one piece of evidence on the 30: when it was deferred, the stated ground was that 30 days cannot move a single entry inside a seven-day window. On the first cycle it moved 13, and the stale count went from 1 to 16. So the number is doing more work than the deferral assumed — which is an argument for ruling it, not for changing it blind.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Keep</b> both at 30 and 5 and inscribe them as ruled, so they stop being provisional and the grader's output stops carrying an asterisk.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">keep <em>/</em> change <em>/</em> later</div>
+      </div>
+      <p class="tech"><b>Technical</b> · <code>GRADE_AGING_DAYS = 30</code> at <code>knowledge/_gardener.py:145</code>, still labelled provisional · <code>POPULATION_DELTA_THRESHOLD = 5</code> · source <code>notes/_dream/2026-08-23-proposals.md</code> P3 (dream pass 9, file date 2026-08-23, age <b>29 days</b> measured) · reserved to you by name in <code>s183-D1</code>'s status (“grading unit and GRADE_AGING_DAYS remain DAVE'S at the B3 return-with-numbers”, 2026-08-16, age 36 days measured) and in <code>s256-D2</code> (“NOT enacted, still Dave's … the picked POPULATION_DELTA_THRESHOLD=5”, 2026-09-08, age 13 days measured) · audit findings 3 and 9 · pass 9 has <b>no disposition ruling on any of four surfaces</b>.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">05</div><p class="kicker">Pass six · 43 days · expires in 46</p></div>
+    <div class="body">
+      <h3>The push credential's scope, before it expires in six weeks</h3>
+      <p>Two standing places in the record describe the push token as narrow — this repo, contents read/write, ninety days. The session that installed it said on the record that the token actually in force is broader than that. Nothing re-checks either the scope or the expiry, and the commit script's own refusal message used to tell the reader to paste a live credential into chat.</p>
+      <p>The expiry the record stamps is around <b>6 November</b>, measured 46 days out from today. The narrowing was left as your security call and has never been proposed to you, so there is nothing for you to approve or reject yet — which is the actual gap.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Yes</b> to the narrow shape the record already claims — this repo, contents read/write only, ninety days — re-issued before 6 November, with the expiry checked by the script rather than remembered.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">yes <em>/</em> no <em>/</em> later</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-08-09-proposals.md</code> P4 (dream pass 6, file date 2026-08-09, age <b>43 days</b> measured) · promoted as a priced row by <code>s186-D2</code> (2026-08-16, age 36 days measured) with the scope itself reserved · stamped expiry <code>2026-11-06</code>, <b>46 days</b> out measured · inscribed premise at <code>notes/_MEMENTO-DECISIONS.md:5688</code> and <code>knowledge/_git_commit.sh:39</code> · audit ruling-shaped question 8 · the scope has never been proposed, so no ruling exists to find.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ GROUP 2 ============ -->
+<div class="group">
+  <div class="wrap">
+    <div class="gh">
+      <div><p class="label">Group two</p><h2>Instruments</h2></div>
+      <p class="gcount">Two items. Both are cases where an instrument and the world have come apart, and the fix depends on which of the two you treat as authoritative. Instruments whose <em>purpose</em> you already ruled are not here — those are builds, not decisions, and they are counted in the footer.</p>
+    </div>
+  </div>
+</div>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">06</div><p class="kicker">Longest-carried item in the record</p></div>
+    <div class="body">
+      <h3>The memory grader is dead and two reviews are owed to you</h3>
+      <p>The memory-grade question has ridden four dream passes and seven proposals. Two review dates were set and both have passed: the cost half was due 23 August, the staleness half 20 September. Neither review has ever been made. And the instrument that would supply the numbers has been blocked since the store moved at session 278 — it points at a memory file that does not exist on disk, and refuses to guess.</p>
+      <p>As of today the boot surface no longer prints its dead readings as if they were measurements — that fence went in this morning. So the choice is clean: re-point the grader at the store's new home and review real numbers, or hold the review on whatever data honestly exists.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Re-point</b> first. A review run on a dead 13 September sidecar produces a decision you would have to make twice.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">re-point <em>/</em> review</div>
+      </div>
+      <p class="tech"><b>Technical</b> · sources <code>notes/_dream/2026-08-23-proposals.md</code> P4 (pass 9, age <b>29 days</b> measured) and the pass 8 / 11 / 13 rows · probe <code>python3 knowledge/_gardener.py --refresh --dry-run</code> → <code>⛔ GARDENER BLOCKED … REFUSING TO GUESS</code> · sidecar <code>notes/_dream/_MEMORY-GRADES.json</code> reads <code>refreshed_at 2026-09-13T07:11:34</code> over 52 hooks, age <b>8 days</b> measured · two gardener arms landed at <code>44c80619</code> are inert for the same reason · return dates elapsed 2026-08-23 (1 cycle) and 2026-09-20 (5 cycles) · staleness/void fence landed today at <code>03605215</code> · audit findings 5, 6, 7 and ruling-shaped question 4.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">07</div><p class="kicker">A ruling against the evidence</p></div>
+    <div class="body">
+      <h3>A boot number attributed to a file that no longer exists</h3>
+      <p>The read chain publishes a breakdown of what boot costs, and 8,470 of those tokens are attributed to a memory file that has had no path on disk since the store moved. The session that moved it said on the record it would be re-measured. Five boot readings later, nobody has — while boot went up.</p>
+      <p>Here is the bind, and it is why this is yours. The ceiling above that number is shrink-only by your ruling, and yours to move. An honest re-measure would almost certainly read <em>higher</em>, not lower — so the rule and the evidence point opposite ways, and no session can resolve that on its own.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Re-measure</b>, and publish the reading beside the term rather than replacing it — a shrink-only rule should constrain what we spend, not what we are allowed to know.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">re-measure <em>/</em> hold</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-09-20-proposals.md</code> P2 (dream pass 13, file date 2026-09-20, age <b>1 day</b> measured) · the term is live at four sites in the read chain: <code>_CHAIN.md:43</code>, <code>GOOD-MORNING.md:18</code>, <code>:105</code>, <code>:439</code> · annotated by addition today and parked as <code>P-293-1</code>; the constant is byte-unchanged · the shrink-only rule is <code>s241-D1</code> (70,000 real, 2026-09-02, age 19 days measured, “Dave's to move”) · scope history <code>ds-025</code> · lane E1 ruling-shaped question 3 · audit finding on the four sites.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ GROUP 3 ============ -->
+<div class="group">
+  <div class="wrap">
+    <div class="gh">
+      <div><p class="label">Group three</p><h2>The two stamps on the front page</h2></div>
+      <p class="gcount">Two items. Both are the same question in different clothes: does a figure you read every morning get typed by a session, or produced by the code? You ruled that question once before, at session 125, in favour of generating. These two were never asked.</p>
+    </div>
+  </div>
+</div>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">08</div><p class="kicker">Pass thirteen · strong form open</p></div>
+    <div class="body">
+      <h3>The size figure on the front page: typed by hand or generated</h3>
+      <p>The front page carries a <code>size:</code> stamp giving its own length. It used to call that figure “exact”; it had understated the generated figure at six of the last seven wrap commits, by a growing gap, and at one session the two series disagreed in <em>sign</em> — so the published conclusion was the opposite of what the file had done.</p>
+      <p>The cheap half landed today: the word “exact” is gone. The real question was never answered — should the figure be generated, and should the build fail when the stamped and generated numbers disagree beyond a small tail?</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Generate</b>, and fail the check on a real disagreement — the same call you made at session 125, for the same reason.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">generate <em>/</em> stamp</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-09-20-proposals.md</code> P3 (pass 13, age <b>1 day</b> measured) · weak form enacted today at <code>03605215</code> (<code>GOOD-MORNING.md:15</code>, “exact” dropped, nothing else on the line moved) · strong form — generate the figure, or fail <code>_gen_chain.py --check</code> past the 5-byte tail — not built · lane E1 ruling-shaped question 5, audit ruling-shaped question 6 · precedent <code>s125-D1</code> · this session's own stamp declared 4.89% and 1.46% post-stamp drift against a 10% tolerance.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">09</div><p class="kicker">Found while fixing a 93-session refusal</p></div>
+    <div class="body">
+      <h3>The pre-flight stamp now measures the wrong thing correctly</h3>
+      <p>For 93 consecutive sessions the pre-flight half of the price-versus-actual dataset said “not captured”, and the reason it repeated was false — the measurement was reachable all along. That was fixed today: there is now an arm that reads it and returns a real number.</p>
+      <p>But the new number is the <b>spend</b> — what the session had actually used at the moment of the call. The stamp on the front page wants the <b>price</b>: boot plus job plus wrap, estimated at the opener, against the budget, with a band. Two different objects. Pasting the measured line into the stamp takes the wrap red, and a session is not allowed to change a gate's contract to make its own commit pass.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Widen</b> the stamp to accept either a priced line or a measured one, each labelled — one surface, two legal forms, rather than two emitters that can drift apart.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">widen <em>/</em> emitter</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>notes/_dream/2026-08-23-proposals.md</code> P1 (dream pass 9, age <b>29 days</b> measured), enacted today at <code>03605215</code> as <code>_checkin.py::preflight_line()</code> / <code>--preflight-line N</code> · the refusal ran <code>#199</code> → <code>#291</code>, <b>185 occurrences</b> in <code>notes/_GAUGE-LOG.md</code> · stamp contract <code>_capture_gate.check_preflight</code>, form ruled at #56, arithmetic at <code>ds-023</code> · named ruling-shaped and yours by the #293 wrap · #293's own stamp stands as the #73 legal refusal with a true cause.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ GROUP 4 ============ -->
+<div class="group">
+  <div class="wrap">
+    <div class="gh">
+      <div><p class="label">Group four</p><h2>Jev</h2></div>
+      <p class="gcount">One item. Four lanes researched, built and probed Jev today and nothing has been put back to you. Only the constraint you named yourself needs your word; the technical follow-ups are lane work and are not on this page.</p>
+    </div>
+  </div>
+</div>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">10</div><p class="kicker">Today · your own constraint</p></div>
+    <div class="body">
+      <h3>Jev stays a dev-time instrument, never a dependency</h3>
+      <p>You set the condition yourself when you asked for the research: <em>“obviously it wouldn't work for anyone who doesn't have the api”</em>. Then <em>“okay, ill be guided by you”</em>. So I am guiding, and this is the one line worth inscribing before the adapter grows a caller.</p>
+      <p>Right now the adapter exists and nothing calls it, which is accidentally the right state. The risk is drift: one convenient call site inside a gate or a build step and Jev becomes a hard dependency for every person who does not have an API key. Inscribed as a ruling, that cannot happen by accident — it would have to be argued against your word.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Yes</b> — Jev is a dev-time instrument only, never a blocking dependency; no gate, build step or boot path may require it.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">yes <em>/</em> no</div>
+      </div>
+      <p class="tech"><b>Technical</b> · your words recovered verbatim at <code>notes/_lanes/293/J3/_FOR-THE-NEXT-WRAP.md</code> · lanes J, J2, J3, committed at <code>fa735458</code> and <code>46a55895</code>, age <b>0 days</b> measured · <code>knowledge/_jev.py</code> is an instrument with no caller; nothing in <code>_build_all.py</code> calls it · probe n=3, one document: the rubric's top level failed to separate two artefacts, latency 579–621 ms against a declared 70–500 ms · <code>.env.local</code> holds the key, gitignored at <code>.gitignore:71</code> · zero matches for <code>jev</code> or <code>typesafe</code> across 622 records in <code>_rulings.json</code> and <code>notes/_MEMENTO-DECISIONS.md</code> — nothing ruled.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ GROUP 5 ============ -->
+<div class="group">
+  <div class="wrap">
+    <div class="gh">
+      <div><p class="label">Group five</p><h2>Housekeeping that is yours</h2></div>
+      <p class="gcount">Two items, both older than anything above them, and both kept off the first edition of this page because neither is a dream proposal or a lane question. Each is a small rule that stops a file or a directory growing another line every session it is not ruled. Measured ages: the midnight-stamp question <b>19 days</b>, the holding directory's oldest top-level entry <b>46 days</b>.</p>
+    </div>
+  </div>
+</div>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">11</div><p class="kicker">Session 241 · 19 days</p></div>
+    <div class="body">
+      <h3>What a wrap that crosses midnight should stamp</h3>
+      <p>Work sometimes starts one evening and finishes the next morning, so the session and the commit fall on different dates. Nothing has ever ruled which of those two dates the wrap should stamp, and rather than guess, each wrap that hit the problem added a warning line to the top of the front page explaining its own case. There are now five of those lines, and they are the first thing anyone reads.</p>
+      <p>The practice underneath them is already consistent: keys, filenames and report stems keep the <em>session</em> date, and the header line carries the <em>commit</em> date so the freshness check is grading a true statement. That is a working answer nobody has been allowed to call an answer. Ruling it does not change any behaviour — it stops the sixth occurrence writing a sixth paragraph to re-explain the same thing.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Both</b> — stamp the session date on keys, filenames and report stems, carry the commit date on one header line, and let a ruling replace the five explanatory paragraphs with a pointer.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">session <em>/</em> commit <em>/</em> both</div>
+      </div>
+      <p class="tech"><b>Technical</b> · source <code>GOOD-MORNING.md</code> lines 9–13, five <code>WRAP DATE SPLIT</code> lines added by ADDITION at sessions 241, 248, 261, 277 and 291, none removed · origin <code>_DECISION-HISTORY/2026-09-02-241-the-measured-diet-and-the-derived-band.md</code>, file date 2026-09-02, so the question is <b>19 days</b> old measured against Monday 21 September 2026 · <code>s241-D1</code> and <code>s241-D2</code> both carry <code>date 2026-09-02</code> and neither rules the stamp · ⚠ the ages the five lines themselves carry — 7, 20, 36, 50 — are <b>sessions since #241</b>, not days (248−241=7 · 261−241=20 · 277−241=36 · 291−241=50, verified arithmetically), which at #294 makes it the <b>53rd session</b>; the unit is unlabelled on every one of the five lines and that is its own small defect · searched all <b>622</b> records in <code>knowledge/_rulings.json</code>: the nine <code>s261-D*</code> rulings mention the split in evidence, none disposes of it.</p>
+    </div>
+  </div></div>
+</section>
+
+<section class="item">
+  <div class="wrap"><div class="grid">
+    <div class="aside"><div class="idx">12</div><p class="kicker">Oldest entry · 46 days</p></div>
+    <div class="body">
+      <h3>The holding directory nothing is allowed to empty</h3>
+      <p>When something is retired we move it to a holding directory rather than delete it, because deleting is how work gets lost and a move is always recoverable. The rule is sound. The consequence is that the directory only ever grows: it now holds a hundred and eight top-level entries, five thousand files and directories in all, and a hundred and twenty-eight megabytes.</p>
+      <p>The wrap ritual's scratch-hygiene step looks like it would catch this and does not — it cleans the virtual machine's temporary directories, which are outside the repository, and has never looked at this one. So nothing reaches it, and today's dream-enactment added another entry to it. The honest answer is not to start deleting by hand: that is the exact act the move-never-delete rule exists to prevent, and on this mount the deletion may not even succeed.</p>
+      <div class="rec">
+        <div class="h">My recommendation</div>
+        <div class="t"><b>Gate</b> — add an arm to the hygiene step that refuses a wrap while the holding directory contains anything older than N sessions, and rule N yourself, so the backlog is declared to you rather than quietly swept or quietly grown.</div>
+      </div>
+      <div class="rulebox">
+        <div class="h">One word</div>
+        <div class="words">purge <em>/</em> keep <em>/</em> gate</div>
+      </div>
+      <p class="tech"><b>Technical</b> · measured at this seat, 2026-09-21: <code>_to_delete/</code> holds <b>108</b> top-level entries, <b>5,000</b> files and directories in total and <b>134,691,274 bytes</b> (128.5 MiB); oldest top-level entry 2026-08-06, age <b>46 days</b> measured; oldest file anywhere <code>_to_delete/logos-identifier-282/masterbrand-identifier-light-colour.svg</code>, 2026-06-17, age <b>96 days</b> measured; newest is <code>_to_delete/_s276-D6-lane-ownership-guard/</code> from today's dream-enactment lane, one file, 3,542 B · gitignored at <code>.gitignore:34</code> · ritual step 4c is <code>knowledge/_gate_scratch_hygiene.py</code>, whose <code>SCRATCH_ROOTS</code> at line 35–40 are <code>/var/tmp</code>, <code>/tmp</code>, <code>~/tmp</code>, <code>~/.cache</code> plus <code>~/.local</code> on <code>--wrap</code> — <b>zero</b> occurrences of <code>_to_delete</code> in its 150 lines, so the step provably does not reach it · the squatter is named verbatim in <code>GOOD-MORNING.md</code>'s #293 commit-state block: <em>“still an accumulating squatter that <code>4c</code> does not reach … and what to do about it is his”</em> · <code>s282-D4</code> (ruled 2026-09-18) calls it <em>“a gitignored holding dir: the mount refuses unlink”</em>, which is why a hand purge is not offered as the recommendation · searched all <b>622</b> records: <code>s282-D4</code> is the only one that names the directory, and it rules a logo set, not the directory's fate.</p>
+    </div>
+  </div></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="split">
+      <div><p class="label">What is not here</p><h2>Two tallies, kept separate.</h2></div>
+      <div>
+        <p class="note" style="margin-top:0"><b>Thirty-nine dream proposals, passes six to thirteen.</b></p>
+        <ul>
+          <li><b>22</b><span>ruled by you and enacted with a commit behind them, before today</span></li>
+          <li><b>9</b><span>enacted today — eight in the dream-enactment commit, one in the conductor's seat</span></li>
+          <li><b>3</b><span>overtaken by the store move; the world changed under them</span></li>
+          <li><b>5</b><span>remain, and all five are on this page</span></li>
+        </ul>
+        <p class="note"><b>Eighteen ruling-shaped questions across the three lane reports.</b> Eight are on this page. Ten are not: <b>3</b> were answered by today's enactments · <b>4</b> are the conductor's call rather than yours (a sequencing choice, a boot-surface wiring cost, a duplicate retrieval id, and the Jev receipts-rotation rule, which the lane names as its own) · <b>1</b> is an instrument whose purpose you already ruled, so wiring it is building, not deciding · <b>1</b> is a note rather than a question · <b>1</b> is lane work awaiting a re-run.</p>
+        <p class="note">Also excluded: <b>four sub-clauses</b> reserved deliberately at the time and recorded as not oversights, and <b>a second unwired instrument</b> whose watcher role you inscribed at session 273. No bodies for any of them — the evidence is in the audit at <code>notes/_lanes/293/DA/dream-enactment-audit.html</code>, which this page replaces as the place you rule.</p>
+        <p class="note"><b>Items 11 and 12 were added after the first edition of this page, by addition.</b> Neither is a dream proposal or a lane question, so neither was eligible under the brief the first ten were built from — and both were named as belonging here in that edition's own could-not-resolve note. The two tallies above are unchanged: they count what they counted, and this page now carries two items they never covered.</p>
+        <p class="note"><b>Items 6, 7, 8 and 9 are the unfinished half of something enacted today</b> — each says so in its own Technical line, so you are not ruling on work already done.</p>
+        <p class="note">Every age on this page is <b>measured</b> from a file date or a store record date against Monday 21 September 2026. Nothing here is an estimate, and nothing here has been inscribed — each item is a question put, not a state of the world.</p>
+      </div>
+    </div>
+    <p class="sig">Apollo session 294 · lane R · built from the #293 dream-enactment audit, the enactment report, and the Jev probe · 39 dream proposals and 18 lane questions examined, 10 put to you · plus 2 standing housekeeping questions added by addition, measured at the seat that added them — twelve items in all</p>
+  </div>
+</footer>
+
+</body>
+</html>
