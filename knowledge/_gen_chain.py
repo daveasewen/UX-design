@@ -410,8 +410,29 @@ def build_verdict_line(repo=ROOT):
             f"{stale}{dirty}{unseen}{conf}{sixty2}")
 
 
+# ★★ #295 — THE HEAD PIN, AND IT IS FOR **ONE** CALLER: `check()`'s re-ask at the sha the
+# committed chain was generated at (see § THE HEAD-ONLY ADVANCE in `check()`). ⛔ IT IS NEVER SET
+# WHILE WRITING: `build()`/`write()` always see the true HEAD, so the chain a cold session reads
+# always carries the honest live comparison.
+#
+# ⛔ WHY AN ENVIRONMENT VARIABLE AND NOT A MODULE GLOBAL — MEASURED, after a module global was
+# written first and DID NOT WORK when the file is run as a script. `_capture_gate.py:1794` does
+# `import _gen_chain; _gen_chain.build_verdict_line(repo)` while assembling the banner. Run as
+# `__main__`, this file is TWO module objects — `__main__` and the freshly imported `_gen_chain` —
+# and the verdict line is rendered by the OTHER one, whose global was still None. The in-process
+# test passed and the CLI stayed red on the same tree, which is exactly the class of divergence
+# #58/#59 taught this module to distrust. An env var is the one channel both copies share.
+# ⚠ AND IT IS GUARDED: a var already set when this process STARTED is not honoured silently —
+# `check()` refuses, below, rather than letting an environment pin its verdict green.
+HEAD_PIN_ENV = "APOLLO_CHAIN_HEAD_PIN"
+_PREEXISTING_HEAD_PIN = os.environ.get(HEAD_PIN_ENV)
+
+
 def _head_short(repo=ROOT):
     """The short HEAD sha, or None. Used ONLY to declare staleness, never to derive a count."""
+    pin = os.environ.get(HEAD_PIN_ENV)
+    if pin:
+        return pin
     import subprocess
     try:
         r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=repo,
@@ -419,6 +440,20 @@ def _head_short(repo=ROOT):
         return r.stdout.strip() if r.returncode == 0 else None
     except (OSError, subprocess.SubprocessError):
         return None
+
+
+# The HEAD sha the committed chain was GENERATED at, read out of its own build-verdict line.
+# ⚠ Pinned to the exact sentence `build_verdict_line()` writes — if that sentence is reworded this
+# returns None and `check()` falls straight back to the plain byte comparison, i.e. the old
+# behaviour. A normaliser that silently stops matching must DEGRADE to the strict check, never to
+# a pass [[a-crash-is-not-a-fail]].
+CHAIN_HEAD_RE = re.compile(r"HEAD is `([0-9a-f]{4,40})`")
+
+
+def _chain_head_sha(text):
+    """The short HEAD sha stamped into `text`'s build-verdict line, or None."""
+    m = CHAIN_HEAD_RE.search(text or "")
+    return m.group(1) if m else None
 
 
 def _verdict_from_ledger(repo=ROOT):
@@ -785,6 +820,51 @@ def check(repo=ROOT):
               f"measurer, or re-ask where it is reachable. The freshness of {OUT_NAME} is "
               f"UNKNOWN and is reported as unknown rather than guessed.")
 
+    # ---- ★★ #295 — THE HEAD-ONLY ADVANCE, AND WHY THIS CHECK WAS RED BY CONSTRUCTION.
+    # `build_verdict_line()` (lane A, `s294-D1`) renders the LIVE HEAD sha — *"that run is at X,
+    # HEAD is Y"* — so the instant ANY commit lands, the committed `_CHAIN.md` names the previous
+    # HEAD and a fresh render names the new one. Lane P proved it at `280e4e82`: the chain was
+    # FRESH in the tree that was committed and STALE in the tree that commit produced, in the same
+    # second, with no edit between. ⇒ EVERY pushed tree was red in CI's survey step, permanently,
+    # and the repair was structurally unfinishable at a committing seat (regenerating the chain
+    # needs a commit, and that commit re-stales it).
+    # ⛔ MEASURED, because "it's just the sha" would have been the wrong fix: the two texts differ
+    # in TWO places, not one — the verdict line AND the footer's fixed-point tape figure (10,480
+    # vs 10,481 at #295). The shas are the same BYTE LENGTH and a different TOKEN count, so
+    # normalising the sha clause out of both strings would leave the size figure mismatched and
+    # the check still red. That is why this re-ASKS instead of normalising.
+    # ⛔ WHAT IS NOT WEAKENED: the honest comparison stays VISIBLE. `build()` is untouched and
+    # never sees the override, so the chain a cold session reads still carries *"that run is at X,
+    # HEAD is Y"* against the TRUE HEAD. And the re-ask only ever runs when the committed file
+    # names a DIFFERENT sha than live: any real drift in GOOD-MORNING.md / _LIVE-STATE.md survives
+    # it and is still reported STALE, because the re-render differs for that reason too.
+    if have != text and _PREEXISTING_HEAD_PIN:
+        return cna.refuse(OUT_NAME, f"{HEAD_PIN_ENV} was already set in the environment "
+                          f"({_PREEXISTING_HEAD_PIN!r}) when this process started. That variable "
+                          f"is `check()`'s OWN scratch channel for re-asking at the chain's "
+                          f"generating commit; an environment that sets it is pinning the verdict "
+                          f"from outside. No freshness verdict is offered in either direction.")
+    if have != text:
+        # ⚠ BOTH SHAS ARE READ OFF THE TWO TEXTS, not off git. The committed file's sha and the
+        # FRESH RENDER's sha are exactly the two things the byte comparison is disagreeing about,
+        # and reading them here keeps this clause honest in a tree where `git rev-parse` is
+        # unreadable (a bare export, a fixture) — where `_head_short` returns None and a
+        # git-based condition would silently never fire.
+        pinned, live = _chain_head_sha(have), _chain_head_sha(text)
+        if pinned and pinned != live:
+            os.environ[HEAD_PIN_ENV] = pinned
+            try:
+                at_pin, pin_detail = build(repo)
+            finally:
+                os.environ.pop(HEAD_PIN_ENV, None)
+            if at_pin is not None and have == at_pin:
+                print(f"  ✅ {OUT_NAME} is FRESH at the commit it was generated at "
+                      f"(`{pinned}`) — HEAD has since advanced to `{live or 'UNREADABLE'}`, "
+                      f"and the ONLY "
+                      f"difference is the build-verdict line's live-HEAD clause and the tape "
+                      f"figure it shifts. Content matches GOOD-MORNING.md / _LIVE-STATE.md as "
+                      f"they now stand · {pin_detail}")
+                return 0
     if have != text:
         print(f"  ✗ {OUT_NAME} is STALE — it does not match GOOD-MORNING.md / _LIVE-STATE.md as "
               f"they now stand, so a cold session would read a PREVIOUS session's record as if it "
@@ -967,6 +1047,90 @@ def selftest():
                 shutil.copy(src, os.path.join(tmp, n))
         write(tmp)
         bite("--check PASSES on a freshly generated file", check(tmp) == 0)
+
+        # ---- ★★ #295 — THE HEAD-ONLY ADVANCE vs REAL CONTENT STALENESS, DRIVEN IN BOTH
+        # DIRECTIONS. Lane P proved `--check` was red on every PUSHED tree by construction: the
+        # build-verdict line renders the LIVE HEAD, so the commit that carries a fresh chain is
+        # the commit that stales it. The fixture is the real situation, not a mimic of it — the
+        # chain is GENERATED with the head pin set to another sha, so the file is internally
+        # consistent AT THAT SHA (including the footer's fixed-point tape figure, which shifts by
+        # a token when the sha's characters change), and then asked with the pin gone.
+        # ⛔ THE LEDGER MUST BE IN THE FIXTURE OR THESE ARMS ARE VACUOUS — measured, after the
+        # first version of them passed while proving nothing. Without `_BUILD-VERDICT-LOG.jsonl`
+        # the verdict line takes its NOT-DERIVABLE branch, which carries no HEAD clause at all,
+        # so the pin had nothing to change and `check()` was reaching the ordinary FRESH path.
+        # The plant assertions two lines below exist to make that failure mode LOUD next time.
+        import io as _io295
+        import contextlib as _cx295
+        for _src295, _dst295 in ((os.path.join(ROOT, "notes", "_BUILD-VERDICT-LOG.jsonl"),
+                                  os.path.join(tmp, "notes", "_BUILD-VERDICT-LOG.jsonl")),
+                                 (os.path.join(ROOT, "knowledge", "_build_all.py"),
+                                  os.path.join(tmp, "knowledge", "_build_all.py"))):
+            if os.path.exists(_src295):
+                os.makedirs(os.path.dirname(_dst295), exist_ok=True)
+                shutil.copy(_src295, _dst295)
+        _pin_sha = "dead1234"
+        os.environ[HEAD_PIN_ENV] = _pin_sha
+        try:
+            write(tmp)
+        finally:
+            os.environ.pop(HEAD_PIN_ENV, None)
+        _adv = open(os.path.join(tmp, OUT_NAME), encoding="utf-8").read()
+        bite("the fixture really was generated at another sha (a plant that did not plant would "
+             "make every bite below vacuous)", _chain_head_sha(_adv) == _pin_sha)
+        bite("the fixture DIFFERS from a fresh render — i.e. the old byte comparison WOULD have "
+             "called this stale, which is the defect being fixed", build(tmp)[0] != _adv)
+        _b295 = _io295.StringIO()
+        with _cx295.redirect_stdout(_b295):
+            _adv_rc = check(tmp)
+        _adv_out = _b295.getvalue()
+        bite("--check is GREEN on a HEAD-ONLY advance — the chain's own content still matches "
+             "GOOD-MORNING.md / _LIVE-STATE.md", _adv_rc == 0)
+        bite("and it SAYS SO, naming BOTH shas — the honest comparison stays visible rather than "
+             "being normalised into silence",
+             _pin_sha in _adv_out and "HEAD has since advanced" in _adv_out)
+        bite("a HEAD-only advance is NEVER called FRESH without the qualifier (a bare FRESH would "
+             "claim the file matches a fresh render, which it does not)",
+             "FRESH at the commit it was generated at" in _adv_out)
+
+        # ⛔ THE HALF THAT MATTERS: REAL DRIFT ON TOP OF A HEAD ADVANCE MUST STILL BE STALE.
+        # If the re-ask laundered content staleness it would be worse than the red it replaced —
+        # a cold session would read a PREVIOUS session's record with a green check beside it.
+        with open(os.path.join(tmp, "GOOD-MORNING.md"), "a", encoding="utf-8") as _f295:
+            _f295.write("\n> a line that did not exist when the chain was generated\n")
+        _b295 = _io295.StringIO()
+        with _cx295.redirect_stdout(_b295):
+            _drift_rc = check(tmp)
+        _drift_out = _b295.getvalue()
+        bite("REAL content staleness is STILL RED even when HEAD has also advanced — the re-ask "
+             "does not launder drift", _drift_rc == 1 and "STALE" in _drift_out)
+        bite("and it is called STALE, not could-not-ask — real drift is a content verdict",
+             not cna.is_refusal(_drift_rc))
+
+        # ⛔ THE ENVIRONMENT MAY NOT PIN THE VERDICT. A var already set when the process started
+        # is this check's own scratch channel being driven from outside, and it REFUSES.
+        _real_pre = globals()["_PREEXISTING_HEAD_PIN"]
+        try:
+            globals()["_PREEXISTING_HEAD_PIN"] = _pin_sha
+            _b295 = _io295.StringIO()
+            with _cx295.redirect_stdout(_b295):
+                _env_rc = check(tmp)
+            _env_out = _b295.getvalue()
+            bite("a PRE-SET head pin makes --check REFUSE (could-not-ask), never pass",
+                 cna.is_refusal(_env_rc) and HEAD_PIN_ENV in _env_out)
+            bite("the environment refusal does NOT call it STALE either — it is a measurement "
+                 "refusal, not a content verdict", "STALE" not in _env_out.upper())
+        finally:
+            globals()["_PREEXISTING_HEAD_PIN"] = _real_pre
+
+        # restore the tree for the arms below: GM is re-copied and the chain regenerated at the
+        # TRUE head, so nothing above leaks into the #59 / tier arms that follow.
+        _gm295 = os.path.join(ROOT, "GOOD-MORNING.md")
+        if os.path.exists(_gm295):
+            shutil.copy(_gm295, os.path.join(tmp, "GOOD-MORNING.md"))
+        write(tmp)
+        bite("tree restored — the SAME fresh tree reports FRESH again, unharmed by the arms above",
+             check(tmp) == 0)
 
         # ---- #59: a DEGRADED instrument must REFUSE, and must NEVER be reported as staleness.
         # This is the reproduction of the #58 flicker: same bytes on disk, same GM/LS content,
