@@ -551,7 +551,7 @@ Memory hook: `notes/_lanes/294/WRAP-MEMORY-HOOK.md`. His words:
    seat ran no git command and modified no tracked file, and asks *"Name each in the commit body; do
    not sweep silently."* ⇒ **an explicit hand-up outranks a fifteen-minute mtime proxy** (the proxy
    exists only for when a seat cannot say), so the four idea notes and the hand-up are committed at
-   ⬛ **SHA PENDING — filled from `git log` after the commit lands; no placeholder figure is written here, because a commit cannot name itself**, each named in its body. **The 15-minute test is not weakened — it is what you use
+   **`34cb5824`**, each named in its body. **The 15-minute test is not weakened — it is what you use
    when there is no hand-up.** ⚠ **Two corrections the hand-up needs:** `knowledge/_jev-receipts.jsonl`
    is **NOT outstanding** — it reads **19 lines on disk AND 19 in `HEAD`**, lane C's `dd374131` having
    already carried J4's fourteen, so *"tracked copy has 5"* was true when the worker last looked and
