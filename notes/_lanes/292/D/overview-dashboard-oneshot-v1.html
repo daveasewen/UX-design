@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="canon" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI programme operations — overview</title>
+
+<!-- ============================================================================
+     COLD ONE-SHOT · #292 lane D · 2026-09-21
+     Composed against notes/_lanes/292/D/overview-dashboard-definition.html.
+     COLD: the dashboard template (knowledge/components/template-dashboard-bento.*,
+     showroom/template-dashboard-bento.html) and #288 lane P's composed page were
+     NOT opened at this seat. Every part below is taken from canon.css, the token
+     store, the component snippets and the rulings index.
+     Theme: MONO = the base = the ABSENCE of data-apollo-theme (gen_theme_cascade.py,
+     tokens/themes/_themes.json "Mono = base, no block emitted").
+     ============================================================================ -->
+
+<link rel="stylesheet" href="../../../../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../../../../knowledge/canon/type.css">
+
+<style>
+/* ===========================================================================
+   PAGE-LOCAL DIALS. Every one carries the rule it rests on. No invented token,
+   no raw hex, no component re-implemented.
+   =========================================================================== */
+
+/* D-A3 · pageBg = grey for the dashboard role (s219-D1(3), role_defaults_219.py).
+   ⚠ GAP G1: the store has no semantic grey-page role. --page aliases
+   --background-default (FFF / 000). Bound to the nearest declared intent,
+   --surface-hover (= --tertiary-background-hover, F3F3F3 / 212121), and flagged. */
+.canon{ --page: var(--surface-hover); background:var(--page); }
+body{ margin:0; min-height:100vh; }
+.page{ padding:40px; }                 /* 40px is on the ruled stop set, s219-D1(4) */
+.page > * + *{ margin-top:40px; }
+
+/* D-B2 · THE ONE RULED DASHBOARD DIAL. mainSpacing = 40 for mono (s219-D1(5)).
+   ⛔ It CANNOT be written the way canon.css documents it. The rule that gives a
+   bento-of-bentos its outer gutter is
+     .c-bento[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento)
+   whose :has() argument lifts it to (0,4,0); a bare `.c-bento.wall-ops` is (0,1,0)
+   and loses, so the wall renders at the mono BASE of 0px, not at 40.
+   MEASURED at session 288 lane P (finding F2) and honoured here: the dial repeats the
+   :has(). */
+.c-bento[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento).wall-ops{
+  --bento-gutter:40px;
+}
+
+/* D-B3 · subSpacing = 4 for mono (s219-D1(5)). The inner wall carries the dashboard
+   role too (radius on its container, s217-D3), so the dial must out-specify the
+   role's own 1px: (0,3,0) over (0,2,0). */
+.c-bento[data-bento-role="dashboard"].wall-metrics{ --bento-gutter:4px; }
+
+/* D-C4 · five metrics fill the headline wall exactly — no orphan cell (s249-D5
+   "No ragged layouts"). Per-instance column override is sanctioned by the token's
+   own $note (layout/bento/columns). Safe here and ONLY here: the wall spans all six
+   columns, so it is 1360px wide and clears canon's 1100px band. (G8: below 1100 the
+   compiled band re-declares the count on the grid and the instance dial is inert.) */
+.wall-metrics{ --bento-columns:5; }
+
+/* D-C6 · the spark sits on the base of its card. The kpi-tile is already
+   display:flex;flex-direction:column (canon.css .cn-kpi-tile .kpi-tile) — this uses
+   the component's own box, adds no dimension and no colour. It exists because the
+   row unit is a FIXED 320px on the outer wall and a 120px card in a 320px slot is
+   dead ground. See GAP G3. */
+.wall-metrics .kpi-spark{ margin-top:auto; }
+.wall-metrics .kpi-tile{ height:100%; }
+
+/* D-E4 · THE CHART CANVAS IS PINNED, and the pin is the documented escape hatch.
+   ⚠ GAP G11, MEASURED AT THIS SEAT. dv-behaviour.js `slackBelow()` measures
+   `fig.closest('.c-bento__tile')` — the TILE — not the figure's own surface. A
+   chart needs a surface and `figure.dv` ships none (canon: ":where(.cn-chart-bar)
+   figure.dv{margin:0;position:relative}" — no background, no padding), so every
+   dashboard chart sits inside a card, and the fit pass then offers the svg the
+   card's padding as slack and grows into it. MEASURED here before the pin: the
+   canvas overshot its box by 33px (column) and 71px (line), and
+   `c-bento carries overflow:hidden` swallowed both without a console warning.
+   The pin is fitHeight's own documented behaviour — "a CSS-pinned box would
+   SCALE: keep the bake" — so a max-height just above data-h makes the grow fail
+   its own 1px check and the engine keeps the authored height. */
+.tile-chart.cn-chart-bar  .dv-svg{ max-height:200px; }
+.tile-chart.cn-chart-line .dv-svg{ max-height:240px; }
+
+/* D-A5 · a tile is a SLOT; the surface is the component's (canon gives
+   .c-bento__tile no background at all, and role_defaults_219 says
+   bentoBg=transparent, keylines=off). Card surfaces come from the library:
+   Card-header-lockup's .card where there is a header, Cards' .card where the
+   component inside carries its own. These rules give the card the tile's full
+   height so no tile carries a dead band under its content (DP-18). */
+.c-bento__tile > .card,
+.c-bento__tile > .cn-cards,
+.c-bento__tile > .cn-cards > .card{ height:100%; display:flex; flex-direction:column; min-height:0; }
+.cn-cards > .card{ padding:16px; }
+.panel-body{ flex:1 1 auto; min-height:0; overflow:auto; }
+
+/* the page's own two landmarks — spacing only, both on the ruled stop set */
+.strip{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.strip .lead{ opacity:var(--alpha-60); }
+.filterwrap{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.filterwrap .lead{ opacity:var(--alpha-60); }
+.section-note{ margin:0; opacity:var(--alpha-60); }
+.rowactions{ display:flex; gap:8px; align-items:center; }
+.att-list{ list-style:none; margin:0; padding:0; }
+.att-list > li{ display:flex; align-items:center; justify-content:space-between; gap:16px;
+                padding:12px 0; border-bottom:1px solid var(--divider-soft); }
+.att-list > li:last-child{ border-bottom:0; }
+.att-list .who{ display:block; opacity:var(--alpha-60); }
+/* the Table component's own .scroll is overflow-x only; the tile is fixed-height,
+   so the vertical axis gets the same treatment rather than being clipped. */
+.cn-table .scroll{ overflow:auto; }
+</style>
+<script type="application/json" id="provenance-receipt">
+{
+ "$schema": "apollo/provenance-receipt/1",
+ "pack": "UNDECLARED",
+ "generator": "knowledge/gen_provenance_receipt.py",
+ "retrievalSet": null,
+ "$retrievalSetNote": "rC Q4 \u2014 the retrieval-set membership marker \u2014 is OPEN. null is the honest value; the gate reports it UNPROVEN rather than letting a green imply it was checked.",
+ "$key": "sha256 of the page's OWN region bytes (s235-D1). Valid against `pack` only: the hash moves on every regen serial.",
+ "regions": []
+}
+</script>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- ===== PAGE HEADER — Page-header-lockup, arrangement A (eyebrow + title +
+       right-aligned actions). Markup taken from
+       knowledge/snippets/Page-header-lockup.reference.html. ===== -->
+  <div class="cn-page-header-lockup">
+    <header class="ph-outer">
+      <div class="ph">
+        <div class="ph-row">
+          <div class="ph-titleblock">
+            <span class="eyebrow t-cm-caption">AI portfolio</span>
+            <h1 class="ph-title t-cm-heading">Programme operations</h1>
+          </div>
+          <div class="ph-actions cn-button">
+            <button class="btn tertiary" type="button">Export portfolio</button>
+            <button class="btn primary" type="button">Raise a decision</button>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- ===== 01 · THE ATTENTION STRIP. s251-D1, Dave verbatim: "the user sees the
+       strip and it orientates them to pay attention towards the detail … the user
+       might even click on the chip and it anchor links to the needs attention
+       panel". Built literally: every chip is an <a href="#needs-attention">.
+       ⚠ GAP G6: there is no attention-strip component. Composed from
+       Status-indicator's own tint-chip markup ("square, fully AA") inside a
+       landmark; nothing invented. ===== -->
+  <section class="cn-status-indicator" aria-label="What needs attention now">
+    <div class="strip">
+      <span class="lead t-cm-caption">Needs you now</span>
+      <a class="chip err" href="#needs-attention"><span class="dot" aria-hidden="true"></span>3 breached SLA</a>
+      <a class="chip warn" href="#needs-attention"><span class="dot" aria-hidden="true"></span>2 over budget</a>
+      <!-- D-D6 · the third fact is NOT a chip. A strip with every tier lit at equal
+           weight is the 100% signal rate the baselines were faulted for (DP-19,
+           DP-21 "one channel per tier"): the information tier gets position, not hue. -->
+      <a class="stat neu" href="#needs-attention" data-carries="label"><span class="dot" aria-hidden="true"></span><span>4 decisions due this week</span></a>
+    </div>
+  </section>
+
+  <!-- ===== THE WALL. One outer bento, role=dashboard, whose first tile is itself
+       a bento — which is what makes it the outer wall (s217-D3; canon.css:
+       "a dashboard whose tiles are themselves bentos IS the outer wall").
+       6 columns, dense packing, 320px row unit: all canon defaults, untouched.
+       The filter sits WITH the wall it filters, not in the title zone (DP-28). ===== -->
+  <section aria-label="Portfolio overview">
+
+    <!-- 06 · the filter, SHIPPED COLLAPSED as a chip row with a count and a
+         clear-all. Tags' own .filterbar / dismissible .tag markup. -->
+    <div class="filterwrap cn-tags">
+      <span class="lead t-cm-caption">Filtered — 2 applied</span>
+      <div class="filterbar">
+        <div class="row">
+          <span class="tag"><span class="lbl">In flight</span><button class="x" type="button" aria-label="Remove filter: In flight">×</button></span>
+          <span class="tag"><span class="lbl">Group functions</span><button class="x" type="button" aria-label="Remove filter: Group functions">×</button></span>
+        </div>
+      </div>
+      <span class="cn-button"><button class="btn tertiary" type="button">Clear all</button></span>
+    </div>
+
+    <div class="c-bento wall-ops" data-bento-role="dashboard">
+      <div class="c-bento__grid">
+
+        <!-- ---- 02 · THE HEADLINE ROW. Five metrics in ONE row, never a 2x2 board
+             (s249-D2 "5 is even okay in this case"; s247-D4 "row for sure"). It is a
+             nested bento spanning all six columns, so it may legally carry its own
+             column count (G8). ---- -->
+        <div class="c-bento__tile c-bento wall-metrics" data-c="6" data-r="1" data-bento-role="dashboard">
+          <div class="c-bento__grid cn-kpi-tile">
+
+            <div class="c-bento__tile">
+              <div class="kpi-tile" role="group" aria-label="Programmes in flight">
+                <p class="kpi-lbl t-cm-caption">Programmes in flight</p>
+                <span class="kpi-val t-cm-figure-4"><span>11</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="t-cm-figure-6">No change</span><span class="kpi-per t-cm-legal">vs last week</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3,30 24.6,30 46.2,26 67.8,26 89.3,26 110.9,22 132.5,22 154.1,22 175.6,22 197,22"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="c-bento__tile">
+              <div class="kpi-tile" role="group" aria-label="Spend against budget">
+                <p class="kpi-lbl t-cm-caption">Spend against budget</p>
+                <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>14.2m</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="t-cm-figure-6">On plan</span><span class="kpi-per t-cm-legal">to 20 Sep</span></span>
+                <!-- the component's own target row — NO HUE AT ALL, by its own design note -->
+                <div class="kpi-target">
+                  <div class="tgt-track"><span class="tgt-fill" style="width:72%"></span><span class="tgt-mark" style="left:75%"></span></div>
+                  <p class="tgt-cap t-cm-legal">72% of the £19.6m approved envelope · 75% of the year elapsed</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="c-bento__tile">
+              <div class="kpi-tile" role="group" aria-label="Efficiency gains realised">
+                <p class="kpi-lbl t-cm-caption">Efficiency gains realised</p>
+                <span class="kpi-val t-cm-figure-4"><span class="unit">£</span><span>8.4m</span></span>
+                <!-- D-D2 · NO GREEN, although it is up. DP-19's dark cockpit: a dashboard
+                     with nothing wrong shows no hue, so the only lit thing on this page is
+                     the thing that is wrong. The spark carries no data-trend, so it takes
+                     standing ink, not --pos-ink. -->
+                <span class="kpi-delta up" data-carries="symbol label"><span class="t-cm-figure-6">+£1.1m</span><span class="kpi-per t-cm-legal">vs last quarter</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                    <polyline class="dv-series" points="3,40 24.6,38 46.2,33 67.8,31 89.3,27 110.9,24 132.5,20 154.1,16 175.6,11 197,6"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="c-bento__tile">
+              <!-- D-D3 · POLARITY. DP-22 wants every metric to declare which direction is
+                   good; canon's only carrier is data-trend, which is arithmetic
+                   (GAP G2 — DP-25's data-signal is an OPEN question, not ruled). So the
+                   ONE red on this page is spent through a carrier that means "wrong":
+                   the component's own is-error note, not an arrow. -->
+              <div class="kpi-tile is-error" role="group" aria-label="Risk and compliance exceptions">
+                <p class="kpi-lbl t-cm-caption">Risk &amp; compliance exceptions</p>
+                <span class="kpi-val t-cm-figure-4"><span>7</span></span>
+                <span class="kpi-delta up" data-carries="symbol label"><span class="t-cm-figure-6">+3 open</span><span class="kpi-per t-cm-legal">worse than last week</span></span>
+                <p class="kpi-note t-cm-legal"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path class="inner" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path class="inner" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></svg></span><span>3 have breached their remediation SLA</span></p>
+              </div>
+            </div>
+
+            <div class="c-bento__tile">
+              <div class="kpi-tile" role="group" aria-label="Decisions awaiting you">
+                <p class="kpi-lbl t-cm-caption">Decisions awaiting you</p>
+                <span class="kpi-val t-cm-figure-4"><span>4</span></span>
+                <span class="kpi-delta flat" data-carries="symbol label"><span class="t-cm-figure-6">2 due Friday</span><span class="kpi-per t-cm-legal">this week</span></span>
+                <p class="kpi-note t-cm-legal"><span>Oldest has waited 9 days.</span></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ---- 03 · THE DOMINANT TILE. data-c=4, data-r=2 — the widest on the wall,
+             and nothing else matches its width (DP-14). It is the only element that
+             answers three of the brief's five clauses at once. A PLAIN tile, not a
+             nested bento: a group of one would trip canon's 1100px band and silently
+             become three columns (G8). ---- -->
+        <div class="c-bento__tile cn-card-header-lockup" data-c="4" data-r="2">
+          <article class="card">
+            <div class="ch">
+              <div class="ch-titles">
+                <h2 class="t-cm-ctl-16">Programme portfolio</h2>
+                <p class="meta t-cm-caption">11 in flight · ranked by spend against approved envelope</p>
+              </div>
+              <div class="ch-actions cn-button">
+                <button class="qbtn t-cm-button" type="button">View all</button>
+              </div>
+            </div>
+            <div class="body panel-body cn-table">
+              <div class="scroll cn-status-indicator" role="region" aria-label="Programme portfolio, scrollable" tabindex="0">
+                <table>
+                  <caption class="t-cm-caption">Approved AI programmes, at 20 September 2026</caption>
+                  <thead><tr>
+                    <th scope="col" class="t-cm-ctl-14">Programme</th>
+                    <th scope="col" class="t-cm-ctl-14">Owner</th>
+                    <th scope="col" class="t-cm-ctl-14">Stage</th>
+                    <th scope="col" class="t-cm-ctl-14 num">Spend / budget</th>
+                    <th scope="col" class="t-cm-ctl-14 num">Gain realised</th>
+                    <th scope="col" class="t-cm-ctl-14">Status</th>
+                  </tr></thead>
+                  <!-- D-D4 · THE HUE BUDGET IS SPENT ONLY ON WHAT IS WRONG (DP-19's dark
+                       cockpit; DP-27 "no green tick and no celebratory colour"). The
+                       filled-cell treatment is used for the three exceptions ONLY; the
+                       eight healthy programmes carry Status-indicator's neutral dot +
+                       label, which is a channel, not a hue. All eleven in flight are
+                       listed, because the headline metric says eleven. -->
+                  <tbody>
+                    <tr><th scope="row">Client onboarding triage</th><td>R. Mehta</td><td>Scaling</td><td class="num">£4.1m / £4.0m</td><td class="num">£3.2m</td><td><span class="cell err">Over envelope</span></td></tr>
+                    <tr><th scope="row">Complaints summarisation</th><td>A. Duval</td><td>Pilot</td><td class="num">£1.6m / £1.5m</td><td class="num">£0.7m</td><td><span class="cell err">Over envelope</span></td></tr>
+                    <tr><th scope="row">Model risk evidence pack</th><td>C. Nwosu</td><td>Build</td><td class="num">£1.1m / £1.8m</td><td class="num">—</td><td><span class="cell warn">Evidence overdue</span></td></tr>
+                    <tr><th scope="row">Trade surveillance copilot</th><td>L. Okafor</td><td>Scaling</td><td class="num">£2.8m / £3.4m</td><td class="num">£2.1m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">KYC document extraction</th><td>S. Byrne</td><td>Live</td><td class="num">£2.2m / £2.4m</td><td class="num">£1.6m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Credit memo drafting</th><td>J. Park</td><td>Pilot</td><td class="num">£1.3m / £2.0m</td><td class="num">£0.5m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Payments exception triage</th><td>M. Haddad</td><td>Live</td><td class="num">£1.1m / £1.6m</td><td class="num">£0.3m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Collateral valuation assist</th><td>P. Lindqvist</td><td>Live</td><td class="num">£0.9m / £1.2m</td><td class="num">£0.4m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Sanctions screening assist</th><td>N. Adeyemi</td><td>Build</td><td class="num">£0.8m / £1.4m</td><td class="num">—</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Treasury cash forecasting</th><td>H. Tanaka</td><td>Pilot</td><td class="num">£0.6m / £0.9m</td><td class="num">£0.1m</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                    <tr><th scope="row">Contact centre summarisation</th><td>D. Oyelaran</td><td>Build</td><td class="num">£0.5m / £1.0m</td><td class="num">—</td><td><span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span>On plan</span></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- ---- 04 · THE NEEDS-ATTENTION REGION. A STANDING region (DP-10), each item
+             with its status, its due and its ONE primary action in place (DP-11), and a
+             count against the total. The strip above anchor-links here (s251-D1).
+             ⚠ GAP G4: there is no Needs-attention organism in the library. Composed
+             from List-items rows + Status-indicator + Button inside a
+             Card-header-lockup card; nothing invented. ---- -->
+        <div class="c-bento__tile cn-card-header-lockup" data-c="2" data-r="2" id="needs-attention">
+          <article class="card cn-list-items">
+            <div class="ch">
+              <div class="ch-titles">
+                <h2 class="t-cm-ctl-16">Needs attention</h2>
+                <p class="meta t-cm-caption">6 of 11 programmes</p>
+              </div>
+            </div>
+            <div class="body panel-body cn-status-indicator">
+              <ul class="att-list">
+                <li>
+                  <span>
+                    <span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Client onboarding triage</span></span>
+                    <span class="who t-cm-legal">£100k over envelope · decision due 25 Sep</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Approve uplift</button></span>
+                </li>
+                <li>
+                  <span>
+                    <span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Model risk evidence pack</span></span>
+                    <span class="who t-cm-legal">SLA breached 4 days ago · C. Nwosu</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Escalate</button></span>
+                </li>
+                <li>
+                  <span>
+                    <span class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Complaints summarisation</span></span>
+                    <span class="who t-cm-legal">Pilot exit gate unsigned · due 26 Sep</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Sign off</button></span>
+                </li>
+                <li>
+                  <span>
+                    <span class="stat inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Credit memo drafting</span></span>
+                    <span class="who t-cm-legal">Scope change awaiting your word · 9 days</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Review</button></span>
+                </li>
+                <li>
+                  <span>
+                    <span class="stat inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Sanctions screening assist</span></span>
+                    <span class="who t-cm-legal">Build gate paperwork incomplete · due 30 Sep</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Chase</button></span>
+                </li>
+                <li>
+                  <span>
+                    <span class="stat neu" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Treasury cash forecasting</span></span>
+                    <span class="who t-cm-legal">Pilot ends 3 Oct · no decision recorded</span>
+                  </span>
+                  <span class="rowactions cn-button"><button class="btn tertiary" type="button">Decide</button></span>
+                </li>
+              </ul>
+              <!-- DP-11's ceiling: six items, six primary actions, and the count is
+                   stated rather than implied. -->
+              <p class="section-note t-cm-legal" style="padding-top:12px">Six of eleven programmes need you. The rest are on plan.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- ---- 05 · SUPPORTING EVIDENCE. The exceptions list is the taller neighbour,
+             so it takes its OWN full-height column (data-r=2) and the two charts stack
+             beside it — DP-18: "a taller neighbour is answered by a second tile in the
+             column, not by empty ground". Row sums: 2+4 and 2+4. No orphan cell. ---- -->
+        <div class="c-bento__tile cn-card-header-lockup" data-c="2" data-r="2">
+          <article class="card cn-list-items">
+            <div class="ch">
+              <div class="ch-titles">
+                <h2 class="t-cm-ctl-16">Open exceptions</h2>
+                <p class="meta t-cm-caption">7 open · oldest 21 days</p>
+              </div>
+            </div>
+            <div class="body panel-body cn-status-indicator">
+              <ul class="att-list">
+                <li><span><span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Unapproved model in production</span></span><span class="who t-cm-legal">Trade surveillance · 21 days</span></span></li>
+                <li><span><span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Evidence pack overdue</span></span><span class="who t-cm-legal">Model risk · 12 days</span></span></li>
+                <li><span><span class="stat err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Retention rule not applied</span></span><span class="who t-cm-legal">KYC extraction · 8 days</span></span></li>
+                <li><span><span class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Drift threshold exceeded</span></span><span class="who t-cm-legal">Complaints · 6 days</span></span></li>
+                <li><span><span class="stat warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Human review rate below floor</span></span><span class="who t-cm-legal">Payments triage · 4 days</span></span></li>
+                <li><span><span class="stat inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Vendor attestation renewing</span></span><span class="who t-cm-legal">Credit memo · 3 days</span></span></li>
+                <li><span><span class="stat inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-ctl-14">Data residency question open</span></span><span class="who t-cm-legal">Onboarding triage · 2 days</span></span></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <!-- Chart A — spend against budget by programme. A COLUMN chart: length and
+             2D position are preattentive, area and angle are not (DP-08 — "never a
+             gauge or ring"). Driven by window.dvRender(figure, spec): the library owns
+             the arithmetic, the page owns the data (dv-render.js). The <table> spine
+             ships in the markup and is not optional (dv-005). -->
+        <div class="c-bento__tile tile-chart cn-chart-bar" data-c="4" data-r="1">
+          <div class="cn-cards"><div class="card">
+            <figure class="dv" id="fig-spend" data-dv-type="grouped-column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="fig-spend-cap">
+              <figcaption id="fig-spend-cap" class="sr-only">Spend against approved budget by programme, millions of pounds</figcaption>
+              <div class="dv-head">
+                <h2 class="dv-title t-cm-section-label">Two programmes are spending ahead of their envelope</h2>
+                <div class="dv-controls" role="group" aria-label="Chart tools">
+                  <details class="dv-tbl">
+                    <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label"><span>View as table</span></summary>
+                    <div class="dv-tablepanel" role="region" aria-label="Spend against budget, data table" tabindex="-1">
+                      <table class="dv-table t-cm-legal">
+                        <caption>Spend against approved budget by programme, £m</caption>
+                        <thead><tr><th scope="col">Programme</th><th scope="col">Spend</th><th scope="col">Budget</th></tr></thead>
+                        <tbody><tr><th scope="row">Onboarding</th><td>4.1</td><td>4.0</td></tr><tr><th scope="row">Surveillance</th><td>2.8</td><td>3.4</td></tr><tr><th scope="row">KYC</th><td>2.2</td><td>2.4</td></tr><tr><th scope="row">Complaints</th><td>1.6</td><td>1.5</td></tr><tr><th scope="row">Credit memo</th><td>1.3</td><td>2.0</td></tr><tr><th scope="row">Payments</th><td>1.1</td><td>1.6</td></tr></tbody>
+                      </table>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <!-- the Legend names the keys the engine bakes on a grouped series -->
+              <div class="cn-legend"><div class="leg-host" data-leg-place="top"><div class="leg-slot">
+                <ul class="dv-leg ovf-wrap t-cm-chart-label" role="group" aria-label="Series">
+                  <li class="dv-legrow" data-series="1"><span class="dv-leg-sw" style="--sc:var(--data-series-1)" aria-hidden="true"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">A</span><span class="dv-leg-name">Spend to date</span></span></li>
+                  <li class="dv-legrow" data-series="2"><span class="dv-leg-sw" style="--sc:var(--data-series-2)" aria-hidden="true"></span><span class="dv-leg-item t-cm-chart-label"><span class="dv-key t-cm-chart-key">B</span><span class="dv-leg-name">Approved budget</span></span></li>
+                </ul>
+              </div></div></div>
+              <div class="dv-stage"><div class="dv-chart-area">
+                <svg class="dv-svg dv-fit" data-pl="40" data-pr="12" data-h="196" data-pt="10" data-pb="28" data-h-min="150" viewBox="0 0 800 196" role="img" aria-label="Spend against approved budget by programme" data-bespoke="chart canvas — dataviz geometry, not an icon"></svg>
+              </div></div>
+            </figure>
+          </div></div>
+        </div>
+
+        <!-- Chart B — efficiency gains realised, a run over months. A LINE chart
+             because it is a run over time; the column above is categorical
+             (designer's call, inside the canon type registry dv-render-line.js). -->
+        <div class="c-bento__tile tile-chart cn-chart-line" data-c="4" data-r="1">
+          <div class="cn-cards"><div class="card">
+            <figure class="dv" id="fig-gains" data-dv-type="line" data-domain-min="0" data-surface="page" role="group" aria-labelledby="fig-gains-cap">
+              <figcaption id="fig-gains-cap" class="sr-only">Efficiency gains realised by month, millions of pounds</figcaption>
+              <div class="dv-head">
+                <h2 class="dv-title t-cm-section-label">Realised gains have compounded every month since April</h2>
+                <div class="dv-controls" role="group" aria-label="Chart tools">
+                  <details class="dv-tbl">
+                    <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label"><span>View as table</span></summary>
+                    <div class="dv-tablepanel" role="region" aria-label="Efficiency gains realised, data table" tabindex="-1">
+                      <table class="dv-table t-cm-legal">
+                        <caption>Efficiency gains realised by month, £m cumulative</caption>
+                        <thead><tr><th scope="col">Month</th><th scope="col">Realised (£m)</th></tr></thead>
+                        <tbody><tr><th scope="row">Apr</th><td>3.1</td></tr><tr><th scope="row">May</th><td>4.0</td></tr><tr><th scope="row">Jun</th><td>5.2</td></tr><tr><th scope="row">Jul</th><td>6.1</td></tr><tr><th scope="row">Aug</th><td>7.3</td></tr><tr><th scope="row">Sep</th><td>8.4</td></tr></tbody>
+                      </table>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <div class="dv-stage"><div class="dv-chart-area">
+                <svg class="dv-svg dv-fit" data-pl="40" data-pr="12" data-h="236" data-pt="10" data-pb="28" data-h-min="150" viewBox="0 0 800 236" role="img" aria-label="Efficiency gains realised by month" data-bespoke="chart canvas — dataviz geometry, not an icon"></svg>
+              </div></div>
+            </figure>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- D-E1 · charts are DRIVEN, not hand-authored. dv-render.js header: "It REPLACES
+     rule 18 of ADS-generate-from-canon (the interim 'author the geometry yourself'
+     recipe): the library owns the arithmetic, the author owns the data."
+     D-D5 · NO ENTRY MOTION. The .dv-animate class the chart snippets ship with is
+     deliberately NOT used: motion is the rarest signal and is never spent on load
+     choreography on a monitoring page (DP-23). -->
+<script src="../../../../knowledge/canon/dv-behaviour.js"></script>
+<script src="../../../../knowledge/canon/dv-render.js"></script>
+<script src="../../../../knowledge/canon/dv-render-bar.js"></script>
+<script src="../../../../knowledge/canon/dv-render-line.js"></script>
+<script>
+(function(){
+  function draw(){
+    if(!window.dvRender){ return; }
+    window.dvRender(document.getElementById('fig-spend'), {
+      type:"grouped-column",
+      categories:["Onboarding","Surveillance","KYC","Complaints","Credit memo","Payments"],
+      series:[{name:"Spend to date", values:[4.1,2.8,2.2,1.6,1.3,1.1]},
+              {name:"Approved budget", values:[4.0,3.4,2.4,1.5,2.0,1.6]}],
+      unit:"£", format:"plain",
+      categoryLabel:"Programme",
+      caption:"Spend against approved budget by programme, £m"
+    });
+    window.dvRender(document.getElementById('fig-gains'), {
+      type:"line",
+      categories:["Apr","May","Jun","Jul","Aug","Sep"],
+      series:[{name:"Realised", values:[3.1,4.0,5.2,6.1,7.3,8.4]}],
+      unit:"£", format:"plain",
+      categoryLabel:"Month",
+      caption:"Efficiency gains realised by month, £m cumulative"
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', draw); } else { draw(); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design system map — twelve around one · #292 lane H</title>
+
+<!-- Apollo type composites, hand-authored, linked not copied. -->
+<link rel="stylesheet" href="../../../../knowledge/canon/type.css">
+
+<style>
+/* ============================================================
+   DESIGN SYSTEM MAP — #292 lane H.
+   The reference is a hub-and-spoke poster: pastel blobs, clip-art
+   icons, arrows. This is the SAME STRUCTURE — twelve around one —
+   re-composed in the Swiss idiom the repo already uses.
+
+   WHAT THE RE-COMPOSITION DOES
+     - the ring becomes a RIGID 4x4 GRID. The twelve tiles are the
+       perimeter of that grid; the centre 2x2 is Apollo. Nothing is
+       placed by eye: every tile has a grid-area.
+     - the spokes become 1px HAIRLINE RULES. The grid's own gaps
+       are the rules (grid background = rule colour, 1px gap,
+       cells opaque) — so the structure IS the drawing.
+     - the arrows become a single 28px HAIRLINE TICK on each
+       tile's inward edge. A stem, not an arrowhead: it says which
+       way the tile faces without becoming decoration.
+     - the icons are GONE. The index numeral and the title carry
+       the tile, per the skill's "typography carries the layout".
+     - the six ring words become a rule-separated mono strip under
+       the lockup, not text-on-a-circle.
+
+   COLOUR — one accent, two appearances (the skill's ceiling is
+   2-3): the eyebrow dash at the page head, and the 2px rule under
+   the centre lockup. The hexagon's own red is BRAND, not accent.
+   Everything else is black and the neutral ramp.
+
+   TOKENS are canon values, declared locally so this page renders
+   standalone at file:// without pulling 30k lines of canon.css.
+   Each is cited to its canon.css line.
+   ============================================================ */
+
+:root{
+  /* --- canon.css primitives (line numbers as at #292) --- */
+  --c-primary:      #DB0011;  /* canon.css:9   --color-primary */
+  --c-black:        #000000;  /* canon.css:10  --color-black */
+  --c-white:        #FFFFFF;  /* canon.css:11  --color-white */
+  --c-grey-100:     #F3F3F3;  /* canon.css:15 */
+  --c-grey-200:     #EDEDED;  /* canon.css:16 */
+  --c-grey-300:     #D7D8D6;  /* canon.css:17 */
+  --c-grey-500:     #9B9B9B;  /* canon.css:19 */
+  --c-grey-600:     #767676;  /* canon.css:20 — minimum safe for text */
+  --c-grey-700:     #545454;  /* canon.css:21 */
+  --c-grey-800:     #333333;  /* canon.css:22 */
+  --c-dm-300:       #474747;  /* canon.css:32  --color-grey-dark-mode-300 */
+  --c-dm-600:       #1D1D1D;  /* canon.css:35 */
+  --c-dm-700:       #101010;  /* canon.css:36 */
+  --c-mono-10:      #B7B7B7;  /* canon.css:46 */
+
+  /* --- roles, light --- */
+  --bg:        var(--c-white);
+  --surface:   var(--c-white);
+  --rule:      var(--c-grey-300);
+  --rule-soft: var(--c-grey-200);
+  --ink:       var(--c-black);
+  --ink-2:     var(--c-grey-700);
+  --ink-3:     var(--c-grey-600);
+  --ink-mute:  var(--c-grey-500);
+  --accent:    var(--c-primary);
+  --band:      var(--c-grey-100);
+
+  /* --- type --- */
+  /* type.css declares --uf as "Univers Next HSBC" first; the shipped desktop faces in
+     knowledge/assets/fonts/_desktop/TTF carry the family name HSBC_MtUnivers_Latin, so both
+     are named here and the Swiss fallback chain is kept behind them. */
+  --uf: "Univers Next HSBC","HSBC_MtUnivers_Latin","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --um: ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+
+  /* --- 8px spacing, per the skill --- */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+}
+
+:root[data-theme="dark"]{
+  --bg:        var(--c-dm-700);
+  --surface:   var(--c-dm-600);
+  --rule:      var(--c-dm-300);
+  --rule-soft: var(--c-dm-300);
+  --ink:       var(--c-white);
+  --ink-2:     var(--c-mono-10);
+  --ink-3:     var(--c-mono-10);
+  --ink-mute:  #8A8A8A;
+  --band:      #171717;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:        var(--c-dm-700);
+    --surface:   var(--c-dm-600);
+    --rule:      var(--c-dm-300);
+    --rule-soft: var(--c-dm-300);
+    --ink:       var(--c-white);
+    --ink-2:     var(--c-mono-10);
+    --ink-3:     var(--c-mono-10);
+    --ink-mute:  #8A8A8A;
+    --band:      #171717;
+  }
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--uf);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1312px;margin:0 auto;padding:var(--s6) var(--s4) var(--s5);}
+
+/* ---------- the label pattern (skill) ---------- */
+.label{
+  font-family:var(--uf);
+  font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);
+  display:flex;align-items:center;gap:var(--s1);margin:0;
+}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent);}
+
+/* ---------- masthead ---------- */
+.masthead{display:grid;grid-template-columns:2fr 1fr;gap:var(--s6);align-items:end;
+  padding-bottom:var(--s4);border-bottom:1px solid var(--rule);}
+.masthead h1{margin:var(--s3) 0 0;font-size:40px;line-height:48px;font-weight:300;letter-spacing:0;}
+.masthead .sub{margin:var(--s2) 0 0;font-size:16px;line-height:24px;font-weight:400;color:var(--ink-2);max-width:56ch;}
+.meta{text-align:right;font-family:var(--um);font-size:11px;line-height:18px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);}
+.meta b{font-weight:500;color:var(--ink);}
+
+/* ============================================================
+   THE FRAME — 4 columns x 4 rows. Perimeter = the twelve.
+   Centre (cols 2-3, rows 2-3) = Apollo. The 1px gap on a
+   rule-coloured background IS the hairline grid.
+   ============================================================ */
+.frame{
+  margin-top:var(--s5);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:268px;
+  gap:1px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+}
+.frame > *{background:var(--surface);position:relative;}
+
+/* clockwise from top-left: 01..12 */
+.p01{grid-area:1/1;} .p02{grid-area:1/2;} .p03{grid-area:1/3;} .p04{grid-area:1/4;}
+.p05{grid-area:2/4;} .p06{grid-area:3/4;}
+.p07{grid-area:4/4;} .p08{grid-area:4/3;} .p09{grid-area:4/2;} .p10{grid-area:4/1;}
+.p11{grid-area:3/1;} .p12{grid-area:2/1;}
+.hub{grid-area:2/2 / 4 / 4;}
+
+/* ---------- a tile ---------- */
+.tile{padding:var(--s3);display:flex;flex-direction:column;}
+.tile .idx{
+  margin:0 0 var(--s2);font-family:var(--um);font-size:11px;letter-spacing:.14em;
+  color:var(--ink-mute);
+}
+.tile h2{margin:0;font-family:var(--uf);font-size:20px;line-height:26px;font-weight:400;letter-spacing:0;}
+.tile .d{margin:var(--s2) 0 0;font-size:14px;line-height:21px;font-weight:400;color:var(--ink-2);}
+.tile .foot{margin-top:auto;padding-top:var(--s2);}
+.tile .src{
+  margin:0;font-family:var(--um);font-size:9.5px;line-height:15px;letter-spacing:0;
+  color:var(--ink-3);word-break:break-all;
+}
+.tile .src::before{content:"";display:block;width:16px;height:1px;background:var(--rule);margin-bottom:6px;}
+
+/* The inward tick — a stem, not an arrowhead. It is given its OWN margin
+   (the inward padding below), so it never crosses a line of type: the tick
+   is structure, and structure does not sit on top of content. */
+.tick{position:absolute;background:var(--ink);}
+[data-edge="down"]  .tick{left:50%;bottom:0;width:1px;height:26px;}
+[data-edge="up"]    .tick{left:50%;top:0;width:1px;height:26px;}
+[data-edge="left"]  .tick{top:50%;left:0;height:1px;width:26px;}
+[data-edge="right"] .tick{top:50%;right:0;height:1px;width:26px;}
+[data-edge="down"] {padding-bottom:var(--s5);}
+[data-edge="up"]   {padding-top:var(--s5);}
+[data-edge="left"] {padding-left:var(--s5);}
+[data-edge="right"]{padding-right:var(--s5);}
+
+/* ---------- absent: reduced ink, not removed ---------- */
+.tile[data-state="soon"]{background:var(--band);}
+.tile[data-state="soon"] .ink-block{opacity:.45;}
+.tile[data-state="soon"] .tick{background:var(--ink-mute);}
+.badge{
+  display:inline-block;margin:0;padding:3px 8px;
+  font-family:var(--um);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);border:1px solid var(--rule);background:var(--surface);
+}
+
+/* ============================================================
+   THE HUB
+   ============================================================ */
+.hub{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:var(--s5) var(--s4);text-align:center;}
+.lockup{width:198px;height:auto;display:block;}
+.lockup .wordmark{fill:var(--ink);}
+.hub .accent-rule{width:72px;height:2px;background:var(--accent);margin:var(--s3) 0;}
+.hub h2{margin:0;font-size:28px;line-height:36px;font-weight:300;letter-spacing:0;}
+.hub .strap{margin:var(--s2) 0 0;font-size:14px;line-height:21px;color:var(--ink-2);max-width:46ch;}
+
+/* the six ring words — rule-separated mono strip, not text on a circle */
+.ring{
+  margin-top:var(--s4);padding-top:var(--s2);border-top:1px solid var(--rule);
+  width:100%;display:flex;flex-wrap:nowrap;justify-content:center;
+  font-family:var(--um);font-size:9px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-3);
+  white-space:nowrap;
+}
+.ring span{padding:0 9px;border-right:1px solid var(--rule);line-height:14px;}
+.ring span:last-child{border-right:0;}
+
+/* ---------- key + footer ---------- */
+.key{margin-top:var(--s4);display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--rule);border:1px solid var(--rule);}
+.key > div{background:var(--surface);padding:var(--s3);}
+.key p{margin:var(--s1) 0 0;font-size:14px;line-height:21px;color:var(--ink-2);}
+.key .k{font-family:var(--um);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0;}
+
+footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:var(--s4);
+  font-family:var(--um);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);}
+
+/* the poster is a fixed composition; below 1100 it stacks rather than crushes */
+@media (max-width:1100px){
+  .frame{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto;}
+  .frame > *{grid-area:auto !important;}
+  .hub{order:-1;grid-column:1/-1 !important;padding:var(--s5) var(--s3);}
+  .tick{display:none;}
+  .tile{min-height:200px;}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="masthead">
+    <div>
+      <p class="label">Design system map</p>
+      <h1>Twelve around one</h1>
+      <p class="sub">The parts a design system is made of, and which of them stand in this
+        repository today. Each tile that Apollo holds cites the file it is held in; each tile
+        Apollo does not hold is faded and badged, not removed.</p>
+    </div>
+    <div class="meta">
+      Session <b>292</b> · lane <b>H</b><br>
+      Measured <b>2026-09-21</b><br>
+      In repo <b>10 / 12</b>
+    </div>
+  </header>
+
+  <section class="frame" aria-label="Twelve parts around the system core">
+
+    <!-- ===== top row ===== -->
+    <article class="tile p01" data-edge="down" data-state="have">
+      <div class="ink-block">
+        <p class="idx">01</p>
+        <h2>Brand Standards</h2>
+        <p class="d">Logo masters, marks and colour rules, with the lockups the gate checks against.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/guidelines/brand-principles.md</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p02" data-edge="down" data-state="soon">
+      <div class="ink-block">
+        <p class="idx">02</p>
+        <h2>User Research &amp; Insights</h2>
+        <p class="d">Studies, participants and findings — the evidence the principles would rest on.</p>
+      </div>
+      <div class="foot"><p class="badge">Coming soon</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p03" data-edge="down" data-state="have">
+      <div class="ink-block">
+        <p class="idx">03</p>
+        <h2>Design Patterns</h2>
+        <p class="d">Page templates: the shape a screen takes before any component fills it.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/components/template-report.meta.json</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p04" data-edge="down" data-state="have">
+      <div class="ink-block">
+        <p class="idx">04</p>
+        <h2>Tone of Voice</h2>
+        <p class="d">How the product speaks: register, person, and the words it does not use.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/guidelines/tone-of-voice.md</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <!-- ===== right column ===== -->
+    <article class="tile p05" data-edge="left" data-state="have">
+      <div class="ink-block">
+        <p class="idx">05</p>
+        <h2>Accessibility Standards</h2>
+        <p class="d">Contrast, focus, hit area and conformance — run as gates, not as advice.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/_A11Y-GATE.md</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p06" data-edge="left" data-state="have">
+      <div class="ink-block">
+        <p class="idx">06</p>
+        <h2>Governance &amp; Operations</h2>
+        <p class="d">Every ruling inscribed with its receipt; nothing lands in canon unruled.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/_rulings.json</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <!-- ===== bottom row, right to left ===== -->
+    <article class="tile p07" data-edge="up" data-state="have">
+      <div class="ink-block">
+        <p class="idx">07</p>
+        <h2>Data &amp; Insights</h2>
+        <p class="d">Instruments that measure the system's own state and report where it does not fit.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/_INSTRUMENT-FIT.md</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p08" data-edge="up" data-state="have">
+      <div class="ink-block">
+        <p class="idx">08</p>
+        <h2>Design Tokens</h2>
+        <p class="d">The primitive and semantic values every component is required to resolve to.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/canon/canon.css</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p09" data-edge="up" data-state="have">
+      <div class="ink-block">
+        <p class="idx">09</p>
+        <h2>Content Guidelines</h2>
+        <p class="d">Copy and naming rules: labels, errors, numbers, dates, calls to action.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/guidelines/copywriting.md</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p10" data-edge="up" data-state="have">
+      <div class="ink-block">
+        <p class="idx">10</p>
+        <h2>UX Principles</h2>
+        <p class="d">Ratified principles, each bound to the published evidence it rests on.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/_ux_principle_nodes.json</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <!-- ===== left column, bottom to top ===== -->
+    <article class="tile p11" data-edge="right" data-state="soon">
+      <div class="ink-block">
+        <p class="idx">11</p>
+        <h2>CX Principles</h2>
+        <p class="d">The service-level counterpart to the UX principles, across channels, not screens.</p>
+      </div>
+      <div class="foot"><p class="badge">Coming soon</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <article class="tile p12" data-edge="right" data-state="have">
+      <div class="ink-block">
+        <p class="idx">12</p>
+        <h2>UX Components</h2>
+        <p class="d">Governed components, each with a meta, a reference build and its states.</p>
+      </div>
+      <div class="foot"><p class="src">knowledge/components/</p></div>
+      <span class="tick"></span>
+    </article>
+
+    <!-- ===== the hub ===== -->
+    <div class="hub">
+      <!-- masterbrand lockup, knowledge/assets/logos/masterbrand-light-colour.svg.
+           The wordmark is re-bound to currentColor-by-class so one lockup serves both themes. -->
+      <svg class="lockup" viewBox="0 0 315 85" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Masterbrand lockup">
+        <g class="wordmark">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M299.725 60.8888C288.304 60.8888 283.159 53.5583 283.159 42.7359C283.159 32.0127 288.844 23.9949 300.118 23.9949C307.175 23.9949 314.037 27.1429 314.233 35.2094H306.293C305.9 31.668 303.547 29.7984 300.118 29.7984C293.206 29.7984 291.098 37.2759 291.098 42.9815C291.098 48.6394 293.206 55.2309 299.871 55.2309C303.351 55.2309 305.9 53.3622 306.439 49.7709H314.428C313.547 57.8386 307.077 60.8888 299.725 60.8888Z"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M232.501 60.8888C224.855 60.8888 218.582 57.8386 218.435 49.3288H226.13C226.228 53.117 228.433 55.3792 232.649 55.3792C235.786 55.3792 239.315 53.8047 239.315 50.2625C239.315 47.5088 236.914 46.6233 232.942 45.4914L230.394 44.7537C224.808 43.1306 219.268 40.965 219.268 34.5704C219.268 26.6504 226.621 23.9949 233.335 23.9949C240.245 23.9949 246.176 26.4053 246.225 34.2757H238.531C238.236 31.029 236.374 29.1594 232.746 29.1594C229.904 29.1594 227.062 30.6843 227.062 33.8323C227.062 36.44 229.414 37.2272 234.413 38.8012L237.354 39.7362C243.432 41.6544 247.254 43.7688 247.254 49.673C247.254 57.7886 239.461 60.8888 232.501 60.8888Z"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M264.675 54.9364C268.252 54.9364 271.782 54.0996 271.782 49.771C271.782 45.5403 268.743 44.5557 265.115 44.5557H259.039V54.9364H264.675ZM263.94 39.489C267.322 39.489 270.751 38.8013 270.751 34.6684C270.751 30.9801 267.517 29.9951 264.43 29.9951H259.039V39.489H263.94ZM251.588 24.6832H263.89C267.763 24.6832 269.331 24.7819 270.85 25.1253C275.163 26.109 278.398 28.9127 278.398 33.6855C278.398 38.2597 275.507 40.6205 271.34 41.7037C276.143 42.5892 279.672 45.0495 279.672 50.3122C279.672 58.3795 271.732 60.2491 265.508 60.2491H251.588V24.6832Z"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M206.382 45.0489H191.041V60.2494H183.346V24.6826H191.041V39.2437H206.382V24.6826H214.076V60.2494H206.382V45.0489Z"/>
+        </g>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 85H127.5V0H42.5V85Z" fill="#FFFFFF"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 8.58307e-05L85 42.5L127.5 8.58307e-05H42.5Z" fill="#DB0011"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 85H127.5L85 42.5L42.5 85Z" fill="#DB0011"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M127.5 85L170 42.5L127.5 0V85Z" fill="#DB0011"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 42.5L42.3107 84.9311L42.5 85V0L0 42.5Z" fill="#DB0011"/>
+      </svg>
+
+      <div class="accent-rule" role="presentation"></div>
+
+      <h2>Intelligent Design System</h2>
+      <p class="strap">One governed source. Every surface, component and token resolves back to it,
+        and every change that lands carries the ruling that let it.</p>
+
+      <div class="ring">
+        <span>People</span><span>Technology</span><span>Data</span>
+        <span>Insights</span><span>Governance</span><span>Continuous improvement</span>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="key" aria-label="How to read this map">
+    <div>
+      <p class="k">In the repository</p>
+      <p>Ten of the twelve stand today. Each cites one file it is held in — the citation is the
+        claim, and it can be opened.</p>
+    </div>
+    <div>
+      <p class="k">Coming soon</p>
+      <p>Two are faded and badged: User Research &amp; Insights, and CX Principles. Faded, because
+        absent is a state of the map, not a hole in it.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>A shared foundation for better experiences</span>
+    <span>notes/_lanes/292/H/design-system-map.html</span>
+  </footer>
+
+</main>
+</body>
+</html>

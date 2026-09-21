@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Overview dashboard — a definition</title>
+<style>
+:root{
+  --accent:#DA1A00;
+  --black:#000000;
+  --white:#FFFFFF;
+  --grey-1:#F3F3F3;
+  --grey-2:#EDEDED;
+  --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B;
+  --grey-6:#767676;
+  --grey-7:#545454;
+  --grey-8:#333333;
+  --s1:0.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+  --max-width:1200px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16px; font-weight:400; line-height:1.75;
+  color:var(--black); background:var(--white);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--s4)}
+nav{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:var(--s4)}
+.brand{font-size:14px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase}
+.brand .sep{color:var(--grey-5);margin:0 8px}
+.brand .ctx{color:var(--grey-6);font-weight:400}
+nav .links{display:flex;gap:var(--s3);font-size:12px;letter-spacing:0.05em;text-transform:uppercase}
+nav .links a{color:var(--grey-6);text-decoration:none}
+nav .links a:hover{color:var(--black)}
+.label{font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label.mute{color:var(--grey-6)}
+.label.mute::before{background:var(--grey-3)}
+h1{font-size:76px;font-weight:200;line-height:1.04;margin:0 0 var(--s4)}
+h2{font-size:40px;font-weight:300;line-height:1.14;letter-spacing:-0.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s2)}
+h4{font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.lede{font-size:19px;font-weight:400;line-height:1.6;color:var(--grey-8);max-width:820px}
+.cap{font-size:12px;line-height:1.55;color:var(--grey-6)}
+strong{font-weight:700}
+em{font-style:normal;font-weight:500}
+code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;background:var(--grey-1);padding:1px 5px}
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+section.tight{padding:var(--s6) 0}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white);border-bottom:none}
+section.dark h2,section.dark h3,section.dark h4{color:var(--white)}
+section.dark p,section.dark li{color:var(--grey-3)}
+section.dark .label{color:var(--white)}
+section.dark code{background:#1d1d1d;color:var(--grey-3)}
+.hero h1{margin-bottom:var(--s5)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s5)}
+.stat .fig{font-size:52px;font-weight:200;line-height:1;letter-spacing:-0.01em}
+.stat .lab{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s1);line-height:1.5}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.split-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.num{font-size:40px;font-weight:200;line-height:1;color:var(--grey-3);margin-bottom:var(--s2)}
+blockquote{margin:0 0 var(--s3);padding:0 0 0 var(--s3);border-left:2px solid var(--accent);font-size:19px;line-height:1.55}
+blockquote.small{font-size:16px;border-left-color:var(--grey-3);line-height:1.7}
+blockquote cite{display:block;margin-top:var(--s1);font-size:12px;font-style:normal;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey-6)}
+table.t{width:100%;border-collapse:collapse;margin-top:var(--s3)}
+table.t th{text-align:left;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);padding:0 var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-3);vertical-align:bottom}
+table.t td{padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top;font-size:15px;line-height:1.55}
+table.t td.k{font-weight:500;width:210px}
+table.t td.p{font-size:13px;color:var(--grey-7);font-family:"SF Mono",Menlo,Consolas,monospace;width:340px;word-break:break-all}
+ul.clean{margin:0 0 var(--s2);padding-left:var(--s3)}
+ul.clean li{margin-bottom:var(--s1)}
+.rule{border-top:1px solid var(--grey-3);margin:var(--s5) 0 var(--s3)}
+/* the schematic */
+.schema{margin-top:var(--s4);border:1px solid var(--grey-3);padding:var(--s3);background:var(--white)}
+.schema .band{display:grid;gap:4px;margin-bottom:40px}
+.schema .band:last-child{margin-bottom:0}
+.cell{background:var(--grey-1);border:1px solid var(--grey-3);padding:10px 12px;min-height:56px}
+.cell .t{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+.cell .s{font-size:11px;color:var(--grey-6);line-height:1.4}
+.cell.lead{background:var(--black);border-color:var(--black);color:var(--white)}
+.cell.lead .s{color:var(--grey-5)}
+.cell.att{border-color:var(--accent);border-width:2px}
+.b5{grid-template-columns:repeat(5,1fr)}
+.b42{grid-template-columns:4fr 2fr;gap:40px}
+.b24{grid-template-columns:2fr 4fr;gap:40px}
+.stackcol{display:grid;gap:40px}
+.gutmark{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey-6);margin:6px 0 0}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand">Apollo<span class="sep">/</span><span class="ctx">#292 lane D · overview dashboard</span></div>
+  <div class="links">
+    <a href="#what">What</a><a href="#who">Who</a><a href="#carry">Carries</a>
+    <a href="#parts">Parts</a><a href="#grid">Grid</a><a href="#pass">Pass</a><a href="#his">His</a>
+  </div>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <p class="label">Definition · 21 September 2026 · draft for your eye</p>
+  <h1>The Overview<br>dashboard</h1>
+  <p class="lede">One page that says whether anything is wrong and what to do about it, before anybody clicks. This is the standard a one-shot is graded against — so that grading it is reading, not taste.</p>
+  <blockquote class="small">I also think we need a definition of an 'Overview dashboard' lets work on this together<cite>Dave, 2026-09-19 · <code>notes/_STRAND-MAP-2026-09-19.html</code> § 03</cite></blockquote>
+  <div class="stats">
+    <div class="stat"><div class="fig">5</div><div class="lab">Regions the page must carry</div></div>
+    <div class="stat"><div class="fig">6</div><div class="lab">Columns in the wall</div></div>
+    <div class="stat"><div class="fig">40 / 4</div><div class="lab">Outer / inner gutter, mono</div></div>
+    <div class="stat"><div class="fig">9</div><div class="lab">Pass conditions, all measurable</div></div>
+  </div>
+</div></section>
+
+<section id="what"><div class="wrap">
+  <p class="label mute">01</p>
+  <h2>What it is</h2>
+  <div class="split">
+    <div>
+      <h4>In one sentence</h4>
+      <p class="cap">The definition a builder and a reviewer both read.</p>
+    </div>
+    <div>
+      <p class="lede" style="margin-bottom:var(--s4)"><strong>An Overview dashboard is the standing first screen of a destination. It answers two questions without a click — <em>is anything wrong?</em> and <em>what needs me?</em> — and it lets the reader act on the second answer in place.</strong></p>
+      <p>It is a monitoring surface, not a report and not a search result. The reader arrives already knowing their job; the page's work is to tell them what changed since they last looked, and to be quiet when nothing did.</p>
+      <p>Three things follow from that sentence, and everything further down is a consequence of them:</p>
+      <ul class="clean">
+        <li><strong>Everything read every visit is on the first level.</strong> Anything else is one deliberate, labelled step away — expand, view-as-table, popover — and that step happens <em>where the question was asked</em>, not on another page.</li>
+        <li><strong>The page executes.</strong> An item the reader must act on carries its one primary action on the row. A list you can only look at is a report.</li>
+        <li><strong>Quiet is a designed state.</strong> A page with nothing wrong shows no colour. Hue is a budget spent on exceptions, never on confirming that things are fine.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="who" class="grey"><div class="wrap">
+  <p class="label mute">02</p>
+  <h2>Who reads it, and for how long</h2>
+  <div class="split">
+    <div>
+      <h4>The reading</h4>
+      <p class="cap">If a page cannot name its reader it cannot be graded, because every decision below is "compared to what?".</p>
+    </div>
+    <div>
+      <p>An Overview dashboard is written for <strong>one named operating role</strong> — the person accountable for the thing on the page, not a platform owner and not an analyst. It is read <strong>two to five times a day for under ninety seconds</strong>, usually standing, usually between other things.</p>
+      <p>Two consequences that the grade actually turns on:</p>
+      <ul class="clean">
+        <li><strong>Order is by frequency of reading, not by size of number.</strong> The metric that role checks first sits first, left to right.</li>
+        <li><strong>One destination, one task.</strong> A page that serves two roles is two pages. The Spider's report on the library already names the opposite defect — several destinations reusing one reporting wall instead of supporting distinct tasks.</li>
+      </ul>
+      <p class="cap">⚠ A page therefore cannot be composed without a named role in the brief. If the brief does not give one, that is a question to ask, not a default to invent.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="carry"><div class="wrap">
+  <p class="label mute">03</p>
+  <h2>What it must carry — the five regions</h2>
+  <p class="lede">In reading order. A page missing any of the five is not an Overview dashboard; a page with a sixth region has a brief that needs asking about.</p>
+
+  <div class="split-3" style="margin-top:var(--s5)">
+    <div>
+      <div class="num">01</div>
+      <h3>The attention strip</h3>
+      <p>A thin row above the wall carrying the exceptions as chips, each one anchor-linked to its item in the needs-attention region. It orients; it does not summarise. If nothing is wrong the strip carries one neutral line and no colour.</p>
+      <blockquote class="small">the user sees the strip and it orientates them to pay attention towards the detail … the user might even click on the chip and it anchor links to the needs attention panel<cite>Dave · ruling s251-D1</cite></blockquote>
+    </div>
+    <div>
+      <div class="num">02</div>
+      <h3>The headline row</h3>
+      <p><strong>Three to six metrics in one row</strong>, never a 2×2 board. Each carries value, a signed delta against a <em>named</em> period, and a trend shape — a sparkline, never a gauge or a ring. The count is whatever the data dictates.</p>
+      <blockquote class="small">The headline row should simply be whatever the data dictates, 5 is even okay in this case<cite>Dave · ruling s249-D2</cite></blockquote>
+    </div>
+    <div>
+      <div class="num">03</div>
+      <h3>The dominant evidence tile</h3>
+      <p>Exactly one tile is the widest on the wall, and it holds the evidence the role actually came for. No other tile matches its width. If two tiles compete for that job the page has not decided what it is for.</p>
+    </div>
+  </div>
+
+  <div class="split-3" style="margin-top:var(--s5)">
+    <div>
+      <div class="num">04</div>
+      <h3>The needs-attention region</h3>
+      <p>A <strong>standing</strong> region — present whether or not it has contents, with an empty state that reads as good news. Each item shows status, due, and a count against the total; each carries <strong>its one primary action in place</strong>. At most six actions on the page.</p>
+    </div>
+    <div>
+      <div class="num">05</div>
+      <h3>The supporting evidence</h3>
+      <p>Two to four tiles answering the brief's remaining clauses. Widths are importance-weighted from the ruled span set, not split evenly. Each chart tile carries "view as table" in its own header.</p>
+    </div>
+    <div>
+      <div class="num">—</div>
+      <h3>And the filter</h3>
+      <p>Optional, and when present it <strong>ships collapsed</strong> as a chip row with a count and a clear-all, and it <strong>sits with the wall it filters</strong> — never in the page title zone acting on nothing.</p>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <h3>What it is not</h3>
+  <ul class="clean">
+    <li><strong>Not a 2×2 KPI board.</strong> Two rows of tiles where one row would do pushes the first chart below the fold.</li>
+    <li><strong>Not a symmetric 3+3 wall.</strong> Equal quadrants carry no hierarchy; irregular widths are how importance is said.</li>
+    <li><strong>Not a page of green ticks.</strong> Healthy is unhued. A 100% signal rate is a 0% signal rate.</li>
+    <li><strong>Not animated on entry.</strong> Motion is the rarest signal and is never spent on load choreography on a monitoring page.</li>
+    <li><strong>Not a drill-down hub.</strong> If the answer is one click away on another page, it belongs here or it does not belong.</li>
+  </ul>
+  <p class="cap" style="margin-top:var(--s3)">Source for the composition clauses above: the twenty-nine draft principles DP-01…29 at <code>reviews/DASHBOARD-PRINCIPLES-2026-09-05-v1.html</code>. ⚠ <strong>Those principles are DRAFT and none of them is ruled</strong> — the page says so on its own face. This definition treats them as the standard to grade against because nothing else exists; adopting them is Dave's, and it is question 1 in § 07.</p>
+</div></section>
+
+<section id="parts" class="grey"><div class="wrap">
+  <p class="label mute">04</p>
+  <h2>What it is built out of</h2>
+  <p class="lede">Every part below exists in the library today. Names and paths are read from the repo; nothing here is a component that would have to be invented first.</p>
+
+  <table class="t">
+    <thead><tr><th>Region</th><th>Component</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Page chrome</td><td>Page-header-lockup — arrangement A, eyebrow + title + right actions</td><td class="p">knowledge/snippets/Page-header-lockup.reference.html · scope <code>.cn-page-header-lockup</code></td></tr>
+      <tr><td class="k">Attention strip</td><td>Status-indicator — the tint chip form (square, fully AA)</td><td class="p">knowledge/snippets/Status-indicator.reference.html · <code>.cn-status-indicator</code></td></tr>
+      <tr><td class="k">Headline row</td><td>Kpi-tile — label, value, delta with named period, inline spark</td><td class="p">knowledge/snippets/Kpi-tile.reference.html · <code>.cn-kpi-tile</code></td></tr>
+      <tr><td class="k">Tile frames</td><td>Card-header-lockup — title + meta, or title + inline ghost actions</td><td class="p">knowledge/snippets/Card-header-lockup.reference.html · <code>.cn-card-header-lockup</code></td></tr>
+      <tr><td class="k">Dominant evidence</td><td>Table (with caption + scope'd headers) or Data-grid where the row set is long enough to need its own controls</td><td class="p">knowledge/snippets/Table.reference.html · knowledge/snippets/Data-grid.reference.html</td></tr>
+      <tr><td class="k">Attention items</td><td>List-items rows + Status-indicator + Button — see the gap note below</td><td class="p">knowledge/snippets/List-items.reference.html · Button.reference.html</td></tr>
+      <tr><td class="k">Charts</td><td>Chart-bar / Chart-line / Chart-combo etc., driven by <code>window.dvRender(figure, spec)</code>; the library owns the arithmetic, the page owns the data</td><td class="p">knowledge/canon/dv-render.js + dv-render-bar.js + dv-render-line.js · knowledge/snippets/Chart-*.reference.html</td></tr>
+      <tr><td class="k">Chart keys</td><td>Legend — needed the moment the engine bakes A/B series keys</td><td class="p">knowledge/snippets/Legend.reference.html · <code>.cn-legend</code></td></tr>
+      <tr><td class="k">Filter</td><td>Tags — the dismissible <code>.filterbar</code> chip row; Filter-toolbar-bar only when the brief asks for the open form</td><td class="p">knowledge/snippets/Tags.reference.html · Filter-toolbar-bar.reference.html</td></tr>
+      <tr><td class="k">The wall</td><td>The bento grammar — <code>.c-bento[data-bento-role="dashboard"]</code>, tiles, spans</td><td class="p">knowledge/canon/canon.css lines 1078–1202</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule"></div>
+  <h3>Two parts the library does not have</h3>
+  <p>Both are named here so a builder composes around them rather than inventing them, and so the definition does not quietly assume a component that is not there.</p>
+  <ul class="clean">
+    <li><strong>No needs-attention organism.</strong> There is no <code>Needs-attention</code> or <code>Attention-list</code> snippet. The region is composed from List-items + Status-indicator + Button inside a Card-header-lockup card. Whether that organism should be minted is a question, not a decision.</li>
+    <li><strong>No attention-strip component.</strong> The strip is ruled a good pattern at s251-D1 and has no snippet; it is built from Status-indicator chips inside a landmark.</li>
+  </ul>
+  <p class="cap">Both gaps were first measured at #288 lane P (<code>notes/_subreports/2026-09-19-288-P-composition-probe.md</code>, gaps G4 and G6) and are unchanged today.</p>
+</div></section>
+
+<section id="grid"><div class="wrap">
+  <p class="label mute">05</p>
+  <h2>The layout, on the ruled grid</h2>
+  <p class="lede">The wall is not a suggestion. Every number below is either a token in <code>knowledge/canon/canon.css</code> or a ruled default in <code>knowledge/_render/role_defaults_219.py</code>, and every one of them is measurable in a render.</p>
+
+  <table class="t" style="margin-top:var(--s4)">
+    <thead><tr><th>Parameter</th><th>Value</th><th>Where it is ruled</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Structure</td><td>One outer wall with <code>data-bento-role="dashboard"</code> whose tiles are themselves bentos — a bento-of-bentos</td><td class="p">s217-D3 · canon.css 1182–1201</td></tr>
+      <tr><td class="k">Columns</td><td>6</td><td class="p">s217-D2 · <code>--layout-bento-columns:6</code></td></tr>
+      <tr><td class="k">Row unit</td><td>320px, as a FLOOR — <code>minmax(unit,auto)</code>, each row growing to its own content</td><td class="p">s217-D2 · s245-D8 ("Okay it's 2")</td></tr>
+      <tr><td class="k">Outer gutter</td><td>40px mono &amp; console · 24px legacy &amp; supercharge (mainSpacing)</td><td class="p">s219-D1(5) · role_defaults_219.py --table</td></tr>
+      <tr><td class="k">Inner gutter</td><td>4px mono, legacy, console · 2px supercharge (subSpacing)</td><td class="p">s219-D1(5)</td></tr>
+      <tr><td class="k">Legal spacings</td><td>Only the stop set {1, 2, 4, 16, 24, 40}. Never a free value.</td><td class="p">s219-D1(4) · <code>knowledge/_render/_bento_edit_rails.json</code> → <code>rail.spacing_stops</code></td></tr>
+      <tr><td class="k">Span vocabulary</td><td><code>data-c</code> 1…6 and <code>data-r</code> 1…3, importance-weighted: 6 · 4 · 3 · 2</td><td class="p">canon.css 1112–1121</td></tr>
+      <tr><td class="k">Keylines · grounds</td><td>keylines off · bento background transparent · page ground grey</td><td class="p">s219-D1(3) · role_defaults_219.py --table</td></tr>
+      <tr><td class="k">Surfaces</td><td>A tile is a SLOT. The surface belongs to the component inside it, never to the tile.</td><td class="p">canon.css — <code>.c-bento__tile</code> carries no background</td></tr>
+      <tr><td class="k">Responsive</td><td>The wall's own width decides: 1100px→3 cols, 820px→2, 520px→1</td><td class="p">s217-D2 · canon.css 1146–1159 (<code>@container bento</code>)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule"></div>
+  <h3>The shape of the wall</h3>
+  <p>Three bands at 1440. The dominant tile is black; the attention region is outlined in accent. Wide gaps are the 40px outer gutter, hairline gaps the 4px inner gutter.</p>
+
+  <div class="schema">
+    <div class="band b5">
+      <div class="cell"><div class="t">Metric 1</div><div class="s">read first</div></div>
+      <div class="cell"><div class="t">Metric 2</div><div class="s"></div></div>
+      <div class="cell"><div class="t">Metric 3</div><div class="s"></div></div>
+      <div class="cell"><div class="t">Metric 4</div><div class="s"></div></div>
+      <div class="cell"><div class="t">Metric 5</div><div class="s">exceptions</div></div>
+    </div>
+    <p class="gutmark" style="margin:-32px 0 32px">▲ one inner wall, full 6-column width, its own column count · 4px gutter</p>
+    <div class="band b42">
+      <div class="cell lead" style="min-height:150px"><div class="t">Dominant evidence — data-c 4, data-r 2</div><div class="s">the widest tile on the wall; nothing else matches its width</div></div>
+      <div class="cell att" style="min-height:150px"><div class="t">Needs attention — data-c 2, data-r 2</div><div class="s">standing region · each item its one action in place</div></div>
+    </div>
+    <div class="band b24">
+      <div class="cell" style="min-height:150px"><div class="t">Exceptions — data-c 2, data-r 2</div><div class="s">its own full-height column, because it is the taller neighbour</div></div>
+      <div class="stackcol">
+        <div class="cell"><div class="t">Chart A — data-c 4</div><div class="s">categorical</div></div>
+        <div class="cell"><div class="t">Chart B — data-c 4</div><div class="s">a run over time</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="cap" style="margin-top:var(--s2)">Every band closes on 6 columns with no orphan cell. A taller neighbour is answered by giving it its own row span — never by stretching its neighbour, and never by leaving dead ground under a short tile.</p>
+
+  <div class="rule"></div>
+  <h3>Three traps that are measured, not theoretical</h3>
+  <ul class="clean">
+    <li><strong>The outer gutter will silently be 0 if the instance dial is written the way canon documents it.</strong> canon.css tells the author to declare instance dials as <code>.c-bento.my-wall{…}</code>, but the rule that restores the outer gutter for a bento-of-bentos carries a <code>:has()</code> and out-specifies a bare class. The dial only lands when it repeats the <code>:has()</code>. Measured #288 lane P, finding F2.</li>
+    <li><strong>A nested wall narrower than 1100px cannot carry its own column count.</strong> The container bands re-declare the column count on the grid and answer the wall, not the window. So an inner wall may only carry its own parameter set when it spans the full six columns. Measured #288 lane P, finding F3.</li>
+    <li><strong>Overflow is clipped in silence.</strong> <code>.c-bento{overflow:hidden}</code> is structural, not decoration — a tile whose content exceeds its row is cropped with no error in the DOM and no console warning. Measured #288 lane P, finding F5.</li>
+  </ul>
+</div></section>
+
+<section id="pass" class="dark"><div class="wrap">
+  <p class="label">06</p>
+  <h2>What a one-shot has to do to pass</h2>
+  <p class="lede" style="color:var(--grey-3)">Nine conditions in two groups. Each one is a reading, not an opinion — so a page can be failed by a number rather than by a mood.</p>
+
+  <h3 style="margin-top:var(--s5)">A · It composed, it did not trace</h3>
+  <blockquote style="border-left-color:var(--accent)">what is the point of building the KG if the agent just traces an existing file … this isn't Apollo its a dot-to-dot book<cite style="color:var(--grey-5)">Dave, 2026-09-19</cite></blockquote>
+  <table class="t" style="color:var(--grey-3)">
+    <tbody>
+      <tr><td class="k" style="color:var(--white)">P1 · Materials</td><td>The page's DOM carries <strong>eight or more distinct <code>.cn-*</code> component scopes</strong>. A page built from the library uses the library; a traced page uses its own markup. (Measured at #288: traced 0, composed 11.)</td></tr>
+      <tr><td class="k" style="color:var(--white)">P2 · Zero invention</td><td>No invented component, no invented variant, no invented token, no raw hex anywhere in the page's own CSS. Every visual value resolves to a token.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P3 · The five regions</td><td>All five regions of § 03 are present, in reading order, and the needs-attention region carries at least one real action element per item.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P4 · Decisions are cited</td><td>Every structural decision carries the ruling, principle or token it rests on — or is marked a designer's call. Anything the system could not supply is written down as a gap, not invented over.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:var(--s5)">B · Alignment, spacing and dimensions</h3>
+  <blockquote style="border-left-color:var(--accent)">we need to do something about the sloppiness and, its all about alignment spacing and dimensions<cite style="color:var(--grey-5)">Dave, 2026-09-19</cite></blockquote>
+  <table class="t" style="color:var(--grey-3)">
+    <tbody>
+      <tr><td class="k" style="color:var(--white)">P5 · Gutters</td><td>The outer wall's computed column-gap and row-gap both read <strong>the theme's mainSpacing</strong> (40px in mono). Every inner wall reads <strong>subSpacing</strong> (4px in mono). Read from the live DOM, not from the source.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P6 · Stop set</td><td>Every <strong>bento spacing dial</strong> the page authors is on {1, 2, 4, 16, 24, 40}. One free value is a fail. ⚠ The stop set is scoped to the bento edit-pass vocabulary (<code>_bento_edit_rails.json</code> → <code>rail.spacing_stops</code>); component-internal padding is the component's own idiom and canon itself uses 8px and 12px throughout, so the condition is read on the dials, not on every declaration — and the page reports both numbers separately rather than blurring them.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P7 · No ragged layouts</td><td>Every band closes on the column count with no orphan cell. The per-row sum of <code>data-c</code> is a whole multiple of the wall's columns.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P8 · Nothing clipped, nothing dead</td><td>No tile's content overflows its clipped container, and no tile carries a dead band under its last row. Measured as scrollHeight vs clientHeight per tile — because the clip is silent.</td></tr>
+      <tr><td class="k" style="color:var(--white)">P9 · Both modes, no errors</td><td>Renders clean in light and dark at 1440 with zero uncaught page errors, and every custom property the page's own source references resolves in the scope it is used in.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="cap" style="color:var(--grey-5);margin-top:var(--s4)">⚠ P7 cannot be read by any gate in the tree on a page that <em>links</em> <code>knowledge/canon/canon.css</code> — <code>knowledge/_validate_composition.py</code> reads the grammar from the artefact's own inline <code>@container</code> blocks and returns UNPROVEN otherwise. On a linked page P7 is read by a bespoke DOM probe at render time and reported as such. That is a gap in the instruments, not a softening of the condition.</p>
+</div></section>
+
+<section id="his"><div class="wrap">
+  <p class="label mute">07</p>
+  <h2>What this definition cannot decide</h2>
+  <p class="lede">Five questions. Each one changes the definition above; none of them is a lane's to answer.</p>
+  <table class="t">
+    <tbody>
+      <tr><td class="k">1 · The principles</td><td>DP-01…29 are draft and unruled, and this whole definition rests on them. Do they become the standard, as a set, or does the definition stand on its own and the principles stay advisory?</td></tr>
+      <tr><td class="k">2 · Five regions, or fewer</td><td>Is the five-region list the <em>requirement</em> for the class, or the recommended composition — i.e. is a page without an attention strip disqualified, or merely unusual?</td></tr>
+      <tr><td class="k">3 · The two missing parts</td><td>Should a needs-attention organism and an attention strip be minted as components, given both are composed by hand on every dashboard today?</td></tr>
+      <tr><td class="k">4 · The page ground</td><td>The ruled page ground is grey and there is no semantic grey-page token — today it borrows <code>--surface-hover</code>. Mint a <code>background/app-canvas</code> role, or keep borrowing? (The dark page ground was left expressly open at s219-D1.)</td></tr>
+      <tr><td class="k">5 · The bar</td><td>Is passing all nine conditions <em>enough</em> to show on the 25th, or is the bar your eye and these are only the floor?</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<footer><div class="wrap">
+  <p>Apollo · session #292 lane D · <code>notes/_lanes/292/D/overview-dashboard-definition.html</code> · drafted 2026-09-21. Nothing on this page is ruled. Sources cited inline are repo paths read at this seat.</p>
+</div></footer>
+
+</body>
+</html>
