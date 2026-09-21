@@ -252,9 +252,57 @@ Remedy run **exactly as the gate wrote it, in that order**: `_render_rulings.py`
 `W-295i`, minted through `_state.add()` before staging, with a **true** close condition (the arm
 refuses without one, and inventing one is the smaller cousin of inventing his ruling).
 
-## THE COMMIT
+## THE COMMIT — `95cb58dd`, ONE REFUSAL PAID
 
-See § COMMIT below — sha, staged paths and refusals paid are recorded there after the fact.
+`95cb58dd` — **9 files changed, 718 insertions, 20 deletions**, 2 created.
+
+```
+SESSION_N=295 bash knowledge/_git_commit.sh --reconciled \
+  knowledge/_tmp/msg-295-I-inscribe-enact-2001.txt <9 named paths>
+```
+
+Staged: `knowledge/_rulings.json` · `knowledge/_capture_gate.py` · `knowledge/_state.json` ·
+`_CHAIN.md` · `notes/_RULINGS.html` · `notes/_lanes/295/DAVE-RULINGS-2026-09-21.md` ·
+`notes/_subreports/2026-09-21-295-I-inscribe-and-enact.md` · and the two machine appends
+`notes/_REHEARSAL-LOG.jsonl` · `notes/_dream/_GRADE-DECISIONS.jsonl`.
+**Paths named individually; `add -A` was never used. NOTHING IS PUSHED** — no remote consulted,
+no `git ls-remote`, no CI claimed. Fresh msgfile under a unique name in the gitignored
+`knowledge/_tmp/`, line 1 with **no** `after #N` prefix (the script adds it, and asserted exactly
+one).
+
+**The gate at the commit seam, DECLARED not-a-wrap (`#74-D1`), red visible not blocking:**
+
+> `capture gate [wrap]: 232 in scope · 1 fail · 366 warn`
+
+**Doc-row gate: population 547 · staged-in-THIS-commit 1 · unrowed 0 · ✅ PASS.**
+
+### ⛔ REFUSALS PAID — TWO, VERBATIM, NEITHER ARGUED WITH, NEITHER ACKED
+
+**1 · `s263-D10` — the rulings page, caught by the rehearsal between the two steps.** Quoted in
+full in § `notes/_RULINGS.html` above. **Real, and caused by this lane.** Remedy run exactly as the
+gate wrote it.
+
+**2 · THE STEP-0.5 RECONCILE GATE REFUSED THE FIRST COMMIT ATTEMPT:**
+
+> `✗ refusing to stage: run 'git status --short', account for EVERY dirty path (step 0.5), then
+> re-run with --reconciled.`
+
+**Accounted for, and the two unstaged paths are deliberately not mine:**
+`notes/_lanes/293/J7-IDEA-jev-selects-over-the-kg.md` — **another worker's LIVE file**, left
+uncommitted by declaration at #294 (`_HANDOFF-145` § OWED 13: *"in-flight is not a stray (#70)"*) —
+and `notes/_lanes/294/WRAP-MEMORY-HOOK.md`, **owed to the conductor** (§ OWED 14). Staging either
+would mean minting a doc row on another seat's behalf and freezing work still moving. The script's
+own line: `⚠ 2 dirty path(s) NOT staged — deliberate under explicit-path staging`.
+
+### THE LOCKS — TWO RENAMED ON-DEVICE, ZERO `rm`'d
+
+`.git/index.lock` (0 bytes) existed at the pre-commit check and was `mv`'d to
+`notes/_lanes/_orphan-locks/stale-index.lock-295-I-2000`; a second respawned before the retry and
+went to `stale-index.lock-295-I-<HHMMSS>`. `.git/HEAD.lock` and `.git/refs/heads/master.lock` were
+**absent at both checks**. ⛔ **Nothing was ever `rm`'d** — this mount refuses `unlink`
+(`s282-D4`), and the script's own
+`warning: unable to unlink … Operation not permitted` is git failing to clean up after itself, not
+a foreign lock. The script closed on `✓ done — locks clear`.
 
 ---
 
@@ -294,7 +342,8 @@ See § COMMIT below — sha, staged paths and refusals paid are recorded there a
   fresh) · `_gen_chain --check` · the two new arms direct · `_checkin --window 200000 --no-block`
 - ⛔ **`_capture_gate.py --selftest` NOT RUN WHOLE** — call wall; narrowest probe run instead and
   **declared**, not claimed
-- doc rows minted **1** (`W-295i`) · commits **1** · pushes **0** · locks `rm`'d **0**
+- doc rows minted **1** (`W-295i`, population 772 → 773) · commits **2** (`95cb58dd`, + this report completed) · pushes **0** · locks `rm`'d **0** · locks renamed on-device **2**
+- refusals paid **2**: `s263-D10` stale rulings page (mine, cleared by re-render) · the step-0.5 reconcile gate (2 dirty paths belonging to other seats, accounted for and deliberately unstaged)
 
 ### UNPROVEN, named rather than implied
 
