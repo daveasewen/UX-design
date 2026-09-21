@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dream pass enactment audit — passes 6 to 13</title>
+<style>
+:root{
+--accent:#DB0011;--accent-3:#730014;--black:#000;--white:#fff;
+--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+--s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;
+--max-width:1200px;--gutter:2rem;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--black);background:var(--white);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+hr.rule{border:0;border-top:1px solid var(--grey-2);margin:0}
+
+nav{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding-top:var(--s2);padding-bottom:var(--s2);flex-wrap:wrap}
+nav .back{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-6)}
+nav .back b{color:var(--black);font-weight:500}
+nav .links{display:flex;gap:var(--s3);flex-wrap:wrap}
+nav .links a{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-7);text-decoration:none}
+nav .links a:hover{color:var(--accent)}
+
+.label{font-size:.75rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin-bottom:var(--s3)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+
+header.hero{padding:var(--s7) 0 var(--s6)}
+h1{font-size:3.5625rem;font-weight:300;line-height:1.05;letter-spacing:0;max-width:20ch}
+header.hero .sub{margin-top:var(--s4);max-width:62ch;color:var(--grey-8)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6)}
+.stat .n{font-size:2.6875rem;font-weight:200;line-height:1.05}
+.stat .c{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-5);margin-top:var(--s1);line-height:1.5}
+
+section{padding:var(--s6) 0}
+h2{font-size:2.125rem;font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin-bottom:var(--s3)}
+h3{font-size:1.1875rem;font-weight:500;line-height:1.2;margin-bottom:var(--s2)}
+p+p{margin-top:var(--s2)}
+.lede{max-width:78ch;color:var(--grey-8)}
+.dim{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dim .idx{font-size:2.6875rem;font-weight:200;color:var(--grey-3);line-height:1}
+
+table{width:100%;border-collapse:collapse;margin-top:var(--s3);font-size:.875rem;line-height:1.6}
+th{text-align:left;font-size:.75rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);border-bottom:1px solid var(--black);padding:var(--s1) var(--s2) var(--s1) 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--grey-2);padding:var(--s3) var(--s2) var(--s3) 0;vertical-align:top}
+td:last-child,th:last-child{padding-right:0}
+tr:hover td{background:var(--grey-1)}
+td.p{font-weight:500;white-space:nowrap;width:3.2rem}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em;background:var(--grey-1);padding:.08em .32em;color:var(--grey-8)}
+q,blockquote{font-style:normal}
+blockquote{border-top:1px solid var(--grey-2);padding-top:var(--s2);margin-top:var(--s2);font-size:1.1875rem;font-weight:400;max-width:70ch}
+blockquote cite{display:block;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-5);font-style:normal;margin-top:var(--s1)}
+
+.tag{display:inline-block;font-size:.6875rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;padding:.2em .55em;border:1px solid var(--grey-3);color:var(--grey-7);white-space:nowrap;line-height:1.5}
+.tag.ok{border-color:var(--black);color:var(--black)}
+.tag.live{border-color:var(--accent);color:var(--accent)}
+.tag.rne{border-color:var(--accent-3);color:var(--accent-3)}
+.tag.ot{border-color:var(--grey-3);color:var(--grey-5)}
+
+.band{background:var(--grey-1);padding:var(--s6) 0;margin:0}
+.board{display:grid;grid-template-columns:auto 1fr auto;gap:0;margin-top:var(--s4);background:var(--grey-2);border:1px solid var(--grey-2)}
+.board>div{background:var(--white);padding:var(--s3)}
+.board .rk{font-size:2.125rem;font-weight:200;color:var(--grey-3);line-height:1;min-width:3.5rem}
+.board .bd h3{margin-bottom:var(--s1)}
+.board .bd p{font-size:.875rem;color:var(--grey-8);line-height:1.6}
+.board .ct{text-align:right;min-width:10rem}
+.board .ct .n{font-size:1.1875rem;font-weight:500;white-space:nowrap}
+.board .ct .c{font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-5);margin-top:.2em}
+
+.map{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2);margin-top:var(--s4)}
+.map>div{background:var(--white);padding:var(--s3)}
+.map .k{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.map .v{margin-top:var(--s1);font-size:.875rem;color:var(--grey-8)}
+
+footer{padding:var(--s6) 0 var(--s7);border-top:1px solid var(--grey-2);color:var(--grey-6);font-size:.8125rem}
+ul{margin:var(--s2) 0 0 1.1rem}
+li{margin-bottom:var(--s1)}
+@media(max-width:900px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .dim,.map{grid-template-columns:1fr}
+ .board{grid-template-columns:1fr}
+ .board .ct{text-align:left}
+ h1{font-size:2.6875rem}
+ table{font-size:.8125rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="back">Lane DA &nbsp;·&nbsp; session #293 &nbsp;·&nbsp; <b>Dream pass enactment audit</b></div>
+    <div class="links">
+      <a href="#counts">Counts</a>
+      <a href="#board">Still live</a>
+      <a href="#map">Pass map</a>
+      <a href="#p6">6</a><a href="#p7">7</a><a href="#p8">8</a><a href="#p9">9</a>
+      <a href="#p10">10</a><a href="#p11">11</a><a href="#p12">12</a><a href="#p13">13</a>
+      <a href="#p5">5</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="label">Proposal by proposal, with receipts</p>
+    <h1>Eight dream passes, thirty-nine proposals, and what actually landed</h1>
+    <p class="sub">You asked whether some earlier passes were never enacted. They were not. Twenty-two of the thirty-nine proposals floated across passes 6 to 13 were ruled and enacted with a commit behind them. One was ruled and never built. Thirteen were never put to you at all and the defect each one named is still present in the repo today. Three have been overtaken by events. Every row below carries the probe that was run this morning.</p>
+
+    <div class="stats" id="counts">
+      <div class="stat"><div class="n">22</div><div class="c">Ruled and enacted</div></div>
+      <div class="stat"><div class="n">1</div><div class="c">Ruled, not enacted</div></div>
+      <div class="stat"><div class="n">13</div><div class="c">Never ruled, still live</div></div>
+      <div class="stat"><div class="n">3</div><div class="c">Overtaken by events</div></div>
+    </div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<section class="band" id="board">
+  <div class="wrap">
+    <p class="label">Still-live leaderboard</p>
+    <h2>The six things that have ridden the longest without your word</h2>
+    <p class="lede">Ordered by how many passes have carried the same defect class, then by how long it has stood. The dreamer never re-floats a proposal, so a class that appears in four separate passes means four separate cold readings found it independently.</p>
+
+    <div class="board">
+      <div class="rk">01</div>
+      <div class="bd">
+        <h3>The memory grader's review was promised, came due, and the instrument is now dead</h3>
+        <p>Pass 8 set the return dates. Pass 9 said the cost half was due that morning and the numbers were ready. Pass 11 built the population alarm. Pass 13 found the whole grader has been dead since the store moved out of the repo at #278 — and the boot screen has kept printing stale alerts from a 13 September sidecar over a store that no longer exists.</p>
+      </div>
+      <div class="ct"><div class="n">4 passes</div><div class="c">8, 9, 11, 13 — 36 days</div></div>
+
+      <div class="rk">02</div>
+      <div class="bd">
+        <h3>Nobody has priced a session before running it since #199</h3>
+        <p>The pre-flight half of the price-vs-actual dataset has said <q>NOT CAPTURED</q> every single session. Pass 9 floated it at 27 consecutive refusals and showed the stated reason was already false. It is now at 93 and nothing has answered it.</p>
+      </div>
+      <div class="ct"><div class="n">93 sessions</div><div class="c">Pass 9 — 29 days</div></div>
+
+      <div class="rk">03</div>
+      <div class="bd">
+        <h3>The whole of pass 10 except one item — digested for you, and then nothing</h3>
+        <p>Three findings were written up on a review page for your sitting at #226. You ruled the fourth. The other three were never put again: the report-contract parser, the wrap-commit regex that matches almost every commit, and the build verdict sentence that has been wrong for weeks.</p>
+      </div>
+      <div class="ct"><div class="n">3 proposals</div><div class="c">Pass 10 — 22 days</div></div>
+
+      <div class="rk">04</div>
+      <div class="bd">
+        <h3>The memory index cut has been skipped seven wraps running</h3>
+        <p>Raised at #285, #286, #287 and #288 and routed to the dream pass each time. Pass 13 floated it. Since then it has been suspended at #289, #290, #291 and #292 as well, and the archive file it needs to spill into has 162 bytes of headroom left.</p>
+      </div>
+      <div class="ct"><div class="n">7 wraps</div><div class="c">Pass 13 — 1 day floated</div></div>
+
+      <div class="rk">05</div>
+      <div class="bd">
+        <h3>A guard you told us to remove at the next dream pass is still sitting there</h3>
+        <p>Your #276 ruling gave the lane-ownership guard a removal date: it comes off at the next dream pass if its tripwire never fired. The next dream pass was pass 13. Nothing has ever run the guard, so the tripwire could not have fired, and it is now one of two files the wiring gate fails on.</p>
+      </div>
+      <div class="ct"><div class="n">Removal due</div><div class="c">Pass 13 — condition met</div></div>
+
+      <div class="rk">06</div>
+      <div class="bd">
+        <h3>The only ruled-and-never-built item in the whole audit</h3>
+        <p>You firmed pass 6's P1 at #186 — a re-checker that counts the frozen status strings at wrap, deliberately not a bulk rewrite. It was never built, and the count is still exactly 21.</p>
+      </div>
+      <div class="ct"><div class="n">36 days</div><div class="c">Pass 6 — ruled #186</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section id="map">
+  <div class="wrap">
+    <div class="dim">
+      <div>
+        <p class="label">Pass numbering, verified</p>
+        <div class="idx">00</div>
+      </div>
+      <div>
+        <h2>The numbering in the brief was off by one, and here is the mapping I established</h2>
+        <p class="lede">The brief said 2026-08-08 was pass 6. It is not. Each proposals file states its own number in its first line, and the 2026-08-09 file opens <q>Dream pass 6 — floated proposals</q>, confirmed by <code>_DECISION-HISTORY/2026-08-09-137-dream-pass-6-triage.md</code>. The 2026-08-08 file calls itself <q>Fifth pass</q> in its own standfirst. So passes 6 to 13 are the eight files from 2026-08-09 to 2026-09-20. Pass 5 is audited anyway, at the end, because the brief named its file.</p>
+        <div class="map">
+          <div><div class="k">Pass 5</div><div class="v">2026-08-08 · 3 proposals</div></div>
+          <div><div class="k">Pass 6</div><div class="v">2026-08-09 · 5 proposals</div></div>
+          <div><div class="k">Pass 7</div><div class="v">2026-08-15 · 4 proposals</div></div>
+          <div><div class="k">Pass 8</div><div class="v">2026-08-16 · 5 proposals</div></div>
+          <div><div class="k">Pass 9</div><div class="v">2026-08-23 · 6 proposals</div></div>
+          <div><div class="k">Pass 10</div><div class="v">2026-08-30 · 4 proposals</div></div>
+          <div><div class="k">Pass 11</div><div class="v">2026-09-06 · 4 proposals</div></div>
+          <div><div class="k">Pass 12</div><div class="v">2026-09-13 · 4 proposals</div></div>
+          <div><div class="k">Pass 13</div><div class="v">2026-09-20 · 7 proposals</div></div>
+        </div>
+        <blockquote>Every status below was checked against three sources — the 622 records in the rulings store, the decisions ledger, and your own lane ruling files — and then against the repo itself. Where no ruling exists the row says NONE FOUND. Nothing is inferred.</blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 6 -->
+<section id="p6">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 6 · 2026-08-09</p><div class="idx">06</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">Four of five enacted the same fortnight. One ruled and never built — the only such case in the audit.</p></div>
+      <div>
+        <h2>The first scheduled Sunday fire</h2>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>Twenty-one ruling records carry the same frozen boilerplate status written in a one-off metadata sweep, and at least one says "unknown" in the field meant to answer the question its own text already answers.</td>
+              <td><span class="tag rne">Ruled, not enacted</span><br><br>Your word at #186, on the full read-back: <q>Firm — ratify all</q>. The ruling (<code>s186-D2</code>) promoted it as a re-checker that counts the frozen strings at wrap, explicitly <em>not</em> a bulk rewrite, because a bulk rewrite manufactures the class ADR-0016 forbids.</td>
+              <td><strong>Live.</strong> Still exactly 21 occurrences of the frozen string in the store. No such arm exists anywhere in <code>_capture_gate.py</code> or <code>_governs.py</code> — grep returns nothing.</td>
+              <td>One counting arm in the wrap checks that prints the count and names the ids. Advisory. No record is edited.</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The tools that verify a commit write into a tracked log, so verifying after committing dirties the tree — and the ruled push path then refuses to push.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s137-D1</code>, ruled and enacted the same session. Receipt <code>08852b26</code>.</td>
+              <td>Fixed. <code>_git_commit.sh:174</code> carries the single named exclusion, and the refusal now prints the dirty paths.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The commit runbook still said "GitHub Desktop only, never push from terminal" three sessions after you gave Claude the key.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s186-D2</code>: amend by addition, Desktop stays legal.</td>
+              <td>Fixed. The Desktop line at <code>_RUNBOOK-git-commit.md:106</code> is immediately followed by the #141 correction in your words and the #187 call form.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The push token's shape is written in two places with no expiry check, and the refusal message told the reader to paste a live credential into chat.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s186-D2</code>; stamped at #188, receipt <code>5199b111</code>.</td>
+              <td>Fixed, but worth your eye: the stamped expiry is <strong>~2026-11-06</strong>, about six weeks out. The token scope itself was left as your security call and was never proposed.</td>
+              <td>Nothing needed now. Diarise the November date.</td>
+            </tr>
+            <tr>
+              <td class="p">P5</td>
+              <td>An escape hatch a sub added to the commit script on its own initiative has been awaiting your one-word verdict.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s186-D2</code>: <q>P5 RULED: KEEP the --all-dirty hatch — disclosed at birth, echo-mitigated, no observed harm.</q></td>
+              <td>Kept, as ruled. Present at <code>_git_commit.sh:15</code> and <code>:199</code>, still echoing every path it stages.</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 7 -->
+<section id="p7">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 7 · 2026-08-15</p><div class="idx">07</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">The cleanest pass in the set. All four landed, one of them a session later than the rest.</p></div>
+      <div>
+        <h2>Ruled in one sitting</h2>
+        <blockquote>I'll go with your recommendation, be careful I don't wa[n]t it to break other parts of the system.<cite>Dave, #177, 2026-08-15 — the disposition ruling <code>s177-D1</code></cite></blockquote>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>Four owed items were copied onto a standing line so a rolling banner would not lose them — and that line then sat untouched for 56 sessions with a counter that disagreed with itself.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br>Deferred at #177 pending a liveness check of all four items, then cleared at #178 by <code>s178-D1(b)</code>. Receipt <code>2d2ff44c</code>.</td>
+              <td>Fixed. Two items proved live and were folded onto the fenced residual list with receipts; two proved dead and were deleted with receipts. The fold minted one new item, declared.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The one repeatedly measured 26K-per-session process cost stopped being measurable, because nothing required the conductor to declare what it opened at boot.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s177-D1</code>, receipt <code>affb76fa</code>. The expiry alternative was rejected in the ruling: expiring an unmeasured item rewards the silence.</td>
+              <td>In force. <code>_RUNBOOK-parallel-conductor.md:106–112</code> carries the required <code>boot reads:</code> field in every wrap-sub brief.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>Three memory files published a boot figure that contradicted your ruled band, two of them in the description line that shows up in search results.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br><code>s177-D1</code>, corrected at the compaction pass in the generate-it shape rather than by re-typing a figure.</td>
+              <td>Enacted, but no longer verifiable from the repo: the memory store moved out of the tree at #278. The receipt is the ruling's own status line, not a file I can read today.</td>
+              <td>Re-check the three descriptions next time the store is reachable.</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>Enacting a ruling breaks its predecessor's evidence anchor by construction, so the checker accrues a permanent failure per re-based constant forever — and one live failure named a string that never existed at the address it pointed to.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br>Part (a) at #177 with a mutation proof required before it counted. Part (b) signed later the same day — <q>okay do P4b</q> — and enacted; the checker's failures went 12 → 10.</td>
+              <td>Fixed. The standing evidence-format rule adopted alongside it is in force; the inscription-time check that would enforce it is priced and queued, not built (<code>s172-D3</code>).</td>
+              <td>The queued inscription-time check remains unbuilt. Yours.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 8 -->
+<section id="p8">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 8 · 2026-08-16</p><div class="idx">08</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">All five enacted. But the review they scheduled has never happened, and the instrument they tuned is now dead.</p></div>
+      <div>
+        <h2>The first scheduled pass, promoted whole</h2>
+        <blockquote>have you got space, if so do it.<cite>Dave, #183 post-wrap, 2026-08-16 — <code>s183-D1</code>, all five in their recommended forms only</cite></blockquote>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>The grader judged "can this memory claim be proved?" by reading the one-line index entry while the new authoring convention told authors to put the proof in the hook file — so both hooks written since the ruling complied and both graded unprovable.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · receipt <code>eaaee375</code><br><br>Then explicitly superseded: <code>s188-D3</code> retired this light version two days later when <code>s188-D1</code> moved the grading unit to the hook file outright.</td>
+              <td>Superseded, then overtaken — the grader itself is dead since #278. See pass 13 P1.</td>
+              <td>Covered by pass 13 P1.</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>A claim you personally caught and corrected was carried forward verbatim twice, because the carry rule's own invariant is "wording unchanged" and an unchanged wording cannot record a retraction.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · <code>s183-D1</code>, receipt <code>eaaee375</code></td>
+              <td>In force. The carve-out stands, strengthened later by <code>s188-D2</code>'s receipt-required rule.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The residual list is the most-read carry surface in the project and nothing parses it, so it carried seven colliding numerals, one item twice at two different ages, and an orphaned sentence fragment.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · prose form only: numerals number this session's new items, carried items are identified by age. No counter built, by choice.</td>
+              <td>In force.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The counting window for the memory-grade review opened that morning, and on its first day the human half of the dataset was empty by construction while the cost half held a thousand tokens of rows the plan excludes.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · receipt <code>eaaee375</code>. The window instant is generated, not typed: <code>2026-08-16T06:10:28Z</code>, still in the sidecar today.</td>
+              <td>The mechanism works. <strong>But the dataset it feeds has never been read back to you</strong> — and the last three rows in the decision log are byte-identical replays of a dead sidecar.</td>
+              <td>Covered by pass 13 P1.</td>
+            </tr>
+            <tr>
+              <td class="p">P5</td>
+              <td>The staleness grade cannot change inside the window meant to derive it: the threshold is 30 days and the review was due after one weekly cycle.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · the return <em>date</em> moved, the constant did not: cost half after one cycle, staleness half after five.</td>
+              <td><strong>Live as a consequence.</strong> One cycle elapsed 2026-08-23 and five cycles elapsed 2026-09-20. Neither return has happened. Pass 9 P3 and P4 both said so at the time.</td>
+              <td>The B3 return-with-numbers sitting. It needs a working grader first.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 9 -->
+<section class="band" id="p9">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 9 · 2026-08-23</p><div class="idx">09</div>
+      <p style="font-size:.875rem;color:var(--accent);margin-top:var(--s2);font-weight:500">No disposition ruling exists for this pass at all. Six proposals, none put to you.</p></div>
+      <div>
+        <h2>The pass that was never ruled</h2>
+        <p class="lede">I searched all 622 records in the rulings store, the decisions ledger, every <code>DAVE-RULINGS</code> file and every dream entry in the decision history. There is no pass-9 disposition. Three of the six are dead by other events; three are still live, and one of them is the longest-running measured defect in the record.</p>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>Nobody estimates what a session will cost before running it. The refusal reason given each time — that a sub cannot measure the conductor's window — is falsified four lines below itself, where the hand-over field now carries exactly that number.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND.</td>
+              <td><strong>Live and worse.</strong> It was 27 consecutive refusals when floated. Today the gauge log carries the same refusal for <strong>#199 through #291 — 93 consecutive sessions</strong>, 185 occurrences in the file.</td>
+              <td>Either the conductor writes one estimate at the opener, or the refusal stops claiming a reason the record contradicts.</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The grading unit moved to the hook file, but memory maintenance still writes the newest fact to the index line — so hooks carry their live claim only in the half the grader no longer reads.</td>
+              <td><span class="tag ot">Overtaken</span><br><br>NONE FOUND for pass 9. The direction it wanted was already ruled a week earlier at <code>s188-D1</code> (#188): the grading unit is the hook file.</td>
+              <td>Unverifiable and moot: the store left the repo at #278 and the grader is blocked. Overtaken by the store move.</td>
+              <td>Fold into the B3 sitting.</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The staleness half of the review was deferred by five cycles on the stated ground that the 30-day threshold could not move an entry inside a 7-day window. On cycle one it moved thirteen, and the staleness count went from 1 to 16.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND.</td>
+              <td><strong>Live.</strong> <code>GRADE_AGING_DAYS = 30</code> at <code>_gardener.py:145</code>, still labelled provisional and still marked "Dave's at the B3 review". The review has not happened.</td>
+              <td>Name a date for the B3 sitting, or rule the constant where it stands.</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The cost half's return date was that very day, the numbers were ready, and they were lopsided — 139 machine rows against zero human decision rows.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND.</td>
+              <td><strong>Live, 29 days overdue.</strong> And the dataset has since gone stale: the last logged rows all replay the same dead 13 September sidecar.</td>
+              <td>Same sitting as P3. Report the numbers as they are, lopsidedness included.</td>
+            </tr>
+            <tr>
+              <td class="p">P5</td>
+              <td>A memory hook's description line still published a rule you retired 39 days and three rulings earlier.</td>
+              <td><span class="tag ot">Overtaken</span><br><br>NONE FOUND.</td>
+              <td>Overtaken by the #278 store move. The only copy of that file in the repo is the July snapshot under <code>_retired/</code>; the live store is outside the tree and this seat cannot read it.</td>
+              <td>Re-check the description when the store is next reachable.</td>
+            </tr>
+            <tr>
+              <td class="p">P6</td>
+              <td>A ruling of yours existed only in an uncommitted working tree — no committed surface knew it had happened.</td>
+              <td><span class="tag ot">Overtaken</span><br><br>NONE FOUND.</td>
+              <td>Resolved by events: <code>s217-D1</code> is in <code>knowledge/_rulings.json</code> today. The general defect — a bare dirty-file count that never names what is in it — was not addressed by any ruling.</td>
+              <td>If you want the general fix, it is one line in the wrap: name the dirty paths, do not count them.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 10 -->
+<section id="p10">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 10 · 2026-08-30</p><div class="idx">10</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">Digested onto a review page for your sitting at #226. You ruled one of four. The other three were never raised again.</p></div>
+      <div>
+        <h2>Three findings still sitting on a review page</h2>
+        <p class="lede">The digest is at <code>reviews/DREAM-PASS-10-DIGEST-2026-08-30-v1.html</code>, with the sub-report at <code>notes/_subreports/2026-08-30-226-dream-pass-10-digest.md</code>. Every figure on it was re-measured by that sub rather than copied from the pass, and all four findings survived the re-measurement.</p>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>The three machine-readable lines every filed report is supposed to carry are invisible to their own parser in most reports — and the rate got worse after a fix landed.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND. Digested for you at #226; no ruling followed.</td>
+              <td><strong>Live.</strong> Re-measured this morning with the gate's own three regexes over all 363 filed reports: COUNTS parses in 173, REPLAY-THESE in 136, the questions heading in 169. The priced-deferral line is the weakest at 37 percent.</td>
+              <td>Do <em>not</em> widen the regex to accept a heading — the digest showed that buys a green parse over a still-silent deferral. Fix the template, then grade.</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The constant that answers "when was the last wrap?" matches the prefix the commit script documents as the <em>non</em>-wrap shape, so it selects the newest commit of any kind — and hands both its consumers an empty result.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND.</td>
+              <td><strong>Live.</strong> <code>_capture_gate.py:5694</code> is unchanged: <code>^after\s+#\d+\b</code>. Two consumers still read it.</td>
+              <td>The digest flagged that the proposal's suggested replacement key is a guess, not a measurement, and that landing this before P1 makes the citation check grade a corpus it cannot parse. Order matters.</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The most-read sentence in the project still publishes a build figure that this project's own record declared an artefact six sessions earlier.</td>
+              <td><span class="tag live">Never ruled · live</span><br><br>NONE FOUND.</td>
+              <td><strong>Live, and it has drifted.</strong> The line now reads "75 of 144 steps green — 69 steps have never been in a green verdict". The denominator moved with the codebase; the stale 75 did not. The pinned sha is still <code>18c7789</code>.</td>
+              <td>Not a hand edit. <code>s125-D1</code> carries a watch field written against exactly that: a future session "helpfully" correcting the number by hand would enact the alternative you rejected.</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The release manifest cited the ruling that authorised cutting a version rather than the ruling that ratified it.</td>
+              <td><span class="tag ok">Ruled + enacted</span><br><br>Your word at the #228 opener: <q>Okay your recommendation: move the key to s225-D1 is good</q>. <code>s228-D1</code>, receipt <code>ddc7821d</code>.</td>
+              <td>Fixed, and the frozen package copy was ported in the same lane.</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 11 -->
+<section id="p11">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 11 · 2026-09-06</p><div class="idx">11</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">All four enacted with mutation proofs. Two of them have since been rendered inert by a move nobody connected to them.</p></div>
+      <div>
+        <h2>Enacted whole, then quietly disconnected</h2>
+        <blockquote>do it in your order.<cite>Dave, #256, 2026-09-08 — <code>s256-D2</code>, after "there was also a dream pass that ran on sunday"</cite></blockquote>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>A boot diet cut the grader's population from 122 hooks to 33 and nothing declared it — the instrument answering "is any starred memory claim stale?" stopped reading 107 of them.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · part (a), receipt <code>44c80619</code>. A population alarm that warns on a swing and refuses on a shrink, mutation-proven.<br><br>Part (b) — grading the overflow file too — was <strong>not</strong> taken: it changes what the review measures. Still yours.</td>
+              <td><strong>Inert.</strong> The alarm cannot fire: <code>_gardener.py --refresh</code> returns "GARDENER BLOCKED — the memory index does not resolve", because the path it expects has not existed since #278.</td>
+              <td>Re-point the grader at the store's new home, then decide part (b).</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The same parser graded one hook per line and silently dropped any second link on that line, four lines above a comment promising the opposite.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · receipt <code>44c80619</code>. Took the live population from 33 to 47 graded hooks.</td>
+              <td><strong>Inert</strong>, same cause as P1.</td>
+              <td>Same as P1.</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>A delegated sub declared a limit of its own seat as a property of the artefact — "provenance unknown" — and the record republished that phrase eleven times across seven surfaces, including the generated search index.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · form (b): one line in the wrap brief template. A stray is only unknown after a named grep over three places returns nothing.</td>
+              <td>In force. Note pass 12 recorded the original phrase had grown from 11 occurrences to 71 — the rule stops new ones, it did not clean old ones.</td>
+              <td>A one-off sweep of the 71, if you want it. Not proposed.</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>A generated index claimed it was rebuilt from a directory on every run and named nine subjects; the directory held ten, and the missing one was the project's current declared focus.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · part (b), receipt <code>44c80619</code>: the index refuses to build from a file a fresh clone cannot see.<br><br>Part (a)'s premise had expired by enactment — the file was tracked. Whether dashboards are permanent gate subjects is <strong>still unanswered</strong>.</td>
+              <td>The new arm is green today and refuses nothing — which is correct, not a failure.</td>
+              <td>Answer part (a) if it matters: are dashboards permanent gate subjects?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 12 -->
+<section id="p12">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 12 · 2026-09-13</p><div class="idx">12</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">Ruled the next day, item by item, in your own words. All four enacted within 24 hours. The best-served pass in the set.</p></div>
+      <div>
+        <h2>Four proposals, four separate words from you</h2>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>The stop line had three different values in four authorities, and the one the live instrument reported was scraped by regex out of last session's prose — today matching a number inside a breach narrative.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · <code>s271-D1</code>, receipt <code>f4ad826f</code>.<br><br>Your words: <q>180 was decided because we use a sub for the wrap, the 150 number was chosen before we started this strategy.</q></td>
+              <td>Fixed. <code>STOP_LINE_TK = 180_000</code> at <code>_gauge_tokens.py:126</code>, cited to your ruling; the regex survives only as a declared fallback. Amended at #273 with a tolerance band above it (<code>4294b604</code>).</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>A 717-token boot overshoot is a blocking gate with its own discharge grammar; a 104,364-token overshoot of the working ceiling is a sentence. Three of the last four measured sessions passed it.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · part (a), <code>s271-D2</code>, receipt <code>f4ad826f</code>. Your word: <q>yep like it</q>.<br><br>Part (b) — whether the arm ever <em>blocks</em> — was explicitly not ruled and remains yours.</td>
+              <td>In force and advisory: a declared breach passes, a silent one fails. <code>_capture_gate.py:4277</code> onwards.</td>
+              <td>Rule part (b) when you have a cycle of advisory data.</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The record corrects a date conflation in capitals and then inscribes two of the three dates as relative phrases with no anchor, republished at ten sites across five surfaces.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · <code>s271-D3</code>.<br><br>Your words: <q>none of these dates are decided yet, the first will be next week or the week after, teh second could be any time after but assume at least a week, three at most, but this a guess for date 2.</q></td>
+              <td>In force as a rule: no surface may print either as a fixed date, and every restatement carries its as-at date and the words "not decided".</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The wrap writes the session's memory hook before you answer the session's last questions, so its "open, Dave's" list can be false within minutes — and was, by a ruling inscribed five and a half minutes later.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · <code>s271-D4</code>, receipt <code>b8024dec</code>. You chose between three options: <q>A. re-check</q>.<br><br>Part (b) — write the hook after the last answer — was offered and not taken.</td>
+              <td>In force, advisory. <code>hook_open_items_recheck()</code> at <code>_capture_gate.py:4589</code>; promotion to blocking is your word.</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 13 -->
+<section class="band" id="p13">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 13 · 2026-09-20 · the latest</p><div class="idx">13</div>
+      <p style="font-size:.875rem;color:var(--accent);margin-top:var(--s2);font-weight:500">Seven proposals, none ruled. It fired on schedule while you were away and has been carried unruled through #290, #291 and #292.</p></div>
+      <div>
+        <h2>The latest pass, in full, all of it still open</h2>
+        <p class="lede">Committed at <code>dcf17ade</code>, "7 proposals floated, 0 ruled (scheduled fire; Dave absent)". Three consecutive wrap briefs record it as unruled. I probed every one this morning; all seven defects are present.</p>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>The memory grader has been dead since the store moved, and the boot screen has gone on printing staleness alerts from an eight-day-old file about a store that no longer exists — logging each one into the very dataset the review is owed.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Live, confirmed three ways.</strong> The sidecar says <code>refreshed_at 2026-09-13T07:11:34</code> over 52 hooks. A dry refresh returns "GARDENER BLOCKED". And <code>_checkin.py</code> has <em>no</em> staleness fence — it prints whatever the sidecar's date says and logs a row regardless. The last three logged rows are byte-identical.</td>
+              <td>One fence in <code>_checkin.py</code>: if the sidecar's refresh date is older than the last scheduled fire, print "grades unknown", not a grade. Cheap, and it stops poisoning the dataset today.</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The boot cost breakdown still attributes 8,470 tokens to a file that no longer exists at any path, and nobody re-measured it across five boot readings — while boot went up.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Live at four sites in the read chain itself</strong>: <code>_CHAIN.md:43</code> and <code>GOOD-MORNING.md:18</code>, <code>:105</code> and <code>:439</code>. One of them even carries a later re-measure to 8,800 alongside the original 8,470 without retiring it.</td>
+              <td>Retire the figure by addition at all four sites — say the file is gone and the split is unknown — rather than guessing a replacement.</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>The morning file's size stamp calls its own figure "exact" and has understated the generated figure at six of the last seven wraps, by a growing gap — and at one wrap the two series disagreed in sign, so the published conclusion was the opposite of what the file did.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Partly mitigated, not fixed.</strong> The stamp at <code>GOOD-MORNING.md:15</code> still says "36,009 exact". The #292 wrap declares it iterated the figure to a fixed point — and in the same breath names two drifts for which the stamp was deliberately <em>not</em> re-taken.</td>
+              <td>Drop the word "exact", or state the tolerance the stamp is graded against next to it. One word either way.</td>
+            </tr>
+            <tr>
+              <td class="p">P4</td>
+              <td>The row-id pattern forbids a digit in a lane suffix, so every digit-named lane is refused registration under its own name and renamed to something that no longer names it — five times in four consecutive sessions.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Live, unchanged.</strong> <code>_state.py:117</code> still reads <code>^(?:W-[0-9]{1,3}[a-z]{0,2}|G[0-9]{1,2}[a-z]?)$</code> — the suffix class admits letters only.</td>
+              <td>Widen the suffix class to admit a digit. One character in one regex, plus a bite that registers "W-12b2". Note the precedent: <code>s215-D1</code> widened this same pattern once before and grandfathered the existing ids verbatim.</td>
+            </tr>
+            <tr>
+              <td class="p">P5</td>
+              <td>The memory index's own cut rule has been suspended for three wraps running and the index now carries six wrap lines against a rule of three, because the archive it spills into has 162 bytes of headroom. Raised at four sessions and routed to the dream pass each time.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Live and worse.</strong> The #292 wrap records it as suspended for a <strong>seventh</strong> consecutive session: the index sits at 44,909 of 49,152 bytes and the archive at 48,990 with 162 bytes left. Nothing was truncated, correctly — a truncated verbatim move is not a move.</td>
+              <td>Raise the archive cap, or shard the archive. Either is a decision, not a repair, and it is yours.</td>
+            </tr>
+            <tr>
+              <td class="p">P6</td>
+              <td>The parked question "did the lane-ownership guard ever fire?" cannot be answered in its own terms, because nothing has ever run the guard — and it is now one of two files the wiring gate fails on, up from zero.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND for the pass — <strong>but your #276 ruling already covers it.</strong> <code>s276-D6</code>: the guard "comes OFF at the next dream pass if the tripwire never fired". Pass 13 <em>was</em> the next dream pass.</td>
+              <td><strong>Live.</strong> The wiring gate today reports two failures: <code>_validate_demo_page.py</code> and <code>_validate_lane_ownership.py</code>, both orphaned, neither exempted by name.</td>
+              <td>Your removal condition has been met. Delete the guard, or exempt it by name with a reason and a date — the gate's own message offers exactly that choice. The second orphan needs the same call.</td>
+            </tr>
+            <tr>
+              <td class="p">P7</td>
+              <td>A parked near-duplicate review is due, and its finding has got worse: the byte-identical archive heading has drifted further apart, the search index mints a second record for it, and the tool built to detect this is wired to nothing and read by nobody.</td>
+              <td><span class="tag live">Never ruled · live</span> · NONE FOUND</td>
+              <td><strong>Live.</strong> The only reference to <code>_near_dupes.py</code> anywhere outside itself is a comment in <code>_ngram.py:20</code>. No build step, no commit hook, no workflow.</td>
+              <td>Either wire it to one consumer, or exempt it by name — the same call as P6, on the same gate. The near-duplicate review itself is a separate sitting.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- PASS 5 -->
+<section id="p5">
+  <div class="wrap">
+    <div class="dim">
+      <div><p class="label">Pass 5 · 2026-08-08 · appendix</p><div class="idx">05</div>
+      <p style="font-size:.875rem;color:var(--grey-7);margin-top:var(--s2)">Not in the 6-to-13 range, but the brief named its file, so it is audited. All three are closed.</p></div>
+      <div>
+        <h2>The pass that was named in the brief but numbered five</h2>
+        <table>
+          <thead><tr><th style="width:3.2rem">P</th><th style="width:22%">What it said, plainly</th><th>Status &amp; receipt</th><th style="width:22%">Still live?</th><th style="width:20%">Smallest step</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="p">P1</td>
+              <td>All six of your rulings from the previous pass were unenacted, and not one existed in the rulings store — so the instrument that tracks enactment was structurally blind to them.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · all six landed at #128 and are in the store today, each carrying "ENACTED #128 2026-08-08" in its status field.</td>
+              <td>Closed. This is the finding that produced the first session in 52 to enact what the lane dreamed.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P2</td>
+              <td>The residual carry list had rolled fourteen times, eight items unchanged since the tenth roll, and the ordinal counting them was hand-typed prose nothing reads.</td>
+              <td><span class="tag ot">Overtaken</span> · NONE FOUND for this pass.</td>
+              <td>Overtaken by <code>s225-D2</code> at #225: the carry list left the banner entirely and became the generated <code>_CARRIES.md</code>, which is a destination, not a draft.</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="p">P3</td>
+              <td>This file will be swept into an unrelated session's commit by a blanket staging call, for the second pass running — by the mechanism you had already ruled fixed.</td>
+              <td><span class="tag ok">Ruled + enacted</span> · enacted at #128 under the earlier ruling (dream pass 4 P5, option (a)).</td>
+              <td>Closed. <code>_git_commit.sh:24</code>: "git add -A RETIRED". The script stages explicit paths named on the command line.</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="wrap">
+    <p class="label">Riders</p>
+    <h2>Four named sub-clauses that were deliberately left to you</h2>
+    <p class="lede">These are not unenacted proposals — they are parts of enacted ones that the ruling explicitly declined to settle. They are listed so they are not mistaken for oversights.</p>
+    <ul>
+      <li><strong>Pass 11, P1(b)</strong> — grading the overflow file as well. Not taken, because it changes what the review measures.</li>
+      <li><strong>Pass 11, P4(a)</strong> — whether dashboards are permanent gate subjects. The premise expired at enactment; the question did not.</li>
+      <li><strong>Pass 12, P2(b)</strong> — whether the ceiling arm ever blocks rather than warns. Explicitly reserved to you.</li>
+      <li><strong>Pass 12, P4(b)</strong> — writing the memory hook after the last answer. Offered, and not taken: the current order is what makes the hook survive a wrap that runs out of window.</li>
+    </ul>
+    <p class="lede" style="margin-top:var(--s4)">One more, which is a threshold rather than a clause: <code>POPULATION_DELTA_THRESHOLD = 5</code> and <code>GRADE_AGING_DAYS = 30</code> are both picked, not derived, and both are explicitly labelled yours at the memory-grade review.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<footer>
+  <div class="wrap">
+    <p>Lane DA · session #293 · 2026-09-21 · read-only on git, nothing staged, nothing committed.</p>
+    <p style="margin-top:var(--s2)">Sources read: the nine proposals files in <code>notes/_dream/</code>; all 622 records in <code>knowledge/_rulings.json</code>; <code>notes/_MEMENTO-DECISIONS.md</code>; every <code>DAVE-RULINGS</code> file in <code>notes/_lanes/</code>; <code>_DECISION-HISTORY/2026-08-09-137-dream-pass-6-triage.md</code>; <code>notes/_subreports/2026-09-08-256-DREAM-ENACT.md</code>; <code>notes/_subreports/2026-08-30-226-dream-pass-10-digest.md</code>. Every "still live?" cell is a probe run against the working tree this morning. Commands are replayable from the sub-report at <code>notes/_subreports/2026-09-21-293-DA-dream-enactment-audit.md</code>.</p>
+  </div>
+</footer>
+
+</body>
+</html>
