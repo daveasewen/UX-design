@@ -65,3 +65,33 @@ shape stays at n=2** (#291 and #292); this session adds no third datapoint to it
 *(Mid-session, not a ruling and recorded so the record is complete: he asked* **"activity seems to
 have stopped?"** *while lane E1 was running long. It was answered in chat. No decision followed
 from it and nothing was changed by it.)*
+
+---
+
+## ⚠ A FIFTH ASK, RECORDED WITHOUT A QUOTATION BECAUSE NONE IS AVAILABLE AT THIS SEAT
+
+⛔ **THE WRAP BRIEF DID NOT CARRY IT, AND THIS FILE WILL NOT INVENT IT.** A third lane — **J** —
+ran this session on a Jev / TypeSafe integration question that came from Dave. Its two files
+(`notes/_lanes/293/J/jev-integration-brief.html`, `notes/_subreports/2026-09-21-293-J-jev-research.md`)
+appeared on the mount at 15:01–15:03 while this ritual was running, and the wrap seat first read
+them as a stray.
+
+**The receipt that identifies them** is in the claude.ai Project memory store, written by the
+conductor at **2026-09-21T14:10:16Z** (`/projects/01a0a457-df26-7151-80c8-7d2f74bf7c97/areas/jev-integration.md`,
+version `6aab740ecb06`). Its three lines, as the conductor filed them:
+
+- *"wants research on integrating Jev into the Apollo projects, driven from Cowork (2026-09-21,
+  session #293 lane J; brief at `notes/_lanes/293/J/`)"*
+- *"concern: a Jev dependency wouldn't work for anyone without the API — improvement to what exists,
+  optional, not a hard dependency"*
+- *"has a TypeSafe/Jev invite; getting the API key 'shouldn't be a problem'"*
+
+⚠ **Those are the CONDUCTOR'S paraphrase, not Dave's words**, and they are quoted here as such. His
+verbatim sentences are in the #293 chat and are **not reachable from this seat**, so the entry above
+is deliberately not written in the quoted form the other four use. **#294 should recover the verbatim
+line and add it here.**
+
+**What was done.** Lane J researched and wrote a brief; **no decision was taken and none was put back
+to him.** Both files are committed by this wrap with the doc row `W-293j`. The standing constraint he
+stated — **optional improvement, never a hard dependency** — is carried in `_CARRIES.md` §
+`residual → #294` ⑩.

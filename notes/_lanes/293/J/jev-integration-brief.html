@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev in Apollo</title>
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --display:6rem; --title1:5.25rem; --title2:3.5625rem;
+  --head1:2.6875rem; --head2:2.125rem; --head3:1.1875rem;
+  --body1:1rem; --caption1:.875rem; --caption2:.75rem;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem;
+  --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px; --gutter:2rem;
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:var(--font);
+  font-size:var(--body1);font-weight:400;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+section{padding:var(--s7) 0;border-top:1px solid var(--grey-2)}
+section:first-of-type{border-top:0}
+.label{font-size:var(--caption2);font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s4)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:var(--title2);font-weight:300;line-height:1.05;letter-spacing:0;margin:0 0 var(--s4)}
+h2{font-size:var(--head1);font-weight:300;line-height:1.15;letter-spacing:-.01em;margin:0 0 var(--s4)}
+h3{font-size:var(--head3);font-weight:500;line-height:1.3;margin:0 0 var(--s2)}
+p{margin:0 0 var(--s3);max-width:72ch}
+a{color:var(--black);text-decoration:underline;text-underline-offset:3px;
+  text-decoration-color:var(--grey-3)}
+a:hover{text-decoration-color:var(--accent)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.86em;background:var(--grey-1);padding:.1em .35em}
+.masthead{padding:var(--s8) 0 var(--s7)}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);
+  border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s5)}
+.meta div{font-size:var(--caption2);letter-spacing:.06em;text-transform:uppercase;color:var(--grey-6)}
+.meta strong{display:block;font-size:var(--caption1);font-weight:400;letter-spacing:0;
+  text-transform:none;color:var(--black);margin-top:var(--s1)}
+.answer{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s6);align-items:start}
+.answer .rule{border-left:1px solid var(--grey-3);min-height:160px}
+.answer h2{margin-bottom:0}
+.lede{font-size:var(--head3);line-height:1.6;font-weight:400}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.split .idx{font-size:var(--title1);font-weight:100;color:var(--grey-3);line-height:.9;
+  margin:0 0 var(--s2)}
+.split .aside p{font-size:var(--caption1);color:var(--grey-7);max-width:34ch}
+table{width:100%;border-collapse:collapse;margin:var(--s4) 0 var(--s3);font-size:var(--caption1)}
+th{text-align:left;font-weight:500;font-size:var(--caption2);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey-6);border-bottom:1px solid var(--black);
+  padding:0 var(--s2) var(--s1) 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--grey-2);padding:var(--s2) var(--s2) var(--s2) 0;
+  vertical-align:top;line-height:1.55}
+td:first-child{font-weight:500;width:15%}
+.prim{white-space:nowrap;font-family:ui-monospace,Menlo,monospace;font-size:.82em}
+.paths{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);
+  margin-top:var(--s5);border:1px solid var(--grey-2)}
+.paths>div{background:var(--white);padding:var(--s4)}
+.paths .n{font-size:var(--caption2);letter-spacing:.12em;color:var(--grey-5);margin-bottom:var(--s2)}
+.paths p{font-size:var(--caption1);line-height:1.6;margin-bottom:var(--s2)}
+.quote{border-top:1px solid var(--grey-3);padding-top:var(--s4);margin:var(--s6) 0;
+  font-size:var(--head2);font-weight:300;line-height:1.3;max-width:26ch}
+.quote cite{display:block;font-size:var(--caption2);letter-spacing:.1em;text-transform:uppercase;
+  font-style:normal;color:var(--grey-6);margin-top:var(--s3)}
+.band{background:var(--grey-1);margin:0;padding:var(--s7) 0}
+.band .wrap{max-width:var(--max-width)}
+ul{max-width:72ch;padding-left:1.1rem;margin:0 0 var(--s3)}
+li{margin-bottom:var(--s2)}
+.warn{border-left:2px solid var(--accent);padding-left:var(--s3);margin:var(--s4) 0;max-width:68ch}
+.warn p{margin-bottom:var(--s2)}
+.small{font-size:var(--caption1);color:var(--grey-7)}
+footer{border-top:1px solid var(--grey-2);padding:var(--s5) 0 var(--s7);
+  font-size:var(--caption2);letter-spacing:.06em;color:var(--grey-6)}
+@media(max-width:860px){
+  .answer,.split{grid-template-columns:1fr;gap:var(--s4)}
+  .answer .rule{display:none}
+  .paths,.meta{grid-template-columns:1fr}
+  h1{font-size:var(--head1)}
+  table,thead,tbody,th,td,tr{display:block}
+  thead{display:none}
+  td{border:0;padding:var(--s1) 0}
+  tr{border-bottom:1px solid var(--grey-2);padding:var(--s3) 0;display:block}
+  td:first-child{width:auto;font-size:var(--head3)}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap masthead">
+  <p class="label">Session 293 · lane J · side quest</p>
+  <h1>Jev in Apollo</h1>
+  <p class="lede">A typed, calibrated judgment model, and the three honest ways it could reach the tree from a Cowork session.</p>
+  <div class="meta">
+    <div>Filed<strong>21 September 2026</strong></div>
+    <div>Subject<strong>TypeSafe Jev · jev-1.13.0</strong></div>
+    <div>Status<strong>Research only. Nothing built, nothing committed.</strong></div>
+    <div>Rules<strong>Jev advises. Dave inscribes.</strong></div>
+  </div>
+</div>
+
+<section class="wrap">
+  <p class="label">The answer, first</p>
+  <div class="answer">
+    <h2>Yes, cheaply, and not where you think.</h2>
+    <div class="rule"></div>
+    <div>
+      <p><strong>Can we?</strong> Yes. I reached <code>api.typesafe.ai</code> from the Cowork sandbox and it answered with a typed authentication error, and <code>pip install typesafe-sdk</code> pulled 0.7.0 and imported clean — the only missing part is a key, which is early-access and Dave's to request at <a href="https://console.typesafe.ai/keys">console.typesafe.ai/keys</a>.</p>
+      <p><strong>Should we?</strong> For a narrow class, yes: judgments Apollo makes many times over, where code can enumerate the options first and a number is more useful than a paragraph — retrieval ranking, ruling-trigger recall, citation checking. For the art-director's eye and for anything with a figure in it, no, and the vendor says so itself (<a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13">jaggedness</a>).</p>
+      <p><strong>How?</strong> A thin <code>knowledge/_jev.py</code> adapter with a receipts log, called from inside gates that already exist — not an MCP server, because an MCP tool answers into a transcript and Apollo's judgments have to leave a file behind.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <p class="label">What the thing actually is</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">01</p>
+      <p>Released 15 September 2026 by TypeSafe AI, in limited early access. Stable at <code>jev-1.13.0</code>.</p>
+    </div>
+    <div>
+      <p>Jev is not a language model with a schema bolted on. It does not generate text at all: you send a <em>state</em> — a string, a JSON object or an array — together with a map of typed <em>questions</em>, and every question is evaluated against that state in one parallel pass, returning a typed value and a probability distribution (<a href="https://docs.typesafe.ai/introduction.md">introduction</a>). There are three primitives: <strong>Choice</strong> picks one option from a set you define and returns the winner, a probability per option and a confidence; <strong>Score</strong> rates the state against up to ten ordered levels and returns a probability-weighted value, the same per-level distribution and a confidence; <strong>Noul</strong> asks a yes/no statement and returns a bare probability from 0 to 1, with no confidence attached (<a href="https://docs.typesafe.ai/api.md">API reference</a>). The endpoint is a single <code>POST https://api.typesafe.ai/v1/systemone</code> with a bearer key. TypeSafe prices it at $0.042 per million input tokens with output tokens free, inside a 64k-token request budget of which the state plus the longest single question may use 32k, at 250,000 tokens per second and 1,200 requests per minute — limits the docs warn are "adjusting dynamically" and may change without notice (<a href="https://docs.typesafe.ai/models.md">models</a>). The founder's launch post claims 40–200× faster and, on their own workflow evals, up to 193.6× faster and 444.6× cheaper than frontier models; those numbers are TypeSafe's own, measured on workloads TypeSafe's capabilities team wrote, and the post says so plainly (<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">launch post</a>).</p>
+      <p>The shape that matters for Apollo is the last line of that paragraph. Jev's answer is a number you threshold on. It does not come with an argument you can disagree with, which is exactly why it suits a gate and does not suit a review.</p>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+<div class="wrap">
+  <p class="label">Three ways in, ranked</p>
+  <h2>All three are real. Only one leaves a receipt.</h2>
+  <div class="paths">
+    <div>
+      <p class="n">RANKED FIRST</p>
+      <h3>A <code>knowledge/_jev.py</code> adapter with its own log</h3>
+      <p><strong>What it is.</strong> One module, house style: a <code>help_gate</code> docstring naming what it can and cannot see, a single place holding every question and every threshold, and an append-only <code>notes/_JEV-LOG.jsonl</code> recording the state hash, the question, the full distribution, the confidence, the model id the response reports, and the latency.</p>
+      <p><strong>Prerequisites.</strong> An early-access key in the environment, and one ruling from Dave on whether a Jev number may ever appear in a gate's exit code.</p>
+      <p><strong>Costs.</strong> A module to maintain and a network dependency inside scripts that are currently pure and offline.</p>
+      <p><strong>Cannot do.</strong> Nothing for a session that has no key. It also adds 70–500 ms per call to gates that today run in milliseconds.</p>
+    </div>
+    <div>
+      <p class="n">RANKED SECOND</p>
+      <h3>REST or SDK called directly from inside a gate</h3>
+      <p><strong>What it is.</strong> The same calls, but scattered. The Python SDK installs and imports in the sandbox and exports <code>Choice</code>, <code>Score</code>, <code>Noul</code>, <code>TypeSafeClient</code> and <code>AsyncTypeSafeClient</code>; it reads <code>TYPESAFE_API_KEY</code> from the environment and defaults to <code>jev-latest</code> (<a href="https://docs.typesafe.ai/introduction/quickstart.md">quickstart</a>).</p>
+      <p><strong>Prerequisites.</strong> Just the key.</p>
+      <p><strong>Costs.</strong> The thing Apollo has spent nine gates learning to avoid — a judgment with no join, questions and thresholds spread across files where no reviewer can find them. TypeSafe's own skill page warns of this and says to keep questions and thresholds in one file (<a href="https://docs.typesafe.ai/agent-skill.md">agent skill</a>).</p>
+      <p><strong>Cannot do.</strong> Survive review. This is path one without the discipline, and it is listed only because it is the version that happens by accident.</p>
+    </div>
+    <div>
+      <p class="n">RANKED THIRD</p>
+      <h3>An MCP server loaded into Claude Code</h3>
+      <p><strong>What it is.</strong> <code>jev-mcp</code> exposes <code>jev_classify</code>, <code>jev_score</code>, <code>jev_check</code>, <code>jev_ask</code> and <code>jev_models</code> as MCP tools with full distributions and a confidence-derived <code>act</code> / <code>review</code> / <code>abstain</code> verdict (<a href="https://github.com/rahulrajaram/jev-mcp">rahulrajaram/jev-mcp</a>). It installs as a Claude Code plugin with <code>/plugin marketplace add rahulrajaram/jev-mcp</code> then <code>/plugin install jev@jev-mcp</code>, declaring the server inline in <code>.claude-plugin/plugin.json</code>. <code>jev-review</code> is the same idea narrowed to code quality: one tool, seventeen scored dimensions, a local Node process, key never leaving the machine (<a href="https://github.com/NiazMorshed2007/jev-review">NiazMorshed2007/jev-review</a>).</p>
+      <p><strong>Prerequisites.</strong> A key, Node 20+, and — this is the blocker — a plugin installed into the Cowork session rather than the sandbox. Cowork loads plugins as bundles of MCP servers and skills through the app; the sandbox shell cannot register one into the running session, so this path is installed by Dave in the client, not by an agent in a lane.</p>
+      <p><strong>Costs.</strong> Low to set up, high in the wrong currency: the answer lands in a transcript.</p>
+      <p><strong>Cannot do.</strong> Leave a file behind. A tool result is visible to the agent that asked and to nobody else afterwards, which is the exact failure Apollo built the rulings store to stop.</p>
+    </div>
+    <div>
+      <p class="n">ALSO AVAILABLE</p>
+      <h3>TypeSafe's own agent skill</h3>
+      <p><strong>What it is.</strong> A drop-in skill teaching an agent the primitives and patterns — <code>claude plugin marketplace add typesafe-ai/skills</code> then <code>claude plugin install typesafe@typesafe-ai</code>, or <code>npx skills add typesafe-ai/skills --skill typesafe-ai</code> for other agents (<a href="https://docs.typesafe.ai/agent-skill.md">agent skill</a>).</p>
+      <p><strong>Why it is not a path.</strong> It teaches; it does not call. It costs nothing and belongs alongside path one, so that whoever writes the questions is writing them against the vendor's own guidance rather than against this brief.</p>
+      <p class="small">The raw skill is readable without installing anything, at <a href="https://raw.githubusercontent.com/typesafe-ai/skills/main/skills/typesafe-ai/SKILL.md">raw.githubusercontent.com</a> — reachable from the sandbox, measured today.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<section class="wrap">
+  <p class="label">Where it would actually go</p>
+  <h2>Eight judgment points, with the state block each one would send.</h2>
+  <p>Every row is a place where Apollo today either asks an LLM for prose, falls back to a lexical heuristic, or waits for Dave's eye. The question column is written literally, because Jev answers the question you wrote rather than the one you meant — the vendor's first named failure mode.</p>
+
+  <table>
+    <thead>
+      <tr><th>Judgment point</th><th>Primitive</th><th>State block</th><th>The question, literally</th><th>What the probability buys</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Memento retrieval ranking<br><span class="small"><code>knowledge/_search_core.py</code> · <code>score_record</code></span></td>
+        <td class="prim">Score</td>
+        <td>The query string, plus one candidate record's blob, one candidate per question, batched.</td>
+        <td>"Rate how directly this record answers the query" over three levels: answers it, mentions the topic, unrelated.</td>
+        <td>A re-rank <em>within</em> a bucket only. Bucket membership and caps stay in code. TypeSafe's own re-ranking cookbook moved top-1 from 5% to 18% and top-10 from 38% to 62% on legal queries.</td>
+      </tr>
+      <tr>
+        <td>Ruling trigger recall<br><span class="small"><code>knowledge/_rulings.json</code> · 622 rulings</span></td>
+        <td class="prim">Noul</td>
+        <td>One ruling's <code>says</code> field, plus the path and diff hunk of a file the session touched.</td>
+        <td>"This change falls under the rule stated above."</td>
+        <td>Catches the ruling whose <code>governs</code> list never named the file. Prints advisory, above a threshold, with the probability shown. Never edits <code>governs</code> — that is a ruling, not a retrieval.</td>
+      </tr>
+      <tr>
+        <td>Duplicate-ruling detection<br><span class="small">the #80/#81 re-derivation class</span></td>
+        <td class="prim">Noul</td>
+        <td>Two rulings' <code>says</code> fields, side by side as a two-field object.</td>
+        <td>"These two statements rule the same thing."</td>
+        <td>A list of suspected pairs for Dave. At 622 rulings the full pairwise set is too large for one pass, so it runs as the vendor's two-pass shape: a cheap filter, then the survivors.</td>
+      </tr>
+      <tr>
+        <td>Dashboard condition P4, "decisions are cited"<br><span class="small"><code>notes/_lanes/292/D/overview-dashboard-definition.html</code></span></td>
+        <td class="prim">Choice</td>
+        <td>One structural decision sentence from a one-shot, plus the citation it carries.</td>
+        <td>"Classify what this decision rests on" over: a named ruling, principle or token; an explicit designer's call; an uncited assertion.</td>
+        <td>Of the nine pass conditions, this is the only one no DOM probe can read. Output is a list of uncited decisions, reported. It does not fail the page.</td>
+      </tr>
+      <tr>
+        <td>Dream-pass proposal triage<br><span class="small"><code>notes/_dream/_GRADE-DECISIONS.jsonl</code></span></td>
+        <td class="prim">Score</td>
+        <td>One proposal record with its counts, minus the fields the decision does not need.</td>
+        <td>Three levels that are the three available actions: carry it forward, park it, drop it.</td>
+        <td>The vendor's entity-alignment cookbook uses exactly this shape — levels as actions, so there is no threshold to fit. Confidence below the bar routes to Dave rather than to a default.</td>
+      </tr>
+      <tr>
+        <td>Gate failure triage<br><span class="small">the eight <code>knowledge/_gate_*.py</code></span></td>
+        <td class="prim">Choice</td>
+        <td>The gate's own "CAN / CANNOT see" block from its docstring, plus the failing line it printed.</td>
+        <td>"Classify this failure" over: inside the gate's stated scope; outside the stated scope; scope cannot be told from the text.</td>
+        <td>Distinguishes a real defect from a known blind spot before a session spends an hour on it. Advisory only, in the house pattern that <code>_gate_scratch_hygiene.py</code> already sets.</td>
+      </tr>
+      <tr>
+        <td>Art-director review, the nameable half<br><span class="small"><code>reviews/*.REVIEW.html</code></span></td>
+        <td class="prim">Score</td>
+        <td>A variant's rendered role description and token values — never the raw 39k of HTML.</td>
+        <td>"Rate how clearly this control reads as the row's single primary action" over four levels, written as descriptions rather than numbers.</td>
+        <td>A second opinion on one narrow, nameable axis. It does not review the page. Dave's eye is the review; this is a flag that a variant may be arguing with itself.</td>
+      </tr>
+      <tr>
+        <td>Composition provenance<br><span class="small">the "composed, not traced" question</span></td>
+        <td class="prim">Noul</td>
+        <td>A page's list of distinct component scopes, plus the library's list.</td>
+        <td>"This page's markup was assembled from the listed library components."</td>
+        <td>Listed for completeness and <strong>not recommended</strong>: #288 already measures this in the DOM at traced 0, composed 11. A measured number beats a calibrated guess every time.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warn">
+    <p><strong>Three places it must not go, published so nobody re-derives them.</strong></p>
+    <p>The <strong>stop line</strong> in <code>knowledge/_checkin.py</code> is arithmetic over real token counts, and Jev is explicitly not a calculator — the docs say to keep mathematical logic in code and warn that Score levels are "weak in numerical calibration". The <strong>spacing and gap conditions</strong> P5 to P8 are read from a live DOM in pixels; a probability there would be a downgrade. And <strong>scratch hygiene</strong> is a file-ownership fact, which needs a stat call, not a judgment.</p>
+  </div>
+</section>
+
+<div class="band">
+<div class="wrap">
+  <p class="label">What could go wrong</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">02</p>
+      <p>Each of these is a reason to measure before adopting, not a reason to stay away.</p>
+    </div>
+    <div>
+      <h3>The access is early and the limits move</h3>
+      <p>Jev is in limited early access with a waitlist; the launch post says TypeSafe is "bringing developers off the waitlist as quickly as we can". The models page carries an explicit warning that rate limits "can change without notice". Anything Apollo builds on this is building on a surface that is still moving.</p>
+
+      <h3>The headline numbers are self-tested</h3>
+      <p>The 193.6× and 444.6× figures come from workflow evals TypeSafe designed, using the average of GPT-6 Astra and Fable 5.1 as the reference answer. The post is candid that the workflows "were made by individuals on our model capabilities team, so some bias could exist". Apollo's own standing rule applies without modification: measured and declared are both published, and these are declared.</p>
+
+      <h3>Nothing is reproducible from weights</h3>
+      <p>Jev is proprietary and served only from TypeSafe's API. There is no local model, no weights, and no fine-tuning — the docs state the same weights serve every account and that Apollo's domain would be encoded in the state and the criteria, not in a trained artefact. An aliased model can also move underneath a pinned threshold, which is why the response reports the versioned id and why any Apollo use should log it and pin <code>jev-1.13.0</code> rather than <code>jev-latest</code>.</p>
+
+      <h3>Calibration is untested on design artefacts</h3>
+      <p>Every calibration claim and every cookbook number is on support tickets, legal passages, SEC filings, patents and beer catalogues. Not one is on a rendered interface or a design ruling. Confidence describes how concentrated a distribution is; it is not a claim that the answer is right, and no number published anywhere says how Jev behaves on Apollo's material. That is the gap the first experiment exists to close.</p>
+
+      <h3>Design artefacts are exactly the hard input</h3>
+      <p>The jaggedness page names large state full of irrelevant detail as a failure mode, and a <code>.REVIEW.html</code> is 39,137 characters of which the judgment needs perhaps two hundred. It also warns that the model reads hex and RGB worse than colour names. Both cut straight through Apollo's material, and both are handled the same way: build the state in code from the fields the question needs, never from the file you happen to have.</p>
+
+      <h3>And the governance line does not move</h3>
+      <p>Every use above is advisory. Not one writes to <code>_rulings.json</code>, changes a <code>governs</code> list, flips a gate's exit code, or grades a page. Jev returns a number; a number is evidence. Dave rules.</p>
+    </div>
+  </div>
+
+  <blockquote class="quote">
+    Typed output guarantees the interface, not the truth.
+    <cite>jev-mcp, "When not to reach for this"</cite>
+  </blockquote>
+</div>
+</div>
+
+<section class="wrap">
+  <p class="label">The first experiment</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">03</p>
+      <p>Small, measurable, reversible. One scratch script, no writes to the tree, cost in pennies.</p>
+    </div>
+    <div>
+      <h2>Re-rank memento search against a retrieval failure we already documented.</h2>
+      <p>Apollo has a named, dated, twice-repeated retrieval defect sitting in its own records. The trigger index README says it outright: ruling ds-021 settled the token unit at session #54; the ruling sits in ten places; #80 re-derived it from scratch twenty-six sessions later and nearly filed it as a discovery, and #81 started down the same path. The README's diagnosis is the sentence to test — <em>searching the archive for the topic returns this week's banners, because retrieval ranks recency above rulings</em>.</p>
+      <p>So the experiment has a right answer that predates the experiment. Take a small fixture of queries whose correct target ruling is already known. Run the existing lexical search from <code>_search_core.score_record</code> and record where the right ruling lands. Then send the same query plus each shortlisted candidate to Jev as one batched Score request, re-rank inside the bucket without touching bucket membership or caps, and record where the right ruling lands now. Publish both numbers, the per-query distributions, the latency, and the token cost.</p>
+      <p><strong>It is reversible</strong> because it writes only to <code>notes/_lanes/293/J/</code> — no gate changes, no adapter yet, nothing importable by the tree. <strong>It is measurable</strong> because rank-of-correct-answer is an integer, before and after. <strong>It is small</strong> because one batched call carries every candidate for a query, and at $0.042 per million input tokens the whole run costs less than a cent.</p>
+
+      <h3>The one thing to be honest about in advance</h3>
+      <p>If I write the fixture queries myself from the rulings' own text, the test is circular — I would be writing queries that the ruling's own vocabulary already answers, and lexical search would do suspiciously well. The fixture has to come from Dave, or from real session transcripts where someone searched and missed. The #80 and #81 misses are two such queries with a known right answer, and two is a start but is not a result. Ten real queries would be.</p>
+      <p class="small">Prerequisite before any of this runs: an early-access key at <a href="https://console.typesafe.ai/keys">console.typesafe.ai/keys</a>. The sandbox network reaches the API, PyPI, npm and raw.githubusercontent today — all four measured this session, with commands and output in the filed subreport. The key is the only thing missing.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  Session 293 · lane J · research only, nothing committed · receipts in notes/_subreports/2026-09-21-293-J-jev-research.md
+</footer>
+
+</body>
+</html>
