@@ -366,12 +366,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
 
   /* ---- 3 · the housing and the construction ------------------------- */
   var BTOP = BMIN + 2, BBOT = BTOP - 12;
-  /* PASS EIGHT (#292 lane B2): AOV 12 -> 33. The plate now overhangs the
-     traced rim by 33 model units at each end, which puts its plan
-     proportion at 367.6 x 156.4 = 2.35 : 1 — the gearbox base plate's
-     404 x 172 = 2.35 : 1, to two decimals. At 12 the plate was a plank
-     the brain stood on; the gearbox's is a plinth the train sits on. */
-  var HALF = (2*WMAX+GMAX)*1.15, AOV = 33;
+  var HALF = (2*WMAX+GMAX)*1.15, AOV = 12;
   function box(u0,u1,a0,a1,b0,b1){
     var v=[[u0,a0,b0],[u1,a0,b0],[u1,a1,b0],[u0,a1,b0],
            [u0,a0,b1],[u1,a0,b1],[u1,a1,b1],[u0,a1,b1]];
@@ -427,26 +422,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
      faces the way Dave's reference does, and the profile survives. So
      +35 / 20 is the same VIEW as the other two, mirrored in the body's
      own axes. brain-v6.html keeps pass six. */
-  /* PASS EIGHT (#292 lane B2) FLIPS THE SIGN. Dave, on pass seven's
-     render: "the cogs and books were fine as they were, as a guide lets
-     angle the tray on the brain to be the same as the cogs, with the
-     back of the brain angled towards us."
-     Pass seven kept the yaw MAGNITUDE at 35 but not the sign, to save the
-     traced lateral profile. That cost the tray: at +35 the plate is the
-     MIRROR of the gearbox's — its long edge runs upper-left to lower-
-     right where the gearbox's runs lower-left to upper-right. The sign
-     is now the gearbox's literal constant, -35 / 20, so the plate is
-     character-for-character the gearbox's plate.
-     The sign is also what Dave asked for in the body. `a` is the brain's
-     FRONT-BACK axis (frontal pole at a = -150, occipital/cerebellum at
-     a = +115), and the eye sits at (-cos(pit)sin(yaw), sin(pit),
-     cos(pit)cos(yaw)). At +35 that eye is at a = -0.54 — the FRONT
-     angled towards us, which is what pass seven shipped. At -35 it is at
-     a = +0.54: the BACK angled towards us, 35 deg round from the lateral,
-     with the tray unmoved. The profile foreshortens; that is the ask.
-     ONE camera, not two: at -35 the body and the tray want the same yaw,
-     so no per-body view matrix was introduced. */
-  var YAW0 = -35*Math.PI/180, PIT0 = 20*Math.PI/180;
+  var YAW0 = 35*Math.PI/180, PIT0 = 20*Math.PI/180;
   var YAW_R = 25*Math.PI/180, PIT_R = 12*Math.PI/180;
   var TAU = 1.0;
   var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;

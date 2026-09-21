@@ -19,3 +19,11 @@
 > these are new tasks, so watch the context window carefully.
 
 *(attached: the brain, the books and the gearbox renders. The brain sits near side-on; the books and gearbox share the same three-quarter orbit. Read: the brain's REST orientation should match the books' and gearbox's start angle.)*
+
+> the design system map is good for now as a placeholder, we'll refine later. we can slot it after slide 10
+>
+> The angles in this preview aren't right, the cogs and books were fine as they were, as a guide lets angle the tray on the brain to be the same as the cogs, with the back of the brain angled towards us.
+>
+> We need time to go over the dashboard, next time can we use the cold brief we will be doing the demo with rather than the Ai platform one
+
+*(attached: the gearbox render as the angle guide. Read: lane B's brain reading was WRONG and is not accepted; books and gearbox untouched. Brain: tray to match the gearbox's tray angle; brain turned so its BACK faces the viewer. Dashboard: review deferred; the NEXT one-shot runs on the demo's cold brief, not the AI-platform brief — a standing note for #293.)*
