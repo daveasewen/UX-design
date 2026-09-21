@@ -114,7 +114,16 @@ LEGACY_IDS = (
 # s215-D1 (Dave, 2026-08-22): W- widened to 3 digits + up to two-letter suffix. The eight
 # #214 stopgaps (W-99za..W-99zh) are GRANDFATHERED VERBATIM — ids are addresses; renaming
 # rots every citation (ADR-0017). Next fresh mint is W-100. G scheme untouched.
-ID_RE = re.compile(r"^(?:W-[0-9]{1,3}[a-z]{0,2}|G[0-9]{1,2}[a-z]?)$")
+# #293 lane E1, enacting dream pass 13 P4. The suffix class was `[a-z]{0,2}`, which forbade a
+# digit anywhere in a lane suffix — so every digit-named lane (W2, C2, R2 …) was REFUSED under
+# its own name and renamed (`W-287w2` → `W-287ww`, five times across #285–#288). It is now
+# `[a-z][a-z0-9]?`: a suffix must still START with a letter, so a BARE-DIGIT suffix that could
+# be read as more session number is still refused, but `W-287w2` is admitted. The suffix stays
+# AT MOST TWO characters, so a no-suffix id (`W-100`) is still legal and `W-285lm2`'s three-char
+# shape is still refused — widening the LENGTH was not proposed and is not done here.
+# ⛔ The five existing renamed rows are RATIFIED RECORD and were NOT repointed —
+# that is an edit to filed history and is Dave's. Guarded by selftest bite 8b.
+ID_RE = re.compile(r"^(?:W-[0-9]{1,3}(?:[a-z][a-z0-9]?)?|G[0-9]{1,2}[a-z]?)$")
 
 # ---- `priority_override` — OPTIONAL, DAVE'S ALONE (narrow schema addition, #165) -------------
 # The dashboard computes a PROPOSED priority score from the store. Dave overrules it by writing
@@ -645,6 +654,19 @@ def selftest():
     # 8. duplicate ids
     d = healthy(); d["items"].append(dict(d["items"][0]))
     bite("duplicate id", d, False, "NEVER reused")
+
+    # 8b. THE ID GRAMMAR, BOTH DIRECTIONS (#293 lane E1, dream pass 13 P4). The defect this
+    # re-enacts: `W-287w2` — a real lane's real name — was refused by `_state.add` and had to be
+    # renamed `W-287ww`, five times across four consecutive sessions, so the register named a
+    # lane that does not exist on disk. A widening that only ADMITS is half a gate; the second
+    # arm proves the widening did not also admit a bare-digit suffix, which could be misread as
+    # more session number.
+    for _legal in ("W-287w2", "W-100", "W-99za", "G1", "G12a"):
+        d = healthy(); d["items"][0]["id"] = _legal
+        bite(f"id {_legal} ADMITTED", d, True)
+    for _illegal in ("W-2872", "W-287-2", "W-287lm2", "W-2879w"):
+        d = healthy(); d["items"][0]["id"] = _illegal
+        bite(f"id {_illegal} REFUSED", d, False, "id does not match")
 
     # 9. a close with no receipt
     d = healthy(); d["items"][0]["state"] = "done"

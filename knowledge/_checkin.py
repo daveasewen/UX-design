@@ -340,6 +340,36 @@ def _iso(epoch: float) -> str:
     return _dt.datetime.fromtimestamp(epoch, _dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _freshest_proposals_mtime(repo: str = REPO) -> tuple[float, str] | None:
+    """(mtime, basename) of the newest `notes/_dream/*-proposals.md`, or None if there are none.
+
+    The B3 sidecar's staleness fence (dream pass 13 P1) measures against THE DREAM PASS, because
+    that is the event that regrades the store — not against a wall-clock age, which would make
+    the fence fire on a quiet week and say nothing about whether anything actually moved.
+    ⚠ mtime and not the filename date: a file's own name is a claim, its mtime is a fact.
+    """
+    fs = glob.glob(os.path.join(repo, "notes/_dream/*-proposals.md"))
+    if not fs:
+        return None
+    p = max(fs, key=os.path.getmtime)
+    return os.path.getmtime(p), os.path.basename(p)
+
+
+def _grades_refreshed_epoch(gdoc: dict) -> float | None:
+    """The sidecar's `refreshed_at` as an epoch, or None if it is absent or unparseable.
+
+    ⛔ None means UNKNOWN and the caller must treat it as such — never as "fresh enough". An
+    unparseable timestamp that silently reads as now is the confident-false-inscription class.
+    """
+    raw = str(gdoc.get("refreshed_at") or "").strip()
+    if not raw:
+        return None
+    try:
+        return _dt.datetime.fromisoformat(raw.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return None
+
+
 def _flatten(s: str, limit: int = 150) -> str:
     """One line, markdown noise stripped, TRUNCATION DECLARED IN THE TEXT (never silent)."""
     s = _MD_NOISE_RE.sub("", s)
@@ -1010,6 +1040,82 @@ def selftest_compaction() -> int:
     return 0
 
 
+# ── THE PRE-FLIGHT CAPTURE — dream pass 9 P1, built #293 lane E1 ───────────────────────────
+#
+# ⛔ WHAT THE AUDIT FOUND, AND IT IS NOT WHAT THE BRIEF EXPECTED. There was never a GENERATOR
+# for `notes/_GAUGE-LOG.md`'s pre-flight line. Every one of them is HAND-TYPED into a
+# `knowledge/_tmp/wrap<n>/stratum*.py` by that session's wrap sub, and each one copies the
+# previous session's refusal with the ordinal bumped: *"Reason unchanged from #199…#<n-1>"*.
+# That is how one refusal ran for 93 consecutive sessions (#199 → #291, 185 occurrences in the
+# file) — nothing re-derived it, so nothing could notice when it stopped being true.
+#
+# ⛔ AND IT STOPPED BEING TRUE. The stated reason is *"a sub cannot read its own message.usage"*,
+# which is correct AND IRRELEVANT: the line is not asking for the SUB's price, it is asking for
+# the CONDUCTOR's window, and the conductor's top-level transcript is READABLE FROM A SUB SEAT
+# at `/sessions/*/mnt/.claude/projects/*/*.jsonl` — the same glob `find_transcript()` has always
+# used, and the same read `s214-D5`'s hand-over field already depends on. Several wrap strata
+# say so in as many words in the very paragraph that refuses (*"`_checkin.py` WAS RUN AT THIS
+# SEAT on the conductor's transcript"*), and #290/#291 say outright that the gauge was read and
+# simply not captured to a file. A refusal beside a successful reading of the same number is not
+# a fidelity ceiling; it is a copied sentence.
+#
+# ⇒ SO THE FIX IS A GENERATOR, and this is it. It READS — it never writes to the log; the caller
+# pastes the returned line, exactly as the wrap sub pastes its hand-typed one today, so the
+# change is one line of provenance and is reversible by not calling it.
+#
+# ⛔ THE REFUSAL PATH SURVIVES AND IS THE POINT OF THE SHAPE. When the reading is genuinely
+# unavailable the line still refuses — in the #73 legal form the capture gate grades, `⛔ NOT
+# CAPTURED — UNMEASURED.` — but it NAMES THE CAUSE IT ACTUALLY MET, in one clause, measured at
+# the moment of the call. A bare "NOT CAPTURED", or an inherited reason, is exactly what this
+# arm exists to stop. [[feedback-measuring-tool-must-not-guess]] [[instrument-without-a-consumer]]
+
+def preflight_line(session, path: str | None = None) -> str:
+    """The `> **pre-flight #N:**` line for `notes/_GAUGE-LOG.md`, GENERATED, never inherited.
+
+    Returns a MEASURED line when the conductor's top-level transcript is readable from this
+    seat, and the #73 legal refusal WITH THE CAUSE NAMED IN ONE CLAUSE when it is not.
+    ⛔ Read-only: it opens the transcript and returns a string. It never touches the log.
+    """
+    tag = f"> **pre-flight #{session}:**"
+
+    def refuse(why: str) -> str:
+        # The glyph sequence is the gate's legal form (`PREFLIGHT_UNMEASURED_RE`) and must not
+        # be reworded. The clause after it is the part that was missing for 93 sessions.
+        return (f"{tag} ⛔ NOT CAPTURED — UNMEASURED. {why} ⛔ An UNKNOWN is declared, never "
+                f"defaulted to a number [[feedback-measuring-tool-must-not-guess]].")
+
+    try:
+        p = path or max(glob.glob(TRANSCRIPT_GLOB), key=os.path.getmtime)
+    except ValueError:
+        return refuse(f"no top-level transcript matched `{TRANSCRIPT_GLOB}` at this seat, so the "
+                      f"conductor's window is unreadable from here — an ABSENCE OF A MATCH, "
+                      f"named as such, not a proven absence.")
+    try:
+        fill = read_fill(p)
+    except OSError as e:
+        return refuse(f"the conductor's transcript at `{p}` could not be read "
+                      f"({type(e).__name__}: {' '.join(str(e).split())[:90]}).")
+    if not fill.get("available"):
+        return refuse(f"the conductor's transcript at `{p}` carries no usable `message.usage` "
+                      f"record ({fill.get('reason', 'reason unstated by read_fill')}).")
+
+    boot, now, peak = fill.get("boot"), fill.get("now"), fill.get("peak")
+    extra = ""
+    if fill.get("compaction_records"):
+        extra += (f" ⚠ {fill['compaction_records']} compaction record(s) in the transcript — "
+                  f"FILL is not monotonic across them and must not be differenced.")
+    if fill.get("drops"):
+        extra += (f" ⚠ {len(fill['drops'])} turn(s) dropped >10% with no compaction marker — "
+                  f"reported, not explained.")
+    return (f"{tag} ✅ CAPTURED — the CONDUCTOR'S FILL read first-hand at this seat by "
+            f"`knowledge/_checkin.read_fill` off `{p}`: boot **{boot:,}** · now **{now:,}** · "
+            f"peak **{peak:,}** real tokens over {fill.get('continuous')} continuous turn(s). "
+            f"⚠ THIS IS THE CONDUCTOR'S WINDOW, NOT THIS SEAT'S PRICE — the two measure "
+            f"different objects and are never summed or converted "
+            f"[[measure-dont-convert-units]]. Read at the moment of the call, not inherited "
+            f"from the previous session's line (#293, dream pass 9 P1).{extra}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="On-demand context check-in.")
     ap.add_argument("path", nargs="?", help="Transcript jsonl (default: newest mounted).")
@@ -1048,7 +1154,21 @@ def main() -> int:
                     help="Skip the B2 seam block. ⛔ An escape hatch for a broken mount, not a "
                          "convenience: skipping it means the seam has NO graded block and the "
                          "next brief has nothing legitimate to carry.")
+    ap.add_argument("--preflight-line", metavar="N",
+                    help="PRINT the generated `> **pre-flight #N:**` line for "
+                         "notes/_GAUGE-LOG.md and exit. Reads the conductor's top-level "
+                         "transcript and nothing else — it appends to NO log, logs no grade row "
+                         "and runs no rehearsal, so a wrap sub can take the reading without "
+                         "moving any counted dataset. Paste the line; the arm never writes it.")
     args = ap.parse_args()
+
+    # ⛔ FIRST, AND BEFORE ANY APPEND. `_checkin.py`'s normal path writes to
+    # notes/_REHEARSAL-LOG.jsonl and notes/_dream/_GRADE-DECISIONS.jsonl, both COUNTED
+    # datasets. A pre-flight reading that moved the population it is taken beside would be
+    # pass 6 P2 wearing a fix's clothes, so this arm returns before any of that happens.
+    if args.preflight_line:
+        print(preflight_line(args.preflight_line, args.path))
+        return 0
 
     if args.selftest_disk:
         return selftest_disk()
@@ -1260,10 +1380,64 @@ def main() -> int:
         try:
             import _gardener as _gd
             _gdoc = _gd.load_grades(os.path.join(REPO, "notes/_dream/_MEMORY-GRADES.json"))
+            # ⛔ THE SIBLING FENCE — dream pass 13 P1, built #293 lane E1. ABSENT was fenced;
+            # STALE and "my provenance path does not resolve" were NOT, and a present-but-dead
+            # sidecar took the GREEN path: it printed `refreshed 2026-09-13 …` and then either
+            # the alert counts or the line "✅ no starred/blocked entry is STALE — an honest
+            # silence". That silence stopped being honest at #278, when the memory store moved
+            # from the sandbox-mounted .auto-memory/MEMORY.md to claude.ai Project cloud memory
+            # and `_gardener.py --refresh` began BLOCKING ("the memory index does not resolve …
+            # REFUSING TO GUESS"). The refusal is correct; the CONSUMER was the defect. 42 of
+            # the 43 rows written to `_GRADE-DECISIONS.jsonl` since the move measure the token
+            # cost of a surface reporting on a store that no longer exists, and `s183-D1` counts
+            # those rows into the B3 return-with-numbers — so the dataset the review is owed was
+            # being padded by an instrument that knows nothing. The last three rows before this
+            # fence landed were BYTE-IDENTICAL.
+            # ⚠ NOT A RE-POINT. Re-aiming `_gardener.py` at the cloud store is ruling-shaped and
+            # Dave's (only the conductor's seat can read that store, so the grader may have no
+            # legal seat at all any more). This is one fence: it says UNKNOWN where the surface
+            # used to say clean, and it marks the row `alert-void` so the B3 dataset can tell a
+            # real measurement from a dead one. The row is still written — a boot that prints
+            # nothing and logs nothing is invisible to the very review that needs to see it.
+            # ⚠ (jj3) is not overturned: pass 8's (ee2) ruled `memory_index` "a per-session mount
+            # path, NOT a finding", and it was right that the path VARIES forever. This fence
+            # does not fire on a changed path; it fires on a path that resolves at NO mount.
+            _void = None
+            if _gdoc:
+                _mi = str(_gdoc.get("memory_index") or "")
+                if not _mi:
+                    _void = "the sidecar names NO memory_index — its provenance is unstated"
+                elif not os.path.exists(_mi):
+                    _void = (f"its memory_index does not resolve on disk ({_mi}) — the store "
+                             f"moved at #278 and nothing re-pointed the grader")
+                else:
+                    _newest = _freshest_proposals_mtime()
+                    _ra = _grades_refreshed_epoch(_gdoc)
+                    if _newest and _ra and _ra < _newest[0]:
+                        _void = (f"it was refreshed {_gdoc.get('refreshed_at')}, OLDER than the "
+                                 f"newest dream pass ({_newest[1]}) — at least one pass has "
+                                 f"fired since anything was graded")
             if not _gdoc:
                 print("  GRADES      ⛔ NO SIDECAR — notes/_dream/_MEMORY-GRADES.json absent. "
                       "Grades are UNKNOWN, not clean. Run `python3 knowledge/_gardener.py "
                       "--refresh`.")
+            elif _void:
+                print(f"  GRADES      ⛔ SIDECAR PRESENT BUT VOID — {_void}. Grades are UNKNOWN, "
+                      f"not clean, and the alert counts are NOT printed: a reading of a dead "
+                      f"premise is not a reading. Run `python3 knowledge/_gardener.py "
+                      f"--refresh` and read its refusal.")
+                try:
+                    _gd.log_grade_event(REPO, {
+                        "kind": "alert-void", "lines": 0, "chars": 0, "tokens": 0,
+                        "method": "not-measured (void sidecar)",
+                        "why": _void,
+                        "counts": _gdoc.get("counts", {}),
+                        "memory_index": _gdoc.get("memory_index"),
+                        "refreshed_at": _gdoc.get("refreshed_at"),
+                        "listed": []})
+                except Exception as _e:   # noqa: BLE001 — loud + named, never silent
+                    print(f"    ⛔ VOID ROW NOT LOGGED ({type(_e).__name__}: {_e}) — this boot "
+                          f"contributes NOTHING to the B3 numbers. Declared, not hidden.")
             else:
                 _alerts = _gd.render_grade_alerts(_gdoc)
                 _head = (f"  GRADES      B3 sidecar, refreshed {_gdoc.get('refreshed_at')} — "

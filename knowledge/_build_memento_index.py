@@ -108,13 +108,39 @@ def rec(rid, kind, relfile, line, head, text):
             "head": head, "text": text}
 
 
-def _dedupe(records):
+def _where(r):
+    """`<file>:<line>` for a record, tolerant of the bare-id fixtures the selftest passes."""
+    return f"{r.get('file', '?')}:{r.get('line', '?')}"
+
+
+def _dedupe(records, warn=None):
+    """Suffix id collisions `-2`, `-3` … AND DECLARE EACH ONE (#293 lane E1, dream pass 13 P7).
+
+    ⚠ The suffixing used to be SILENT, and silence is the defect. `_GM-ARCHIVE.md` carries a
+    byte-identical heading twice (`gm-archive:4b-queued-button-states-finesse-pass-dave-2026-07-22-not-now`
+    at `:5295` and `:6488` — one of four headings the #35 offload block re-inscribes), so
+    `_memento_search.py`, the contracted first move, returns TWO records for ONE fact and nothing
+    tells the reader which. P-269-4 has been carrying the pair as PROSE since #269, and its own
+    line pointers had already rotted by ~355 lines in a week — exactly the `s129-D5` class.
+    A build-time declaration is the cheapest of the three triage forms: the duplicate becomes
+    visible where it is minted and the pointer never needs re-typing.
+
+    ⛔ NEITHER COPY IS DELETED, HERE OR ANYWHERE. The #35 block says "VERBATIM, on Dave's ruling",
+    so removing one is an edit to ratified record and is Dave's alone. This warns; it never prunes.
+    The warning goes to STDERR so it cannot enter the generated index or a stdout-captured verdict.
+    """
+    warn = warn if warn is not None else (lambda m: print(m, file=sys.stderr))
     seen = {}
+    first = {}
     for r in records:
-        n = seen.get(r["id"], 0) + 1
-        seen[r["id"]] = n
-        if n > 1:
-            r["id"] = f"{r['id']}-{n}"
+        rid = r["id"]
+        n = seen.get(rid, 0) + 1
+        seen[rid] = n
+        if n == 1:
+            first[rid] = _where(r)
+        else:
+            warn(f"⚠ DUPLICATE HEADING: {rid} at {first[rid]} and {_where(r)}")
+            r["id"] = f"{rid}-{n}"
     return records
 
 
@@ -435,8 +461,21 @@ def selftest():
     read_lines("notes/__no_such_file__.md", errs3)
     bite("missing declared source REFUSES", any("MISSING" in e for e in errs3))
     # id collision suffixing is deterministic
-    d = _dedupe([{"id": "a"}, {"id": "a"}, {"id": "a"}])
+    _warned = []
+    d = _dedupe([{"id": "a"}, {"id": "a"}, {"id": "a"}], warn=_warned.append)
     bite("collision suffixing deterministic", [r["id"] for r in d] == ["a", "a-2", "a-3"])
+    # #293 lane E1, dream pass 13 P7 — the suffixing must DECLARE, both directions.
+    bite("collision DECLARES one warning per extra copy", len(_warned) == 2)
+    bite("collision warning names the id and BOTH sites",
+         _warned[0].startswith("⚠ DUPLICATE HEADING: a at ") and " and " in _warned[0])
+    _clean = []
+    _dedupe([{"id": "a"}, {"id": "b"}], warn=_clean.append)
+    bite("no collision ⇒ SILENT (a warner that always fires says nothing)", _clean == [])
+    _sites = []
+    _dedupe([{"id": "x", "file": "_GM-ARCHIVE.md", "line": 5295},
+             {"id": "x", "file": "_GM-ARCHIVE.md", "line": 6488}], warn=_sites.append)
+    bite("collision warning carries file:line for both copies",
+         _sites == ["⚠ DUPLICATE HEADING: x at _GM-ARCHIVE.md:5295 and _GM-ARCHIVE.md:6488"])
     # slug stability
     bite("slug stable", slug("★ #24 — O1′ ENACTED: lanes-as-records!") == "24-o1-enacted-lanes-as-records")
     # the real corpus builds, every class present, and the render is deterministic

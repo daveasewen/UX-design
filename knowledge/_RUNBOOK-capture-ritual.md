@@ -391,6 +391,19 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      **A missing stratum is logged as a HOLE (P1(b), same ruling):** a session that writes no stratum
      gets a dated gap line in `_GAUGE-LOG.md`, the way #19's absence was flagged — the dataset's gaps
      stay visible to the next reader; #14's unflagged absence is what made them silent.
+     ⛔ **THE PRE-FLIGHT LINE IS GENERATED NOW — DO NOT HAND-TYPE IT AND NEVER COPY THE PREVIOUS
+     SESSION'S (#293, dream pass 9 P1).** `python3 knowledge/_checkin.py --preflight-line <N>`
+     prints the line, reading the CONDUCTOR'S top-level transcript at
+     `/sessions/*/mnt/.claude/projects/*/*.jsonl` — which a sub seat CAN read, and always could.
+     The arm appends to no log and logs no grade row, so taking the reading moves no counted
+     dataset; paste what it prints. ★ Why this exists: the hand-typed `⛔ NOT CAPTURED` ran for
+     **93 consecutive sessions (#199 → #291, 185 occurrences)**, each one copying the last with
+     the ordinal bumped (*"Reason unchanged from #199…#<n-1>"*), and the stated reason — *"a sub
+     cannot read its own `message.usage`"* — was answering a question nobody asked: the line
+     wants the CONDUCTOR'S window, not the sub's price. Several of those same strata say
+     `_checkin.py` WAS run on the conductor's transcript in the paragraph that refuses.
+     ⚠ **The refusal form survives and is still legal** — but it must name the cause the arm
+     ACTUALLY met at the moment of the call, in one clause. A bare "NOT CAPTURED" is the defect.
      ### ★ THE OPTIONAL `subs` LINE IN A GAUGE-LOG BLOCK (Dave #168, option 2 — "small gate")
 
      A block MAY carry ONE extra line recording what the session spent on **delegated subs**:
@@ -591,6 +604,12 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
 3. **Update memory — AND mirror anything durable into the repo.** Any `feedback` / `project` / `user` /
    `reference` memory that's new or changed this session, plus the one-line pointer in `MEMORY.md`.
    Check for stale memories the session disproved and correct or remove them.
+   ⛔ **THE STORE IS `Project instructions + cloud memory` SINCE #278 (2026-09-16), NOT the
+   sandbox-mounted auto-memory this step was written for** — #278's conductor promised this wording
+   change on the record in the session that caused the move; it is paid here at #293 (lane E1, dream
+   pass 13 P2). `MEMORY.md` named above is the OLD store's index and has no path on disk any more;
+   read the naming as "the memory index, wherever the store now lives". ⚠ Only the conductor's seat
+   can read or write that store — a sub-lane cannot, and must say so rather than report silence.
    **Provenance fields on memory files (2026-07-26, Memento §4.1 — D1a):** every new/changed memory
    file gets two keys under its existing frontmatter `metadata:` — `provenance: <session-id> · <date>`
    and `status:` (same five-value vocab as step 1b). ⚠️ **Ritual discipline, NOT gate-enforced** — the

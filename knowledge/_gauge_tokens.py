@@ -159,6 +159,13 @@ TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to
 # IS the session-shape variation the old warning below was worried about):
 #     first turn      ~65,400  MEASURED whole
 #       MEMORY.md       8,470  MEASURED (#109, tokenised off the mounted auto-memory)
+#                              ⛔ THE STORE MOVED AT #278 — this term is UNRE-MEASURED since;
+#                              the figure is a pre-#278 measurement, not a current one.
+#                              (#293 lane E1, dream pass 13 P2, ANNOTATION BY ADDITION —
+#                              the constant is NOT edited: it is a measurement and `s241-D1`
+#                              is shrink-only, so moving it is Dave's. The promised re-measure
+#                              is minted as parked item P-293-1, due at the next cold boot
+#                              after a ruling to re-measure.)
 #       remainder      56,308  system prompt + tool schemas + deferred-tool list + MCP
 #                              server instructions + CLAUDE.md -- BOUNDED and NAMED, but
 #                              not yet split. THIS is what `ds-025` item 1 still means.
@@ -440,7 +447,9 @@ def measure_boot(repo: str = REPO) -> dict:
             + " · ".join(f"{r:,}" for r in reads)
             + f"). Ceiling {BOOT_CEILING_TK:,} (`s240-D2`/`s241-D1`), shrink-only. Covers "
               "system prompt + tool schemas + deferred-tool list + MCP instructions + "
-              "MEMORY.md + CLAUDE.md; its INTERNAL split is still `ds-025` item 1.")
+              "MEMORY.md + CLAUDE.md; its INTERNAL split is still `ds-025` item 1. "
+              "⛔ THE STORE MOVED AT #278 — this term is UNRE-MEASURED since; the figure is "
+              "a pre-#278 measurement, not a current one (parked P-293-1).")
     else:
         firstturn, err = BOOT_CEILING_TK, 0
         fmethod = (

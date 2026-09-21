@@ -6381,6 +6381,25 @@ def run(mode="build", repo=REPO, report=REPORT, today=None, lane=False, rehearse
         fails += f
         warns += w
         notes += n
+        # ---- THE #119 SWEEP RE-CHECKER — dream pass 6 P1, RULED s186-D2 (#186) AND UNBUILT FOR
+        # 36 DAYS until #293 lane E1. s186-D2 says "at wrap", so it is called here and nowhere
+        # else. It COUNTS the 21 frozen "UNPROVEN by this sweep" status strings and refuses ONLY
+        # if the count GROWS — a new one is the CLAIMED class being manufactured today. The bulk
+        # rewrite the ruling forbids by name is impossible from here: this arm has no writer.
+        # The body, the baseline and five mutation bites live in `_governs.frozen_sweep_recheck`.
+        try:
+            import _governs as _gv
+            _sf, _sn = _gv.frozen_sweep_recheck()
+            fails += _sf
+            notes += _sn
+        except Exception as _se:                                   # noqa: BLE001
+            # Same shape as the trigger-index consumer above: a reader of decided things cannot
+            # make a correct tree incorrect, so it must not block a wrap — but a silently absent
+            # counter is the [[instrument-without-a-consumer]] failure this arm was built to end.
+            notes.append(f"⚠ #119 SWEEP RE-CHECKER DID NOT RUN ({type(_se).__name__}: {_se}) — "
+                         f"s186-D2's count was NOT taken this wrap. That is not the same as "
+                         f"'the count is unchanged'. Run `python3 knowledge/_governs.py "
+                         f"--selftest` (bite 6j) by hand.")
         # ---- #92: EVERY wrap-mode run logs its fail count — rehearsals build the early series,
         # real wraps build the fails-at-wrap-open distribution #91-F5 ordered, and repeated
         # wrap lines within one session ARE the remediation-round count. Append-only, machine.

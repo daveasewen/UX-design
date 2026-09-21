@@ -122,6 +122,15 @@ EXEMPT: dict[str, tuple[str, str]] = {
         "turns this entry into a STALE EXEMPTION failure by itself.",
         "2026-08-27",
     ),
+    # #293 lane E1, enacting dream pass 13 P6. The sibling orphan _validate_lane_ownership.py
+    # was NOT exempted — it came OFF to _to_delete/ on Dave's own s276-D6 ("it comes OFF at the
+    # next dream pass if the tripwire never fired"; the next pass was 13 and nothing ever ran
+    # the guard, so the condition is met vacuously). This file gets the gate's OTHER prescribed
+    # remedy because it carries no ruling either way and the wire-or-retire call is Dave's.
+    "_validate_demo_page.py": (
+        "unwired since #268 (08e315dc); wire-or-retire is Dave's, review page #293",
+        "2026-09-21",
+    ),
 }
 
 

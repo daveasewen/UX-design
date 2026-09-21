@@ -348,6 +348,60 @@ def surface(targets: set[str], rulings: list[dict] | None = None) -> list[dict]:
     return [r for r in (rulings if rulings is not None else load()) if matches(r, targets)]
 
 
+# ---- THE #119 SWEEP RE-CHECKER — dream pass 6 P1, ruled s186-D2 (#186), built #293 lane E1 ----
+#
+# ⛔ WHY IT COUNTS AND DOES NOT REWRITE. The #119 metadata sweep stamped 21 rulings with a status
+# that states, honestly, that it did not look: "enactment state NOT asserted here (UNPROVEN by
+# this sweep)". Dave firmed the remedy at #186 on a full read-back ("Firm — ratify all") in a
+# deliberately minimal shape, and his ruling names the thing it forbids in the same clause:
+#     "P1 re-checker counting the 21 frozen '#119 sweep' status strings at wrap (NO BULK REWRITE
+#      — that manufactures the CLAIMED class ADR-0016 forbids)"
+# A bulk rewrite would replace 21 honest "I did not check" strings with 21 assertions nobody
+# checked either — which is worse than the frozen string, because it reads as evidence. So this
+# arm has exactly one power: it COUNTS, and it refuses only when the count GROWS. A new one is a
+# NEW ruling filed with the unproven stamp, i.e. the CLAIMED class being manufactured today,
+# which is the only event worth blocking a wrap for. The 21 that exist are RATIFIED RECORD and
+# this arm never touches them; retiring one is a real re-check by a seat that did the work, and
+# a FALL in the count is reported and welcomed, never refused.
+#
+# ⚠ The baseline below is a MEASUREMENT of the store at #293 (grep count 21, in 21 distinct
+# records' `status` field, unchanged since #119 — 36 days and no arm). It is not a target and not
+# a cap on rulings; it is the high-water mark of ONE string.
+FROZEN_SWEEP_STATUS = "enactment state NOT asserted here (UNPROVEN by this sweep)"
+FROZEN_SWEEP_BASELINE = 21
+
+
+def frozen_sweep_count(rulings: list[dict] | None = None) -> list[str]:
+    """Ids of the rulings whose `status` still carries the frozen #119-sweep string."""
+    rs = rulings if rulings is not None else load()
+    return [str(r.get("id")) for r in rs
+            if FROZEN_SWEEP_STATUS in str(r.get("status", ""))]
+
+
+def frozen_sweep_recheck(rulings: list[dict] | None = None,
+                         baseline: int | None = None) -> tuple[list[str], list[str]]:
+    """(fails, notes). REFUSES ONLY ON GROWTH — see the block comment above."""
+    base = FROZEN_SWEEP_BASELINE if baseline is None else baseline
+    ids = frozen_sweep_count(rulings)
+    n = len(ids)
+    if n > base:
+        fresh = ids[base:] if len(ids) > base else []
+        return ([f"#119 SWEEP RE-CHECKER (s186-D2): the frozen "
+                 f"{FROZEN_SWEEP_STATUS!r} status count has GROWN {base} → {n}. A NEW ruling has "
+                 f"been filed carrying a status that asserts its own enactment was not checked — "
+                 f"that is the CLAIMED class ADR-0016 forbids, being manufactured now, not "
+                 f"inherited from the #119 sweep. All {n} carriers, in store order — the last "
+                 f"{n - base} is where a fresh one usually lands, but the store is not a queue, "
+                 f"so READ, do not assume: …{', '.join(fresh) or '—'}. "
+                 f"Either assert the enactment state from evidence or "
+                 f"do not file the stamp. ⛔ DO NOT 'fix' this by rewriting the 21 inherited "
+                 f"ones — s186-D2 forbids the bulk rewrite by name."], [])
+    verdict = "unchanged" if n == base else f"FELL {base} → {n} (a real re-check retired one)"
+    return ([], [f"#119 sweep re-checker (s186-D2, pass 6 P1): {n} frozen "
+                 f"'UNPROVEN by this sweep' status string(s) in `_rulings.json` — {verdict}. "
+                 f"Counted, never rewritten; refuses only on growth."])
+
+
 def render(hits: list[dict], because: str) -> str:
     if not hits:
         return ""
@@ -702,6 +756,47 @@ def selftest(refusals: list[str] | None = None) -> list[str]:
                                     [f"knowledge/_no_such_{'xyzzy'}.py#anchor"]}], "selftest 6i"):
         failures.append("_governs: render() did NOT report a genuinely rotten anchor as "
                         "UNRESOLVED — 6i's positive bite above cannot fail, so it is asserting")
+
+    # 6j. THE #119 SWEEP RE-CHECKER, MUTATION-TESTED BOTH WAYS (#293 lane E1; dream pass 6 P1,
+    #     ruled s186-D2 at #186 and unbuilt for 36 days). A counter that only ever counts the
+    #     healthy store is an assertion, so every bite below drives a SYNTHETIC store: the arm
+    #     must be silent at baseline, must REFUSE on growth, must NOT refuse on a fall, and must
+    #     still find the string in the real corpus (the last bite is what catches the string
+    #     being reworded out from under the count — the failure mode that would make this arm
+    #     read green forever while measuring nothing).
+    _S = FROZEN_SWEEP_STATUS
+    _at = [{"id": f"x{i}", "status": _S} for i in range(3)]
+    _bf, _bn = frozen_sweep_recheck(_at, baseline=3)
+    if _bf or not _bn or "unchanged" not in _bn[0]:
+        failures.append("_governs 6j: the #119 re-checker REFUSED at its own baseline, or did "
+                        "not report the count — it must be SILENT-BUT-SPEAKING on the inherited "
+                        "21, because s186-D2 forbids blocking them by name")
+    _grown = _at + [{"id": "NEW-1", "status": f"prefix {_S} suffix"}]
+    _f, _n = frozen_sweep_recheck(_grown, baseline=3)
+    if not _f or "GROWN" not in _f[0] or "NEW-1" not in _f[0]:
+        failures.append("_governs 6j: the #119 re-checker did NOT refuse on GROWTH, or did not "
+                        "name the new carrier — a fresh unproven stamp is the CLAIMED class "
+                        "being manufactured today and is the ONE event this arm exists to catch")
+    if "bulk rewrite" not in (_f[0] if _f else ""):
+        failures.append("_governs 6j: the growth refusal does not forbid the bulk rewrite in its "
+                        "own text — a reader who hits it will 'fix' 21 ratified rows "
+                        "[[gate-must-quote-what-it-forbids]]")
+    _fell, _nf = frozen_sweep_recheck(_at[:1], baseline=3)
+    if _fell or not _nf or "FELL" not in _nf[0]:
+        failures.append("_governs 6j: a FALL in the count was refused or not reported — a real "
+                        "re-check retiring a stamp is the outcome this arm wants, not a red")
+    if frozen_sweep_recheck([{"id": "q", "status": "ordinary"}], baseline=0)[0]:
+        failures.append("_governs 6j: the arm refused a store with ZERO carriers — it is "
+                        "counting something other than the frozen string")
+    if len(frozen_sweep_count(rulings)) != FROZEN_SWEEP_BASELINE:
+        failures.append(
+            f"_governs 6j: the REAL store carries {len(frozen_sweep_count(rulings))} frozen "
+            f"'#119 sweep' status string(s), not the recorded baseline "
+            f"{FROZEN_SWEEP_BASELINE}. If the count GREW, the wrap arm has already said so and "
+            f"the ruling is the thing to look at. If it FELL, a re-check retired one and the "
+            f"baseline is now a stale constant — move it DOWN with the receipt. If it went to "
+            f"ZERO abruptly, suspect a REWORDING of the string, which s186-D2 forbids: this "
+            f"bite is the only thing standing between that and a counter measuring nothing.")
     return failures
 
 
