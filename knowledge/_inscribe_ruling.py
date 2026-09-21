@@ -342,6 +342,23 @@ def amend_evidence(rid, evidence, path=RULINGS, write=False):
 
     lo, hi = _evidence_span(original, rid)
     old_span = original[lo:hi]
+
+    # A2b — THE SPAN MUST BE THE ARRAY AND NOTHING ELSE. Found #294 by armA1c, which read
+    # ACCEPTED before this check existed. ⛔ WHY NOTHING DOWNSTREAM CATCHES IT: a span one byte
+    # too wide still RECONSTRUCTS (putting the old bytes back gives the original, so A2 is
+    # happy), still PARSES, and still compares equal on every ruling (so A3/A4 are happy) —
+    # while the byte it swallowed, the `\n` before the object's own `}`, is silently dropped and
+    # the file's formatting moves outside the target array. That is the #179 defect at
+    # one-byte scale, and the reconstruction proof is structurally blind to it because the proof
+    # is about the SPAN'S CONTENTS, never about the span's BOUNDARIES. So the boundaries are
+    # asserted here, where they are known, rather than inferred downstream.
+    if not (old_span.startswith("[") and old_span.endswith("]")):
+        raise InscriptionRefused(
+            f"⛔ REFUSED (span) — the evidence span located for {rid!r} is not exactly the "
+            f"`[...]` array: it starts {old_span[:1]!r} and ends {old_span[-1:]!r}. A span that "
+            f"reaches even one byte outside the array reconstructs AND parses, so no check "
+            f"downstream of this one can see it. File untouched.")
+
     new_span, new_text = compose_amend(original, lo, hi, evidence)
 
     reconstructed = new_text[:lo] + old_span + new_text[lo + len(new_span):]   # A2 — the proof
@@ -685,11 +702,28 @@ def selftest():
         orig_a1 = open(pa1, encoding="utf-8").read()
         real_ca = globals()["compose_amend"]
 
+        # ⛔ THE PLANT IS DERIVED FROM THE FILE, NEVER TYPED (fixed #294). The literal it used to
+        # search for was `'\n "ruled":'` — ONE space, i.e. array elements at indent 0 — and the
+        # store's real shape is elements at indent 1, keys at indent 2. `str.replace` on a string
+        # that is not there returns the string UNCHANGED, so the plant silently never fired: the
+        # amend then succeeded (correctly), the arm read that success as "A2 is dead", and the
+        # suite reported a DEFECT IN THE TOOL where there was only a defect in its own fixture
+        # [[gate-cannot-pass-in-one-environment]]. Worse, in the shape where the literal WOULD
+        # match, the arm was measuring an indent the file never uses. The plant is now located in
+        # the head by search and its firing is ASSERTED — an unfired plant is UNMEASURED, and
+        # UNMEASURED is never a pass.
+        _plant_fired = []
+
         def tidy_compose(text, lo_, hi_, ev):          # a "harmless" reindent of an untouched line
             span, nt = real_ca(text, lo_, hi_, ev)
-            head = nt[:lo_].replace('\n "ruled":', '\n  "ruled":', 1)
-            nt2 = head + nt[lo_:]
-            return span, nt2
+            head = nt[:lo_]
+            for _key in ('\n  "ruled":', '\n  "date":', '\n  "by":'):
+                if _key in head:                       # JSON-EQUIVALENT: whitespace between tokens
+                    k = head.index(_key)
+                    head = head[:k] + "\n " + _key[1:] + head[k + len(_key):]
+                    _plant_fired.append(_key)
+                    break
+            return span, head + nt[lo_:]
         globals()["compose_amend"] = tidy_compose
         try:
             amend_evidence(tgt, list(new_ev), pa1, write=True)
@@ -706,6 +740,10 @@ def selftest():
                              f"bites, or the arm proves a different clause) — {ex}")
         finally:
             globals()["compose_amend"] = real_ca
+        if not _plant_fired:
+            fails.append("armA1: UNMEASURED — the tidying plant never fired (no `\\n  \"<key>\":` "
+                         "line was found in the head), so A2 was not exercised. NOT a pass: fix "
+                         "the fixture to the store's real indentation.")
         if open(pa1, encoding="utf-8").read() != orig_a1 \
                 and len(json.loads(orig_a1)["rulings"]) >= 2:
             fails.append("armA1: FILE WAS MODIFIED despite the refusal")

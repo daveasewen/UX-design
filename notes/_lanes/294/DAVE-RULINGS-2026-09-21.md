@@ -55,3 +55,11 @@ carried on the midnight-wrap question: **19 days measured; the 52 is sessions, u
     older than N sessions. ⚠ **N is not yet his** — it is the one figure the page left open.
 
 **Nothing skipped.** Twelve of twelve.
+
+---
+
+> inscribe, N+3 is fine
+
+**What this rules.** The twelve go into `knowledge/_rulings.json` as `s294-D1` … `s294-D12`, in the
+order above. Item 12's N is **3 sessions**. The header block above that says *"not yet inscribed"*
+is superseded by this entry; it stands as written because the record is by addition.
