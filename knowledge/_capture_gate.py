@@ -4044,7 +4044,31 @@ def dofirst_index_present_check(repo):
 # constant across a structural break") applied in the other direction. Grading those against a
 # post-diet ceiling would paint the log red for a condition that no longer exists, so they are
 # NOT graded against it — and they are NAMED in a note rather than silently skipped.
-BOOT_CEILING_FROM_SESSION = 241
+#
+# ★★★ #295 — THE BOUNDARY MOVES 241 → 295, BY ADDITION AND ON DAVE'S WORD (`s295-D4`, *"inscribe"*).
+# ⛔ THE SENTENCES ABOVE STAY. They are the true history of the FIRST boundary and of the 70,000 the
+# nine breach readings were graded against; this paragraph is the SECOND boundary beside them, not a
+# rewrite of the first [[correct-by-addition-never-by-deletion]].
+# WHY A SECOND BOUNDARY AND NOT A SECOND NUMBER: `s240-D2` set #241 because the #240 roster diet was
+# a STRUCTURAL BREAK, and #111-D2 forbids fitting one constant across one. Dave switched boot
+# features off at the #293 worker seat (`notes/_lanes/293/NOTE-boot-has-three-bands.md`) — the same
+# class of break, one regime later. The FIRST COLD BOOT after that switch-off read 72,768 real at
+# #295 turn 1, which is the reading `s295-D3` re-based `BOOT_CEILING_TK` to.
+# ⛔ THE ARITHMETIC THAT PROVES A NUMBER COULD NOT DO THIS JOB, measured by lane I2 at #295: the
+# re-base to 72,768 cleared NONE of the seven charged readings — #283 80,871 · #287 74,120 ·
+# #288 74,174 · #289 74,174 · #290 74,165 · #291 74,155 · #292 74,170 — because the SMALLEST of them
+# still sits 1,352 ABOVE the new ceiling. All seven PREDATE the switch-off. A ceiling that closed
+# them by value would have to be ≥ 80,871, which is 8,103 above anything Dave said and would turn a
+# shrink-only ratchet into the standing treadmill `s240-D1` exists to end. ⇒ the honest instrument
+# is to stop CHARGING readings taken on a retired setup, which is a BOUNDARY, not a VALUE.
+# ⛔ THIS MOVES A BOUNDARY AND NOTHING ELSE. `BOOT_CEILING_TK` is untouched at 72,768 and stays
+# SHRINK-ONLY; a POST-#295 reading above it is a BREACH whose remedy is still TO CUT THE BOOT.
+# ⚠ THE OLD READINGS ARE NOT ERASED and are not made invisible: `notes/_GAUGE-LOG.md` is append-only,
+# they stay in it at their true values, and the `pre` note below NAMES every one of them at every
+# run — REPORTED, never CHARGED. That hold-harmless shape is `s240-D2`'s own, re-used unchanged.
+# ⚠ `BOOT_DOUBLE_COUNT_FROM_SESSION` STAYS 241 and is a different question: `s295-D1` narrows WHAT
+# IS READ and moves no boundary, and its own selftest arm (5) asserts that. Two constants, two jobs.
+BOOT_CEILING_FROM_SESSION = 295        # `s295-D4`, Dave's word. (was 241 — `s240-D2`, the #240 diet.)
 
 # ★★ #111-D1 (Dave) — THE LEGAL DECLARED-AND-PROCEED FORM.
 # Dave, #111, on being asked warn-vs-block: *"Keep it BLOCKING, but the gate as built has
@@ -4961,9 +4985,16 @@ def boot_constant_drift_check(repo):
            if s < BOOT_CEILING_FROM_SESSION and tk > ceiling]
     if pre:
         notes.append(
-            "boot-drift: %d reading(s) in the window sit above the ceiling but are PRE-DIET "
-            "(session < #%d) and are NOT graded against it — %s. `s240-D2` sets the ceiling "
-            "from the FIRST POST-DIET boot; grading the old regime by it would be fitting a "
+            # ⚠ #295 — THE WORD "PRE-DIET" WOULD NOW BE A LIE AND IS CORRECTED, NOT KEPT.
+            # Until `s295-D4` the boundary was #241 and everything under it was pre-#240-diet.
+            # The boundary is now #295 and the readings under it are PRE-SWITCH-OFF (taken before
+            # Dave switched boot features off at #293) — a different break, the same hold-harmless.
+            # The note names both boundaries so a reader can tell which regime a reading belongs to.
+            "boot-drift: %d reading(s) in the window sit above the ceiling but were taken BEFORE "
+            "the current regime boundary (session < #%d) and are NOT graded against it — %s. "
+            "`s240-D2` set the first boundary at #241 (the #240 roster diet); `s295-D4` moved it "
+            "to #295 (Dave's boot-feature switch-off at #293). Those readings are REPORTED and "
+            "never CHARGED: grading a retired setup by today's ceiling would be fitting a "
             "constant across a structural break (#111-D2). Named, never silently skipped."
             % (len(pre), BOOT_CEILING_FROM_SESSION,
                " · ".join(f"#{s} {tk:,}" for s, tk in pre)))
@@ -10239,6 +10270,32 @@ def selftest_boot_ceiling_discharge():
                         f"ceiling must keep the discharge and be NAMED — fails={[x[:100] for x in f_]} "
                         f"notes={[x[:100] for x in n_]}")
     # …while the same declaration can never discharge a breach it does not name: (c) above.
+
+    # ---- ★★ `s295-D4` — THE REGIME BOUNDARY IS PINNED, AND THE PIN IS EXACT ON PURPOSE.
+    # ⛔ WHY AN EXACT PIN RATHER THAN A DIRECTION TEST: this boundary decides which readings are
+    # CHARGED at all. Raising it silently would DISCHARGE a live breach by making its reading
+    # invisible — the loudest possible way to absorb a failure without paying it — and lowering it
+    # would re-charge readings Dave's word already ruled HISTORY. Neither direction is a seat's,
+    # so BOTH are refused here and the number moves only in the commit that carries his word.
+    # ⚠ THE PRICE, STATED SO NOBODY REDISCOVERS IT AT 2 A.M. (the same price lane I2 named for
+    # `_gauge_tokens` arm E): the NEXT time Dave moves this boundary, THIS PIN MOVES IN THE SAME
+    # COMMIT. Loosening it to a direction test was available and is REFUSED — a boundary that may
+    # drift in one direction unattended is not a boundary [[gate-must-quote-what-it-forbids]].
+    if BOOT_CEILING_FROM_SESSION != 295:
+        failures.append(
+            f"[s295-D4] BOOT_CEILING_FROM_SESSION = {BOOT_CEILING_FROM_SESSION}, not 295. The "
+            f"ceiling's REGIME BOUNDARY is Dave's word alone (`s240-D2` set it at #241, `s295-D4` "
+            f"moved it to #295 on his boot-feature switch-off at #293). Moving it UP discharges "
+            f"live breaches by hiding their readings; moving it DOWN re-charges readings his word "
+            f"ruled HISTORY. Neither is a price a seat may pay.")
+    # ---- AND THE SIBLING BOUNDARY DID NOT RIDE ALONG. `s295-D1` narrows WHAT IS READ and moves no
+    # boundary; `s295-D4` moves ONE boundary and narrows nothing. A single edit touching both would
+    # be two rulings enacted under one authority, which is the shape neither ruling grants.
+    if BOOT_DOUBLE_COUNT_FROM_SESSION != 241:
+        failures.append(
+            f"[s295-D4] BOOT_DOUBLE_COUNT_FROM_SESSION moved to {BOOT_DOUBLE_COUNT_FROM_SESSION} "
+            f"alongside the ceiling boundary — `s295-D4` moves the CEILING boundary only, and the "
+            f"double-count boundary is `s241-D2`'s, untouched by it.")
     return failures
 
 
