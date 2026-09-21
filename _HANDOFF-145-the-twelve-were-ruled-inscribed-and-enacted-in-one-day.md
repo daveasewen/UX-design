@@ -544,3 +544,34 @@ Memory hook: `notes/_lanes/294/WRAP-MEMORY-HOOK.md`. His words:
    ⛔ **Nobody wrote this down because the ruling was one day old.** It joins lane I's *"a doc-row
    mint is what takes `_gen_chain.py --check` red"* as the second undocumented staler of the same
    file, found the same day. [[premise-ages-faster-than-rule]]
+
+5. ⛔★★ **A HAND-UP ARRIVED AT 19:19 AND CHANGED THE DISPOSITION OF THE OTHER WORKER'S FILES — BY
+   ADDITION, and by their AUTHOR's word rather than this seat's judgement.**
+   `notes/_lanes/293/_FOR-THE-WRAP-worker-seat-hand-up.md` names every untracked path, declares that
+   seat ran no git command and modified no tracked file, and asks *"Name each in the commit body; do
+   not sweep silently."* ⇒ **an explicit hand-up outranks a fifteen-minute mtime proxy** (the proxy
+   exists only for when a seat cannot say), so the four idea notes and the hand-up are committed at
+   ⬛ **SHA PENDING — filled from `git log` after the commit lands; no placeholder figure is written here, because a commit cannot name itself**, each named in its body. **The 15-minute test is not weakened — it is what you use
+   when there is no hand-up.** ⚠ **Two corrections the hand-up needs:** `knowledge/_jev-receipts.jsonl`
+   is **NOT outstanding** — it reads **19 lines on disk AND 19 in `HEAD`**, lane C's `dd374131` having
+   already carried J4's fourteen, so *"tracked copy has 5"* was true when the worker last looked and
+   stale when written; and `notes/_lanes/293/J4/__pycache__/` is **correctly excluded** by
+   `.gitignore:17`.
+6. ⛔★★★ **AND THE HAND-UP CARRIES ELEVEN MORE OF DAVE'S VERBATIM LINES FROM THAT SEAT THAT NO #294
+   SURFACE HELD. THEY ARE NOT MOVED INTO #294's RULINGS FILE** — that file is this conductor's window
+   and these are #293's worker seat's. **Two of them change what #295 should do:**
+   ⛔ ***"it's fine, i understand this much better now, I've switched off what I think we can ditch"***
+   — **HE SWITCHED BOOT FEATURES OFF TODAY.** `notes/_lanes/293/NOTE-boot-has-three-bands.md` measures
+   the 22–28 August **+24k step as toggleable feature blocks** and says **the NEXT COLD BOOT'S TURN-1
+   READING IS THE MEASUREMENT** (that seat read **74,220**; this conductor **74,656**). ⇒ **READ
+   #295's OPENING BOOT FIGURE AS EVIDENCE OF HIS CHANGE, NOT AS ANOTHER DRIFT READING, AND DO NOT
+   AVERAGE IT WITH THE SEVEN POST-DIET READINGS.** This is the single most actionable thing in the
+   hand-up and it arrived after the banner had closed at its cap.
+   ⚠ ***"another thing, the wrap takes a long time to run… is this something we could work on in the
+   future? any ideas"*** — answered at that seat as `notes/_lanes/293/IDEA-wrap-is-slow-five-levers.md`,
+   whose **lever 3 is *"rule the seven inherited gate fails closed"* — a RULING, no build.** ⛔ **That
+   is the same seven this wrap carried in the `#243` form for the twentieth consecutive time: the cost
+   he noticed and the backlog this ritual declares are ONE OBJECT, and the cheapest lever on it is his
+   word.** ⚠ The hand-up also records that **J6 DISPUTES J2's *"jev-1.13.0 not requestable"*** and that
+   **both stand until measured** — unresolved here.
+
