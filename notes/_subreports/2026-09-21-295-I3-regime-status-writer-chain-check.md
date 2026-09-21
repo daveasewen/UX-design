@@ -458,3 +458,113 @@ any git command — the fourth consecutive session this has been measured.** `gi
    until regenerated — **the fix does not and must not change that.**
 
 REPLAY-THESE: `python3 -c "import sys;sys.path.insert(0,'knowledge');import _capture_gate as g;print(g.BOOT_CEILING_FROM_SESSION, g.BOOT_DOUBLE_COUNT_FROM_SESSION)"` (expect **295 241**) · `python3 -c "import json;r=json.load(open('knowledge/_rulings.json'))['rulings'];print(len(r),r[-1]['id'])"` (expect **638 s295-D4**) · `python3 knowledge/_inscribe_ruling.py --selftest` (expect green, SET-STATUS arms named in the line) · `python3 knowledge/_gen_chain.py --selftest` (expect **all bites pass**) · `python3 knowledge/_gen_chain.py --check` (expect **exit 0** — FRESH, or FRESH-at-its-own-commit if HEAD has advanced) · `python3 knowledge/_render_rulings.py --check` (expect FRESH) · `python3 knowledge/_checkin.py --window 200000 --no-block` (expect **0 STRUCTURAL fails**) · `python3 -c "import sys;sys.path.insert(0,'knowledge');import _capture_gate as g;print([x[:90] for x in g.enacted_sha_pointer_check('.')[1] if 'ENACTED-SHA' in x])"` (expect **131 enacted, 33 with a sha, 98 without**)
+
+---
+
+## ⬛ POST-COMMIT ADDENDUM (4) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+⚠ **THIS IS A FOURTH COMMIT AND THE BRIEF ASKED FOR THREE.** The brief allowed *"fewer if the
+script's contract forces it"* and not more. **It is declared rather than absorbed: a commit cannot
+read its own CI** (lane P's termination, met again), so the choice was a report that says nothing
+about CI or one more commit that says what CI said. **The push happened at commit three; this commit
+carries only prose.** ★ **And it is itself a proof of Part 3: this commit advances HEAD past the
+chain's own commit and `--check` stays green.**
+
+## ⛔ THE PROOF PART 3 OWED — GREEN ON THE COMMITTED TREE, NO REGENERATION
+
+Run immediately after `c896bcaf` with a clean tree (bar the three other-seat paths), with **no
+`_gen_chain.py` run in between**:
+
+```
+HEAD is now: c896bcaf
+  ✅ _CHAIN.md is FRESH at the commit it was generated at (`ac55c7b2`) — HEAD has since advanced to
+     `c896bcaf`, and the ONLY difference is the build-verdict line's live-HEAD clause and the tape
+     figure it shifts. Content matches GOOD-MORNING.md / _LIVE-STATE.md as they now stand
+exit=0
+```
+
+⇒ ★★ **THE CHAIN WAS GENERATED AT `ac55c7b2`, TWO COMMITS BACK, AND `--check` IS GREEN.** Under the
+old behaviour this tree was red by construction.
+
+## ⬛ THE PUSH — THE SANCTIONED ARM WAS TRIED FIRST, IT REFUSED, AND THE FALLBACK IS DECLARED
+
+⛔ **`bash knowledge/_git_commit.sh --push` WAS RUN FIRST AND REFUSED AT THE DIRT GATE — lane P's and
+lane I2's finding reproduced a third time, on the identical three paths:**
+
+```
+✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:
+ M notes/_dream/_GRADE-DECISIONS.jsonl
+ M notes/_lanes/293/J7-IDEA-jev-selects-over-the-kg.md
+ M notes/_lanes/294/WRAP-MEMORY-HOOK.md
+```
+
+⛔ **THE PUSH THEREFORE WENT BY PLAIN `git push origin master`, A DECLARED FALLBACK AND NOT THE
+SANCTIONED PATH.** The brief authorised it explicitly and the conductor's verdict is PUSH. **The
+price is named rather than implied: the `s294-D5` expiry gate, the fast-forward-only gate, the
+master-only gate and the script's own post-push verification ALL SKIPPED.** Branch was confirmed
+`master` before the push and the verification was re-done by hand; **the expiry check was NOT
+re-done and nothing here claims it.**
+
+```
+   89f09db9..c896bcaf  master -> master
+git rev-parse HEAD            → c896bcafbacb725833ffb7f59c5f49666f27eff4
+git ls-remote origin master   → c896bcafbacb725833ffb7f59c5f49666f27eff4   ✅ EQUAL
+```
+
+⛔ **The remote URL and its token were never printed: every line that touched them is `sed`-redacted.**
+
+## ⬛ CI, READ BACK FOR `c896bcaf`
+
+**RUN `35652886287` · workflow `gates` · created 2026-09-21T20:43:54Z · POLLED TO COMPLETION ·
+RUN CONCLUSION: FAILURE.**
+
+| job | colour | failing steps |
+|---|---|---|
+| `gates` | ⛔ **FAILURE** | **5** `Survey the COMMITTED tree` · **6** `Knowledge build` |
+| `release` | ✅ **SUCCESS** | none |
+| `render` | ✅ **SUCCESS** | none |
+
+⚠ **`render` stayed `in_progress` for roughly eight minutes after `gates` and `release` had closed.
+The verdict above is the one taken AFTER it finished** — the #291/#292 lesson, met a fifth time.
+
+### ★★ THE ONE THING THIS LANE WENT TO CI TO LEARN, AND IT IS THE ANSWER IT WANTED
+
+```
+#295 lane P  (d30aebe1):  SURVEY: 58 pass · 7 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked
+#295 lane I2 (0d487352):  SURVEY: 58 pass · 7 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked
+#295 lane I3 (c896bcaf):  SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked
+```
+
+★★ **`[120] read chain determinism check` IS GREEN IN CI, verbatim from the run log:**
+
+```
+  ✅ [120] read chain determinism check — stale _CHAIN.md serves a PREVIO…
+```
+
+⇒ ⛔ **THE ONLY STEP THAT MOVED IS THE ONE PART 3 FIXED, AND IT MOVED THE RIGHT WAY.** 7 → 6 fails,
+58 → 59 passes. **It is the step lane P found NEWLY RED on `d30aebe1` and called red on every pushed
+tree by construction; it is green on a pushed tree now.**
+
+**THE SIX THAT REMAIN, BY NAME** (never by number — lane P measured that survey step IDs move
+between sessions): `[3]` token blast-radius · `[13]` capture/provenance selftest · `[38]`
+component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package
+delta-audit · `[136]` governs matcher selftest. ⛔ **All six inherited, identical to lane P's and
+lane I2's set minus `[120]`.**
+
+⇒ ⛔ **AND THE REST OF THIS LANE BROKE NOTHING CI CAN SEE.** `[13]` is `_capture_gate.py --selftest`,
+which this lane edited (the boundary constant, the note text, the new pin arms) — **still exit 1 on
+the same `pre-flight:` stamp arm, no worse and no better.** `_inscribe_ruling.py` gained a whole new
+write path and `[9]`'s help-gate selftest and step 6's script scan both still count the same 12
+failures on the same 12 files. Step 6 aborts where it always did:
+
+```
+help-gate: 264 script(s) scanned, 12 failure(s) — a script that can write before it reads argv is
+the #157 gen_showroom defect
+```
+
+⛔★ **THE ZERO IS INVISIBLE TO CI, AND THAT IS WORTH SAYING OUT LOUD.** The wrap gate reading `0`
+structural fails — this lane's first headline — **does not appear in CI at all**:
+`_capture_gate.py --wrap` is wired into no CI step, lane P and lane I2 both measured that, and it
+holds here. **The only instrument that sees the zero is the local rehearsal.**
+
+⛔ **NOTHING CI REPORTED WAS REPAIRED** — the brief fences it.
