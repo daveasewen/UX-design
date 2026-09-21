@@ -44,10 +44,14 @@ Usage:
   # AMEND (sanctioned #193, evidence array ONLY — `says` is unreachable from here):
   echo '["commit abc1234 - …"]' | python3 knowledge/_inscribe_ruling.py \
         --amend-evidence --id s176-D2 --dry-run
+  # SET-STATUS (sanctioned #295 to discharge `s295-D2` — `status` + the enacting sha ONLY;
+  # `says`, `ruled` and `governs` are UNREACHABLE from here, same fence as --amend-evidence):
+  python3 knowledge/_inscribe_ruling.py --set-status s294-D1 enacted --evidence-sha f81bbdd4 --dry-run
 """
 import argparse
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -395,6 +399,218 @@ def amend_evidence(rid, evidence, path=RULINGS, write=False):
     report = {"id": rid, "at_byte": lo, "old_span_bytes": len(old_span), "span_bytes": len(new_span),
               "file_bytes_before": len(original), "file_bytes_after": len(new_text),
               "evidence_before": len(old_evidence), "evidence_after": len(evidence),
+              "textual": True, "written": False}
+    if write:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(new_text)
+        report["written"] = True
+    return report
+
+
+# ---------------------------------------------------------------------------
+# S — SET-STATUS. Built #295 to discharge `s295-D2`, which rules that THE ENACTING LANE stamps
+# `status: enacted` in the SAME COMMIT with the COMMIT SHA as the proof.
+#
+# ⛔ WHY THIS EXISTS, AND IT IS AN OBSERVED FAILURE, NOT A SPECULATIVE ONE (`s172-D3`(e)): at #295
+# lane I ruled and enacted `s295-D2` and then COULD NOT DISCHARGE IT — the only sanctioned writer
+# reaches the `evidence` array and nothing else, and hand-editing `_rulings.json` is the #179 defect
+# this module exists to abolish. Eleven #294 rulings went unstamped and the lane filed the gap as a
+# refusal. `s172-D3`(e) fences SPECULATIVE CHECKS and RETIRES NOTHING; it does not fence a writer
+# that a ratified ruling cannot be discharged without, and the ruling this arm enforces is named.
+#
+# ⛔ SCOPE, and it is the whole safety argument: this mode may replace the `status` STRING and the
+# `evidence` ARRAY of ONE existing ruling and NOTHING ELSE. `says`, `ruled`, `governs`, `id` and
+# `date` are UNREACHABLE from here — a ruling's words are Dave's, and a tool that could reach them
+# is a re-stamp wearing a tool's clothes [[header-wins-over-audit]]. The parse check below PROVES
+# that by comparing every other ruling and every other field of the target for equality.
+#
+#   S1 TARGET     — the id must exist, EXACTLY once (shares `_entry_span` with amend).
+#   S2 VOCABULARY — the new status's LEAD WORD must be one ALREADY PRESENT in the store. ⛔ THE
+#                   VOCABULARY IS READ FROM THE STORE AT CALL TIME AND IS NEVER HARD-CODED HERE: a
+#                   list of accepted words in this file would be a SECOND COPY of the store's own
+#                   vocabulary, which is the copy-chain class this repo refuses everywhere else. A
+#                   seat that wants a NEW status word must get it ruled, not typed past a tool.
+#   S3 SHA        — a status whose lead word is `enacted` REQUIRES `--evidence-sha`, a 7–40 hex run.
+#                   `s295-D2` makes the commit sha the PROOF; an `enacted` stamp with no pointer is
+#                   the record claiming an enactment it cannot show, which is worse than `ruled`.
+#                   ⚠ THE SHAPE IS CHECKED, THE COMMIT IS NOT RESOLVED — same declared limit as the
+#                   gate's advisory arm: `git cat-file` needs a repo this tool may run outside of.
+#   S4 TEXTUAL    — TWO span swaps in ONE composition, the LATER span swapped first so the earlier
+#                   offset cannot move, PROVEN BY RECONSTRUCTION: putting BOTH old spans back must
+#                   give back the ORIGINAL BYTES, `==` on the raw string. ⛔ ONE composition, not
+#                   two writes: two proven writes leave a HALF-STAMP window in which the record
+#                   claims `enacted` with no sha, which is the exact state `s295-D2` forbids.
+#   S5 PARSES     — the result parses, has the SAME ruling count, the same top-level keys, and
+#                   differs from the original in EXACTLY ONE RULING and only in `status`/`evidence`.
+#   S6 CHANGES    — a stamp that changes nothing is refused; a no-op write is a lie in git log.
+#   R5/R6         — every NEW evidence pointer gets the full append ladder, same as amend.
+# ---------------------------------------------------------------------------
+SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
+ENACTED_LEAD = "enacted"
+
+
+def _lead_word(status):
+    """The first alphabetic token of a status string, lowercased. `''` when there is none."""
+    m = re.match(r"[A-Za-z][A-Za-z-]*", str(status).strip())
+    return m.group(0).lower() if m else ""
+
+
+def store_status_vocabulary(rulings):
+    """The set of status LEAD WORDS already present in the store. READ, never typed."""
+    return {w for w in (_lead_word(r.get("status", "")) for r in rulings) if w}
+
+
+def _status_span(text, rid):
+    """(start, end) of the `"..."` that is ruling `rid`'s status STRING, in FILE coordinates.
+
+    ⚠ The span is the QUOTED LITERAL including both quotes — the same boundary discipline
+    `_evidence_span` uses for the array, and asserted the same way by the caller."""
+    lo, hi = _entry_span(text, rid)
+    obj = text[lo:hi]
+    key = obj.index('"status"')
+    i = obj.index('"', obj.index(":", key))
+    esc = False
+    for j in range(i + 1, len(obj)):
+        c = obj[j]
+        if esc:
+            esc = False
+        elif c == "\\":
+            esc = True
+        elif c == '"':
+            return lo + i, lo + j + 1
+    raise InscriptionRefused(f"⛔ REFUSED (structure) — could not find the close of {rid!r}'s status.")
+
+
+def compose_status(text, pairs):
+    """Return the new text with each `(lo, hi, span)` swapped in. ⛔ The LATER span is swapped
+    FIRST so the earlier span's offset cannot move under it. Kept as its own function so the
+    selftest can PLANT a tidying writer here and prove S4 is the check that catches it."""
+    out = text
+    for lo, hi, span in sorted(pairs, key=lambda t: t[0], reverse=True):
+        out = out[:lo] + span + out[hi:]
+    return out
+
+
+def set_status(rid, status, sha=None, path=RULINGS, write=False):
+    if not isinstance(rid, str) or not rid.strip():
+        raise InscriptionRefused("⛔ REFUSED (target) — no ruling id given. File untouched.")
+    if not isinstance(status, str) or not status.strip():
+        raise InscriptionRefused("⛔ REFUSED (schema) — the new status must be a non-empty string. File untouched.")
+
+    with open(path, encoding="utf-8") as fh:
+        original = fh.read()
+    data = json.loads(original)
+    rulings = data.get("rulings", [])
+    targets = [r for r in rulings if r.get("id") == rid]
+    if len(targets) != 1:                                                  # S1
+        raise InscriptionRefused(
+            f"⛔ REFUSED (unknown id) — {rid!r} matches {len(targets)} rulings in "
+            f"{os.path.basename(path)}. A status is stamped on an EXISTING ruling. File untouched.")
+    target = targets[0]
+
+    vocab = store_status_vocabulary(rulings)                               # S2
+    lead = _lead_word(status)
+    if lead not in vocab:
+        raise InscriptionRefused(
+            f"⛔ REFUSED (vocabulary) — {lead!r} is not a status word this store already uses. "
+            f"The accepted lead words are READ FROM THE STORE, never typed into this tool: "
+            f"{', '.join(sorted(vocab))}. Inventing a status word at a seat creates an invisible "
+            f"convention nobody ruled — get the word ruled, then stamp it. File untouched.")
+
+    if lead == ENACTED_LEAD:                                               # S3
+        if not sha:
+            raise InscriptionRefused(
+                f"⛔ REFUSED (no proof) — a status of {lead!r} REQUIRES --evidence-sha. `s295-D2`: "
+                f"the commit sha IS the proof of enactment. A record that claims `enacted` and "
+                f"points at nothing is claiming an enactment it cannot show, which is a worse "
+                f"record than an honest `ruled`. File untouched.")
+        if not SHA_RE.match(str(sha)):
+            raise InscriptionRefused(
+                f"⛔ REFUSED (sha shape) — {sha!r} is not a 7–40 character lowercase hex sha. ⚠ The "
+                f"SHAPE is what this tool can check; that the commit exists, is reachable, or is "
+                f"the one that did the enacting is NOT checked here and is not claimed — resolving "
+                f"it needs a repo this tool may be run outside of. File untouched.")
+
+    old_status = target.get("status", "")
+    old_evidence = list(target.get("evidence") or [])
+    new_evidence = list(old_evidence)
+    if sha:
+        pointer = (f"commit {sha} - `{rid}` enacted in code; the commit is the proof "
+                   f"(`s295-D2`: the enacting lane stamps the status, the sha is the pointer)")
+        if not any(str(sha) in p for p in old_evidence):
+            new_evidence.append(pointer)
+    if old_status == status and new_evidence == old_evidence:              # S6
+        raise InscriptionRefused(
+            f"⛔ REFUSED (no change) — {rid!r} already reads this status and already carries this "
+            f"sha. A write that changes nothing puts a lie in git log. File untouched.")
+
+    delta = [p for p in new_evidence if p not in old_evidence]             # R5/R6 on the delta only
+    if delta:
+        check_evidence_list(delta)
+
+    s_lo, s_hi = _status_span(original, rid)
+    e_lo, e_hi = _evidence_span(original, rid)
+    old_s, old_e = original[s_lo:s_hi], original[e_lo:e_hi]
+    # S4b — BOUNDARIES ASSERTED WHERE THEY ARE KNOWN, the #294 armA1c lesson applied to both spans:
+    # a span one byte too wide still reconstructs, still parses and still compares equal, so no
+    # check downstream of this one can see it.
+    if not (old_s.startswith('"') and old_s.endswith('"')):
+        raise InscriptionRefused(
+            f"⛔ REFUSED (span) — the status span located for {rid!r} is not exactly the quoted "
+            f"string: it starts {old_s[:1]!r} and ends {old_s[-1:]!r}. File untouched.")
+    if not (old_e.startswith("[") and old_e.endswith("]")):
+        raise InscriptionRefused(
+            f"⛔ REFUSED (span) — the evidence span located for {rid!r} is not exactly the `[...]` "
+            f"array: it starts {old_e[:1]!r} and ends {old_e[-1:]!r}. File untouched.")
+    if not (s_hi <= e_lo or e_hi <= s_lo):
+        raise InscriptionRefused(
+            f"⛔ REFUSED (span) — the status and evidence spans for {rid!r} OVERLAP. File untouched.")
+
+    new_s = json.dumps(status, ensure_ascii=False)
+    new_e, _ = compose_amend(original, e_lo, e_hi, new_evidence)
+    pairs = [(s_lo, s_hi, new_s), (e_lo, e_hi, new_e)]
+    new_text = compose_status(original, pairs)
+
+    # S4 — THE PROOF. Restore the EARLIER span first: once it is back at its original length every
+    # later offset is the ORIGINAL offset again, so no shift arithmetic is needed and none is done
+    # (shift arithmetic is a second place to be wrong about the thing being proven).
+    recon = new_text
+    for lo, hi, span in sorted(pairs, key=lambda t: t[0]):
+        recon = recon[:lo] + original[lo:hi] + recon[lo + len(span):]
+    if recon != original:
+        raise InscriptionRefused(
+            "⛔ REFUSED (not textual) — putting the OLD status and evidence spans back does NOT "
+            "give back the original bytes. Something outside the two target spans moved. This is "
+            "the #179 defect and the whole reason this script exists. File untouched.")
+
+    try:                                                                   # S5
+        after = json.loads(new_text)
+    except json.JSONDecodeError as ex:
+        raise InscriptionRefused(f"⛔ REFUSED (unparseable result) — {ex}. File untouched.")
+    after_rulings = after.get("rulings", [])
+    if len(rulings) != len(after_rulings):
+        raise InscriptionRefused("⛔ REFUSED (count) — the ruling count changed. File untouched.")
+    if set(data) != set(after) or any(k != "rulings" and data[k] != after[k] for k in data):
+        raise InscriptionRefused("⛔ REFUSED (scope) — a top-level key outside `rulings` changed. File untouched.")
+    diffs = []
+    for b, a_ in zip(rulings, after_rulings):
+        if b == a_:
+            continue
+        frozen = lambda r: {k: v for k, v in r.items() if k not in ("status", "evidence")}  # noqa: E731
+        if b.get("id") != rid or frozen(b) != frozen(a_):
+            diffs.append(b.get("id"))
+    if diffs:
+        raise InscriptionRefused(
+            f"⛔ REFUSED (scope) — the result differs outside {rid!r}'s status/evidence: {diffs}. "
+            f"`says`, `ruled` and `governs` are never reachable from here. File untouched.")
+    got = after_rulings[rulings.index(target)]
+    if got["status"] != status or got["evidence"] != new_evidence:
+        raise InscriptionRefused("⛔ REFUSED (round-trip) — the parsed record is not what was submitted. File untouched.")
+
+    report = {"id": rid, "status_before": old_status, "status_after": status,
+              "status_at_byte": s_lo, "evidence_at_byte": e_lo, "sha": sha,
+              "evidence_before": len(old_evidence), "evidence_after": len(new_evidence),
+              "file_bytes_before": len(original), "file_bytes_after": len(new_text),
               "textual": True, "written": False}
     if write:
         with open(path, "w", encoding="utf-8") as fh:
@@ -862,6 +1078,130 @@ def selftest():
                 pass
         if open(p5, encoding="utf-8").read() != o5:
             fails.append("arm5: a refusal MODIFIED the file")
+
+    fails.extend(selftest_set_status())
+    return fails
+
+
+def selftest_set_status():
+    """S1…S6, both directions. Every green below is proven able to fail by mutation."""
+    import tempfile
+    fails = []
+    with tempfile.TemporaryDirectory() as td:
+        pa = _tmp_copy(td)
+        original = open(pa, encoding="utf-8").read()
+        rulings = json.loads(original)["rulings"]
+        vocab = store_status_vocabulary(rulings)
+        tgt = rulings[-1]["id"]
+        before = rulings[-1]
+
+        # ---- (1) THE VOCABULARY IS READ, NOT TYPED. `enacted` and `ruled` are both in the live
+        # store, so both must be admitted; a word nobody has ever used must be refused BY NAME.
+        for word in ("enacted", "ruled"):
+            if word not in vocab:
+                fails.append(f"setstatus(1): {word!r} is not in the store's status vocabulary "
+                             f"({sorted(vocab)}) — this arm's premise has moved")
+        try:
+            set_status(tgt, "adjudicated-by-a-seat", "deadbee", pa, write=True)
+            fails.append("setstatus(1): an INVENTED status word was accepted — S2 is dead")
+        except InscriptionRefused as ex:
+            if "vocabulary" not in str(ex):
+                fails.append(f"setstatus(1): refused, but not as a vocabulary refusal: {ex}")
+        if open(pa, encoding="utf-8").read() != original:
+            fails.append("setstatus(1): a refusal MODIFIED the file")
+
+        # ---- (2) `enacted` WITHOUT A SHA IS REFUSED, and a malformed sha is refused separately.
+        for sha, why in ((None, "no proof"), ("", "no proof"), ("zzzz", "sha shape"),
+                         ("abc", "sha shape"), ("A" * 8, "sha shape"), ("a" * 41, "sha shape")):
+            try:
+                set_status(tgt, "enacted", sha, pa, write=True)
+                fails.append(f"setstatus(2): `enacted` accepted with sha={sha!r} — S3 is dead")
+            except InscriptionRefused as ex:
+                if why not in str(ex):
+                    fails.append(f"setstatus(2): sha={sha!r} refused as {str(ex)[:60]!r}, not {why!r}")
+        if open(pa, encoding="utf-8").read() != original:
+            fails.append("setstatus(2): a refusal MODIFIED the file")
+
+        # ---- (3) THE CONTROL: a legal stamp lands, byte-exact, and touches TWO fields of ONE
+        # record and nothing else — proven by re-parsing and comparing every other ruling.
+        # ⛔ WRAPPED: a control that RAISES is a crash, and a crash is not a fail — the arm must
+        # report the refusal as a failure by name, or a scope-widening mutation reads as a
+        # traceback instead of a red arm [[a-crash-is-not-a-fail]].
+        try:
+            rep = set_status(tgt, "enacted", "1234abc", pa, write=True)
+        except InscriptionRefused as ex:
+            fails.append(f"setstatus(3): the CONTROL stamp was REFUSED — {str(ex)[:140]}")
+            return fails
+        after = json.loads(open(pa, encoding="utf-8").read())["rulings"]
+        if len(after) != len(rulings):
+            fails.append("setstatus(3): the ruling count changed on a legal stamp")
+        if after[-1]["status"] != "enacted":
+            fails.append(f"setstatus(3): the status did not land — {after[-1]['status']!r}")
+        if not any("1234abc" in p for p in after[-1]["evidence"]):
+            fails.append("setstatus(3): the sha pointer was not appended to evidence")
+        if {k: v for k, v in before.items() if k not in ("status", "evidence")} != \
+           {k: v for k, v in after[-1].items() if k not in ("status", "evidence")}:
+            fails.append("setstatus(3): a field OUTSIDE status/evidence moved — `says` is reachable")
+        if after[:-1] != rulings[:-1]:
+            fails.append("setstatus(3): a ruling other than the target changed")
+        if not rep.get("textual"):
+            fails.append("setstatus(3): the report does not claim the textual proof")
+
+        # ---- (4) NO-OP REFUSED. The same stamp twice is a lie in git log.
+        try:
+            set_status(tgt, "enacted", "1234abc", pa, write=True)
+            fails.append("setstatus(4): a NO-OP stamp was accepted — S6 is dead")
+        except InscriptionRefused as ex:
+            if "no change" not in str(ex):
+                fails.append(f"setstatus(4): refused, but not as a no-op: {ex}")
+
+        # ---- (5) UNKNOWN ID, and the file is untouched by it.
+        now = open(pa, encoding="utf-8").read()
+        try:
+            set_status("zz-no-such-ruling-xyzzy", "ruled", None, pa, write=True)
+            fails.append("setstatus(5): an unknown id was accepted — S1 is dead")
+        except InscriptionRefused:
+            pass
+        if open(pa, encoding="utf-8").read() != now:
+            fails.append("setstatus(5): a refusal MODIFIED the file")
+
+        # ---- (6) THE RECONSTRUCTION PROOF IS THE CHECK THAT CATCHES A TIDYING WRITER, and it is
+        # PLANTED here rather than argued: a composer that re-serialises the whole file the obvious
+        # way (json.load → dump) must be caught by S4, not by luck downstream.
+        pa2 = _tmp_copy(td)
+        o2 = open(pa2, encoding="utf-8").read()
+        t2 = json.loads(o2)["rulings"][-1]["id"]
+        real = globals()["compose_status"]
+        try:
+            globals()["compose_status"] = lambda text, pairs: json.dumps(json.loads(text), indent=4)
+            try:
+                set_status(t2, "enacted", "1234abc", pa2, write=True)
+                fails.append("setstatus(6): a REFORMATTING composer was accepted — S4 is dead")
+            except InscriptionRefused as ex:
+                if "not textual" not in str(ex):
+                    fails.append(f"setstatus(6): refused, but not by the textual proof: {str(ex)[:90]}")
+        finally:
+            globals()["compose_status"] = real
+        if open(pa2, encoding="utf-8").read() != o2:
+            fails.append("setstatus(6): the planted writer MODIFIED the file")
+
+        # ---- (7) A SPAN ONE BYTE TOO WIDE. ⛔ THE #294 armA1c CLASS, and S4 IS STRUCTURALLY BLIND
+        # TO IT: a wider span still RECONSTRUCTS, still PARSES and still compares equal, while the
+        # byte it swallowed is silently dropped. So the BOUNDARY is asserted where it is known, and
+        # this arm proves that assert is the one doing the work.
+        real_span = globals()["_status_span"]
+        try:
+            globals()["_status_span"] = lambda text, rid: (lambda t: (t[0] - 1, t[1]))(real_span(text, rid))
+            try:
+                set_status(t2, "enacted", "1234abc", pa2, write=True)
+                fails.append("setstatus(7): a status span ONE BYTE TOO WIDE was accepted — S4b is dead")
+            except InscriptionRefused as ex:
+                if "span" not in str(ex):
+                    fails.append(f"setstatus(7): refused, but not by the boundary assert: {str(ex)[:90]}")
+        finally:
+            globals()["_status_span"] = real_span
+        if open(pa2, encoding="utf-8").read() != o2:
+            fails.append("setstatus(7): the planted span MODIFIED the file")
     return fails
 
 
@@ -876,6 +1216,13 @@ def main():
                     help="replace ONE existing ruling's `evidence` array (and nothing else); "
                          "--entry/stdin then holds a JSON LIST of pointer strings")
     ap.add_argument("--id", help="the ruling id whose evidence is being amended")
+    ap.add_argument("--set-status", nargs=2, metavar=("ID", "STATUS"),
+                    help="stamp ONE existing ruling's `status` (and append the enacting sha to its "
+                         "evidence). Accepted status words are READ FROM THE STORE, never typed "
+                         "here; `enacted` REQUIRES --evidence-sha (`s295-D2`)")
+    ap.add_argument("--evidence-sha", metavar="SHA",
+                    help="the 7-40 hex commit sha that enacted the ruling — appended to `evidence` "
+                         "as the proof. Its SHAPE is checked; that the commit exists is NOT")
     a = ap.parse_args()
 
     if a.selftest:
@@ -891,7 +1238,30 @@ def main():
               "R6 rolling-file evidence refused for every named file · bare-path form · "
               "use-vs-mention + roll-TARGET controls accepted · AMEND: control fires byte-exact, "
               "reconstruction mutation-proven, unknown id · illegal + rolling evidence · no-op "
-              "and empty refused, file untouched)")
+              "and empty refused, file untouched · SET-STATUS: store-read vocabulary refuses an "
+              "invented word · `enacted` refused without a 7-40 hex sha and on six malformed "
+              "shas · control stamp lands byte-exact touching TWO fields of ONE record · no-op "
+              "and unknown id refused · a reformatting composer and a one-byte-wide span both "
+              "caught, file untouched)")
+        return 0
+
+    if a.set_status:
+        rid, status = a.set_status
+        if not (a.dry_run or a.write):
+            print("⛔ state your intention: --dry-run or --write. Nothing done.", file=sys.stderr)
+            return 2
+        try:
+            rep = set_status(rid, status, a.evidence_sha, a.rulings, write=a.write)
+        except InscriptionRefused as ex:
+            print(str(ex), file=sys.stderr)
+            return 3
+        verb = "STAMPED" if rep["written"] else "DRY RUN — would stamp cleanly, NOTHING WRITTEN"
+        print(f"{verb}: {rep['id']} status {rep['status_before']!r} → {rep['status_after']!r}"
+              + (f", evidence +{rep['evidence_after'] - rep['evidence_before']} "
+                 f"(sha {rep['sha']})" if rep["sha"] else "")
+              + f"; file {rep['file_bytes_before']} → {rep['file_bytes_after']} bytes; "
+                f"reconstruction proof PASSED (every other byte identical; `says`, `ruled` and "
+                f"`governs` untouched by construction).")
         return 0
 
     if a.amend_evidence:
