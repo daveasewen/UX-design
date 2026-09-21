@@ -27,3 +27,8 @@
 > We need time to go over the dashboard, next time can we use the cold brief we will be doing the demo with rather than the Ai platform one
 
 *(attached: the gearbox render as the angle guide. Read: lane B's brain reading was WRONG and is not accepted; books and gearbox untouched. Brain: tray to match the gearbox's tray angle; brain turned so its BACK faces the viewer. Dashboard: review deferred; the NEXT one-shot runs on the demo's cold brief, not the AI-platform brief — a standing note for #293.)*
+
+> cool, two up alt is better but we need to orientate the brain so its inline with the tray as it was before, but this is the right angle.
+> the slide is great for now, wrap when you're ready
+
+*(Read: the ALT camera (body −50 / tray −35) is the right angle — ACCEPTED BY EYE; the brain must then be turned so its long axis runs inline with the tray's long axis, as it did before B2. Deck v13 with the map at 10A: "great for now" — accepted as placeholder. Wrap called.)*

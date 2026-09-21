@@ -446,32 +446,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
      with the tray unmoved. The profile foreshortens; that is the ask.
      ONE camera, not two: at -35 the body and the tray want the same yaw,
      so no per-body view matrix was introduced. */
-  /* PASS NINE (#292 lane B3) TAKES THE ALTERNATE, AS ONE CAMERA. Dave, on
-     B2's pair: "two up alt is better but we need to orientate the brain so
-     its inline with the tray as it was before, but this is the right
-     angle."
-     B2's alternate was NOT one camera: the body was drawn at -50 while the
-     tray was held at -35, a 15 deg rotation of the body about b RELATIVE
-     TO THE TRAY. `a` is both the brain's front-back axis and the tray's
-     long axis, so any non-zero relative yaw takes the brain's long axis
-     off the tray's long edge — in plan by the full 15 deg, and on screen
-     from a 5.4 deg residual to 14.8 deg. That is the thing Dave's eye
-     caught, and it is the ONLY defect the alternate introduced.
-     The fix is to put the relative rotation back to ZERO while leaving the
-     BODY exactly where the alternate had it: YAW0 -35 -> -50, and the tray
-     follows the body instead of the body following the tray. The brain is
-     pixel-identical to two-up-alt.png; the plate turns the 15 deg it
-     should always have turned with it. PIT0 / YAW_R / PIT_R / TAU / AOV /
-     setView / the projection / the fit are all untouched, and there is
-     still ONE view matrix, so the mouse orbit stays rigid.
-     MEASURED, pole-to-pole (a = -150.6 .. +149.4) against the plate's long
-     edge, both projected: v6 5.1 deg, v7 5.65, pass eight (-35) 5.40,
-     B2's alternate (-50 body / -35 tray) 14.81, pass nine (-50) 6.10. In
-     plan the same four are 0, 0, 0, 15.0, 0.
-     THE COST, for the ruling: the plate is no longer the gearbox's literal
-     -35. Its construction, proportion (2.35 : 1) and idiom are unchanged.
-     brain-v8.html keeps pass eight. */
-  var YAW0 = -50*Math.PI/180, PIT0 = 20*Math.PI/180;
+  var YAW0 = -35*Math.PI/180, PIT0 = 20*Math.PI/180;
   var YAW_R = 25*Math.PI/180, PIT_R = 12*Math.PI/180;
   var TAU = 1.0;
   var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
