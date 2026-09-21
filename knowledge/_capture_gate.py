@@ -4032,7 +4032,14 @@ def dofirst_index_present_check(repo):
 # read at check time. A second copy here is the copy-chain class the ruling exists to end.
 # ★ #241 — THE CEILING'S REGIME BOUNDARY, and it is DECLARED rather than smuggled.
 # `s240-D2` defines the ceiling as the first measured boot AFTER the #240 roster diet and
-# `s241-D1` fixes its value at 70,000 from that boot (69,092 at #241). Every reading in this log
+# `s241-D1` fixes its value at 70,000 from that boot (69,092 at #241). ★★ #295 — BY ADDITION,
+# NOT BY REWRITE: `s295-D3` RE-BASED that value to 72,768 — the first cold boot after Dave
+# switched boot features off at #293, measured at the #295 conductor's seat, n=1, on his own
+# words *"I can't cut anything else permanently, this is possibly the new ceiling"*. The
+# sentence above stays because it is the true history of the 70,000 the nine breach readings
+# were graded against; the LIVE value is read from `_gauge_tokens.BOOT_CEILING_TK` at check time
+# and is never copied into this module. ⛔ `BOOT_CEILING_FROM_SESSION` below is UNTOUCHED by
+# `s295-D3` — the re-base moved a VALUE, not a regime boundary. Every reading in this log
 # from #240 and earlier is PRE-DIET — a different regime, the #111-D2 clause ("don't fit a
 # constant across a structural break") applied in the other direction. Grading those against a
 # post-diet ceiling would paint the log red for a condition that no longer exists, so they are

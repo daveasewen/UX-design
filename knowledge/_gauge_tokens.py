@@ -304,7 +304,10 @@ TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to
 # never raised. There is no cheap in-process way to prove a literal never rose (the previous
 # value is not in the file), so the ratchet is enforced by REVIEW against this comment and by
 # `git log -p` on this line — stated here rather than pretended [[honest-refusal-needs-a-legal-form]].
-# The ceiling is graded per READING, not against the mean: one boot over 70,000 fails by name.
+# The ceiling is graded per READING, not against the mean: one boot over `BOOT_CEILING_TK` fails
+# by name. ⚠ #295 — this sentence USED TO NAME 70,000 IN PROSE; it now names the constant, because
+# `s295-D3` re-based the literal to 72,768 and a prose copy of a moving number is the copy-chain
+# class this module already refuses elsewhere. The value's provenance is at the constant itself.
 # ⚠ `s208-D1`'s RIDER STILL BINDS: a band that moves with the measurement is measurement
 # honesty, never target acceptance. The boot-reduction work stays OPEN.
 #
@@ -322,7 +325,31 @@ TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to
 # the RED LINE, stated separately and never folded into the spread [[measure-dont-convert-units]].
 BOOT_BAND_WINDOW = 7           # n, `s240-D1`'s proposed window — the figure Dave was shown
 BOOT_BAND_SIGMA = 2.0          # red beyond this many spreads — derived above, not picked
-BOOT_CEILING_TK = 70_000       # `s241-D1`, SHRINK-ONLY. Measured first post-diet boot: 69,092.
+# ★★ #295 — THE CEILING IS RE-BASED BY DAVE'S WORD, AND THE PROVENANCE IS KEPT BY ADDITION.
+# WHERE 70,000 CAME FROM: `s240-D2` defined the ceiling as the first measured boot AFTER the #240
+# roster diet; `s241-D1` fixed its VALUE at 70,000 from that boot (69,092 real at #241, Dave took
+# the rounded option). That number held for 54 sessions and is NOT erased — it is the number the
+# nine post-diet breach readings (#283 80,871 · #287 74,120 · #288 74,174 · #289 74,174 ·
+# #290 74,165 · #291 74,155 · #292 74,170 · #293 74,204 · #294 74,656) were taken against, and
+# they stay over it forever in the append-only log.
+# WHERE 72,768 COMES FROM: `s295-D3`. Dave switched boot features off at the #293 worker seat; the
+# FIRST COLD BOOT after that switch-off was measured at the #295 conductor's seat at turn 1 —
+# `_checkin.py`, FILL 89,108 real over 2 turns ⇒ BOOT 72,768 real. ⚠ n=1, PUBLISHED AS n=1: the
+# previous setup's four readings spread nineteen tokens (#288/#289 74,174 · #290 74,165 ·
+# #291 74,155), so that regime was tight — this one has exactly one sample in it.
+# HIS WORDS, VERBATIM, AND THE HEDGE IS HIS: *"I can't cut anything else permanently, this is
+# possibly the new ceiling"* — put to him against the conductor's recommendation to KEEP 70,000
+# and cut the remaining 2,768. "possibly" is recorded, not smoothed.
+# ⛔ STILL SHRINK-ONLY, NOW FROM 72,768. `s240-D2`/`s241-D1` are not repealed, they are RE-BASED
+# in the shape `s129-D1` already set for the floor. The boot may go DOWN past this and NEVER UP.
+# ⛔ THE REMEDY FOR A BREACH IS STILL TO CUT THE BOOT. If the next cold boots read above 72,768
+# the BREACH IS REPORTED and this literal IS NOT MOVED — a seat that answers a breach by
+# re-basing again has turned the ratchet into the standing treadmill `s240-D1` exists to end.
+# ⛔ `BOOT_CEILING_FROM_SESSION` (in `_capture_gate.py`) IS NOT TOUCHED here: whether the
+# post-switch-off boots are a THIRD regime needing their own boundary is a ruling-shaped
+# question, and inventing one at a seat is exactly what `s240-D2` forbids.
+BOOT_CEILING_TK = 72_768       # `s295-D3`, SHRINK-ONLY from here. Dave's word, n=1, #295 turn 1.
+                               # (was 70_000 — `s241-D1`, first post-diet boot 69,092 at #241.)
 
 
 def derived_boot_band(samples: list | None = None,
@@ -834,13 +861,27 @@ def selftest() -> int:
                     "BY SIDE: `s294-D7` publishes the new reading BY ADDITION and does not "
                     "replace the old one. One of the two is missing from this file.")
             # the four that may not move (s241-D1 shrink-only; D7 explicitly excludes them)
-            for name, want in (("BOOT_CEILING_TK", 70_000), ("STOP_LINE_TK", STOP_LINE_TK),
+            # ★★ #295 — THE EXPECTED VALUE MOVED ONCE, BY DAVE'S WORD, AND THE ARM STILL BITES.
+            # This arm was written to prove `s294-D7`'s re-measure moved NO constant, and it
+            # pinned 70_000 as the value that must not move. `s295-D3` RE-BASED it to 72_768 on
+            # his own words (*"I can't cut anything else permanently, this is possibly the new
+            # ceiling"*), which is the ONE authority `s241-D1` ever admitted. ⛔ The arm is NOT
+            # weakened to `!= None` or deleted: it is re-pinned to the NEW literal, so a seat
+            # that moves the ceiling again WITHOUT his word trips it exactly as before. ⛔ And
+            # the direction is asserted separately below, because shrink-only is the half a bare
+            # equality check cannot see.
+            for name, want in (("BOOT_CEILING_TK", 72_768), ("STOP_LINE_TK", STOP_LINE_TK),
                                ("BUDGET_HARD", BUDGET_HARD)):
                 got = globals().get(name)
                 if name == "BOOT_CEILING_TK" and got != want:
-                    failures.append(f"[E s294-D7] {name} = {got:,}, not {want:,} — `s294-D7` "
-                                    f"moves NO constant and `s241-D1` makes this one "
-                                    f"shrink-only and DAVE'S.")
+                    failures.append(f"[E s294-D7/s295-D3] {name} = {got:,}, not {want:,} — "
+                                    f"`s294-D7` moves NO constant; `s295-D3` moved it ONCE to "
+                                    f"72,768 on Dave's word and `s241-D1`/`s295-D3` keep it "
+                                    f"shrink-only and DAVE'S from there.")
+                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 72_768:
+                    failures.append(f"[E s295-D3] {name} = {got:,} is ABOVE the re-based "
+                                    f"72,768 — SHRINK-ONLY means it may go DOWN and NEVER UP. "
+                                    f"A breach is REPORTED, not absorbed by raising this line.")
             if "BOOT_FIRSTTURN_TK" in globals():
                 failures.append("[E s294-D7] BOOT_FIRSTTURN_TK is back — it was DELETED at "
                                 "#241, not superseded in place, and a re-measure does not "

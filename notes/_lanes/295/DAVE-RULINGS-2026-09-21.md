@@ -18,3 +18,8 @@ Opener. Boot at turn 1 measured 72,768 real (after his feature switch-off at the
 > inscribe
 
 Authority for TWO rulings, s295-D1 and s295-D2 (texts in the lane I brief and in `knowledge/_rulings.json` once written). ⚠ He did NOT separately say "go" on the push; the push is at the conductor's judgement per the standing instruction and is taken on that basis, declared here.
+
+> 1. I can't cut anything else permanently, this is possibly the new ceiling
+> 2. cool do it inscribe
+
+(1) answers the conductor's "keep 70,000 and cut the rest": the boot ceiling is RE-BASED by his word to the turn-1 reading at this seat, 72,768 real (n=1, the first cold boot after his feature switch-off) — s295-D3, "possibly" carried verbatim into its evidence; the literal stays shrink-only from there. (2) is "do it" on the six double-counts rule, already inscribed as s295-D1 on his earlier "inscribe".
