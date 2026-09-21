@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recall, not re-ranking</title>
+<link rel="stylesheet" href="../../../../knowledge/canon/canon.css">
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --display:6rem; --title1:5.25rem; --title2:3.5625rem;
+  --head1:2.6875rem; --head2:2.125rem; --head3:1.1875rem;
+  --body1:1rem; --caption1:.875rem; --caption2:.75rem;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem;
+  --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px; --gutter:2rem;
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:var(--font);
+  font-size:var(--body1);font-weight:400;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+section{padding:var(--s7) 0;border-top:1px solid var(--grey-2)}
+.label{font-size:var(--caption2);font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s4)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:var(--title2);font-weight:300;line-height:1.05;margin:0 0 var(--s4)}
+h2{font-size:var(--head1);font-weight:300;line-height:1.15;letter-spacing:-.01em;margin:0 0 var(--s4)}
+h3{font-size:var(--head3);font-weight:500;line-height:1.3;margin:var(--s4) 0 var(--s2)}
+p{margin:0 0 var(--s3);max-width:74ch}
+ol,ul{max-width:74ch;padding-left:1.2em}
+li{margin:0 0 var(--s2)}
+a{color:var(--black);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--grey-3)}
+a:hover{text-decoration-color:var(--accent)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.86em;background:var(--grey-1);padding:.1em .35em}
+.masthead{padding:var(--s7) 0 var(--s6)}
+.banner{border:1px solid var(--black);padding:var(--s4);margin:var(--s5) 0 0;background:var(--grey-1)}
+.banner blockquote{margin:0 0 var(--s3);padding:0 0 0 var(--s3);border-left:2px solid var(--accent);
+  font-size:var(--head3);line-height:1.6}
+.banner .rule{font-size:var(--caption1);color:var(--grey-8);margin:0;text-transform:none}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);
+  border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s5)}
+.meta div{font-size:var(--caption2);letter-spacing:.06em;text-transform:uppercase;color:var(--grey-6)}
+.meta strong{display:block;font-size:var(--caption1);font-weight:400;letter-spacing:0;
+  text-transform:none;color:var(--black);margin-top:var(--s1)}
+.answer{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s5);align-items:start}
+.answer .rule{border-left:1px solid var(--grey-3);min-height:140px}
+.lede{font-size:var(--head3);line-height:1.6}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.split .idx{font-size:var(--title1);font-weight:100;color:var(--grey-3);line-height:.9;margin:0 0 var(--s2)}
+.split .aside p{font-size:var(--caption1);color:var(--grey-7);max-width:34ch}
+table{width:100%;border-collapse:collapse;margin:var(--s4) 0 var(--s3);font-size:var(--caption1)}
+th{text-align:left;font-weight:500;font-size:var(--caption2);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grey-6);border-bottom:1px solid var(--black);padding:0 var(--s2) var(--s1) 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--grey-2);padding:var(--s2) var(--s2) var(--s2) 0;vertical-align:top;line-height:1.55}
+td.num{text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:.86em;white-space:nowrap}
+.tag{font-size:var(--caption2);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6)}
+.tag-m{color:var(--black)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin:var(--s5) 0}
+.stats .n{font-size:var(--title2);font-weight:100;line-height:1;display:block}
+.stats .c{font-size:var(--caption2);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);
+  display:block;margin-top:var(--s1);line-height:1.5}
+.cannot{background:var(--grey-1);padding:var(--s5) 0}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-2);
+  border:1px solid var(--grey-2);margin-top:var(--s4)}
+.paths div{background:var(--white);padding:var(--s3);font-family:ui-monospace,Menlo,monospace;
+  font-size:var(--caption2);line-height:1.6;word-break:break-all}
+.decision{display:grid;grid-template-columns:auto 1fr;gap:var(--s4);border-top:1px solid var(--grey-2);
+  padding:var(--s4) 0}
+.decision .n{font-size:var(--head2);font-weight:100;color:var(--grey-3);line-height:1}
+footer{border-top:1px solid var(--black);padding:var(--s5) 0 var(--s7);font-size:var(--caption1);color:var(--grey-7)}
+@media(max-width:820px){
+  .answer,.split,.stats,.meta,.paths,.decision{grid-template-columns:1fr}
+  .answer .rule{display:none} h1{font-size:var(--head1)} h2{font-size:var(--head2)}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="label">Apollo · session 293 · lane J5 · 2026-09-21 · analysis only</p>
+  <h1>Recall, not re-ranking</h1>
+  <p class="lede">What nineteen measured calls to Jev say about where the Memento door actually fails, and what it would cost to test the fix.</p>
+
+  <div class="banner">
+    <blockquote>&ldquo;okay this seems like a big job and maybe a dramatic change to the system, given that I have a presentation on Friday any analysis is fine but any chages with impact will need to be made after the presentations and demos.&rdquo;</blockquote>
+    <p class="rule"><strong>Dave, verbatim.</strong> This page is analysis only &mdash; no change before Friday 25 September. Every action below is after the demos, and only if ruled. Nothing here is built, scheduled, started or agreed. No file outside <code>notes/_lanes/293/J5/</code> and <code>notes/_subreports/</code> was created, and none was modified.</p>
+  </div>
+
+  <div class="meta">
+    <div>Status<strong>Proposal for ruling &mdash; nothing enacted</strong></div>
+    <div>Evidence<strong>19 live calls, lanes J2 &middot; J3 &middot; J4</strong></div>
+    <div>Every number<strong>labelled measured or declared</strong></div>
+    <div>Earliest action<strong>After 25 September, if ruled</strong></div>
+  </div>
+</header>
+
+<section>
+  <p class="label">Answer first</p>
+  <div class="answer">
+    <h2>Re-ranking is flat. Recall is the defect. Jev should be paid at index time, not at query time.</h2>
+    <div class="rule"></div>
+    <div>
+      <p>Lane J4 re-ranked fourteen real queries with one live Jev request each and moved MRR 0.173&nbsp;&rarr;&nbsp;0.187 &mdash; measured, and smaller than one query is worth at n&nbsp;=&nbsp;14.</p>
+      <p>On four of those fourteen queries the record the session actually fetched was never on the shortlist at all, so no re-ordering could ever have reached it &mdash; measured. That is a recall failure, not a ranking failure, and it is the defect worth spending on.</p>
+      <p>The fix that follows from this is a build-time pass: label every record once, offline, and let the door open a second time on those labels. That moves the cost off the designer's query and onto a batch job nobody is waiting for &mdash; and it is the only shape in which a ~920&nbsp;ms oracle is affordable at all.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">The evidence, measured</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">01</p>
+      <p>Nineteen live calls to <code>jev-latest</code> across three lanes on 2026-09-21. Every latency below is wall-clock from this sandbox, including TLS. TypeSafe's <em>declared</em> band is 70&ndash;500&nbsp;ms. <strong>All nineteen exceeded it.</strong></p>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>Lane</th><th class="num">Calls</th><th class="num">Mean latency</th><th>What it established</th></tr></thead>
+        <tbody>
+          <tr><td>J2 &mdash; adapter</td><td class="num">2</td><td class="num">693.5 ms</td><td>The wire works; <code>jev-1.13.0</code> is echoed, not sent. A Score came back saturated at confidence 1.0 on a rubric it had never seen &mdash; unfalsified.</td></tr>
+          <tr><td>J3 &mdash; probe</td><td class="num">3</td><td class="num">594.6 ms</td><td>Confidence left 1.0 (0.99 / 0.34 / 0.92), so the instrument can disagree. And the stripper lesson: a mutation a human sees instantly was <em>invisible in <code>state</code></em>, because <code>html_to_state</code> discards the CSS that carried it.</td></tr>
+          <tr><td>J4 &mdash; re-rank</td><td class="num">14</td><td class="num">920.0 ms</td><td>Twenty Score questions per request over real Memento candidates. Flat lift; four correct records absent from the shortlist entirely.</td></tr>
+          <tr><td><strong>Total</strong></td><td class="num"><strong>19</strong></td><td class="num">&mdash;</td><td><strong>Zero calls inside the declared latency band.</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>J4's fourteen queries, in brief</h3>
+      <p>Measured: MRR 0.173&nbsp;&rarr;&nbsp;0.187. hits@1 1/14&nbsp;&rarr;&nbsp;1/14. hits@3 3/14&nbsp;&rarr;&nbsp;2/14. Four rows improved (one by 13 places, one by 9), four degraded, three were unchanged, and three could not move at all. Absent-from-top-20 was <strong>4 / 14 before and 4 / 14 after</strong> &mdash; a re-rank cannot add a candidate. A caps-off global baseline was harsher still at 8 / 14 absent.</p>
+      <p>Three of the shortlist misses were the same target, <code>gm:PRIOR</code> &mdash; a haystack section the lexical door never surfaced for three different needle queries. One row, <code>ds-018</code>, is the row worth arguing about: Jev promoted <code>ledger:121-2026-08-07-ds-018-ruled-enacted-s121-d1</code>, the record that says ds-018 was ruled and enacted, over the banner the 2026 session happened to fetch. The metric scored that as a five-place degradation. <strong>On at least one of fourteen rows the fixture punishes the re-ranker for possibly being right.</strong></p>
+      <p>Cost of the whole run, measured: <strong>102,106 input tokens / 4,256 output</strong>, 7,293 input per request, 14.0&nbsp;s of wall time. At the rerank cookbook's <em>declared</em> price of <strong>$0.042 per 1M input tokens</strong> that is <strong>&asymp;$0.0043</strong> &mdash; declared, carried from the vendor's cookbook; the API reports no cost field.</p>
+
+      <h3>Three lessons, and they are the design constraints</h3>
+      <ol>
+        <li><strong><code>state</code> must be the real artefact, never a description of it.</strong> J3 paid for this: the stripped page vouched for a marker that had been removed, and Jev answered the state it was given, correctly. J4 kept the lesson &mdash; its candidates were the record text itself &mdash; and that is why its ladder did real work instead of collapsing.</li>
+        <li><strong>Sessions are the users of this search, not Dave.</strong> J4's fixture is mined from 357 <code>consult-receipts</code> lines the repo wrote about itself; 63 carry a payload. Every query is one a cold session actually typed. So the thing to optimise is a cold session's first lookup &mdash; which is also the one place a ~920&nbsp;ms tax is least affordable.</li>
+        <li><strong>A haystack fetch is a recall failure wearing a different hat.</strong> When the door cannot surface the needle, the session fetches the big containing section and reads down it. Three of J4's fourteen rows did exactly that. Counting those is how you see the defect; MRR hides it.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Proposal A &mdash; a second door for Memento</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">02</p>
+      <p>A build-time labelling pass. Nothing at query time. Behind a flag, default off. <strong>Not started. After the 25th, if ruled.</strong></p>
+    </div>
+    <div>
+      <h2>Label the index once, offline; open a second door on the labels.</h2>
+      <p>The index holds <strong>2,282 records</strong> &mdash; measured, <code>knowledge/_memento-index.json</code>, key <code>records</code>. Their kinds are already a closed set of fourteen: ls-archive-section 535, pattern-node 380, gauge-block 275, gm-archive-section 263, context-node 222, brief 206, component-meta 139, ledger-section 86, carries-section 71, runbook-section 57, gm-section 20, dream 13, ls-section 11, lane 4. All measured.</p>
+
+      <h3>What the pass would ask, per record</h3>
+      <ul>
+        <li><strong>One Choice</strong> &mdash; three to five typed topic labels, drawn from a <em>closed</em> label set derived from those fourteen bucket kinds plus the 69 synonyms already in <code>knowledge/_consult-lexicon.json</code> (measured: 69 entries under <code>synonyms</code>). Closed, because an open label set is a vocabulary invented by a model, and this repo closed its edge vocabulary by ruling for exactly that reason.</li>
+        <li><strong>One Score</strong> &mdash; <em>specificity</em>: is this record a needle (one decision, one ruling, one component) or a haystack section (a whole archive block a reader must scan)? That number is what would let the door prefer the ds-018 ledger record over the banner, and it is the direct answer to the three <code>gm:PRIOR</code> rows.</li>
+      </ul>
+
+      <h3>Where it would sit, and where it would plug in</h3>
+      <p>Output goes to a <strong>sidecar JSON beside the index</strong> &mdash; e.g. <code>knowledge/_memento-labels.json</code> &mdash; and <em>never into <code>_memento-index.json</code> itself</em>. The index is a built artefact with its own builder; a model-authored field inside it would be indistinguishable from a measured one at the next rebuild.</p>
+      <p>The plug point is named, not written: <code>search()</code> in <code>knowledge/_search_core.py</code> (line 94). Today it scores each record with <code>score_record()</code> (line 81) and <em>drops it at line 106 when the score is zero</em>. That line is exactly where recall is lost. A second door would be an optional argument beside the existing <code>decorate</code> hook &mdash; a labels lookup consulted only for records that lexical scored at zero, adding them as a separately-headed group. <strong>Lexical search is unchanged, the caps are unchanged, <code>totals</code> are unchanged, and <code>--fetch</code> resolves exactly what it resolves today.</strong> Absent sidecar, or flag off: today's behaviour, byte for byte.</p>
+
+      <h3>Cost &mdash; the arithmetic, stated</h3>
+      <div class="stats">
+        <div><span class="n">2,282</span><span class="c">records in the index<br>measured</span></div>
+        <div><span class="n">4,564</span><span class="c">questions (1 Choice + 1 Score each)<br>derived from measured</span></div>
+        <div><span class="n">$0.07</span><span class="c">total, at the declared price<br>declared &times; measured</span></div>
+        <div><span class="n">3.5 min</span><span class="c">wall time, batched 20/request<br>derived from measured</span></div>
+      </div>
+      <p>Working: J4 measured <strong>364.7 input tokens per candidate-question</strong> (102,106 &divide; 14 &divide; 20) at a 600-character text cap, and <strong>920.0&nbsp;ms per 20-question request</strong>. At two questions per record that is 4,564 questions &asymp; <strong>1,664,000 input tokens</strong> &mdash; <strong>$0.070</strong> at the <em>declared</em> $0.042/1M, across <strong>229 requests</strong>, <strong>211&nbsp;s</strong> serial. A one-question variant is $0.035 and 106&nbsp;s. <strong>Cost is not the objection to A. Nothing here is.</strong></p>
+      <p>The honest caveat on that figure: at a 600-character cap the pass reads <strong>1.37M of the corpus's 40.0M characters &mdash; 3.4%</strong> (both measured). A record's opening 600 characters is what J4 judged, so this estimate is consistent with the only accuracy evidence that exists &mdash; but a fuller window costs more and is untested. A 2,000-character cap is roughly $0.10.</p>
+
+      <h3>The success measure, fixed in advance</h3>
+      <p><strong>Re-run J4's fourteen-row fixture and count absent-from-top-20 before and after. It is 4 / 14 today, measured. That number is the target &mdash; not MRR.</strong> MRR is what made the re-rank look like an almost-result; the absent count is what made it a real finding. If A does not move 4 / 14 down, A has failed, and the honest reading of a flat result is the same one J4 gave: do not wire it.</p>
+      <p>One thing the fixture cannot do, stated now rather than discovered later: two of the misses J4 went looking for &mdash; the <code>"trigger index"</code> query and the ds-021 ledger entries &mdash; point at records the corpus does not hold or did not index. <strong>Those are corpus defects. A cannot fix them either.</strong></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Proposal B &mdash; edge proposals for two families</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">03</p>
+      <p>Session 269's proposal page listed twelve candidate edge types. Two would be tried, and only two. <strong>Nothing generated. After the 25th, if ruled.</strong></p>
+    </div>
+    <div>
+      <h2>Two edge types, proposed with a probability, ratified by Dave, vocabulary still closed.</h2>
+      <p>The #269 page (<code>_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html</code>) recorded the families sitting at zero in the graph &mdash; 932 token leaves, 666 icons, 470 tagged rules, 145 principles, 251 photographs, 111 font files, 12 roles &mdash; and twelve candidate edge types that cleared its evidence bar. <strong>The edge vocabulary has been closed by ruling since #75.</strong> Nothing below opens it: the output is a page of proposals with probabilities, Dave rules, and only a ruled edge is ever written.</p>
+
+      <h3>Why these two</h3>
+      <p>They are the two smallest pair spaces on #269's list. Its counts, cited as it printed them: <strong>usesIcon &mdash; 19 metas name an icon path</strong> (the page notes a lane first said 4 and the verifier measured 19), and <strong>providesRole &middot; answersIntent &middot; hasDataShape &mdash; 24 &middot; 26 &middot; 26 components</strong>, all marked size S against closed, resolver-checked stores.</p>
+      <p><strong>One correction, measured today, and it matters for scoping.</strong> <code>knowledge/_icon_nodes.json</code> already holds <strong>371 <code>usesIcon</code> edges</strong> across 105 components and 81 icons, ratified s277-D4 and derived by byte-match of normalised path data through each meta's snippet. So usesIcon is not at zero &mdash; #269's 19 was the count of metas that <em>name a path in prose</em>, a different thing. That makes usesIcon the better <em>audit</em> target than proposal target, and it is priced both ways below. On the role side: <code>knowledge/roles.json</code> holds 12 roles, and <strong>108 of 138 component metas carry a <code>provides</code> value</strong> &mdash; measured.</p>
+
+      <h3>The shape</h3>
+      <p>One Noul per (node, candidate) pair. <code>state</code> is the <strong>meta text itself</strong> &mdash; the J3 lesson, not a summary of it &mdash; and the proposition is phrased so high means yes. Output is a ratification page in the #266 pattern: proposed edge, probability, the evidence line, and Dave's word. Storage is unchanged until he rules.</p>
+
+      <table>
+        <thead><tr><th>Scope</th><th class="num">Pairs</th><th class="num">Input tokens</th><th class="num">Cost (declared)</th><th class="num">Requests</th><th class="num">Wall</th></tr></thead>
+        <tbody>
+          <tr><td><strong>providesRole</strong> &mdash; every meta &times; the closed 12-role vocabulary (138 &times; 12)</td><td class="num">1,656</td><td class="num">604,000</td><td class="num">$0.025</td><td class="num">83</td><td class="num">76 s</td></tr>
+          <tr><td><strong>usesIcon, audit</strong> &mdash; the 371 byte-matched edges already in the file</td><td class="num">371</td><td class="num">135,000</td><td class="num">$0.006</td><td class="num">19</td><td class="num">18 s</td></tr>
+          <tr><td>usesIcon, proposal over the 81 icons already matched (138 &times; 81)</td><td class="num">11,178</td><td class="num">4,076,000</td><td class="num">$0.171</td><td class="num">559</td><td class="num">8.6 min</td></tr>
+          <tr><td>usesIcon, full space (138 metas &times; 666 icons) &mdash; priced to be ruled out, not to be run</td><td class="num">91,908</td><td class="num">33,516,000</td><td class="num">$1.41</td><td class="num">4,596</td><td class="num">70 min</td></tr>
+        </tbody>
+      </table>
+      <p>Pair counts measured. Token, cost, request and wall figures derived from J4's measured 364.7 tokens and 46&nbsp;ms per question, priced at the declared $0.042/1M. <strong>Recommended scope is the first two rows: 2,027 pairs, $0.031, 94&nbsp;s.</strong></p>
+
+      <h3>Where a proposed edge file would sit &mdash; named, not built</h3>
+      <p><code>knowledge/_build_kg_explorer.py</code> reads the component metas (<code>knowledge/components/*.meta.json</code>, 138 measured) plus per-family node files &mdash; <code>_rule_nodes.json</code>, <code>_ux_principle_nodes.json</code>, <code>_icon_nodes.json</code>, <code>_logo_nodes.json</code>, <code>_ruling_edges.json</code> &mdash; and <code>knowledge/_kg_history.json</code> (54 dated snapshots, 2026-05-31 to 2026-09-14, measured) for the time axis. A proposed-edge file would sit beside them as its own unread sidecar &mdash; e.g. <code>knowledge/_edge_proposals.json</code> &mdash; <strong>with no reader in the builder and no entry in <code>_kg_verbs.json</code> until Dave rules.</strong> The build is not touched by this proposal in any form.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Proposal C &mdash; audit the ruling-to-ruling edges</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">04</p>
+      <p>The cheapest item on the page, and the one with a real ground truth. <strong>Not run. After the 25th, if ruled.</strong></p>
+    </div>
+    <div>
+      <h2>Ask, of each judged pair: does the evidence support this edge?</h2>
+      <p>One Noul per pair, <code>state</code> = both rulings' own records plus the evidence line already stored on the edge. The proposition is the edge's own claim. Output is a table sorted by probability ascending, so the weakest edges surface first &mdash; and the low end is the useful end.</p>
+      <p><strong>The 78 is a judgement count, not an edge count &mdash; measured.</strong> <code>notes/_lanes/267/E/edge-recs.json</code> holds <strong>78 rows</strong>. Of those, 47 became authored edges in <code>knowledge/_ruling_edges.json</code> (which holds <strong>48</strong> in total, the 48th coming from the store's own <code>superseded_by</code> field), and <strong>31 were ratified by Dave as plain citations</strong> that stay derived <code>mentions</code> and were never authored. 47 + 31 = 78.</p>
+      <p>So &ldquo;78 calls&rdquo; is the right budget, and it audits both sides: the 47 edges that were written <em>and</em> the 31 that were deliberately not. The 31 are arguably the more interesting half &mdash; they are where a human said no, and they are the only rows on this page with a recorded human verdict to check an answer against.</p>
+      <div class="stats">
+        <div><span class="n">78</span><span class="c">judged pairs, one Noul each<br>measured</span></div>
+        <div><span class="n">28,400</span><span class="c">input tokens<br>derived from measured</span></div>
+        <div><span class="n">$0.0012</span><span class="c">total, declared price<br>declared &times; measured</span></div>
+        <div><span class="n">4 s</span><span class="c">wall, batched 20/request<br>derived from measured</span></div>
+      </div>
+      <p>At a tenth of a cent, C is the item where the argument can only be about whether the answer would be trusted, never about what it costs. That is a clean question to put to Dave, and it is the reason C is on this page at all.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cannot">
+  <div class="wrap" style="padding:0">
+  <p class="label">What none of this does</p>
+  <div class="split">
+    <div class="aside"><p class="idx">05</p><p>Published as a CANNOT block, in the house style &mdash; so the boundary is read, not discovered.</p></div>
+    <div>
+      <ul>
+        <li><strong>The explorer and its layout are untouched.</strong> No node id, edge type, file or family key moves. No baked coordinate moves, because nothing enters the force layout.</li>
+        <li><strong>No dependency is created.</strong> No key, no route, no sidecar &mdash; every door prints exactly what it prints today and says in one line that the oracle was absent. The oracle rule from <code>knowledge/_jev.py</code> holds: an absence is never a failure.</li>
+        <li><strong>The edge vocabulary stays closed.</strong> B and C produce a page for Dave to rule on. Neither writes an edge.</li>
+        <li><strong>No family the metas do not describe can be invented.</strong> Jev reads state; it cannot conjure 932 token nodes, 251 photograph rows or a font manifest that does not exist. Every family at zero in #269 is at zero because the payload or the decision is missing, and no oracle supplies either.</li>
+        <li><strong>A cannot fix a corpus defect.</strong> If the right record is not indexed, no label reaches it.</li>
+        <li><strong>None of this makes Memento better for Dave.</strong> It makes it better for a cold session, which is who actually types these queries.</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Risks, stated plainly</p>
+  <div class="split">
+    <div class="aside"><p class="idx">06</p><p>Four, and the first two are properties of the vendor, not of the design.</p></div>
+    <div>
+      <ol>
+        <li><strong>Latency has exceeded the declared band on every call so far &mdash; 19 of 19, measured.</strong> 693.5 / 594.6 / 920.0&nbsp;ms mean against a declared 70&ndash;500&nbsp;ms. This is survivable for A, B and C precisely because they are batch jobs, and it is the single strongest reason not to put Jev on the query path.</li>
+        <li><strong>The access is early and the limits move.</strong> Two requestable model ids exist; the version in the docs' sample responses is not one you may send. Pricing is a declared figure from a cookbook, not a billed one &mdash; the API returns no cost field at all. A run priced at seven cents today could be priced differently tomorrow with no notice to us.</li>
+        <li><strong>Calibration is unvalidated on this domain, n&nbsp;=&nbsp;19.</strong> No artefact has been asked the same question twice, so answer stability is entirely unmeasured. One Score came back at confidence exactly 1.0 on a rubric it had never seen. A labelling pass that runs once and is trusted thereafter is the worst possible consumer of an uncalibrated instrument &mdash; which is why the sidecar must stay a sidecar, rebuildable and discardable, and never merge into the index.</li>
+        <li><strong>The fixture's ground truth is fetch history.</strong> &ldquo;Correct&rdquo; means a session wrote in its receipt that it fetched that record. The ds-018 row shows the failure mode directly: the metric scored a five-place loss for an answer that may be better than the fixture's. A success measure built on that fixture inherits the flaw, and 14 rows is too few either way. <strong>Before A is trusted, the fixture wants 40+ rows.</strong></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Decisions for Dave</p>
+  <h2>Five, each one word, none of them due before the demos.</h2>
+  <div class="decision"><div class="n">1</div><div><strong>Proposal A &mdash; go, after the 25th?</strong> A build-time labelling pass over 2,282 records, output to a sidecar beside the index, second door behind a flag that defaults off. Roughly seven cents and three and a half minutes of batch time at the declared price. Success is measured one way only: absent-from-top-20 on J4's fixture, 4 / 14 today. My reading is that this is the cheapest honest test of the actual defect, and that it should be run before anything is wired into the door.</div></div>
+  <div class="decision"><div class="n">2</div><div><strong>Proposal B &mdash; are those the right two edge types?</strong> The recommendation is providesRole across the closed twelve-role vocabulary (1,656 pairs) and an audit of the 371 usesIcon edges that already exist (371 pairs) &mdash; about three cents and ninety seconds together. If you would rather the second one proposed new icon edges than audited existing ones, the price moves to seventeen cents, and the full icon space is $1.41, which is why it is priced here and not recommended.</div></div>
+  <div class="decision"><div class="n">3</div><div><strong>Proposal C &mdash; run the audit?</strong> Seventy-eight Nouls over the seventy-eight pairs lane E judged in #267 &mdash; the 47 that became edges and the 31 you ratified as plain citations. A tenth of a cent. The question is not cost, it is whether a disagreement between Jev and your own #267 ruling would be read as information or as noise.</div></div>
+  <div class="decision"><div class="n">4</div><div><strong>Track the receipts file, and give it a rotation rule?</strong> <code>knowledge/_jev-receipts.jsonl</code> holds 19 lines and grew by 14 in one lane. It carries no key material &mdash; scanned twice, clean both times. Tracking it means a later session can ask what Jev has already been asked instead of re-deriving it; the cost is that it is append-only, conflicts on every parallel lane, and grows without bound. J2 recommended tracking with a rotation rule and left it to you. Still open. A and B would add thousands of lines, so the rule wants deciding before, not after.</div></div>
+  <div class="decision"><div class="n">5</div><div><strong>Jev as a dev-time instrument only &mdash; confirm that as a ruling?</strong> This is the stance already being held in practice: <code>_jev.py</code> is an instrument, nothing in <code>_build_all.py</code> calls it, no gate depends on it, and an absent oracle is never a failure. Everything on this page fits inside that stance &mdash; A, B and C all run offline and all produce artefacts a human ratifies. Making it an explicit ruling would close the question for every future lane rather than re-litigating it each time.</div></div>
+</section>
+
+<section>
+  <p class="label">Everything this page read</p>
+  <div class="paths">
+    <div>notes/_subreports/2026-09-21-293-J2-jev-adapter.md</div>
+    <div>notes/_subreports/2026-09-21-293-J3-jev-probe.md</div>
+    <div>notes/_subreports/2026-09-21-293-J4-memento-rerank.md</div>
+    <div>notes/_lanes/293/J4/rerank-results.md</div>
+    <div>notes/_lanes/293/J/jev-integration-brief.html</div>
+    <div>_PROPOSAL-kg-entity-and-edge-gaps-2026-09-14-v1.html</div>
+    <div>notes/_lanes/269/kg-gaps/DAVE-RULINGS-2026-09-14.md</div>
+    <div>knowledge/_memento-index.json</div>
+    <div>knowledge/_search_core.py</div>
+    <div>knowledge/_build_kg_explorer.py</div>
+    <div>knowledge/_kg_history.json</div>
+    <div>knowledge/_ruling_edges.json</div>
+    <div>notes/_lanes/267/E/edge-recs.json</div>
+    <div>knowledge/_icon_nodes.json</div>
+    <div>knowledge/_consult-lexicon.json</div>
+    <div>knowledge/roles.json</div>
+    <div>knowledge/components/*.meta.json</div>
+    <div>knowledge/canon/canon.css</div>
+  </div>
+</section>
+
+<footer>
+  <p>Apollo &middot; session 293 &middot; lane J5 &middot; filed 2026-09-21. Analysis only. No file outside <code>notes/_lanes/293/J5/</code> and <code>notes/_subreports/</code> was created; none was modified; no live call was made by this lane; no git command was run. Every figure above is labelled <strong>measured</strong> (counted in this repo or recorded by a lane that spent the call) or <strong>declared</strong> (published by TypeSafe and not verified by us). Working and unverified figures: <code>notes/_subreports/2026-09-21-293-J5-recall-proposal.md</code>.</p>
+</footer>
+
+</div>
+</body>
+</html>

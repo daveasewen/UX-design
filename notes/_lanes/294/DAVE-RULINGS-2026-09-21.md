@@ -63,3 +63,19 @@ carried on the midnight-wrap question: **19 days measured; the 52 is sessions, u
 **What this rules.** The twelve go into `knowledge/_rulings.json` as `s294-D1` … `s294-D12`, in the
 order above. Item 12's N is **3 sessions**. The header block above that says *"not yet inscribed"*
 is superseded by this entry; it stands as written because the record is by addition.
+
+---
+
+> teh whole contents of to delete? all files and folders?
+
+**What was done.** Answered: yes, everything inside `_to_delete/` to the Trash (not Empty Trash), keep
+the empty folder; the folder is gitignored, its tracked-origin contents are recoverable from git.
+
+---
+
+> done, you can wrap
+
+**What this rules.** He emptied `_to_delete/` by hand from Finder (his hands — the mount refuses
+unlink from any sandbox seat, `s282-D4`), so the `s294-D12` arm should read clean at this wrap. Wrap
+called by him after the seam reading 182,609 real / 24 turns was quoted past the 180,000 quality
+line: **stopped ON the instrument's recommendation, no override.**

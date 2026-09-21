@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What the vendor's own documentation says</title>
+<link rel="stylesheet" href="../../../../knowledge/canon/canon.css">
+<style>
+:root{
+  --accent:#DB0011; --black:#000; --white:#fff;
+  --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B; --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+  --display:6rem; --title1:5.25rem; --title2:3.5625rem;
+  --head1:2.6875rem; --head2:2.125rem; --head3:1.1875rem;
+  --body1:1rem; --caption1:.875rem; --caption2:.75rem;
+  --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem;
+  --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px; --gutter:2rem;
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--white);color:var(--black);font-family:var(--font);
+  font-size:var(--body1);font-weight:400;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--gutter)}
+section{padding:var(--s7) 0;border-top:1px solid var(--grey-2)}
+.label{font-size:var(--caption2);font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s4)}
+.label::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent)}
+h1{font-size:var(--title2);font-weight:300;line-height:1.05;margin:0 0 var(--s4)}
+h2{font-size:var(--head1);font-weight:300;line-height:1.15;letter-spacing:-.01em;margin:0 0 var(--s4)}
+h3{font-size:var(--head3);font-weight:500;line-height:1.3;margin:var(--s4) 0 var(--s2)}
+p{margin:0 0 var(--s3);max-width:74ch}
+ol,ul{max-width:74ch;padding-left:1.2em}
+li{margin:0 0 var(--s2)}
+a{color:var(--black);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--grey-3)}
+a:hover{text-decoration-color:var(--accent)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.86em;background:var(--grey-1);padding:.1em .35em}
+.masthead{padding:var(--s7) 0 var(--s6)}
+.banner{border:1px solid var(--black);padding:var(--s4);margin:var(--s5) 0 0;background:var(--grey-1)}
+.banner blockquote{margin:0 0 var(--s3);padding:0 0 0 var(--s3);border-left:2px solid var(--accent);
+  font-size:var(--head3);line-height:1.6}
+.banner .rule{font-size:var(--caption1);color:var(--grey-8);margin:0;text-transform:none}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);
+  border-top:1px solid var(--grey-2);padding-top:var(--s3);margin-top:var(--s5)}
+.meta div{font-size:var(--caption2);letter-spacing:.06em;text-transform:uppercase;color:var(--grey-6)}
+.meta strong{display:block;font-size:var(--caption1);font-weight:400;letter-spacing:0;
+  text-transform:none;color:var(--black);margin-top:var(--s1)}
+.answer{display:grid;grid-template-columns:3fr 1fr 4fr;gap:var(--s5);align-items:start}
+.answer .rule{border-left:1px solid var(--grey-3);min-height:140px}
+.lede{font-size:var(--head3);line-height:1.6}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.split .idx{font-size:var(--title1);font-weight:100;color:var(--grey-3);line-height:.9;margin:0 0 var(--s2)}
+.split .aside p{font-size:var(--caption1);color:var(--grey-7);max-width:34ch}
+table{width:100%;border-collapse:collapse;margin:var(--s4) 0 var(--s3);font-size:var(--caption1)}
+th{text-align:left;font-weight:500;font-size:var(--caption2);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grey-6);border-bottom:1px solid var(--black);padding:0 var(--s2) var(--s1) 0;vertical-align:bottom}
+td{border-bottom:1px solid var(--grey-2);padding:var(--s2) var(--s2) var(--s2) 0;vertical-align:top;line-height:1.55}
+td.num{text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:.86em;white-space:nowrap}
+.tag{font-size:var(--caption2);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6)}
+.tag-m{color:var(--black);font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin:var(--s5) 0}
+.stats .n{font-size:var(--title2);font-weight:100;line-height:1;display:block}
+.stats .c{font-size:var(--caption2);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);
+  display:block;margin-top:var(--s1);line-height:1.5}
+.cannot{background:var(--grey-1);padding:var(--s5) 0}
+.decision{display:grid;grid-template-columns:auto 1fr;gap:var(--s4);border-top:1px solid var(--grey-2);
+  padding:var(--s4) 0}
+.decision .n{font-size:var(--head2);font-weight:100;color:var(--grey-3);line-height:1}
+.wide{grid-template-columns:1fr}
+footer{border-top:1px solid var(--black);padding:var(--s5) 0 var(--s7);font-size:var(--caption1);color:var(--grey-7)}
+@media(max-width:820px){
+  .answer,.split,.stats,.meta,.decision{grid-template-columns:1fr}
+  .answer .rule{display:none} h1{font-size:var(--head1)} h2{font-size:var(--head2)}
+  table{font-size:var(--caption2)}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="label">Apollo &middot; session 293 &middot; lane J6 &middot; 2026-09-21 &middot; analysis only</p>
+  <h1>What the vendor's own documentation says</h1>
+  <p class="lede">Fifty-nine TypeSafe pages read end to end, and what each one changes about the three proposals already on the table.</p>
+
+  <div class="banner">
+    <blockquote>&ldquo;okay this seems like a big job and maybe a dramatic change to the system, given that I have a presentation on Friday any analysis is fine but any chages with impact will need to be made after the presentations and demos.&rdquo;</blockquote>
+    <p class="rule"><strong>Dave, verbatim.</strong> This page is analysis only &mdash; no change before Friday 25 September. Nothing here is built, started, scheduled or agreed. Every recommendation below is <em>after the demos, and only if ruled</em>. No file outside <code>notes/_lanes/293/J6/</code> and <code>notes/_subreports/</code> was created, and none was modified. No live call was made by this lane; no git command was run.</p>
+  </div>
+
+  <div class="meta">
+    <div>Status<strong>Reading, not ruling &mdash; nothing enacted</strong></div>
+    <div>Sources<strong>59 pages, all fetched clean</strong></div>
+    <div>Every number<strong>labelled measured, declared or derived</strong></div>
+    <div>Earliest action<strong>After 25 September, if ruled</strong></div>
+  </div>
+</header>
+
+<section>
+  <p class="label">Answer first</p>
+  <div class="answer">
+    <h2>Five pages change what we would build. The largest change is that the proposal's request arithmetic is inverted.</h2>
+    <div class="rule"></div>
+    <div>
+      <p>One sentence each, in the order they matter.</p>
+      <ol>
+        <li><strong><a href="https://docs.typesafe.ai/cookbooks/semantic_find.md">Line-by-line search</a></strong> &mdash; a single Choice question can carry up to 255 candidate ids at once with a companion Noul asking whether the corpus holds an answer <em>at all</em>, which turns Memento retrieval from a twenty-wide re-rank into a roughly two-hundred-wide joint ranking with an explicit absence signal, and absence is the exact defect lane J4 measured.</li>
+        <li><strong><a href="https://docs.typesafe.ai/cookbooks/parallel_questions.md">Parallel questions</a></strong> &mdash; batching many questions about <em>one</em> state is free and provably does not move the answers (declared: 12.2&times; cheaper, 10.0&times; faster, run-to-run standard deviation unchanged), which means the saving comes from re-using one state, not from packing many records into one request.</li>
+        <li><strong><a href="https://docs.typesafe.ai/cookbooks/entity_alignment.md">Knowledge graph entity alignment</a></strong> &mdash; a three-level Score whose levels <em>are</em> the three available actions (merge, hand to a curator, leave unlinked) removes every fitted threshold from Proposal B and replaces it with wording you can write before you have seen a single number.</li>
+        <li><strong><a href="https://docs.typesafe.ai/cookbooks/citation_check.md">Double-checking citations</a></strong> &mdash; one Choice over <em>supports / unsupported / contradicted</em>, preceded by an exact-match prefilter done in ordinary code and followed by a confidence flag, is precisely Proposal C's audit, and C's thirty-one recorded human &ldquo;no&rdquo;s are a calibration set for the confidence threshold rather than a thing to argue about.</li>
+        <li><strong><a href="https://docs.typesafe.ai/models.md">Models</a></strong> &mdash; 64k tokens per request (32k for state plus the longest question), 1,200 requests per minute, 250,000 tokens per second, $0.042 per million input tokens with <em>output tokens free</em>, and versioned ids such as <code>jev-1.13.0</code> accepted whether or not they appear in the model list &mdash; which sizes everything above and corrects one of J5's stated risks.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">What changes in the standing proposal</p>
+  <div class="split wide">
+    <div>
+      <h2>The cost conclusion survives. The request count does not.</h2>
+      <p>J5's <a href="jev-recall-proposal.html">Recall, not re-ranking</a> priced A, B and C by assuming twenty questions ride in every request, carried over from J4, which put twenty Memento candidates into one shared <code>state</code>. The documentation does not sanction that shape. <a href="https://docs.typesafe.ai/cookbooks/classifying_rag_passages.md">Classifying RAG passages</a> says it in one line: <em>&ldquo;Nothing batches passages into one request, because each question is about one pair.&rdquo;</em> <a href="https://docs.typesafe.ai/cookbooks/parallel_questions.md">Parallel questions</a> shows the saving comes from sending one document once and asking thirteen things about it &mdash; not from putting thirteen documents in one envelope. And <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13.md">jaggedness mode 5</a> names a state full of material the question does not need as an accuracy cost in its own right.</p>
+      <p>Recomputed on that basis, every cost falls and every request count rises. Cost falls because a per-record request stops re-sending nineteen other records; requests rise because each record now needs its own envelope. <strong>Nothing crosses a tenth of a dollar, and nothing comes close to the declared rate ceiling.</strong></p>
+
+      <table>
+        <thead><tr><th>Cookbook or pattern</th><th>Affects</th><th>The concrete change</th><th class="num">J5 figure</th><th class="num">Recomputed</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/parallel_questions.md">Parallel questions</a></strong></td>
+            <td>A, B, C</td>
+            <td>Batch <em>questions per state</em>, never states per request. A's Choice and Score ride together in one request per record, as J5 intended &mdash; but that request carries one record, not twenty. Cost per record falls because the other nineteen records leave the envelope.</td>
+            <td class="num">229 reqs<br>$0.070<br>3.5 min</td>
+            <td class="num">2,282 reqs<br>$0.062<br>35 min serial<br>~2 min at 1,200/min</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/semantic_find.md">Line-by-line search</a></strong></td>
+            <td>A &mdash; and it may replace A</td>
+            <td>The alternative shape: skip the index pass entirely and ask, per query, one Choice whose options are the candidate record ids, plus one Noul asking whether the corpus answers the query at all. Choice accepts 255 options and is declared reliable to roughly 240. At a 400-character window that is ~24,000 state tokens, inside the 32k budget. <strong>This is a recall instrument, not a re-ranker: it widens the shortlist twelve-fold, which is the only thing that can move 4&nbsp;/&nbsp;14 absent.</strong></td>
+            <td class="num">n/a</td>
+            <td class="num">14 reqs<br>~350k tokens<br>$0.015<br>13 s</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/entity_alignment.md">Entity alignment</a></strong></td>
+            <td>B &mdash; providesRole</td>
+            <td>The per-pair Noul with a fitted threshold is replaced by <strong>one request per component meta</strong>: a Choice over the closed twelve-role vocabulary, plus a three-level Score whose levels are the three outcomes (<em>assert the edge</em> / <em>send it to Dave</em> / <em>leave it unlinked</em>), plus evidence Nouls that ride along for the middle level. The pair space collapses from 1,656 to 138 because the twelve roles become options inside one question rather than 1,656 separate questions. <strong>There is no threshold to fit anywhere in it.</strong></td>
+            <td class="num">1,656 pairs<br>83 reqs<br>$0.025<br>76 s</td>
+            <td class="num">138 reqs<br>~112k tokens<br>$0.005<br>127 s</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/entity_alignment.md">Entity alignment</a></strong></td>
+            <td>B &mdash; usesIcon audit</td>
+            <td>Same three-level Score, one request per existing byte-matched edge; state is the meta snippet and the icon's path data. Cost rises because each edge now gets its own envelope rather than sharing one with nineteen others.</td>
+            <td class="num">371 pairs<br>19 reqs<br>$0.006<br>18 s</td>
+            <td class="num">371 reqs<br>~252k tokens<br>$0.011<br>341 s</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/citation_check.md">Double-checking citations</a></strong></td>
+            <td>C</td>
+            <td>The Noul is replaced by a Choice over three options &mdash; <em>the records support this edge</em>, <em>they do not address it</em>, <em>they contradict it</em> &mdash; with the answer's own <code>confidence</code> flagging rows for Dave at the cookbook's declared 0.8 auto-accept line. Two further changes: an exact-match prefilter in ordinary Python marks any edge whose stored evidence line does not appear in either ruling record, with no call spent; and the <strong>31 rows Dave ratified as plain citations become the calibration set</strong> for where that 0.8 should actually sit, because they are the only rows on the page carrying a recorded human verdict.</td>
+            <td class="num">78 pairs<br>4 reqs<br>$0.0012<br>4 s</td>
+            <td class="num">78 reqs<br>~59k tokens<br>$0.0025<br>72 s</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/classifying_rag_passages.md">Classifying RAG passages</a></strong></td>
+            <td>A &mdash; before any re-rank</td>
+            <td>A relevance Noul as a <em>pre-filter</em>, not a re-ranker: four Nouls per query-candidate pair (relevant / carries an answer / contradicts the query's premise / carries an instruction aimed at the model), tested against thresholds in a fixed order, first match wins. Applied to Memento this drops candidates below a relevance floor before anything is ordered, and gives the door a principled reason to say &ldquo;nothing here answers that&rdquo; instead of printing its best lexical guess. The cookbook's own numbers (declared) are 0.70 injection, 0.70 contradiction, 0.45 relevance floor, 0.55 evidence &mdash; and it says plainly to treat them as a starting point, not defaults.</td>
+            <td class="num">n/a</td>
+            <td class="num">1 req per pair</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/patterns/confidence-routing.md">Confidence-gated routing</a></strong></td>
+            <td>A, B, C</td>
+            <td>What is automatic and what reaches Dave. Noul answers <strong>carry no confidence at all</strong> &mdash; only Choice and Score do &mdash; so J5's all-Noul design for B and C has no second axis to gate on. Switching B and C to Score and Choice is what makes a gate possible. The declared default shape is high &rarr; act, medium &rarr; confirm, low &rarr; human, with the boundary set by the stakes. For Apollo: a sidecar label in A is low-stakes and can be automatic; a proposed <em>edge</em> in B is a ratification page for Dave regardless of confidence, because the vocabulary is closed by ruling; a disagreement in C between Jev and Dave's own #267 verdict should surface as a row for him, never as an overwrite.</td>
+            <td class="num">n/a</td>
+            <td class="num">Design change,<br>no cost</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/skill_suggestion.md">Skill suggestion</a></strong></td>
+            <td>A &mdash; the label set</td>
+            <td>One Choice comfortably held a 182-option roster, so A's &ldquo;closed label set derived from fourteen bucket kinds plus 69 lexicon synonyms&rdquo; fits in one question with room to spare. It also supplies the two-stage shape: a cheap wide ranking over everything, then a close re-read of the top three with fuller text. That is a better answer to the <code>gm:PRIOR</code> rows than a single pass at either width.</td>
+            <td class="num">n/a</td>
+            <td class="num">Within limits</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence.md">Classification using confidence</a></strong></td>
+            <td>A &mdash; the specificity Score</td>
+            <td>When confidence is low, report the <em>coarser</em> label rather than dropping the record or escalating it. Declared: at a 0.9 cutoff the confident half was right 90% of the time and the unconfident half 40%, which rose to 70% when reported one level up. For A this means an unconfident topic label degrades to the record's bucket kind &mdash; which is already known and measured &mdash; rather than becoming a model-authored guess in the sidecar.</td>
+            <td class="num">n/a</td>
+            <td class="num">Free &mdash; no<br>extra call</td>
+          </tr>
+          <tr>
+            <td><strong><a href="https://docs.typesafe.ai/cookbooks/rerank_typesafe.md">Re-ranking</a></strong></td>
+            <td>A &mdash; the success measure</td>
+            <td>The cookbook's precondition is stated outright: its BM25 shortlist contained the gold passage for <strong>100% of 40 queries</strong>, so re-ranking only had to reorder. J4's shortlist contained it for 10 of 14. <strong>The cookbook's 5%&nbsp;&rarr;&nbsp;18% top-1 lift was never available to J4, and J5's reading of that is confirmed by the vendor's own page.</strong> It also uses one Noul per pair in its own request, not twenty Scores in a shared state.</td>
+            <td class="num">MRR</td>
+            <td class="num">Absent-from-shortlist,<br>as J5 already says</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>The whole recommended programme, both ways</h3>
+      <div class="stats">
+        <div><span class="n">335</span><span class="c">requests, as J5 priced it<br>derived</span></div>
+        <div><span class="n">2,869</span><span class="c">requests, recomputed<br>derived</span></div>
+        <div><span class="n">$0.081</span><span class="c">total, recomputed<br>declared &times; derived</span></div>
+        <div><span class="n">~3 min</span><span class="c">at the declared 1,200/min<br>declared &times; derived</span></div>
+      </div>
+      <p><strong>Working, stated so it can be checked.</strong> Baselines carried from J4, measured: 364.7 input tokens per candidate-question at a 600-character cap, 7,293 input tokens per twenty-question request, 920.0&nbsp;ms per request, 46&nbsp;ms per question. Declared from <a href="https://docs.typesafe.ai/models.md">models</a>: $0.042 per million input tokens, output free. A per-record request is derived as roughly 650 input tokens &mdash; ~150 for a 600-character record body, ~280 for a fourteen-label Choice criteria block, ~100 for a four-level Score, ~100 wrapper &mdash; and 2,282 &times; 650 &asymp; 1.48M tokens &asymp; $0.062. B's per-meta request is derived at ~810 tokens, C's per-pair request at ~750. <strong>Every token figure on this page is derived from J4's measured rate and a character count, not measured; every price is declared. Both labels hold.</strong></p>
+      <p><strong>The honest caveat on the whole table:</strong> the recomputation assumes the per-question token rate J4 measured carries over to a one-state-per-request shape. It probably does not, exactly &mdash; a request that sends one record pays its wrapper and its criteria block once for one record instead of once for twenty, so the <em>per-record</em> figure is more likely to be under-stated than over-stated. The direction of every conclusion above survives a doubling. The cost objection to A, B and C stays where J5 put it: there isn't one.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Docs to Apollo, page by page</p>
+  <div class="split wide">
+    <div>
+      <h2>Every conceptual page, pattern and cookbook, against a judgment point we already have.</h2>
+      <p>Fifty-nine pages were fetched; the fifty-two that carry teaching are below. The seven omitted are the two changelogs, the three API-reference index stubs, the demos index and the smart-home demo &mdash; navigation, not instruction. The JavaScript class pages were skipped by brief.</p>
+
+      <table>
+        <thead><tr><th>Page</th><th>What it teaches</th><th>Apollo judgment point</th><th>Verdict</th></tr></thead>
+        <tbody>
+        <tr><td><a href="https://docs.typesafe.ai/introduction.md">Introduction</a></td><td>Three primitives; typed answers, not text; every question evaluated in parallel and in isolation against one state.</td><td>Foundational &mdash; the whole <code>_jev.py</code> contract</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/introduction/quickstart.md">Quick start</a></td><td>Playground, cURL, Python SDK, agent skill. Python &ge; 3.10.</td><td>None &mdash; we already have a working adapter</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/concepts/system-one.md">System One</a></td><td>Calibration is a property of <em>groups</em> of predictions, never a guarantee about one answer.</td><td>Every gate; the reason Jev is an oracle and not a gate</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/concepts/state.md">State</a></td><td>State is a string, object or array; put related records together when the decision compares them; separate content from questions.</td><td>The J3 stripped-prose lesson, stated by the vendor</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/primitives.md">Primitives</a></td><td>Choosing between Choice, Score and Noul, and asking several at once.</td><td>Every lane that designs a question</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/primitives/choice.md">Choice</a></td><td>Pick one from a set; returns the winner, a full distribution and confidence. Maximum 255 options.</td><td>A's label set; designer-skill routing; C's audit verdict</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/primitives/score.md">Score</a></td><td>Ordered levels, 2 to 10, probability-weighted answer plus confidence. Adding a relevant <code>examples</code> array to a level moved confidence 0.35&nbsp;&rarr;&nbsp;0.96 in the page's own worked example; an irrelevant one moved it back.</td><td>A's specificity ladder; B's three outcomes; art-director reviews</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/primitives/noul.md">Noul</a></td><td>Yes/no as a probability. <strong>Carries no confidence field.</strong></td><td>Evidence questions that ride alongside a Score</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/primitives/advanced.md">Advanced: structure</a></td><td>Instructions and all criteria accept objects and arrays, not just strings; an option can be described by what it is <em>not</em> for.</td><td>Gate rules and draft principles, which are already structured</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/introduction/machine-learning-primer.md">AI primer</a></td><td>RLCD; calibration means 0.8 answers are right about 80% of the time <em>across many</em>.</td><td>How to read any single number a lane reports</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/confidence.md">Confidence</a></td><td>Confidence is derived from the distribution; thresholds scale with the stakes of the action, not with the question.</td><td>The check-in stop-line; release gates; dashboard grading</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/concepts/how-to-build-with-system-one.md">How to build with TypeSafe</a></td><td>Keep code in control; give the model narrow structured decisions; the longest page in the set.</td><td>The standing stance that Jev is a dev-time instrument</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/concepts/use-case-map.md">Example use cases</a></td><td>Use cases by industry, as a brainstorming index.</td><td>None</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/patterns.md">Patterns</a></td><td>Index of the four architectural patterns.</td><td>None &mdash; the four pages below carry it</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/patterns/fan-out.md">Speculative fan-out</a></td><td>Ask everything up front, including questions you may not need, and discard in code; extra questions barely change response time.</td><td>Dashboard one-shot grading against nine pass conditions &mdash; ask all nine at once and branch in Python</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/patterns/confidence-routing.md">Confidence-gated routing</a></td><td>A floor below which nothing acts, then per-action thresholds above it.</td><td>The check-in stop-line; what in A/B/C is automatic and what reaches Dave</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/patterns/composite-scoring.md">Composite scoring</a></td><td>Break one judgment into atomic Scores and combine with weights held in your own code, so a priority change is a coefficient, not a rewrite.</td><td>Art-director reviews; dashboard grading against draft principles</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/patterns/intent-routing.md">Intent routing</a></td><td>Classify first, then send only the cases that need it to the expensive handler.</td><td>Routing a lane's ask to the right designer skills pack</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/semantic_find.md">Line-by-line search</a></td><td>Tag every line with an id, make the ids the Choice options, add a Noul asking whether an answer exists at all. Choice probabilities always sum to 1, so something always ranks first &mdash; the Noul is what tells you the ranking is meaningless.</td><td><strong>Memento search recall &mdash; the single closest match on the whole site</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/parallel_questions.md">Parallel questions</a></td><td>N questions in one request give identical answers to N requests of one question; the saving is the document sent once.</td><td>Every batch job in A, B and C</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/rerank_typesafe.md">Re-ranking</a></td><td>One Noul per query-candidate pair, in its own request, over a shortlist that already contains the answer.</td><td>The re-rank J4 ran &mdash; and the precondition it did not meet</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/entity_alignment.md">Entity alignment</a></td><td>A three-level Score whose levels are the three actions; 450 pairs split 360 unlinked / 50 curator / 40 merge with no fitted threshold anywhere.</td><td><strong>KG edge proposal (Proposal B)</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/citation_check.md">Double-checking citations</a></td><td>String-match prefilter in code, then a Choice over three relations, then a confidence flag at a declared 0.8.</td><td><strong>KG edge audit (Proposal C)</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/classifying_rag_passages.md">Classifying RAG passages</a></td><td>Four Nouls per pair, thresholds tested in a fixed order, first match wins; injection tested first because it is a security decision. States the vendor's own rule against batching states.</td><td>Memento pre-filter; <strong>adversarial screening of lane inputs</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/skill_suggestion.md">Skill suggestion</a></td><td>Wide Choice over 182 skills plus three Nouls asking whether <em>any</em> skill is wanted, then a second pass re-reading the top three with fuller text; wrong loads 16.8%&nbsp;&rarr;&nbsp;7.3%, needless loads 9.8%&nbsp;&rarr;&nbsp;4.0%.</td><td><strong>Designer skills packs &mdash; which skill applies</strong>; also A's label set</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/llm_guardrails.md">Guardrails for LLMs</a></td><td>A battery of hazard Nouls plus a severity Score, screened on both the way in and the way out, with named policies holding the thresholds. Warns outright that the injection question is a filter, never a security boundary.</td><td><strong>Adversarial / injection screening of lane inputs</strong></td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence.md">Classification using confidence</a></td><td>75 options in one Choice; below a 0.9 confidence cutoff, report the parent level instead of the leaf. Says a Choice works reliably to roughly 240 options.</td><td>Dashboard grading; A's specificity label; dream-pass grading</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook.md">Self-consistency: nouls</a></td><td>A 14-question rubric run 15 times; TypeSafe's mean per-question standard deviation 0.0102, below every LLM condition tested &mdash; but its <code>covered</code> answers still spanned 0.43 to 0.53, crossing a 0.5 line.</td><td><strong>The stability J5's risk 3 says is unmeasured &mdash; this is how to measure it</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md">Self-consistency: choices</a></td><td>The same experiment for Choice, with an explicit &ldquo;uncertain&rdquo; outcome added to a moderation decision.</td><td>Repeat-run design for any Apollo rubric; release gate grading</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/hierarchical_classification.md">Hierarchical classification</a></td><td>Beam search over Choice probabilities down a deep tree, rather than a greedy walk.</td><td>Only if A's label set ever becomes a tree &mdash; today it is flat</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/sde_cascade.md">SDE cascade</a></td><td>A cheap model extracts, TypeSafe verifies, and only the failures escalate to an expensive reasoning model.</td><td>Component-meta extraction, if it is ever automated</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/autoformat.md">Structure recovery</a></td><td>Rebuild lost Markdown structure in two requests, with companion questions read only when relevant.</td><td>None today &mdash; the repo's artefacts keep their structure</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/function_calling.md">Function calling</a></td><td>Map function names and closed-set arguments onto confidence-aware questions.</td><td>None &mdash; Apollo's commands are typed already</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/date_extraction_cookbook.md">Date extraction</a></td><td>Ask for the named <em>parts</em> of a date as Choices over closed sets, with an explicit &ldquo;not stated&rdquo; option, then resolve and compare in code.</td><td><strong>Dream-pass FRESH / AGING / STALE grading &mdash; which is a date comparison Jev is ruled out of</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/pre_parsed_value_extraction_cookbook.md">Pre-parsed value extraction</a></td><td>Regex finds the candidates, the model picks the right span, code normalises it.</td><td>Ruling-id and record-id extraction, if ever needed</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery.md">Autoresearch feature discovery</a></td><td>A loop that proposes its own questions, turns free text into numeric features and trains a classical regressor on them.</td><td>None &mdash; far past anything Apollo needs, and it would author its own vocabulary</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/models.md">Models</a></td><td>Context, rate limits, price, aliases, language support, data handling, <code>GET /v1/models</code>.</td><td>Sizes every proposal on this page</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/api.md">API reference</a></td><td>The full wire shape, the four documented error statuses and the <code>usage</code> object.</td><td><code>knowledge/_jev.py</code> directly</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13.md">Jev 1.13 jaggedness</a></td><td>Nine named failure modes with a remedy for each.</td><td>Every judgment point &mdash; see the risks section below</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/agent-skill.md">Agent skill</a></td><td>A drop-in skill for coding agents, plus four review principles: keep questions and thresholds in one file, don't take the agent's assertions at face value, and don't reach for a confidence threshold when you only want the top option.</td><td>Where a future <code>_jev_questions.py</code> should live; the skill is already installed here</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/legal.md">Legal</a></td><td>DPA, Master Customer Agreement, Privacy Policy; not trained on customer requests or responses; zero data retention for enterprise customers only.</td><td>What we may send from a client design system</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk.md">Client SDKs</a></td><td>Index page.</td><td>None</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python.md">Python SDK</a></td><td>Install, sync and async clients.</td><td>Only if <code>_jev.py</code> is ever replaced</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/usage.md">Usage</a></td><td>Typed response models, retry policies, environment variables, forward-compatibility escape hatches. <strong>Warns that at <code>debug</code> level the SDK logs request and response bodies un-redacted.</strong></td><td>The adapter gap list below</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/clients/sync.md">Sync client</a></td><td>Full signatures; <code>extra_body</code> for fields the SDK predates.</td><td>Reference only</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/clients/async.md">Async client</a></td><td>The same, asynchronous &mdash; the shape a 2,282-request batch would actually want.</td><td>A's batch runner, if A is ever ruled</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/types/questions.md">Questions</a></td><td>Question objects and raw dictionaries; both accepted.</td><td>Reference only &mdash; <code>_jev.py</code> already sends raw dictionaries</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/types/responses.md">Answers and responses</a></td><td>The response schema; <code>usage.input_tokens</code> and <code>usage.output_tokens</code> are both <em>nullable</em>; <code>request_id</code> and <code>raw_http_response</code> are properties on the response.</td><td>The receipts file &mdash; both usage fields can be null and must not be assumed</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/retries.md">Retries</a></td><td>The full default policy, quoted in the facts section below.</td><td><strong>The adapter's single largest gap</strong></td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/exceptions.md">Exceptions</a></td><td>Ten typed exceptions; <code>retry_after_ms</code> parsed off the rate-limit error; <code>field_path</code> on a response-validation error.</td><td>The adapter's error taxonomy</td><td class="tag">Adapt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/types/common.md">Common types</a></td><td>Shared type aliases.</td><td>None</td><td class="tag">Ignore</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/python/api/constants.md">Constants</a></td><td>Environment variable names and client defaults.</td><td>What <code>.env.local</code> should be named to match</td><td class="tag tag-m">Adopt</td></tr>
+        <tr><td><a href="https://docs.typesafe.ai/sdk/javascript.md">JavaScript SDK</a></td><td>Node 20+, ESM and CJS, answer types inferred from the questions. Skimmed only, by brief.</td><td>None &mdash; Apollo is Python</td><td class="tag">Ignore</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Facts we did not have</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">01</p>
+      <p>All declared &mdash; published by TypeSafe, not measured by us. Two of them correct a figure the standing proposal carries.</p>
+    </div>
+    <div>
+      <h2>Limits, prices, and the one number nobody had written down.</h2>
+
+      <table>
+        <thead><tr><th>Fact</th><th>Value</th><th>Page</th></tr></thead>
+        <tbody>
+        <tr><td>Context limit</td><td><strong>64,000 tokens per request</strong>, covering state plus all questions combined; <strong>32,000 tokens</strong> for state plus the single longest question</td><td><a href="https://docs.typesafe.ai/models.md">models</a></td></tr>
+        <tr><td>Rate limits</td><td><strong>250,000 tokens per second</strong> and <strong>1,200 requests per minute</strong>; breaching either returns 429. Explicitly warned as adjusting dynamically and able to change without notice</td><td><a href="https://docs.typesafe.ai/models.md">models</a></td></tr>
+        <tr><td>Price</td><td><strong>$42 per billion input tokens, $0.042 per million.</strong> <em>Output tokens are free.</em> Charged per input token only</td><td><a href="https://docs.typesafe.ai/models.md">models</a></td></tr>
+        <tr><td>Usage the API returns</td><td>A required <code>usage</code> object with <code>input_tokens</code> and <code>output_tokens</code>. <strong>J4 was right that there is no cost field</strong> &mdash; and because output is free, <code>usage.input_tokens</code> alone is a complete bill at the published rate. Both fields are nullable in the SDK's own schema, so neither may be assumed present. The model that actually answered comes back in the response's <code>model</code> field, and the request id in the <code>x-typesafe-request-id</code> header</td><td><a href="https://docs.typesafe.ai/api.md">api</a>, <a href="https://docs.typesafe.ai/sdk/python/api/types/responses.md">responses</a></td></tr>
+        <tr><td>Retry policy, as shipped</td><td><code>max_retries=2</code>; <code>backoff_initial=0.5</code>s doubling to <code>backoff_max=5.0</code>s; <code>backoff_jitter=0.25</code>; <code>respect_retry_after=True</code>, honouring both <code>Retry-After</code> and <code>retry-after-ms</code>; connection errors and timeouts retried by default; an overall retry <code>timeout</code> of 30.0s</td><td><a href="https://docs.typesafe.ai/sdk/python/api/retries.md">retries</a></td></tr>
+        <tr><td>Retryable statuses</td><td><code>{408, 429}</code> plus the whole <code>range(500, 600)</code> &mdash; so <strong>529 Overloaded is retried</strong> by the default policy without being named in it</td><td><a href="https://docs.typesafe.ai/sdk/python/api/retries.md">retries</a></td></tr>
+        <tr><td>Documented error statuses</td><td>401 unauthorised, 422 unprocessable, 429 rate limit, 529 overloaded. <strong>The lane J2 finding stands: a missing key returned 403 live, not the documented 401.</strong> The SDK's exception list also carries 400 and 403 types the HTTP page does not mention</td><td><a href="https://docs.typesafe.ai/api.md">api</a>, <a href="https://docs.typesafe.ai/sdk/python/api/exceptions.md">exceptions</a></td></tr>
+        <tr><td>Environment variables</td><td><code>TYPESAFE_API_KEY</code> (required), <code>TYPESAFE_BASE_URL</code> (default <code>https://api.typesafe.ai</code>), <code>TYPESAFE_DEFAULT_MODEL</code> (default <code>jev-latest</code>), <code>TYPESAFE_LOG_LEVEL</code>. Default per-operation timeout 10.0s</td><td><a href="https://docs.typesafe.ai/sdk/python/api/constants.md">constants</a></td></tr>
+        <tr><td>Model aliases</td><td><code>jev-latest</code> &rarr; <code>jev-1.13.0</code>; <code>jev-preview</code> &rarr; <code>jev-1.13.0</code> today, with no preview build available. <strong>Versioned ids are accepted by the <code>model</code> field whether or not <code>GET /v1/models</code> lists them</strong>, and the docs advise pinning the version rather than the alias if you have tuned thresholds against it</td><td><a href="https://docs.typesafe.ai/models.md">models</a></td></tr>
+        <tr><td>Question limits</td><td>Choice: <strong>maximum 255 options</strong>, declared reliable to roughly 240. Score: at least two levels, <strong>API accepts up to 10</strong>. Instructions and all criteria accept a string, an object or an array</td><td><a href="https://docs.typesafe.ai/api.md">api</a>, <a href="https://docs.typesafe.ai/primitives/advanced.md">advanced</a>, <a href="https://docs.typesafe.ai/cookbooks/classification_using_confidence.md">classification using confidence</a></td></tr>
+        <tr><td>Data retention and legal</td><td>Data Processing Agreement, Master Customer Agreement and Privacy Policy, all hosted off-docs at typesafe.ai. <strong>Jev is not trained on customer requests or responses.</strong> <strong>Zero data retention is an enterprise-only offering</strong>, by request to privacy@typesafe.ai &mdash; so on an ordinary key, record text we send is retained under the DPA's terms, which nobody in Apollo has read</td><td><a href="https://docs.typesafe.ai/legal.md">legal</a></td></tr>
+        <tr><td>Logging hazard</td><td>At <code>debug</code>, the Python SDK logs request and response <strong>bodies</strong>. Secret headers are redacted; <strong>bodies are explicitly not</strong>. Irrelevant while <code>_jev.py</code> is stdlib, and a live trap the day the SDK is swapped in</td><td><a href="https://docs.typesafe.ai/sdk/python/usage.md">usage</a></td></tr>
+        <tr><td>Language</td><td>English is the primary training language and where accuracy is best; other languages are handled but not equally well</td><td><a href="https://docs.typesafe.ai/models.md">models</a></td></tr>
+        <tr><td><strong>The latency band</strong></td><td><strong>No latency figure is published anywhere on the site.</strong> The &ldquo;declared 70&ndash;500&nbsp;ms&rdquo; that lanes J2, J3, J4 and J5 all measure against does not appear on models, api or any conceptual page. The only latency number in the documentation is a cookbook's own measured mean round trip of <strong>114&nbsp;ms</strong> for a Choice, on the vendor's hardware. <strong>So &ldquo;19 of 19 calls exceeded the declared band&rdquo; is measured against a figure this lane could not find in the current docs, and that sentence should be re-sourced or softened before it is shown to anyone.</strong></td><td>absent from <a href="https://docs.typesafe.ai/models.md">models</a>; 114&nbsp;ms from <a href="https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md">consistency: choices</a></td></tr>
+        </tbody>
+      </table>
+
+      <h3>The two that change the standing page</h3>
+      <p>J5's risk 2 says &ldquo;the version in the docs' sample responses is not one you may send.&rdquo; <a href="https://docs.typesafe.ai/models.md">Models</a> says the opposite in as many words: versioned ids are accepted whether or not they are listed. <strong>Pinning <code>jev-1.13.0</code> is available to us, and it is the documented remedy for exactly the risk J5 raises about an alias moving under a tuned threshold.</strong></p>
+      <p>And the latency band above. It is the load-bearing figure in J5's risk 1 and in J3's results table, and this lane could not source it. It may come from a page since edited, from the console, or from lane J's original research; the subreport records it as unverified either way.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Adapter gaps</p>
+  <div class="split">
+    <div class="aside">
+      <p class="idx">02</p>
+      <p>Proposal only. <code>knowledge/_jev.py</code> was read and not touched. <strong>Not started. After the 25th, if ruled.</strong></p>
+    </div>
+    <div>
+      <h2>Seven things the adapter would gain to match the documented SDK.</h2>
+      <p>The docstring's own &ldquo;CANNOT do&rdquo; list is honest and mostly correct. These are the gaps the documentation opens, in the order a batch job would hit them.</p>
+      <ol>
+        <li><strong>Retries.</strong> The docstring calls backoff &ldquo;a policy decision&rdquo; that belongs to the caller, which is right &mdash; and the caller has nothing to hold it in. A <code>RetryPolicy</code>-shaped argument on <code>ask()</code>, defaulting to <em>off</em> so today's behaviour is unchanged, would let a 2,282-request batch job ask for the documented defaults: two retries, 0.5s doubling to 5.0s, 25% jitter, <code>{408, 429, 500&ndash;599}</code>, honouring both retry-after headers. At the declared 1,200 requests per minute, A <em>will</em> meet a 429.</li>
+        <li><strong>Usage capture in the receipt.</strong> Lane J3 read <code>usage</code> off the response and reported 4,023 input tokens; the receipt schema in the docstring lists timestamp, model, questions, answers, latency and request id, and not usage. Adding <code>input_tokens</code> and <code>output_tokens</code> makes every receipt self-pricing at the declared rate, and makes J5's derived token figures checkable against measured ones. Both fields are nullable and must be written as absent, never as zero.</li>
+        <li><strong>A request-size guard.</strong> Nothing in the adapter knows about 64k total or 32k for state plus the longest question. A batch that packs 240 candidate ids into a Choice will silently cross one of those, and the failure will arrive as a 422 with a field path rather than as a clear message. A cheap character-count check before the POST, refusing rather than truncating, would turn that into a caller's problem at build time.</li>
+        <li><strong>Structured instructions and criteria.</strong> <a href="https://docs.typesafe.ai/primitives/advanced.md">Advanced: structure</a> allows objects and arrays in <code>instructions</code>, in Choice option descriptions, in Score levels and in Noul <code>criteria.true</code>/<code>false</code>. Apollo's gate rules and draft principles are already structured; flattening them into a prose string before sending is a loss the adapter does not need to impose. The Score page's own worked example moved confidence from 0.35 to 0.96 purely by adding a relevant <code>examples</code> array to a level.</li>
+        <li><strong>Record the answering model, not the requested one.</strong> The docstring notes that <code>jev-1.13.0</code> is &ldquo;echoed, not sent&rdquo;. Now that pinning is documented as available, the receipt should hold both the id requested and the id that answered, so a disputed answer can be reproduced against the same weights.</li>
+        <li><strong>A rate-aware batch runner &mdash; separate from the adapter.</strong> A helper that fires requests concurrently under a 1,200-per-minute and 250,000-token-per-second ceiling is what turns A's 35 minutes serial into roughly 2. It belongs beside <code>_jev.py</code> as its own instrument, not inside <code>ask()</code>, which should stay one POST.</li>
+        <li><strong>A questions-and-thresholds module.</strong> The <a href="https://docs.typesafe.ai/agent-skill.md">agent skill page</a> makes this its main review principle: put every question and every threshold constant in one file so a human can review the judgments without reading the plumbing. Apollo has the same problem in a sharper form, because the thing Dave rules on <em>is</em> the question. A <code>knowledge/_jev_questions.py</code> holding A's label set, B's three levels and C's three options, with nothing else in it, is what a ratification page would cite.</li>
+      </ol>
+      <p><strong>One thing the adapter should keep exactly as it is.</strong> The oracle rule. Nothing in fifty-nine pages of vendor documentation argues against it, and <a href="https://docs.typesafe.ai/concepts/system-one.md">System One</a> supplies the reason in a sentence: calibration is measured across groups of predictions and &ldquo;does not guarantee that an individual answer is correct.&rdquo; An instrument that cannot guarantee one answer must never be allowed to fail a build.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cannot">
+  <div class="wrap" style="padding:0">
+  <p class="label">Risks the documentation names on itself</p>
+  <div class="split">
+    <div class="aside"><p class="idx">03</p><p>Nine failure modes are published on <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13.md">the jaggedness page</a>, last reviewed 2026-09-17. Six land on us.</p></div>
+    <div>
+      <h2>The vendor's own list, with the Apollo instance of each.</h2>
+      <table>
+        <thead><tr><th class="num">#</th><th>Mode</th><th>The Apollo instance</th></tr></thead>
+        <tbody>
+        <tr><td class="num">1</td><td><strong>Literal reading.</strong> The model answers the question you wrote, not the one you meant; scoping words and negations are read at face value.</td><td><strong>The release and quality gates.</strong> <code>knowledge/_gate_*.py</code> conditions are written for a human reader who supplies the intent. Any of them handed to Jev as prose would be answered literally. The remedy the page gives is the useful part: when you look at a wrong answer and find yourself explaining what you really meant, <em>that explanation is the missing half of the instruction</em>. It also names the split &mdash; where interpretation is unavoidable, ask two literal questions and combine them in code, which is exactly the composite-scoring pattern.</td></tr>
+        <tr><td class="num">2</td><td><strong>Math and numbers.</strong> Not a calculator; does not count reliably; Score levels are weak in numerical calibration and must not be interpolated between.</td><td><strong>The dashboard's nine pass conditions.</strong> &ldquo;How many of the nine pass?&rdquo; is a counting question and belongs in Python. The fan-out pattern gives the right shape: ask nine separate Nouls in one request and add up the answers yourself. The same rule forbids reading A's specificity Score as a quantity rather than a band.</td></tr>
+        <tr><td class="num">3</td><td><strong>Date and time comparison.</strong> Dates are read as text, not as ordered quantities; which came first, how far apart, whether one falls in a window &mdash; all unreliable.</td><td><strong>Dream-pass proposal grading.</strong> FRESH / AGING / STALE is a date comparison in a rubric's clothing. Jev is ruled out of it by the vendor. The <a href="https://docs.typesafe.ai/cookbooks/date_extraction_cookbook.md">date extraction cookbook</a> gives the split: extraction is a judgment and goes to the model as Choices over closed sets with an explicit &ldquo;not stated&rdquo; option; the ordering is arithmetic and stays in code. UNPROVABLE, by contrast, <em>is</em> a judgment and is a fair question.</td></tr>
+        <tr><td class="num">5</td><td><strong>Large state full of irrelevant detail.</strong> Accuracy falls as the state grows with content unrelated to the decision; unrelated material acts as a distractor, and a big state makes it hard to tell which part produced a wrong answer.</td><td><strong>J4's own design, named by the vendor.</strong> Twenty candidate records shared one <code>state</code> and nineteen were irrelevant to each of the twenty questions. J4 recorded that shared state as an untested departure from the cookbook; this page names the mechanism by which it could have cost accuracy. It is also the reason the semantic-find shape is not simply &ldquo;the same thing but wider&rdquo; &mdash; there, the candidates <em>are</em> the option set, so every line is material to the one question being asked.</td></tr>
+        <tr><td class="num">6</td><td><strong>Adversarial content.</strong> State is data and is not treated as hostile by default; an injected instruction, a misleading framing, or text that argues for its own classification can move the answer.</td><td><strong>Screening lane inputs, and every artefact A would label.</strong> Memento records are written by sessions, about sessions, and some of them quote instructions verbatim &mdash; a ledger entry containing the text of a ruling is a passage that argues for its own classification. The <a href="https://docs.typesafe.ai/cookbooks/classifying_rag_passages.md">RAG cookbook</a> supplies the injection Noul and then warns, in its own words, that it <em>is a filter and only one</em>, and that nothing there is a security boundary. Any Apollo screen built on it inherits that warning verbatim.</td></tr>
+        <tr><td class="num">8</td><td><strong>Common-sense structural invariants.</strong> A Noul and its negation do not sum to 1 (0.72 and 0.47 on the page's own example). A Noul threshold does not carry over to a Choice. A Choice is relative &mdash; it settles <em>which</em>; a Noul is absolute and can be low for all of them.</td><td><strong>Proposals B and C as currently drafted.</strong> B asks one Noul per (node, candidate) pair and reads them against each other; the page says that comparison is not sound, because each Noul is absolute. C's &ldquo;does the evidence support this edge&rdquo; cannot be compared to a &ldquo;does it contradict&rdquo; Noul either. Both are fixed by the same move: use a Choice or a Score when the question is <em>which of these</em>, and keep Nouls for the absolute evidence questions riding alongside. The <a href="https://docs.typesafe.ai/cookbooks/skill_suggestion.md">skill suggestion cookbook</a> runs both on the same shortlist and is explicit that they answer different things &mdash; the Choice picks, the Nouls decide whether to say anything at all.</td></tr>
+        </tbody>
+      </table>
+      <p>Modes 4 (indirection), 7 (contradictory instructions and criteria) and 9 (generation) are real and do not currently land on anything Apollo would ask. Mode 7 becomes live the moment a gate rule and its criteria are written by different hands.</p>
+      <p><strong>And the standing risk the documentation does not lift.</strong> J5's risk 3 &mdash; calibration unvalidated on this domain, n&nbsp;=&nbsp;19, no artefact asked the same question twice &mdash; is unchanged by anything read here. What <em>is</em> new is that the vendor publishes the experiment: <a href="https://docs.typesafe.ai/cookbooks/consistency_noul_cookbook.md">self-consistency: nouls</a> runs one rubric fifteen times and reports a mean per-question standard deviation of 0.0102, and is candid that its own answers still spanned 0.43 to 0.53 across a 0.5 decision line. That is a measurable thing Apollo could do for a few cents on its own fixture, and it is the precondition for trusting a labelling pass that runs once.</p>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section>
+  <p class="label">Decisions for Dave</p>
+  <h2>Six, all of them after the 25th, none of them started.</h2>
+  <div class="decision"><div class="n">1</div><div><strong>Re-price the standing proposal before ruling on it?</strong> The costs in <a href="jev-recall-proposal.html">Recall, not re-ranking</a> assume twenty records ride in one request. The vendor's own documentation says not to do that. Recomputed properly, the whole programme costs about eight cents rather than ten, and takes 2,869 requests rather than 335 &mdash; about three minutes inside the declared rate limit. Nothing in the conclusion changes, but the arithmetic on the page does, and it would be better corrected before it is shown to anyone than after.</div></div>
+  <div class="decision"><div class="n">2</div><div><strong>Try the line-by-line search shape before Proposal A, or instead of it?</strong> A labels 2,282 records once and opens a second door on the labels. The vendor's line-by-line search cookbook does the same job from the other end: for each query, one Choice whose options are up to 240 candidate record ids, plus one Noul asking whether the corpus holds an answer at all. It is fourteen requests and about a penny and a half to run over J4's existing fixture, it needs no sidecar and no flag, and it attacks 4&nbsp;/&nbsp;14 absent directly by widening the shortlist twelvefold rather than by relabelling the index. My reading is that this is the cheaper first experiment and that A should be ruled on after it, not before.</div></div>
+  <div class="decision"><div class="n">3</div><div><strong>Switch B from a Noul with a threshold to a three-level Score with none?</strong> The entity-alignment cookbook's whole argument is that when you have three things you can do with a candidate &mdash; assert it, hand it to a curator, leave it unlinked &mdash; those three things should be the levels of one Score, and then there is no number to fit. For providesRole that also collapses 1,656 pairs into 138 requests, because the twelve roles become options inside one question rather than 1,656 separate questions. It is half a cent. The substantive change is not the price; it is that nobody has to defend a threshold.</div></div>
+  <div class="decision"><div class="n">4</div><div><strong>Use the thirty-one rows you already ruled on as a calibration set for C?</strong> C audits seventy-eight judged pairs: forty-seven that became edges and thirty-one you ratified as plain citations. The citation-check cookbook flags a row for human review below 0.8 confidence, and says to start high and lower it against your own documents. Your thirty-one recorded &ldquo;no&rdquo;s are exactly those documents. That turns the open question on C &mdash; whether a disagreement with your ruling reads as information or as noise &mdash; into something the run itself answers, at about a quarter of a cent.</div></div>
+  <div class="decision"><div class="n">5</div><div><strong>Run the vendor's own stability experiment on one Apollo rubric?</strong> The largest unaddressed risk on the standing page is that nothing has been asked the same question twice. TypeSafe publishes the shape: one rubric, fifteen repeats, report the per-question standard deviation. Run on J4's fourteen-row fixture that is about two hundred requests and under a cent, and it produces the one number that would tell us whether a labelling pass which runs once can be trusted afterwards. It is the cheapest item anyone has proposed and it de-risks the most expensive one.</div></div>
+  <div class="decision"><div class="n">6</div><div><strong>Does anyone need to read the Data Processing Agreement before we send client material?</strong> Zero data retention is an enterprise-only offering that we do not have. The vendor states plainly that it does not train on customer requests or responses, and the retention terms themselves live in a document off the docs site that nobody in Apollo has opened. Everything proposed so far sends repo text about the repo, which is ours. The moment a proposal sends a client's design system through the same door, that document becomes the thing that decides whether it is allowed, and it would be better read now than at the point somebody wants to.</div></div>
+</section>
+
+<section>
+  <p class="label">What this page did not do</p>
+  <div class="split">
+    <div class="aside"><p class="idx">04</p><p>Published as a CANNOT block, in the house style &mdash; so the boundary is read, not discovered.</p></div>
+    <div>
+      <ul>
+        <li><strong>No call was made.</strong> Every figure here is either carried from a lane that spent the call, derived from one, or declared by TypeSafe. Nothing on this page was measured by this lane.</li>
+        <li><strong>No accuracy claim was verified.</strong> Every cookbook number quoted &mdash; 12.2&times;, 5%&nbsp;&rarr;&nbsp;18%, 16.8%&nbsp;&rarr;&nbsp;7.3%, 0.0102 &mdash; is the vendor's own, on the vendor's own data, mostly on <code>jev-1.12</code>. None of it transfers to this corpus without being run here.</li>
+        <li><strong>Nothing was corrected in place.</strong> The two figures this page disputes &mdash; J5's request arithmetic and the 70&ndash;500&nbsp;ms band &mdash; are named here and left standing in their own files. Changing them is a change, and changes wait.</li>
+        <li><strong>The JavaScript API-reference class pages were not read</strong>, by brief. Approximately fifty pages. If a JS surface is ever proposed, they are unread ground.</li>
+        <li><strong>The legal documents themselves were not read.</strong> The docs page links them; they live at typesafe.ai, off the documentation site, and this lane fetched only the index that names them.</li>
+        <li><strong>A cookbook is not a result.</strong> Every &ldquo;adopt&rdquo; above means the shape is right for a judgment point we have, not that it works on our material. The only way past that is to run it, and running it is after the 25th.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Apollo &middot; session 293 &middot; lane J6 &middot; filed 2026-09-21. Analysis only. Fifty-nine TypeSafe documentation pages read; all fetched clean; none failed. No file outside <code>notes/_lanes/293/J6/</code> and <code>notes/_subreports/</code> was created; none was modified; no live call was made by this lane; no git command was run. Every figure above is labelled <strong>measured</strong> (recorded by a lane that spent the call), <strong>declared</strong> (published by TypeSafe and not verified by us) or <strong>derived</strong> (computed on this page from a measured rate and a counted quantity). Pages read, fetch results and verification notes: <code>notes/_subreports/2026-09-21-293-J6-typesafe-docs.md</code>.</p>
+</footer>
+
+</div>
+</body>
+</html>
