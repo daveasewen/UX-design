@@ -493,6 +493,20 @@ STEPS = [
      "_gen_chain.py", ["--check"]),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)",
      "_gen_chain.py", ["--selftest"]),
+    # WIRED #294 — `s294-D8` (Dave): GM's `size:` figures are GENERATED at ritual step 2, so the
+    # front page stops carrying a hand-typed claim about its own length. ⚠ These two rows are
+    # ASSERT-ONLY on purpose: `--write` is a WRAP step (DECLARE-LAST, after 2c/2d/2f have moved
+    # the very files it measures), never a build step — a build that re-stamped the front page
+    # mid-session would publish a figure for a file the wrap is still editing.
+    # ⚠ The drift arm keeps `_capture_gate.SIZE_TOLERANCE` (imported, not re-typed); the FORM arm
+    # — "was this figure typed?" — is a WARN at birth and its promotion trigger is in the module
+    # docstring. So this row cannot go red for the act it is introduced to stop, only for a
+    # measurable disagreement.
+    ("GM size stamp check — a TYPED `size:` figure / drift past the gate's tolerance (s294-D8)",
+     "_gen_size_stamp.py", ["--check"]),
+    ("GM size stamp selftest — the fixed point, the 2-cycle refusal, the ESTIMATE-tier refusal "
+     "and the gate's own regex parsing what this writes (s294-D8)",
+     "_gen_size_stamp.py", ["--selftest"]),
     # WIRED #127 — Dave's call at the opener. The Memento schematic v2: one generated HTML
     # diagram of the six subsystems (chain · store · search · marks · gates · package), every
     # figure read off disk at generation time. v1 was HAND-AUTHORED, referenced by no generator,
@@ -911,6 +925,20 @@ ROUTE_ROWS = [
     ("read chain file — _CHAIN.md, the cold-start door (#41)", ABORT, None),
     ("read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)", ABORT, None),
     ("read chain selftest — verbatim terms + the CUT + refusal on a blank GM (#41)", ABORT, None),
+    # #294 `s294-D8` — GATE, NOT ABORT, and the tier is reasoned rather than copied. The stamp is
+    # DECLARE-LAST: for most of a session GM has moved and the stamp has not, so an ABORT here
+    # would make the whole build unrunnable mid-session for a condition that is EXPECTED until
+    # ritual step 2 runs. `_capture_gate` already FAILS blocking on the same >10% drift at the
+    # wrap, which is the one seam where it must block; this row makes it VISIBLE everywhere else
+    # without giving one condition two blocking homes. The selftest ABORTS like every other.
+    ("GM size stamp check — a TYPED `size:` figure / drift past the gate's tolerance (s294-D8)",
+     GATE,
+     "\n❌ GM `size:` stamp check failed (exit {code}) — the front page's figure disagrees with its "
+     "own length past `_capture_gate.SIZE_TOLERANCE`, or it was TYPED rather than generated "
+     "(`s294-D8`). ⛔ Do NOT hand-correct the number — that is the act the ruling forbids. Run: "
+     "python3 knowledge/_gen_size_stamp.py --write"),
+    ("GM size stamp selftest — the fixed point, the 2-cycle refusal, the ESTIMATE-tier refusal "
+     "and the gate's own regex parsing what this writes (s294-D8)", ABORT, None),
     ("memento schematic — the six subsystems, generated from the file inventory (#127)", ABORT, None),
     ("memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)", ABORT, None),
     ("memento schematic selftest — figure provenance, caption geometry, self-recheck (#127)", ABORT, None),

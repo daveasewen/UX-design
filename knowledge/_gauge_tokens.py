@@ -166,6 +166,54 @@ TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to
 #                              is shrink-only, so moving it is Dave's. The promised re-measure
 #                              is minted as parked item P-293-1, due at the next cold boot
 #                              after a ruling to re-measure.)
+# ── ⬛ s294-D7 — THE RE-MEASURE, PUBLISHED BESIDE THE OLD TERM AND NOT IN PLACE OF IT ────────
+# `s294-D7` (Dave, 2026-09-21, chat #294): "THE 8,470 BOOT TERM IS RE-MEASURED, AND THE READING
+# IS PUBLISHED BESIDE THE TERM RATHER THAN REPLACING IT." Its own ground, in the recommendation
+# he took: "a shrink-only rule should constrain what we SPEND, not what we are allowed to KNOW."
+# With this reading, parked item `P-293-1` is UNPARKED by the ruling itself.
+# ⛔ NOTHING ABOVE OR BELOW IS EDITED. The 8,470 line stands. `BOOT_CEILING_TK`,
+# `STOP_LINE_TK`, `BUDGET_HARD` and the derived band are BYTE-UNCHANGED by this entry: a
+# re-measure publishes a number, it does not move a line [[home-by-addition-then-cut]].
+#
+#     ★ MEASURED 2026-09-21, session #294, conductor's own top-level transcript:
+#       boot, first turn  74,656 REAL  — `message.usage` on the first assistant message:
+#                                        input 2 + cache_creation 38,612 + cache_read 36,042.
+#                                        Transcript found by the SAME glob `_checkin.py`'s
+#                                        `find_transcript()` uses (`/sessions/*/mnt/.claude/
+#                                        projects/*/*.jsonl`, newest by mtime).
+#       MEMORY.md             0  — ⛔ THE TERM IS NOT SMALLER, IT IS GONE. The file has no path
+#                                  at this mount (`/sessions/<s>/mnt/.auto-memory/MEMORY.md`
+#                                  ABSENT, probed) and it is not a boot input in any form: since
+#                                  #278 the store is claude.ai Project cloud memory, whose
+#                                  CONTENTS are fetched by tool call during the session, never
+#                                  laid into the opener. 8,470 → 0 for THIS term.
+#       <user_memory>     5,413 tape — AND THIS IS WHAT BOOTS IN ITS PLACE, which is the half a
+#                                  bare "0" would hide. The memory system's whole boot presence
+#                                  is now its INSTRUCTION block: block 3 of the 4 strings in the
+#                                  opener's `prompt_snapshot.systemPrompt`, and that block IS the
+#                                  `<user_memory>` span exactly (23,385 chars; nested inside it,
+#                                  `<privacy_requirements>` 2,279 and `<memory_application>` 851).
+#                                  ⇒ the memory term went 8,470 → 5,413 by the nearest honest
+#                                  comparison, a fall of 3,057 — and it stopped being CONTENT
+#                                  (which grew with the store) and became FIXED HARNESS TEXT.
+#     ⚠ UNIT, STATED NOT CONVERTED [[measure-dont-convert-units]]: 5,413 is a cl100k TAPE count
+#       (tiktoken, over the transcript's own bytes) and 74,656 is REAL. They are NOT summed here.
+#       The old 8,470 was tape too — "tokenised off the mounted auto-memory" — published inside a
+#       decomposition of a REAL total, so THAT mix is inherited, declared, and not compounded:
+#       the comparison 8,470 → 5,413 is tape-to-tape, same instrument, same unit.
+#     ★ AND THE `remainder 56,308` LINE BELOW IS NOW PARTLY LIT, same reading, same transcript:
+#       systemPrompt (4 blocks)  26,984 tape  — 7,901 · 8 · 13,662 · 5,413; `<env>` 10,095 of it
+#       opener attachments        6,719 tape  — `_boot_decompose.py`: skills roster 2,717 · MCP
+#                                               instruction blocks 2,400 · deferred tool NAME
+#                                               list 986 · agent roster 552 · the rest 64
+#       ⇒ residual              ≈40,953       — ⛔ ESTIMATED BY SUBTRACTION (74,656 real − 33,703
+#                                               tape), MIXED UNITS BY CONSTRUCTION, and that is
+#                                               the loaded tool SCHEMAS plus Anthropic's own
+#                                               harness, for which no tape proxy exists at any
+#                                               seat. Quote it with this label or not at all.
+#     ⛔ WHAT THIS READING IS NOT: one session, one seat, n=1. It is a MEASUREMENT of today's
+#       boot, not a new band — `s240-D1`'s band is derived from `notes/_GAUGE-LOG.md` and is
+#       untouched here. Whether any of it may move a constant is Dave's, under `s241-D1`.
 #       remainder      56,308  system prompt + tool schemas + deferred-tool list + MCP
 #                              server instructions + CLAUDE.md -- BOUNDED and NAMED, but
 #                              not yet split. THIS is what `ds-025` item 1 still means.
@@ -449,7 +497,16 @@ def measure_boot(repo: str = REPO) -> dict:
               "system prompt + tool schemas + deferred-tool list + MCP instructions + "
               "MEMORY.md + CLAUDE.md; its INTERNAL split is still `ds-025` item 1. "
               "⛔ THE STORE MOVED AT #278 — this term is UNRE-MEASURED since; the figure is "
-              "a pre-#278 measurement, not a current one (parked P-293-1).")
+              "a pre-#278 measurement, not a current one (parked P-293-1). "
+              # ⬛ s294-D7 — BY ADDITION. The sentence above is another session's and stands
+              # unedited; this one corrects the COVERAGE LIST it publishes at runtime, because
+              # naming MEMORY.md as a covered term is now false at every seat.
+              "✅ RE-MEASURED 2026-09-21 (#294, `s294-D7`), and P-293-1 is UNPARKED: MEMORY.md "
+              "is NOT a covered term any more — it is not a boot input at all (0, probed "
+              "absent at the mount). What boots in its place is the `<user_memory>` "
+              "INSTRUCTION block, 5,413 cl100k tape of the opener's system prompt, against the "
+              "old 8,470 tape of store CONTENT. Boot that day measured 74,656 real. See the "
+              "`s294-D7` block at the head of this file for the method; no constant moved.")
     else:
         firstturn, err = BOOT_CEILING_TK, 0
         fmethod = (
@@ -743,6 +800,52 @@ def selftest() -> int:
             if band_for(BUDGET_WORKING + 1) != "RED":
                 failures.append("[D band_for] one token above working must be RED")
         _arm("D budget-guard logic (band_for / assert_budget_clears_floor)", _arm_d)
+
+        # ── ⬛ s294-D7 — THE RE-MEASURE IS PUBLISHED *BESIDE* THE OLD TERM, AND STAYS THERE ──
+        # Two things can undo this ruling silently: someone DELETES the 8,470 line (replacing
+        # rather than adding, which is what D7 forbids in so many words), or someone drops the
+        # re-measure and leaves the dead attribution standing alone again. Both are bitten.
+        # ⛔ And the four figures D7 may NOT move are asserted at their literals, so a re-measure
+        # can never be laundered into a constant change.
+        def _arm_e():
+            src = open(os.path.abspath(__file__), encoding="utf-8").read()
+            # PLANT-AND-DETECT, over a mutated copy: with the annotation stripped, the check
+            # must FAIL. A green that cannot fail certifies nothing.
+            # ⛔ THE NEEDLES ARE BUILT AT RUNTIME, NOT WRITTEN AS LITERALS, and that is the
+            # point: the first cut of this arm wrote the whole needle out as one inline literal,
+            # so the check's OWN SOURCE satisfied it and deleting the real line changed
+            # nothing — measured, by mutating the file and watching the arm stay green. A
+            # self-satisfying search is a green that cannot fail — the same class as everything
+            # else in this file's history [[measuring-tool-must-not-guess]]. Split, they never
+            # appear contiguously in this module's text except where they are meant to.
+            old_term = "8,470" + "  MEASURED (#109"
+            new_read = "5," + "413"
+            boot_real = "74," + "656"
+
+            def _both_present(t: str) -> bool:
+                return old_term in t and new_read in t and boot_real in t
+            planted = src.replace(old_term, "8,470  (line deleted by the plant)")
+            if _both_present(planted):
+                failures.append("[E s294-D7] the PLANT (annotation removed) did NOT bite — the "
+                                "check is not reading what it claims to read.")
+            if not _both_present(src):
+                failures.append(
+                    "[E s294-D7] the 8,470 term and its 2026-09-21 re-measure must stand SIDE "
+                    "BY SIDE: `s294-D7` publishes the new reading BY ADDITION and does not "
+                    "replace the old one. One of the two is missing from this file.")
+            # the four that may not move (s241-D1 shrink-only; D7 explicitly excludes them)
+            for name, want in (("BOOT_CEILING_TK", 70_000), ("STOP_LINE_TK", STOP_LINE_TK),
+                               ("BUDGET_HARD", BUDGET_HARD)):
+                got = globals().get(name)
+                if name == "BOOT_CEILING_TK" and got != want:
+                    failures.append(f"[E s294-D7] {name} = {got:,}, not {want:,} — `s294-D7` "
+                                    f"moves NO constant and `s241-D1` makes this one "
+                                    f"shrink-only and DAVE'S.")
+            if "BOOT_FIRSTTURN_TK" in globals():
+                failures.append("[E s294-D7] BOOT_FIRSTTURN_TK is back — it was DELETED at "
+                                "#241, not superseded in place, and a re-measure does not "
+                                "resurrect it.")
+        _arm("E s294-D7 re-measure published by addition; no constant moved", _arm_e)
 
     finally:
         CACHE, REPO = _orig_cache, _orig_repo

@@ -259,8 +259,228 @@ def main():
             print(f"  [{i}] {label[:66]}")
         if len(skipped) > 8:
             print(f"  … and {len(skipped) - 8} more")
+
+    # ★ s294-D1 — THE RUN IS RECORDED, so the green count has a source of truth to be read from.
+    if "--no-record" in sys.argv:
+        print("\n⚠ --no-record: this run is NOT in the verdict ledger, so nothing downstream can "
+              "quote it. The chain's green count keeps saying whatever the last recorded run said.")
+    else:
+        where, why = record_run(
+            steps_on_disk=len(all_steps), rng=rng, timeout=timeout, include_mut=include_mut,
+            passed=[i for i, _l in passed], failed=[r[0] for r in failed],
+            refused=[r[0] for r in refused], errored=[r[0] for r in errored],
+            skipped=[r[0] for r in skipped])
+        print(f"\n— recorded → {where}" if where else
+              f"\n⚠ NOT RECORDED — {why}. The run happened; the ledger does not know it, and "
+              f"`_gen_chain.build_verdict_line()` will say the green count is NOT DERIVABLE "
+              f"rather than invent one.")
     return 1 if (failed or errored) else 0
 
 
+# =========================================================== s294-D1 — THE BUILD-VERDICT LEDGER
+# ★ WHY THIS EXISTS (Dave, `s294-D1`, ruled #294 2026-09-21). The most-read sentence in the
+# project — *"75 of 144 steps green (#62, `18c7789`)"* — derived its DENOMINATOR from
+# `_build_all.py`'s AST and its NUMERATOR from a pinned sha, so the denominator moved on its own
+# and the numerator did not: the sentence got quietly wronger every time the build grew.
+# `s125-D1` already ruled this exact shape once, and its `watch` field forbids the helpful
+# hand-correction BY NAME. So the numerator needed a SOURCE OF TRUTH, and there wasn't one:
+# ⛔ MEASURED AT THIS SEAT 2026-09-21 — this module PRINTED its verdict and wrote nothing. No CI
+# run record, no verdict ledger, nothing in the repo that a generator could read. A number can
+# only be generated from a thing that exists, so the thing is built here, at the instrument that
+# takes the reading, and NOT in the renderer that publishes it (one slicer, `s125-D1`'s (2)).
+#
+# ⚠ WHY INDICES AND NOT COUNTS. A full mutating pass cannot fit one call (#47 died at step 73;
+# this module's own docstring says so), and at #294 a full NON-mutating pass did not fit either —
+# measured: the host's call cap cut it off. So a verdict is assembled from CHUNKS, which means
+# counts cannot be added (two chunks may overlap) — the STEP INDICES are recorded and unioned.
+# ⚠ AND THE NEWEST RECORD WINS PER STEP, not per file: a step that failed in an early chunk and
+# passes in a later one is GREEN, and the disagreement is COUNTED and PUBLISHED rather than
+# smoothed, because a step whose verdict changed inside one sha is a fact about the runner.
+LEDGER = os.path.join(ROOT, "notes", "_BUILD-VERDICT-LOG.jsonl")
+_LEDGER_FIELDS = ("passed", "failed", "refused", "errored", "skipped")
+
+
+def _head_sha():
+    try:
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT,
+                           capture_output=True, text=True, timeout=20)
+        if r.returncode == 0:
+            return r.stdout.strip(), None
+        return None, f"git rev-parse failed rc={r.returncode}"
+    except (OSError, subprocess.SubprocessError) as e:
+        return None, f"git unavailable ({e})"
+
+
+def record_run(steps_on_disk, rng, timeout, include_mut, **buckets):
+    """Append ONE record for this run. Returns `(path, None)` or `(None, why_not)`.
+
+    ⚠ NEVER RAISES INTO THE SURVEY. The survey's verdict is the product; the ledger is a
+    by-product, and a by-product that can abort the product is a worse instrument than no
+    by-product at all. Every failure path returns a REASON, which `main()` prints.
+    """
+    import datetime
+    import json
+    sha, why = _head_sha()
+    if sha is None:
+        return None, f"the HEAD sha could not be read ({why}) — a verdict with no tree is not a verdict"
+    dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
+                           capture_output=True, text=True).stdout.strip()
+    rec = {"at": datetime.datetime.now().isoformat(timespec="seconds"),
+           "sha": sha, "dirty": bool(dirty), "steps_on_disk": steps_on_disk,
+           "range": list(rng) if rng else None, "timeout": timeout,
+           "include_mutating": bool(include_mut), "tool": "_build_survey.py"}
+    rec.update({k: sorted(buckets.get(k, [])) for k in _LEDGER_FIELDS})
+    try:
+        os.makedirs(os.path.dirname(LEDGER), exist_ok=True)
+        with open(LEDGER, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, sort_keys=True) + "\n")
+    except OSError as e:
+        return None, f"the ledger could not be written ({e})"
+    return LEDGER, None
+
+
+def verdict_from_ledger(repo=ROOT, ledger=None):
+    """`(verdict_dict, None)` for the newest recorded tree, or `(None, why_not)`.
+
+    ⛔ REFUSES, NEVER GUESSES — the `s125-D1` posture, inherited deliberately. No file, no
+    records, an unreadable record, a record with no steps: every one of them yields a NAMED
+    reason that the chain PUBLISHES as an unmeasured gap. A declared gap passes; a silent one
+    fails [[measuring-tool-must-not-guess]].
+    """
+    import json
+    path = ledger or os.path.join(repo, "notes", "_BUILD-VERDICT-LOG.jsonl")
+    if not os.path.exists(path):
+        return None, (f"no verdict ledger at `{os.path.relpath(path, repo)}` — no surveyed run "
+                      f"has ever been recorded in this tree")
+    recs, malformed = [], 0
+    try:
+        with open(path, encoding="utf-8") as f:
+            for ln in f:
+                ln = ln.strip()
+                if not ln:
+                    continue
+                try:
+                    r = json.loads(ln)
+                except ValueError:
+                    malformed += 1
+                    continue
+                if isinstance(r, dict) and r.get("sha") and r.get("steps_on_disk"):
+                    recs.append(r)
+                else:
+                    malformed += 1
+    except OSError as e:
+        return None, f"the verdict ledger could not be read ({e})"
+    if not recs:
+        return None, (f"the verdict ledger has no readable record"
+                      + (f" ({malformed} malformed line(s))" if malformed else ""))
+    newest = recs[-1]
+    same = [r for r in recs if r.get("sha") == newest["sha"]]
+    # per-step verdict, newest record wins; conflicts COUNTED, never smoothed.
+    verdict, conflicts = {}, 0
+    for r in same:
+        for bucket in _LEDGER_FIELDS:
+            for i in r.get(bucket) or []:
+                if i in verdict and verdict[i] != bucket:
+                    conflicts += 1
+                verdict[i] = bucket
+    total = max(r.get("steps_on_disk") or 0 for r in same)
+    counts = {b: sum(1 for v in verdict.values() if v == b) for b in _LEDGER_FIELDS}
+    seen = set(verdict)
+    return {
+        "green": counts["passed"], "fail": counts["failed"], "refused": counts["refused"],
+        "errored": counts["errored"], "skipped": counts["skipped"],
+        "asked": counts["passed"] + counts["failed"] + counts["refused"] + counts["errored"],
+        "total": total, "sha": newest["sha"], "at": newest.get("at", "?"),
+        "dirty": any(r.get("dirty") for r in same), "records": len(same),
+        "conflicts": conflicts, "malformed": malformed,
+        "unseen": sorted(i for i in range(1, total + 1) if i not in seen),
+        "partial": any(r.get("range") for r in same),
+    }, None
+
+
+def selftest():
+    """Plant the defect, then detect it. The ledger is a NEW source of truth for the single
+    most-read sentence in the project, so every refusal path is asserted, not assumed."""
+    import json
+    import tempfile
+    fails, n = [], [0]
+
+    def bite(name, ok):
+        n[0] += 1
+        if not ok:
+            fails.append(f"[{name}]")
+
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "led.jsonl")
+        # ---- refusal 1: no file. Never a number, never a zero.
+        v, why = verdict_from_ledger(td, p)
+        bite("an absent ledger REFUSES", v is None and "no surveyed run" in why)
+        # ---- refusal 2: present but unreadable content.
+        open(p, "w").write("{not json\n")
+        v, why = verdict_from_ledger(td, p)
+        bite("an unreadable ledger REFUSES rather than reporting 0 green",
+             v is None and "no readable record" in why and "malformed" in why)
+        # ---- the healthy path, in TWO CHUNKS, the way a real pass has to run.
+        def rec(**kw):
+            base = {"sha": "aaa1111", "steps_on_disk": 10, "at": "2026-09-21T10:00:00",
+                    "dirty": False, "range": None}
+            base.update(kw)
+            return json.dumps(base) + "\n"
+        with open(p, "w") as f:
+            f.write(rec(range=[1, 5], passed=[1, 2, 3], failed=[4], skipped=[5]))
+            f.write(rec(range=[6, 10], passed=[6, 7], refused=[8], errored=[9], skipped=[10]))
+        v, why = verdict_from_ledger(td, p)
+        bite("two chunks UNION into one verdict", v is not None and v["green"] == 5)
+        bite("the buckets are not blended", v["fail"] == 1 and v["refused"] == 1
+             and v["errored"] == 1 and v["skipped"] == 2)
+        bite("asked EXCLUDES the skipped (not asked is not passing)", v["asked"] == 8)
+        bite("a chunked pass is declared PARTIAL", v["partial"] is True)
+        bite("nothing is unseen when the chunks cover the build", v["unseen"] == [])
+        # ---- planted defect: a gap in the coverage must be VISIBLE, not counted as green.
+        with open(p, "w") as f:
+            f.write(rec(range=[1, 3], passed=[1, 2, 3]))
+        v, _ = verdict_from_ledger(td, p)
+        bite("an uncovered range is reported as UNSEEN, never as green",
+             v["green"] == 3 and v["unseen"] == [4, 5, 6, 7, 8, 9, 10])
+        # ---- planted defect: a verdict that CHANGED inside one sha is counted and published.
+        with open(p, "w") as f:
+            f.write(rec(failed=[1]))
+            f.write(rec(passed=[1]))
+        v, _ = verdict_from_ledger(td, p)
+        bite("the newest record wins per step", v["green"] == 1 and v["fail"] == 0)
+        bite("the disagreement is COUNTED, not smoothed", v["conflicts"] == 1)
+        # ---- planted defect: an OLD tree's records must not be mixed into the newest verdict.
+        with open(p, "w") as f:
+            f.write(rec(sha="old0000", passed=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+            f.write(rec(sha="new1111", passed=[1]))
+        v, _ = verdict_from_ledger(td, p)
+        bite("records from an older sha are NOT unioned into the newest tree's verdict",
+             v["green"] == 1 and v["sha"] == "new1111")
+        # ---- the writer's round trip: what record_run writes, verdict_from_ledger reads.
+        global LEDGER
+        was, LEDGER = LEDGER, p
+        try:
+            os.remove(p)
+            where, why = record_run(steps_on_disk=4, rng=None, timeout=25, include_mut=False,
+                                    passed=[1, 2], failed=[3], skipped=[4])
+            bite("record_run writes a record (or names why it could not)",
+                 where is not None or why is not None)
+            if where:
+                v, _ = verdict_from_ledger(td, p)
+                bite("the writer's record is readable by the reader (one format, one place)",
+                     v is not None and v["green"] == 2 and v["total"] == 4)
+                bite("a full pass is NOT flagged partial", v["partial"] is False)
+            else:
+                bite("the writer's record is readable by the reader (one format, one place)", False)
+                bite("a full pass is NOT flagged partial", False)
+        finally:
+            LEDGER = was
+    return fails, n[0]
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        fs, nb = selftest()
+        print("\n".join(fs) if fs else f"_build_survey selftest: {nb} bites, all GREEN")
+        sys.exit(1 if fs else 0)
     sys.exit(main())

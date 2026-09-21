@@ -348,6 +348,14 @@ def facts_chain(repo=ROOT):
         return f"{n} steps ({distinct} distinct labels){dup}"
     out.append(_read("build steps the chain banner reports", "`_gen_chain.build_steps_now` → `_build_all.py` AST (`s125-D1`)", _steps_now))
 
+    # ⛔ #294 — THE SECOND CONSUMER, FOUND BY GREP AND FIXED WHERE IT WAS FOUND. This row used to
+    # render *"75 of 144 — 69 steps have NEVER been in a green verdict"*, the same sentence the
+    # chain banner carries. `s294-D1` made the chain's NUMERATOR a real run's green count, so
+    # leaving this one on `len(STEPS)`-at-a-pinned-sha would have had the two artefacts publishing
+    # DIFFERENT green claims from the same repo — the second-consumer drift, arrived at by fixing
+    # only the home the ruling names. ⇒ TWO ROWS, each measuring exactly one thing: this one is
+    # #62's COVERAGE (and no longer says the word "green" about today's build), and the one below
+    # is the green count, read from the run ledger through the SAME reader the chain uses.
     def _verdict():
         import _gen_chain as gc
         now, _d, why_n = gc.build_steps_now(repo)
@@ -356,9 +364,18 @@ def facts_chain(repo=ROOT):
             raise BuildTableError(why_n)
         if then is None:
             raise BuildTableError(why_t)
-        return (f"{then} of {now} — {now - then} steps have NEVER been in a green verdict "
-                f"(#62, `{gc.VERDICT_SHA}`)")
-    out.append(_read("steps the last green verdict actually covered", "`_gen_chain.build_steps_at` → `git show <sha>:_build_all.py` AST", _verdict))
+        return (f"{then} of today's {now} existed at #62 — {now - then} have never been in that "
+                f"verdict (`{gc.VERDICT_SHA}`)")
+    out.append(_read("steps the #62 verdict actually covered", "`_gen_chain.build_steps_at` → `git show <sha>:_build_all.py` AST", _verdict))
+
+    def _green():
+        import _gen_chain as gc
+        v, why = gc._verdict_from_ledger(repo)
+        if v is None:
+            raise BuildTableError(f"{why} — NOT defaulted to a number (`s294-D1`)")
+        return (f"{v['green']} of {v['total']} GREEN · {v['fail']} FAIL · {v['refused']} "
+                f"COULD-NOT-ASK · {v['total'] - v['asked']} not asked (`{v['sha']}`)")
+    out.append(_read("steps GREEN in the newest recorded run", "`_build_survey.verdict_from_ledger` → `notes/_BUILD-VERDICT-LOG.jsonl` (`s294-D1`)", _green))
     return out
 
 

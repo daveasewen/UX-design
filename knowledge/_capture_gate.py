@@ -124,6 +124,30 @@ LATEST_SESSION_RE = re.compile(r"^\s*>\s*##\s*★\s*LATEST\b[^\n]*?\*\*#(\d+)\*\
 # numbers FAILS as contradictory testimony. A declared gap passes (as a WARN, staying visible);
 # a silent one fails — that asymmetry is the mechanism (Dave #56).
 PREFLIGHT_UNMEASURED_RE = re.compile(r"⛔ NOT CAPTURED — UNMEASURED\.\s*\S")
+# ★ #294 `s294-D9` — THE THIRD LEGAL FORM: A MEASURED CAPTURED LINE. The stamp had exactly two
+# legal forms, the #56 PRICE (`boot N + job N est + wrap N est = N of 200,000 — BAND`) and the
+# #73 refusal. On 2026-09-21 at `03605215` the 93-session "not captured" refusal was fixed for
+# real — `_checkin.py::preflight_line()` / `--preflight-line <N>` now returns a MEASURED figure —
+# ⛔ BUT WHAT IT MEASURES IS A DIFFERENT OBJECT FROM WHAT THE STAMP WANTS: the arm emits the
+# SPEND (the conductor's FILL at the moment of the call: `boot · now · peak`), while the stamp
+# wants the PRICE (boot + job + wrap, estimated at the opener, against the budget, with a band).
+# Before this widening that line reached the final fall-through and was graded "pre-flight stamp
+# is in no legal form" — i.e. the gate refused the one line in the repo that had actually been
+# measured, and pasting it in took a wrap RED.
+# ⇒ THE FORM IS WIDENED, NOT THE ARITHMETIC. Both older forms are untouched and still graded by
+# the same branches in the same order; this pattern only catches what USED to fall through.
+# ⛔ AND IT IS SCOPED SO IT CANNOT BE PRODUCED BY ACCIDENT, the same discipline as the #73
+# refusal above: the `✅ CAPTURED` glyph run AND all three of the arm's named figures AND the
+# `real tokens` unit. A line that merely says "CAPTURED" still FAILS (driven both ways in
+# `selftest_preflight`), because a widening that accepts the word rather than the measurement is
+# how a gate's contract gets re-dialled by a session to make its own commit pass.
+# ⚠ IT PASSES AS A **WARN**, NEVER A NOTE: a measured line is legal but it is NOT a price, so the
+# price-versus-actual dataset still has a hole on that session's pre-flight half, and the gate
+# says so on the passing path [[instrument-without-a-consumer]]. `--preflight-line` emitting the
+# price as well is a change to `_checkin.py`, which is not this seat's file.
+PREFLIGHT_MEASURED_RE = re.compile(
+    r"✅ CAPTURED\b(?=.*\bboot\b\D{0,4}[`*]{0,2}[\d,]+)(?=.*\bnow\b\D{0,4}[`*]{0,2}[\d,]+)"
+    r"(?=.*\bpeak\b\D{0,4}[`*]{0,2}[\d,]+)(?=.*real tokens\b)", re.S)
 TERM_RE = {k: re.compile(r"\b%s\b\D{0,4}(\d+)" % k, re.I) for k in ("fill", "job", "wrap")}
 TOTAL_RE = re.compile(r"=\s*[~≈]?\s*(\d+)")
 BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)  # used by the #56 TOKEN path
@@ -1524,6 +1548,24 @@ def check_preflight(text, label="GOOD-MORNING.md"):
     if ABS_TOTAL_RE.search(line):
         return check_preflight_tokens(line, label=label)
 
+    # ---- ★ #294 `s294-D9` — THE MEASURED FORM. Checked AFTER the #56 dispatch on purpose: a line
+    # carrying `= N of N` has the budget arithmetic and must be graded as a PRICE, so the priced
+    # path always wins and this branch only catches what previously fell through to the fail.
+    if PREFLIGHT_MEASURED_RE.search(line):
+        warns.append(
+            f"{label}: pre-flight is the MEASURED form — `✅ CAPTURED` with the conductor's FILL "
+            f"read first-hand (`knowledge/_checkin.py --preflight-line <N>`, born 2026-09-21 at "
+            f"`03605215`). LEGAL since `s294-D9`, which widened this stamp's form to admit either "
+            f"a priced line or a measured one, each labelled. ⚠ AND IT IS NOT A PRICE: this line "
+            f"is the SPEND at the moment of the call, so the price-versus-actual dataset still "
+            f"has no ESTIMATE for this session — the #56 form (`pre-flight #N: boot N (disk N "
+            f"measured · harness ~N est ±N) + job N est + wrap N est = N of "
+            f"{gauge.BUDGET_WORKING:,} — BAND`) is what carries one, and nothing here grades a "
+            f"budget because there is no estimate on the line to grade. Price at the OPENER and "
+            f"the two halves can be compared; a measured line alone is half the dataset, "
+            f"DECLARED [[measure-dont-convert-units]].")
+        return fails, warns, notes
+
     # ---- ⛔ THE % PATH IS RETIRED — #74-D3 (Dave, explicit option-select; standing fork since
     # #58). The (45/60/63) percentage band and its grading branch lived here DORMANT from #57
     # (the live stamp moved to #56's token form, which the dispatch above catches first) — a
@@ -1535,9 +1577,11 @@ def check_preflight(text, label="GOOD-MORNING.md"):
     fails.append(
         f"{label}: pre-flight stamp is in no legal form. The %-form (`fill N% + job N% + wrap "
         f"N% = N%`) was RETIRED #74-D3 (Dave) — the gauge is denominated in REAL TOKENS (#56). "
-        f"Legal: the #56 token stamp (`pre-flight #N: boot N (disk N measured · harness ~N est "
-        f"±N) + job N est + wrap N est = N of {gauge.BUDGET_WORKING:,} — BAND`) or the #73 "
-        f"refusal (`⛔ NOT CAPTURED — UNMEASURED.` + reason).")
+        f"Legal, THREE forms since `s294-D9`: the #56 PRICED token stamp (`pre-flight #N: boot N "
+        f"(disk N measured · harness ~N est ±N) + job N est + wrap N est = N of "
+        f"{gauge.BUDGET_WORKING:,} — BAND`); the MEASURED line `knowledge/_checkin.py "
+        f"--preflight-line <N>` emits (`✅ CAPTURED …: boot N · now N · peak N real tokens`); or "
+        f"the #73 refusal (`⛔ NOT CAPTURED — UNMEASURED.` + reason).")
     return fails, warns, notes
 
 
@@ -5422,8 +5466,9 @@ def regen_serial_check(repo, sha=None):
     if sha is None:
         wrap = _last_wrap_commit(repo)
         if wrap is None:
-            return warns, [f"REGEN SERIAL SKIPPED — no `after #<n>` wrap commit is visible under "
-                           f"{repo}, so the wave has no start point. NOT a pass."]
+            return warns, [f"REGEN SERIAL SKIPPED — no `#<n> <date> — ` wrap commit is visible "
+                           f"under {repo} (the shape T3 writes on `--wrap`; `s294-D3`), so the "
+                           f"wave has no start point. NOT a pass."]
         sha = wrap[0]
     changed = _changed_since(repo, sha, ".")
     if changed is None:
@@ -5641,8 +5686,9 @@ def shared_helper_dedup_check(repo):
 # to close over a filed report that this session's own record does not name BY PATH.
 #
 # ⚠ WHAT "NEWER THAN THE LAST WRAP" MEANS HERE, MECHANICALLY. The last wrap is the most recent
-# commit whose subject opens `after #<n>` — the capture-ritual commit convention (`git log`
-# confirms it: `after #218 …`, `after #215 …`). Population = every `notes/_subreports/*.md` that
+# commit whose subject opens `#<n> <date> — ` — the shape `_git_commit.sh`'s T3 generates under
+# `--wrap` (see `WRAP_COMMIT_SUBJECT_RE`'s header; `after #<n> <date> — ` is the NON-WRAP shape
+# and selecting on it was the `s294-D3` defect). Population = every `notes/_subreports/*.md` that
 # has CHANGED against that commit (tracked: `git diff`) or does not exist in it at all
 # (untracked: `git ls-files --others`). No wrap commit, or no git ⇒ LOUD UNKNOWN, never a pass:
 # a check that cannot bound its own window has not measured anything [[a-crash-is-not-a-fail]].
@@ -5691,7 +5737,27 @@ SUBREPORT_COUNTS_RE = re.compile(
     + r"\s*·\s*UNPROVEN\s+" + _CNT + r"(?:\s*[·`*].*)?$", re.M)
 SUBREPORT_REPLAY_RE = re.compile(r"^REPLAY-THESE:\s*(\S.*)$", re.M)
 SUBREPORT_QUESTIONS_RE = re.compile(r"^#{1,6}\s*RULING-SHAPED QUESTIONS\s*$", re.M)
-WRAP_COMMIT_SUBJECT_RE = re.compile(r"^after\s+#\d+\b")
+# ⛔ #294 `s294-D3` — THIS PATTERN WAS POINTED AT THE WRONG SHAPE, AND IT IS THE NON-WRAP ONE.
+# It read `^after\s+#\d+\b` — byte-unchanged since birth — and `knowledge/_git_commit.sh` is the
+# only writer of these subjects. Its T3 generator has TWO shapes and the shell comment above
+# `prefix_count()` (`_git_commit.sh:219-220`) states them: `after #<n> <date> — ` is the NON-WRAP
+# shape (generated in T3's `else` branch from SESSION_N + today + the msgfile's first line) and
+# `#<n> <date> — ` is the WRAP shape (`headline = f"#{n} {date} — {after}"`, derived from the
+# ★ LATEST banner under `--wrap`). So the old pattern selected the newest NON-WRAP commit, i.e.
+# the newest commit of any kind: MEASURED over `git log --format=%s -150` at #294 it matched
+# **129 of 150** subjects, of which none is a wrap; the fixed pattern matches **21**, every one
+# a real `--wrap` subject. Both live consumers (`regen_serial_check`, `subreport_citation_check`)
+# were therefore diffing against HEAD-ish and being handed a near-empty population — a confident
+# empty answer to "when was the last wrap?", which is worse than an error because nothing
+# surfaces it [[instrument-without-a-consumer]].
+# ★ THE BITE, NOT JUST THE REPOINT (`s294-D3`: "the fix and its bite together"): the ANTI pattern
+# below is what the selftest drives — a wrap pattern that matches a non-wrap subject is the exact
+# regression, so it is asserted as a NEGATIVE control in `selftest_subreport_citation`, against
+# the real `git log --format=%s -150` population when this checkout has one.
+# ⚠ `— ` is U+2014 + space, the literal T3 emits; a hyphen is not this separator (the shell's own
+# selftest holds the same line: "hyphen is not the em-dash separator").
+WRAP_COMMIT_SUBJECT_RE = re.compile(r"^#(\d+)\s+\d{4}-\d{2}-\d{2}\s+—\s")
+NONWRAP_COMMIT_SUBJECT_RE = re.compile(r"^after\s+#(\d+)\s+\d{4}-\d{2}-\d{2}\s+—\s")
 
 
 def _git_out(repo, *args):
@@ -5747,8 +5813,8 @@ def subreport_citation_check(repo):
     wrap = _last_wrap_commit(repo)
     if wrap is None:
         return ([f"FILED SUB-REPORTS: the citation check DID NOT RUN — no commit whose subject "
-                 f"opens `after #<n>` is visible under {repo} (no git, or no capture-ritual "
-                 f"commit in the last 400). This is UNKNOWN, not agreement: list "
+                 f"opens `#<n> <date> — ` is visible under {repo} (no git, or no capture-ritual "
+                 f"`--wrap` commit in the last 400; `s294-D3`). This is UNKNOWN, not agreement: list "
                  f"`{SUBREPORT_DIR}/` by hand and check every report is named in the receipt."],
                 notes)
     sha, subj = wrap
@@ -5828,6 +5894,268 @@ def subreport_citation_check(repo):
                      f"COUNTS / REPLAY-THESE / RULING-SHAPED QUESTIONS skeleton. Surfaces read: "
                      f"{', '.join(surface_names)}. ADVISORY at birth; promotion is Dave's.")
     return warns, notes
+
+
+# ★★ #294 `s294-D2` — THE THREE MACHINE-READ LINES BECOME A GATE CONDITION ON A NEW REPORT.
+#
+# THE CONTRACT is `s218-D7`: every filed lane report carries three PARSED lines — a COUNTS line,
+# a `REPLAY-THESE:` block and a `RULING-SHAPED QUESTIONS` heading — because the conductor's stub
+# figures are COPIED off them and every consumer written against the contract reads them.
+# ⛔ THE PREMISE, RE-MEASURED AT #293 WITH THE THREE REGEXES ABOVE over all 363 filed reports:
+# the counts line parses in 173, the replay block in 136, the questions heading in 169 — 48% ·
+# 37% · 47%. Under half on all three. Held as an unenforced convention, every consumer silently
+# reads a partial population and cannot tell, which is the worst of the three options the review
+# page offered and the one this ruling is against most of all.
+#
+# ⚠ THE SCOPE, AND IT IS THE HALF THAT KEEPS THIS HONEST — I PICKED THE ONE THE GATE CAN MEASURE.
+# `s294-D2` offered two: "staged in the commit", or "newer than the last wrap". Neither is taken
+# verbatim, and here is why each was rejected and what replaced it:
+#   · STAGED IN THE COMMIT is unmeasurable at this seat. `_git_commit.sh` runs `_capture_gate.py
+#     --wrap` at its line ~527, BEFORE it stages anything (staging is ~line 845), so the index is
+#     empty when this gate runs and `--cached` would measure nothing and report green.
+#   · NEWER THAN THE LAST WRAP would RETRO-FAIL, which the ruling forbids. With
+#     `WRAP_COMMIT_SUBJECT_RE` fixed (`s294-D3`) the newest wrap commit in this repo is #277's,
+#     five days and sixteen sessions back — so that window sweeps in every report COMMITTED by
+#     #278…#293, which this session cannot fix and must not be charged for.
+#   ⇒ THE SCOPE IS **NEW-OR-MODIFIED AGAINST `HEAD`**: `git diff --name-only HEAD` ∪ `git
+#     ls-files --others --exclude-standard`, restricted to `_is_subreport`. That is exactly the
+#     set a commit from this working tree can still carry, it is measurable at the moment the
+#     gate runs, and it is what the refusal SAYS it measured.
+# ⛔ GRANDFATHERED BY SHA, COUNTED, NEVER REWRITTEN — the `s186-D2` shape ("counted, never
+# rewritten; refuses only on growth"). Everything already in `HEAD` is outside the population BY
+# CONSTRUCTION, not by an exemption list that could rot: a report enters only by being written or
+# edited in this working tree. The 363 inherited reports are COUNTED on every run and published
+# as a note, so the debt is DECLARED and its direction is visible; not one of them is graded, and
+# a wrap can never be stranded by another session's report [[gate-inside-the-growth-loop]].
+# ⛔ AND THE PARSE IS THE GATE'S OWN THREE REGEXES, reused rather than re-written
+# (`SUBREPORT_COUNTS_RE`, `SUBREPORT_REPLAY_RE`, `SUBREPORT_QUESTIONS_RE`) — a second
+# implementation of the contract is how the two halves drift apart, which `s294-D9` is the other
+# half of this session's lesson about.
+# ★ THE TIER IS ONE LINE AND IT IS **BLOCKING AT BIRTH**, which is the departure from the
+# advisory-at-birth house habit and it is DAVE'S WORD, not this seat's: `s294-D2` rules that the
+# three lines "become a GATE CONDITION on a filed lane report: a lane cannot close without
+# them". The advisory half (`subreport_citation_check`, since-last-wrap, ADVISORY) is untouched
+# and still runs — it grades a WIDER window and a different clause (citation), so the two are
+# not duplicates.
+SUBREPORT_LINES_BLOCKING = True
+
+
+# ⛔⛔ #294 LANE C2 — THE SCOPE IS NARROWED FROM WORKING-TREE TO **STAGED**, AND HERE IS WHY.
+# As born (lane B, earlier this same session) the population was `git diff --name-only HEAD` ∪
+# `git ls-files --others`, i.e. EVERY report new-or-modified in this working tree. Measured at the
+# #294 mid-session commit: that set contained
+# `notes/_subreports/2026-09-21-293-J5-recall-proposal.md` and `…-293-J6-typesafe-docs.md` —
+# **another session's lanes, untracked and IN FLIGHT**, which this commit does not carry and this
+# seat must not edit. The arm was therefore refusing a commit for files belonging to a worker who
+# had not finished writing them: a FALSE refusal, and it is the #70 class in reverse — a gate
+# charging a session for work that is not its own. A false refusal is a defect, not strength.
+# ⇒ THE POPULATION IS NOW THE **STAGED** SET: `git diff --cached --name-only --diff-filter=ACMR
+#   HEAD -- notes/_subreports`, restricted to `_is_subreport`. That is exactly what the commit
+#   CARRIES — the nearest honest reading of `s294-D2`'s own first offered scope, "staged in the
+#   commit" — and it is the set the committing seat both owns and can fix.
+# ⛔ NOTHING IS GRANDFATHERED OR EXEMPTED BY NAME. No filename, no session ordinal and no lane
+# letter appears in this arm. J5/J6 leave the population because they are NOT STAGED, and they
+# re-enter it the moment their own seat stages them.
+# ⚠ AND THE WEAKENING THIS COULD HAVE BEEN IS GUARDED, NOT WAVED THROUGH. `staged ⊆ HEAD-diff`
+# always, so a narrower scope could have made this arm a no-op — and at its ONE blocking consumer
+# it very nearly is: `knowledge/_git_commit.sh` runs `_capture_gate.py --wrap` at :646 and stages
+# at :896, so the index is EMPTY when the gate runs from that seam (lane B's finding 4(a),
+# re-measured here by line number). So an empty index is **UNKNOWN, NEVER GREEN**: the arm returns
+# `population is None` with a note naming the two line numbers and saying the bite must be taken
+# by a run made AFTER staging. ⬛ DECLARED GAP, carried to the wrap: moving that gate past the
+# staging line (or re-running it there) is a change to the commit seam's refusal contract
+# ("Nothing has been staged"), which is a ruling, not a commit lane's tidy-up.
+def _subreports_staged(repo):
+    """(population, note) — filed reports STAGED in this commit (added/copied/modified/renamed).
+
+    `population is None` means the window could not be bounded and the caller must say UNKNOWN
+    rather than green: a check that cannot state its own scope has measured nothing
+    [[a-crash-is-not-a-fail]]."""
+    if _git_out(repo, "rev-parse", "--verify", "HEAD") is None:
+        return None, (f"FILED SUB-REPORT LINES: the check DID NOT RUN — no `HEAD` is readable "
+                      f"under {repo} (no git, or a repo with no commit yet), so 'staged against "
+                      f"HEAD' has no meaning here. UNKNOWN, not agreement.")
+    whole = _git_out(repo, "diff", "--cached", "--name-only", "HEAD")
+    if whole is None:
+        return None, (f"FILED SUB-REPORT LINES: the check DID NOT RUN — `git diff --cached` gave "
+                      f"no answer under {repo}. UNKNOWN, not agreement.")
+    if not whole.strip():
+        return None, (f"FILED SUB-REPORT LINES: the check DID NOT RUN — **the index is EMPTY**, "
+                      f"so the staged population is empty and this arm has measured NOTHING. "
+                      f"⛔ UNKNOWN, NEVER GREEN. ⚠ `knowledge/_git_commit.sh` runs "
+                      f"`_capture_gate.py --wrap` at :646 and stages at :896, so from that seam "
+                      f"the index is empty BY CONSTRUCTION and `s294-D2`'s bite cannot land "
+                      f"there. Take it with a run made AFTER staging: `git add -- <paths>` then "
+                      f"`python3 knowledge/_capture_gate.py --wrap`. ⬛ DECLARED GAP (#294 C2): "
+                      f"moving or re-running that gate past the staging line changes the "
+                      f"script's 'Nothing has been staged' refusal contract and is Dave's call.")
+    staged = _git_out(repo, "diff", "--cached", "--name-only", "--diff-filter=ACMR", "HEAD",
+                      "--", SUBREPORT_DIR)
+    if staged is None:
+        return None, (f"FILED SUB-REPORT LINES: the check DID NOT RUN — `git diff --cached` gave "
+                      f"no answer for `{SUBREPORT_DIR}` under {repo}. UNKNOWN, not agreement.")
+    return sorted({p.strip() for p in staged.splitlines()
+                   if p.strip() and _is_subreport(p.strip())
+                   and os.path.exists(os.path.join(repo, p.strip()))}), None
+
+
+def _lines_missing(text):
+    """Which of the three `s218-D7` machine-read lines are absent. The gate's OWN regexes."""
+    out = []
+    if not SUBREPORT_COUNTS_RE.search(text):
+        out.append("COUNTS")
+    if not SUBREPORT_REPLAY_RE.search(text):
+        out.append("REPLAY-THESE")
+    if not SUBREPORT_QUESTIONS_RE.search(text):
+        out.append("RULING-SHAPED QUESTIONS")
+    return out
+
+
+def subreport_lines_gate(repo):
+    """`s294-D2` — a STAGED filed report must carry all three machine-read lines. (fails, notes).
+
+    Scope: the staged set (see the header block). The inherited population is COUNTED and never
+    graded; so is the un-staged remainder, which this commit does not carry."""
+    fails, notes = [], []
+    sub_abs = os.path.join(repo, SUBREPORT_DIR)
+    if not os.path.isdir(sub_abs):
+        return fails, [f"FILED SUB-REPORT LINES: no `{SUBREPORT_DIR}/` under {repo} — nothing "
+                       f"filed here. NOT a pass: the check did not run."]
+    population, why = _subreports_staged(repo)
+    if population is None:
+        return fails, [why]
+
+    # ---- the UNGRADED counts (`s186-D2`): every report NOT in the staged population, counted by
+    # clause, reported, never graded and never rewritten. Two buckets, because they are two
+    # different facts and blending them would let an in-flight file hide inside "inherited":
+    #   · GRANDFATHERED — already in `HEAD`. Outside the population BY CONSTRUCTION.
+    #   · NOT STAGED — present in the tree, absent from `HEAD`, and NOT carried by this commit.
+    #     Another seat's in-flight work lands here; it is COUNTED, never graded, and it re-enters
+    #     the population the moment its own seat stages it.
+    pop_set = set(population)
+    in_head = _git_out(repo, "ls-tree", "-r", "--name-only", "HEAD", "--", SUBREPORT_DIR)
+    head_set = ({p.strip() for p in in_head.splitlines() if p.strip()}
+                if in_head is not None else None)
+    zero = {"COUNTS": 0, "REPLAY-THESE": 0, "RULING-SHAPED QUESTIONS": 0}
+    grand, g_miss = 0, dict(zero)
+    unst, u_miss, u_names = 0, dict(zero), []
+    for name in sorted(os.listdir(sub_abs)):
+        rel = f"{SUBREPORT_DIR}/{name}".replace("\\", "/")
+        if not _is_subreport(rel) or rel in pop_set:
+            continue
+        inherited = True if head_set is None else rel in head_set
+        if inherited:
+            grand += 1
+        else:
+            unst += 1
+            u_names.append(rel)
+        try:
+            with open(os.path.join(sub_abs, name), encoding="utf-8") as f:
+                for clause in _lines_missing(f.read()):
+                    (g_miss if inherited else u_miss)[clause] += 1
+        except OSError:
+            continue
+    if grand:
+        notes.append(
+            f"FILED SUB-REPORT LINES (`s294-D2`): {grand} inherited report(s) are GRANDFATHERED "
+            f"— already in `HEAD`, so outside this gate's population BY CONSTRUCTION. Counted, "
+            f"never rewritten, never graded (`s186-D2`): missing COUNTS {g_miss['COUNTS']} · "
+            f"missing REPLAY-THESE {g_miss['REPLAY-THESE']} · missing RULING-SHAPED QUESTIONS "
+            f"{g_miss['RULING-SHAPED QUESTIONS']}. The gate refuses only on what is STAGED.")
+    if unst:
+        notes.append(
+            f"FILED SUB-REPORT LINES (`s294-D2`): {unst} report(s) exist in this working tree, "
+            f"are NOT in `HEAD` and are NOT STAGED, so this commit does not carry them and this "
+            f"arm does not grade them (#294 C2 — a gate must not charge a session for another "
+            f"seat's in-flight file): missing COUNTS {u_miss['COUNTS']} · missing REPLAY-THESE "
+            f"{u_miss['REPLAY-THESE']} · missing RULING-SHAPED QUESTIONS "
+            f"{u_miss['RULING-SHAPED QUESTIONS']}. NAMED so nothing hides: "
+            f"{', '.join('`' + x + '`' for x in u_names)}. Each re-enters the population the "
+            f"moment it is staged.")
+    if head_set is None:
+        notes.append(f"FILED SUB-REPORT LINES: `git ls-tree HEAD` gave no answer, so the "
+                     f"ungraded remainder above is reported as ALL-INHERITED — that is the "
+                     f"conservative label, not a measurement. UNKNOWN, not agreement.")
+
+    if not population:
+        notes.append(f"FILED SUB-REPORT LINES: the index is non-empty but no filed report is "
+                     f"staged in it — nothing for `s294-D2` to grade in this commit.")
+        return fails, notes
+    clean = 0
+    for p in population:
+        try:
+            with open(os.path.join(repo, p), encoding="utf-8") as f:
+                text = f.read()
+        except OSError as e:                                          # noqa: BLE001
+            fails.append(f"FILED SUB-REPORT LINES: `{p}` is STAGED in this commit and "
+                         f"UNREADABLE ({e}) — a report the gate cannot parse is not a report "
+                         f"that passed.")
+            continue
+        gone = _lines_missing(text)
+        if not gone:
+            clean += 1
+            continue
+        fails.append(
+            f"FILED SUB-REPORT LINES (`s294-D2`, BLOCKING): `{p}` is STAGED IN THIS COMMIT "
+            f"and is missing {len(gone)} of the three machine-read lines `s218-D7` "
+            f"requires: {', '.join(gone)}. ⛔ WHAT IS FORBIDDEN, QUOTED: a newly filed report "
+            f"without all three of — (1) `COUNTS: findings <N> · ruling-shaped <N> · UNPROVEN "
+            f"<N>` on its own line (figures may wear backticks and/or bold; three fields, in "
+            f"order, separated by `·`); (2) `REPLAY-THESE: <paths with token prices>` or exactly "
+            f"`REPLAY-THESE: none — the stub carries everything.`; (3) a `RULING-SHAPED "
+            f"QUESTIONS` heading (`## RULING-SHAPED QUESTIONS`, mandatory even when the answer "
+            f"is 'none'). Measured at #293 over 363 filed reports, these parsed in 173 / 136 / "
+            f"169 — under half on all three, so every consumer read a partial population and "
+            f"could not tell. Skeleton: `{SUBREPORT_DIR}/{SUBREPORT_TEMPLATE}`. ⚠ This refuses "
+            f"only what THIS COMMIT STAGES; the {grand} report(s) already in `HEAD` and "
+            f"the {unst} un-staged one(s) are counted above and not graded.")
+    if clean and not fails:
+        notes.append(f"FILED SUB-REPORT LINES: {clean} report(s) STAGED in this commit, "
+                     f"every one carrying all three `s218-D7` machine-read lines. BLOCKING since "
+                     f"`s294-D2` (Dave, #294).")
+    return fails, notes
+
+
+# ★★ #294 `s294-D12` — `_to_delete/` IS GATED, N = 3 SESSIONS (Dave: "N+3 is fine").
+#
+# ⚠ WHY THE REFUSAL IS SEATED HERE AND NOT ONLY AT RITUAL STEP 4c, WHICH IS WHAT THE RULING NAMES.
+# The measurement IS at 4c: `_gate_scratch_hygiene.to_delete_backlog()` / `to_delete_lines()`,
+# which is the right home — 4c is the hygiene step, it is where the holding directories are
+# reported, and its `SCRATCH_ROOTS` being all-outside-the-repo (with zero occurrences of
+# `_to_delete`) was precisely #293's finding. That file now reports on a plain run and exits 1
+# on `--wrap`, exactly as ruled.
+# ⛔ BUT 4c CANNOT REFUSE A WRAP, AND THAT IS MEASURABLE, NOT AN OPINION: nothing reads its exit
+# code. It is a hand-run runbook step (`_RUNBOOK-capture-ritual.md:740`), `_seam.py` imports only
+# `mine()` and `_rm()`, and `_build_all.py` and CI never invoke it. Its own docstring has said
+# "ADVISORY, DELIBERATELY … promotion to blocking is Dave's" since #227, and quietly flipping an
+# advisory probe's tier would ALSO be the wrong move. `_capture_gate.py --wrap` is the only wrap
+# check with a consumer that stops a commit: `_git_commit.sh:527` fails the run and stages
+# NOTHING when it goes red. ⇒ the measurement lives at 4c, the REFUSAL lives here, and there is
+# ONE implementation — imported, never re-written [[a-new-tier-silently-bypasses-its-tests]].
+# ⛔ PURGING IS NOT THE ARM'S JOB. `s282-D4`: this mount refuses unlink. It names and stops.
+# ⚠ MEASURED AT THIS SEAT 2026-09-21: 108 top-level entries, 106 of them more than 3 sessions
+# behind #294 (oldest #109, 185 sessions), 2 inside the window. This arm therefore goes RED on
+# sight, which is the ruling's point — the backlog becomes DECLARED to Dave rather than quietly
+# swept or quietly grown — and a session that cannot fix it still has the legal `#243` DECLARED
+# NOT-A-WRAP path that the last nineteen wraps have taken.
+TO_DELETE_BLOCKING = True
+
+
+def to_delete_check(repo):
+    """`s294-D12` — (fails, notes). ONE implementation, in `_gate_scratch_hygiene`."""
+    try:
+        import _gate_scratch_hygiene as hygiene
+    except Exception as e:                                            # noqa: BLE001
+        return [], [f"`_to_delete/` BACKLOG NOT MEASURED (`s294-D12`) — "
+                    f"`_gate_scratch_hygiene` did not import ({type(e).__name__}: {e}). NOT a "
+                    f"pass: the holding directory was never aged."]
+    try:
+        refusals, notes = hygiene.to_delete_lines(repo=repo)
+    except Exception as e:                                            # noqa: BLE001
+        return [], [f"`_to_delete/` BACKLOG NOT MEASURED (`s294-D12`) — the arm raised "
+                    f"({type(e).__name__}: {e}). A crash is not a fail and it is not a pass "
+                    f"either [[a-crash-is-not-a-fail]]."]
+    return list(refusals), list(notes)
 
 
 def plan_block_check(repo):
@@ -5965,6 +6293,18 @@ def wrap_checks(repo, today, lane=False):
     _cw, _cn = subreport_citation_check(repo)
     (fails if SUBREPORT_CITE_BLOCKING else warns).extend(_cw)
     notes += _cn
+    # ★★ #294 `s294-D2` — the three machine-read lines, BLOCKING at birth on Dave's word. Runs
+    # for LANE wraps too, for the same reason as the citation check above: a lane files reports
+    # like any other seat. The tier is the one line `SUBREPORT_LINES_BLOCKING`.
+    _lf, _ln = subreport_lines_gate(repo)
+    (fails if SUBREPORT_LINES_BLOCKING else warns).extend(_lf)
+    notes += _ln
+    # ★★ #294 `s294-D12` — `_to_delete/`, aged in SESSIONS, N = 3 (Dave). The measurement is at
+    # ritual 4c (`_gate_scratch_hygiene`); this is the seat that can actually refuse a wrap. Runs
+    # for LANE wraps too: the holding directory is the repo's, not a seat's.
+    _tf, _tn = to_delete_check(repo)
+    (fails if TO_DELETE_BLOCKING else warns).extend(_tf)
+    notes += _tn
     # ★ #244 — the mechanised `MEMORY.md` cap. ADVISORY AT BIRTH; tier at MEMORY_CAP_BLOCKING.
     # Runs for LANE wraps too: every seat pays the index in its boot, lane or not.
     _mw, _mn = memory_cap_check(repo)
@@ -6736,6 +7076,61 @@ def selftest_preflight():
     # the twice-flipped 57% control and the #31 delegated-enforcement lesson is in the ledger
     # (§ #36, § ★ #74). One arm here pins the retirement: the %-form FAIL fixture in
     # PREFLIGHT_FIXTURES above, which names #74-D3 and the legal forms.
+
+    # ---- ★ #294 `s294-D9` — ALL THREE LEGAL FORMS, PLANTED TOGETHER, ONE ASSERTED VERDICT EACH.
+    # The ruling is about the stamp's FORM, so the arm plants the priced line, the measured line
+    # and the #73 refusal against the SAME check and asserts the three verdicts are distinct and
+    # correct. ⛔ The measured fixture is the literal shape `_checkin.preflight_line()` emits
+    # (`knowledge/_checkin.py:1110-1116`), not a paraphrase of it — a gate tested against its
+    # author's idea of the emitter's output is the `s294-D3` defect in another costume.
+    _B9 = "> ## ★ LATEST — 2026-09-21 (Sun **#294**, fixture)\n"
+    _MEASURED = ("> **pre-flight #294:** ✅ CAPTURED — the CONDUCTOR'S FILL read first-hand at "
+                 "this seat by `knowledge/_checkin.read_fill` off `/x/t.jsonl`: boot **74,120** "
+                 "· now **173,377** · peak **173,377** real tokens over 42 continuous turn(s). "
+                 "⚠ THIS IS THE CONDUCTOR'S WINDOW, NOT THIS SEAT'S PRICE.\n")
+    _PRICED = ("> **pre-flight #294:** boot 26,897 (disk 6,897 measured · harness ~20,000 est "
+               "±8,000) + job 45,000 est + wrap 20,000 est = 91,897 of 200,000 — GREEN\n")
+    _REFUSAL = ("> **pre-flight #294:** ⛔ NOT CAPTURED — UNMEASURED. The conductor's transcript "
+                "is unreadable from this seat.\n")
+    for name, text, want in (
+            ("s294-D9: the MEASURED line the arm emits — LEGAL, warns as not-a-price, no fail",
+             _B9 + _MEASURED, "measured"),
+            ("s294-D9: the #56 PRICED line still grades as a price (form unchanged)",
+             _B9 + _PRICED, "priced"),
+            ("s294-D9: the #73 legal refusal is still legal (declared gap, warn, no fail)",
+             _B9 + _REFUSAL, "refusal")):
+        f_, w_, _n = check_preflight(text, label="fixture")
+        if f_:
+            failures.append(f"pre-flight [{name}]: expected NO fail, got {f_[:1]} — `s294-D9` "
+                            f"widened the form; a legal form that fails is the defect it fixed.")
+            continue
+        if want == "measured" and not any("MEASURED form" in x and "NOT A PRICE" in x for x in w_):
+            failures.append(f"pre-flight [{name}]: the measured line passed but was NOT labelled "
+                            f"as the spend rather than the price — an unlabelled pass makes the "
+                            f"price-versus-actual dataset look complete when it is half: {w_}")
+        if want == "priced" and any("MEASURED form" in x for x in w_):
+            failures.append(f"pre-flight [{name}]: a PRICED line was graded by the measured "
+                            f"branch — the #56 dispatch must win whenever `= N of N` is present, "
+                            f"or the widening silently retires the priced form: {w_}")
+        if want == "refusal" and not any("NOT CAPTURED" in x for x in w_):
+            failures.append(f"pre-flight [{name}]: the #73 refusal lost its declared-gap warn — "
+                            f"`s294-D9` must keep the legal refusal legal: {w_}")
+    # ---- and the MUTATION CONTROLS: the widening must accept the MEASUREMENT, not the word.
+    for line, why in (
+            ("> **pre-flight #294:** ✅ CAPTURED — the conductor's fill was read.\n",
+             "`✅ CAPTURED` with NO figures at all"),
+            ("> **pre-flight #294:** ✅ CAPTURED — boot **74,120** real tokens.\n",
+             "only ONE of the three named figures"),
+            ("> **pre-flight #294:** ✅ CAPTURED — boot **74,120** · now **173,377** · peak "
+             "**173,377** turns.\n", "the three figures with the `real tokens` unit DROPPED"),
+            ("> **pre-flight #294:** CAPTURED — boot 1 · now 2 · peak 3 real tokens.\n",
+             "the bare word with the `✅` glyph dropped")):
+        f_, _w, _n = check_preflight(_B9 + line, label="fixture")
+        if not f_:
+            failures.append(f"pre-flight [s294-D9 control]: {why} was ACCEPTED as the measured "
+                            f"form — the gate now accepts a WORD instead of a measurement, which "
+                            f"is how a stamp's contract gets re-dialled to make a commit pass: "
+                            f"`{line.strip()[:90]}`")
 
     return failures
 
@@ -10091,7 +10486,9 @@ def selftest_subreport_citation():
     """★ #218 `s218-D7` — THE FILED-REPORT CITATION CHECK, DRIVEN ON A REAL GIT REPO.
 
     ⛔ Every arm runs the REAL `subreport_citation_check` against a real repo with a real
-    `after #NNN` wrap commit in its history. A fixture tree with no `.git` only proves the
+    `#NNN <date> — ` wrap commit in its history (`s294-D3` fixed the shape; ARM 9 is its bite,
+    and the fixture below deliberately carries BOTH shapes so the two cannot be confused). A
+    fixture tree with no `.git` only proves the
     refusal path, and an advisory check that has never been seen to fire is an instrument
     without a consumer [[instrument-without-a-consumer]].
 
@@ -10271,6 +10668,303 @@ def selftest_subreport_citation():
         if w_ or not any("NOT a pass" in x for x in n_):
             failures.append(f"subreport cite: a tree with no sub-report directory must DECLARE "
                             f"the skip — warns={w_} notes={n_}")
+
+    # ---- ★ ARM 9, `s294-D3` — THE WRAP-SUBJECT PATTERN'S OWN BITE. The defect was not that the
+    # pattern was loose, it was that it was pointed at the OTHER legal shape, so the only arm that
+    # can catch a recurrence is a NEGATIVE control on the non-wrap shape. Driven on the literal
+    # subjects `_git_commit.sh` T3 emits, then on the real `git log` when there is one.
+    for subj, why in (
+            ("#294 2026-09-21 — wrap: session close", "the WRAP shape T3 writes under --wrap"),
+            ("#1 2026-01-01 — x", "the minimal wrap subject")):
+        if not WRAP_COMMIT_SUBJECT_RE.match(subj):
+            failures.append(f"s294-D3: WRAP_COMMIT_SUBJECT_RE does NOT match {why} — `{subj}`. "
+                            f"The pattern is pointed away from the shape the commit script "
+                            f"actually writes, which is the whole defect.")
+    for subj, why in (
+            ("after #294 2026-09-21 — wave1 receipts", "the NON-WRAP shape (the s294-D3 defect)"),
+            ("after #1 2026-01-01 — x", "the minimal non-wrap subject"),
+            ("see #294 2026-09-21 — x", "a subject that merely MENTIONS the shape mid-line"),
+            ("#294 2026-09-21 - hyphen not em-dash", "a hyphen separator, which T3 never emits"),
+            ("#294 — no date at all", "no date between the session and the separator")):
+        if WRAP_COMMIT_SUBJECT_RE.match(subj):
+            failures.append(f"s294-D3 BITE: WRAP_COMMIT_SUBJECT_RE matched {why} — `{subj}`. A "
+                            f"wrap pattern that matches a non-wrap subject hands both consumers "
+                            f"the newest commit of ANY kind and answers \"when was the last "
+                            f"wrap?\" confidently and wrongly.")
+    # and the FIXTURE repo above carries both shapes: the wrap commit must be the `#217 …` one,
+    # never the `after #217 …` one that is its child.
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+            for i, s in enumerate(("#217 2026-08-24 — the WRAP",
+                                   "after #217 2026-08-24 — a later NON-WRAP commit")):
+                with open(os.path.join(td, f"f{i}.txt"), "w") as f:
+                    f.write("x\n")
+                subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+                subprocess.run(git + ["commit", "-qm", s], capture_output=True, timeout=30)
+            got = _last_wrap_commit(td)
+            if got is None or "the WRAP" not in got[1]:
+                failures.append(f"s294-D3 BITE: with a wrap commit followed by a non-wrap one, "
+                                f"`_last_wrap_commit` picked {got!r} — it must pick the `#217 "
+                                f"2026-08-24 — the WRAP` subject, not its non-wrap child.")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"s294-D3 fixture: git unavailable in this checkout ({e})")
+
+    # ★ AND AGAINST THE REAL FIXTURE THE RULING NAMES (`git log --format=%s -150`), when this
+    # checkout is a git repo: the two consumers must be handed a NON-EMPTY population, or the
+    # repoint traded a wrong answer for no answer [[a-crash-is-not-a-fail]].
+    _here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    _log = _git_out(_here, "log", "--format=%s", "-150")
+    if _log is None:
+        SELFTEST_REFUSALS.append("s294-D3: `git log` did not answer in this checkout — the "
+                                 "150-subject population arm did not run")
+    else:
+        subs = [s.strip() for s in _log.splitlines() if s.strip()]
+        wraps = [s for s in subs if WRAP_COMMIT_SUBJECT_RE.match(s)]
+        nonwraps = [s for s in subs if NONWRAP_COMMIT_SUBJECT_RE.match(s)]
+        if subs and not wraps:
+            failures.append(f"s294-D3: 0 of {len(subs)} real commit subjects match "
+                            f"WRAP_COMMIT_SUBJECT_RE — both consumers get an EMPTY population "
+                            f"and the repoint is a different wrong answer, not a fix.")
+        if set(wraps) & set(nonwraps):
+            failures.append(f"s294-D3: a real subject matched BOTH the wrap and the non-wrap "
+                            f"pattern — the two shapes are not disjoint: "
+                            f"{sorted(set(wraps) & set(nonwraps))[:2]}")
+    return failures
+
+
+def selftest_subreport_lines_gate():
+    """★★ #294 `s294-D2` — THE THREE MACHINE-READ LINES, BLOCKING, DRIVEN ON A REAL GIT REPO.
+
+    Plant-then-detect, and the arm that MATTERS MOST is the negative one: a report already in
+    `HEAD` and missing all three lines must NOT fail, or the gate retro-fails the 363 inherited
+    reports, which is exactly what `s294-D2` forbids. So the fixture commits a malformed report
+    FIRST, proves the gate is silent about it, and only then writes a new one.
+    """
+    failures = []
+    GOOD = ("# r\n\nCOUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2\n\n"
+            "## RULING-SHAPED QUESTIONS\n\nnone\n\nREPLAY-THESE: none — the stub carries "
+            "everything.\n")
+    BAD = "# r\n\nprose only, three findings, nothing a machine can read\n"
+
+    # ---- ARM 0: a tree with no `.git` (and no report dir) DECLARES the skip, never passes.
+    with tempfile.TemporaryDirectory() as td:
+        f_, n_ = subreport_lines_gate(td)
+        if f_ or not any("NOT a pass" in x for x in n_):
+            failures.append(f"s294-D2: a tree with no `{SUBREPORT_DIR}/` must DECLARE the skip — "
+                            f"fails={f_} notes={n_}")
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, SUBREPORT_DIR))
+        with open(os.path.join(td, SUBREPORT_DIR, "2026-09-21-294-x.md"), "w",
+                  encoding="utf-8") as f:
+            f.write(BAD)
+        f_, n_ = subreport_lines_gate(td)
+        if f_ or not any("DID NOT RUN" in x and "UNKNOWN" in x for x in n_):
+            failures.append(f"s294-D2: with no `HEAD` the gate must say UNKNOWN, not grade a "
+                            f"malformed report it cannot scope — fails={f_} notes={n_}")
+
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"s294-D2: git unavailable in this checkout ({e})")
+            return failures
+
+        def put(rel, body):
+            p = os.path.join(td, rel)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(body)
+
+        def commit(subject):
+            subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+            subprocess.run(git + ["commit", "-qm", subject], capture_output=True, timeout=30)
+
+        def stage(*rels):
+            subprocess.run(git + ["add", "--", *rels], capture_output=True, timeout=30)
+
+        def unstage_all():
+            subprocess.run(git + ["reset", "-q"], capture_output=True, timeout=30)
+
+        INHERITED = f"{SUBREPORT_DIR}/2026-08-01-100-inherited-malformed.md"
+        NEWREL = f"{SUBREPORT_DIR}/2026-09-21-294-B-new.md"
+        # `carrier` is the non-report file whose staging keeps the INDEX non-empty, so the arms
+        # below measure the staged-report population and not the empty-index UNKNOWN path.
+        CARRIER = "carrier.txt"
+        put(f"{SUBREPORT_DIR}/{SUBREPORT_TEMPLATE}", "skeleton\n")
+        put(INHERITED, BAD)
+        put(CARRIER, "v1\n")
+        commit("#100 2026-08-01 — a prior session's wrap")
+
+        # ---- ★ ARM 9 (#294 C2), THE NO-OP CONTROL, AND IT RUNS FIRST BECAUSE IT IS THE PRICE OF
+        # NARROWING THE SCOPE: with an EMPTY INDEX the arm must say UNKNOWN and must NOT go green.
+        f_, n_ = subreport_lines_gate(td)
+        if f_ or not any("index is EMPTY" in x and "NEVER GREEN" in x for x in n_):
+            failures.append(f"s294-D2: an EMPTY INDEX did not produce the UNKNOWN-never-green "
+                            f"declaration — the staged scope is a silent no-op, which is the "
+                            f"weakening the narrowing was allowed on condition of avoiding: "
+                            f"fails={f_} notes={n_}")
+        if not any("_git_commit.sh" in x for x in n_):
+            failures.append(f"s294-D2: the empty-index note does not name the commit seam whose "
+                            f"ordering causes it — the declared gap is undiscoverable: {n_}")
+
+        put(CARRIER, "v2\n")
+        stage(CARRIER)
+
+        # ---- ★ ARM 1, THE GRANDFATHER CONTROL — the whole reason this gate is allowed to block.
+        f_, n_ = subreport_lines_gate(td)
+        if f_:
+            failures.append(f"s294-D2: a report ALREADY IN `HEAD` and missing all three lines was "
+                            f"FAILED — the gate retro-fails inherited reports, which `s294-D2` "
+                            f"forbids in terms: {f_[:1]}")
+        if not any("GRANDFATHERED" in x and "Counted, never rewritten" in x for x in n_):
+            failures.append(f"s294-D2: the inherited population was not COUNTED — the `s186-D2` "
+                            f"shape is 'counted, never rewritten', and an uncounted debt is an "
+                            f"invisible one: {n_}")
+        if not any("missing COUNTS 1" in x for x in n_):
+            failures.append(f"s294-D2: the grandfather count did not report the planted "
+                            f"malformed report — the counter is measuring nothing: {n_}")
+
+        # ---- ★ ARM 8 (#294 C2), THE #70-CLASS CONTROL: a malformed report that is NEW in the
+        # working tree but NOT STAGED must NOT fail — it is not what this commit carries, and it
+        # may be another seat's file still being written. It must be COUNTED and NAMED, though:
+        # un-graded is not un-mentioned.
+        put(NEWREL, BAD)
+        f_, n_ = subreport_lines_gate(td)
+        if f_:
+            failures.append(f"s294-D2: an UNSTAGED new malformed report was FAILED — the arm is "
+                            f"still charging this commit for files it does not carry, which is "
+                            f"the #70 class in reverse: {f_[:1]}")
+        if not any("NOT STAGED" in x and NEWREL in x for x in n_):
+            failures.append(f"s294-D2: the un-staged report was neither counted nor NAMED — "
+                            f"ungraded must never mean unmentioned: {n_}")
+
+        # ---- ARM 2, THE RED: a STAGED new report missing all three. This is the gate.
+        stage(NEWREL)
+        f_, _n = subreport_lines_gate(td)
+        if not any(NEWREL in x and "BLOCKING" in x for x in f_):
+            failures.append(f"s294-D2: a NEW report missing all three machine-read lines did not "
+                            f"FAIL — the gate condition does not exist: {f_}")
+        elif not all(k in " ".join(f_) for k in ("COUNTS", "REPLAY-THESE",
+                                                 "RULING-SHAPED QUESTIONS")):
+            failures.append(f"s294-D2: the refusal does not name which of the three are missing "
+                            f"[[gate-must-quote-what-it-forbids]]: {f_}")
+
+        # ---- ARM 3, ONE CLAUSE AT A TIME (attribute-the-diff): each of the three must bite alone.
+        for drop, marker in (
+                ("COUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2", "COUNTS"),
+                ("REPLAY-THESE: none — the stub carries everything.", "REPLAY-THESE"),
+                ("## RULING-SHAPED QUESTIONS", "RULING-SHAPED QUESTIONS")):
+            put(NEWREL, GOOD.replace(drop, ""))
+            stage(NEWREL)
+            f_, _n = subreport_lines_gate(td)
+            if not any(NEWREL in x and marker in x for x in f_):
+                failures.append(f"s294-D2: a new report missing ONLY `{marker}` did not fail — "
+                                f"the clause is not enforced on its own: {f_}")
+
+        # ---- ARM 4, THE PASS: the skeleton's own form, in the template's BACKTICKED figures.
+        put(NEWREL, GOOD.replace("COUNTS: findings 3 · ruling-shaped 1 · UNPROVEN 2",
+                                 "COUNTS: findings `3` · ruling-shaped `1` · UNPROVEN `2`"))
+        stage(NEWREL)
+        f_, n_ = subreport_lines_gate(td)
+        if f_:
+            failures.append(f"s294-D2: a report obeying `_TEMPLATE.md`'s own backticked form was "
+                            f"FAILED — the gate is refusing the instruction it enforces "
+                            f"[[no-gate-parses-the-artefact]]: {f_}")
+        if not any("every one carrying all three" in x for x in n_):
+            failures.append(f"s294-D2: the clean case left no note naming what it measured: {n_}")
+
+        # ---- ★ ARM 5, THE GROWTH CONTROL: the same malformed inherited report, now MODIFIED in
+        # this working tree, MUST fail. Grandfathering is by sha, not by filename — an exemption
+        # keyed on a name would let a session edit an old report back into the excused set.
+        put(NEWREL, GOOD)
+        put(INHERITED, BAD + "one line appended in this working tree\n")
+        stage(NEWREL, INHERITED)
+        f_, _n = subreport_lines_gate(td)
+        if not any(INHERITED in x for x in f_):
+            failures.append("s294-D2: an inherited report EDITED and STAGED stayed "
+                            "grandfathered — the exemption is keyed on the filename rather than "
+                            "on the sha, so 'refuses only on growth' is not what it enforces.")
+
+        # ---- ARM 6, POPULATION CONTROLS: the skeleton and `assets/**` are never reports.
+        unstage_all()
+        os.remove(os.path.join(td, NEWREL))
+        subprocess.run(git + ["checkout", "--", "."], capture_output=True, timeout=30)
+        put(f"{SUBREPORT_DIR}/{SUBREPORT_TEMPLATE}", "skeleton, EDITED in this working tree\n")
+        put(f"{SUBREPORT_DIR}/assets/2026-09-21-294-B-new/probe.md", "evidence, no COUNTS line\n")
+        put(CARRIER, "v3\n")   # the index must be NON-empty or ARM 9's path answers instead
+        stage(CARRIER, f"{SUBREPORT_DIR}/{SUBREPORT_TEMPLATE}", f"{SUBREPORT_DIR}/assets")
+        f_, n_ = subreport_lines_gate(td)
+        if f_:
+            failures.append(f"s294-D2: the template or `assets/**` entered the population — the "
+                            f"glob is wider than the rule: {f_}")
+        if not any("no filed report is staged" in x for x in n_):
+            failures.append(f"s294-D2: an empty population was not reported as empty — every red "
+                            f"above is unattributable: {n_}")
+
+        # ---- ARM 7: the tier is wired, and it is wired to FAILS. A blocking constant nothing
+        # reads is an instrument without a consumer.
+        if not SUBREPORT_LINES_BLOCKING:
+            failures.append("s294-D2: SUBREPORT_LINES_BLOCKING is False — `s294-D2` rules the "
+                            "three lines a GATE CONDITION ('a lane cannot close without them'), "
+                            "and demotion is Dave's word, not a seat's.")
+    return failures
+
+
+def selftest_to_delete_backlog():
+    """★★ #294 `s294-D12` — THE SEAT, not the measurement. Two questions only:
+
+      1. is the wrap check WIRED to the arm, and wired to FAILS (a tier nothing reads is an
+         instrument without a consumer);
+      2. does the arm's OWN suite — `_gate_scratch_hygiene.selftest_to_delete()`, 8 arms with
+         both negative controls — pass from here? Driven rather than re-implemented, because a
+         second copy of the plant-then-detect fixtures is how the two halves drift apart.
+    """
+    failures = []
+    try:
+        import _gate_scratch_hygiene as hygiene
+    except Exception as e:                                            # noqa: BLE001
+        failures.append(f"s294-D12: `_gate_scratch_hygiene` does not import from the gate's own "
+                        f"path ({type(e).__name__}: {e}) — the refusal seat is dead")
+        return failures
+    if not TO_DELETE_BLOCKING:
+        failures.append("s294-D12: TO_DELETE_BLOCKING is False — the ruling is that the arm "
+                        "REFUSES a wrap, and demotion is Dave's word, not a seat's.")
+    if hygiene.TO_DELETE_MAX_AGE_SESSIONS != 3:
+        failures.append(f"s294-D12: N is {hygiene.TO_DELETE_MAX_AGE_SESSIONS}, not 3 — "
+                        f"Dave's figure, 'N+3 is fine' (#294).")
+    failures += [f"s294-D12 (arm suite) {x}" for x in hygiene.selftest_to_delete()]
+    # ---- and the SEAT's own bite: a fixture repo with a stale entry must reach `fails`, and a
+    # tree with no holding directory must not.
+    with tempfile.TemporaryDirectory() as td:
+        git = ["git", "-C", td, "-c", "user.email=t@t", "-c", "user.name=t"]
+        try:
+            if subprocess.run(git[:3] + ["init", "-q"], capture_output=True,
+                              timeout=30).returncode != 0:
+                raise RuntimeError("git init failed")
+            with open(os.path.join(td, "x.txt"), "w") as f:
+                f.write("x\n")
+            subprocess.run(git + ["add", "-A"], capture_output=True, timeout=30)
+            subprocess.run(git + ["commit", "-qm", "#294 2026-09-21 — the wrap"],
+                           capture_output=True, timeout=30)
+        except Exception as e:                                        # noqa: BLE001
+            SELFTEST_REFUSALS.append(f"s294-D12 seat: git unavailable in this checkout ({e})")
+            return failures
+        f_, n_ = to_delete_check(td)
+        if f_ or not any("nothing held" in x for x in n_):
+            failures.append(f"s294-D12 seat: a tree with no `_to_delete/` must be the clean case "
+                            f"— fails={f_} notes={n_}")
+        os.makedirs(os.path.join(td, hygiene.TO_DELETE_DIRNAME, "_s280-ancient"))
+        f_, _n = to_delete_check(td)
+        if not any("_s280-ancient" in x and "s294-D12" in x for x in f_):
+            failures.append(f"s294-D12 seat: a stale entry did not reach the wrap check's FAILS "
+                            f"— the refusal has no teeth: {f_}")
     return failures
 
 
@@ -10448,6 +11142,8 @@ def _selftest_body():
                 + selftest_regen_serial()        # ★ #221 — the ordered serial, whole per wave
                 + selftest_shared_helper_dedup() # ★ #221 — W-92's residual: ONE implementation
                 + selftest_subreport_citation()  # ★ #218 `s218-D7` — the unread-pointer check
+                + selftest_subreport_lines_gate() # ★ #294 `s294-D2` — the three lines, BLOCKING
+                + selftest_to_delete_backlog()   # ★ #294 `s294-D12` — `_to_delete/`, N=3 sessions
                 + selftest_plan_block_check()    # B2 seam obligation, s179-D1 — wired at write
                 + selftest_real_tier_reachable()
                 + selftest_preflight() + selftest_preflight_tokens()

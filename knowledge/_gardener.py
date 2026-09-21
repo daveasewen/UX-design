@@ -83,6 +83,7 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 
 import argparse
 import datetime as _dt
+import glob
 import json
 import os
 import re
@@ -142,15 +143,33 @@ GRADE_SCHEMA_ID = "memory-grades/0-PROVISIONAL"
 # vocabulary (PROVISIONAL): four grades, and UNPROVABLE is a FIRST-CLASS one — an entry whose
 # claim no machine can decide is NEVER silently called FRESH [[measuring-tool-must-not-guess]].
 GRADE_VOCAB = ("FRESH", "AGING", "STALE", "UNPROVABLE")
-GRADE_AGING_DAYS = 30        # PROVISIONAL: probe passes but the claim itself hasn't been touched
+# ── ⬛ s294-D4 RULED BLOCK — BEGIN (Dave, 2026-09-21, chat #294) ────────────────────────────
+# ★ BOTH NUMBERS BELOW ARE RULED, NOT PROVISIONAL, AND BOTH ARE BYTE-UNCHANGED BY THIS RULING.
+# `s294-D4` (2026-09-21): "GRADE_AGING_DAYS = 30 AND POPULATION_DELTA_THRESHOLD = 5 ARE KEPT AT
+# THOSE VALUES AND ARE RULED, NOT PROVISIONAL." What changed is the STATUS, never the value —
+# they stop being picked-to-get-the-instrument-running and become HIS. So the grader's output
+# stops carrying an asterisk and the word `provisional` comes OFF, here and in every string this
+# module prints beside either number. The two annotations above (`s182-D1` CALL 2's "EXPLICIT
+# PLACEHOLDER", #256's "PLACEHOLDER, picked not derived") stand as HISTORY, untrimmed, and are
+# SUPERSEDED BY ADDITION by this block [[home-by-addition-then-cut]].
+# ★ THE ONE PIECE OF EVIDENCE, and it cut towards ruling rather than changing: the stated ground
+# for deferring the 30 was that it "cannot move a single entry inside a seven-day window"; on
+# the first cycle it moved 13 and the stale count went 1 → 16. The number was doing MORE work
+# than the deferral assumed. Source `notes/_dream/2026-08-23-proposals.md` P3 (dream pass 9).
+# ⛔ THE BITE: `provisional_label_bite()` FAILS if the word `provisional` returns beside either
+# constant — in this block or on any line in this file that names either one. Re-labelling them
+# provisional is now a selftest failure, not a style drift. Changing a VALUE is still Dave's.
+GRADE_AGING_DAYS = 30        # RULED s294-D4 (2026-09-21): probe passes, claim itself untouched
 # ── POPULATION ALARM (dream-11 P1(a), enacted #256) ────────────────────────────────────────
 # `:706`'s refusal says an EMPTY grade set "would read as 'nothing is stale'". The SAME
 # sentence is true of a 73% cut, and #242's memory-index diet made exactly that cut (122 → 33)
 # with nothing declaring it. So the slope gets the posture the zero already had: a move of
 # more than this many hooks is PRINTED, and a SHRINK of more than this many REFUSES.
-# ⚠ The number is a PLACEHOLDER, picked not derived — the same honest register as
-# GRADE_AGING_DAYS. Dave's at the B3 review.
-POPULATION_DELTA_THRESHOLD = 5
+# ⚠ #256 wrote here: "The number is a PLACEHOLDER, picked not derived — the same honest
+# register as the aging limit. Dave's at the B3 review." THAT SENTENCE IS SPENT: he ruled it
+# at #294 and it is quoted rather than deleted, per s183-D1/s188-D2.
+POPULATION_DELTA_THRESHOLD = 5   # RULED s294-D4 (2026-09-21): hooks of movement before the alarm
+# ── ⬛ s294-D4 RULED BLOCK — END ───────────────────────────────────────────────────────────
 # ── THE COUNTING WINDOW, GENERATED NOT NOTED (s183-D1 enacting dream-8 P4a) ────────────────
 # `s182-D1` CALL 4 ruled the boundary in prose: "the counting window opens at the FIRST
 # SCHEDULED dream-pass; the 2026-08-15 manual pass does NOT count." That is the SCHEDULED
@@ -163,6 +182,45 @@ ALERT_MARKS = ("⛔", "★★")   # ★★ or more, or a ⛔ — the marks MEMOR
 ALERT_LIST_GRADES = ("STALE",)              # printed one line each
 ALERT_COUNT_GRADES = ("UNPROVABLE", "AGING")  # summarised as ONE count line — surface control
 MEMORY_INDEX_BASENAME = "MEMORY.md"
+# ── ⬛ s294-D6 — THE POPULATION THIS GRADER CAN ACTUALLY READ (Dave, 2026-09-21, chat #294) ─
+# `s294-D6`: "THE B3 MEMORY GRADER IS RE-POINTED AT THE STORE'S NEW HOME FIRST; THE TWO OWED
+# REVIEWS COME AFTER, ON REAL NUMBERS. The order is the ruling."
+# ⛔ THE FACT THAT FORCES THE SHAPE, and it is a SEAT limit, not a defect: since #278 the memory
+# store is claude.ai PROJECT CLOUD MEMORY. It has no path on any mount, and only the conductor's
+# seat can read it at all. `MEMORY_DIRS[0]/MEMORY.md` has not resolved since, so `--refresh` has
+# been blocking ("the memory index does not resolve … REFUSING TO GUESS") for eleven sessions
+# while `_checkin.py` printed a 2026-09-13 sidecar as if it were a reading.
+# ⇒ THE POPULATION THE REPO OWNS is its own record of WHAT WAS PLACED in the store: one
+# `WRAP-MEMORY-HOOK*.md` per wrap, written at the wrap seat before the placement, by the #278
+# addition to `knowledge/_RUNBOOK-capture-ritual.md` § step 3. That is what is graded now.
+# ⛔ THE MIRROR IS NOT THE STORE, AND THE OUTPUT SAYS SO ON EVERY RUN (`cannot_grade`, below).
+# A grader that read the mirror and reported "grades" without that sentence would be making the
+# #278 mistake in the other direction [[measuring-tool-must-not-guess]].
+MIRROR_RELDIR = os.path.join("notes", "_lanes")
+MIRROR_BASENAME_GLOB = "WRAP-MEMORY-HOOK*.md"
+# What this instrument CANNOT grade, declared in the sidecar and printed at every refresh.
+CANNOT_GRADE = [
+    "THE CLOUD STORE ITSELF — claude.ai Project memory (`index.md` + the wrap hook files placed "
+    "in it). UNREACHABLE from any sandbox seat since #278; it has no path to probe. Its contents "
+    "are UNGRADED here and are NOT reported clean.",
+    "ANY STORE ENTRY WITH NO REPO MIRROR — a hook placed in the store that no "
+    "`notes/_lanes/<n>/WRAP-MEMORY-HOOK*.md` records is invisible to this instrument BY "
+    "CONSTRUCTION. The mirror is the repo's record of what was PLACED, not the store's contents.",
+    "THE STORE'S OWN PROPERTIES — index ordering, the 49,152 B per-file cap, whether a placement "
+    "actually landed. Those are readable only from the conductor's seat, one hook at a time.",
+]
+# ⛔ THE STORE'S OWN FILENAMES, WHICH A MIRROR FILE NAMES BY NECESSITY AND WHICH THIS REPO DOES
+# NOT CONTAIN. Every mirror file says where it is going — `index.md`, `wrap-<n>-<slug>.md` — and
+# those are CLOUD-STORE paths. Probing them against the repo grades a live placement STALE, which
+# is the same false-STALE class `resolve_claimed_path`'s docstring warns about ("a probe that
+# reports STALE for a present file is worse than no probe: it teaches the reader to ignore the
+# alert"). They are folded into the `s191-D2` NON-REPO carve-out MECHANICALLY for the mirror
+# source — the marker s191-D2 asks each hook to write by hand is not available here, because
+# these files are other sessions' append-only testimony and a wrap cannot be made to re-file
+# them. The declaration is stated once, in code, instead of 23 times by hand.
+STORE_OWN_PATH_RE = re.compile(r"^(?:index\.md|MEMORY\.md|MEMORY-ARCHIVE\.md|wrap-[^/]*\.md)$")
+STORE_OWN_WHERE = ("the claude.ai Project memory store — UNREACHABLE from any sandbox seat "
+                   "(s294-D6; the s191-D2 NON-REPO carve-out, applied mechanically)")
 
 
 class GardenerBlock(RuntimeError):
@@ -744,6 +802,168 @@ def parse_memory_index(memory_dir: str) -> tuple[list[dict], list[str]]:
     return hooks, unlinked
 
 
+# ── ⬛ s294-D6 — THE REPO MIRROR AS THE GRADED POPULATION ──────────────────────────────────
+_MIRROR_LANE_RE = re.compile(r"(?:^|/)(\d+)/WRAP-MEMORY-HOOK[^/]*\.md$")
+
+
+def mirror_dir(root: str) -> str:
+    """The mirror's ROOT — the directory hook ids are relative to, so `hook_file_body` and
+    `grade_entry` resolve a mirror hook with no special case anywhere downstream."""
+    return os.path.join(os.path.abspath(root), MIRROR_RELDIR)
+
+
+def mirror_hook_files(root: str) -> list[str]:
+    """Every mirror file, id form (`<lane>/WRAP-MEMORY-HOOK*.md`), OLDEST LANE FIRST.
+
+    Sorted by lane NUMBER, not by string — `notes/_lanes/9` must not sort after `notes/_lanes/
+    280` [[measure-dont-convert-units]]. A file whose lane is not numeric is DECLARED by the
+    caller, never silently dropped.
+    """
+    base = mirror_dir(root)
+    hits = glob.glob(os.path.join(base, "*", MIRROR_BASENAME_GLOB))
+    out = []
+    for p in hits:
+        rel = os.path.relpath(p, base).replace(os.sep, "/")
+        m = _MIRROR_LANE_RE.search(rel)
+        out.append((int(m.group(1)) if m else -1, rel))
+    return [rel for _n, rel in sorted(out)]
+
+
+def mirror_index_path(root: str) -> str:
+    """THE PROVENANCE ANCHOR the sidecar records as `memory_index`, and the reason it is a FILE.
+
+    The mirror has no single index file, and one must NOT be generated: `_checkin.py`'s #293 void
+    fence decides UNKNOWN-not-clean by asking whether the sidecar's `memory_index` still resolves
+    on disk, so an anchor this module WRITES could never stop resolving and the fence would be
+    dead the day it landed. The NEWEST mirror file is therefore the anchor: it is a real file, it
+    is a member of the very population that was graded, and it stops resolving exactly when the
+    mirror population goes missing — which is the condition the fence exists to catch.
+    """
+    files = mirror_hook_files(root)
+    if not files:
+        raise GradesBlock(
+            "P8/B3 (s294-D6) — the REPO MIRROR of the memory store does not resolve, so NOTHING "
+            "can be graded.\n"
+            f"        expected : {os.path.join(mirror_dir(root), '<lane>', MIRROR_BASENAME_GLOB)}\n"
+            f"        and the pre-#278 mount index is also absent : "
+            f"{memory_index_path(MEMORY_DIRS[0]) if MEMORY_DIRS else '(no mount configured)'}\n"
+            "        REFUSING TO GUESS a population. An empty grade set here would read as "
+            "'nothing is stale', which is the exact false-confidence B3 exists to remove — and "
+            "the cloud store itself is UNREACHABLE from this seat, so there is no fallback to "
+            "fall back to.")
+    return os.path.join(mirror_dir(root), files[-1])
+
+
+def parse_mirror_population(root: str) -> tuple[list[dict], list[str]]:
+    """(hooks, unlinked) over the repo mirror — the SAME shape `parse_memory_index` returns.
+
+    One mirror FILE is one hook, because the wrap wrote one file per placement. Its index-line
+    HEADLINE is quoted from the file's own `## THE INDEX LINE` fenced block when it has one (that
+    block is a verbatim copy of what went to the store's `index.md`), and a file that has no such
+    block is DECLARED in `unlinked` and graded from its H1 — never dropped, never invented.
+    """
+    base = mirror_dir(root)
+    hooks, unlinked = [], []
+    for rel in mirror_hook_files(root):
+        p = os.path.join(base, rel)
+        try:
+            text = open(p, encoding="utf-8").read()
+        except OSError as exc:                     # a crash is not a fail
+            raise GradesBlock(
+                f"B3/s294-D6 — a mirror file exists but could not be READ: {p}\n"
+                f"        cause : {type(exc).__name__}: {exc}\n"
+                "        REFUSING to grade a population one of whose members is unreadable.") from exc
+        headline, src = _mirror_headline(text)
+        if src == "H1-FALLBACK":
+            unlinked.append(f"{rel}: no index-line SECTION with content — headline taken from "
+                            f"the H1, DECLARED")
+        hooks.append({
+            "id": rel,
+            "line": rel,                            # the mirror's "line number" IS its path
+            "title": headline,
+            "marks": "".join(sorted({c for c in ALERT_MARKS if c in headline})),
+            "starred": any(c in headline for c in ALERT_MARKS),
+            "hook": headline,
+            "hook_sha": _sha(headline),
+            "headline_source": src,
+        })
+    return hooks, unlinked
+
+
+def _mirror_headline(text: str) -> tuple[str, str]:
+    """(headline, source) — the index line the wrap SAYS it placed, flattened to ONE line.
+
+    ⚠ MEASURED BEFORE IT WAS WRITTEN, over all 23 mirror files as at 2026-09-21: the index line
+    is written in FOUR different shapes across the run — a fenced block (#271–#273, #284–#285,
+    #292–#293), a bare markdown list item wrapped over several lines (#277, #286), a blockquote
+    (#289–#291), and in one file (#283) the section is EMPTY and the line lives elsewhere. A
+    matcher tuned to any one of those shapes silently drops the rest, which is the
+    `_HOOK_RE.match()` defect dream-11 P2 already found in this module. So the SECTION is the
+    unit: everything under the heading that names the index line, up to the next `## `, with
+    fence markers, blockquote markers and the standing parenthetical notes stripped. A section
+    that yields nothing falls back to the H1 and SAYS SO [[unmatched-grep-is-not-an-absence]].
+    """
+    # ⚠ THE HEADING IS WRITTEN FIVE WAYS ACROSS THE RUN and the pattern was widened against all
+    # 23 files until it matched every one (measured 2026-09-21: 23/23, vs 8/23 for a pattern
+    # keyed on the literal "THE INDEX LINE"): "THE `MEMORY.md` INDEX LINE", "MEMORY.md line",
+    # "`index.md` line", "The index line — `index.md`", "THE INDEX LINE (…)".
+    m = re.search(r"^##+[^\n]*(?:index|MEMORY\.md)[^\n]{0,24}line\b[^\n]*$",
+                  text, re.M | re.IGNORECASE)
+    if m:
+        rest = text[m.end():]
+        nxt = re.search(r"^##\s", rest, re.M)
+        body = rest[: nxt.start()] if nxt else rest
+        body = re.sub(r"^```[^\n]*$", "", body, flags=re.M)        # fence markers
+        body = re.sub(r"^\s*>\s?", "", body, flags=re.M)           # blockquote markers
+        body = re.sub(r"^\s*\*\([^)]*\)\*\s*$", "", body, flags=re.M)  # *(standing note)*
+        body = re.sub(r"^\s*-{3,}\s*$", "", body, flags=re.M)      # section rules
+        flat = " ".join(body.split())
+        if flat:
+            return _flat(flat, 400), "INDEX-LINE section (verbatim)"
+    h1 = re.search(r"^#\s+(.+)$", text, re.M)
+    return (_flat(h1.group(1).strip(), 400) if h1 else "(no headline)"), "H1-FALLBACK"
+
+
+def resolve_population(root: str, memory_dir: str | None) -> dict:
+    """WHICH population is live at this seat, and it is decided by PROBE, never by assumption.
+
+    Order, and the order is the honesty: a real memory-store MOUNT wins when one exists (the
+    pre-#278 shape, and a future re-mount would just work); otherwise the REPO MIRROR. Neither
+    resolving is a LOUD block — `mirror_index_path` raises and names both paths it tried.
+    """
+    if memory_dir and os.path.isfile(memory_index_path(memory_dir)):
+        return {"kind": "memory-store-mount", "dir": os.path.abspath(memory_dir),
+                "index": memory_index_path(memory_dir),
+                "index_abs": memory_index_path(memory_dir),
+                "glob": memory_index_path(memory_dir),
+                "note": "the memory store is MOUNTED at this seat and is graded directly.",
+                "parse": lambda: parse_memory_index(memory_dir)}
+    _abs = mirror_index_path(root)
+    # ⛔ THE ANCHOR IS RECORDED REPO-RELATIVE, AND THAT IS A CORRECTION OF THE OLD SIDECAR'S
+    # SHAPE, NOT A STYLE CHOICE. The pre-#278 sidecar stored an ABSOLUTE mount path
+    # (`/sessions/<session>/mnt/.auto-memory/MEMORY.md`); the mount name changes every session,
+    # so `_checkin.py`'s void fence — a plain `os.path.exists` — would report a path that
+    # resolves perfectly well as "does not resolve on disk" at every seat but the one that wrote
+    # it. Pass 8's (ee2) already noticed the path VARIES; the fence was built to fire on a path
+    # that resolves at NO mount, and an absolute anchor makes it fire on every new one. The
+    # mirror lives INSIDE the repo, so it HAS a stable form and takes it.
+    # ⚠ DECLARED ASSUMPTION, not hidden: a relative path resolves against the CALLER'S cwd, and
+    # both `_checkin.py` and this module are run from the repo root by the runbook. Where that
+    # does not hold the fence errs towards UNKNOWN-NOT-CLEAN, which is the safe direction and
+    # the one B3 exists to take. `population_index_abs` below carries the absolute form for a
+    # human, and it is NOT what the fence reads.
+    return {"kind": "repo-mirror (s294-D6)", "dir": mirror_dir(root),
+            "index": os.path.relpath(_abs, os.path.abspath(root)).replace(os.sep, "/"),
+            "index_abs": _abs,
+            "glob": os.path.join(MIRROR_RELDIR, "*", MIRROR_BASENAME_GLOB),
+            "note": ("the cloud store is UNREACHABLE from this seat (claude.ai Project memory, "
+                     "since #278), so the graded population is the REPO'S OWN RECORD of what was "
+                     "placed in it: one WRAP-MEMORY-HOOK file per wrap. The `memory_index` above "
+                     "is the NEWEST member of that population — the provenance anchor, and the "
+                     "path `_checkin.py`'s void fence probes."),
+            "parse": lambda: parse_mirror_population(root)}
+
+
 def _flat(s: str, n: int = 90) -> str:
     s = " ".join(s.split())
     return s if len(s) <= n else s[: n - 1] + "…"
@@ -800,7 +1020,8 @@ def hook_file_body(hook_id: str, memory_dir: str) -> str | None:
     return body
 
 
-def derive_probe_from_file(hook_id: str, memory_dir: str) -> dict | None:
+def derive_probe_from_file(hook_id: str, memory_dir: str,
+                           store_paths_nonrepo: bool = False) -> dict | None:
     """s188-D1 — THE GRADING UNIT IS THE HOOK FILE. Derive the probe from the FILE's claims.
 
     RULED `s188-D1` (#188, Dave: "1. Grade the file"), SUPERSEDING the `s183-D1` P1 light
@@ -846,6 +1067,12 @@ def derive_probe_from_file(hook_id: str, memory_dir: str) -> dict | None:
     # adjacency discipline as NEGATED [[gate-must-quote-what-it-forbids]].
     NONREPO = re.compile(r"`([^`]+)`\s*\(NON-REPO:\s*([^)]+)\)")
     nonrepo: dict[str, str] = {m[0]: m[1].strip() for m in NONREPO.findall(body)}
+    # ⬛ s294-D6: for the REPO MIRROR the store's own filenames are NON-REPO BY CONSTRUCTION.
+    # See STORE_OWN_PATH_RE for why the marker cannot be asked of these files by hand.
+    if store_paths_nonrepo:
+        for t in re.findall(r"`([^`]+)`", body):
+            if STORE_OWN_PATH_RE.match(t.strip()) and t not in nonrepo:
+                nonrepo[t] = STORE_OWN_WHERE
     cands = [t for t in dict.fromkeys(re.findall(r"`([^`]+)`", body))
              if looks_like_path(t) and t not in denied and t not in nonrepo]
     if not cands:
@@ -954,7 +1181,7 @@ def grade_entry(hook: dict, probe: dict, root: str, memory_dir: str,
     age_days = (now - os.path.getmtime(target)) / 86400.0
     if age_days > aging_days:
         return {"grade": "AGING", "why": f"{ev}; but the claim itself has not been touched in "
-                                         f"{age_days:.0f} days (limit {aging_days}, PROVISIONAL)",
+                                         f"{age_days:.0f} days (limit {aging_days}, RULED s294-D4)",
                 "probe_ran": True}
     return {"grade": "FRESH", "why": ev, "probe_ran": True}
 
@@ -988,21 +1215,124 @@ def load_grades(path: str) -> dict:
 
 
 def population_delta(prev_seen, seen: int,
-                     threshold: int = POPULATION_DELTA_THRESHOLD) -> dict:
+                     threshold: int = POPULATION_DELTA_THRESHOLD,
+                     prev_source: str | None = None,
+                     now_source: str | None = None) -> dict:
     """dream-11 P1(a). Did the graded POPULATION move, and did it SHRINK?
 
     `prev_seen` is last run's `hooks_seen`, read from the sidecar the arm already persists.
     None (no sidecar yet) is not a move — it is a first run, and says so.
+
+    ⛔ s294-D6 ADDED THE SOURCE ARM, and it is a unit rule, not a convenience. When the
+    POPULATION SOURCE changes — the store mount was graded before, the repo mirror is graded now
+    — the two counts are counts of DIFFERENT THINGS, and subtracting them manufactures a
+    "shrink" that nothing shrank [[measure-dont-convert-units]]. The move is DECLARED and no
+    delta is computed. It is not a refusal either: refusing a re-point as if it were a silent
+    73% cut would block the very ruling that ordered it.
     """
     if prev_seen is None:
         return {"prev": None, "now": seen, "delta": None, "moved": False, "shrank": False,
                 "line": f"POPULATION: {seen} hooks this run · no previous run on record"}
+    if prev_source is not None or now_source is not None:
+        _p = prev_source or "(unstated — a pre-s294-D6 sidecar, i.e. the dead store mount)"
+        _n = now_source or "(unstated)"
+        if _p != _n:
+            return {"prev": int(prev_seen), "now": seen, "delta": None, "moved": True,
+                    "shrank": False, "incomparable": True, "threshold": threshold,
+                    "prev_source": _p, "now_source": _n,
+                    "line": (f"POPULATION SOURCE CHANGED (s294-D6 re-point): {seen} over {_n} "
+                             f"vs {prev_seen} over {_p} — TWO DIFFERENT POPULATIONS, so NO "
+                             f"delta is computed and neither count is a shrink of the other.")}
     delta = seen - int(prev_seen)
     moved = abs(delta) > threshold
     return {"prev": int(prev_seen), "now": seen, "delta": delta, "moved": moved,
             "shrank": moved and delta < 0, "threshold": threshold,
             "line": f"POPULATION CHANGED: {seen} hooks this run vs {prev_seen} last run "
                     f"({delta:+d}, threshold ±{threshold})"}
+
+
+def population_age(root: str, memory_dir: str, hooks: list[dict],
+                   now: float | None = None,
+                   aging_days: int = GRADE_AGING_DAYS) -> dict:
+    """How OLD is the graded population, against s294-D4's ruled aging limit?
+
+    Exists because `AGING 0` has two completely different causes and the counts cannot tell them
+    apart: (a) every claim has been touched recently, or (b) the whole population is younger
+    than the limit, so the limit CANNOT bite yet. (b) is the repo mirror's situation today and
+    reporting it as (a) would be the false-confidence B3 exists to remove.
+    """
+    now = _dt.datetime.now().timestamp() if now is None else now
+    ages = []
+    for h in hooks:
+        p = os.path.join(os.path.abspath(memory_dir), h["id"])
+        if os.path.isfile(p):
+            ages.append((now - os.path.getmtime(p)) / 86400.0)
+    if not ages:
+        return {"n": 0, "aging_limit_days": aging_days,
+                "note": "no member of the population resolves on disk — nothing to age."}
+    oldest, newest = max(ages), min(ages)
+    can_bite = oldest > aging_days
+    return {
+        "n": len(ages), "oldest_days": round(oldest, 1), "newest_days": round(newest, 1),
+        "aging_limit_days": aging_days,
+        "limit_can_bite": can_bite,
+        "note": ("the oldest member is {:.1f}d against the ruled {}d limit (s294-D4), so the "
+                 "AGING arm {} — an `AGING 0` here is {}").format(
+                     oldest, aging_days,
+                     "CAN bite" if can_bite else "CANNOT bite on any member",
+                     "a measurement" if can_bite
+                     else "STRUCTURAL, not a clean bill of health"),
+    }
+
+
+_PROVISIONAL_RE = re.compile(r"provisional", re.IGNORECASE)
+_RULED_CONST_RE = re.compile(r"GRADE_AGING_DAYS|POPULATION_DELTA_THRESHOLD|aging_days")
+
+
+def provisional_label_bite(text: str | None = None) -> list[str]:
+    # D4-BITE-SELF-EXEMPT BEGIN
+    """s294-D4's BITE — does the word `provisional` stand BESIDE either RULED constant?
+
+    `s294-D4` (Dave, 2026-09-21) ruled `GRADE_AGING_DAYS = 30` and
+    `POPULATION_DELTA_THRESHOLD = 5` at those values and took the `provisional` label OFF. The
+    label coming back is the regression this bites. Returns the offending "<n>: <line>" strings;
+    EMPTY IS THE PASS.
+
+    ⛔ SCOPE IS THE LINE, AND DELIBERATELY SO [[gate-must-quote-what-it-forbids]]. The bite fires
+    on a line that NAMES either constant (or the `aging_days` parameter that carries the aging
+    limit into a printed string) AND carries the word `provisional`. That is the exact shape of
+    what was removed — `GRADE_AGING_DAYS = 30  # PROVISIONAL: …` and the two grade strings that
+    printed `(PROVISIONAL)` next to the number — so the ruling's OWN prose, which must be able
+    to say the word in order to quote what it forbids, is out of scope by construction and never
+    by an exemption list. A file-wide ban on the word would forbid the ruling from stating
+    itself, and the GRADE SCHEMA as a whole is still provisional under `s182-D1`: only these two
+    NUMBERS were ruled, and a bite that cannot tell the difference would assert more than Dave
+    said.
+
+    ⛔ ONE CARVE-OUT, AND IT IS SENTINELLED IN THE SOURCE RATHER THAN LISTED HERE: the regions
+    marked `D4-BITE-SELF-EXEMPT BEGIN/END` are skipped. Those are this function's own docstring
+    and the selftest arms that PLANT the label to prove the bite fires — both of which must be
+    able to write the forbidden phrase in order to forbid it. The exemption is a pair of
+    greppable markers, not a line-number list, so it cannot silently drift over real code, and
+    it covers nothing that a reader or a grade string ever sees.
+
+    `text` exists for the PLANT: the selftest feeds a mutated copy and the bite must FIRE on it.
+    """
+    # D4-BITE-SELF-EXEMPT END
+    src = text if text is not None else open(os.path.abspath(__file__), encoding="utf-8").read()
+    hits, exempt = [], False
+    for i, line in enumerate(src.splitlines(), 1):
+        if "D4-BITE-SELF-EXEMPT BEGIN" in line:
+            exempt = True
+            continue
+        if "D4-BITE-SELF-EXEMPT END" in line:
+            exempt = False
+            continue
+        if exempt:
+            continue
+        if _RULED_CONST_RE.search(line) and _PROVISIONAL_RE.search(line):
+            hits.append(f"{i}: {_flat(line, 100)}")
+    return hits
 
 
 def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
@@ -1016,14 +1346,20 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
     error — it is the grade UNPROVABLE, counted and surfaced.
     """
     root = os.path.abspath(root)
-    hooks, unlinked = parse_memory_index(memory_dir)
+    # ⬛ s294-D6 — the population is RESOLVED BY PROBE, not assumed (see `resolve_population`).
+    pop_src = resolve_population(root, memory_dir)
+    memory_dir = pop_src["dir"]
+    hooks, unlinked = pop_src["parse"]()
     prev_doc = load_grades(fence.grades_path) if fence else {}
     prev = {e["id"]: e for e in prev_doc.get("entries", [])}
     # #190: memory_dir is IN the index. Hooks legally name memory-store files
     # (`MEMORY-ARCHIVE.md`) — indexing the repo alone graded them false-STALE, the exact
     # ignore-the-alert class resolve_claimed_path's docstring warns about. The sweep arm
     # (sweep(), line ~455) already indexes memory_dirs; this arm now matches it.
-    by_base, _rels = build_index(root, [memory_dir])  # basename → paths; see resolve_claimed_path
+    # ⬛ s294-D6: the REPO MIRROR is already inside `root`, so indexing it again would be a
+    # second copy of the same basenames. Only an OUT-OF-TREE store dir is an extra index root.
+    _extra = [] if pop_src["kind"].startswith("repo-mirror") else [memory_dir]
+    by_base, _rels = build_index(root, _extra)  # basename → paths; see resolve_claimed_path
     entries, counts, changed = [], {g: 0 for g in GRADE_VOCAB}, []
     for h in hooks:
         old = prev.get(h["id"], {})
@@ -1031,7 +1367,9 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             probe = old.get("probe")
         else:
             # s188-D1: FILE FIRST, index line as the declared fallback.
-            probe = derive_probe_from_file(h["id"], memory_dir)
+            probe = derive_probe_from_file(
+                h["id"], memory_dir,
+                store_paths_nonrepo=pop_src["kind"].startswith("repo-mirror"))
             if probe is None:
                 probe = dict(derive_probe(h["hook"], root))
                 probe["source"] = "index-line FALLBACK (hook file names no repo path)"
@@ -1046,7 +1384,22 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             "grade": g["grade"], "why": g["why"], "probe_ran": g["probe_ran"],
             "graded_at": _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         })
-    pop = population_delta(prev_doc.get("hooks_seen"), len(hooks))
+    # ⬛ s294-D6: what source was the PREVIOUS run's count taken over? A sidecar written before
+    # this ruling states none — but it does state its `memory_index`, so the answer is PROBED
+    # from that path rather than assumed. A sidecar that states NEITHER leaves the source arm
+    # switched off entirely, which keeps dream-11 P1(a)'s shrink posture exactly as it was.
+    _prev_src = prev_doc.get("population_source") if prev_doc else None
+    if not _prev_src and prev_doc.get("memory_index"):
+        # os.path.join leaves an ABSOLUTE second argument alone, so this reads both shapes:
+        # the old sidecar's absolute mount path and the new repo-relative anchor.
+        _mi = os.path.abspath(os.path.join(root, str(prev_doc["memory_index"])))
+        _prev_src = ("repo-mirror (s294-D6)"
+                     if _mi.startswith(mirror_dir(root) + os.sep)
+                     else "memory-store-mount (INFERRED from the sidecar's own memory_index — a "
+                          "pre-s294-D6 sidecar states no source)")
+    pop = population_delta(prev_doc.get("hooks_seen"), len(hooks),
+                           prev_source=_prev_src,
+                           now_source=pop_src["kind"] if _prev_src else None)
     doc = {
         "schema": GRADE_SCHEMA_ID,
         "PROVISIONAL": (
@@ -1071,7 +1424,8 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
             "at >= this instant (s183-D1 enacting dream-8 P4a)."),
         "vocabulary": {
             "FRESH": "a mechanical probe RE-RAN and PASSED, and the claim was touched recently",
-            "AGING": f"probe passes, but the claim is older than {GRADE_AGING_DAYS}d (PROVISIONAL)",
+            "AGING": f"probe passes, but the claim is older than {GRADE_AGING_DAYS}d "
+                     f"(RULED s294-D4, 2026-09-21 — the limit is Dave's, not a placeholder)",
             "STALE": "a mechanical probe RE-RAN and FAILED, or the hook's target is absent",
             "UNPROVABLE": "no mechanical probe exists — staleness here is a JUDGMENT, not a "
                           "measurement. NEVER read as FRESH.",
@@ -1083,7 +1437,24 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
                     "(list vs count) is PROVISIONAL and is what the cost measurement prices.",
         },
         "refreshed_at": _dt.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "memory_index": memory_index_path(memory_dir),
+        # ⬛ s294-D6. `memory_index` is now the population's PROVENANCE ANCHOR, and for the repo
+        # mirror that is the NEWEST mirror file — see `mirror_index_path` for why it must be a
+        # file this module does not write. `_checkin.py`'s #293 void fence probes this path.
+        "memory_index": pop_src["index"],
+        "population_index_abs": pop_src["index_abs"],
+        "population_source": pop_src["kind"],
+        "population_root": pop_src["dir"],
+        "population_glob": pop_src["glob"],
+        "population_note": pop_src["note"],
+        # ⛔ WHAT THIS INSTRUMENT CANNOT GRADE — declared in the file AND printed at every
+        # refresh. s294-D6 re-points the grader at the population it CAN read; it does not
+        # pretend that population is the store.
+        "cannot_grade": list(CANNOT_GRADE),
+        # ⚠ s294-D4's ruled aging limit, priced against the population it now grades. A reader
+        # who sees `AGING 0` is owed the reason: on the repo mirror it can be an honest zero
+        # BECAUSE THE WHOLE POPULATION IS YOUNGER THAN THE LIMIT, which is a different fact from
+        # "nothing is aging" and must not be read as the second [[measuring-tool-must-not-guess]].
+        "population_age": population_age(root, memory_dir, hooks, now=now),
         "counts": counts,
         "hooks_seen": len(hooks),
         "unlinked_index_lines": unlinked,
@@ -1097,7 +1468,8 @@ def refresh_arm(root: str, memory_dir: str, fence: "WriteFence | None" = None,
         raise GradesBlock(
             "B3 — the graded POPULATION SHRANK and the refresh will not silently succeed.\n"
             f"        {pop['line']}\n"
-            f"        index : {memory_index_path(memory_dir)}\n"
+            f"        index : {pop_src['index']}\n"
+            f"        source: {pop_src['kind']}  (glob {pop_src['glob']})\n"
             "        A 73% cut reads as 'nothing is stale' exactly the way an EMPTY grade set "
             "does (see parse_memory_index's refusal), and #242's index diet made that cut with "
             "nothing declaring it.\n"
@@ -1308,13 +1680,24 @@ def main(argv: list[str] | None = None) -> int:
             _die(4, *str(exc).splitlines())
         c = doc["counts"]
         print("── B3 REFRESH RECEIPT (grade schema PROVISIONAL — Dave's at review) ──")
-        print(f"index           : {doc['memory_index']}")
+        print(f"population      : {doc.get('population_source', '(unstated)')}")
+        print(f"  glob          : {doc.get('population_glob', '(unstated)')}")
+        print(f"index (anchor)  : {doc['memory_index']}  [repo-relative — the void fence's probe; "
+              f"abs: {doc.get('population_index_abs', '(unstated)')}]")
+        if doc.get("population_note"):
+            print(f"  ⚠ {doc['population_note']}")
+        # ⛔ s294-D6: the declaration is part of the READING, printed every run, never a footnote
+        # the reader has to go and look for.
+        for _cg in doc.get("cannot_grade", []):
+            print(f"  ⛔ CANNOT GRADE: {_cg}")
         if doc["population"]["moved"]:              # dream-11 P1(a) — ADVISORY on a growth
             print(f"⚠ {doc['population']['line']}"
                   + ("  [ACCEPTED by --accept-population-change]"
                      if doc["population"]["shrank"] else ""))
         print(f"hooks graded    : {doc['hooks_seen']}  "
               + " · ".join(f"{k} {c[k]}" for k in GRADE_VOCAB))
+        if doc.get("population_age", {}).get("note"):
+            print(f"  aging arm     : {doc['population_age']['note']}")
         print(f"unlinked lines  : {len(doc['unlinked_index_lines'])} DECLARED, not graded")
         print(f"grade changes   : {len(doc['grade_changes_this_pass'])}"
               + ("  (" + "; ".join(doc["grade_changes_this_pass"][:5]) + ")"
@@ -1529,9 +1912,133 @@ def _grade_fixture(hooks: list[str], make_target: bool = False, bodies: dict | N
     return root, mem, fence
 
 
+def _mkmirror(root: str, lanes: dict[str, str] | None = None) -> list[str]:
+    """Plant a REPO MIRROR population (s294-D6) — `notes/_lanes/<n>/WRAP-MEMORY-HOOK.md`.
+
+    `lanes` maps lane number → file text. Default plants one lane whose index-line section names
+    a repo path that the `_mkrepo` fixture can resolve, so the CONTROL is a real FRESH grade.
+    """
+    lanes = lanes or {"200": (
+        "# #200 — WRAP MEMORY HOOK\n\n"
+        "## THE INDEX LINE (for `index.md`, at the TOP, newest first)\n\n"
+        "```\n- [★★ #200 WRAPPED · a fixture line](wrap-200-fixture.md)\n```\n\n"
+        "## THE FILE BODY\n\nIt lives at `knowledge/_probe_target.py`.\n")}
+    out = []
+    for n, text in lanes.items():
+        d = os.path.join(root, MIRROR_RELDIR, n)
+        os.makedirs(d, exist_ok=True)
+        p = os.path.join(d, "WRAP-MEMORY-HOOK.md")
+        open(p, "w", encoding="utf-8").write(text)
+        out.append(p)
+    return out
+
+
 def selftest_grades() -> int:
     print("B3 GRADE MUTATION TESTS (plant a grade → detect the alert; each shows its CONTROL)")
     ok = True
+
+    # ── ⬛ s294-D4 — THE `provisional` LABEL MAY NOT COME BACK BESIDE EITHER RULED NUMBER ────
+    # PLANT FIRST: feed a mutated copy of this module's own source with the pre-ruling label
+    # restored, and the bite must FIRE and NAME the line. Then the live source, which must be
+    # clean. A green that cannot fail certifies nothing.
+    # D4-BITE-SELF-EXEMPT BEGIN
+    _src = open(os.path.abspath(__file__), encoding="utf-8").read()
+    _planted = _src.replace(
+        "GRADE_AGING_DAYS = 30        # RULED s294-D4",
+        "GRADE_AGING_DAYS = 30        # PROVISIONAL: RULED s294-D4", 1)
+    _fired = provisional_label_bite(_planted)
+    ok &= _t("(d4a) PLANT — `provisional` restored beside GRADE_AGING_DAYS ⇒ bite FIRES, named",
+             len(_fired) == 1 and "GRADE_AGING_DAYS" in _fired[0],
+             f"planted-edit-applied={_planted != _src}; hits={_fired}")
+    _planted2 = _src.replace(
+        "POPULATION_DELTA_THRESHOLD = 5   # RULED s294-D4",
+        "POPULATION_DELTA_THRESHOLD = 5   # PROVISIONAL placeholder, Dave's at review", 1)
+    _fired2 = provisional_label_bite(_planted2)
+    ok &= _t("(d4b) PLANT — `provisional` restored beside POPULATION_DELTA_THRESHOLD ⇒ FIRES",
+             len(_fired2) == 1 and "POPULATION_DELTA_THRESHOLD" in _fired2[0],
+             f"planted-edit-applied={_planted2 != _src}; hits={_fired2}")
+    # D4-BITE-SELF-EXEMPT END
+    _live = provisional_label_bite()
+    ok &= _t("(d4c) CONTROL — the LIVE source carries the label beside neither (s294-D4)",
+             _live == [], f"hits={_live}")
+    ok &= _t("(d4d) the two RULED VALUES are BYTE-UNCHANGED by s294-D4 (30 and 5)",
+             GRADE_AGING_DAYS == 30 and POPULATION_DELTA_THRESHOLD == 5,
+             f"GRADE_AGING_DAYS={GRADE_AGING_DAYS}; "
+             f"POPULATION_DELTA_THRESHOLD={POPULATION_DELTA_THRESHOLD}")
+
+    # ── ⬛ s294-D6 — THE RE-POINT, AND THE VOID FENCE STILL TRIPS ON A MISSING MIRROR ────────
+    # (d6a) mirror PRESENT ⇒ a reading over the mirror, the anchor RESOLVES, and the output
+    #       DECLARES what it cannot grade. (d6b) PLANT: the mirror goes missing AFTER the
+    #       sidecar was written ⇒ the anchor stops resolving, which is exactly the predicate
+    #       `_checkin.py`'s #293 fence uses to print UNKNOWN-not-clean and log `kind:
+    #       alert-void`. (d6c) PLANT: no mirror at refresh time ⇒ LOUD block, never an empty
+    #       (and therefore reassuring) grade set.
+    root = _mkrepo()
+    try:
+        open(os.path.join(root, "knowledge", "_probe_target.py"), "w").write("x\n")
+        _mkmirror(root)
+        fence = WriteFence(root, [], apply_tier1=False)
+        doc = refresh_arm(root, None, fence, dry=True)
+        anchor = doc["population_index_abs"]
+        ok &= _t("(d6a) mirror present ⇒ graded over the MIRROR, anchor resolves, CANNOT-GRADE "
+                 "declared",
+                 doc["population_source"].startswith("repo-mirror")
+                 and doc["memory_index"] == "notes/_lanes/200/WRAP-MEMORY-HOOK.md"
+                 and not os.path.isabs(doc["memory_index"])
+                 and os.path.exists(anchor) and doc["hooks_seen"] == 1
+                 and len(doc["cannot_grade"]) >= 1
+                 and any("UNREACHABLE" in c for c in doc["cannot_grade"]),
+                 f"source={doc['population_source']!r}; anchor={doc['memory_index']!r}; "
+                 f"anchor_exists={os.path.exists(anchor)}; "
+                 f"hooks={doc['hooks_seen']}; cannot_grade={len(doc['cannot_grade'])}")
+        # (d6b) THE PLANT: remove the mirror the sidecar's provenance points at.
+        shutil.rmtree(os.path.join(root, MIRROR_RELDIR), ignore_errors=True)
+        void = not os.path.exists(anchor)
+        ok &= _t("(d6b) PLANT — mirror deleted ⇒ the sidecar's anchor no longer resolves, so the "
+                 "#293 void fence trips (`kind: alert-void`)", void,
+                 f"anchor={anchor}; still_exists={os.path.exists(anchor)}")
+        # (d6c) and a refresh with no mirror at all REFUSES, naming both paths it tried.
+        named = False
+        try:
+            refresh_arm(root, None, WriteFence(root, [], False), dry=True)
+        except GradesBlock as exc:
+            named = "REPO MIRROR" in str(exc) and "REFUSING TO GUESS" in str(exc)
+        ok &= _t("(d6c) PLANT — no mirror at refresh ⇒ LOUD named block, not an empty pass", named,
+                 f"named refusal={named}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+    # (d6d) THE STORE'S OWN FILENAMES ARE NON-REPO BY CONSTRUCTION on the mirror source — the
+    #       false-STALE class. CONTROL: the same token on a MOUNTED store source stays a claim.
+    root = _mkrepo()
+    try:
+        _mkmirror(root, {"201": (
+            "# #201 — WRAP MEMORY HOOK\n\n"
+            "## THE INDEX LINE (for `index.md`, at the TOP, newest first)\n\n"
+            "```\n- [★★ #201 WRAPPED · store paths only](wrap-201-fixture.md)\n```\n\n"
+            "## THE FILE BODY\n\nGoes to `index.md` as `wrap-201-fixture.md`.\n")})
+        doc = refresh_arm(root, None, WriteFence(root, [], False), dry=True)
+        e = doc["entries"][0]
+        ok &= _t("(d6d) a mirror hook naming ONLY store files ⇒ UNPROVABLE with the NON-REPO "
+                 "declaration, never a false STALE",
+                 e["grade"] == "UNPROVABLE" and "NON-REPO" in str(e["probe"].get("source", "")),
+                 f"grade={e['grade']}; probe={e['probe']}; why={_flat(e['why'], 80)!r}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+    # (d6e) POPULATION SOURCE CHANGE IS NOT A SHRINK — the unit arm. A 52 → 23 move across two
+    #       different sources must DECLARE and compute no delta; the same 52 → 23 move WITHIN
+    #       one source must still refuse as a shrink (the dream-11 P1(a) posture, intact).
+    _cross = population_delta(52, 23, prev_source="memory-store-mount",
+                              now_source="repo-mirror (s294-D6)")
+    _within = population_delta(52, 23, prev_source="repo-mirror (s294-D6)",
+                               now_source="repo-mirror (s294-D6)")
+    ok &= _t("(d6e) source change ⇒ INCOMPARABLE, no delta, NOT a shrink; same source ⇒ shrink",
+             _cross.get("incomparable") is True and _cross["shrank"] is False
+             and _cross["delta"] is None and _within["shrank"] is True
+             and _within["delta"] == -29,
+             f"cross={_cross['shrank']}/{_cross['delta']}; within={_within['shrank']}/"
+             f"{_within['delta']}")
     STARRED = "- [★★ Thing](thing.md) — see `knowledge/_probe_target.py` for the probe"
     PLAIN = "- [Thing](thing.md) — see `knowledge/_probe_target.py` for the probe"
     NOPROBE = "- [⛔ Judgment call](judgment.md) — prose only, nothing a machine can re-run"
@@ -1639,9 +2146,21 @@ def selftest_grades() -> int:
         try:
             refresh_arm(root, mem, WriteFence(root, [], False), dry=True)
         except GradesBlock as exc:
-            named = "memory index does not resolve" in str(exc)
-        ok &= _t("(g7) no memory index ⇒ LOUD block, not an empty pass", named,
-                 f"named refusal={named}")
+            # ⬛ s294-D6 RE-AIMED THIS ARM, and the class it bites is UNCHANGED: with no store
+            # index AND no repo mirror there is no population at all, and the refusal must name
+            # BOTH paths it tried rather than only the one it happened to look at first. The
+            # mount-index refusal is still asserted directly below, so neither door is untested.
+            named = ("REPO MIRROR" in str(exc) and "REFUSING TO GUESS" in str(exc)
+                     and "does not resolve" in str(exc))
+        ok &= _t("(g7) no store index AND no repo mirror ⇒ LOUD block naming BOTH, not an empty "
+                 "pass", named, f"named refusal={named}")
+        direct = False
+        try:
+            parse_memory_index(mem)
+        except GradesBlock as exc:
+            direct = "the memory index does not resolve" in str(exc)
+        ok &= _t("(g7b) CONTROL — the MOUNT-source refusal is intact and still names its path",
+                 direct, f"named={direct}")
     finally:
         shutil.rmtree(root, ignore_errors=True); shutil.rmtree(mem, ignore_errors=True)
 

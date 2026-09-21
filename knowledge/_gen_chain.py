@@ -341,6 +341,28 @@ def build_steps_at(sha, repo=ROOT):
         return None, None, str(e)
 
 
+# ★ s294-D1 (DAVE, RULED #294 2026-09-21) — THE GREEN COUNT IS GENERATED TOO, AND FROM A RUN.
+#
+# `s125-D1` made the DENOMINATOR generated and left the numerator pinned to `VERDICT_SHA`: the
+# sentence read "75 of 144 steps green" because 75 was `len(STEPS)` AT `18c7789`, i.e. how many
+# steps EXISTED when #62 went green — a number that cannot move, beside one that moves on its
+# own. ⛔ So the sentence got quietly wronger every time the build grew, and #294 ruled the same
+# shape the same way a second time, explicitly over the hand-correction `s125-D1`'s `watch`
+# field forbids by name.
+#
+# ★ WHERE THE NUMERATOR COMES FROM NOW: `_build_survey.verdict_from_ledger()` — the VERDICT
+# LEDGER, `notes/_BUILD-VERDICT-LOG.jsonl`, written by the instrument that actually asks the
+# steps. ⛔ MEASURED AT #294: no such source existed anywhere in the repo — the survey printed
+# and wrote nothing, there is no CI run record on disk, and no build-verdict ledger. It was built
+# at the survey (the reading), not here (the rendering), for `s125-D1`'s own reason: one slicer.
+#
+# ⚠ THE #62 FIGURE IS NOT DELETED. It is still generated from the AST at `VERDICT_SHA`, and it
+# still answers a question the ledger cannot: how much of today's build has NEVER been in a green
+# verdict. Two facts, reported separately, never summed — the same discipline `s125-D1`'s own
+# enactment decision (1) took when it refused to publish one number for two things.
+#
+# ⛔ AND IT NEVER DEFAULTS. No ledger, no readable record, no sha: the line SAYS SO, in the
+# chain, where the reader is. `s294-D1`'s own instruction for this seat, taken literally.
 def build_verdict_line(repo=ROOT):
     """The GENERATED build-verdict sentence for the chain banner. NEVER a typed count.
 
@@ -354,17 +376,68 @@ def build_verdict_line(repo=ROOT):
                 f"GENERATED, and a generator that guesses is the defect it replaced.")
     dup = "" if now == now_lab else f" ⚠ **{now - now_lab} DUPLICATE label(s)**"
     then, _then_lab, why_then = build_steps_at(VERDICT_SHA, repo)
+    # The #62 clause — generated at its own end, or a named gap. Never a typed 75.
     if then is None:
-        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup} — GENERATED from "
-                f"`_build_all.py`'s AST (`s125-D1`). The #62 green verdict's COVERAGE is "
-                f"UNMEASURED ({why_then}) — a declared gap, not a pass.**")
-    gap = now - then
-    if gap <= 0:
-        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup}; #62's green verdict covered "
-                f"{then} (`{VERDICT_SHA}`) — GENERATED at both ends (`s125-D1`).**")
-    return (f"⛔ **BUILD VERDICT: {then} of {now} steps green (#62, `{VERDICT_SHA}`) — "
-            f"{gap} steps have NEVER been in a green verdict.**{dup} Both counts GENERATED "
-            f"from `_build_all.py`'s AST at each end; the shortfall is computed (`s125-D1`).")
+        sixty2 = (f" ⚠ #62's green verdict's COVERAGE is UNMEASURED ({why_then}) — a declared "
+                  f"gap, not a pass.")
+    elif now - then > 0:
+        sixty2 = (f" ⚠ **{now - then} have never been in the #62 verdict** ({then} existed at "
+                  f"`{VERDICT_SHA}`, from its AST — `s125-D1`).")
+    else:
+        sixty2 = f" #62's verdict covered {then} steps (`{VERDICT_SHA}`, from its AST)."
+
+    v, why = _verdict_from_ledger(repo)
+    if v is None:
+        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup}; THE GREEN COUNT IS NOT DERIVABLE "
+                f"AT THIS SEAT — {why}.** NOT defaulted to a number and NOT re-stamped from an "
+                f"older one (`s294-D1`, and `s125-D1`'s `watch` forbids the hand-fix by name): "
+                f"run `python3 knowledge/_build_survey.py` and the figure becomes readable."
+                f"{sixty2}")
+    stale = "" if v["sha"] == _head_short(repo) else (
+        f" ⚠ **that run is at `{v['sha']}`, HEAD is `{_head_short(repo) or 'UNREADABLE'}` — the "
+        f"verdict is that tree's, not this one's.**")
+    dirty = " ⚠ **measured on a DIRTY tree.**" if v.get("dirty") else ""
+    part = " (assembled from consecutive chunks)" if v.get("partial") else ""
+    unseen = (f" ⛔ **{len(v['unseen'])} step(s) are in NO record — never asked, never green.**"
+              if v["unseen"] else "")
+    conf = (f" ⚠ **{v['conflicts']} step(s) changed verdict inside one sha.**"
+            if v.get("conflicts") else "")
+    return (f"⛔ **BUILD VERDICT: {v['green']} of {v['total']} steps GREEN — {v['fail']} FAIL · "
+            f"{v['refused']} COULD-NOT-ASK · {v['errored']} unaskable · "
+            f"{v['total'] - v['asked']} NOT ASKED (mutating).**{dup} Green GENERATED from the run "
+            f"ledger (`_build_survey.py` @ `{v['sha']}` {v['at'][:10]}{part}, `s294-D1`); total "
+            f"from `_build_all.py`'s AST (`s125-D1`)."
+            f"{stale}{dirty}{unseen}{conf}{sixty2}")
+
+
+def _head_short(repo=ROOT):
+    """The short HEAD sha, or None. Used ONLY to declare staleness, never to derive a count."""
+    import subprocess
+    try:
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=repo,
+                           capture_output=True, text=True, timeout=20)
+        return r.stdout.strip() if r.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def _verdict_from_ledger(repo=ROOT):
+    """The ledger reader, borrowed from the instrument that WRITES it — never re-implemented.
+
+    ⚠ `import _build_survey` is safe and that is not an accident: it reads `_build_all.STEPS`
+    with `ast` and is forbidden by its own docstring from importing it (importing `_build_all`
+    RUNS THE BUILD — it has zero main guards, and that mistake gutted 33 files twice in one
+    session). A second reader of the ledger format here would be the same second-source-of-truth
+    defect this module's `chain_parts` comment argues against.
+    """
+    try:
+        import _build_survey
+    except Exception as e:                       # noqa: BLE001 - reported, never swallowed
+        return None, f"the verdict ledger's reader could not be imported ({e})"
+    try:
+        return _build_survey.verdict_from_ledger(repo)
+    except Exception as e:                       # noqa: BLE001
+        return None, f"the verdict ledger could not be read ({e})"
 
 
 # ⚠ #47 — THE COST ASYMMETRY, AND IT DECIDES WHERE PROSE GOES IN THIS MODULE.
@@ -824,6 +897,44 @@ def selftest():
                  f" {_n} steps" in text or f"of {_n} steps" in text)
             bite("no DUPLICATE step labels are being counted as growth", _n == _lab,
                  ) if _n != _lab else bite("step labels are 1:1 with rows (no duplicates)", True)
+        # ---- s294-D1 (#294): THE GREEN COUNT IS GENERATED FROM A RUN, AND THIS RE-CHECKS IT.
+        # ★ The load-bearing arm is the REFUSAL one. The defect `s294-D1` names is a number that
+        # keeps being published after it stopped being true, so the bite that matters is: with no
+        # source of truth reachable, does the sentence SAY SO — or does it fall back to a figure?
+        # ⚠ The ledger reader is stubbed rather than a temp tree being built, on purpose: the
+        # reader's own paths (absent file, malformed line, chunk union, an older sha's records)
+        # are bitten where the format LIVES, in `_build_survey.selftest` — one format, one place,
+        # one set of bites. What is asserted HERE is what the SENTENCE does with each answer.
+        _real_reader = globals()["_verdict_from_ledger"]
+        try:
+            globals()["_verdict_from_ledger"] = lambda repo=ROOT: (None, "no ledger (planted)")
+            _no = build_verdict_line(ROOT)
+            bite("with NO run record the line says the green count is NOT DERIVABLE",
+                 "NOT DERIVABLE" in _no)
+            bite("…and it names the remedy instead of a number (`_build_survey.py`)",
+                 "_build_survey.py" in _no and "no ledger (planted)" in _no)
+            bite("…and it re-stamps NOTHING — the old pinned 75-of-N form cannot reappear",
+                 " of 75 " not in _no and "75 of" not in _no)
+            bite("…and it names BOTH rulings, so the next session cannot 'helpfully' type it",
+                 "`s294-D1`" in _no and "`s125-D1`" in _no)
+            globals()["_verdict_from_ledger"] = lambda repo=ROOT: ({
+                "green": 7, "fail": 2, "refused": 1, "errored": 0, "skipped": 3, "asked": 10,
+                "total": 13, "sha": "dead123", "at": "2026-01-02T03:04:05", "dirty": False,
+                "records": 1, "conflicts": 0, "malformed": 0, "unseen": [11, 12, 13],
+                "partial": False}, None)
+            _yes = build_verdict_line(ROOT)
+            bite("with a record the GREEN COUNT IS THE RUN'S, not len(STEPS) at a pinned sha",
+                 "7 of 13 steps GREEN" in _yes)
+            bite("the run's sha and date are published beside it (an unattributed verdict is "
+                 "not a verdict)", "`dead123`" in _yes and "2026-01-02" in _yes)
+            bite("a stale record DECLARES itself against HEAD rather than passing as current",
+                 "HEAD is" in _yes)
+            bite("steps in NO record are called out — never asked is never green",
+                 "3 step(s) are in NO record" in _yes)
+            bite("the #62 clause SURVIVES as its own fact, generated from its own AST",
+                 "#62" in _yes and f"`{VERDICT_SHA}`" in _yes)
+        finally:
+            globals()["_verdict_from_ledger"] = _real_reader
         # ⛔ REFUSAL BITE — the figure must go UNMEASURED, by name, rather than default to a
         # number. A measuring tool that guesses is the defect this replaced.
         try:

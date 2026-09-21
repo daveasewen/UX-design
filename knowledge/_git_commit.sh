@@ -158,6 +158,56 @@ if [ "${1-}" = "--declare-dirt" ]; then
   exit 0
 fi
 
+# ── ⬛ s294-D5 — THE PUSH CREDENTIAL'S EXPIRY IS CHECKED, NOT REMEMBERED ─────────────────────
+# `s294-D5` (Dave, 2026-09-21, chat #294): "THE PUSH CREDENTIAL IS NARROWED TO THE SHAPE THE
+# RECORD ALREADY CLAIMS: THIS REPO, CONTENTS READ/WRITE ONLY, NINETY DAYS — RE-ISSUED BEFORE
+# 2026-11-06, WITH THE EXPIRY CHECKED BY THE SCRIPT RATHER THAN REMEMBERED." And its ground, in
+# his own page's words: "a ninety-day scope that nobody re-checks is a ninety-day scope exactly
+# once."
+# ⛔ THE RE-ISSUE ITSELF IS DAVE'S HANDS, AT GITHUB. Nothing here can mint, read or replace a
+# token, and nothing here ever will: this gate reads ONE DATE out of the ledger and compares it
+# to today. It never touches `remote.origin.url`, never echoes it, never logs it. The credential
+# does not appear in this function's inputs or its outputs.
+# ★ THE DATE HAS ONE HOME IN THE REPO and this reads it from there rather than restating it —
+# `notes/_MEMENTO-DECISIONS.md`, the W-24 stamp added at #188 under `s133-D2`. A second copy of a
+# date is a second thing to drift [[premise-ages-faster-than-rule]], which is the whole defect
+# dream pass 6 P4 found: the expiry was written in prose and nothing re-read it.
+PAT_EXPIRY_LEDGER="notes/_MEMENTO-DECISIONS.md"
+PAT_EXPIRY_ANCHOR="EXPIRY STAMPED (W-24"
+PAT_EXPIRY_WARN_DAYS=14
+
+# The ONE date, read from the ONE place. Prints it or prints nothing (never a guess).
+pat_expiry_read() {
+  [ -f "$PAT_EXPIRY_LEDGER" ] || return 0
+  grep -A3 -F "$PAT_EXPIRY_ANCHOR" "$PAT_EXPIRY_LEDGER" 2>/dev/null \
+    | sed -n 's/.*expires \*\*~\{0,1\}\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\)\*\*.*/\1/p' \
+    | head -1
+}
+
+# GNU `date -d` and BSD `date -j -f` both exist in this project's seats (Linux sandbox, his Mac),
+# so neither is assumed. Prints an epoch or nothing.
+pat_epoch_of() {
+  date -d "$1" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$1" +%s 2>/dev/null
+}
+
+# `APOLLO_FAKE_TODAY=YYYY-MM-DD` — the SELFTEST's clock, and it is declared out loud rather than
+# hidden: a gate that can only be exercised by waiting six weeks is a gate nobody has tested.
+# ⚠ It is read ONLY here, and the real clock is the default.
+pat_today() { echo "${APOLLO_FAKE_TODAY:-$(date +%Y-%m-%d)}"; }
+
+# verdict: prints "OK <days>" / "WARN <days>" / "EXPIRED <days>" / "UNREADABLE", exit 0 always.
+pat_expiry_verdict() {
+  local exp today e t days
+  exp=$(pat_expiry_read); today=$(pat_today)
+  [ -n "$exp" ] || { echo "UNREADABLE"; return 0; }
+  e=$(pat_epoch_of "$exp"); t=$(pat_epoch_of "$today")
+  { [ -n "$e" ] && [ -n "$t" ]; } || { echo "UNREADABLE"; return 0; }
+  days=$(( (e - t) / 86400 ))
+  if   [ "$days" -lt 0 ];                       then echo "EXPIRED $days"
+  elif [ "$days" -le "$PAT_EXPIRY_WARN_DAYS" ]; then echo "WARN $days"
+  else                                               echo "OK $days"; fi
+}
+
 # ── PUSH MODE (s133-D2, Dave: "I dont mind if its reasonable gated" → "okay do it") ──────────
 # `bash knowledge/_git_commit.sh --push` — the ONLY push path. Fires ONLY on Dave's explicit
 # in-session word (the caller's attestation, same contract as --reconciled). Gates, each a refusal:
@@ -179,6 +229,34 @@ if [ "$1" = "--push" ]; then
     exit 1
   fi
   git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) — ⛔ do NOT paste it into chat; run this yourself in a terminal: git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git   (W-24 / dream pass 6 P4: the credential never transits the chat; the gate behaves identically. Expiry ~2026-11-06 for the token minted 2026-08-08 — if that date has passed, re-issue rather than re-read this line. ⛔ the token's SCOPE is Dave's security call, unproposed.)"; exit 1; }
+  # ── ⬛ s294-D5 — THE EXPIRY GATE, BEFORE THE PUSH AND AFTER THE CREDENTIAL CHECK ────────────
+  # WARNS inside 14 days, REFUSES past the date, and quotes the date and the ruling either way.
+  # ⛔ Nothing below reads, prints or logs the credential — the date comes from the ledger.
+  PAT_V=$(pat_expiry_verdict); PAT_STATE=${PAT_V%% *}; PAT_DAYS=${PAT_V##* }
+  PAT_EXP=$(pat_expiry_read); PAT_NOW=$(pat_today)
+  case "$PAT_STATE" in
+    EXPIRED)
+      echo "✗ push refused: THE PUSH CREDENTIAL'S STAMPED EXPIRY HAS PASSED — $PAT_EXP, and today is $PAT_NOW ($((0 - PAT_DAYS)) day(s) past it)."
+      echo "  s294-D5 (Dave, 2026-09-21): the credential is this repo, Contents read/write only, ninety days, RE-ISSUED BEFORE 2026-11-06, with the expiry CHECKED BY THE SCRIPT rather than remembered. This is that check, and it is refusing."
+      echo "  REMEDY — DAVE'S HANDS, AT GITHUB, NOT THIS SCRIPT'S AND NOT A SESSION'S: mint a fresh fine-grained PAT (this repo only · Contents read/write only · 90 days), install it in the remote URL yourself in a terminal, and update the stamped date at $PAT_EXPIRY_LEDGER (the W-24 stamp) so this gate reads the new one."
+      echo "  ⛔ The credential NEVER transits the chat and nothing in this repo may ask for it. Nothing has been pushed."
+      exit 1 ;;
+    WARN)
+      echo "⚠ PUSH CREDENTIAL EXPIRES IN $PAT_DAYS DAY(S) — $PAT_EXP (today $PAT_NOW), inside the ${PAT_EXPIRY_WARN_DAYS}-day window."
+      echo "  s294-D5: re-issue before that date — Dave's hands, at GitHub, 90 days, this repo, Contents r/w only. The push PROCEEDS; this is a warning, not a refusal." ;;
+    UNREADABLE)
+      echo "✗ push refused: THE STAMPED EXPIRY COULD NOT BE READ, so s294-D5's check cannot run and this script will not push on a remembered date."
+      echo "  looked for : the line after \"$PAT_EXPIRY_ANCHOR\" in $PAT_EXPIRY_LEDGER, in the form: expires **~YYYY-MM-DD**"
+      echo "  s294-D5 put the expiry IN THE SCRIPT'S HANDS precisely so nobody has to remember it; an unreadable stamp is therefore a refusal, not a pass [[measuring-tool-must-not-guess]]."
+      echo "  DECLARED-GAP HATCH, spelled like its neighbours (DOC_ROW_ACK / SHOWROOM_ACK / SESSION_ACK): PAT_EXPIRY_ACK=\"<real reason, e.g. the stamp moved to <path> at #N>\" bash knowledge/_git_commit.sh --push"
+      if [ -n "${PAT_EXPIRY_ACK:-}" ]; then
+        echo "  — expiry gate: DECLARED GAP — $PAT_EXPIRY_ACK"
+      else
+        echo "  Nothing has been pushed."; exit 1
+      fi ;;
+    OK)
+      echo "— push credential expiry: $PAT_EXP, $PAT_DAYS day(s) out (s294-D5, checked not remembered)" ;;
+  esac
   LOCAL=$(git rev-parse HEAD)
   git push origin master 2>&1 | grep -v "^remote:" || true
   REMOTE=$(git ls-remote origin refs/heads/master | cut -f1)
@@ -278,10 +356,51 @@ if [ "${1-}" = "--selftest" ]; then
   # silent fails). A hatch nothing asserts is a hatch that can be deleted by accident.
   if grep -q 'PREFIX_ACK' "$0"; then echo "  [OK]   PREFIX_ACK hatch present (declared passes, silent fails)";
   else echo "  [FAIL] PREFIX_ACK hatch absent — the door gate has no legal form for a declared exception"; SF_FAILS=$((SF_FAILS + 1)); fi
+  # ── ⬛ s294-D5 — THE EXPIRY GATE, EXERCISED BY A FAKE CLOCK AND NEVER BY THE REAL ONE ───────
+  # PLANT, THEN DETECT. The real clock can only ever say one thing today, so a gate tested
+  # against it is a green that cannot fail. `APOLLO_FAKE_TODAY` moves the clock across the
+  # stamped date; the CONTROL run with the fake clock unset proves the default is the real date.
+  echo "— s294-D5 push-credential expiry gate selftest (fake clock: APOLLO_FAKE_TODAY)"
+  SF_EXP=$(pat_expiry_read)
+  bite "the stamped expiry is READ from the ledger, one place, one date" "2026-11-06" "$SF_EXP"
+  bite "far out (2026-01-01) ⇒ OK"        "OK"      "$(APOLLO_FAKE_TODAY=2026-01-01 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "15 days out (2026-10-22) ⇒ OK — the boundary is NOT off by one" "OK" "$(APOLLO_FAKE_TODAY=2026-10-22 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "14 days out (2026-10-23) ⇒ WARN"  "WARN"    "$(APOLLO_FAKE_TODAY=2026-10-23 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "1 day out (2026-11-05) ⇒ WARN"    "WARN"    "$(APOLLO_FAKE_TODAY=2026-11-05 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "the day itself (2026-11-06) ⇒ WARN, not yet expired" "WARN" "$(APOLLO_FAKE_TODAY=2026-11-06 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "one day past (2026-11-07) ⇒ EXPIRED" "EXPIRED" "$(APOLLO_FAKE_TODAY=2026-11-07 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "long past (2027-03-01) ⇒ EXPIRED" "EXPIRED" "$(APOLLO_FAKE_TODAY=2027-03-01 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "days-remaining is COMPUTED, not narrated (2026-10-30 ⇒ 7)" "7" "$(APOLLO_FAKE_TODAY=2026-10-30 pat_expiry_verdict | cut -d' ' -f2)"
+  # an UNREADABLE stamp refuses rather than passes — the ledger path moved out from under it
+  bite "an unreadable stamp ⇒ UNREADABLE (a refusal, never a pass)" "UNREADABLE" \
+       "$(PAT_EXPIRY_LEDGER=/nonexistent/_no-ledger.md pat_expiry_verdict)"
+  # CONTROL: unset, the gate uses the REAL date — asserted as a shape, never as today's value
+  bite "with no fake clock the gate reads the REAL date (YYYY-MM-DD shape)" "1" \
+       "$(pat_today | grep -c '^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}$')"
+  # ⛔ s294-D5's second clause: NO refusal message may tell the reader to put a credential into
+  # the chat. Asserted as a COUNT OF UNNEGATED 'paste' INSTRUCTIONS, so it bites a new one too.
+  bite "no refusal instructs pasting a credential into chat (s294-D5)" "0" \
+       "$(grep -o 'echo "[^"]*paste[^"]*"' "$0" | grep -vc 'do NOT paste' || true)"
+  # ⛔ AND THE CREDENTIAL IS ONLY EVER *TESTED*, NEVER PRINTED. The remote URL carries the token,
+  # so `git config remote.origin.url` must always be piped into a quiet test — never left to
+  # reach stdout, a log or a message. Asserted as the count of lines that read it WITHOUT one.
+  bite "the credential is only TESTED, never printed (no unpiped git config remote.origin.url)" "0" \
+       "$(grep -vn '^[[:space:]]*#' "$0" | grep 'git config remote\.origin\.url' | grep -v 'grep -q' | grep -vc 'bite ' || true)"
+  # ⚠ THE ONE THING THESE BITES CANNOT REACH, DECLARED RATHER THAN IMPLIED: `--push` end to end.
+  # At a sandbox seat there is no credential in the remote URL, so `--push` refuses at the
+  # credential gate and never reaches the expiry gate — and a seat that COULD reach it would
+  # push. So the gate's LOGIC is bitten above through `pat_expiry_verdict` (the exact function
+  # the push path branches on), and its POSITION is bitten here: after the credential check,
+  # before `git push`. Order is the part a unit test of the verdict cannot see.
+  SF_CRED_LN=$(grep -n 'git config remote\.origin\.url | grep -q' "$0" | head -1 | cut -d: -f1)
+  SF_GATE_LN=$(grep -n '^  PAT_V=\$(pat_expiry_verdict)' "$0" | head -1 | cut -d: -f1)
+  SF_PUSH_LN=$(grep -n '^  git push origin master' "$0" | head -1 | cut -d: -f1)
+  bite "the expiry gate sits AFTER the credential check and BEFORE the push" "1" \
+       "$([ -n "$SF_GATE_LN" ] && [ "$SF_CRED_LN" -lt "$SF_GATE_LN" ] && [ "$SF_GATE_LN" -lt "$SF_PUSH_LN" ] && echo 1 || echo 0)"
   if [ "$SF_FAILS" -ne 0 ]; then
     echo "✗ selftest FAILED — $SF_FAILS bite(s)"; exit 1
   fi
-  echo "✓ selftest OK — 14 bites: 6 fire, 7 stay silent, 1 hatch present"
+  echo "✓ selftest OK — 28 bites: 6 fire, 7 stay silent, 1 hatch present, 14 on the s294-D5 expiry gate"
   exit 0
 fi
 

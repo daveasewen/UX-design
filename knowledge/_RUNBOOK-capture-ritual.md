@@ -139,6 +139,20 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
      ```
      > **size:** GM 25.6K tk · chain 43.5K tk · measured <date> (tiktoken cl100k_base)
      ```
+     ⛔★ **THE FIGURES ARE NOT TYPED — RUN THE GENERATOR. `s294-D8` (Dave, ruled #294), the same ruling
+     shape as `s125-D1`:** the GM / LS / corpus figures, their unit word and the `measured <date>` date are
+     written by a script, **at this step, DECLARE-LAST**, with the fixed-point iteration included (the stamp
+     measures a region that contains it, the #240 lesson):
+     ```
+     python3 knowledge/_gen_size_stamp.py --write     # then read its stdout into the residual
+     python3 knowledge/_gen_size_stamp.py --check      # the build step (`_build_all.py`, wired #294)
+     ```
+     ⚠️ **It writes ONLY the figures, the unit word and the date** — every other word on that line, including
+     the drift narration and the §A probe, is yours. **§A is NOT generated** (a different instrument,
+     `_gm_usage.py`; the two are never reconciled or averaged) and **neither is the session ordinal** (a label,
+     not a measurement). ⚠️ If it REFUSES (exit 77 `COULD-NOT-ASK`, or an oscillation refusal) **publish the
+     refusal in the residual and do not hand-type the figure it would not write** — that is the act the ruling
+     forbids by name, and `--check`'s form arm reports it.
      The gate **measures the file and checks the stamp against its own measurement** (>10% drift = FAIL),
      so a stale stamp is caught rather than believed. ⚠️ **Measure, never convert by rule of thumb:** this
      corpus runs at **3.53 bytes/token**, not the customary 4 — its ★ ⚠ ⛔ · — load makes it ~13% denser,
