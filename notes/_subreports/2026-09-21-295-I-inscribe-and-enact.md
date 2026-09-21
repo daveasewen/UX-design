@@ -252,7 +252,7 @@ Remedy run **exactly as the gate wrote it, in that order**: `_render_rulings.py`
 `W-295i`, minted through `_state.add()` before staging, with a **true** close condition (the arm
 refuses without one, and inventing one is the smaller cousin of inventing his ruling).
 
-## THE COMMIT — `95cb58dd`, ONE REFUSAL PAID
+## THE COMMITS — `95cb58dd` + `9d8c728b`, THREE REFUSALS PAID
 
 `95cb58dd` — **9 files changed, 718 insertions, 20 deletions**, 2 created.
 
@@ -294,11 +294,13 @@ and `notes/_lanes/294/WRAP-MEMORY-HOOK.md`, **owed to the conductor** (§ OWED 1
 would mean minting a doc row on another seat's behalf and freezing work still moving. The script's
 own line: `⚠ 2 dirty path(s) NOT staged — deliberate under explicit-path staging`.
 
-### THE LOCKS — TWO RENAMED ON-DEVICE, ZERO `rm`'d
+### THE LOCKS — THREE RENAMED ON-DEVICE, ZERO `rm`'d
 
-`.git/index.lock` (0 bytes) existed at the pre-commit check and was `mv`'d to
-`notes/_lanes/_orphan-locks/stale-index.lock-295-I-2000`; a second respawned before the retry and
-went to `stale-index.lock-295-I-<HHMMSS>`. `.git/HEAD.lock` and `.git/refs/heads/master.lock` were
+**THREE, named in full because a count is not a record:** `stale-index.lock-295-I-2000` ·
+`stale-index.lock-295-I-200108` · `stale-index.lock-295-I-200246`, all under
+`notes/_lanes/_orphan-locks/`. ⚠ **ONE PER GIT-WRITE ATTEMPT, INCLUDING THE TWO THAT WERE
+REFUSED** — `_HANDOFF-145`'s correction that `git status` ALONE strands a lock reproduced exactly
+at this seat, three times. `.git/HEAD.lock` and `.git/refs/heads/master.lock` were
 **absent at both checks**. ⛔ **Nothing was ever `rm`'d** — this mount refuses `unlink`
 (`s282-D4`), and the script's own
 `warning: unable to unlink … Operation not permitted` is git failing to clean up after itself, not
@@ -342,8 +344,8 @@ a foreign lock. The script closed on `✓ done — locks clear`.
   fresh) · `_gen_chain --check` · the two new arms direct · `_checkin --window 200000 --no-block`
 - ⛔ **`_capture_gate.py --selftest` NOT RUN WHOLE** — call wall; narrowest probe run instead and
   **declared**, not claimed
-- doc rows minted **1** (`W-295i`, population 772 → 773) · commits **2** (`95cb58dd`, + this report completed) · pushes **0** · locks `rm`'d **0** · locks renamed on-device **2**
-- refusals paid **2**: `s263-D10` stale rulings page (mine, cleared by re-render) · the step-0.5 reconcile gate (2 dirty paths belonging to other seats, accounted for and deliberately unstaged)
+- doc rows minted **1** (`W-295i`, population 772 → 773) · commits **2** (`95cb58dd`, + this report completed) · pushes **0** · locks `rm`'d **0** · locks renamed on-device **3**
+- refusals paid **3**: `s263-D10` stale rulings page (mine, cleared by re-render) · the step-0.5 reconcile gate (2 dirty paths belonging to other seats, accounted for and deliberately unstaged) · `_gen_chain.py --check` staleness on the SECOND commit — cause measured: `_CHAIN.md` renders the live HEAD sha in its BUILD VERDICT line, so **this lane's own first commit is what took the chain stale**, a sibling of #294 lane I's doc-row finding and worth the same runbook line
 
 ### UNPROVEN, named rather than implied
 
