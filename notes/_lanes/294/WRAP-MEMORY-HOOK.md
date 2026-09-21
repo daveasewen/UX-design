@@ -137,6 +137,15 @@ override shape STAYS AT n=2 and nothing is inferred from this session.**
 
 ### OPEN, DAVE'S — every one a QUESTION PUT AT THE WRAP CALL, not a state of the world
 
+> **OPEN, DAVE'S:** the push and a CI read-back job by job over the six local commits, and it is not routine — put to Dave at the wrap call · who stamps `status: enacted` on a ruling and with what evidence pointer, when eleven of twelve are enacted and none is stamped — put to Dave at the wrap call · whether the `s294-D2` arm gets a consumer at the commit seam, where `_git_commit.sh` gates at `:646` and stages at `:896` — put to Dave at the wrap call · whether lane B's premise correction on `s294-D2` (145 of 375, not the inscribed 173 of 363) is amended by addition or carried in the lane report — put to Dave at the wrap call · whether `knowledge/_parked.py` grows a closing writer now that `P-293-1` is answered by `s294-D7` — put to Dave at the wrap call · the re-issue of the push token before 2026-11-06, which is his hands and which `s294-D5` can date but never scope — put to Dave at the wrap call · what to do about boot 74,656 against the shrink-only ceiling of 70,000 with seven post-diet readings already over it — put to Dave at the wrap call · whether the `s241-D2` banner cap of 1,200 tape still constrains girth or now shapes the record, at a second consecutive wrap with zero headroom — put to Dave at the wrap call · Friday the 25th and everything #292 and #293 owed on the deck, the workers, the dashboard and the drawings — put to Dave at the wrap call · whether the other worker's J5, J6, J7 and its two idea notes are reconciled at #295 or left where they stand — put to Dave at the wrap call
+
+*(The line above is the machine-read form `_capture_gate.hook_open_items_recheck` (`s271-D4`,
+ADVISORY) parses: `HOOK_OPEN_LABEL_RE` wants the label and a colon on one line, and every segment
+carries the ruling's own legal phrase, so each item PASSES as a question rather than being graded as
+a claim about the world. ⚠ **The numbered list below is the same ten items for a human reader and is
+the authority on their bodies; the line above exists so the arm is not silently blind.** The
+heading's own prose form read **0 items** at this wrap, which is how the blindness was found.)*
+
 1. **The push, and a CI read-back job by job — and it is not routine.** Six commits are LOCAL:
    `dd374131` · `ea930e72` · `698d8ddf` · `e31aa34b` · `f81bbdd4` and the wrap's own. **No CI run
    exists on any of them and none is claimed.** The wave touched `_capture_gate.py`,
