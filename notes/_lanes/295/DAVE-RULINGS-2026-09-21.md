@@ -27,3 +27,7 @@ Authority for TWO rulings, s295-D1 and s295-D2 (texts in the lane I brief and in
 > inscribe
 
 Authority for s295-D4: the boot-ceiling regime boundary (`BOOT_CEILING_FROM_SESSION`) moves 241 → 295 — the post-switch-off boots are a new regime; the seven pre-switch-off readings are history, reported never charged. Put to him as "the only thing that closes the last fail"; his whole reply was "inscribe". The three builds (status writer, chain --check HEAD-clause fix, push-script dirt-gate declaration) were named as the conductor's own and need no word.
+
+> wrap
+
+His whole reply to the seam reading 214,824 real / 23 turns quoted past the 180,000 quality line, inside the 220,000 tolerance, with the wrap recommended. Stopped ON the instrument. Date at the wrap brief: `Tue Sep 22 07:58:54 BST 2026` — the session opened Mon 2026-09-21 and the ritual runs 2026-09-22: a DATE SPLIT in the s294-D11 shape.
