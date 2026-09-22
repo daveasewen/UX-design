@@ -190,7 +190,7 @@ def build(src, dst, chapters, must=('you can bank on',)):
 PLAIN_CHAPTERS = '''  chapters: [
     {n:1, title:'Problem',     id:'s3',  subs:[]},
     {n:2, title:'Research',    id:'s5x', subs:['s5r']},
-    {n:3, title:'Evaluation',  id:'s4p', subs:['s6','s7','s8','s7b','s6b','s10','s10map']},
+    {n:3, title:'Evaluation',  id:'s4p', subs:['s6','s7','s8','s6b','s10','s10map']},
     {n:4, title:'The result',  id:'s9',  subs:[]},
     {n:5, title:'The ask',     id:'s11', subs:['s12']}
   ]

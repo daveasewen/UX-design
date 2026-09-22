@@ -251,18 +251,18 @@ table.strip tr.sum td{border-bottom:none;padding-top:12px;font-weight:500}
    else. Each drawing's own canvas is white-filled, so it is its own ground
    — which is the card treatment all three now share, unchanged from the
    gearbox's: white plane, no border, the .inner grid as its only inset. */
-#s4,#s5,#s6,#s7,#s8{background:var(--white);}
-#s4 .inner,#s5 .inner,#s6 .inner,#s7 .inner,#s8 .inner{max-width:1360px;display:grid;grid-template-columns:minmax(0,38fr) minmax(0,58fr);
+#s4,#s5,#s6,#s7,#s7b,#s8{background:var(--white);}
+#s4 .inner,#s5 .inner,#s6 .inner,#s7 .inner,#s7b .inner,#s8 .inner{max-width:1360px;display:grid;grid-template-columns:minmax(0,38fr) minmax(0,58fr);
   gap:var(--s5);align-items:center;}
-#s4 .type,#s5 .type,#s6 .type,#s7 .type,#s8 .type{min-width:0;}
-#s4 h2,#s5 h2,#s6 h2,#s7 h2,#s8 h2{margin:0;font-size:clamp(24px,2.5vw,34px);line-height:1.15;}
-#s4 .lead,#s5 .lead,#s6 .lead,#s7 .lead,#s8 .lead{font-size:clamp(16px,1.35vw,19px);line-height:1.5;margin-top:var(--s3);}
-#s4 .body,#s5 .body,#s6 .body,#s7 .body,#s8 .body{font-size:15px;line-height:1.65;margin-top:var(--s3);}
-#s4 .foot,#s5 .foot,#s6 .foot,#s7 .foot,#s8 .foot{margin-top:var(--s4);}
+#s4 .type,#s5 .type,#s6 .type,#s7 .type,#s7b .type,#s8 .type{min-width:0;}
+#s4 h2,#s5 h2,#s6 h2,#s7 h2,#s7b h2,#s8 h2{margin:0;font-size:clamp(24px,2.5vw,34px);line-height:1.15;}
+#s4 .lead,#s5 .lead,#s6 .lead,#s7 .lead,#s7b .lead,#s8 .lead{font-size:clamp(16px,1.35vw,19px);line-height:1.5;margin-top:var(--s3);}
+#s4 .body,#s5 .body,#s6 .body,#s7 .body,#s7b .body,#s8 .body{font-size:15px;line-height:1.65;margin-top:var(--s3);}
+#s4 .foot,#s5 .foot,#s6 .foot,#s7 .foot,#s7b .foot,#s8 .foot{margin-top:var(--s4);}
 #s6 .switch,#s7 .switch{margin-top:var(--s4);font-size:13px;}
-#s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s8 .draw{position:relative;min-width:0;width:100%;height:min(76vh,820px);}
-#s4 canvas,#s5 canvas,#s6 canvas,#s7 canvas,#s8 canvas{display:block;width:100%;height:100%;}
-#s4 #lwPrint,#s5 #lnPrint,#s6 #ctPrint,#s7 #brPrint,#s8 #cpPrint{display:none;width:100%;height:100%;object-fit:contain;}
+#s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s7b .draw,#s8 .draw{position:relative;min-width:0;width:100%;height:min(76vh,820px);}
+#s4 canvas,#s5 canvas,#s6 canvas,#s7 canvas,#s7b canvas,#s8 canvas{display:block;width:100%;height:100%;}
+#s4 #lwPrint,#s5 #lnPrint,#s6 #ctPrint,#s7 #shlPrint,#s7b #brPrint,#s8 #cpPrint{display:none;width:100%;height:100%;object-fit:contain;}
 /* v10: the arm is drawn only to be baked into the 10 anatomy - it has no
    card of its own, so its canvas lives off-screen at a fixed 600x420. */
 #amHost{position:fixed;left:-3000px;top:0;width:600px;height:420px;pointer-events:none;z-index:-2;}
@@ -272,8 +272,8 @@ table.strip tr.sum td{border-bottom:none;padding-top:12px;font-weight:500}
    bakes from gbPrint, so the gearbox draws once, off-screen, and stays still. */
 #gbHost{position:fixed;left:-3000px;top:0;width:600px;height:420px;pointer-events:none;z-index:-2;}
 @media(max-width:900px){
-  #s4 .inner,#s5 .inner,#s6 .inner,#s7 .inner,#s8 .inner{grid-template-columns:minmax(0,1fr);}
-  #s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s8 .draw{height:min(52vh,460px);}
+  #s4 .inner,#s5 .inner,#s6 .inner,#s7 .inner,#s7b .inner,#s8 .inner{grid-template-columns:minmax(0,1fr);}
+  #s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s7b .draw,#s8 .draw{height:min(52vh,460px);}
 }
 /* §2 · eight chapters, not five — the strip is titles only in v9 */
 #s2 .chapters{grid-template-columns:repeat(5,1fr);gap:var(--s3) var(--s4);}
@@ -396,11 +396,11 @@ table.kpi td.tg{color:var(--black)}
   .ask{font-size:36px} #s12 .close-line{font-size:28px}
   #s2 h2{font-size:28px}
   /* sections 4, 5, 6, 7 and 8 print the resting frame of their drawing */
-  #s4 canvas,#s5 canvas,#s6 canvas,#s7 canvas,#s8 canvas{display:none!important}
-  #s4 #lwPrint,#s5 #lnPrint,#s6 #ctPrint,#s7 #brPrint,#s8 #cpPrint{display:block!important}
-  #s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s8 .draw{height:560px}
-  #s4 h2,#s5 h2,#s6 h2,#s7 h2,#s8 h2{font-size:30px}
-  #s4 .lead,#s5 .lead,#s6 .lead,#s7 .lead,#s8 .lead{font-size:17px}
+  #s4 canvas,#s5 canvas,#s6 canvas,#s7 canvas,#s7b canvas,#s8 canvas{display:none!important}
+  #s4 #lwPrint,#s5 #lnPrint,#s6 #ctPrint,#s7 #shlPrint,#s7b #brPrint,#s8 #cpPrint{display:block!important}
+  #s4 .draw,#s5 .draw,#s6 .draw,#s7 .draw,#s7b .draw,#s8 .draw{height:560px}
+  #s4 h2,#s5 h2,#s6 h2,#s7 h2,#s7b h2,#s8 h2{font-size:30px}
+  #s4 .lead,#s5 .lead,#s6 .lead,#s7 .lead,#s7b .lead,#s8 .lead{font-size:17px}
   #amHost{display:none!important}
   #bkHost{display:none!important}
   #gbHost{display:none!important}
@@ -425,7 +425,7 @@ table.kpi td.tg{color:var(--black)}
       <p class="sub">A governed engine for designing with AI — on brand, accessible, at&nbsp;speed.</p>
     </div>
   </div>
-  <div class="pagenum">01 / 15</div>
+  <div class="pagenum">01 / 16</div>
 </section>
 
 <!-- ===== v14-plain (#296 lane B) · 2 · What you'll see — six beats, no metaphor ===== -->
@@ -434,58 +434,38 @@ table.kpi td.tg{color:var(--black)}
   <div class="lift"></div>
   <img id="kgPrint2" alt="">
   <div class="inner">
-    <p class="label rv">How this goes</p>
+    <p class="label rv">The order of play</p>
     <h2 class="rv d1" style="font-size:clamp(28px,3vw,40px);margin-bottom:var(--s5);max-width:22em;text-wrap:balance">
       What you&rsquo;ll see in the next 15&ndash;20&nbsp;minutes.</h2>
-    <ol class="chapters rv d2" style="grid-template-columns:repeat(6,1fr)">
-      <li><span class="n">1</span><b>Observation<em>dev got fast</em></b></li>
-      <li><span class="n">2</span><b>Problem<em>why design is slow</em></b></li>
-      <li><span class="n">3</span><b>Analysis<em>breaking it down</em></b></li>
-      <li><span class="n">4</span><b>Experiment<em>agentic loops</em></b></li>
-      <li><span class="n">5</span><b>Results<em>what we saw</em></b></li>
-      <li><span class="n">6</span><b>Response<em>the library &middot; the graph</em></b></li>
+    <ol class="chapters rv d2" style="grid-template-columns:repeat(4,1fr)">
+      <li><span class="n">1</span><b>Problem<em>what we noticed</em></b></li>
+      <li><span class="n">2</span><b>Research<em>what we tested &middot; what we saw</em></b></li>
+      <li><span class="n">3</span><b>Evaluation<em>the library &middot; the graph &middot; the gates</em></b></li>
+      <li><span class="n">4</span><b>The result<em>demo &middot; what she is made of</em></b></li>
     </ol>
   </div>
-  <div class="pagenum">02 / 15</div>
+  <div class="pagenum">02 / 16</div>
 </section>
 
 <!-- ===== 3 · Observation — v13 s3, label only re-named ===== -->
 <section class="slide dark" id="s3">
   <div class="inner">
-    <p class="label rv">Observation</p>
-    <h2 class="rv d1"><b>Dev got fast.</b></h2>
-    <p class="lead rv d2">Build fast, test with real, shippable code. Design became the bottleneck.</p>
-    <p class="lead rv d3" style="margin-top:var(--s3)">So we asked: how do we speed up design?</p>
+    <p class="label rv">What we noticed</p>
+    <h2 class="rv d1"><b>&lsquo;Agile&rsquo; was sluggish.</b></h2>
+    <p class="lead rv d2">Agile delivery was stuck in waterfall, including design. Coupled with long delivery cycles, we were meeting too few user needs and delivering them too late.</p>
+    <p class="lead rv d3" style="margin-top:var(--s3)">So we asked: can we speed up design with the help of AI?</p>
     <p class="foot rv d4">That question was the first experiment.</p>
   </div>
-  <div class="pagenum">03 / 15</div>
+  <div class="pagenum">03 / 16</div>
 </section>
 
 <!-- ===== 4 · Problem — the SPEED flow from Dave's whiteboard, broken down ===== -->
-<section class="slide" id="s4p">
-  <div class="inner">
-    <p class="label rv">Problem &middot; speed</p>
-    <h2 class="rv d1">Why is design slow? <b>Five causes.</b></h2>
-    <div class="c5 rv d2">
-      <p class="grp sp">Speed</p>
-      <p class="grp all">All &middot; shared with consistency and quality</p>
-      <div><p class="ix">01</p><h3>Governance process</h3><p>It is a queue. Every component waits its turn for review.</p></div>
-      <div><p class="ix">02</p><h3>2 stage process (Figma + Code&nbsp;library)</h3><p>Every component is designed twice: once in Figma, once in code.</p></div>
-      <div><p class="ix">03</p><h3>Small component library</h3><p>Too few parts, so designers draw the rest from scratch.</p></div>
-      <div><p class="ix">04</p><h3>Lack of design standards and accessibility knowledge</h3><p>With no written rules, each decision is made again, and accessibility is fixed late.</p></div>
-      <div><p class="ix">05</p><h3>Low/variable skills</h3><p>How good and how fast the work is depends on who picks it up.</p></div>
-    </div>
-    <p class="foot rv d3">From the whiteboard: Current problems &rarr; Speed, which runs into its own group and into All.</p>
-  </div>
-  <div class="pagenum">04 / 15</div>
-</section>
 
 <!-- ===== 5 · Analysis + experiment — v13 s5, de-metaphored ===== -->
 <section class="slide grey" id="s5x">
   <div class="inner">
-    <p class="label rv">Analysis &middot; the experiment</p>
-    <h2 class="rv d1">Built only from the 36 components. <b>Then the work, and the output, checked.</b></h2>
-    <p class="lead rv d2">The agent never invents a part. Anything missing is raised as a gap &mdash; never improvised.</p>
+    <p class="label rv">What we tested</p>
+    <h2 class="rv d1">Built from the 36 components available. <b>The work checked automatically and by a human.</b></h2>
     <div class="xl rv d3">
       <ol class="steps">
         <li class="k1"><p class="sh">1 &middot; Intake</p><p class="sb">The brief, its jobs and assumptions.</p></li>
@@ -499,28 +479,43 @@ table.kpi td.tg{color:var(--black)}
     </div>
     <p class="foot rv d4">June&ndash;July 2026: one brief, two arms &mdash; governed and ungoverned &mdash; both on Opus.</p>
   </div>
-  <div class="pagenum">05 / 15</div>
+  <div class="pagenum">04 / 16</div>
 </section>
 
 <!-- ===== 6 · Results — what was observed at that point (v13 s5's finding, de-metaphored) ===== -->
 <section class="slide dark" id="s5r">
   <div class="inner">
-    <p class="label rv">Results &middot; what we saw</p>
+    <p class="label rv">What we saw</p>
     <h2 class="rv d1">Where the component library was empty, <b>the agents invented parts &mdash; and got them&nbsp;wrong.</b></h2>
     <p class="lead rv d2">Our designers were doing exactly the same thing.</p>
     <p class="lead rv d3" style="margin-top:var(--s3)">The problem was always there. Automating it made it obvious.</p>
   </div>
-  <div class="pagenum">06 / 15</div>
+  <div class="pagenum">05 / 16</div>
+</section>
+
+<section class="slide" id="s4p">
+  <div class="inner">
+    <p class="label rv">What can we improve</p>
+    <h2 class="rv d1"><b>We asked: what else is slowing design?</b></h2>
+    <div class="c5 rv d2">
+      <div><p class="ix">01</p><h3>Governance process</h3><p>It is a queue. Every component waits its turn for review.</p></div>
+      <div><p class="ix">02</p><h3>2 stage process (Figma + Code&nbsp;library)</h3><p>Every component is designed twice: once in Figma, once in code.</p></div>
+      <div><p class="ix">03</p><h3>Small component library</h3><p>Too few parts, so designers draw the rest from scratch.</p></div>
+      <div><p class="ix">04</p><h3>Lack of design standards and accessibility knowledge</h3><p>With no written rules, each decision is made again, and accessibility is fixed late.</p></div>
+      <div><p class="ix">05</p><h3>Low/variable skills</h3><p>How good and how fast the work is depends on who picks it up.</p></div>
+    </div>
+    <p class="foot rv d3">From the whiteboard: Current problems &rarr; Speed, which runs into its own group and into All.</p>
+  </div>
+  <div class="pagenum">06 / 16</div>
 </section>
 
 <!-- ===== 7 · Response 1 — the component library (v13 s6; the catalogue canvas, verbatim) ===== -->
 <section class="slide" id="s6">
   <div class="inner">
     <div class="type">
-      <p class="label rv">Response 1 &middot; the component library</p>
+      <p class="label rv">The component library</p>
       <h2 class="rv d1"><b>The first improvement:</b> the catalogue went from 36 to&nbsp;137.</h2>
       <p class="lead rv d2">125 components, 12 templates, 8 foundations &mdash; 101 new &mdash; each one in code, built to our design and accessibility standards.</p>
-      <p class="switch rv d3">Switch to the library</p>
       <p class="foot rv d4">Source: showroom/index.json, read 2026-09-22. Growing.</p>
     </div>
     <div class="draw rv d2">
@@ -528,14 +523,68 @@ table.kpi td.tg{color:var(--black)}
       <img id="ctPrint" alt="">
     </div>
   </div>
-  <div class="pagenum">07 / 15</div>
+  <div class="pagenum">07 / 16</div>
 </section>
 
 <!-- ===== 8 · The other two — consistency and quality; the whiteboard rebuilt slide-native ===== -->
+
+<!-- ===== 9 · Response 2 — the knowledge graph joins it all (v13 s7; #296 E: the shells graph replaces the brain) ===== -->
+<section class="slide" id="s7">
+  <div class="inner">
+    <div class="type">
+      <p class="label rv">The knowledge graph</p>
+      <h2 class="rv d1">The second: <b>we started to build a knowledge graph that joined everything together.</b></h2>
+      <p class="lead rv d2">Standards, accessibility, rulings, governance, usage and theory &mdash; in one graph, retrieved at build time.</p>
+      <p class="body rv d3">Every build comes with a record of account.</p>
+      <p class="foot rv d5">4,820 nodes &middot; 8,648 edges &middot; explorer builder 1.27, 2026-09-19.</p>
+    </div>
+    <div class="draw rv d2">
+      <canvas id="shl"></canvas>
+      <img id="shlPrint" alt="">
+    </div>
+  </div>
+  <div class="pagenum">08 / 16</div>
+</section>
+
+
+<!-- ===== 10 · Gates and evals — the same graph rechecks the work (v13 s8; the callipers canvas, verbatim) ===== -->
+<section class="slide" id="s8">
+  <div class="inner">
+    <div class="type">
+      <p class="label rv">Gates and evals</p>
+      <h2 class="rv d1">Third: <b>the system checks and rechecks its own work.</b></h2>
+      <p class="lead rv d2">Gates and evals are the quality control: every build is checked against the standards it was built from.</p>
+      <p class="body rv d3">Corrections are made at the check, not sent back to the start.</p>
+    </div>
+    <div class="draw rv d2">
+      <canvas id="cp"></canvas>
+      <img id="cpPrint" alt="">
+    </div>
+  </div>
+  <div class="pagenum">09 / 16</div>
+</section>
+
+<!-- ===== 10b · The designer's brain (#296 lane E; the brain canvas moved here from s7, rest angle -50 / 20 / 33).
+     Headline and lead are DRAFT FOR DAVE'S WORDS. ===== -->
+<section class="slide" id="s7b">
+  <div class="inner">
+    <div class="type">
+      <p class="label rv">The designer&rsquo;s brain</p>
+      <h2 class="rv d1">Fourth: <b>a designer&rsquo;s judgement, built into the system.</b></h2>
+      <p class="lead rv d2">The parts and the knowledge are not enough on their own &mdash; the brain is the judgement to compose from them, the way an experienced designer would.</p>
+    </div>
+    <div class="draw rv d2">
+      <canvas id="br"></canvas>
+      <img id="brPrint" alt="">
+    </div>
+  </div>
+  <div class="pagenum">10 / 16</div>
+</section>
+
 <section class="slide grey" id="s6b">
   <div class="inner">
-    <p class="label rv">Consistency and quality</p>
-    <h2 class="rv d1">It confirmed what we always knew &mdash; <b>and a chance to solve three things at&nbsp;once.</b></h2>
+    <p class="label rv">Speed, consistency, and quality</p>
+    <h2 class="rv d1">In truth it confirmed much of what we already knew <b>and gave us the opportunity to solve three things at&nbsp;once.</b></h2>
     <div class="wb rv d2" aria-label="Current problems: speed, consistency and quality, and what they share">
       <div class="wb-h sp"><span>Speed</span></div>
       <div class="wb-h co"><span>Consistency</span></div>
@@ -548,61 +597,177 @@ table.kpi td.tg{color:var(--black)}
       <div class="wb-g all"><p class="gl">All &middot; shared by all three</p><ul><li>Small component library</li><li>Lack of design standards and accessibility knowledge</li><li>Low/variable skills</li></ul></div>
       <div class="wb-g qu"><p class="gl">Quality</p><ul><li>Lack of data and research</li><li>AI generation quality (slop)</li></ul></div>
     </div>
-    <div class="wb-out rv d3">
-      <p class="ai">Introduce AI to build solutions <span aria-hidden="true">&rarr;</span></p>
-      <div class="ap"><p class="gl">Apollo</p><ul><li>Gates and evals</li><li>Full library in code</li><li>A graph that holds all the tokens, components, standards and compliance</li></ul></div>
-      <div class="rg"><p class="gl">Another group</p><ul><li>Research graph?</li></ul></div>
-    </div>
   </div>
-  <div class="pagenum">08 / 15</div>
+  <div class="pagenum">11 / 16</div>
 </section>
 
-<!-- ===== 9 · Response 2 — the knowledge graph joins it all (v13 s7; the brain canvas, verbatim) ===== -->
-<section class="slide" id="s7">
+<!-- ===== 10 - What she is made of - v12/P2: the THREE-UP ANATOMY ===== -->
+<section class="slide grey" id="s10">
   <div class="inner">
-    <div class="type">
-      <p class="label rv">Response 2 &middot; the knowledge graph</p>
-      <h2 class="rv d1">The knowledge graph <b>joins it all together.</b></h2>
-      <p class="lead rv d2">Standards, accessibility, rulings, governance, usage and theory &mdash; in one graph, retrieved at build time.</p>
-      <p class="body rv d3">Every build comes with a record of account.</p>
-      <p class="switch rv d4">Switch to the knowledge-graph explorer</p>
-      <p class="foot rv d5">4,820 nodes &middot; 8,648 edges &middot; explorer builder 1.27, 2026-09-19.</p>
+    <p class="label rv">The main constituents</p>
+    <h2 class="rv d1"><b>The three main elements of Apollo.</b></h2>
+    <div class="grid4 grid5">
+      <div class="rv d2"><img class="pic" id="an1" alt="Line drawing of a gearbox"><p class="ix">01</p><h3>Parts</h3><p>The library: 137 components in code.</p></div>
+      <div class="rv d2"><img class="pic" id="an2" alt="Line drawing of a stack of books"><p class="ix">02</p><h3>Knowledge</h3><p>Standards, accessibility, rulings, governance, usage, theory &mdash; one graph.</p></div>
+      <div class="rv d3"><img class="pic" id="an3" alt="Line drawing of a brain"><p class="ix">03</p><h3>Proficiency</h3><p>The judgement to compose from it.</p></div>
     </div>
-    <div class="draw rv d2">
-      <canvas id="br"></canvas>
-      <img id="brPrint" alt="">
-    </div>
+    <p class="foot rv d5">Parts, knowledge and the judgement to compose from them.</p>
   </div>
-  <div class="pagenum">09 / 15</div>
+  <div class="pagenum">12 / 16</div>
 </section>
 
-<!-- ===== 10 · Gates and evals — the same graph rechecks the work (v13 s8; the callipers canvas, verbatim) ===== -->
-<section class="slide" id="s8">
+<!-- ===== 10A · The design system map — #292 lane H, inlined ==============
+     Dave, verbatim: "the design system map is good for now as a placeholder,
+     we'll refine later. we can slot it after slide 10".
+
+     Lane H's poster (notes/_lanes/292/H/design-system-map.html) re-cut for a
+     720/900-high card: the 4x4 frame, the twelve on the perimeter, the hub in
+     the middle 2x2, the hairline grid made of the grid's own 1px gaps, and the
+     inward tick on each tile. What is dropped is the poster's masthead (the
+     card carries its own eyebrow and headline), its key panel and its footer
+     (folded into one .foot line), and each tile's description is CUT SHORTER.
+     Nothing is an image: the map is markup and scoped CSS, so it scales with
+     the card and prints as type, not as a screenshot.
+
+     The id is s10map, NOT s11: the chassis navigates positionally
+     (querySelectorAll('.slide')), so the existing s1..s12 ids are untouched
+     and this one is kept out of their sequence. The pagenum reads 10A / 12 for
+     the same reason — no other card's counter is disturbed. ============== -->
+<section class="slide grey" id="s10map">
   <div class="inner">
-    <div class="type">
-      <p class="label rv">Response 2 &middot; gates and evals</p>
-      <h2 class="rv d1">The same graph <b>rechecks the work.</b></h2>
-      <p class="lead rv d2">Gates and evals are the quality control: every build is checked against the standards it was built from.</p>
-      <p class="body rv d3">Corrections are made at the check, not sent back to the start.</p>
-    </div>
-    <div class="draw rv d2">
-      <canvas id="cp"></canvas>
-      <img id="cpPrint" alt="">
-    </div>
+    <p class="label rv">A smart design system</p>
+    <h2 class="rv d1"><b>Twelve types of content.</b></h2>
+
+    <section class="dsm rv d2" aria-label="Twelve parts of a design system around one core">
+      <article class="tile p01" data-edge="down" data-state="have">
+        <div class="ink-block">
+          <p class="idx">01</p>
+          <h3>Brand Standards</h3>
+          <p class="d">Logo masters, marks and colour rules.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/guidelines/brand-principles.md</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p02" data-edge="down" data-state="soon">
+        <div class="ink-block">
+          <p class="idx">02</p>
+          <h3>User Research &amp; Insights</h3>
+          <p class="d">Studies, participants and findings.</p>
+        </div>
+        <div class="tfoot"><p class="badge">In progress</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p03" data-edge="down" data-state="have">
+        <div class="ink-block">
+          <p class="idx">03</p>
+          <h3>Design Patterns</h3>
+          <p class="d">Page templates — the shape before the parts.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/components/template-report.meta.json</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p04" data-edge="down" data-state="have">
+        <div class="ink-block">
+          <p class="idx">04</p>
+          <h3>Tone of Voice</h3>
+          <p class="d">How the product speaks, and what it will not say.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/guidelines/tone-of-voice.md</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p05" data-edge="left" data-state="have">
+        <div class="ink-block">
+          <p class="idx">05</p>
+          <h3>Accessibility Standards</h3>
+          <p class="d">Contrast, focus, hit area — run as gates.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/_A11Y-GATE.md</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p06" data-edge="left" data-state="have">
+        <div class="ink-block">
+          <p class="idx">06</p>
+          <h3>Governance &amp; Operations</h3>
+          <p class="d">Every ruling inscribed with its receipt.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/_rulings.json</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p07" data-edge="up" data-state="have">
+        <div class="ink-block">
+          <p class="idx">07</p>
+          <h3>Data &amp; Insights</h3>
+          <p class="d">Instruments that measure the system’s own state.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/_INSTRUMENT-FIT.md</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p08" data-edge="up" data-state="have">
+        <div class="ink-block">
+          <p class="idx">08</p>
+          <h3>Design Tokens</h3>
+          <p class="d">The values every component resolves to.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/canon/canon.css</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p09" data-edge="up" data-state="have">
+        <div class="ink-block">
+          <p class="idx">09</p>
+          <h3>Content Guidelines</h3>
+          <p class="d">Labels, errors, numbers, dates, calls to action.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/guidelines/copywriting.md</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p10" data-edge="up" data-state="have">
+        <div class="ink-block">
+          <p class="idx">10</p>
+          <h3>UX Principles</h3>
+          <p class="d">Ratified, each bound to its published evidence.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/_ux_principle_nodes.json</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p11" data-edge="right" data-state="soon">
+        <div class="ink-block">
+          <p class="idx">11</p>
+          <h3>CX Principles</h3>
+          <p class="d">The service-level counterpart, across channels.</p>
+        </div>
+        <div class="tfoot"><p class="badge">In progress</p></div>
+        <span class="tick"></span>
+      </article>
+      <article class="tile p12" data-edge="right" data-state="have">
+        <div class="ink-block">
+          <p class="idx">12</p>
+          <h3>UX Components</h3>
+          <p class="d">Governed components, each with a meta and a build.</p>
+        </div>
+        <div class="tfoot"><p class="src">knowledge/components/</p></div>
+        <span class="tick"></span>
+      </article>
+
+      <div class="hub">
+        <p class="hubh apollo">Apollo</p>
+        <div class="accent-rule" role="presentation"></div>
+        <p class="strap">Smart design system</p>
+      </div>
+    </section>
+    <p class="foot rv d3">Ten of the twelve stand in the repository today, each citing one file it is held in. Two are faded and badged &mdash; absent is a state of the map, not a hole in it. Placeholder: not yet ruled.</p>
   </div>
-  <div class="pagenum">10 / 15</div>
+  <div class="pagenum">13 / 16</div>
 </section>
 
 <!-- ===== 11 · The build — v13 s9, plant words out ===== -->
 <section class="slide dark" id="s9">
   <div class="inner">
-    <p class="label rv">The build</p>
-    <h2 class="rv d1"><b>Live build.</b></h2>
+    <p class="label rv">The working system</p>
+    <h2 class="rv d1"><b>Let&rsquo;s build something.</b></h2>
     <p class="lead rv d2">One cold, repeatable testing prompt. The build, the checks and the finished product, live.</p>
-    <p class="switch rv d3">Switch to the editor</p>
     <p class="foot rv d4">Live and unedited, with the recording as the fallback.</p>
   </div>
-  <div class="pagenum">11 / 15</div>
+  <div class="pagenum">14 / 16</div>
 </section>
 
 <style data-lane="296-B">
@@ -684,180 +849,7 @@ table.kpi td.tg{color:var(--black)}
 }
 </style>
 
-<!-- ===== 10 - What she is made of - v12/P2: the THREE-UP ANATOMY ===== -->
-<section class="slide grey" id="s10">
-  <div class="inner">
-    <p class="label rv">What she is made of</p>
-    <h2 class="rv d1"><b>Three things she is made of.</b></h2>
-    <div class="grid4 grid5">
-      <div class="rv d2"><img class="pic" id="an1" alt="Line drawing of a gearbox"><p class="ix">01</p><h3>Parts</h3><p>The library: 137 components in code.</p></div>
-      <div class="rv d2"><img class="pic" id="an2" alt="Line drawing of a stack of books"><p class="ix">02</p><h3>Knowledge</h3><p>Standards, accessibility, rulings, governance, usage, theory &mdash; one graph.</p></div>
-      <div class="rv d3"><img class="pic" id="an3" alt="Line drawing of a brain"><p class="ix">03</p><h3>Proficiency</h3><p>The judgement to compose from it.</p></div>
-    </div>
-    <p class="foot rv d5">Parts, knowledge and the judgement to compose from them.</p>
-  </div>
-  <div class="pagenum">12 / 15</div>
-</section>
 
-<!-- ===== 10A · The design system map — #292 lane H, inlined ==============
-     Dave, verbatim: "the design system map is good for now as a placeholder,
-     we'll refine later. we can slot it after slide 10".
-
-     Lane H's poster (notes/_lanes/292/H/design-system-map.html) re-cut for a
-     720/900-high card: the 4x4 frame, the twelve on the perimeter, the hub in
-     the middle 2x2, the hairline grid made of the grid's own 1px gaps, and the
-     inward tick on each tile. What is dropped is the poster's masthead (the
-     card carries its own eyebrow and headline), its key panel and its footer
-     (folded into one .foot line), and each tile's description is CUT SHORTER.
-     Nothing is an image: the map is markup and scoped CSS, so it scales with
-     the card and prints as type, not as a screenshot.
-
-     The id is s10map, NOT s11: the chassis navigates positionally
-     (querySelectorAll('.slide')), so the existing s1..s12 ids are untouched
-     and this one is kept out of their sequence. The pagenum reads 10A / 12 for
-     the same reason — no other card's counter is disturbed. ============== -->
-<section class="slide grey" id="s10map">
-  <div class="inner">
-    <p class="label rv">The design system</p>
-    <h2 class="rv d1"><b>Twelve around one.</b></h2>
-
-    <section class="dsm rv d2" aria-label="Twelve parts of a design system around one core">
-      <article class="tile p01" data-edge="down" data-state="have">
-        <div class="ink-block">
-          <p class="idx">01</p>
-          <h3>Brand Standards</h3>
-          <p class="d">Logo masters, marks and colour rules.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/guidelines/brand-principles.md</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p02" data-edge="down" data-state="soon">
-        <div class="ink-block">
-          <p class="idx">02</p>
-          <h3>User Research &amp; Insights</h3>
-          <p class="d">Studies, participants and findings.</p>
-        </div>
-        <div class="tfoot"><p class="badge">Coming soon</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p03" data-edge="down" data-state="have">
-        <div class="ink-block">
-          <p class="idx">03</p>
-          <h3>Design Patterns</h3>
-          <p class="d">Page templates — the shape before the parts.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/components/template-report.meta.json</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p04" data-edge="down" data-state="have">
-        <div class="ink-block">
-          <p class="idx">04</p>
-          <h3>Tone of Voice</h3>
-          <p class="d">How the product speaks, and what it will not say.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/guidelines/tone-of-voice.md</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p05" data-edge="left" data-state="have">
-        <div class="ink-block">
-          <p class="idx">05</p>
-          <h3>Accessibility Standards</h3>
-          <p class="d">Contrast, focus, hit area — run as gates.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/_A11Y-GATE.md</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p06" data-edge="left" data-state="have">
-        <div class="ink-block">
-          <p class="idx">06</p>
-          <h3>Governance &amp; Operations</h3>
-          <p class="d">Every ruling inscribed with its receipt.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/_rulings.json</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p07" data-edge="up" data-state="have">
-        <div class="ink-block">
-          <p class="idx">07</p>
-          <h3>Data &amp; Insights</h3>
-          <p class="d">Instruments that measure the system’s own state.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/_INSTRUMENT-FIT.md</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p08" data-edge="up" data-state="have">
-        <div class="ink-block">
-          <p class="idx">08</p>
-          <h3>Design Tokens</h3>
-          <p class="d">The values every component resolves to.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/canon/canon.css</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p09" data-edge="up" data-state="have">
-        <div class="ink-block">
-          <p class="idx">09</p>
-          <h3>Content Guidelines</h3>
-          <p class="d">Labels, errors, numbers, dates, calls to action.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/guidelines/copywriting.md</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p10" data-edge="up" data-state="have">
-        <div class="ink-block">
-          <p class="idx">10</p>
-          <h3>UX Principles</h3>
-          <p class="d">Ratified, each bound to its published evidence.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/_ux_principle_nodes.json</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p11" data-edge="right" data-state="soon">
-        <div class="ink-block">
-          <p class="idx">11</p>
-          <h3>CX Principles</h3>
-          <p class="d">The service-level counterpart, across channels.</p>
-        </div>
-        <div class="tfoot"><p class="badge">Coming soon</p></div>
-        <span class="tick"></span>
-      </article>
-      <article class="tile p12" data-edge="right" data-state="have">
-        <div class="ink-block">
-          <p class="idx">12</p>
-          <h3>UX Components</h3>
-          <p class="d">Governed components, each with a meta and a build.</p>
-        </div>
-        <div class="tfoot"><p class="src">knowledge/components/</p></div>
-        <span class="tick"></span>
-      </article>
-
-      <div class="hub">
-      <svg class="lockup" viewBox="0 0 315 85" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Masterbrand lockup">
-        <g class="wordmark">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M299.725 60.8888C288.304 60.8888 283.159 53.5583 283.159 42.7359C283.159 32.0127 288.844 23.9949 300.118 23.9949C307.175 23.9949 314.037 27.1429 314.233 35.2094H306.293C305.9 31.668 303.547 29.7984 300.118 29.7984C293.206 29.7984 291.098 37.2759 291.098 42.9815C291.098 48.6394 293.206 55.2309 299.871 55.2309C303.351 55.2309 305.9 53.3622 306.439 49.7709H314.428C313.547 57.8386 307.077 60.8888 299.725 60.8888Z"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M232.501 60.8888C224.855 60.8888 218.582 57.8386 218.435 49.3288H226.13C226.228 53.117 228.433 55.3792 232.649 55.3792C235.786 55.3792 239.315 53.8047 239.315 50.2625C239.315 47.5088 236.914 46.6233 232.942 45.4914L230.394 44.7537C224.808 43.1306 219.268 40.965 219.268 34.5704C219.268 26.6504 226.621 23.9949 233.335 23.9949C240.245 23.9949 246.176 26.4053 246.225 34.2757H238.531C238.236 31.029 236.374 29.1594 232.746 29.1594C229.904 29.1594 227.062 30.6843 227.062 33.8323C227.062 36.44 229.414 37.2272 234.413 38.8012L237.354 39.7362C243.432 41.6544 247.254 43.7688 247.254 49.673C247.254 57.7886 239.461 60.8888 232.501 60.8888Z"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M264.675 54.9364C268.252 54.9364 271.782 54.0996 271.782 49.771C271.782 45.5403 268.743 44.5557 265.115 44.5557H259.039V54.9364H264.675ZM263.94 39.489C267.322 39.489 270.751 38.8013 270.751 34.6684C270.751 30.9801 267.517 29.9951 264.43 29.9951H259.039V39.489H263.94ZM251.588 24.6832H263.89C267.763 24.6832 269.331 24.7819 270.85 25.1253C275.163 26.109 278.398 28.9127 278.398 33.6855C278.398 38.2597 275.507 40.6205 271.34 41.7037C276.143 42.5892 279.672 45.0495 279.672 50.3122C279.672 58.3795 271.732 60.2491 265.508 60.2491H251.588V24.6832Z"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M206.382 45.0489H191.041V60.2494H183.346V24.6826H191.041V39.2437H206.382V24.6826H214.076V60.2494H206.382V45.0489Z"/>
-        </g>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 85H127.5V0H42.5V85Z" fill="#FFFFFF"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 8.58307e-05L85 42.5L127.5 8.58307e-05H42.5Z" fill="#DB0011"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M42.5 85H127.5L85 42.5L42.5 85Z" fill="#DB0011"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M127.5 85L170 42.5L127.5 0V85Z" fill="#DB0011"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 42.5L42.3107 84.9311L42.5 85V0L0 42.5Z" fill="#DB0011"/>
-      </svg>
-        <div class="accent-rule" role="presentation"></div>
-        <p class="hubh">Intelligent Design System</p>
-        <p class="strap">One governed source. Every surface, component and token resolves back to&nbsp;it.</p>
-        <div class="ring">
-          <span>People</span><span>Technology</span><span>Data</span><span>Insights</span><span>Governance</span><span>Continuous improvement</span>
-        </div>
-      </div>
-    </section>
-
-    <p class="foot rv d3">Ten of the twelve stand in the repository today, each citing one file it is held in. Two are faded and badged &mdash; absent is a state of the map, not a hole in it. Placeholder: not yet ruled.</p>
-  </div>
-  <div class="pagenum">13 / 15</div>
-</section>
 
 <style data-lane="P4">
 /* ============================================================
@@ -976,18 +968,17 @@ table.kpi td.tg{color:var(--black)}
       a problem we have to solve. Owed, not solved.</p>
     <p class="foot rv d5">Draft wording. Measured targets are a later deck, for a later audience.</p>
   </div>
-  <div class="pagenum">14 / 15</div>
+  <div class="pagenum">15 / 16</div>
 </section>
 
 <!-- ===== 12 · Closing — v8 s11 verbatim ================================ -->
 <section class="slide dark" id="s12">
   <div class="inner">
-    <p class="label rv">In closing</p>
+    <p class="label rv">Smart design system</p>
     <h1 class="rv d1">Apollo</h1>
-    <p class="close-line rv d2">Automated product design<br>you can bank on.</p>
-    <p class="count rv d3">4,820 nodes · 8,648 edges</p>
+    <p class="close-line rv d2">Automated product design you can bank on.</p>
   </div>
-  <div class="pagenum">15 / 15</div>
+  <div class="pagenum">16 / 16</div>
 </section>
 
 <style data-lane="G3">
@@ -3361,7 +3352,8 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
 
   /* ---- 3 · the housing and the construction ------------------------- */
   var BTOP = BMIN + 2, BBOT = BTOP - 12;
-  var HALF = (2*WMAX+GMAX)*1.15, AOV = 12;
+  /* #296 E: AOV 12 -> 33, from 289/illustration/brain.html PASS EIGHT (#292 B2). */
+  var HALF = (2*WMAX+GMAX)*1.15, AOV = 33;
   function box(u0,u1,a0,a1,b0,b1){
     var v=[[u0,a0,b0],[u1,a0,b0],[u1,a1,b0],[u0,a1,b0],
            [u0,a0,b1],[u1,a0,b1],[u1,a1,b1],[u0,a1,b1]];
@@ -3397,7 +3389,9 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
      sheet presents almost square, the outline is the traced profile,
      the cerebellum's folia stay legible, and the groove is a single
      hairline sliver over the crown. */
-  var YAW0 = 10*Math.PI/180, PIT0 = 8*Math.PI/180;
+  /* #296 E: the deck copy was three passes behind the drawing file. Pass nine
+     (#292 B3, 289/illustration/brain.html L474), ruled by Dave: YAW0 -50 / PIT0 20. */
+  var YAW0 = -50*Math.PI/180, PIT0 = 20*Math.PI/180;
   var YAW_R = 25*Math.PI/180, PIT_R = 12*Math.PI/180;
   var TAU = 1.0;
   var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
@@ -3680,11 +3674,11 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
     var io7 = new IntersectionObserver(function(es){
       es.forEach(function(x){ if (x.isIntersecting) start(); else stop(); });
     }, {threshold:0.05});
-    var s7el = document.getElementById('s7'); if (s7el) io7.observe(s7el);
+    var s7el = document.getElementById('s7b'); if (s7el) io7.observe(s7el);
   } else start();
   document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); });
   window.addEventListener('blur', stop);
-  window.addEventListener('focus', function(){ var e=document.getElementById('s7'), r=e&&e.getBoundingClientRect(); if (r && r.bottom>0 && r.top<innerHeight) start(); });
+  window.addEventListener('focus', function(){ var e=document.getElementById('s7b'), r=e&&e.getBoundingClientRect(); if (r && r.bottom>0 && r.top<innerHeight) start(); });
 
   /* v9 deck port: print — the resting frame, baked to the <img>. */
   function snap(){
@@ -3720,6 +3714,289 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
     setView(YAW0+yawOff, PIT0+pitOff); render();
   };
   window.brReady = true;
+})();
+
+/* ---- §7 · the shells graph (#296 lane E) ------------------------------
+   Dave: "add another one of our 3d illustrations that has a representation
+   of a knowledge graph the shells construction is probably best it can be a
+   simplfied version, not the full thing, to replace the brain".
+   The explorer's three layers as three concentric shells (graph-layers-are-
+   shells-280): the system at the core, the obligations in the middle, the
+   reasons outside. Each shell is a construction sphere: its outline, its
+   equator and one meridian; the half of every ring, node and edge that lies
+   behind the picture plane through the centre is the hidden run, dashed in
+   the deck's hidden grey, exactly as the books and the gearbox dash theirs.
+   26 nodes, 26 edges (e2: 5 / 9 / 12); one chain (core -> middle -> outer) and its end node
+   carry the one accent red. Same camera as the books and the gearbox
+   (YAW0 -35 / PIT0 20, YAW_R 25 / PIT_R 12, TAU 1.0), same setView, same
+   orthographic projection, same plate idiom, same ink weights. */
+(function(){
+  var cv = document.getElementById('shl');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var INK = '#111', HIDC = '#BDBDBD', CONC = '#9B9B9B', RED = '#DA1A00';
+  var D2R = Math.PI/180;
+
+  /* ---- 1 · the shells, the nodes, the edges ------------------------- */
+  var RS = [44, 90, 138];                 /* core, middle, outer radius   */
+  function onShell(k, lat, lon){
+    var r = RS[k], p = lat*D2R, t = lon*D2R;
+    return [r*Math.cos(p)*Math.cos(t), r*Math.cos(p)*Math.sin(t), r*Math.sin(p)];   /* [a,u,b] */
+  }
+  var NODES = [
+    [0, 14, 20], [0,-28,150], [0, 48,235], [0,-38,320], [0, 30,110],                                  /* core   0-4   */
+    [1, 22, 88], [1,-16, 12], [1, 42,140], [1,-20,110], [1,  8,212], [1, 30,300], [1,-22, 50],
+    [1, 58,215], [1, 18,165],                                                                         /* middle 5-13  */
+    [2, 30,122], [2, -4, 78], [2, 56,  2], [2,-16,-24], [2, 16,164], [2, 20,250], [2, 44,305],
+    [2,-30,120], [2, 65,190], [2, -8,340], [2, 38,200], [2,-40, 30]                                   /* outer 14-25  */
+  ].map(function(n){ return {k:n[0], p:onShell(n[0], n[1], n[2])}; });
+  var EDGES = [
+    [0,3],[1,2],                                                   /* within the core      */
+    [0,5,1],[0,6],[1,8],[2,7],[3,10],[2,9],[4,13],[4,11],          /* core -> middle       */
+    [6,5],[7,9],[12,7],[11,6],                                     /* within the middle    */
+    [5,14,1],[6,16],[6,17],[8,15],[7,18],[9,19],[10,20],[8,21],
+    [12,22],[10,23],[11,24],[11,25]                                /* middle -> outer      */
+  ];
+  var RED_NODE = 14;
+
+  /* each shell: the equator, and one meridian at its own azimuth */
+  var RINGS = [], NSEG = 120;
+  function ring(k, kind, az){
+    var pts = [], i, t, r = RS[k];
+    for (i=0;i<=NSEG;i++){
+      t = i/NSEG*2*Math.PI;
+      if (kind === 'eq') pts.push([r*Math.cos(t), r*Math.sin(t), 0]);
+      else pts.push([r*Math.cos(t)*Math.cos(az*D2R), r*Math.cos(t)*Math.sin(az*D2R), r*Math.sin(t)]);
+    }
+    RINGS.push(pts);
+  }
+  ring(0,'eq'); ring(1,'eq'); ring(2,'eq');
+  ring(0,'mer',-10); ring(1,'mer',-10); ring(2,'mer',-10);
+
+  /* ---- 2 · the plate and the construction lines --------------------- */
+  var BASE_T = -RS[2] - 14, BASE_B = BASE_T - 12;
+  var PA = RS[2] + 22, PU = RS[2] + 22;
+  function boxEdges(a0,a1,u0,u1,b0,b1){
+    var V = [[a0,u0,b0],[a1,u0,b0],[a1,u1,b0],[a0,u1,b0],
+             [a0,u0,b1],[a1,u0,b1],[a1,u1,b1],[a0,u1,b1]];
+    var E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    return E.map(function(e){ return [V[e[0]], V[e[1]]]; });   /* [a,u,b] */
+  }
+  var PLATE = boxEdges(-PA, PA, -PU, PU, BASE_B, BASE_T);
+  var AXES = [
+    [[0,0,BASE_B-18],[0,0,RS[2]+34]],                          /* the vertical axis */
+    [[-PA-16,0,BASE_T],[PA+16,0,BASE_T]],                      /* ground cross      */
+    [[0,-PU-16,BASE_T],[0,PU+16,BASE_T]]
+  ];
+
+  /* ---- 3 · the camera: the books' and the gearbox's, verbatim ------- */
+  var YAW0 = -35*Math.PI/180, PIT0 = 20*Math.PI/180;
+  var YAW_R = 25*Math.PI/180, PIT_R = 12*Math.PI/180;
+  var TAU = 1.0;
+  var m00=1,m02=0,m10=0,m11=1,m12=0,m20=0,m21=0,m22=1;
+  function setView(yaw, pit){
+    var cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pit), sp=Math.sin(pit);
+    m00=cy;      m02=sy;
+    m10=sp*sy;   m11=cp;   m12=-sp*cy;
+    m20=-cp*sy;  m21=sp;   m22=cp*cy;
+  }
+  function springStep(x,v,target,w,dt){ var a=-2*w*v-w*w*(x-target); v+=a*dt; x+=v*dt; return [x,v]; }
+  var mnx=0,mny=0,mouseSeen=false,yawOff=0,yawVel=0,pitOff=0,pitVel=0;
+  function onMove(e){
+    if (e.pointerType && e.pointerType !== 'mouse') return;
+    var w = window.innerWidth||1, h = window.innerHeight||1;
+    mnx=(e.clientX-w/2)/(w/2); mny=(e.clientY-h/2)/(h/2);
+    if (mnx<-1) mnx=-1; else if (mnx>1) mnx=1;
+    if (mny<-1) mny=-1; else if (mny>1) mny=1;
+    mouseSeen=true;
+  }
+  window.addEventListener('pointermove', onMove, {passive:true});
+  function updateView(dt){
+    var tY = mouseSeen ?  mnx*YAW_R : 0, tP = mouseSeen ? -mny*PIT_R : 0;
+    var w=1/TAU, left=dt, h, A, B;
+    while (left>1e-5){
+      h = left>0.008?0.008:left; left-=h;
+      A=springStep(yawOff,yawVel,tY,w,h); yawOff=A[0]; yawVel=A[1];
+      B=springStep(pitOff,pitVel,tP,w,h); pitOff=B[0]; pitVel=B[1];
+    }
+    setView(YAW0+yawOff, PIT0+pitOff);
+  }
+
+  /* ---- 4 · the fit (the brain's slot, the brain's pads and K) ------- */
+  var W=800,H=600,DPR=1,SC=1,OX=0,OY=0,PAD_X=72,PAD_Y=40,BOXU=null;
+  function everyVertex(cb){
+    RINGS.forEach(function(r){ r.forEach(function(p){ cb(p[0],p[1],p[2]); }); });
+    /* the outline of each shell is a circle of radius r on screen: its
+       extremes are the shell's own extremes on every axis */
+    RS.forEach(function(r){ cb(0,0,r); cb(0,0,-r); });
+    PLATE.forEach(function(s){ s.forEach(function(v){ cb(v[0],v[1],v[2]); }); });
+    AXES.forEach(function(s){ s.forEach(function(v){ cb(v[0],v[1],v[2]); }); });
+  }
+  function sweepBox(){
+    var lo=[1e9,1e9], hi=[-1e9,-1e9], rlo=[1e9,1e9], rhi=[-1e9,-1e9];
+    var saved=[m00,m02,m10,m11,m12,m20,m21,m22], i, j;
+    function acc(L,Hh){ return function(a,u,b){
+      var sx=m00*a+m02*u, sy=m10*a+m11*b+m12*u;
+      if (sx<L[0]) L[0]=sx; if (sx>Hh[0]) Hh[0]=sx;
+      if (sy<L[1]) L[1]=sy; if (sy>Hh[1]) Hh[1]=sy;
+    };}
+    for (i=-1;i<=1;i++) for (j=-1;j<=1;j++){
+      setView(YAW0+i*YAW_R, PIT0+j*PIT_R); everyVertex(acc(lo,hi));
+      if (i===0 && j===0) everyVertex(acc(rlo,rhi));
+    }
+    /* the outlines: +-r about the centre, both ways, in any view */
+    RS.forEach(function(r){ for (var q=0;q<2;q++){ lo[q]=Math.min(lo[q],-r); hi[q]=Math.max(hi[q],r); rlo[q]=Math.min(rlo[q],-r); rhi[q]=Math.max(rhi[q],r); } });
+    m00=saved[0];m02=saved[1];m10=saved[2];m11=saved[3];m12=saved[4];
+    m20=saved[5];m21=saved[6];m22=saved[7];
+    return {lo:lo,hi:hi,rlo:rlo,rhi:rhi};
+  }
+  function size(){
+    var host=cv.parentNode;
+    W=Math.max(240, host.clientWidth||800); H=Math.max(200, host.clientHeight||600);
+    DPR=Math.min(2, window.devicePixelRatio||1);
+    cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+    cv.style.width=W+'px'; cv.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    PAD_X=Math.min(72,W*0.07); PAD_Y=Math.min(40,H*0.06);
+    if (!BOXU) BOXU=sweepBox();
+    var K=0.42;
+    var rw=BOXU.rhi[0]-BOXU.rlo[0], rh=BOXU.rhi[1]-BOXU.rlo[1];
+    var bw=rw+K*((BOXU.hi[0]-BOXU.lo[0])-rw), bh=rh+K*((BOXU.hi[1]-BOXU.lo[1])-rh);
+    SC=Math.min((W-2*PAD_X)/bw,(H-2*PAD_Y)/bh)*0.98;
+    OX=W/2-(BOXU.rlo[0]+BOXU.rhi[0])/2*SC;
+    OY=H/2+(BOXU.rlo[1]+BOXU.rhi[1])/2*SC;
+  }
+
+  /* ---- 5 · the ink -------------------------------------------------- */
+  function px(a,u,b){ return OX+(m00*a+m02*u)*SC; }
+  function py(a,u,b){ return OY-(m10*a+m11*b+m12*u)*SC; }
+  function dep(p){ return m20*p[0]+m21*p[2]+m22*p[1]; }     /* + toward the eye */
+  function lerp(p,q,t){ return [p[0]+(q[0]-p[0])*t, p[1]+(q[1]-p[1])*t, p[2]+(q[2]-p[2])*t]; }
+  function seg2(p,q){ return [px(p[0],p[1],p[2]),py(p[0],p[1],p[2]),px(q[0],q[1],q[2]),py(q[0],q[1],q[2])]; }
+  /* split one 3D segment at the picture plane through the centre */
+  function split(p, q, front, back){
+    var d0=dep(p), d1=dep(q);
+    if (d0>=0 && d1>=0){ front.push(seg2(p,q)); return; }
+    if (d0<0 && d1<0){ back.push(seg2(p,q)); return; }
+    var m=lerp(p,q,d0/(d0-d1));
+    if (d0>=0){ front.push(seg2(p,m)); back.push(seg2(m,q)); }
+    else { back.push(seg2(p,m)); front.push(seg2(m,q)); }
+  }
+  function strokeSegs(arr, col, dash, w){
+    if (!arr.length) return;
+    ctx.beginPath();
+    for (var i=0;i<arr.length;i++){ ctx.moveTo(arr[i][0],arr[i][1]); ctx.lineTo(arr[i][2],arr[i][3]); }
+    ctx.strokeStyle=col; ctx.lineWidth=w; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
+  }
+  var drawBox=[0,0,0,0], LAST={};
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    var ringF=[], ringB=[], edgeF=[], edgeB=[], redF=[], redB=[], plate=[], axes=[];
+    RINGS.forEach(function(r){ for (var i=0;i<r.length-1;i++) split(r[i], r[i+1], ringF, ringB); });
+    EDGES.forEach(function(e){
+      if (e[2]) split(NODES[e[0]].p, NODES[e[1]].p, redF, redB);
+      else split(NODES[e[0]].p, NODES[e[1]].p, edgeF, edgeB);
+    });
+    PLATE.forEach(function(s){ plate.push(seg2(s[0],s[1])); });
+    AXES.forEach(function(s){ axes.push(seg2(s[0],s[1])); });
+
+    /* 1 · the hidden runs, laid down first */
+    strokeSegs(ringB, HIDC, [5,4], 1);
+    strokeSegs(edgeB.concat(redB), HIDC, [5,4], 1);
+    /* 2 · the construction and the plate */
+    strokeSegs(axes, CONC, [9,3,2,3], 1);
+    strokeSegs(plate, INK, [], 1);
+    /* 3 · the shells' outlines — each shell's silhouette is a circle */
+    var cx=px(0,0,0), cy=py(0,0,0);
+    ctx.beginPath();
+    RS.forEach(function(r){ ctx.moveTo(cx+r*SC, cy); ctx.arc(cx, cy, r*SC, 0, 2*Math.PI); });
+    ctx.strokeStyle=INK; ctx.lineWidth=1; ctx.setLineDash([]); ctx.stroke();
+    /* 4 · the visible rings and edges, the accent last */
+    strokeSegs(ringF, INK, [], 1);
+    strokeSegs(edgeF, INK, [], 1);
+    strokeSegs(redF, RED, [], 1.4);
+    /* 5 · the nodes, back to front: white-filled so the lines stop at them */
+    var NR = Math.max(2.6, Math.min(4.2, 3.0*SC));
+    var order = NODES.map(function(n,i){ return {i:i, d:dep(n.p)}; }).sort(function(x,y){ return x.d-y.d; });
+    var nFront=0, nBack=0;
+    order.forEach(function(o){
+      var n=NODES[o.i], x=px(n.p[0],n.p[1],n.p[2]), y=py(n.p[0],n.p[1],n.p[2]);
+      ctx.beginPath(); ctx.arc(x, y, o.i===RED_NODE ? NR+0.6 : NR, 0, 2*Math.PI);
+      if (o.i===RED_NODE){ ctx.fillStyle=RED; ctx.fill(); ctx.strokeStyle=RED; ctx.lineWidth=1.4; }
+      else { ctx.fillStyle='#fff'; ctx.fill(); ctx.strokeStyle = o.d>=0 ? INK : HIDC; ctx.lineWidth=1; }
+      ctx.stroke();
+      if (o.d>=0) nFront++; else nBack++;
+    });
+    drawBox=[1e9,1e9,-1e9,-1e9];
+    function hit(x,y){ if(x<drawBox[0])drawBox[0]=x; if(x>drawBox[2])drawBox[2]=x; if(y<drawBox[1])drawBox[1]=y; if(y>drawBox[3])drawBox[3]=y; }
+    [ringF,ringB,edgeF,edgeB,plate,axes].forEach(function(g){ g.forEach(function(s){ hit(s[0],s[1]); hit(s[2],s[3]); }); });
+    RS.forEach(function(r){ hit(cx-r*SC,cy-r*SC); hit(cx+r*SC,cy+r*SC); });
+    LAST={nFront:nFront, nBack:nBack, redEdgeSegs:redF.length, redEdgeHidden:redB.length, nodeR:NR};
+  }
+
+  /* ---- 6 · the frame, the observer, the print ----------------------- */
+  var lastT=-1, raf=null, running=false;
+  function frame(now){
+    if (lastT<0) lastT=now;
+    var dt=(now-lastT)/1000; lastT=now;
+    if (dt<0) dt=0; if (dt>0.1) dt=0.1;
+    updateView(dt); render();
+  }
+  size(); setView(YAW0,PIT0); render();
+  var _min=1000/30, _last=0;
+  function loop(now){ if (now-_last>=_min-1){ _last=now; frame(now); } raf=requestAnimationFrame(loop); }
+  function start(){ if (running||reduce) return; running=true; lastT=-1; raf=requestAnimationFrame(loop); }
+  function stop(){ running=false; if (raf) cancelAnimationFrame(raf); raf=null; }
+  function still(){ yawOff = pitOff = 0; yawVel = pitVel = 0; setView(YAW0, PIT0); render(); }
+  if ('IntersectionObserver' in window){
+    var ioS = new IntersectionObserver(function(es){
+      es.forEach(function(x){ if (x.isIntersecting) start(); else stop(); });
+    }, {threshold:0.05});
+    var sEl = document.getElementById('s7'); if (sEl) ioS.observe(sEl);
+  } else start();
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) stop(); });
+  window.addEventListener('blur', stop);
+  window.addEventListener('focus', function(){ var e=document.getElementById('s7'), r=e&&e.getBoundingClientRect(); if (r && r.bottom>0 && r.top<innerHeight) start(); });
+  function snap(){
+    try {
+      var was = running; if (was) stop();
+      var yo = yawOff, po = pitOff;
+      still();
+      var out = document.createElement('canvas');
+      out.width = cv.width; out.height = cv.height;
+      var o = out.getContext('2d');
+      o.fillStyle = '#fff'; o.fillRect(0, 0, out.width, out.height);
+      o.drawImage(cv, 0, 0);
+      var im = document.getElementById('shlPrint');
+      if (im) im.src = out.toDataURL('image/png');
+      yawOff = yo; pitOff = po; setView(YAW0 + yawOff, PIT0 + pitOff);
+      if (was) start(); else if (!reduce) render();
+    } catch(e){}
+  }
+  window.addEventListener('beforeprint', snap);
+  if (window.matchMedia){
+    var mqS = window.matchMedia('print');
+    if (mqS.addEventListener) mqS.addEventListener('change', function(e){ if (e.matches) snap(); });
+  }
+  setTimeout(snap, 1200);
+  window.shlSnap = snap;
+  var rt=null;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ BOXU=null; size(); render(); },160); });
+  window.shlSet = function(yawDeg, pitDeg){
+    stop(); mouseSeen=false; yawVel=pitVel=0;
+    yawOff=(yawDeg||0)*Math.PI/180; pitOff=(pitDeg||0)*Math.PI/180;
+    setView(YAW0+yawOff, PIT0+pitOff); render();
+  };
+  window.shlState = function(){
+    return {yaw0:YAW0/D2R, pit0:PIT0/D2R, yawR:YAW_R/D2R, pitR:PIT_R/D2R, radii:RS.slice(),
+            nodes:NODES.length, edges:EDGES.length, redEdges:EDGES.filter(function(e){return e[2];}).length,
+            rings:RINGS.length, outlines:RS.length, plate:[2*PA,2*PU,BASE_T-BASE_B],
+            SC:SC, W:W, H:H, drawBox:drawBox.slice(), last:LAST};
+  };
+  window.shlReady = true;
 })();
 
 /* ============================================================
@@ -5979,7 +6256,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
        ruling).
 
    THE OBJECT. Everything is built in ONE local frame Fc, the
-   calliper's own, which is the world turned PSI = -62 deg about
+   calliper's own, which is the world turned PSI = -90 deg (#296 E2; was -62) about
    the vertical. Fc.x runs along the beam, Fc.y is the jaw
    direction, Fc.z is up, so the instrument LIES on the base
    plate with its graduated face up and its jaws swung toward the
@@ -6133,7 +6410,13 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
   }
 
   /* ---- 2 · the instrument ---------------------------------------------- */
-  var PSI = -62*D2R;                      /* the calliper's lie on the plate */
+  /* #296 E2 (Dave: "can we have the callipers in a similar resting position too"):
+     PSI -62 -> -90. At -62 the plate's edges sat at 9.89 / 33.87 deg on screen
+     against the books' and gearbox's 13.47 / 26.03; a quarter turn puts them
+     on exactly those lines. -90 stays inside the monotone-depth window the
+     header derives (Fc.x depth < 0 and Fc.y depth > 0 over yaw -60..-10,
+     pitch 8..32 needs PSI in about -100..-60), so painter's order is still exact. */
+  var PSI = -90*D2R;                      /* the calliper's lie on the plate */
   var LB = 150, WB = 22, ZB0 = 6, ZB1 = 12;    /* the beam                    */
   var JAW = 54, JR = 14;                       /* jaw reach, jaw root length  */
   var CAR_L = 46, CAR_Y0 = -WB-6, CAR_Y1 = 5, CAR_Z1 = 14;
@@ -8033,5 +8316,16 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
 })();
 
 </script>
+<style data-lane="296-D">
+/* #296 Dave: strapline one line; Apollo bold to match the cover */
+#s12 .close-line{white-space:nowrap}
+#s12 h1{font-weight:600}
+/* #296 Dave: the three prints on s10 flashed white over the grey card (multiply blend + reveal). Left white, keyline added. */
+/* #296 Dave: the map hub is Apollo (bold, as the cover) + the strapline */
+#s10map .hub .hubh.apollo{font-weight:600;font-size:clamp(40px,3.8vw,58px);letter-spacing:-.01em}
+#s10map .hub .strap{font-size:17px}
+#s10map .hub .accent-rule{width:72px;margin:18px 0}
+.grid5 .pic{mix-blend-mode:normal;background:#fff;border:1px solid var(--g3);box-sizing:border-box;padding:6px}
+</style>
 </body>
 </html>
