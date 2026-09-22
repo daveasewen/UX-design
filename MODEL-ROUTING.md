@@ -5,7 +5,7 @@
 > Supersedes the `model-selection-by-phase` memory (now points here). Audited 2026-07-23 against
 > the Fable-era routing research (sheet: `reviews/ROUTING-AUDIT-2026-07-23-v1.html`; all 13
 > proposals ratified by Dave same session) — still Dave's to tune.
-> *Last updated: 2026-08-21 #212 `s212-D12` (routing currency check against live Anthropic docs,
+> *Last updated: 2026-09-22 #297 (Default tier `Opus 5` → `Opus 5.5`, `claude-opus-5-5`, and named the default for every sub — Dave: *"okay can you change the routing doc to specify 5.5 as teh defaults for subs"*). Prior: 2026-08-21 #212 `s212-D12` (routing currency check against live Anthropic docs,
 > four weeks on — P1–P7, P9, P10 applied: model strings pinned across all four tiers, the effort
 > ladder corrected to five rungs, the classifier-routing destination corrected [Opus 5 also runs
 > classifiers now], and the tokenizer-overhead figure corrected. P8 — the rule-5 verification
@@ -21,7 +21,7 @@
 | Tier | Model | When | Notes |
 |---|---|---|---|
 | **Premium — rationed** | **Fable** | Big, high-stakes, hands-off jobs where a mistake across the whole scope is costly and you can't babysit it — "I need to trust this." | Most-trusted, but dear. Spend it where high-trust-*at-scale* actually pays; not the daily driver. `claude-fable-5` · $10/$50 per MTok · on Pro/Max/Team plans it draws on **usage credits**, not the standard weekly allowance (Anthropic, 1 Jul 2026). Rationing is a billing fact, not just a habit. *(added `s212-D12`, 2026-08-21, P1)* |
-| **Default — complex** | **Opus 5 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. Exact API string `claude-opus-5`. *(added `s212-D12`, 2026-08-21, P2 — see the staleness note below, now independently confirmed)* |
+| **Default — complex** | **Opus 5.5 · high** | Judgment, architecture, sequencing, audits, critique, governance, ambiguous or irreversible calls, reviews. | The workhorse. Your default for anything that needs thinking. Exact API string `claude-opus-5-5`. **The default model for every sub** (2026-09-22 #297, Dave). *(added `s212-D12`, 2026-08-21, P2 — see the staleness note below, now independently confirmed; model moved Opus 5 → Opus 5.5 at #297, see the note after it)* |
 | **Throughput — to a plan** | **Sonnet** | Execute a known runbook/spec: gates, metas, snippets, token rebinds, ingestion tranches, refactors to spec. | The judgment is already made; you need reliable execution. Saves Opus budget. Exact API string `claude-sonnet-5` · $2/$10 per MTok · 1M context · prompt-cache minimum **1,024 tokens** (not 512 — that's Opus/Fable/Mythos only). *(added `s212-D12`, 2026-08-21, P3)* |
 | **Chore — mechanical** | **Haiku** | Doc-drift fixes, find/replace, formatting, renames, gate-count sweeps, index bumps. | No judgment involved — never pay more than you must. Exact API string `claude-haiku-4-5-20251001` · $1/$5 per MTok · 200k context · cache minimum 4,096 tokens · **no adaptive thinking, no `xhigh`, no `max`** — this tier behaves categorically differently from the other three. Watch date: tentative retirement not sooner than **15 October 2026**, roughly eight weeks out as of this writing. *(added `s212-D12`, 2026-08-21, P3)* |
 
@@ -46,6 +46,8 @@
 > model to use, start with Claude Opus 5." Sources fetched 2026-08-21:
 > `anthropic.com/news/claude-opus-5` and `platform.claude.com/docs/en/about-claude/models/overview`.
 > A ruling that started as Dave's word now also has a receipt.
+>
+> **ADDED 2026-09-22 #297, by ADDITION — the Default tier moved `Opus 5` → `Opus 5.5` (`claude-opus-5-5`) and Opus 5.5 is now THE DEFAULT FOR EVERY SUB,** on Dave's word: *"okay can you change the routing doc to specify 5.5 as teh defaults for subs"*. Nothing above is rewritten; the #48 and `s212-D12` notes stand as history. ★ **What it means in a brief:** every lane runs Opus 5.5 unless the divvy plan names another tier on purpose (Sonnet for throughput, Haiku for chores, Fable for a rationed high-trust sweep). Wherever this file says "Opus 5 sub" (rule 7, Mode 2), read Opus 5.5 from #297. ⚙ **How it is set:** the Agent tool's `model` takes a FAMILY only (`opus` · `fable` · `sonnet` · `haiku`), never a version; a sub spawned with the model left unset INHERITS the conductor's. So from an Opus 5.5 conductor, leave it unset; from a Fable conductor, pass `opus` — ⚠ **which Opus version that alias resolves to is UNVERIFIED (#297)**; the lane's report must name the model it ran on, and a label copied from the brief is not a reading (the #295/#296 reports self-label "Opus 5" and the two #296 wrap seats disagree, 5 vs 5.5). ⚠ **Noticed, NOT changed (outside the ask):** the Premium line still reads `claude-fable-5` while Fable 5.1 has shipped — Dave's to move.
 
 ## Fable-era notes
 
