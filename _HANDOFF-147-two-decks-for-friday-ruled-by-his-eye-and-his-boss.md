@@ -181,3 +181,65 @@ reports: `notes/_subreports/2026-09-22-296-A-deck-v14-plant.md` ·
 `notes/_subreports/2026-09-22-296-B2-plain-five-causes-and-the-loop.md` ·
 `notes/_subreports/2026-09-22-296-C-plain-chapter-rail.md` ·
 `notes/_subreports/2026-09-22-296-E-shells-graph-and-the-brain-slide.md`.*
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+⚠ **This addendum is written by a SECOND delegated wrap seat (Opus 5.5).** The first seat ran the
+ritual from 19:24 UTC through the commit and the push, and its hand-back never reached the conductor;
+it left no § POST-WRAP (its filed report points to one that did not exist) and no push transcript.
+This seat found the wrap already committed and pushed, re-verified both, read CI, and filed 5b.
+**Nothing the first seat wrote was rewritten.**
+
+**No ruling landed after the wrap gate ran**, so no ★ LATEST banner addendum is owed and the banner is
+untouched. The `s271-D4` re-read of the memory hook's open list strikes nothing: `_rulings.json` reads
+**638, newest `s295-D4`**, by `json.load` over `rulings`.
+
+1. ⛔★★ **THE WRAP COMMIT IS `39c6ba81` AND IT WENT ON THE TRUE `--wrap` PATH** — the second wrap
+   running. The script's own lines (`outputs/_gitcommit-transcript-296W-b.log`):
+   **`capture gate [wrap]: 234 in scope · 0 fail · 40 warn`** then **`— wrap gate GREEN on the wrap
+   commit (#74-D1 consumer)`**. **18 files changed, 1,914 insertions, 1,101 deletions** (the script's
+   count; `git show --stat` without break-detection reads 1,835 / 1,022 — both published), 6 created.
+   ⇒ **The `#243` declared not-a-wrap form was not needed.**
+2. ⚠ **ONE refusal was paid before it** (`…-296W-a.log`): the #208 `[110]` mention-map re-stale class —
+   the gate regenerated `knowledge/_graph-mention-map.json` and, under P5, staged nothing; re-run with
+   the path named. The same refusal #295's wrap met. ✅ **The first-add lock variant did NOT fire on
+   this commit**: the script logged git's own `unable to unlink '.git/index.lock'` and still closed
+   `✓ done — locks clear`; no `.git/*.lock` existed when this seat opened, and no 296W file sits in
+   `notes/_lanes/_orphan-locks/`.
+3. **THE ★ LATEST BANNER, measured by the gate's own arm** (`section_spans` → `BANNER_LATEST_RE` →
+   `measure_tokens`, bounded by the next ★ PRIOR): **764 tape, 8 substantive lines**, against
+   `s241-D2`'s **1,200 tape / 10 lines**. ★ **Under by 436 — the first wrap in four NOT to close at
+   exactly the cap.** The deck day had few machine findings; that is the reading, not a claim that the
+   cap stopped shaping the record.
+4. ⬛ **THE PUSH.** **`8af95161..39c6ba81`**, reflog `update by push` at **19:38:26 UTC**.
+   `git ls-remote origin refs/heads/master` = **`39c6ba812de600ca4d707d5058923493b7d9fa72`** = local
+   HEAD, **verified independently at this seat**; `git log origin/master..master` empty.
+   ⛔ **HOW IT WAS PUSHED IS NOT RECORDED.** There is no push transcript and the first seat's stub
+   never arrived. The three other-seat paths (`notes/_dream/_GRADE-DECISIONS.jsonl` ·
+   `notes/_lanes/293/J7-IDEA-jev-selects-over-the-kg.md` · `notes/_lanes/294/WRAP-MEMORY-HOOK.md`) are
+   still dirty, so the sanctioned `--push` arm's dirt gate would have refused on them as at every seat
+   since #295 — **that is a reading, not a record; do not cite it as the method.**
+5. ⬛★ **CI, READ BACK FOR THE WRAP SHA — run `35775081617`, POLLED TO COMPLETION, verdict taken AFTER
+   `render` closed.** `release` ✅ SUCCESS at 19:39:07 · `gates` ⛔ FAILURE at 19:43:41, **steps 5 and
+   6** · `render` ✅ SUCCESS at **19:53:26 — 9m45s after `gates`** (the #291/#292 lesson, met an
+   **eighth** time).
+
+   ```
+   SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 77 not asked (mutating)
+   ```
+
+   **IDENTICAL to #295's wrap read on `d9b7320f`.** The six BY NAME: token blast-radius + graph report
+   · capture/provenance selftest (still *"no `pre-flight:` stamp"*) · component-partials sync ·
+   memento schematic determinism · memento-package delta-audit selftest · governs matcher selftest.
+   ✅ **`read chain determinism check` is GREEN on a second wrap tree.** Step 6 aborts where it always
+   does (`help-gate: 264 script(s) scanned, 12 failure(s)`; evidence gate `6 lint · 0 unparsed · 5
+   rc/observation mismatch`). ⛔ **Nothing CI reported was repaired.**
+6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **7,010 tape (slice 6,155 + 855 wrapper), ratio 21%**.
+   After this addendum's ⏱ delta line: **7,606 (slice 6,751 + the same 855), ratio 23%** of a
+   `GOOD-MORNING.md` of 33,608 tape. **Inside the `<40%` floor and under the ~10–12K target** — ★ unlike
+   #295's 5b, which pushed the chain 1,035 past the target. Both figures reported, no third
+   invented; `_gen_chain.py --check` FRESH after regeneration. ⛔ No literal was moved.
+7. ⚠ **FILL for #296 stays UNMEASURED.** This seat, too, is a remote-device seat with no `.claude`
+   transcript tree; no number is written. The conductor's ~185,000 remains his declaration.
