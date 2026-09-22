@@ -24,3 +24,8 @@ Put to him by the conductor: plain or plant for Friday, then five open items on 
 ## The conductor's reading (a reading, not his words)
 
 The plain deck carries Friday. The brain goes to the shared angle. The s7b words stand as written. Item 3 is read as a further turn of the brain toward s7b's words; three readings are rendered for him to pick; the catalogue plate is left as it is, unruled. Both placeholder footnotes come out. The demo's cold brief is `notes/_lanes/288/GRILL-SOURCE-2026-09-18-hsbc-ceo-international-banking.md`, with changes of his to come. Nothing inscribed — he did not say "inscribe". On the Docs panel: the Claude Docs tools are present in the #297 chat although the connector reads not connected, so they arrive by a route that panel does not control.
+
+22:05 BST:
+
+> I want you to do a review on the plain version, and make some suggestions using your best judgment, first thing I'd like to do is alight the diagrammatical style i on 04, 06, 11, 12, 13 somewhat, don't enact just make me an html doc with your analysis and ideas, I'm talking about typography alignment, pace, copy, does the story hang together and anything else.
+> put your copy-editor hat on, publisher and art director. maybe use a few subs for this.
