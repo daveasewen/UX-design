@@ -7,6 +7,33 @@ memory (`sandbox-html-rendering`, arc 2026-06-22 → 07-18), which is exactly th
 Polaroid failure. **Every step below was run and OBSERVED working 2026-07-23** in a fresh sandbox
 (arm64, no root, 45 s bash cap) unless marked HISTORY.
 
+> ⛔★★ **NINTH STRATUM (#296, 2026-09-22) — THE ONE CALL THAT ALWAYS WORKS, and why the eighth stopped.**
+> Dave: *"I thought we had resolved the playwright and chromium problem … can we permanently fix this?"* —
+> after a session rendered two decks in the cloud because `outputs/_render-env-229` (the eighth stratum's
+> durable half) was **no longer on the mount** and `seat_env.sh` failed on a hollow lib dir at all three
+> `outputs/_render-env*` dirs. Root cause: the durable half was a hand-built directory that **nothing could
+> rebuild** — `seat_env.sh` asserts it and stops. The fix is a BUILDER beside the asserter:
+>
+> ```bash
+> cd <repo> && export TMPDIR=/dev/shm
+> bash knowledge/_render/ensure_env.sh        # builds/repairs outputs/_render-env (idempotent; network on FIRST run only)
+> source knowledge/_render/seat_env.sh        # asserts it, generates the seat-bound fonts half, exports
+> python3 <driver.py>                          # SAME call · executable_path=$RENDER_SHELL
+> ```
+> `ensure_env.sh` = pip `--target pylibs` · `playwright install chromium-headless-shell` into the mount ·
+> every `ldd`-missing lib by `apt-get download` + `dpkg -x` into `chromelibs` · asserts no `/sessions/<seat>`
+> path is baked into the durable half. **Observed end-to-end today at this seat:** `ENSURE_ENV: OK … size=443M`,
+> `SEAT_ENV: OK … faces=10/404 farm=10/10 libs=2`, canvas probe **346.88 / 346.88 / 375.39 / 301.07** (the #138
+> table to two decimals ⇒ the real HSBC face), a v14 slide rendered in 6.5 s. ⚠ Two things changed under
+> the eighth stratum and both scripts now allow either: **playwright ≥1.6x lays the shell out as
+> `chrome-headless-shell-linux-arm64/chrome-headless-shell`** (the old glob `chrome-linux/headless_shell` found
+> nothing); and the durable default is now `outputs/_render-env` (no session suffix — one env, repaired in place).
+> ⚠ **The first build is slow on the mount** (the 280 MB shell unzips across it; one call timed out at 180 s
+> mid-unzip and the second run finished it — the script is idempotent, so a timeout is re-run, never repaired
+> by hand). ⛔ `outputs/` is gitignored: the env lives on Dave's disk, not in git, so **if it vanishes again the
+> builder rebuilds it; nothing else needs to exist.** Boot ritual line owed to the Project instructions:
+> `bash knowledge/_render/ensure_env.sh` after the `_checkin.py` step.
+
 **What renders are FOR:** PNG = the agent's own verification — the 4th check after mechanical proofs
 (contrast maths, `node --check`, gates). **HTML is what Dave reviews, never PNGs.** A standing
 "render-verify OWED" note clears only when a render has been *seen*, not when the pipeline exists.

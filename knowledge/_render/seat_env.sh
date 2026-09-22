@@ -15,7 +15,8 @@
 # the mount, and each of those is asserted too.
 #
 # USAGE — in the SAME bash call as the render (nothing survives a call boundary; /dev/shm is per-call):
-#   source knowledge/_render/seat_env.sh [<durable env dir>]      # default: <repo>/outputs/_render-env-229
+#   bash knowledge/_render/ensure_env.sh                           # #296: builds/repairs the durable half if absent
+#   source knowledge/_render/seat_env.sh [<durable env dir>]      # default: <repo>/outputs/_render-env (#296; was -229, which vanished)
 #   python3 <driver.py> ...                                        # same call
 # Prints `SEAT_ENV: OK seat=<seat> ...` and exports PYTHONPATH PLAYWRIGHT_BROWSERS_PATH LD_LIBRARY_PATH
 # FONTCONFIG_FILE TMPDIR RENDER_SHELL RENDER_SEAT. On any failed assertion prints `SEAT_ENV: FAIL <which>`
@@ -33,7 +34,7 @@ _se_main() {
   seat="$(printf '%s' "$repo" | awk -F/ '$2=="sessions"{print $3}')"
   [ -n "$seat" ] || seat="$(basename "${HOME:-unknown}")"
 
-  envdir="${1:-$repo/outputs/_render-env-229}"
+  envdir="${1:-$repo/outputs/_render-env}"
   [ -d "$envdir" ] || { _se_fail "envdir absent: $envdir"; return 1; }
 
   # --- seat-free half, reused from the mount, each ASSERTED (never trusted by name) ---------------
@@ -41,7 +42,9 @@ _se_main() {
   [ -d "$libdir" ] && [ -n "$(ls -A "$libdir" 2>/dev/null)" ] \
     || { _se_fail "lib dir hollow or absent: $libdir (fifth-stratum shape)"; return 1; }
 
-  shell="$(ls -d "$envdir"/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell 2>/dev/null | head -1)"
+  # two layouts: playwright <=1.5x `chrome-linux/headless_shell`, >=1.6x `chrome-headless-shell-linux-*/chrome-headless-shell` (#296)
+  shell="$(ls -d "$envdir"/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell \
+                 "$envdir"/pw-browsers/chromium_headless_shell-*/chrome-headless-shell-linux-*/chrome-headless-shell 2>/dev/null | head -1)"
   [ -x "$shell" ] || { _se_fail "headless_shell not found under $envdir/pw-browsers"; return 1; }
 
   n="$(LD_LIBRARY_PATH="$libdir" ldd "$shell" 2>/dev/null | grep -c 'not found')"
