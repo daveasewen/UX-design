@@ -243,3 +243,37 @@ untouched. The `s271-D4` re-read of the memory hook's open list strikes nothing:
    invented; `_gen_chain.py --check` FRESH after regeneration. ⛔ No literal was moved.
 7. ⚠ **FILL for #296 stays UNMEASURED.** This seat, too, is a remote-device seat with no `.claude`
    transcript tree; no number is written. The conductor's ~185,000 remains his declaration.
+
+---
+
+## ⬛ #297 FIRST-CHAT ADDENDUM — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+*Written 2026-09-22 ~21:45 BST by the first #297 chat (Opus 5.5 conductor, a CLOUD session linked to
+Dave's computer). That chat was closed on Dave's word *"fresh"* at ~186,000 fill with no work done beyond
+one commit. **No wrap was run. THE NEXT CHAT IS STILL #297** — the chain title stands.*
+
+1. ⛔★★ **WHY #296's FILL WAS UNMEASURED — FOUND.** The conductor now runs in the CLOUD workspace and its
+   transcript lives THERE: `/root/.claude/projects/-home-claude/<session-id>.jsonl` (the cloud `Bash` tool,
+   not `device_bash`). `_checkin.py` globs `/sessions/*/mnt/.claude/projects/*/*.jsonl` on the device and
+   says NO TRANSCRIPT FOUND. **Read it in the cloud shell** by summing `input_tokens +
+   cache_creation_input_tokens + cache_read_input_tokens` over `message.usage` (the check-in's own
+   `FILL_FIELDS`), one row per distinct `message.id`. That is a hand sum, not a `_checkin.py` run — say so.
+   ⚠ #296 almost certainly failed the same way; NOT verified.
+2. ⛔★★ **BOOT 127,609 real, first turn** (cache_creation 127,607) against `BOOT_CEILING_TK` **72,768**
+   (`s295-D3`) — over by **54,841**. After the opener reads (handoff · chain · index · dave-voice · check-in
+   · ensure_env): **168,388**. Third turn: **177,764**. The attribution is UNMEASURED (the system prompt is
+   not in the transcript). Dave: *"that boot is massive again, i've switched off the docs."* — the Claude
+   Docs connector went off at ~21:33; the cache prefix held through it, so it did NOT reach that chat.
+   **The fresh chat's first turn measures his switch-off.**
+3. ✅ **`22a6a6a8` — the routing doc names Opus 5.5 as the default for every sub**, on his *"okay can you
+   change the routing doc to specify 5.5 as teh defaults for subs"*. `MODEL-ROUTING.md` Default tier
+   Opus 5 → Opus 5.5 (`claude-opus-5-5`) plus a by-addition note. **NOT PUSHED.** The Premium line
+   (`claude-fable-5` vs Fable 5.1) noticed, not changed.
+4. ⬛ **PARKED, HIS WORDS — routing by effort:** *"by most evaluations Opus surpasses Fable now or is very
+   similar, so i might be using opus at different effort levels for the routing, we can work on this
+   later"*. Not a ruling; not started.
+5. ⬛ **THE DECK QUESTION WAS PUT AND NOT ANSWERED.** Recommendation given: the PLAIN deck carries Friday
+   (a day of his rulings and his boss's pass; the plant deck a day behind). Ask again at the opener.
+6. ⚠ **`git status` stranded `.git/index.lock` twice; both moved to `notes/_lanes/_orphan-locks/*.297-*`**
+   (his to delete — the mount refuses `unlink`). `_git_commit.sh` needs `SESSION_N=297` on a non-wrap
+   commit, and line 1 of the msgfile WITHOUT the `after #N` prefix (T3 adds it).
