@@ -128,3 +128,14 @@ Struck on `_HANDOFF-147` § OWED (by an addendum at its foot) and in `_CARRIES.m
    **IDENTICAL to #296's wrap read and to lane A's run `35785910901`.** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/297/W/_ci-gates-W.log`.
 6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **7,153 tape (slice 6,300 + 853 wrapper), ratio 21%**. After this addendum's ⏱ delta line: **7,840 (slice 6,987 + 853), ratio 23%** of a `GOOD-MORNING.md` of 33,660 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
 7. ⚠ **STEP 4c ran LAST, after both commits** (`_gate_scratch_hygiene.py --clean --wrap`): it deletes the tiktoken cache every gate needs, so it could not run before the 5b commit. Declared, not skipped.
+
+---
+
+## ⬛ #298 ADDENDUM — STRIKES ON § OWED, BY ADDITION; NOTHING ABOVE IS REWRITTEN (`s183-D1` / `s188-D2`)
+
+*Filed by the #298 delegated wrap seat, 2026-09-23. His words are in `notes/_lanes/298/DAVE-WORDS-AND-BOOT-FINDING-2026-09-23.md`, verbatim.*
+
+- **2 — the brain's further pivot: STRUCK.** He picked *"B"* (11:41 BST); enacted by #298 lane B in `f54562e2` (rest yaw −35 → −27, pitch 20). Report `notes/_subreports/2026-09-23-298-B-brain-turn-B.md`.
+- **3 — slide 12's lines: STRUCK.** *"this is fine"* (11:38 BST) — both lines stay as the deck carries them.
+- **7 — confirm the 07 line: STRUCK.** *"do it"* (11:38 BST) — confirmed; in the deck since `81541832`, nothing built.
+- **NOT STRUCK:** 1 the ask (no answer at #298) · 4 the laptop headlines (his order: *"lets get the structure right and then we'll deal with polish"*) · 5 the review's other suggestions (folded into #299's first job) · 6 the demo brief (*"we'll do that last"*) · 8–13. All carried at their true ages in `_CARRIES.md` § `residual → #299`; the next handoff is `_HANDOFF-149-the-running-order-is-settled-and-the-work-is-to-enact-what-he-decided.md`.

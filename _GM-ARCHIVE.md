@@ -1,5 +1,22 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-23 #298
+
+> **COMMIT STATE #297:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-22-297-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. ⛔ **DATE SPLIT, SEVENTH** — the session's commits span 09-22 (`22a6a6a8` · `4fe02e0e` · `57e885b0` · `75a8598c`) and 09-23 (`cde7107d` · `38be9376` · `999cba4a` · `f848330e` · `81541832`). **`57e885b0` was pushed by lane A** (CI `35785910901`); the rest go with this wrap. Handoff `_HANDOFF-148-the-plain-deck-carries-friday-and-his-eye-ruled-it-slide-by-slide.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **245,372 real at the brief — a DECLARED hand sum, 247,700 re-read at this seat; no band claimed.**
+
+> ## ★ PRIOR — 2026-09-22 (Tue **#296**, Fable 5.1, **5 Opus lanes**, DELEGATED wrap on Opus 5.5 — ★★ **TWO DECKS FOR FRIDAY, RULED ALL DAY BY HIS EYE, AND HIS BOSS HAD THE LAST WORD**)
+>
+> - ★★★ ① **ONE DAY, NO DATE SPLIT. NOTHING INSCRIBED — `_rulings.json` STAYS 638** (`json.load`). Two v14 decks from v13: **A** plant (his run order), **B** plain (observation → response, no metaphor). His rulings all day went to the PLAIN one; the plant got the rail and the payoff line ONLY. `1351175a`.
+> - ★★ ② **THE RENDER ENV GOT A BUILDER** on his *"can we permanently fix this?"* — `knowledge/_render/ensure_env.sh`, ninth stratum in `_RUNBOOK-render-verify.md`. `cf97ccc4`.
+> - ★★ ③ **THE PLAIN DECK BY HIS EYE:** five causes + the archive's six-step loop (**B2**); the chapter rail v1→v6, then ported (**C**); payoff ***"Automated product design you can bank on"***. **His boss's pass:** Problem · Research · Evaluation · The result; the SHELLS graph, a brain slide, callipers PSI −62→−90 (**E**). `c358fc6b` — ⛔ **plain `git commit -F`, DECLARED: `_git_commit.sh` stranded the lock on its OWN first add, four refusals.**
+> - ⛔ ④ **STRUCK: `_HANDOFF-139…146`'s *"frozen demo prompt NOT RECOVERABLE"*** — it is at `notes/_briefs/2026-09-08-258-cold-run-brief.md` lines 13–17. Which cold brief is the demo's: **still unnamed.**
+> - ⚙ ⑤ **FILL UNMEASURED — no transcript at ANY seat; the conductor's ~185,000 is DECLARED, never a reading.** Lanes A · B · B2 · C · E, reports `notes/_subreports/2026-09-22-296-*.md`. **`_HANDOFF-147-two-decks-for-friday-ruled-by-his-eye-and-his-boss.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #297:** ⬛ **FRIDAY 09-25 IS THREE DAYS OUT — WHICH DECK CARRIES?** [NEW — 0, DAVE'S] — put to Dave at the wrap call; ask at the opener. `s225-D2`. **654 items, 12 new, 2 STRUCK**, `_CARRIES.md` § `residual → #297` `carries:residual-297`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#297:**' in l][0])))"` = 654.
+> **residual (GENERATED #296):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #295) — _roll_state.py · 2026-09-22
+
+
+*Rolled at the #298 wrap (2c). The #296 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #297` onward, now § `residual → #299`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-22 #297
 
 > **COMMIT STATE #296:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-22-296-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. ✅ **ONE DAY, NO DATE SPLIT** — session, lanes, the three session commits (`cf97ccc4` · `1351175a` · `c358fc6b`) and this ritual are all 2026-09-22. ⛔ **`c358fc6b` WENT BY PLAIN `git commit -F`, DECLARED** — `_git_commit.sh` refused four times after its own first auto-stage of `notes/_REHEARSAL-LOG.jsonl` stranded the index lock. Handoff `_HANDOFF-147-two-decks-for-friday-ruled-by-his-eye-and-his-boss.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⛔ UNMEASURED (no transcript at any seat).
