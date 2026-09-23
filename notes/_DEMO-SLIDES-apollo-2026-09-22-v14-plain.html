@@ -6567,7 +6567,14 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
      on exactly those lines. -90 stays inside the monotone-depth window the
      header derives (Fc.x depth < 0 and Fc.y depth > 0 over yaw -60..-10,
      pitch 8..32 needs PSI in about -100..-60), so painter's order is still exact. */
-  var PSI = -90*D2R;                      /* the calliper's lie on the plate */
+  /* #299 D: Dave 2026-09-23 14:12, "turn 09's callipers a quarter turn so they face you like the others". PSI -90 -> 0:
+     the beam, and the plate's long side with it, now runs across the front as the plates of 07, 08 and 10 do (the
+     books lie at -5), graduated face up, fixed jaw on the left, jaws toward the camera. The rest yaw stays -27 / 20.
+     Over the orbit (yaw -52..-2, pitch 8..32) Fc.x depth is +0.03..+0.78 and Fc.y +0.53..+0.99: one sign each, so
+     the picture stays monotone in depth. The one pair centroid order then gets wrong is a small part ON a big one
+     (the lock screw under the carriage's fill), so the carriage's two fittings are pinned over it (ord 1, below).
+     Checked by ray-casting every 2px against the solids at rest and the 8 orbit corners (notes/_lanes/299/D/). */
+  var PSI = 0*D2R;                        /* the calliper's lie on the plate (was -90) */
   var LB = 150, WB = 22, ZB0 = 6, ZB1 = 12;    /* the beam                    */
   var JAW = 54, JR = 14;                       /* jaw reach, jaw root length  */
   var CAR_L = 46, CAR_Y0 = -WB-6, CAR_Y1 = 5, CAR_Z1 = 14;
@@ -6636,7 +6643,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
                    segs:[[fp(Fc,[XS, 2, CAR_Z1]), fp(Fc,[XS, -10, CAR_Z1])]]});
 
     /* the thumb wheel and the lock screw */
-    var wh = prismP(Fc, [XS+30, 10, 0], 2, 10, CAR_Z1, CAR_Z1+5, 20, 0, {});
+    var wh = prismP(Fc, [XS+30, 10, 0], 2, 10, CAR_Z1, CAR_Z1+5, 20, 1, {});   /* #299 D: ord 1, over the carriage */
     wh.deco.push({face:wh.capHi, pts:ring(wh.cHi, Fc.x, Fc.y, 2.6, 20), col:INK});
     var kn = [], a;                                   /* the knurl, 16 cuts */
     for (i=0;i<16;i++){
@@ -6646,7 +6653,7 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
     }
     wh.deco.push({face:wh.capHi, segs:kn, col:INK, w:1});
     P.push(wh);
-    var lk = prismP(Fc, [XS+10, -14, 0], 2, 4.5, CAR_Z1, CAR_Z1+4, 20, 0, {});
+    var lk = prismP(Fc, [XS+10, -14, 0], 2, 4.5, CAR_Z1, CAR_Z1+4, 20, 1, {});   /* #299 D: ord 1, over the carriage */
     P.push(lk);
 
     /* the depth rod, out past the far end of the beam */
@@ -6889,7 +6896,8 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
     for (i=0;i<P.length;i++) prepare(P[i]);
     /* painter's order: centroid depth, which is EXACT here — the lie of
        the instrument keeps the whole orbit monotone along the beam and
-       across the jaws. ord only pins the beam under its own carriage. */
+       across the jaws. ord only pins the beam under its own carriage, and (#299 D, PSI 0) the wheel and the lock
+       screw over it: at PSI 0 the lock's centroid falls behind the carriage's, so centroid order alone buried it. */
     var order = P.slice().sort(function(a,b){ return (a.ord - b.ord) || (a.cd - b.cd); });
 
     /* 0 · the base plate, classified against the instrument in 3D, drawn
