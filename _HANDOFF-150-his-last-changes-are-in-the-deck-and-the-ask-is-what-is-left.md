@@ -107,3 +107,23 @@ Rail: **Problem** 03 · **Research** 04[05] · **Evaluation** 06 · **Evolution*
 *Filed report: `notes/_subreports/2026-09-23-299-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-23-299-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md`. Memory hook: `notes/_lanes/299/WRAP-MEMORY-HOOK.md`. His words and the facts: `notes/_lanes/299/WRAP-BRIEF.md`.*
 
 *Title the next chat:* `Apollo - #300: the ask on slide 15, then polish for friday`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no ★ LATEST banner addendum is owed. The `s271-D4` re-read of the memory hook's open list strikes nothing: `_rulings.json` reads **638, newest `s295-D4`** (`json.load`).
+
+1. ⛔★★ **THE WRAP COMMIT IS `f8321215` AND IT WENT ON THE DECLARED NOT-A-WRAP PATH, NOT `--wrap`.** The wrap gate, run inside the committer: **`capture gate [wrap]: 237 in scope · 1 fail · 44 warn`** → **`⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)`**. The one fail is the boot ceiling, now with two cloud readings (*"#297 127,600 · #298 127,661"*) — owed item 6 above, his call. The STEP CHANGE fail is gone: the band now holds the cloud boot. 24 files changed, 1,907 insertions, 1,003 deletions; `✓ done — locks clear`, exit 0 (transcript `notes/_lanes/299/W/_gitcommit-W1.log`). ⚠ A first run refused at the mention-map gate (the map was stale; the committer regenerated it and, by its own rule, did not stage it); re-run with `knowledge/_graph-mention-map.json` named. Nothing was committed by the refused run.
+2. ⚠ **The gate stranded `.git/index.lock` at open AND before the commit** — moved as `index.lock.299-W-1` and `index.lock.299-W-3`; each `git reset -q` then stranded `HEAD.lock` and `master.lock` (and once `ORIG_HEAD.lock`), moved as `*.299-W-2` and `*.299-W-4`. `s294-D12` did not fire; no delete was asked for.
+3. **THE ★ LATEST BANNER, by the gate's own arm (`_gm_usage.py`): LATEST 663 tape** against `s241-D2`'s **1,200 / 10**.
+4. ⬛ **THE PUSH: `4c9b4040..f8321215`**, seven commits (`2f0a385d` · `0e23408e` lane C · `d5583dee` · `e3f0de60` · `a7b2c9f2` lane D · `119f3615` lane E · `f8321215` the wrap), by **plain `git push origin master`, DECLARED** — the sanctioned `--push` arm runs `git status`. Branch `master` and fast-forward checked first (remote was `4c9b4040`, an ancestor). **`git ls-remote origin refs/heads/master` = `f83212155e42b3b4750ea32ea91b32a0119402bc` = local HEAD.** Transcript `notes/_lanes/299/W/_push-W1-plain.log`.
+5. ⬛★ **CI, READ BACK FOR THE WRAP SHA — run `35873846048`, POLLED TO COMPLETION, verdict taken AFTER `render` closed:** `release` ✅ 14:24:27 UTC · `gates` ⛔ FAILURE 14:30:36, **steps 5 and 6** · `render` ✅ **14:38:06 — 7m30s after `gates`**.
+
+   ```
+   SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 77 not asked (mutating)
+   ```
+
+   **IDENTICAL to #298's wrap read (`35854057936`).** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/299/W/_ci-gates-W.log`.
+6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **6,790 tape (slice 5,938 + 852 wrapper), ratio 20%**. After this addendum's ⏱ delta line: **7,428 (slice 6,576 + 852), ratio 22%** of a `GOOD-MORNING.md` of 33,535 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
+7. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.
