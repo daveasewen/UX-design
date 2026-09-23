@@ -4096,6 +4096,18 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
      solid. Here consecutive pieces are joined, so the hidden runs stay dashed 5/4. 08's canvas, view, scale, stroke,
      print and state are put back exactly as they were after each draw. */
   (function(){
+    /* #299 D - Dave 2026-09-23 14:12: "Lets make the KG illustration a bit smaller, 15% say, and make it spin slowly :)".
+       This instance only: 08's drawing and 12's Knowledge thumbnail (08's own print image) are not touched.
+       HUB_SCALE  the drawing inside the hub against the fit it had (the hub, its box and the words keep their size; the
+                  drawing keeps its centre). Line weights and node size are unchanged, as at any scale in this script.
+       HUB_TURN_S seconds for one full turn about the vertical axis, at constant speed, from the rest pose (yaw -35 /
+                  pitch 20, 08's). The extent of every view is the outer shell's circle and the axis, so the turn needs
+                  no re-fit and never leaves the box.
+       The turn runs only while slide 13 is on screen and the tab is visible, drawn at the deck's 30 fps into a canvas
+       over #hubShl; it resumes from the angle it left. Under prefers-reduced-motion: reduce, and in print, it does not
+       run: #hubShl, the rest pose drawn as an image exactly as before (at HUB_SCALE), is what shows. The hub never
+       followed the mouse (the orbit is 08's), so there is no interaction to pause for. */
+    var HUB_SCALE = 0.85, HUB_TURN_S = 60;
     var im = document.getElementById('hubShl'); if (!im) return;
     var host = im.parentNode, off = document.createElement('canvas'), octx = off.getContext('2d'), lastKey = '';
     var HAX = [[[0,0,-(RS[2]+34)],[0,0,RS[2]+34]]];
@@ -4110,15 +4122,12 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
       }
       ctx.strokeStyle=col; ctx.lineWidth=w; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
     }
-    function hubDraw(){
-      var w = Math.round(host.clientWidth), h = Math.round(host.clientHeight);
-      if (w < 40 || h < 40) return;
-      var dpr = Math.min(2, window.devicePixelRatio||1), key = w + 'x' + h + '@' + dpr;
-      if (key === lastKey) return;
+    /* draw the hub's drawing into one 2d context at w x h css px, turned yaw about the vertical; the fit is always taken
+       at the rest pose, so every angle shares one scale and one centre. 08's state is put back exactly after. */
+    function hubPaint(c2, w, h, dpr, yaw){
       var sv = [ctx, W, H, SC, OX, OY, PLATE, AXES, drawBox, LAST, strokeSegs];
       try {
-        off.width = Math.round(w*dpr); off.height = Math.round(h*dpr);
-        ctx = octx; W = w; H = h; PLATE = []; AXES = HAX; strokeSegs = hubStroke;
+        ctx = c2; W = w; H = h; PLATE = []; AXES = HAX; strokeSegs = hubStroke;
         ctx.setTransform(dpr,0,0,dpr,0,0);
         setView(YAW0, PIT0);
         var lo = [1e9,1e9], hi = [-1e9,-1e9];
@@ -4128,21 +4137,81 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
         RS.forEach(function(r){ lo[0]=Math.min(lo[0],-r); hi[0]=Math.max(hi[0],r); lo[1]=Math.min(lo[1],-r); hi[1]=Math.max(hi[1],r); });
         HAX.forEach(function(s){ s.forEach(function(v){ acc(v[0],v[1],v[2]); }); });
         var P = 4;
-        SC = Math.min((w-2*P)/(hi[0]-lo[0]), (h-2*P)/(hi[1]-lo[1]));
+        SC = Math.min((w-2*P)/(hi[0]-lo[0]), (h-2*P)/(hi[1]-lo[1])) * HUB_SCALE;
         OX = w/2-(lo[0]+hi[0])/2*SC; OY = h/2+(lo[1]+hi[1])/2*SC;
+        if (yaw !== YAW0) setView(yaw, PIT0);
         render();
-        im.src = off.toDataURL('image/png');
-        lastKey = key;
-      } catch(e){}
+        var ok = true;
+      } catch(e){ ok = false; }
       ctx = sv[0]; W = sv[1]; H = sv[2]; SC = sv[3]; OX = sv[4]; OY = sv[5]; PLATE = sv[6]; AXES = sv[7]; drawBox = sv[8]; LAST = sv[9]; strokeSegs = sv[10];
       setView(YAW0+yawOff, PIT0+pitOff);
+      return ok;
+    }
+    function hubDraw(){
+      var w = Math.round(host.clientWidth), h = Math.round(host.clientHeight);
+      if (w < 40 || h < 40) return;
+      var dpr = Math.min(2, window.devicePixelRatio||1), key = w + 'x' + h + '@' + dpr;
+      if (key === lastKey) return;
+      off.width = Math.round(w*dpr); off.height = Math.round(h*dpr);
+      if (!hubPaint(octx, w, h, dpr, YAW0)) return;
+      try { im.src = off.toDataURL('image/png'); lastKey = key; } catch(e){}
+    }
+    /* the turn */
+    var sp = document.createElement('canvas'), sctx = sp.getContext('2d');
+    sp.className = 'hubspin'; sp.setAttribute('aria-hidden', 'true'); host.appendChild(sp);
+    var mqR = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    var phi = 0, spinning = false, sraf = null, sLast = -1, sDrawn = -1e9, onScreen = false, printing = false, sKey = '';
+    function spinAllowed(){ return onScreen && !printing && !document.hidden && !(mqR && mqR.matches); }
+    function spinPaint(){
+      var w = Math.round(host.clientWidth), h = Math.round(host.clientHeight);
+      if (w < 40 || h < 40) return;
+      var dpr = Math.min(2, window.devicePixelRatio||1), key = w + 'x' + h + '@' + dpr;
+      if (key !== sKey){ sp.width = Math.round(w*dpr); sp.height = Math.round(h*dpr); sKey = key; }
+      hubPaint(sctx, w, h, dpr, YAW0 + phi);
+    }
+    function spinFrame(now){
+      sraf = requestAnimationFrame(spinFrame);
+      if (sLast < 0) sLast = now;
+      var dt = (now - sLast)/1000; sLast = now;
+      if (dt < 0) dt = 0; if (dt > 0.1) dt = 0.1;
+      phi = (phi + dt*2*Math.PI/HUB_TURN_S) % (2*Math.PI);
+      if (now - sDrawn >= _min - 1){ sDrawn = now; spinPaint(); }
+    }
+    function spinStart(){
+      if (spinning || !spinAllowed()) return;
+      spinning = true; sLast = -1; spinPaint(); host.classList.add('spinning');
+      sraf = requestAnimationFrame(spinFrame);
+    }
+    function spinStop(rest){
+      spinning = false; if (sraf) cancelAnimationFrame(sraf); sraf = null;
+      if (rest) host.classList.remove('spinning');
+    }
+    if ('IntersectionObserver' in window){
+      var sEl = document.getElementById('s10map');
+      if (sEl) new IntersectionObserver(function(es){
+        es.forEach(function(x){ onScreen = x.isIntersecting; if (onScreen) spinStart(); else spinStop(false); });
+      }, {threshold:0.05}).observe(sEl);
+    }
+    document.addEventListener('visibilitychange', function(){ if (document.hidden) spinStop(false); else spinStart(); });
+    if (mqR){
+      var onR = function(){ if (mqR.matches) spinStop(true); else spinStart(); };
+      if (mqR.addEventListener) mqR.addEventListener('change', onR); else if (mqR.addListener) mqR.addListener(onR);
+    }
+    window.addEventListener('beforeprint', function(){ printing = true; spinStop(true); });
+    window.addEventListener('afterprint', function(){ printing = false; spinStart(); });
+    if (window.matchMedia){
+      var mqP = window.matchMedia('print');
+      var onP = function(e){ if (e.matches){ printing = true; spinStop(true); } else { printing = false; spinStart(); } };
+      if (mqP.addEventListener) mqP.addEventListener('change', onP); else if (mqP.addListener) mqP.addListener(onP);
     }
     hubDraw();
-    if ('ResizeObserver' in window) new ResizeObserver(function(){ hubDraw(); }).observe(host);
+    if ('ResizeObserver' in window) new ResizeObserver(function(){ hubDraw(); if (host.classList.contains('spinning')) spinPaint(); }).observe(host);
     window.addEventListener('resize', function(){ setTimeout(hubDraw, 180); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(hubDraw);
     window.addEventListener('load', hubDraw);
-    window.shlHubState = function(){ return {key:lastKey, src:(im.src||'').length, w:host.clientWidth, h:host.clientHeight}; };
+    window.shlHubState = function(){ return {key:lastKey, src:(im.src||'').length, w:host.clientWidth, h:host.clientHeight,
+      scale:HUB_SCALE, turnS:HUB_TURN_S, spinning:spinning, shown:host.classList.contains('spinning') ? 'turn' : 'rest',
+      phiDeg:+(phi*180/Math.PI).toFixed(2), yawDeg:+((YAW0+phi)*180/Math.PI).toFixed(2), reduced:!!(mqR && mqR.matches)}; };
   })();
   window.shlReady = true;
 })();
@@ -8667,6 +8736,13 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
 #s10map .hub{container-type:size;justify-content:center;padding:18px 22px 20px;}
 #s10map .hub .hubkg{position:relative;flex:1 1 0;min-height:0;width:100%;margin:0 0 4px;}
 #s10map .hub .hubkg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}
+/* #299 D - the turn: a canvas over the rest image while slide 13 is on screen; the image (the rest pose) in print and under
+   reduced motion. The canvas's bitmap is the box's own size, so it lands where the image does. */
+#s10map .hub .hubkg canvas.hubspin{position:absolute;inset:0;width:100%;height:100%;display:none;}
+#s10map .hub .hubkg.spinning canvas.hubspin{display:block;}
+#s10map .hub .hubkg.spinning img{visibility:hidden;}
+@media print{ #s10map .hub .hubkg canvas.hubspin{display:none!important} #s10map .hub .hubkg img{visibility:visible!important} }
+@media (prefers-reduced-motion: reduce){ #s10map .hub .hubkg canvas.hubspin{display:none!important} #s10map .hub .hubkg img{visibility:visible!important} }
 #s10map .hub .hubh.apollo{font-size:clamp(34px,14.8cqh,58px);line-height:1.1;}
 #s10map .hub .accent-rule{margin:clamp(8px,3.4cqh,14px) 0;}
 #s10map .hub .strap{font-size:clamp(14px,4.4cqh,17px);margin-top:clamp(2px,1.5cqh,6px);}
