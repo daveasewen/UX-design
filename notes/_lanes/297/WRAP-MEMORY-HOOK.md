@@ -57,4 +57,4 @@ provenance: 297 · 2026-09-22 · status: observed · repo record: `_HANDOFF-148-
 
 ## THE `s271-D4` RE-READ
 
-Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json`. **Result: PENDING-297W-RECHECK.**
+Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json`. **Result: 638 records, newest `s295-D4`; #297 inscribed nothing, so NO item above is closed by a #297 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck` was asked and read 0 open items (its parser did not match this file's heading form) — recorded in `notes/_subreports/2026-09-22-297-W-wrap.md` § POST-WRAP.

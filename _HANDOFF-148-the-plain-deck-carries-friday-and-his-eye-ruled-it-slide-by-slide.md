@@ -108,3 +108,23 @@ Struck on `_HANDOFF-147` § OWED (by an addendum at its foot) and in `_CARRIES.m
 ---
 
 *Filed report: `notes/_subreports/2026-09-22-297-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-22-297-the-plain-deck-carries-friday-and-his-eye-ruled-it-slide-by-slide.md`. Memory hook: `notes/_lanes/297/WRAP-MEMORY-HOOK.md`. His words: `notes/_lanes/297/DAVE-RULINGS-2026-09-22.md`. The brief: `notes/_lanes/297/WRAP-BRIEF.md`.*
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no ★ LATEST banner addendum is owed. The `s271-D4` re-read of the memory hook's open list strikes nothing: `_rulings.json` reads **638, newest `s295-D4`** (`json.load`).
+
+1. ⛔★★ **THE WRAP COMMIT IS `c0ad1a85` AND IT WENT ON THE TRUE `--wrap` PATH** — **`capture gate [wrap]: 235 in scope · 0 fail · 62 warn`**, then **`— wrap gate GREEN on the wrap commit (#74-D1 consumer)`**; 18 files changed, 1,567 insertions, 1,010 deletions (transcripts `notes/_lanes/297/W/_gitcommit-W1.term` refused · `…-W2.log` committed). The 07 line went first as its own commit, **`81541832`**.
+2. ⚠ **ONE refusal before it**: the #208 `[110]` mention-map class, as at #295 and #296. ⚠ **And a stranded `.git/index.lock` was found before that run — left by this seat's own `_capture_gate.py --wrap` runs**, not by the committer: moved to `notes/_lanes/_orphan-locks/index.lock.297-W-1`; the recipe's `git reset -q` then stranded `HEAD.lock` and `refs/heads/master.lock` itself (moved as `*.297-W-2`). ⇒ **the gate is a lock-stranding command on this mount, like `git status`.**
+3. **THE ★ LATEST BANNER, by the gate's own arm** (`BANNER_LATEST_RE` → `measure_tokens`, bounded by the next ★ PRIOR): **841 tape, 8 substantive lines**, against `s241-D2`'s **1,200 / 10**.
+4. ⬛ **THE PUSH: `57e885b0..c0ad1a85`**, seven commits (`75a8598c` `cde7107d` `38be9376` `999cba4a` `f848330e` `81541832` `c0ad1a85`), by **plain `git push origin master`, DECLARED** — the sanctioned `--push` arm runs `git status` and its dirt gate refuses on the three other-seat paths and the lanes' uncommitted working files. Branch `master` and fast-forward checked first. **`git ls-remote origin refs/heads/master` = `c0ad1a85180f471886bfb773c0638ae1c03ca64a` = local HEAD.** Transcript `notes/_lanes/297/W/_push-W1-plain.log`.
+5. ⬛★ **CI, READ BACK FOR THE WRAP SHA — run `35842716140`, POLLED TO COMPLETION, verdict taken AFTER `render` closed:** `release` ✅ 09:24:57 UTC · `gates` ⛔ FAILURE 09:28:13, **steps 5 and 6** · `render` ✅ **09:38:35 — 10m22s after `gates`** (the #291/#292 lesson, a ninth time).
+
+   ```
+   SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 77 not asked (mutating)
+   ```
+
+   **IDENTICAL to #296's wrap read and to lane A's run `35785910901`.** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/297/W/_ci-gates-W.log`.
+6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **7,153 tape (slice 6,300 + 853 wrapper), ratio 21%**. After this addendum's ⏱ delta line: **7,840 (slice 6,987 + 853), ratio 23%** of a `GOOD-MORNING.md` of 33,660 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
+7. ⚠ **STEP 4c ran LAST, after both commits** (`_gate_scratch_hygiene.py --clean --wrap`): it deletes the tiktoken cache every gate needs, so it could not run before the 5b commit. Declared, not skipped.
