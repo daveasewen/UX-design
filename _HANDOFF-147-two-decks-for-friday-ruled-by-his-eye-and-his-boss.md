@@ -277,3 +277,20 @@ one commit. **No wrap was run. THE NEXT CHAT IS STILL #297** — the chain title
 6. ⚠ **`git status` stranded `.git/index.lock` twice; both moved to `notes/_lanes/_orphan-locks/*.297-*`**
    (his to delete — the mount refuses `unlink`). `_git_commit.sh` needs `SESSION_N=297` on a non-wrap
    commit, and line 1 of the msgfile WITHOUT the `after #N` prefix (T3 adds it).
+
+---
+
+## ⬛ #297 WRAP — STRIKES ON § OWED, BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+*Written 2026-09-23 by the #297 delegated wrap seat (Opus 5.5), `s183-D1` / `s188-D2`: each strike names the session that closed it and where the closing is inscribed. The same eight are struck in `_CARRIES.md` § `residual → #298`. The successor handoff is `_HANDOFF-148-the-plain-deck-carries-friday-and-his-eye-ruled-it-slide-by-slide.md`.*
+
+1. ~~Which deck carries~~ — **STRUCK #297: the PLAIN deck.** His *"plain"*, 22:00 BST 2026-09-22, `notes/_lanes/297/DAVE-RULINGS-2026-09-22.md`; every #297 lane worked it (`57e885b0` … `f848330e`).
+2. ~~The brain's angle~~ — **STRUCK #297: the shared −35 / 20.** *"1. okay do it"*, same file; enacted by lane A, `57e885b0`. His further pivot pick (A/B/C) is a new item.
+3. ~~The brain slide's words are a draft~~ — **STRUCK #297: kept.** *"2. this copy is fine"*, same file.
+6. ~~The two placeholder footnotes~~ — **STRUCK #297: removed.** *"4. remove the notes"*, same file; lane A, `57e885b0`.
+7. ~~Port the plain rulings to the plant deck~~ — **STRUCK #297: moot.** Its condition failed: the plant deck does not carry (*"plain"*).
+8. ~~Which cold brief is the demo's~~ — **STRUCK #297: `notes/_lanes/288/GRILL-SOURCE-2026-09-18-hsbc-ceo-international-banking.md`.** *"5. it's the one we reconstructed from co-pilot … but we'll make changes to it"*, same file. His changes are a new item.
+11. ~~Why #296's FILL was unmeasured~~ — **STRUCK #297: found.** The conductor runs in the cloud; its transcript is outside the device glob — § #297 FIRST-CHAT ADDENDUM 1 above, `4fe02e0e`. #296's own figure stays a declared absence.
+12. ~~The #296 memory hook~~ — **STRUCK #297: placed.** The Project memory holds `wrap-296-two-decks-for-friday-ruled-by-his-eye-and-his-boss.md` (2026-09-22 20:14:49 UTC) and an updated `index.md` (20:16:14 UTC), listed at the #297 wrap seat.
+
+⛔ **NOT STRUCK:** 4 the catalogue plate · 5 the proficiency image · 9 `notes/_lanes/296/E/_dbg-*.png` · 10 the `_git_commit.sh` first-add lock · 13 everything else in `_CARRIES.md`.
