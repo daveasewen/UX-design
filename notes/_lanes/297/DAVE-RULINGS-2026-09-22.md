@@ -67,3 +67,31 @@ Shown the five diagram proposals one at a time (lane B's viewer).
 ### The conductor's reading (a reading, not his words)
 
 All five diagram proposals go into the deck · on 11 the red comes off the Speed box and the Speed heading, and "Addressed first · the library" goes · 11 gets a second state on the next advance highlighting everything tackled, i.e. every item except "Lack of user data and research" (renamed from "Lack of data and research") · Governance gets a distinct not-solved-but-proposed indicator: sign off the system, not the outputs — or at least a fast-track · the three renames apply on 06 AND on 11, so the two slides name the causes identically · the 07 sentence fix is NOT ruled and is not touched. Nothing inscribed.
+
+
+## 2026-09-23 — the cover strap, a new chapter, the three titles and the map's hub
+
+2026-09-23 08:41 BST:
+
+> can we have the KG graphic in the middle of the diagram from 08 on 13 in the middle;, try and keep the text and remove the tray for this one
+
+2026-09-23 08:44 BST (with a screenshot of slide 12's three plates titled Parts / Knowledge / Proficiency):
+
+> Lets have the titles as
+> Components - Knowledge - Judgment
+>
+> the description for Judgement will need different copy, I don't want to repeat the noun
+
+2026-09-23 08:48 BST:
+
+> cover slide, change the strap to:
+> A smart design engine powered by AI
+> on, brand, on standard, accessible, at speed
+
+2026-09-23 08:50 BST:
+
+> I want a new chapter called evolution after evaluation, that stars with slide 07
+
+### The conductor's reading (a reading, not his words)
+
+13's hub becomes 08's knowledge-graph drawing with no tray, its text kept · 12's titles become Components · Knowledge · Judgment; Judgment gets a new line that does not repeat the noun; the Components line also repeats its noun and is put to him with an alternative, not changed · the cover strap becomes two lines, "A smart design engine powered by AI" / "on brand, on standard, accessible, at speed" · a new chapter, Evolution, runs from 07 to 13; Evaluation keeps 06. Nothing inscribed.

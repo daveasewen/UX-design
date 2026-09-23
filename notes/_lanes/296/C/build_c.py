@@ -201,12 +201,15 @@ def build(src, dst, chapters, must=('you can bank on',)):
     open(dst, 'w', encoding='utf-8').write(h)
     print('wrote', dst, len(h.encode()))
 
+# v8 (#297 lane D): Dave 2026-09-23 08:50, "I want a new chapter called evolution after evaluation, that stars with
+# slide 07". Evolution runs 07-13 (s6 ... s10map); Evaluation keeps 06 (s4p) alone. Six chapters, the same 14 items.
 PLAIN_CHAPTERS = '''  chapters: [
     {n:1, title:'Problem',     id:'s3',  subs:[]},
     {n:2, title:'Research',    id:'s5x', subs:['s5r']},
-    {n:3, title:'Evaluation',  id:'s4p', subs:['s6','s7','s8','s7b','s6b','s10','s10map']},
-    {n:4, title:'The result',  id:'s9',  subs:[]},
-    {n:5, title:'The ask',     id:'s11', subs:['s12']}
+    {n:3, title:'Evaluation',  id:'s4p', subs:[]},
+    {n:4, title:'Evolution',   id:'s6',  subs:['s7','s8','s7b','s6b','s10','s10map']},
+    {n:5, title:'The result',  id:'s9',  subs:[]},
+    {n:6, title:'The ask',     id:'s11', subs:['s12']}
   ]
 '''
 

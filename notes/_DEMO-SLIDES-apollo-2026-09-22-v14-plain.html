@@ -414,7 +414,10 @@ table.kpi td.tg{color:var(--black)}
 <div id="kgLayer"><canvas id="kg"></canvas></div>
 <div class="deck" id="deck">
 <!-- ===== 1 · Title — VERBATIM from v8 (Dave: "keep the opening slide as it is").
-     Only the pagenum denominator moves, 11 -> 12. ====== -->
+     Only the pagenum denominator moves, 11 -> 12.
+     #297 lane D: the strap is Dave's two lines of 2026-09-23 08:48 ("cover slide, change the strap to:
+     A smart design engine powered by AI / on, brand, on standard, accessible, at speed"), the stray comma
+     after the first "on" dropped, the second line lowercase as he typed it. ====== -->
 <section class="slide dark" id="s1">
   <img id="kgPrint" alt="">
   <div class="vignette"></div>
@@ -422,7 +425,7 @@ table.kpi td.tg{color:var(--black)}
     <div class="inner">
       <p class="label">Apollo · design-system engine</p>
       <h1 class="wordmark">Apollo</h1>
-      <p class="sub">A governed engine for designing with AI — on brand, accessible, at&nbsp;speed.</p>
+      <p class="sub">A smart design engine powered by&nbsp;AI<br>on brand, on standard, accessible, at&nbsp;speed</p>
     </div>
   </div>
   <div class="pagenum">01 / 16</div>
@@ -437,11 +440,12 @@ table.kpi td.tg{color:var(--black)}
     <p class="label rv">The order of play</p>
     <h2 class="rv d1" style="font-size:clamp(28px,3vw,40px);margin-bottom:var(--s5);max-width:22em;text-wrap:balance">
       What you&rsquo;ll see in the next 15&ndash;20&nbsp;minutes.</h2>
-    <ol class="chapters rv d2" style="grid-template-columns:repeat(4,1fr)">
+    <ol class="chapters rv d2" style="grid-template-columns:repeat(5,minmax(max-content,1fr))">
       <li><span class="n">1</span><b>Problem<em>what we noticed</em></b></li>
       <li><span class="n">2</span><b>Research<em>what we tested &middot; what we saw</em></b></li>
-      <li><span class="n">3</span><b>Evaluation<em>the library &middot; the graph &middot; the gates</em></b></li>
-      <li><span class="n">4</span><b>The result<em>demo &middot; what she is made of</em></b></li>
+      <li><span class="n">3</span><b>Evaluation<em>what else is slowing design</em></b></li>
+      <li><span class="n">4</span><b>Evolution<em>the library &middot; the graph &middot; the gates</em></b></li>
+      <li><span class="n">5</span><b>The result<em>demo &middot; what she is made of</em></b></li>
     </ol>
   </div>
   <div class="pagenum">02 / 16</div>
@@ -606,11 +610,11 @@ table.kpi td.tg{color:var(--black)}
     <p class="label rv">The main constituents</p>
     <h2 class="rv d1"><b>The three main elements of Apollo.</b></h2>
     <div class="grid4 grid5">
-      <div class="rv d2"><img class="pic" id="an1" alt="Line drawing of the catalogue"><p class="ix">01</p><h3>Parts</h3><p>The library: 137 components in code.</p></div>
+      <div class="rv d2"><img class="pic" id="an1" alt="Line drawing of the catalogue"><p class="ix">01</p><h3>Components</h3><p>The library: 137 components in code.</p></div>
       <div class="rv d2"><img class="pic" id="an2" alt="Line drawing of the knowledge graph"><p class="ix">02</p><h3>Knowledge</h3><p>Standards, accessibility, rulings, governance, usage, theory &mdash; one graph.</p></div>
-      <div class="rv d3"><img class="pic" id="an3" alt="Line drawing of a brain"><p class="ix">03</p><h3>Proficiency</h3><p>The judgement to compose from it.</p></div>
+      <div class="rv d3"><img class="pic" id="an3" alt="Line drawing of a brain"><p class="ix">03</p><h3>Judgment</h3><p>The brain: what to build, and how to compose&nbsp;it.</p></div>
     </div>
-    <p class="foot rv d5">Parts, knowledge and the judgement to compose from them.</p>
+    <p class="foot rv d5">Components, knowledge and the judgement to compose from them.</p>
   </div>
   <div class="pagenum">12 / 16</div>
 </section>
@@ -748,6 +752,7 @@ table.kpi td.tg{color:var(--black)}
       </article>
 
       <div class="hub">
+        <div class="hubkg"><img id="hubShl" alt="Line drawing of the knowledge graph"></div>
         <p class="hubh apollo">Apollo</p>
         <div class="accent-rule" role="presentation"></div>
         <p class="strap">Smart design system</p>
@@ -4076,6 +4081,65 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
             rings:RINGS.length, outlines:RS.length, plate:[2*PA,2*PU,BASE_T-BASE_B],
             SC:SC, W:W, H:H, drawBox:drawBox.slice(), last:LAST};
   };
+  /* #297 lane D - THE SAME DRAWING AT THE HEART OF 13's MAP. Dave 2026-09-23 08:41: "can we have the KG graphic in
+     the middle of the diagram from 08 on 13 in the middle;, try and keep the text and remove the tray for this one".
+     The shells, nodes, edges and rings above, at the rest angle (-35 / 20), in the same ink and the same weights.
+     Left out on this slide only: the tray (the plate and the ground cross drawn on it). The vertical axis stays and
+     runs as far below the centre as above it, since the plate it ran down to has gone. Static: drawn at rest into
+     #hubShl as an image (so it keeps its shape at any size and prints as it shows), and again when the hub changes
+     size. One difference in the stroke, not the drawing: 08 strokes each ring as 120 short pieces and the 5/4 dash
+     restarts on every piece; at the hub's smaller scale a piece is shorter than a dash, so the hidden runs would go
+     solid. Here consecutive pieces are joined, so the hidden runs stay dashed 5/4. 08's canvas, view, scale, stroke,
+     print and state are put back exactly as they were after each draw. */
+  (function(){
+    var im = document.getElementById('hubShl'); if (!im) return;
+    var host = im.parentNode, off = document.createElement('canvas'), octx = off.getContext('2d'), lastKey = '';
+    var HAX = [[[0,0,-(RS[2]+34)],[0,0,RS[2]+34]]];
+    function hubStroke(arr, col, dash, w){
+      if (!arr.length) return;
+      ctx.beginPath();
+      var lx = NaN, ly = NaN;
+      for (var i=0;i<arr.length;i++){
+        var q = arr[i];
+        if (!(Math.abs(q[0]-lx) < 0.01 && Math.abs(q[1]-ly) < 0.01)) ctx.moveTo(q[0], q[1]);
+        ctx.lineTo(q[2], q[3]); lx = q[2]; ly = q[3];
+      }
+      ctx.strokeStyle=col; ctx.lineWidth=w; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
+    }
+    function hubDraw(){
+      var w = Math.round(host.clientWidth), h = Math.round(host.clientHeight);
+      if (w < 40 || h < 40) return;
+      var dpr = Math.min(2, window.devicePixelRatio||1), key = w + 'x' + h + '@' + dpr;
+      if (key === lastKey) return;
+      var sv = [ctx, W, H, SC, OX, OY, PLATE, AXES, drawBox, LAST, strokeSegs];
+      try {
+        off.width = Math.round(w*dpr); off.height = Math.round(h*dpr);
+        ctx = octx; W = w; H = h; PLATE = []; AXES = HAX; strokeSegs = hubStroke;
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        setView(YAW0, PIT0);
+        var lo = [1e9,1e9], hi = [-1e9,-1e9];
+        var acc = function(a,u,b){ var sx=m00*a+m02*u, sy=m10*a+m11*b+m12*u;
+          if (sx<lo[0]) lo[0]=sx; if (sx>hi[0]) hi[0]=sx; if (sy<lo[1]) lo[1]=sy; if (sy>hi[1]) hi[1]=sy; };
+        RINGS.forEach(function(r){ r.forEach(function(p){ acc(p[0],p[1],p[2]); }); });
+        RS.forEach(function(r){ lo[0]=Math.min(lo[0],-r); hi[0]=Math.max(hi[0],r); lo[1]=Math.min(lo[1],-r); hi[1]=Math.max(hi[1],r); });
+        HAX.forEach(function(s){ s.forEach(function(v){ acc(v[0],v[1],v[2]); }); });
+        var P = 4;
+        SC = Math.min((w-2*P)/(hi[0]-lo[0]), (h-2*P)/(hi[1]-lo[1]));
+        OX = w/2-(lo[0]+hi[0])/2*SC; OY = h/2+(lo[1]+hi[1])/2*SC;
+        render();
+        im.src = off.toDataURL('image/png');
+        lastKey = key;
+      } catch(e){}
+      ctx = sv[0]; W = sv[1]; H = sv[2]; SC = sv[3]; OX = sv[4]; OY = sv[5]; PLATE = sv[6]; AXES = sv[7]; drawBox = sv[8]; LAST = sv[9]; strokeSegs = sv[10];
+      setView(YAW0+yawOff, PIT0+pitOff);
+    }
+    hubDraw();
+    if ('ResizeObserver' in window) new ResizeObserver(function(){ hubDraw(); }).observe(host);
+    window.addEventListener('resize', function(){ setTimeout(hubDraw, 180); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(hubDraw);
+    window.addEventListener('load', hubDraw);
+    window.shlHubState = function(){ return {key:lastKey, src:(im.src||'').length, w:host.clientWidth, h:host.clientHeight}; };
+  })();
   window.shlReady = true;
 })();
 
@@ -8573,6 +8637,20 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
   window.diagramLayout = lay;
 })();
 </script>
+<style data-lane="297-D">
+/* #297 lane D - 13's hub. Dave 2026-09-23 08:41: "can we have the KG graphic in the middle of the diagram from 08 on 13
+   in the middle;, try and keep the text and remove the tray for this one". 08's graph, with no tray, fills the hub
+   above its words; Apollo, the red rule and the strap keep their type (#296 D) and sit beneath it. The drawing is an
+   image drawn by the shells script (object-fit:contain), so it never stretches.
+   The hub is short on a 900-high screen, so its words scale with the hub's height (cqh): at 1920x1080 they are the
+   #296 D sizes (Apollo 58, strap 17); at 1440x900 they step down (Apollo ~43, strap 14) and the drawing keeps the room. */
+#s10map .hub{container-type:size;justify-content:center;padding:18px 22px 20px;}
+#s10map .hub .hubkg{position:relative;flex:1 1 0;min-height:0;width:100%;margin:0 0 4px;}
+#s10map .hub .hubkg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}
+#s10map .hub .hubh.apollo{font-size:clamp(34px,14.8cqh,58px);line-height:1.1;}
+#s10map .hub .accent-rule{margin:clamp(8px,3.4cqh,14px) 0;}
+#s10map .hub .strap{font-size:clamp(14px,4.4cqh,17px);margin-top:clamp(2px,1.5cqh,6px);}
+</style>
 <script data-lane="296-C">
 /* #296 lane C - the chapter rail, v2. RAIL is the only thing to edit:
    a chapter is {n, title, id, subs:[ids]}; ids are the slides' own ids.
@@ -8595,9 +8673,10 @@ var RAIL = {
   chapters: [
     {n:1, title:'Problem',     id:'s3',  subs:[]},
     {n:2, title:'Research',    id:'s5x', subs:['s5r']},
-    {n:3, title:'Evaluation',  id:'s4p', subs:['s6','s7','s8','s7b','s6b','s10','s10map']},
-    {n:4, title:'The result',  id:'s9',  subs:[]},
-    {n:5, title:'The ask',     id:'s11', subs:['s12']}
+    {n:3, title:'Evaluation',  id:'s4p', subs:[]},
+    {n:4, title:'Evolution',   id:'s6',  subs:['s7','s8','s7b','s6b','s10','s10map']},
+    {n:5, title:'The result',  id:'s9',  subs:[]},
+    {n:6, title:'The ask',     id:'s11', subs:['s12']}
   ]
 };
 (function(){
