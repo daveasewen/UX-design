@@ -48,7 +48,7 @@ Missing file → `STANDING — knowledge/_standing.md ABSENT`, and the run still
 VERDICTS are the ruled lines, imported from `_gauge_tokens.py`, never restated here:
   STOP_LINE_TK 180,000 (s260-D2/s271-D1) → past it: "STOP LINE PASSED — wrap before the next lane"
   TOLERATED_TK 220,000 (s272-D93)       → past it: "OUTSIDE TOLERANCE — no more lanes"
-  BUDGET_HARD  256,000                  → past it: "HARD LINE BREACHED"
+  BUDGET_HARD  300,000 (#301, was 256,000) → past it: "HARD LINE BREACHED"
 
 SCRATCH is cleaned MECHANICALLY (the current user's own top-level entries under /tmp and
 /var/tmp — the only litter anyone can ever remove, see `_gate_scratch_hygiene.py`), with ONE

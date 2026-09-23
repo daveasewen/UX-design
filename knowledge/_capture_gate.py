@@ -165,6 +165,8 @@ BAND_WORD_RE = re.compile(r"\b(GREEN|AMBER|RED)\b", re.I)  # used by the #56 TOK
 # tokens (amber 160,000 · working 200,000 · quality-max 256,000 — the figure formerly labelled
 # "hard": a QUALITY/TOLERANCE line sourced at a 200K-class window, NOT a context wall for
 # Fable 5.1 / Opus 5 in Cowork (1M + auto-compaction), per Dave's #284 correction, worded #286).
+# ⚠ #301 addendum: quality-max is now 300,000 — PICKED by Dave as an experiment until the Mac seat fix.
+# ⚠ #301 addendum (2): working is now 256,000 — PICKED by Dave (*"200k isnt enough make it 256"*).
 # ⚠ The escape-hatch marker survives the retirement because the TOKEN path uses it: crossing
 # the working budget is a QUESTION PUT TO DAVE, so the marker names him.
 RESERVE_SPEND_RE = re.compile(r"RESERVE SPEND\b[^.]{0,40}?\bforked to Dave\b", re.I)
@@ -1390,7 +1392,7 @@ def check_preflight_tokens(line, label="GOOD-MORNING.md"):
     total, budget = _n(tm.group(1)), _n(tm.group(2))
     if budget != gauge.BUDGET_WORKING:
         fails.append(f"{label}: pre-flight prices against {budget:,}, but the ruled working "
-                     f"budget is {gauge.BUDGET_WORKING:,} (Dave #56). Re-dialling it is his "
+                     f"budget is {gauge.BUDGET_WORKING:,} (Dave #56, re-dialled #301). Re-dialling it is his "
                      f"word — and changing `_gauge_tokens.BUDGET_WORKING` is part of doing it.")
 
     if not missing:
@@ -1421,11 +1423,14 @@ def check_preflight_tokens(line, label="GOOD-MORNING.md"):
         # NOT a context wall — Fable 5.1 / Opus 5 in Cowork have a 1M window with auto-compaction,
         # so crossing 256,000 is a RECALL-QUALITY breach, never a crash risk. The number and the
         # fail are UNCHANGED; only the label is.
+        # ⛔ #301 (2026-09-23): the line is now 300,000, PICKED by Dave as an experiment until the
+        # Mac seat fix. 256,000–300,000 has NO published recall measurement; the fail message says so.
         fails.append(
             f"{label}: pre-flight {total:,} is past the QUALITY-MAX line ({gauge.BUDGET_HARD:,}; "
             f"historically called the 'hard line'). "
-            f"That line is SOURCED, not picked: it is the last context length at which Claude's "
-            f"recall has been publicly measured (93% on MRCR v2, falling to 76% at 1M). It is a "
+            f"That line is PICKED by Dave #301 as an experiment until the Mac seat fix, ABOVE "
+            f"the last context length at which Claude's recall has been publicly measured "
+            f"(256,000 — 93% on MRCR v2, falling to 76% at 1M). It is a "
             f"QUALITY line, not a context wall for this model (1M + auto-compaction). Beyond "
             f"it there is no measurement to reason from, so `RESERVE SPEND` does NOT buy the "
             f"overrun — SPLIT THE JOB across windows, or delegate part of it to a subagent with "
@@ -1440,7 +1445,7 @@ def check_preflight_tokens(line, label="GOOD-MORNING.md"):
         else:
             fails.append(
                 f"{label}: pre-flight {total:,} is over the working budget "
-                f"({gauge.BUDGET_WORKING:,}, Dave #56) and UNMARKED. Either CUT THE JOB back "
+                f"({gauge.BUDGET_WORKING:,}, Dave #56, re-dialled #301) and UNMARKED. Either CUT THE JOB back "
                 f"inside the budget, DELEGATE part of it to a subagent with its own window, or "
                 f"declare the overrun IN ADVANCE and mark it `RESERVE SPEND — forked to Dave`. "
                 f"⚠ Do NOT under-price the job to fit — that is the failure this budget exists "
@@ -4483,6 +4488,10 @@ def boot_stratum_double_count_check(repo):
 # and a wrap that states a six-figure FILL and says nothing about the wall has not.
 # ⚠ "the wall" above is the HISTORICAL name for 256,000. Worded #286 on Dave's #284 correction:
 # it is a QUALITY / TOLERANCE line, not a context wall for this model (1M + auto-compaction).
+# ⚠ #301 addendum: `BUDGET_HARD` is now 300,000, PICKED by Dave as an experiment (was 256,000,
+# SOURCED). This arm still only reads it.
+# ⚠ #301 addendum (2): `BUDGET_WORKING` is now 256,000, PICKED by Dave (*"200k isnt enough make it
+# 256"*; was 200,000, SOURCED). The ceiling this arm grades moved with it; `_WALL` below takes 256,000.
 # ⛔ WHAT IT NEVER TOUCHES: `BUDGET_WORKING` (200,000) and `BUDGET_HARD` (256,000) are SOURCED and
 # are not moved, widened or re-based here; nor is `gauge.STOP_LINE_TK`. This arm reads them.
 # ⚠ WHAT IT CANNOT SEE: whether the declared figure is TRUE. A sub cannot re-measure a
@@ -4519,7 +4528,9 @@ FILL_NOT_FILL_RE = re.compile(r"\b(boot|subs|throughput|quota|cl100k)\b", re.I)
 # ceiling. Either order — `104,364 OVER the 200,000 working ceiling`, or `the 200,000 working
 # wall … is a BREACH`. ⛔ `under`/`below` are deliberately absent from the verb list.
 _OVER = r"(?:breach|over|past|above|beyond|exceed\w*|bust)"
-_WALL = r"(?:200,000|200000|working\s+(?:ceiling|wall|line))"
+# #301: 256,000 added — BUDGET_WORKING moved 200,000 → 256,000 (Dave, *"200k isnt enough make it
+# 256"*). 200,000 is KEPT so blocks written against the old line still read as declared.
+_WALL = r"(?:200,000|200000|256,000|256000|working\s+(?:ceiling|wall|line))"
 FILL_BREACH_DECL_RE = re.compile(
     r"%s\b[^.]{0,160}?%s|%s[^.]{0,160}?\b%s" % (_OVER, _WALL, _WALL, _OVER), re.I)
 
@@ -4594,7 +4605,8 @@ def fill_working_ceiling_check(repo):
             "⛔ A breach that is written down passes this arm; a breach that is merely recorded "
             "as a number does not (`s244-D1` posture). The remedy is ONE clause in the block "
             "naming the overshoot and its size — NOT a smaller number, and never a move of the "
-            "200,000 literal, which is SOURCED and is not a price a wrap may pay to go green "
+            "working-ceiling literal, which is Dave's (PICKED #301, was 200,000 SOURCED) and is "
+            "not a price a wrap may pay to go green "
             "[[gate-must-quote-what-it-forbids]]. ⚠ ADVISORY: this arm does not block "
             "(dream-12 P2(b) is UNRULED and Dave's)."
             % (sess, f"{fig:,}", sess, f"{fig:,}", f"{fig - ceiling:,}", f"{ceiling:,}"))
@@ -4606,7 +4618,7 @@ def fill_working_ceiling_check(repo):
             % (sess, f"{fig:,}", f"{fig - ceiling:,}", f"{ceiling:,}"))
     notes.append(
         "FILL ceiling (`s271-D2`): %d `post-mortem` block(s) read, %d carrying a declared FILL "
-        "· ceiling %s (`gauge.BUDGET_WORKING`, SOURCED) · %d over it (%d DECLARED, %d silent) · "
+        "· ceiling %s (`gauge.BUDGET_WORKING`, PICKED Dave #301) · %d over it (%d DECLARED, %d silent) · "
         "stop line %s (`gauge.STOP_LINE_TK`, `s260-D2`+`s271-D1`) is the ADVISORY and is NOT "
         "graded here. ⚠ The figure is the block's OWN declaration: this arm grades the RECORD, "
         "never a measurement it did not take."
@@ -7027,8 +7039,10 @@ PREFLIGHT_FIXTURES = [
 # was written down: the check was confirmed to go RED on the failing form and GREEN on the
 # control. A fixture list assembled without that step asserts that the code does what its author
 # intended, which is not the same as testing it [[gate-must-quote-what-it-forbids]].
+# #301: every `of 200,000` below → `of 256,000` — the stamp must price against the live
+# BUDGET_WORKING or check_preflight_tokens() fails it ("prices against 200,000").
 _ABS_OK = ("pre-flight #56: boot 26,897 (disk 6,897 measured · harness ~20,000 est ±8,000) + "
-           "job 45,000 est + wrap 20,000 est = 91,897 of 200,000 — GREEN\n")
+           "job 45,000 est + wrap 20,000 est = 91,897 of 256,000 — GREEN\n")
 PREFLIGHT_TOKEN_FIXTURES = [
     ("control — priced, in budget, all three terms labelled", _ABS_OK, False),
     # ⛔ #58, AND IT TOOK THE WHOLE GATE DOWN, NOT JUST THIS CHECK. The live #58 banner mentioned
@@ -7039,38 +7053,43 @@ PREFLIGHT_TOKEN_FIXTURES = [
     # parsed: mutation-tested #58, both arms — restore `([\d,]+)` and it raises again.
     ("#58: a PROSE MENTION before the real term must not crash, and must not win",
      "pre-flight #58 (no band was written before the job, and that is a LAPSE): boot 30,633 "
-     "measured + job 70,000 est + wrap 25,000 est = 125,633 of 200,000 — GREEN\n", False),
+     "measured + job 70,000 est + wrap 25,000 est = 125,633 of 256,000 — GREEN\n", False),
     # ★ THE D10 (c) PAIR, and it is the whole point of the rewrite. A term that is DECLARED
     # unobservable passes; the identical stamp with that term merely ABSENT fails. Silence is
     # the only thing being punished — which is what makes publishing cheaper than refusing.
     ("D10 (c): a DECLARED-unobservable term passes",
      "pre-flight #56: boot 26,897 measured + job unobservable (scope unruled) + wrap 20,000 est "
-     "= 46,897 of 200,000 — GREEN\n", False),
+     "= 46,897 of 256,000 — GREEN\n", False),
     ("D10 (c): the SAME term silently absent FAILS",
-     "pre-flight #56: boot 26,897 measured + wrap 20,000 est = 46,897 of 200,000 — GREEN\n", True),
+     "pre-flight #56: boot 26,897 measured + wrap 20,000 est = 46,897 of 256,000 — GREEN\n", True),
     ("arithmetic that does not close FAILS",
      "pre-flight #56: boot 26,897 measured + job 45,000 est + wrap 20,000 est "
-     "= 150,000 of 200,000 — GREEN\n", True),
+     "= 150,000 of 256,000 — GREEN\n", True),
     ("band mis-read against the ruled thresholds FAILS", _ABS_OK.replace("GREEN", "AMBER"), True),
     ("AMBER stated correctly passes",
      "pre-flight #56: boot 26,897 measured + job 120,000 est + wrap 30,000 est "
-     "= 176,897 of 200,000 — AMBER\n", False),
+     "= 176,897 of 256,000 — AMBER\n", False),
+    # #301: WORKING moved 200,000 → 256,000, so 206,897 is now AMBER — the two fixtures below
+    # were lifted to 266,897 (over the new working line, under the 300,000 hard line) so they
+    # still test the RED overrun, not a band mis-read.
     ("over the working budget, UNMARKED — FAILS",
-     "pre-flight #56: boot 26,897 measured + job 150,000 est + wrap 30,000 est "
-     "= 206,897 of 200,000 — RED\n", True),
+     "pre-flight #56: boot 26,897 measured + job 200,000 est + wrap 40,000 est "
+     "= 266,897 of 256,000 — RED\n", True),
     ("over the working budget, MARKED — allowed, warns",
-     "pre-flight #56: boot 26,897 measured + job 150,000 est + wrap 30,000 est "
-     "= 206,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", False),
+     "pre-flight #56: boot 26,897 measured + job 200,000 est + wrap 40,000 est "
+     "= 266,897 of 256,000 — RED · RESERVE SPEND — forked to Dave\n", False),
     # ⛔ THE ASYMMETRY THAT MATTERS: the marker buys the WORKING overrun and does NOT buy the
     # QUALITY-MAX one. Past 256,000 there is no published measurement of Dave's model's RECALL to
     # reason from, and a receipt cannot manufacture evidence. Split the job or delegate it.
     # ⚠ #286 wording, on Dave's #284 correction: 256,000 bounds measured QUALITY, not the window
     # (Fable 5.1 / Opus 5 in Cowork: 1M + auto-compaction). The fixture and the fail are unchanged.
     ("past the HARD line — FAILS EVEN WHEN MARKED",
-     "pre-flight #56: boot 26,897 measured + job 200,000 est + wrap 40,000 est "
-     "= 266,897 of 200,000 — RED · RESERVE SPEND — forked to Dave\n", True),
+     # #301: total lifted 266,897 → 316,897 so it stays PAST the hard line after the
+     # 256,000 → 300,000 move (266,897 would now sit inside it and be allowed when marked).
+     "pre-flight #56: boot 26,897 measured + job 250,000 est + wrap 40,000 est "
+     "= 316,897 of 256,000 — RED · RESERVE SPEND — forked to Dave\n", True),
     ("a stamp priced against a budget nobody ruled FAILS",
-     _ABS_OK.replace("of 200,000", "of 500,000"), True),
+     _ABS_OK.replace("of 256,000", "of 500,000"), True),
     # ⚠ THE MIS-TARGET BITE, #56. Before the `#NN` widening, PREFLIGHT_RE skipped the live
     # banner and matched an ARCHIVED stratum instead. This fixture pins the live form.
     ("the LIVE banner form `pre-flight #NN:` is the line that gets checked", _ABS_OK, False),
@@ -7080,7 +7099,7 @@ PREFLIGHT_TOKEN_FIXTURES = [
     ("the REAL bold-laden banner form parses (the #56 bite)",
      "> **pre-flight #56:** boot 26,897 (disk 6,897 **measured**, real · harness ~20,000 "
      "**est ±8,000**, `ds-025` item 1) + job 45,000 **est** + wrap 25,000 **est** "
-     "= **96,897 of 200,000 — GREEN**.\n", False),
+     "= **96,897 of 256,000 — GREEN**.\n", False),
 ]
 
 
@@ -7095,11 +7114,17 @@ def selftest_preflight_tokens():
         if not should_fail and f_:
             failures.append(f"pre-flight/tokens [{name}]: expected green, got {f_}")
     # the budget thresholds, pinned. Two DIFFERENT authorities and the pin records which is which.
-    if (gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD) != (160_000, 200_000, 256_000):
+    # ⛔ #301 (2026-09-23): HARD re-pinned 256_000 → 300_000 on Dave's word — *"Lets try 300k and
+    # cross our fingers"* / *"1. is right, might be a good experiment."* — PICKED, an experiment
+    # until the Mac seat fix. Then WORKING 200_000 → 256_000, same session: *"200k isnt enough
+    # make it 256"*. AMBER did NOT move. The pin is re-pinned, not weakened.
+    if (gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD) != (160_000, 256_000, 300_000):
         failures.append(
             f"budget = {(gauge.BUDGET_AMBER, gauge.BUDGET_WORKING, gauge.BUDGET_HARD)}, ruled "
-            f"(160,000 / 200,000 / 256,000) at #56. WORKING is DAVE'S; BUDGET_HARD is SOURCED "
-            f"(93% MRCR v2 at 256K) and is a QUALITY-MAX line, NOT a context wall for this model "
+            f"(160,000 at #56 · 256,000 / 300,000 at #301). WORKING is PICKED by Dave #301 "
+            f"(was 200,000, SOURCED); BUDGET_HARD is "
+            f"PICKED by Dave #301 as an experiment (was 256,000, SOURCED — 93% MRCR v2 at 256K) "
+            f"and is a QUALITY-MAX line, NOT a context wall for this model "
             f"(1M + auto-compaction — Dave's #284 correction, worded #286); "
             f"AMBER is derived at 80% of working. Re-dialling WORKING is his "
             f"word — updating this pin is part of doing it.")
@@ -7244,7 +7269,7 @@ def selftest_preflight():
                  "· now **173,377** · peak **173,377** real tokens over 42 continuous turn(s). "
                  "⚠ THIS IS THE CONDUCTOR'S WINDOW, NOT THIS SEAT'S PRICE.\n")
     _PRICED = ("> **pre-flight #294:** boot 26,897 (disk 6,897 measured · harness ~20,000 est "
-               "±8,000) + job 45,000 est + wrap 20,000 est = 91,897 of 200,000 — GREEN\n")
+               "±8,000) + job 45,000 est + wrap 20,000 est = 91,897 of 256,000 — GREEN\n")
     _REFUSAL = ("> **pre-flight #294:** ⛔ NOT CAPTURED — UNMEASURED. The conductor's transcript "
                 "is unreadable from this seat.\n")
     for name, text, want in (

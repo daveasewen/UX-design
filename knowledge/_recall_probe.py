@@ -4,7 +4,8 @@
 CONSUMER (named, because an instrument without a consumer is the defect):
     THE CONDUCTOR, at EVERY check-in past 150,000 FILL, and mandatorily while the session is
     inside the 200,000–256,000 CONDITIONAL BAND (`s214-D1`, condition (3); the band section of
-    `knowledge/_RUNBOOK-context-gauge.md`). The conductor plants once, early, then quizzes
+    `knowledge/_RUNBOOK-context-gauge.md`; ⚠ #301 2026-09-23: the band is now 256,000–300,000 —
+    WORKING 256,000 / HARD 300,000, Dave: *"200k isnt enough make it 256"*). The conductor plants once, early, then quizzes
     itself blind at each check-in. One miss CLOSES the band for that session and judgment work
     stops immediately. The probe outlives the band: it is the standing defence against a silent
     model-version recall regression on this seat.

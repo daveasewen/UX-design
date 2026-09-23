@@ -54,6 +54,10 @@ These are NEW thresholds with their own provenance [[measure-dont-convert-units]
 | **WORKING** | 200,000 | **SOURCED**, not Dave's preference — entered force at #56, provenance corrected #58b. The line jobs are priced against it. |
 | **AMBER** | 160,000 | **PICKED**, not derived — corrected #59. 80% of working is a round fraction, not a formula. |
 
+⛔ **2026-09-23 · #301 — QUALITY-MAX MOVED 256,000 → 300,000, PICKED BY DAVE AS AN EXPERIMENT** (added by addition; the row above is the pre-#301 record and is left as written). Dave, verbatim: *"okay what we'll do is just raise the ceiling until we do the Mac seat fix, hopefully there wont be too many consequences. let just use subs to stretch the window as much as possible. Lets try 300k and cross our fingers"* — then, choosing the window line over the boot ceiling: *"1. is right, might be a good experiment."* `BUDGET_HARD = 300_000` in `_gauge_tokens.py`; the gate's pin in `_capture_gate.py` `selftest_preflight_tokens()` moved with it. ⚠ 256,000–300,000 has **no published recall measurement** — the line is now a PICK above the last measured-good point, not a SOURCED figure. WORKING 200,000, AMBER 160,000, the 180,000 stop line, the 220,000 tolerance and the 72,768 boot ceiling did **not** move. Reverting is his word.
+
+⛔ **2026-09-23 · #301 (later the same session) — WORKING MOVED 200,000 → 256,000, PICKED BY DAVE** (added by addition; the WORKING row above is the pre-#301 record). Asked whether the 200K–256K mechanical-only band should stretch to 300K, Dave, verbatim: *"200k isnt enough make it 256"*. `BUDGET_WORKING = 256_000`; the gate's pin is now `(160_000, 256_000, 300_000)`, and a priced pre-flight stamp must read `= N of 256,000`. AMBER 160,000 and the 72,768 boot ceiling did **not** move; the 180,000 stop line and 220,000 tolerance now sit UNDER the working line.
+
 ⚠ **PROVENANCE OF THE TWO ROWS ABOVE WAS ITSELF CORRECTED TWICE AFTER THIS TABLE WAS FIRST WRITTEN
 (#58b, #59) — folded in above; here is why, so a later re-read does not silently drift back.**
 WORKING read "DAVE'S, ruled #56" for three sessions until Dave corrected it himself: *"BTW the 200K
@@ -90,6 +94,10 @@ model releases, and the probe may only ever CLOSE the band, never widen past tha
 auto-compaction), and **180,000 is the quality line that binds**. The number did not move.
 ⚠ A green probe is *necessary, never sufficient* (synthetic recall does not predict downstream
 synthesis — the HELMET finding), which is why judgment work stays illegal in-band regardless.
+
+⚠ **2026-09-23 · #301 addendum:** the hard line this band ends at is now **300,000** (Dave's picked experiment, see the ⛔ #301 line under the band table). Whether the `s214-D1` conditional band's upper edge follows it to 300,000, or stays at 256,000 as `s214-D2` inscribed, is **not ruled** — the code has no band-edge literal of its own (it reads `BUDGET_HARD`), so until Dave rules, the gate's hard fail sits at 300,000.
+
+⚠ **2026-09-23 · #301 addendum (2) — RULED, supersedes the "not ruled" line just above:** with WORKING at 256,000 and HARD at 300,000, the mechanical-only conditional band (`s214-D1`'s three conditions) now runs **256,000–300,000** — Dave, *"200k isnt enough make it 256"*, answering exactly that question.
 
 **⛔ A DECLARED GAP PASSES; A SILENT ONE FAILS.** A term you cannot measure is written as an
 estimate with its error bar, or declared `unobservable (<reason>)`. Leaving it out is the only

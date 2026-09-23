@@ -53,6 +53,11 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # --------------------------------------------------------------------------- THE BUDGET
 # ⛔ TWO NUMBERS, TWO DIFFERENT KINDS OF AUTHORITY. Do not blur them.
 #
+# ⛔ #301 (2026-09-23): BUDGET_WORKING MOVED 200,000 → 256,000 as well (*"200k isnt enough make it
+# 256"*), PICKED; its SOURCED account below is likewise the pre-#301 record.
+# ⛔ #301 (2026-09-23): BUDGET_HARD MOVED 256,000 → 300,000, PICKED by Dave as an experiment until
+# the Mac seat fix (his words quoted at the constant). The SOURCED account below is the pre-#301
+# record of the 256,000 figure and is kept as written; it no longer describes the live number.
 # BUDGET_HARD is SOURCED, not picked: 256,000 is the largest context at which Claude's recall
 # has been PUBLICLY MEASURED and still holds — 93% on MRCR v2 at 256K, falling to 76% at 1M
 # (verified #56 against Anthropic's context-engineering guidance and the published benchmarks).
@@ -80,11 +85,28 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # set to 5,000 against a floor of 4,998 — compliance was arithmetically impossible, and three
 # sessions shaved ratified record trying to obey it. A cap must be DERIVED, and a derivation
 # that lands under its own floor is not a strict cap, it is a broken one. [[translate-prose-into-machinery]]
-BUDGET_HARD = 256_000        # SOURCED — last publicly measured-good recall point (93% MRCR v2).
+BUDGET_HARD = 300_000        # PICKED by Dave #301 (2026-09-23) — an EXPERIMENT until the Mac
+                             # seat fix. His words, verbatim: *"okay what we'll do is just raise
+                             # the ceiling until we do the Mac seat fix, hopefully there wont be
+                             # too many consequences. let just use subs to stretch the window as
+                             # much as possible. Lets try 300k and cross our fingers"* — then,
+                             # choosing the window line over the boot ceiling: *"1. is right,
+                             # might be a good experiment."* ⚠ 256,000 → 300,000 is PAST the last
+                             # measured-good point: 256,000–300,000 has NO published recall
+                             # measurement. BUDGET_WORKING / BUDGET_AMBER / BOOT_CEILING_TK
+                             # did NOT move. Reverting is his word.
+                             # WAS (pre-#301): 256_000, SOURCED — last publicly measured-good
+                             # recall point (93% MRCR v2).
                              # ⚠ NAME IS HISTORICAL: a QUALITY/TOLERANCE line sourced when the
                              # window was 200K-class — NOT a context wall for Fable 5.1 / Opus 5
                              # in Cowork (1M + auto-compaction), per Dave's #284 correction.
-BUDGET_WORKING = 200_000     # SOURCED — the line jobs are priced against
+BUDGET_WORKING = 256_000     # PICKED by Dave #301 (2026-09-23, 20:21 BST), answering whether the
+                             # 200K–256K "mechanical work only" band should stretch to 300K:
+                             # *"200k isnt enough make it 256"*. Same experiment as BUDGET_HARD
+                             # (300,000, his words at that constant) — until the Mac seat fix.
+                             # ⇒ the mechanical-only band is now 256,000–300,000. AMBER 160,000
+                             # and BOOT_CEILING_TK did NOT move. Reverting is his word.
+                             # WAS (pre-#301): 200_000, SOURCED — the line jobs are priced against.
 # ⛔ PROVENANCE CORRECTED #58b, BY DAVE, AND THE CORRECTION IS THE POINT. This line read "DAVE'S,
 # ruled #56" for three sessions. He: *"BTW the 200K and 256K come from established research, its
 # been worked out already."* ⇒ BOTH are SOURCED; neither is a preference he can be talked out of,
@@ -116,6 +138,8 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # ⇒ 150,929 was derived (200,000 − 49,071 inline wrap) BEFORE the delegated-wrap strategy
 # existed; it describes a ritual we no longer run, and a retired figure that stays reachable is
 # a second answer to a question that has one [[retrieval-default-hides-the-ruling]].
+# ⚠ #301 addendum: BUDGET_HARD is now 300,000 (Dave's picked experiment); the 256,000 below is the
+# figure as it stood when this entry was written. STOP_LINE_TK itself did not move at #301.
 # ⛔ WHAT THIS IS NOT: it is NOT a wall. 200,000 (`BUDGET_WORKING`) and 256,000 (`BUDGET_HARD`)
 # are SOURCED and are NOT moved, widened or re-based by this constant — dream-12 P1 proposed
 # nothing about them and `s271-D1` says so in terms. This line is the ADVISORY that says start
@@ -241,7 +265,8 @@ TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to
 # the whole observed post-break series (54,859 − 53,681 = 1,178 > 55,733 − 54,859 = 874). Same
 # method as before (half-range), re-measured, not re-argued.
 # ⛔ WHAT DID **NOT** MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING
-# (200,000), BUDGET_AMBER (160,000) and BUDGET_HARD (256,000). A cheaper boot moves the ROOM,
+# (200,000), BUDGET_AMBER (160,000) and BUDGET_HARD (256,000 then; 300,000 from #301, Dave's
+# picked experiment — a separate ruling, not this re-base). A cheaper boot moves the ROOM,
 # never the LINE — the stop line carries no boot term. Measured effect of this re-base, at the
 # chain size on disk at #129: floor 81,335 → 70,794, room for job + wrap 118,665 → 129,206.
 # ⚠ DECLARED RESIDUAL, not a defect and not silently fixed: the SEVEN samples are FIRST-TURN
@@ -595,9 +620,11 @@ def main() -> int:
         return 2
     print(f"context gauge — unit: REAL Claude tokens ({MODEL})\n")
     print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
-          f"quality-max {BUDGET_HARD:,} (SOURCED — 93% MRCR v2)")
-    print("    ⚠ 256,000 is a QUALITY/TOLERANCE line sourced at a 200K-class window, NOT a "
-          "context wall for")
+          f"(working PICKED Dave #301, was 200,000) · "
+          f"quality-max {BUDGET_HARD:,} (PICKED Dave #301 — experiment; was 256,000 SOURCED, "
+          f"93% MRCR v2)")
+    print(f"    ⚠ {BUDGET_HARD:,} is a QUALITY/TOLERANCE line (above the last measured-good 256,000), "
+          "NOT a context wall for")
     print("      Fable 5.1 / Opus 5 in Cowork (1M + auto-compaction) — Dave's #284 correction. "
           "The quality")
     print(f"      line that binds is the {STOP_LINE_TK:,} stop line (gauged against the messy "
@@ -626,7 +653,8 @@ def selftest() -> int:
     through it and it had never been proven (session #79, P5).
 
     XX Does NOT re-pin the ruled budget triple. `(BUDGET_AMBER, BUDGET_WORKING, BUDGET_HARD)
-    == (160_000, 200_000, 256_000)` has exactly ONE authority -- `_capture_gate.py`\'s
+    == (160_000, 256_000, 300_000)` (#301, Dave's picked experiment: HARD 256_000 -> 300_000,
+    WORKING 200_000 -> 256_000) has exactly ONE authority -- `_capture_gate.py`\'s
     `selftest_preflight_tokens()`, which asserts it by importing this module. A second
     literal copy here would be the exact defect [[gate-must-quote-what-it-forbids]] warns
     about. Arm D checks the GUARD\'s LOGIC (ordering + floor-clearing), never the numbers.

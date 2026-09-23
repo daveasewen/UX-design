@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-23 #301
+
+> **COMMIT STATE #300:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-300-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **No lane committed this session:** the six reports, the lanes' work files and the plan page go out with this wrap's commit. Handoff `_HANDOFF-151-the-boot-was-measured-and-the-reading-stays.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **278,666 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; no band claimed.**
+
+> ## ★ PRIOR — 2026-09-23 (Wed **#299**, Opus 5.5 conductor in the CLOUD, **5 Opus subs**, DELEGATED wrap on Opus 5.5 — ★★ **HIS LAST CHANGES ARE IN THE DECK, AND THE ASK IS WHAT IS LEFT**)
+>
+> - ★★★ ① **HIS LAST CHANGES ARE IN THE DECK.** Lane **R** reconciled: 42 decided · 40 enacted · 2 partly · 0 not enacted · 26 review suggestions never answered. His 13:34 list → **C** `2f0a385d` `0e23408e` · 14:12 → **D** `d5583dee` `e3f0de60` `a7b2c9f2` · 14:56 *"Checked automatically, then by a human."* → **E** `119f3615`. **NOTHING INSCRIBED — `_rulings.json` STAYS 638.**
+> - ★★ ② **THE ASK (15) IS STILL A DRAFT, AND FRIDAY IS TWO DAYS OUT** — #300's first question. Also his: the 07/08 headlines · 07 and 08 rest at −35 while 09 and 10 rest at −27 · the demo brief (last) · the 26 suggestions · the boot ceiling. ⛔ **TWO CARRIES STRUCK WITH RECEIPTS.**
+> - ⚙ ③ **BOOT 126,178 — NO CLAUDE DOCS TOOLS ARRIVED; HIS BLOCK HELD.** FILL a HAND SUM, ~243,000 when the conductor called the wrap, re-read to the token. The wrap gate is RED on the boot ceiling, so the wrap took the DECLARED not-a-wrap path again. **`_HANDOFF-150-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #300:** ⬛ **THE ASK ON SLIDE 15, THEN POLISH FOR FRIDAY** [NEW — 0, DAVE'S] — ask at the opener. `s225-D2`. **687 items, 5 new, 2 STRUCK**, `_CARRIES.md` § `residual → #300` `carries:residual-300`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#300:**' in l][0])))"` = 687. ⚠ **5 new INVISIBLE to it**; 678→687.
+> **residual (GENERATED #299):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #298) — _roll_state.py · 2026-09-23
+
+
+*Rolled at the #301 wrap (2c). The #299 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #300` onward, now § `residual → #302`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-23 #300
 
 > **COMMIT STATE #299:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-299-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. The session's six lane commits — **`2f0a385d` · `0e23408e`** (lane C) · **`d5583dee` · `e3f0de60` · `a7b2c9f2`** (lane D) · **`119f3615`** (lane E) — go out with this wrap's push. Handoff `_HANDOFF-150-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **~243,000 real when the conductor called the wrap — a DECLARED hand sum, 248,704 re-read at this seat at the launch; no band claimed.**

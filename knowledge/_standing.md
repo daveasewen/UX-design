@@ -16,7 +16,7 @@ each line points at where its ruling lives. `_seam.py` prints only the lines bel
 Everything is delegated: the conductor orchestrates and judges; lane work done in-seat is a lapse (#57 / s204-D1, restated #284).
 The four generators that undo hand-authored state — gen_kg_rules.py, land_rests_on.py, gen_kg_icons.py, _build_all.py single-process — never run without Dave's word (H-135 open 11).
 Commits only through knowledge/_git_commit.sh, as a lane by default; push is the conductor's call with a CI read-back (H-135 move 3).
-180,000 FILL is the QUALITY line and stands; 256,000 is not a wall for this model in Cowork (Dave's correction, #284).
+180,000 FILL is the QUALITY line and stands; working 256,000 and hard 300,000 are not walls in Cowork (#284). #301 2026-09-23, Dave: "Lets try 300k and cross our fingers" / "1. is right, might be a good experiment." / "200k isnt enough make it 256".
 Strike nothing from a carry without a receipt (s183-D1 / s188-D2).
 Dave rules from plain prose and visuals, never ID codes; render readings side by side for a visual ruling (#66-D5, s172-D1).
 Every sub files its full report at notes/_subreports/ (s218-D7).
