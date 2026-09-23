@@ -505,7 +505,7 @@ table.kpi td.tg{color:var(--black)}
       <div><p class="ix">01</p><h3>Manual, linear governance process</h3><p>It is a queue. Every component waits its turn for review.</p></div>
       <div><p class="ix">02</p><h3>2 stage process (Figma + Code&nbsp;library)</h3><p>Every component is designed twice: once in Figma, once in code.</p></div>
       <div class="first-tackled"><p class="ix">03</p><h3>Small component library</h3><p>Too few parts, so designers draw the rest from scratch.</p></div>
-      <div><p class="ix">04</p><h3>Lack of standards knowledge</h3><p>Design, accessibility and content standards are not written down, so each decision is made again.</p></div>
+      <div><p class="ix">04</p><h3>Lack of standards knowledge</h3><p>Standards exist, but in too many places; asking someone is quicker than looking it&nbsp;up.</p></div>
       <div><p class="ix">05</p><h3>Highly variable design&nbsp;skills</h3><p>How good and how fast the work is depends on who picks it up.</p></div>
     </div>
   </div>
@@ -595,8 +595,8 @@ table.kpi td.tg{color:var(--black)}
       <svg class="wb-bus" viewBox="0 0 700 40" preserveAspectRatio="none" aria-hidden="true">
         <path d="M100 0V40M350 0V40M600 0V40M100 16H600" vector-effect="non-scaling-stroke"/>
       </svg>
-      <div class="wb-g sp"><p class="gl">Speed</p><ul><li class="tk tk-prop">Manual, linear governance process</li><li class="tk">2 stage process (Figma + Code library)</li></ul>
-        <p class="prop"><b>Proposal:</b> sign off the system, not&nbsp;the&nbsp;outputs&nbsp;&mdash; or&nbsp;at&nbsp;least a&nbsp;fast-track.</p></div>
+      <div class="wb-g sp"><p class="gl">Speed</p><ul><li class="gov">Manual, linear governance process<sup class="ref" aria-hidden="true">&dagger;</sup></li><li class="tk">2 stage process (Figma + Code library)</li></ul>
+        <p class="prop"><sup class="ref" aria-hidden="true">&dagger;</sup><b>Proposal:</b> sign off the system, not&nbsp;the&nbsp;outputs&nbsp;&mdash; or&nbsp;at&nbsp;least a&nbsp;fast-track.</p></div>
       <div class="wb-g all"><p class="gl">Shared by all three</p><ul><li class="tk">Small component library</li><li class="tk">Lack of standards knowledge</li><li class="tk">Highly variable design&nbsp;skills</li></ul></div>
       <div class="wb-g qu"><p class="gl">Quality</p><ul><li>Lack of user data and research</li><li class="tk">AI generation quality (slop)</li></ul></div>
     </div>
@@ -8459,23 +8459,27 @@ var TRACE = {"meta": {"source": "DAVE-REF-brain-side-view.png", "units": "cerebr
 /* 11, STATE 2 - the build. Dave: "insert a new state triggered like the next slide advancement where everything we have
    tackled is highlighted ... except lack of 'User data and research' ... Governance need an indicator that it isn't
    solved but we have a proposal i.e. sign of the system not the outputs, or at least a fast-track."
-   Tackled = a 2px red rule (06's mark for the cause tackled first), stood upright beside each cause so it can only
-   belong to that one: in the card's padding, or in the gap between the shared causes. Governance = the same rule
-   DASHED 5/4, the drawings' "not yet" line, and the note under the Speed card carries the same dashed rule, on the
-   same line, so the two read as one. "Lack of user data and research" carries no mark. Nothing reflows: the marks sit
-   in existing padding and the note sits below the cards, so both states have one layout; only opacity changes. */
+   #297 lane E - then Dave 2026-09-23 09:11: "I think we just make the text red on slide 11, and just add a reference
+   mark to the governance text". So lane C's upright red rules and its dashed rule are gone. On the next press each
+   tackled cause's TEXT turns the deck's red. "Lack of user data and research" stays ink. Governance is not solved, so
+   its text stays ink and carries a red dagger; the proposal note under the Speed card opens with the same dagger, hung
+   in the card's text margin so "Proposal:" keeps the card's text line, and the two read as a pair. The daggers are in
+   state 1 too, hidden, and take no line height, so both states keep one layout: only colour and opacity change. */
 #s6b .wb-g{position:relative;}
 #s6b .wb-g li{position:relative;}
-#s6b .wb-g li.tk::before{content:"";position:absolute;left:-12px;top:7px;bottom:7px;width:2px;background:var(--accent);
-  opacity:0;transition:opacity .35s var(--ease);}
-#s6b .wb-g li.tk-prop::before,#s6b .prop::before{background:linear-gradient(180deg,var(--accent) 5px,transparent 5px) 0 0/2px 9px repeat-y;}
+#s6b .wb-g li.tk{transition:color .35s var(--ease);}
+#s6b .ref{position:relative;top:-.55em;margin-left:.16em;font-size:.72em;font-weight:500;line-height:0;vertical-align:baseline;
+  color:var(--accent);opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility 0s linear .35s;}
 #s6b .prop{position:absolute;left:25px;right:24px;top:calc(100% + var(--s2));margin:0;font-size:13px;line-height:1.45;color:#333;
   opacity:0;visibility:hidden;transition:opacity .35s var(--ease) .12s,visibility 0s linear .47s;}
 #s6b .prop b{font-weight:600;color:var(--pp-ink);}
-#s6b .prop::before{content:"";position:absolute;left:-12px;top:2px;bottom:2px;width:2px;}
-#s6b[data-step="2"] .wb-g li.tk::before,#s6b[data-step="2"] .prop{opacity:1;}
-#s6b[data-step="2"] .prop{visibility:visible;transition:opacity .35s var(--ease) .12s,visibility 0s;}
-@media (prefers-reduced-motion:reduce){ #s6b .wb-g li.tk::before,#s6b .prop{transition:none;} }
+#s6b .prop .ref{position:absolute;right:100%;top:-.2em;margin:0 4px 0 0;font-size:11.5px;line-height:inherit;
+  opacity:1;visibility:inherit;transition:none;}
+#s6b[data-step="2"] .wb-g li.tk{color:var(--accent);}
+#s6b[data-step="2"] .wb-g li .ref,#s6b[data-step="2"] .prop{opacity:1;visibility:visible;}
+#s6b[data-step="2"] .wb-g li .ref{transition:opacity .35s var(--ease),visibility 0s;}
+#s6b[data-step="2"] .prop{transition:opacity .35s var(--ease) .12s,visibility 0s;}
+@media (prefers-reduced-motion:reduce){ #s6b .wb-g li.tk,#s6b .ref,#s6b .prop{transition:none;} }
 /* ---- 12 three elements ---- */
 #s10 .grid5 .ix{color:var(--g6)!important;}
 #s10 .grid4{border-top-color:var(--g3)!important;border-left-color:var(--g3)!important;}

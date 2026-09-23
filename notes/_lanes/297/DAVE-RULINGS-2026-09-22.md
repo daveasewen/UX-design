@@ -95,3 +95,27 @@ All five diagram proposals go into the deck · on 11 the red comes off the Speed
 ### The conductor's reading (a reading, not his words)
 
 13's hub becomes 08's knowledge-graph drawing with no tray, its text kept · 12's titles become Components · Knowledge · Judgment; Judgment gets a new line that does not repeat the noun; the Components line also repeats its noun and is put to him with an alternative, not changed · the cover strap becomes two lines, "A smart design engine powered by AI" / "on brand, on standard, accessible, at speed" · a new chapter, Evolution, runs from 07 to 13; Evaluation keeps 06. Nothing inscribed.
+
+
+## 2026-09-23 — review pages from his repo, red text on 11, and the standards line on 06
+
+2026-09-23 09:07 BST:
+
+> Question? when you surface review docks, why cant you surface the docs from my local repo rather than the cloud, i shouldn't have to download these files all the time.
+
+2026-09-23 09:11 BST:
+
+> I think we just make the text red on slide 11, and just add a reference mark to the governance text
+
+2026-09-23 09:15 BST:
+
+> one note on 04 on slide six, the standards are available, so they are written down. we need to succinctly say they are multiple sources and designers would rather
+
+2026-09-23 09:18 BST:
+
+> carried one from the last message:
+> ...ask someone, they certainly don't want to read, and they are pushed for time, the problem isn't that they are not available the problem is that there are frictions. I don't what to call the designers lazy, but there is a bit of that too
+
+### The conductor's reading (a reading, not his words)
+
+Review pages are given to him from now on as a computer:// link to the file in his repo, not sent as a cloud copy · on 11's second state the tackled causes' TEXT turns red instead of carrying upright rules; governance carries a reference mark keyed to the proposal note, instead of a dashed rule · on 06, cause 04's description says the standards exist but across many sources, and that asking someone is quicker than looking — friction, not blame. Nothing inscribed.
