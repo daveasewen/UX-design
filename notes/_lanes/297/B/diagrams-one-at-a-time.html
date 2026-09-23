@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Five diagram proposals</title>
+<style>
+/* #297 lane B - one diagram proposal per screen. Proposals only: nothing here is in the deck. */
+:root{--ink:#111;--g1:#F3F3F3;--g3:#D7D8D6;--g6:#767676;--g8:#333;--accent:#DA1A00;--bg:#fff;
+  --font:"Univers Next","Helvetica Neue",Helvetica,Arial,sans-serif;}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+header{display:flex;align-items:center;gap:16px;padding:16px 24px;border-bottom:1px solid var(--g3);}
+.label{display:flex;align-items:center;gap:8px;margin:0;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);}
+.label::before{content:"";width:24px;height:1px;background:currentColor;}
+header .count{margin-left:auto;font-size:13px;letter-spacing:.08em;color:var(--g6);}
+main{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;}
+.stage{min-width:0;min-height:0;overflow:auto;padding:24px;display:flex;align-items:flex-start;justify-content:center;background:var(--g1);}
+.stage img{display:block;max-width:100%;max-height:100%;height:auto;width:auto;background:#fff;outline:1px solid var(--g3);cursor:zoom-in;}
+.stage.zoom{align-items:flex-start;justify-content:flex-start;}
+.stage.zoom img{max-width:none;max-height:none;cursor:zoom-out;}
+aside{border-left:1px solid var(--g3);padding:24px;display:flex;flex-direction:column;gap:20px;overflow:auto;}
+.num{font-size:64px;font-weight:300;line-height:1;margin:0;letter-spacing:-.01em;}
+h1{font-size:22px;font-weight:600;margin:4px 0 0;line-height:1.25;}
+.sub{font-size:13px;color:var(--g6);margin:6px 0 0;line-height:1.5;}
+ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink);}
+ol li{padding:12px 0;border-bottom:1px solid var(--g3);font-size:15px;line-height:1.5;color:var(--g8);display:grid;grid-template-columns:32px 1fr;}
+ol li b{font-size:12px;font-weight:500;letter-spacing:.14em;color:var(--g6);padding-top:3px;}
+nav{display:flex;gap:8px;margin-top:auto;}
+button{flex:1;font:inherit;font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:12px 10px;background:#fff;color:var(--ink);
+  border:1px solid var(--ink);cursor:pointer;}
+button:hover:not(:disabled){background:var(--ink);color:#fff;}
+button:disabled{border-color:var(--g3);color:var(--g3);cursor:default;}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.hint{font-size:12px;color:var(--g6);margin:0;line-height:1.5;}
+.dots{display:flex;gap:6px;}
+.dots span{width:8px;height:8px;border-radius:50%;border:1px solid var(--g6);}
+.dots span.on{background:var(--accent);border-color:var(--accent);}
+@media (max-width:900px){
+  main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;overflow:auto;}
+  .stage{padding:16px;} aside{border-left:0;border-top:1px solid var(--g3);padding:16px;}
+  header{padding:12px 16px;}
+}
+</style></head>
+<body>
+<header><p class="label">Five diagrams, one at a time &middot; a proposal, not in the deck</p><span class="count" id="count"></span></header>
+<main>
+  <div class="stage" id="stage"><img id="img" alt=""></div>
+  <aside>
+    <div><p class="num" id="num"></p><h1 id="name"></h1>
+      <p class="sub">Left: the slide now. Right: the same slide redrawn in the line style of the drawings on 08 and 10.</p></div>
+    <div><p class="label" style="margin-bottom:10px">What changes</p><ol id="list"></ol></div>
+    <div class="dots" id="dots" aria-hidden="true"></div>
+    <nav><button id="prev" type="button">&larr; Previous</button><button id="next" type="button">Next &rarr;</button></nav>
+    <p class="hint">Arrow keys move between slides. Click the picture to see it full size.</p>
+  </aside>
+</main>
+<script>
+var SLIDES = [
+ {
+  "n": "04",
+  "name": "The loop",
+  "img": "diagram-04.png",
+  "changes": [
+   "The filled black, grey and red header bands go. Each step is a white box drawn in the drawings’ thin black line, its name a small label over a hairline.",
+   "Step numbers read 01 to 06, in grey.",
+   "Red marks one idea, the checking: steps 04 and 05 are outlined in red, like the red page in the catalogue drawing, and the way back from a failed gate is a thin red dashed line.",
+   "The arrows are one thin black line with one small solid head. The italic notes stand upright."
+  ]
+ },
+ {
+  "n": "06",
+  "name": "Five causes",
+  "img": "diagram-06.png",
+  "changes": [
+   "A thin black line over each of the five columns, like the edges in the drawings. Still no boxes.",
+   "Numbers in grey. Titles one size smaller (22 to 18) and given one height, so all five descriptions start on the same line.",
+   "A red line, the one heavier line, marks the cause tackled first, the small component library: the thread into the catalogue on 07.",
+   "Descriptions at the deck’s body size, 16, in dark grey."
+  ]
+ },
+ {
+  "n": "11",
+  "name": "Three problems",
+  "img": "diagram-11.png",
+  "changes": [
+   "The filled red, black and grey chips become plain labels: Speed in red, Consistency and Quality in black.",
+   "The connecting line is one thin black line.",
+   "Each card is outlined in the thin black line, the Speed card in red. The repeated SPEED and QUALITY labels inside the cards go.",
+   "“All · shared by all three” reads “Shared by all three”. The tick moves under “Small component library” and reads “Addressed first”."
+  ]
+ },
+ {
+  "n": "12",
+  "name": "Three elements",
+  "img": "diagram-12.png",
+  "changes": [
+   "The plates show the three drawings the audience has just seen, the catalogue (07), the graph (08) and the brain (10), all at one scale. Today two of them, a gearbox and books, appear nowhere else in the deck.",
+   "Numbers in grey, not red.",
+   "The cell lines that are invisible today (light grey on light grey) are drawn in the drawings’ light grey.",
+   "Descriptions at the deck’s body size, 16."
+  ]
+ },
+ {
+  "n": "13",
+  "name": "The map",
+  "img": "diagram-13.png",
+  "changes": [
+   "The twelve file paths go: tiny grey code type that no one can read from the room.",
+   "Numbers, titles and descriptions come up to the deck’s sizes: grey 12 numbers, bold 16 titles in sentence case, 13 descriptions.",
+   "“In progress” tiles become white with a grey dashed line inside, the drawings’ “not yet” line, instead of faded type on grey.",
+   "The outer frame is drawn in the thin black line and the grid inside stays light grey. The red rule under Apollo stays the only red."
+  ]
+ }
+];
+(function(){
+  var i = 0, img = document.getElementById('img'), stage = document.getElementById('stage');
+  function esc(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  var dots = document.getElementById('dots');
+  SLIDES.forEach(function(){ dots.appendChild(document.createElement('span')); });
+  function show(k){
+    i = Math.max(0, Math.min(SLIDES.length - 1, k)); var s = SLIDES[i];
+    stage.classList.remove('zoom'); stage.scrollTop = 0; stage.scrollLeft = 0;
+    img.src = s.img; img.alt = 'Slide ' + s.n + ', ' + s.name + ': now (left) and proposed (right)';
+    document.getElementById('num').textContent = s.n;
+    document.getElementById('name').textContent = s.name;
+    document.getElementById('count').textContent = (i + 1) + ' / ' + SLIDES.length;
+    document.getElementById('list').innerHTML = s.changes.map(function(c, j){ return '<li><b>0' + (j + 1) + '</b><span>' + esc(c) + '</span></li>'; }).join('');
+    document.getElementById('prev').disabled = i === 0;
+    document.getElementById('next').disabled = i === SLIDES.length - 1;
+    [].forEach.call(dots.children, function(d, j){ d.classList.toggle('on', j === i); });
+    try { history.replaceState(null, '', '#' + s.n); } catch(e){}
+  }
+  document.getElementById('prev').addEventListener('click', function(){ show(i - 1); });
+  document.getElementById('next').addEventListener('click', function(){ show(i + 1); });
+  img.addEventListener('click', function(){ stage.classList.toggle('zoom'); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(i + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(i - 1); e.preventDefault(); }
+    else if (e.key === 'Escape') stage.classList.remove('zoom');
+  });
+  var h = (location.hash || '').slice(1), start = 0;
+  SLIDES.forEach(function(s, j){ if (s.n === h) start = j; });
+  show(start);
+})();
+</script>
+</body></html>

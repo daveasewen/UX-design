@@ -29,3 +29,20 @@ The plain deck carries Friday. The brain goes to the shared angle. The s7b words
 
 > I want you to do a review on the plain version, and make some suggestions using your best judgment, first thing I'd like to do is alight the diagrammatical style i on 04, 06, 11, 12, 13 somewhat, don't enact just make me an html doc with your analysis and ideas, I'm talking about typography alignment, pace, copy, does the story hang together and anything else.
 > put your copy-editor hat on, publisher and art director. maybe use a few subs for this.
+
+
+## 2026-09-23 — the five that matter most
+
+Put to him after the review: the five that matter most — 29 write the ask · 8 give the rail its own margin · 1–5 redraw 04, 06, 11, 12, 13 in the drawings' hairline style · 30 move 11 to straight after 06 · 17 the sum on 07.
+
+2026-09-23 07:52 BST:
+
+> 1. were discussing this today
+> 2. lets remove the m-dash from the titles to get a little more space and give it a rail.
+> 3. Okay let me see them separately first
+> 4.  I'm not opposed to this but they are very similar slides, the contents and messaging would have to change, otherwise we are just presenting two very similar content with no really differentiation, feels messy, also remember the story is we worked on speed but that work solved other problems that what slide 11 is about.
+> 5.  Whats the problem with the sum?
+
+### The conductor's reading (a reading, not his words)
+
+The ask is parked; he is discussing it today. The rail: the em-dash comes out of the titles and the rail gets space of its own so it never collides — enacted by lane B. The five diagrams are shown to him separately, current vs proposed, NOT enacted. Slide 11 stays where it is; suggestion 30 is declined as it stands, on his reason that the speed work solved other problems and 11 says so. The sum: 125 + 12 + 8 = 145 against the headline 137 (125 + 12 = 137 exactly; 137 − 36 = 101 matches "101 new"); lane B probes the library's own count; no copy changed until he rules. Nothing inscribed.

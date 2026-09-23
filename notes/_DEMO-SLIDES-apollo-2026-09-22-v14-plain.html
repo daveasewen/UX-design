@@ -1037,11 +1037,11 @@ table.kpi td.tg{color:var(--black)}
   line-height:1.4;white-space:nowrap;display:flex;align-items:center;gap:8px;
   transition:font-size .25s var(--ease),color .2s;}
 #chrail.no-tiny .cr-ch:not(.is-cur) .cr-t{display:none;}
-#chrail .cr-t::before{content:"";width:0;height:1px;background:var(--racc);transition:width .25s var(--ease);}
+/* v7 (#297 lane B): no dash before the title - Dave 2026-09-23: "lets remove the m-dash from the titles
+   to get a little more space and give it a rail". The eyebrow's own dash on the slides (.label::before) is untouched. */
 /* THE CURRENT CHAPTER: 44px circle, number in the display face; v4: title = the slides' own eyebrow (.label) */
 #chrail .cr-ch.is-cur .cr-c{width:44px;height:44px;font-size:22px;font-weight:300;letter-spacing:-.01em;border-color:var(--rk);}
 #chrail .cr-ch.is-cur > .cr-row .cr-t{font-size:12px;font-weight:500;letter-spacing:.14em;line-height:1.4;color:var(--racc);}
-#chrail .cr-ch.is-cur > .cr-row .cr-t::before{width:24px;}
 /* the current sub-page's own dot */
 #chrail .cr-sub.is-cur .cr-d{width:10px;height:10px;background:var(--racc);}
 #chrail .cr-row:focus-visible{outline:1px solid var(--racc);outline-offset:2px;}
@@ -1051,6 +1051,20 @@ table.kpi td.tg{color:var(--black)}
 #chrail .cr-sub .cr-d{background:var(--rfade);}
 #chrail .cr-sub.is-grp .cr-d{background:var(--rmid);}
 #chrail .cr-sub.is-cur .cr-d{background:var(--racc);}
+/* v7 (#297 lane B) - THE RAIL'S OWN COLUMN. The rail title starts at 72px (16 inset + 44 marker + 12 gap);
+   the longest, "EVALUATION", ends at ~163px; + a 32px (--s4) gutter, rounded up: --rail-w 200px. No slide's
+   content enters it. Left padding is at least --rail-w; right padding matches it while the content can still
+   centre (so at 1920 nothing moves) and gives way, never below the deck's own minimum, when it cannot (so at
+   1440 the 1120 column steps right of the rail instead of shrinking). The drawing cards run a 1360 grid; the
+   map keeps its own 72px minimum. #s1 keeps padding:0 (the rail is hidden there). */
+:root{--rail-w:200px;}
+.slide{padding-left:max(var(--s6),6vw,var(--rail-w));
+  padding-right:max(var(--s6),6vw,min(var(--rail-w),100% - var(--rail-w) - var(--max)));}
+#s4,#s5,#s6,#s7,#s7b,#s8{padding-right:max(var(--s6),6vw,min(var(--rail-w),100% - var(--rail-w) - 1360px));}
+#s10map{padding-left:max(72px,var(--rail-w));padding-right:max(72px,min(var(--rail-w),100% - var(--rail-w) - var(--max)));}
+/* the map fills the slide's height; below 1520 wide, where it has to step right of the rail, its bottom-right
+   corner would meet the page number (1px at 1440), so there it stops above the page number's band. */
+@media (max-width:1519px){ #s10map{padding-bottom:72px;} }
 @media (prefers-reduced-motion:reduce){ #chrail, #chrail *{transition:none !important;} }
 @media print{ #chrail{display:none !important;} }
 </style>
