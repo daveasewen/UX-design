@@ -119,3 +119,19 @@ All five diagram proposals go into the deck · on 11 the red comes off the Speed
 ### The conductor's reading (a reading, not his words)
 
 Review pages are given to him from now on as a computer:// link to the file in his repo, not sent as a cloud copy · on 11's second state the tackled causes' TEXT turns red instead of carrying upright rules; governance carries a reference mark keyed to the proposal note, instead of a dashed rule · on 06, cause 04's description says the standards exist but across many sources, and that asking someone is quicker than looking — friction, not blame. Nothing inscribed.
+
+
+## 2026-09-23 — the file that would not open, and "get this executed"
+
+2026-09-23 09:50 BST:
+
+> can you surface the file
+
+2026-09-23 09:53 BST:
+
+> okay lets get this executed
+> wrap
+
+### The conductor's reading (a reading, not his words)
+
+The computer:// link to the review page in his repo did not open for him, so the files were sent to him as copies again — the mechanism he asked for at 09:07 is still not working. "this" is read as a yes to the conductor's standing recommendation for slide 07's lead, the count line: "125 components, 12 templates, 8 foundations — 101 new — …" becomes "125 components and 12 templates — 101 new — on 8 foundations, each one in code, built to our design and accessibility standards." (the 137 in the headline is 125 + 12; the 8 foundations sit outside it — `showroom/index.json`, lane B's report, option A). **Enacted by the #297 wrap seat before the ritual**, in the deck's source `notes/_lanes/296/C/v14-plain-before-c.html`, rebuilt with `build_c.py`; a no-break space keeps "8" with "foundations" (the seat's typographic choice, not his words). Rendered at 1920×1080 and 1440×900 on the mount: only 07 changes, the lead stays three lines at both sizes. "wrap" starts the capture ritual. Nothing inscribed.
