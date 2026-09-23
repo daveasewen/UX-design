@@ -59,3 +59,11 @@ provenance: 301 · 2026-09-23 · status: observed · repo record: `_HANDOFF-152-
 ## THE `s271-D4` RE-READ
 
 *Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json` — its result is appended below by addition.*
+
+**Result: 638 records, newest `s295-D4` (`json.load`, 20:30 UTC); #301 inscribed nothing, so NO item above is closed by a #301 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck('.', <this file>)` read 0 open items and 0 same-day rulings — its parser does not match this file's heading form, as at #297–#300. Recorded in `notes/_subreports/2026-09-23-301-W-wrap.md` § POST-WRAP.
+
+---
+
+## RECEIPT — PLACED BY THE #301 WRAP SEAT, AFTER HIS "lets just wrap then" (appended by addition)
+
+Placed LAST, after the wrap commit `e0411c61`, its push and its CI read (run `35914461863`, `render` closed 20:27:32 UTC), under the Project instructions he pasted at #300. **From the store's own write results, 2026-09-23 ~20:29–20:31 UTC:** `wrap-301-the-window-was-raised-and-the-ask-is-still-open.md` **3,621 B** — the frontmatter (701 B, `notes/_lanes/301/W/_work/memory_front_301.txt`) plus the body above (2,920 B, md5 `73f929508dea35607714478f00918a8a`), byte for byte (the joined file `notes/_lanes/301/W/_work/memory_file_301.md`, 3,621 B, md5 `9c1dd933406cfb140043b5b4e1ec4a65`) · the #298 line appended to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-23 #301 (wrap)* (+806 B → **22,274 B**), **then removed from `index.md` with the same string: the match held (755 B = the 754-byte line plus its newline)** · the index line above put at the top (+831 B = its 830 bytes plus the newline) · the description now says `MEMORY-ARCHIVE-3` holds #292–#298 (49 B → 49 B) · a cut note added (+637 B) · **`index.md` 7,538 B at 20:30:47 UTC, three lines: #301 · #300 · #299** (re-read from the store). `areas/presentation-friday-25th-288.md` left as it is (4,144 B, 14:48:17 UTC). ⚠ **One declared slip:** the description edit and the cut-note edit were sent in parallel, and the cut-note edit carried a version token this seat had not been given; the store accepted it. The re-read above shows both edits landed once and nothing else changed.
