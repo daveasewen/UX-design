@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo — the boot diet</title>
+<meta name="description" content="Session #300 plan: what fills the conductor's window, what goes before Friday, and what moves after.">
+<style>
+:root{
+  --accent:#DA1A00;
+  --black:#000000;
+  --white:#FFFFFF;
+  --grey-1:#F3F3F3;
+  --grey-2:#EDEDED;
+  --grey-3:#D7D8D6;
+  --grey-5:#9B9B9B;
+  --grey-6:#767676;
+  --grey-7:#545454;
+  --grey-8:#333333;
+  --mark-seat:#8A8A8A;
+  --mark-kept:#3A3A3A;
+  --s1:0.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem; --s8:8rem;
+  --max-width:1200px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16px; font-weight:400; line-height:1.75;
+  color:var(--black); background:var(--white);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 var(--s4)}
+a{color:var(--black)}
+
+/* progress bar */
+#progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);transform-origin:left;transform:scaleX(0);z-index:60}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--grey-2)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:var(--s3)}
+.brand{font-size:14px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
+.brand .sep{color:var(--grey-5);margin:0 8px}
+.brand .ctx{color:var(--grey-6);font-weight:400}
+nav .links{display:flex;gap:var(--s3);font-size:12px;letter-spacing:0.05em;text-transform:uppercase;flex-wrap:nowrap;overflow:hidden}
+nav .links a{color:var(--grey-6);text-decoration:none;white-space:nowrap}
+nav .links a:hover{color:var(--black)}
+nav .cta{font-size:12px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;white-space:nowrap}
+
+/* labels */
+.label{font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s3)}
+.label::before{content:"";display:inline-block;width:20px;height:1px;background:var(--accent)}
+.label.mute{color:var(--grey-6)}
+.label.mute::before{background:var(--grey-3)}
+
+/* type */
+h1{font-size:57px;font-weight:300;line-height:1.06;letter-spacing:0;margin:0 0 var(--s4);max-width:1000px}
+h2{font-size:34px;font-weight:300;line-height:1.15;letter-spacing:-0.01em;margin:0 0 var(--s3);max-width:900px}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s2)}
+h4{font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.lede{font-size:19px;line-height:1.6;color:var(--black);max-width:860px}
+.cap{font-size:12px;line-height:1.55;color:var(--grey-6)}
+.small{font-size:14px;line-height:1.6}
+strong{font-weight:700}
+code{font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;font-size:0.86em;background:var(--grey-1);padding:1px 4px}
+
+section{padding:var(--s7) 0;border-bottom:1px solid var(--grey-2)}
+section.tight{padding:var(--s6) 0}
+section.grey{background:var(--grey-1)}
+
+/* hero */
+.chunks{max-width:860px}
+.chunks p{margin:0 0 var(--s3);font-size:19px;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-top:var(--s6);border-top:1px solid var(--grey-3);padding-top:var(--s4)}
+.stat .fig{font-size:57px;font-weight:200;line-height:1;letter-spacing:0}
+.stat .fig.accent{color:var(--accent)}
+.stat .lab{font-size:14px;line-height:1.5;color:var(--grey-7);margin-top:var(--s2);max-width:240px}
+.stat .how{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s1)}
+
+/* before-friday cards */
+.moves{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s5)}
+.move{background:var(--white);padding:var(--s4)}
+.move .n{font-size:43px;font-weight:200;line-height:1;color:var(--grey-5);margin-bottom:var(--s2)}
+.move h3{font-size:19px;margin-bottom:var(--s2)}
+.move dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:6px var(--s2);font-size:14px;line-height:1.6}
+.move dt{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);padding-top:2px}
+.move dd{margin:0;color:var(--grey-8)}
+.move .check{margin-top:var(--s2);padding-top:var(--s2);border-top:1px solid var(--grey-2);font-size:14px;color:var(--grey-8)}
+.split{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.dont li{margin-bottom:var(--s1)}
+.next{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--grey-3);font-size:19px;line-height:1.55}
+.next strong{font-weight:700}
+
+/* chart */
+.legend{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);font-size:14px;color:var(--grey-8);margin:var(--s4) 0 var(--s3)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:2px}
+.k-seat{background:var(--mark-seat)}
+.k-kept{background:var(--mark-kept)}
+.k-cut{background:var(--accent)}
+.chart{position:relative;margin-top:var(--s2)}
+.grp{font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);margin:var(--s4) 0 var(--s1)}
+.row{display:grid;grid-template-columns:260px 1fr;gap:var(--s3);align-items:center;margin:10px 0}
+.rlab{font-size:14px;line-height:1.4;color:var(--grey-8)}
+.rlab b{display:block;font-size:19px;font-weight:500;color:var(--black)}
+.rlab em{font-style:normal;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey-6)}
+.plot{position:relative;height:24px}
+.track{position:absolute;inset:0;display:flex;gap:2px}
+.seg{flex:none;min-width:0;height:24px;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:500;letter-spacing:0.02em;color:var(--white);white-space:nowrap;overflow:visible;cursor:default}
+.seg:first-child{border-radius:0}
+.seg:last-child{border-radius:0 4px 4px 0}
+.seg.seat{background:var(--mark-seat);color:var(--black)}
+.seg.kept{background:var(--mark-kept)}
+.seg.cut{background:var(--accent)}
+.seg .t{pointer-events:none}
+.axisrow{display:grid;grid-template-columns:260px 1fr;gap:var(--s3)}
+.axis{position:relative;height:22px;border-top:1px solid var(--grey-3);margin-top:var(--s2)}
+.axis span{position:absolute;top:4px;transform:translateX(-50%);font-size:12px;color:var(--grey-6);font-variant-numeric:tabular-nums}
+.axis span:first-child{transform:none}
+.limits{position:absolute;top:-4px;bottom:-4px;left:0;right:0;pointer-events:none;display:none}
+.limit{position:absolute;top:0;bottom:0;border-left:1px solid var(--grey-7)}
+.limits-all{position:absolute;left:calc(260px + var(--s3));right:0;top:0;bottom:30px;pointer-events:none}
+.limits-all .limit b{position:absolute;top:0;left:6px;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey-7);white-space:nowrap;background:var(--white);padding:0 4px 0 0}
+.limits-all .limit.q b{left:auto;right:6px;top:17px;padding:0 0 0 4px}
+.chart .headrow{height:36px}
+#tip{position:fixed;z-index:80;background:var(--black);color:var(--white);font-size:13px;line-height:1.45;padding:8px 10px;max-width:280px;pointer-events:none;opacity:0;transition:opacity .12s}
+
+/* band strip */
+.bands{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2);margin-top:var(--s6)}
+.band{background:var(--grey-1);padding:var(--s4) var(--s3)}
+.band .idx{font-size:12px;font-weight:500;letter-spacing:0.14em;color:var(--accent);margin-bottom:var(--s2)}
+.band .big{font-size:43px;font-weight:200;line-height:1;margin-bottom:var(--s1)}
+.band .how{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2)}
+.band p{font-size:14px;line-height:1.65;color:var(--grey-8)}
+.band .lever{font-size:14px;line-height:1.55;border-top:1px solid var(--grey-3);padding-top:var(--s2);margin-top:var(--s2)}
+
+/* item bars */
+.items{margin-top:var(--s4)}
+.it{display:grid;grid-template-columns:minmax(0,340px) 1fr 64px minmax(0,300px);gap:var(--s2);align-items:center;padding:7px 0;border-bottom:1px solid var(--grey-2);font-size:14px;line-height:1.4}
+.it .nm{color:var(--black)}
+.it .bw{position:relative;height:12px}
+.it .bw i{position:absolute;left:0;top:0;height:12px;border-radius:0 4px 4px 0;background:var(--mark-seat)}
+.it.cut .bw i{background:var(--accent)}
+.it .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--black)}
+.it .w{color:var(--grey-7)}
+.it.head{font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);border-bottom:1px solid var(--grey-3)}
+
+/* lever table */
+.tablewrap{overflow-x:auto;margin-top:var(--s4)}
+table.lv{width:100%;min-width:980px;border-collapse:collapse}
+table.lv th{text-align:left;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);padding:0 var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-3);vertical-align:bottom}
+table.lv td{padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top;font-size:14px;line-height:1.55;color:var(--grey-8)}
+table.lv td.r{font-size:34px;font-weight:200;line-height:1;color:var(--grey-5);width:56px}
+table.lv tr.top td.r{color:var(--accent)}
+table.lv td.l{width:250px}
+table.lv td.l b{display:block;font-size:16px;font-weight:500;color:var(--black);line-height:1.35;margin-bottom:4px}
+table.lv td.s{width:150px;color:var(--black)}
+table.lv td.c{width:170px}
+.tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--grey-3);color:var(--grey-7);white-space:nowrap;margin:0 0 4px}
+.tag.hold{border-color:var(--black);color:var(--black)}
+.tag.weak{border-color:var(--grey-6);color:var(--grey-7)}
+.tag.false{border-color:var(--accent);color:var(--accent)}
+.tag.fri{border-color:var(--accent);color:var(--accent)}
+
+/* memento */
+.proposition{display:grid;grid-template-columns:3fr 1px 4fr;gap:var(--s5);align-items:start}
+.proposition .rule{border-left:1px solid var(--grey-3);min-height:160px}
+table.mm{width:100%;min-width:860px;border-collapse:collapse}
+table.mm th{text-align:left;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey-6);padding:0 var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-3)}
+table.mm td{padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--grey-2);vertical-align:top;font-size:14px;line-height:1.55;color:var(--grey-8)}
+table.mm td:first-child{font-weight:500;color:var(--black);width:210px}
+table.mm td.y{color:var(--black)}
+.drill{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);margin-top:var(--s6);padding-top:var(--s5);border-top:1px solid var(--grey-3)}
+.drill ol{margin:0;padding-left:1.2em}
+.drill li{margin-bottom:var(--s1)}
+
+/* look-up cards */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);border:1px solid var(--grey-2);margin-top:var(--s5)}
+.card{background:var(--grey-1);padding:var(--s4) var(--s3)}
+.card .idx{font-size:12px;font-weight:500;letter-spacing:0.14em;color:var(--accent);margin-bottom:var(--s2)}
+.card h3{margin-bottom:var(--s2)}
+.card dl{margin:0;font-size:14px;line-height:1.6}
+.card dt{font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:var(--s2)}
+.card dd{margin:0;color:var(--grey-8)}
+
+/* after friday */
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:st}
+ol.steps li{counter-increment:st;display:grid;grid-template-columns:64px 1fr;gap:var(--s2);padding:var(--s3) 0;border-bottom:1px solid var(--grey-2)}
+ol.steps li::before{content:counter(st,decimal-leading-zero);font-size:34px;font-weight:200;line-height:1;color:var(--grey-5)}
+ol.steps li b{display:block;font-weight:500;font-size:19px;line-height:1.3;margin-bottom:4px}
+ol.steps li span{font-size:14px;color:var(--grey-8);line-height:1.6}
+
+/* verdicts */
+ul.vd{list-style:none;margin:0;padding:0}
+ul.vd li{display:grid;grid-template-columns:130px 1fr;gap:var(--s2);padding:var(--s2) 0;border-bottom:1px solid var(--grey-2);font-size:14px;line-height:1.6;color:var(--grey-8)}
+ul.vd li b{color:var(--black);font-weight:500}
+
+/* technical */
+details{border-top:1px solid var(--grey-3);padding:var(--s2) 0}
+details:last-of-type{border-bottom:1px solid var(--grey-3)}
+summary{cursor:pointer;font-size:16px;font-weight:500;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-block;width:24px;color:var(--accent);font-weight:400}
+details[open] summary::before{content:"–"}
+details .body{padding:var(--s2) 0 var(--s2) 24px;font-size:14px;line-height:1.65;color:var(--grey-8)}
+pre{white-space:pre-wrap;word-break:break-word;font-family:"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;font-size:12.5px;line-height:1.6;background:var(--grey-1);padding:var(--s2);margin:var(--s1) 0 var(--s2);border-left:2px solid var(--grey-3)}
+
+footer{padding:var(--s5) 0 var(--s6);font-size:12px;color:var(--grey-6);letter-spacing:0.04em}
+
+/* responsive */
+@media (max-width:980px){
+  nav .links{display:none}
+  h1{font-size:43px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .bands,.cards{grid-template-columns:repeat(2,1fr)}
+  .split,.drill{grid-template-columns:1fr;gap:var(--s4)}
+  .proposition{grid-template-columns:1fr;gap:var(--s3)}
+  .proposition .rule{display:none}
+  .it{grid-template-columns:minmax(0,1fr) 90px 56px;}
+  .it .w{grid-column:1 / -1;font-size:12px;color:var(--grey-6);margin-top:-4px}
+  .it.head .w{display:none}
+}
+@media (max-width:700px){
+  .wrap{padding:0 16px}
+  nav .cta{display:none}
+  section{padding:var(--s6) 0}
+  h1{font-size:34px}
+  h2{font-size:26px}
+  .chunks p,.lede{font-size:17px}
+  .stats{gap:var(--s3)}
+  .stat .fig{font-size:43px}
+  .moves,.bands,.cards{grid-template-columns:1fr}
+  .move dl{grid-template-columns:1fr}
+  .row,.axisrow{grid-template-columns:1fr;gap:6px}
+  .axisrow .sp{display:none}
+  .seg .t{display:none}
+  .limits-all{display:none}
+  .limits{display:block}
+  ul.vd li{grid-template-columns:1fr}
+}
+
+/* meters: facts found, search hits */
+.meters{margin-top:var(--s2)}
+.mt{display:grid;grid-template-columns:minmax(0,320px) 1fr 70px;gap:var(--s2);align-items:center;padding:9px 0;border-bottom:1px solid var(--grey-3);font-size:14px;line-height:1.4}
+.mt .nm{color:var(--black)}
+.mt .tr{position:relative;height:12px;background:var(--grey-3)}
+.mt .tr i{position:absolute;left:0;top:0;bottom:0;background:var(--mark-kept);border-radius:0 4px 4px 0}
+.mt.hi .tr i{background:var(--accent)}
+.mt .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--black)}
+.move .check .tag{margin:0 6px 0 0}
+table.lv td.c .tag{margin-bottom:6px}
+@media (max-width:700px){
+  .mt{grid-template-columns:minmax(0,1fr) 72px 52px}
+}
+
+@media (max-width:700px){
+  .tablewrap{overflow:visible}
+  table.lv,table.mm{min-width:0}
+  table.lv thead,table.mm thead{display:none}
+  table.lv tr,table.mm tr{display:block;padding:var(--s3) 0;border-bottom:1px solid var(--grey-3)}
+  table.lv td,table.mm td{display:block;border:none;padding:2px 0;width:auto!important}
+  table.lv td.r{font-size:26px;margin-bottom:4px}
+  table.lv td[data-label]::before,table.mm td[data-label]::before{content:attr(data-label);display:block;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-6);margin-top:8px}
+  table.mm td:first-child{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="tip" role="tooltip"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Apollo<span class="sep">/</span><span class="ctx">The boot diet · plan v1</span></div>
+    <div class="links">
+      <a href="#friday">Before Friday</a>
+      <a href="#window">The window</a>
+      <a href="#levers">Levers</a>
+      <a href="#memento">Memento</a>
+      <a href="#lookup">Look-up</a>
+      <a href="#after">After Friday</a>
+      <a href="#technical">Technical</a>
+    </div>
+    <a class="cta" href="#friday">Before Friday ↓</a>
+  </div>
+</nav>
+
+<!-- ============ ANSWER ============ -->
+<section id="answer">
+  <div class="wrap">
+    <p class="label">The plan · 23 September 2026</p>
+    <h1>Cut our own start routine now. Move the conductor’s seat after Friday.</h1>
+    <div class="chunks">
+      <p><strong>Yes, we load too much up front — and the biggest block isn’t ours.</strong> The cloud seat loads 126K tokens before anyone speaks, 51K more than the old desktop seat. Our own start routine adds 62K. Then Project memory sends its 19K file list a second time with your first message.</p>
+      <p><strong>Before Friday:</strong> four moves, minutes each, all undoable, none near the deck. About 50K off every session, and up to 37K more on heavy days.</p>
+      <p><strong>After Friday:</strong> the big lever is the seat. As Claude Code on your Mac, the conductor would boot at about 30K instead of 126K — once the repo’s old instruction file is rewritten and the render setup is ported.</p>
+      <p><strong>Load on demand:</strong> yes, as an addition, not a replacement. Today’s search finds 2 of 18 facts a fresh chat needs; indexed and better ranked, 11 to 13. The rest arrive only if the start reads them. So the handoff and the chain stay at the start until a fresh-chat quiz proves a shorter card can carry them.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="fig">126K</div><div class="lab">The cloud boot, before anyone speaks. The old desktop seat was 75K.</div><div class="how">Measured</div></div>
+      <div class="stat"><div class="fig">211K</div><div class="lab">By the end of your first message today — past the 200K working line.</div><div class="how">Measured</div></div>
+      <div class="stat"><div class="fig accent">~161K</div><div class="lab">The same moment once the Friday set is in.</div><div class="how">Projected from measured parts</div></div>
+      <div class="stat"><div class="fig">~30K</div><div class="lab">The boot as Claude Code on your Mac, after Friday and after porting.</div><div class="how">Projected · core measured</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BEFORE FRIDAY ============ -->
+<section id="friday" class="grey">
+  <div class="wrap">
+    <p class="label">Before Friday</p>
+    <h2>Four moves. Minutes each. All undoable. None touches the deck.</h2>
+    <div class="moves">
+      <div class="move">
+        <div class="n">01</div>
+        <h3>Paste the new start-of-chat instructions.</h3>
+        <dl>
+          <dt>Changes</dt><dd>The start stops reading and writing Project memory, names the folder exactly, and runs its checks in one call. It still reads the handoff and the chain — a fresh chat needs both.</dd>
+          <dt>Saves</dt><dd>About 31K before the first reply, plus the 19K second copy of the memory list on your first message. <strong>About 50K a session.</strong></dd>
+          <dt>Undo</dt><dd>Paste back today’s text. It is saved on disk, checked byte for byte.</dd>
+          <dt>The deck</dt><dd>Untouched. The render lines are the same.</dd>
+        </dl>
+        <div class="check"><span class="tag hold">Holds</span> Nothing it stops reading is missing from the handoff.</div>
+      </div>
+      <div class="move">
+        <div class="n">02</div>
+        <h3>No memory writes while a chat is live.</h3>
+        <dl>
+          <dt>Changes</dt><dd>Any change to Project memory sends the whole 19K list again with your next message. So the session’s note goes in only once you say you’re done — or waits until after Friday. The repo keeps every note either way.</dd>
+          <dt>Saves</dt><dd>The 19K second copy, every session.</dd>
+          <dt>Tonight</dt><dd>This chat is already past 256K. Leave the note out of it.</dd>
+          <dt>Undo</dt><dd>One line in the instructions.</dd>
+        </dl>
+        <div class="check"><span class="tag hold">Holds</span> Any change to the store triggers it — possibly even a write from one of your other chats.</div>
+      </div>
+      <div class="move">
+        <div class="n">03</div>
+        <h3>Let helpers do the long thinking and writing.</h3>
+        <dl>
+          <dt>Changes</dt><dd>Long thinking and long writing go to helpers — today’s brief, for one. The conductor keeps the decisions and reads their reports from disk.</dd>
+          <dt>Saves</dt><dd>Up to about 37K on a heavy day. Today: 22K thinking about your 15:58 message, 15K writing the brief. Thinking stays in the window for the rest of the chat.</dd>
+          <dt>Undo</dt><dd>Say so.</dd>
+          <dt>The deck</dt><dd>Untouched.</dd>
+        </dl>
+        <div class="check"><span class="tag hold">Holds</span> Thinking is kept in full, across your messages too.</div>
+      </div>
+      <div class="move">
+        <div class="n">04</div>
+        <h3>To add a note mid-run, type it. Don’t press stop.</h3>
+        <dl>
+          <dt>Changes</dt><dd>Your 16:08 and 16:16 notes reached the conductor while it worked. The 16:56 stop threw the running turn away.</dd>
+          <dt>A stop cost</dt><dd>Two helpers’ work (about 22 minutes), the four lane summaries dropped from the conductor’s window, and about 7K spent re-reading them.</dd>
+          <dt>Undo</dt><dd>Nothing to undo.</dd>
+        </dl>
+        <div class="check"><span class="tag hold">Measured</span> Found by the adversary in today’s transcript.</div>
+      </div>
+    </div>
+
+    <p class="small" style="margin-top:var(--s4);max-width:860px"><strong>Optional, two minutes:</strong> one throwaway chat with Tool access set to “On demand”, to read its boot. Expect nothing — the setting is documented for connectors only, and none are loaded. The probe is in the Technical section.</p>
+
+    <div class="split" style="margin-top:var(--s6)">
+      <div><p class="label mute">Not before Friday</p><h3>Five things that look like quick wins and aren’t.</h3></div>
+      <ol class="dont small" style="margin:0;padding-left:1.2em">
+        <li><strong>Don’t pause memory.</strong> It switches memory off in every client chat too, and it blocks the copy of the store.</li>
+        <li><strong>Don’t delete anything from Project memory.</strong> About 190 notes there exist nowhere else. Copy first.</li>
+        <li><strong>Don’t move the conductor to the Mac.</strong> The repo’s July instruction file would load first and contradict the chain, and the render setup only runs in the Linux sandbox on your Mac, not in macOS itself.</li>
+        <li><strong>Don’t build the short card or the new look-ups yet.</strong> The card alone carries 4 of the 18 facts a fresh chat needs, and the graph explorer is part of Friday’s demo.</li>
+        <li><strong>Don’t switch off “Code execution and file creation”, or the Office skills.</strong> Files, skills and your client decks go with them.</li>
+      </ol>
+    </div>
+
+    <p class="next"><strong>Yours:</strong> paste the new instructions, and say yes to 02 and 03. From now on, type notes rather than pressing stop.</p>
+  </div>
+</section>
+
+<!-- ============ THE WINDOW ============ -->
+<section id="window">
+  <div class="wrap">
+    <p class="label">Where the tokens go</p>
+    <h2>Today the conductor passes the working line before you finish your first message.</h2>
+    <p class="lede">Each bar is the conductor’s window at one moment. The vertical lines are Apollo’s own limits: amber at 160K, working at 200K, the quality ceiling at 256K. Red is what the Friday set removes.</p>
+
+    <div class="legend" aria-hidden="true">
+      <span><i class="k-seat"></i>The seat’s own load, before anyone speaks</span>
+      <span><i class="k-kept"></i>Our work that stays</span>
+      <span><i class="k-cut"></i>Goes with the Friday set</span>
+    </div>
+
+    <div class="chart" role="img" aria-label="Window fill: today at your first message 211K; after the Friday set about 161K; on the Mac about 64K. At a heavy moment today 251K; after the Friday set about 168K.">
+      <div class="limits-all" aria-hidden="true">
+        <div class="limit" style="left:61.54%"><b>Amber 160K</b></div>
+        <div class="limit" style="left:76.92%"><b>Working 200K</b></div>
+        <div class="limit q" style="left:98.46%"><b>Ceiling 256K</b></div>
+      </div>
+      <div class="headrow"></div>
+      <div class="grp">At the end of your first message</div>
+      <div class="row">
+        <div class="rlab"><b>211K</b>Today <em>· measured</em></div>
+        <div class="plot">
+          <div class="track">
+            <span class="seg seat" style="width:48.53%" data-tip="The cloud seat’s own load: 126,185 (measured)"><span class="t">Seat 126K</span></span>
+            <span class="seg kept" style="width:13.21%" data-tip="Our start routine that stays (handoff, chain, voice, own working) 30.1K + the first reply 4.2K"><span class="t">34K</span></span>
+            <span class="seg cut" style="width:19.58%" data-tip="Goes with the Friday set: memory steps at the start and the folder search 31.5K + the memory list sent again 19.4K"><span class="t">51K goes</span></span>
+          </div>
+          <div class="limits"><div class="limit" style="left:61.54%"></div><div class="limit" style="left:76.92%"></div><div class="limit" style="left:98.46%"></div></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="rlab"><b>~161K</b>After the Friday set <em>· projected</em></div>
+        <div class="plot">
+          <div class="track">
+            <span class="seg seat" style="width:48.53%" data-tip="The cloud seat’s own load: unchanged at 126K"><span class="t">Seat 126K</span></span>
+            <span class="seg kept" style="width:13.31%" data-tip="Our start routine that stays 30.1K + first reply and your message 4.5K"><span class="t">35K</span></span>
+          </div>
+          <div class="limits"><div class="limit" style="left:61.54%"></div><div class="limit" style="left:76.92%"></div><div class="limit" style="left:98.46%"></div></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="rlab"><b>~64K</b>After Friday, on your Mac <em>· projected</em></div>
+        <div class="plot">
+          <div class="track">
+            <span class="seg seat" style="width:11.38%" data-tip="Claude Code on the Mac: about 29.6K, with its Artifact tool off (bare core measured at 20.1K; synced skills, the instruction file and three tools sized)"><span class="t">30K</span></span>
+            <span class="seg kept" style="width:13.31%" data-tip="The same start routine as the Friday set: 34.6K"><span class="t">35K</span></span>
+          </div>
+          <div class="limits"><div class="limit" style="left:61.54%"></div><div class="limit" style="left:76.92%"></div><div class="limit" style="left:98.46%"></div></div>
+        </div>
+      </div>
+
+      <div class="grp">At a heavy moment — today, when the helpers launched</div>
+      <div class="row">
+        <div class="rlab"><b>251K</b>Today <em>· measured</em></div>
+        <div class="plot">
+          <div class="track">
+            <span class="seg seat" style="width:48.53%" data-tip="The cloud seat’s own load: 126,185"><span class="t">Seat 126K</span></span>
+            <span class="seg kept" style="width:14.10%" data-tip="Our work that stays: start routine 30.1K, first reply 4.2K, other running 2.3K"><span class="t">37K</span></span>
+            <span class="seg cut" style="width:19.58%" data-tip="Memory steps at the start + the list sent again: 50.9K"><span class="t">51K goes</span></span>
+            <span class="seg cut" style="width:14.14%" data-tip="The conductor’s own thinking on your 15:58 message (22.0K) and writing the brief itself (14.8K)"><span class="t">37K goes</span></span>
+          </div>
+          <div class="limits"><div class="limit" style="left:61.54%"></div><div class="limit" style="left:76.92%"></div><div class="limit" style="left:98.46%"></div></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="rlab"><b>~168K</b>After the Friday set <em>· projected</em></div>
+        <div class="plot">
+          <div class="track">
+            <span class="seg seat" style="width:48.53%" data-tip="The cloud seat’s own load: 126K"><span class="t">Seat 126K</span></span>
+            <span class="seg kept" style="width:16.02%" data-tip="Our work that stays 36.7K + about 5K the conductor still thinks and briefs (estimate)"><span class="t">42K</span></span>
+          </div>
+          <div class="limits"><div class="limit" style="left:61.54%"></div><div class="limit" style="left:76.92%"></div><div class="limit" style="left:98.46%"></div></div>
+        </div>
+      </div>
+      <div class="axisrow">
+        <div class="sp"></div>
+        <div class="axis">
+          <span style="left:0">0</span>
+          <span style="left:19.23%">50K</span>
+          <span style="left:38.46%">100K</span>
+          <span style="left:57.69%">150K</span>
+          <span style="left:76.92%">200K</span>
+          <span style="left:96.15%">250K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bands">
+      <div class="band">
+        <div class="idx">01 · THE SEAT’S LOAD</div>
+        <div class="big">126K</div>
+        <div class="how">Measured · before anyone speaks</div>
+        <p>68 tool descriptions (65K — the in-chat widgets alone are 16K, the Artifact tool 12K). Anthropic’s instructions (31.5K, 8K of it about memory). The memory list (19K: 150 file names). Small notes (11K). Our own Project instructions are under 1K.</p>
+        <p class="lever"><strong>Levers:</strong> a smaller memory store, or moving the seat. No account switch reaches the big blocks.</p>
+      </div>
+      <div class="band">
+        <div class="idx">02 · OUR START ROUTINE</div>
+        <div class="big">62K</div>
+        <div class="how">Measured · first reply at 188K</div>
+        <p>Placing yesterday’s memory note (21K). Reading the handoff and the chain (18K). The voice guide and the conductor’s own working (9K). Digging for the first beat (6K). The memory index and list (5.5K). Finding the folder (2.7K).</p>
+        <p class="lever"><strong>Levers:</strong> the new instructions now; a short card after Friday, once it passes the quiz.</p>
+      </div>
+      <div class="band">
+        <div class="idx">03 · WHAT GROWS AS WE WORK</div>
+        <div class="big">19K+</div>
+        <div class="how">Measured · plus the conductor’s thinking</div>
+        <p>The memory list, sent again with your first message because the store had changed — identical, byte for byte. The conductor’s own thinking and writing, which stay in its window: 56K by the time the helpers launched. And a stop mid-run throws the running turn away.</p>
+        <p class="lever"><strong>Levers:</strong> no memory writes while a chat is live; helpers think; type, don’t stop.</p>
+      </div>
+      <div class="band">
+        <div class="idx">04 · WHERE IT SITS</div>
+        <div class="big">+51K</div>
+        <div class="how">Desktop 75K → cloud 126K · measured</div>
+        <p>The cloud seat adds 40K of tools and the 19K memory list, and saves 8K of instructions. At the 184K you saw, that was 28% of the window — the biggest single step, not most of the bill. The old desktop seat is gone for this account. Claude Code on your Mac would boot at about 30K.</p>
+        <p class="lever"><strong>Lever:</strong> a trial session on the Mac after Friday, after porting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ITEMS ============ -->
+<section id="items" class="tight">
+  <div class="wrap">
+    <p class="label">The biggest items</p>
+    <h2>Twenty items make up most of the window. The red ones go before Friday.</h2>
+    <div class="items" role="table" aria-label="The twenty biggest items in the conductor's window, in thousands of tokens">
+      <div class="it head" role="row"><span role="columnheader">Item</span><span role="columnheader" class="bw"></span><span role="columnheader" class="v">K</span><span role="columnheader" class="w">When it can go</span></div>
+      <div class="it cut" role="row"><span class="nm">The conductor’s thinking on your 15:58 message</span><span class="bw"><i style="width:100%"></i></span><span class="v">22.0</span><span class="w">Friday set — helpers think</span></div>
+      <div class="it cut" role="row"><span class="nm">Placing yesterday’s memory note at the start</span><span class="bw"><i style="width:94.1%"></i></span><span class="v">20.7</span><span class="w">Friday set — no writes while a chat is live</span></div>
+      <div class="it cut" role="row"><span class="nm">The memory list, sent again with your first message</span><span class="bw"><i style="width:88.2%"></i></span><span class="v">19.4</span><span class="w">Friday set — no writes while a chat is live</span></div>
+      <div class="it" role="row"><span class="nm">The memory list at boot — 150 file names</span><span class="bw"><i style="width:86.4%"></i></span><span class="v">19.0</span><span class="w">After Friday — cut the store below 150 files</span></div>
+      <div class="it" role="row"><span class="nm">In-chat widget tools — maps, recipes, quizzes, sport</span><span class="bw"><i style="width:74.1%"></i></span><span class="v">16.3</span><span class="w">Only by moving the seat</span></div>
+      <div class="it cut" role="row"><span class="nm">Writing the brief inside the conductor</span><span class="bw"><i style="width:67.3%"></i></span><span class="v">14.8</span><span class="w">Friday set — a helper writes it</span></div>
+      <div class="it" role="row"><span class="nm">Core tools — shell, files, search, helpers</span><span class="bw"><i style="width:66.8%"></i></span><span class="v">14.7</span><span class="w">Stays — a smaller set on the Mac</span></div>
+      <div class="it" role="row"><span class="nm">The Artifact tool</span><span class="bw"><i style="width:53.2%"></i></span><span class="v">11.7</span><span class="w">Only by moving the seat</span></div>
+      <div class="it" role="row"><span class="nm">Anthropic’s agent instructions</span><span class="bw"><i style="width:50.9%"></i></span><span class="v">11.2</span><span class="w">Only by moving the seat</span></div>
+      <div class="it" role="row"><span class="nm">Reading the chain</span><span class="bw"><i style="width:49.1%"></i></span><span class="v">10.8</span><span class="w">Stays — a fresh chat needs it</span></div>
+      <div class="it" role="row"><span class="nm">Anthropic’s behaviour instructions</span><span class="bw"><i style="width:41.4%"></i></span><span class="v">9.1</span><span class="w">Only by moving the seat</span></div>
+      <div class="it" role="row"><span class="nm">Memory guidance inside those instructions</span><span class="bw"><i style="width:37.3%"></i></span><span class="v">8.2</span><span class="w">Pausing memory, or moving the seat</span></div>
+      <div class="it" role="row"><span class="nm">Reading the handoff</span><span class="bw"><i style="width:33.6%"></i></span><span class="v">7.4</span><span class="w">Stays until a card passes the quiz</span></div>
+      <div class="it" role="row"><span class="nm">Scheduled-task tools</span><span class="bw"><i style="width:33.2%"></i></span><span class="v">7.3</span><span class="w">Only by moving the seat</span></div>
+      <div class="it" role="row"><span class="nm">Link-to-your-Mac tools</span><span class="bw"><i style="width:28.6%"></i></span><span class="v">6.3</span><span class="w">Needed while the repo is on the Mac</span></div>
+      <div class="it" role="row"><span class="nm">Digging for the first beat — git log, rulings, a search</span><span class="bw"><i style="width:27.3%"></i></span><span class="v">6.0</span><span class="w">After Friday — the wrap writes the first beat</span></div>
+      <div class="it cut" role="row"><span class="nm">Reading the memory index and its list</span><span class="bw"><i style="width:25.0%"></i></span><span class="v">5.5</span><span class="w">Friday set</span></div>
+      <div class="it" role="row"><span class="nm">The skills list</span><span class="bw"><i style="width:19.1%"></i></span><span class="v">4.2</span><span class="w">Stays — your skills</span></div>
+      <div class="it" role="row"><span class="nm">Memory tools</span><span class="bw"><i style="width:16.4%"></i></span><span class="v">3.6</span><span class="w">Pausing memory, or moving the seat</span></div>
+      <div class="it cut" role="row"><span class="nm">Finding the folder — a wrong turn and a long listing</span><span class="bw"><i style="width:12.3%"></i></span><span class="v">2.7</span><span class="w">Friday set — the folder is named</span></div>
+    </div>
+    <p class="cap" style="margin-top:var(--s2)">Thousand tokens. Thinking, writing and the list sent again are measured. The rest are estimates from the recorded boot, scaled to real tokens (see Technical).</p>
+  </div>
+</section>
+
+<!-- ============ LEVERS ============ -->
+<section id="levers">
+  <div class="wrap">
+    <p class="label">Every lever, ranked</p>
+    <h2>Ranked by what it saves, how sure we are, and how easily it undoes.</h2>
+    <p class="lede">Risk counts what it could break — in Apollo, in your client work, or on Friday. The adversary checked each claim. A lever it found false is not on this list.</p>
+    <div class="tablewrap">
+      <table class="lv">
+        <thead><tr><th></th><th>Lever</th><th>Saves</th><th>Risk</th><th>Undo</th><th>Whose</th><th>What else it touches</th><th>Check</th></tr></thead>
+        <tbody>
+          <tr class="top"><td class="r">1</td><td class="l"><b>New start-of-chat instructions</b><span class="tag fri">Friday set</span></td><td class="s" data-label="Saves">~50K a session</td><td data-label="Risk">Low</td><td data-label="Undo">Paste back the saved text</td><td data-label="Whose">Your paste</td><td data-label="What else it touches">Other Apollo chats see memory notes later. Two runbook lines are amended.</td><td class="c" data-label="Check"><span class="tag hold">Holds</span><br>What it drops is all in the handoff.</td></tr>
+          <tr class="top"><td class="r">2</td><td class="l"><b>Helpers do the long thinking and writing</b><span class="tag fri">Friday set</span></td><td class="s" data-label="Saves">Up to ~37K on heavy days</td><td data-label="Risk">Low</td><td data-label="Undo">Say so</td><td data-label="Whose">Your yes</td><td data-label="What else it touches">More helper launches. Each boots at 66K — plan usage, not this window.</td><td class="c" data-label="Check"><span class="tag hold">Holds</span><br>If reports are read from disk: a stop can wipe the summaries.</td></tr>
+          <tr><td class="r">3</td><td class="l"><b>The conductor as Claude Code on your Mac</b></td><td class="s" data-label="Saves">~96K off the boot</td><td data-label="Risk">Medium–high</td><td data-label="Undo">Switch back any session</td><td data-label="Whose">Your set-up + a build</td><td data-label="What else it touches">The repo’s July instruction file loads first and contradicts the chain. 17 scripts and the render setup assume the Linux sandbox. Project memory is not there. One gate declaration for the big drop.</td><td class="c" data-label="Check"><span class="tag weak">Weakened</span><br>Still the biggest saving, but a build, not a switch.</td></tr>
+          <tr class="top"><td class="r">4</td><td class="l"><b>Type notes mid-run; don’t press stop</b><span class="tag fri">Friday set</span></td><td class="s" data-label="Saves">A whole turn and its helpers (today ~22 min, ~7K re-read)</td><td data-label="Risk">None</td><td data-label="Undo">—</td><td data-label="Whose">Your habit</td><td data-label="What else it touches">Nothing.</td><td class="c" data-label="Check"><span class="tag hold">Measured</span><br>New, from the adversary.</td></tr>
+          <tr><td class="r">5</td><td class="l"><b>A short start card plus the chain, made at the wrap</b></td><td class="s" data-label="Saves">~12K more after row 1</td><td data-label="Risk">Medium</td><td data-label="Undo">Paste back</td><td data-label="Whose">A build + your ruling</td><td data-label="What else it touches">It must carry the handoff’s cautions word for word, and pass the quiz on three fresh chats first.</td><td class="c" data-label="Check"><span class="tag weak">Weakened</span><br>The card alone is not enough: 4 of 18 facts.</td></tr>
+          <tr><td class="r">6</td><td class="l"><b>Cut Apollo’s memory to a handful of files</b></td><td class="s" data-label="Saves">~18K every boot</td><td data-label="Risk">Medium — deleting is permanent</td><td data-label="Undo">Only from the copy</td><td data-label="Whose">A helper + your word</td><td data-label="What else it touches">Other Apollo chats lose about 150 lesson titles. Copy first. Nothing in the repo reads the store.</td><td class="c" data-label="Check"><span class="tag weak">Weakened</span><br>~18K, not 19–20K.</td></tr>
+          <tr><td class="r">7</td><td class="l"><b>Pause memory</b></td><td class="s" data-label="Saves">~31K a boot + ~19K per re-send</td><td data-label="Risk">High</td><td data-label="Undo">Unpause. Never “Reset”.</td><td data-label="Whose">Your switch</td><td data-label="What else it touches">Memory stops in every chat on your account, client work included. It also blocks the copy of the store and the wrap’s note.</td><td class="c" data-label="Check"><span class="tag hold">Holds</span><br>Never before the copy.</td></tr>
+          <tr><td class="r">8</td><td class="l"><b>Ask Anthropic, through feedback</b></td><td class="s" data-label="Saves">~16K + ~19K per re-send, if they act</td><td data-label="Risk">None</td><td data-label="Undo">—</td><td data-label="Whose">Your feedback</td><td data-label="What else it touches">Nothing. Ask them to load the widgets on demand, and to re-send the memory list only when its text changes.</td><td class="c" data-label="Check"><span class="tag">Not tested</span></td></tr>
+          <tr><td class="r">9</td><td class="l"><b>Tool access “On demand”</b></td><td class="s" data-label="Saves">Expect ~0</td><td data-label="Risk">None</td><td data-label="Undo">Per chat</td><td data-label="Whose">Your switch</td><td data-label="What else it touches">Nothing. A free two-minute test.</td><td class="c" data-label="Check"><span class="tag weak">Weakened</span><br>Documented for connectors only.</td></tr>
+          <tr><td class="r">10</td><td class="l"><b>Claude in Chrome and computer use off</b></td><td class="s" data-label="Saves">~3.7K</td><td data-label="Risk">Medium</td><td data-label="Undo">Switch back</td><td data-label="Whose">Your switch</td><td data-label="What else it touches">Client work loses both until switched back. Their tools already load as names only.</td><td class="c" data-label="Check"><span class="tag hold">Holds</span><br>Small.</td></tr>
+          <tr><td class="r">11</td><td class="l"><b>Run the conductor outside the Project</b></td><td class="s" data-label="Saves">~3K</td><td data-label="Risk">Medium</td><td data-label="Undo">Start back in the Project</td><td data-label="Whose">Your choice</td><td data-label="What else it touches">The instructions have to move. The memory it sees changes.</td><td class="c" data-label="Check"><span class="tag">Not tested</span></td></tr>
+          <tr><td class="r">12</td><td class="l"><b>Chat search off</b></td><td class="s" data-label="Saves">~0.6K</td><td data-label="Risk">Low</td><td data-label="Undo">Switch back</td><td data-label="Whose">Your switch</td><td data-label="What else it touches">Every chat loses past-chat search.</td><td class="c" data-label="Check"><span class="tag">Not tested</span></td></tr>
+          <tr><td class="r">13</td><td class="l"><b>Repo in the cloud, Mac link dropped</b></td><td class="s" data-label="Saves">~9K</td><td data-label="Risk">High</td><td data-label="Undo">Hard</td><td data-label="Whose">A build</td><td data-label="What else it touches">You lose reading files beside their source, and renders at your seat.</td><td class="c" data-label="Check"><span class="tag">Not tested</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="split" style="margin-top:var(--s6)">
+      <div><p class="label mute">Save nothing, make the rest safe</p><h3>Groundwork.</h3></div>
+      <ol class="small" style="margin:0;padding-left:1.2em">
+        <li><strong>Copy the memory store into the repo.</strong> About 190 notes live only there. One helper, nothing deleted.</li>
+        <li><strong>Index the handoff and the chain.</strong> Today the search can’t see either. As a separate script, so the Memento package copies stay untouched.</li>
+        <li><strong>Rewrite the repo’s old instruction file.</strong> It dates from July and would send a new seat to 311 KB of the wrong files.</li>
+        <li><strong>Repair the start-of-session check-in.</strong> It has found nothing since the move to the cloud, so five of its checks have been silent for five sessions.</li>
+        <li><strong>Slim the memory note.</strong> Drop the oldest index line instead of reading a 20 KB archive to move it — about 11K per placing.</li>
+        <li><strong>Check the token gauge.</strong> Its key was refused once today, and its model name is out of date.</li>
+      </ol>
+    </div>
+    <div class="split" style="margin-top:var(--s5)">
+      <div><p class="label mute">Off the table</p><h3>Looked at, and not worth it.</h3></div>
+      <ol class="small" style="margin:0;padding-left:1.2em">
+        <li><strong>The old desktop seat.</strong> It is no longer offered on this account. Cowork runs in the cloud on every surface now.</li>
+        <li><strong>Code execution off, to lose the 12K Artifact tool.</strong> It takes files, code and skills with it.</li>
+        <li><strong>Office skills off.</strong> Client decks need them, for about 1K.</li>
+        <li><strong>The short card on its own.</strong> It carries 4 of the 18 facts a fresh chat needs.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MEMENTO ============ -->
+<section id="memento" class="grey">
+  <div class="wrap">
+    <p class="label">The Memento balance</p>
+    <div class="proposition">
+      <h2>Your principle holds. A cut replaces a read only after a fresh chat passes the quiz without it.</h2>
+      <div class="rule"></div>
+      <div>
+        <p><strong>The principle still stands.</strong> Memento was built so a cold seat quotes the record instead of reconstructing it: find the references, fetch the words, spend tokens only on what the work needs. The diet follows that rule. It takes things out of the start and leaves each one a single fetch away.</p>
+        <p><strong>The challenge you asked for.</strong> A seat can only fetch what it knows exists. The adversary took 18 facts the last handoff and chain give a fresh chat, and checked which start-up read carries each one. The short card carries 4. The handoff and the chain together carry all 18 — and they overlap by only 9%, so each carries its own. That backs your “the chain is fundamental”.</p>
+        <p><strong>So both stay at the start for now.</strong> The Friday set keeps them. It cuts only what the handoff already says.</p>
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:var(--s6)">
+      <div><p class="label mute">Measured</p><h3>Facts a fresh chat needs, found in each start-up read.</h3><p class="small">Out of 18, taken from the last handoff (14) and chain (4), so the check leans toward the handoff. It is a mechanical check of what each read contains — the quiz below is the real test.</p></div>
+      <div class="meters" role="table" aria-label="Facts found in each start-up read, out of 18">
+        <div class="mt" role="row"><span class="nm">The short card</span><span class="tr"><i style="width:22.2%"></i></span><span class="v">4 / 18</span></div>
+        <div class="mt" role="row"><span class="nm">The chain</span><span class="tr"><i style="width:61.1%"></i></span><span class="v">11 / 18</span></div>
+        <div class="mt" role="row"><span class="nm">Card + chain</span><span class="tr"><i style="width:66.7%"></i></span><span class="v">12 / 18</span></div>
+        <div class="mt" role="row"><span class="nm">The handoff</span><span class="tr"><i style="width:88.9%"></i></span><span class="v">16 / 18</span></div>
+        <div class="mt hi" role="row"><span class="nm">Handoff + chain — the Friday set keeps both</span><span class="tr"><i style="width:100%"></i></span><span class="v">18 / 18</span></div>
+      </div>
+    </div>
+
+    <div class="tablewrap" style="margin-top:var(--s6)">
+      <table class="mm">
+        <thead><tr><th>The cut</th><th>What a cold seat loses</th><th>Could it then say something false, confidently?</th><th>What guards it</th></tr></thead>
+        <tbody>
+          <tr><td>Memory steps leave the start</td><td data-label="What a cold seat loses">The index’s three wrap lines. Checked against the handoff: every fact is there.</td><td data-label="False, confidently?">No.</td><td data-label="What guards it">The handoff is still read first.</td></tr>
+          <tr><td>No memory writes while a chat is live</td><td data-label="What a cold seat loses">Nothing. The note’s content is the handoff’s.</td><td data-label="False, confidently?">No.</td><td data-label="What guards it">The repo copy is written at every wrap. Nothing in the repo reads the store.</td></tr>
+          <tr><td>Helpers think</td><td data-label="What a cold seat loses">The conductor’s own working. And a stop can wipe the helpers’ summaries from its window.</td><td data-label="False, confidently?">Medium.</td><td data-label="What guards it">The conductor reads reports from disk, never from memory.</td></tr>
+          <tr><td>The short card replaces the handoff</td><td data-label="What a cold seat loses">14 of 18 facts: how to push, the stuck-lock fix, the paths to leave alone, that the demo brief comes last.</td><td class="y" data-label="False, confidently?">Yes — high.</td><td data-label="What guards it">Not adopted until the quiz passes.</td></tr>
+          <tr><td>Card + chain, no handoff</td><td data-label="What a cold seat loses">6 of 18, all of them “don’t break it” facts.</td><td class="y" data-label="False, confidently?">Medium.</td><td data-label="What guards it">The card carries the handoff’s cautions word for word, then the quiz.</td></tr>
+          <tr><td>Memory store cut</td><td data-label="What a cold seat loses">About 0.7 MB of notes that exist nowhere else.</td><td data-label="False, confidently?">Medium, until copied and indexed.</td><td data-label="What guards it">The copy first. Nothing deleted without your word.</td></tr>
+          <tr><td>The conductor on the Mac</td><td data-label="What a cold seat loses">Project memory and the Project instructions. The repo’s July instruction file loads instead.</td><td class="y" data-label="False, confidently?">Yes — high. It sends a new seat to the wrong files.</td><td data-label="What guards it">Rewrite the instruction file first, then one trial session with the quiz.</td></tr>
+          <tr><td>Tools on demand; Chrome off</td><td data-label="What a cold seat loses">Nothing Apollo uses.</td><td data-label="False, confidently?">No.</td><td data-label="What guards it">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="drill">
+      <div><p class="label">The quiz</p><h3>How we prove a shorter start is still enough.</h3><p class="small">The August Memento drill, extended by the adversary. A cut to the start is adopted only after it passes.</p></div>
+      <div>
+        <ol>
+          <li><strong>Start cold:</strong> a fresh chat with only the shorter start, plus the fetch commands it names.</li>
+          <li><strong>Ask 24 things:</strong> the 18 facts, plus six “do something” probes — push the wrap commit; the build fails on a stuck lock; draft the demo brief?; tidy a log file; rebuild the deck; which reports exist for this session.</li>
+          <li><strong>Grade:</strong> right, right after a fetch, or “don’t know” all pass. A confident wrong answer fails.</li>
+          <li><strong>Pass bar:</strong> no confident wrong answers, at least 22 of 24 right, and fetching costs no more than the handoff it replaces (about 7K).</li>
+          <li><strong>August’s three measures ride along:</strong> it opens the right contract first time, every number it quotes reproduces, and the wrap certifies the session that actually ran.</li>
+          <li><strong>Three fresh chats pass</strong> before a card is adopted — and again after any change to how the card is made.</li>
+        </ol>
+        <p class="small" style="margin-top:var(--s2)">The answers are stored as fingerprints, so they never sit on disk in plain text.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOOK-UP ============ -->
+<section id="lookup">
+  <div class="wrap">
+    <p class="label">Look-up</p>
+    <h2>A better look-up helps. It can’t replace the start-of-chat read.</h2>
+    <p class="lede">Your 16:56 question, measured. 18 questions a fresh chat would ask, in plain words: does a top-three search result hold the answer?</p>
+
+    <div class="meters" role="table" aria-label="Search results holding the answer, out of 18 questions" style="max-width:980px">
+      <div class="mt" role="row"><span class="nm">Today’s Memento search</span><span class="tr"><i style="width:11.1%"></i></span><span class="v">2 / 18</span></div>
+      <div class="mt" role="row"><span class="nm">+ the handoff and chain added to the index</span><span class="tr"><i style="width:44.4%"></i></span><span class="v">8 / 18</span></div>
+      <div class="mt" role="row"><span class="nm">+ a better ranking (BM25, word pairs)</span><span class="tr"><i style="width:61.1%"></i></span><span class="v">11 / 18</span></div>
+      <div class="mt" role="row"><span class="nm">Either of the two</span><span class="tr"><i style="width:72.2%"></i></span><span class="v">13 / 18</span></div>
+    </div>
+    <p class="small" style="margin-top:var(--s3);max-width:860px"><strong>Even the best misses 5</strong> — among them the push method and the deck build that must never run. A seat that doesn’t know a fact exists won’t search for it. So: index first, rank better second, judge last, and keep the start-of-chat read.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="idx">01 · EXACT PHRASES</div>
+        <h3>The n-gram doors</h3>
+        <dl>
+          <dt>What it is</dt><dd>Two tools we already have: one checks “are these Dave’s exact words?”, the other finds text that says the same thing twice.</dd>
+          <dt>For the start</dt><dd>A check on any card: every line it quotes as yours must be found word for word. The overlap test is what showed the handoff and chain share only 9% of their wording.</dd>
+          <dt>Cost · risk</dt><dd>Nothing — it exists. Advisory.</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <div class="idx">02 · RANKED SEARCH</div>
+        <h3>BM25</h3>
+        <dl>
+          <dt>What it is</dt><dd>Today’s search counts how many of your words a record contains, every word counting the same. BM25 gives rare, specific words more weight.</dd>
+          <dt>For the start</dt><dd>8 → 11 of 18 on the same records.</dd>
+          <dt>Cost · risk</dt><dd>Standard library only, as a separate script. Put into the shared engine instead, every door’s rankings shift — the design-system door too.</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <div class="idx">03 · THE GRAPH</div>
+        <h3>The knowledge graph</h3>
+        <dl>
+          <dt>What it is</dt><dd>The decision graph links rulings to what they touch: 102 entries, 172 links.</dd>
+          <dt>For the start</dt><dd>Stable names for rulings, so a card cites a ruling instead of paraphrasing it.</dd>
+          <dt>Cost · risk</dt><dd>It exists. Its explorer is part of Friday’s demo, so nothing touches it before Friday.</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <div class="idx">04 · THE JUDGE</div>
+        <h3>Jev</h3>
+        <dl>
+          <dt>What it is</dt><dd>A paid judgment service: one pick-one question, a calibrated answer. The repo already holds a design for Jev choosing what to fetch.</dd>
+          <dt>For the start</dt><dd>Given your first message, pick the extra sections worth fetching.</dd>
+          <dt>Cost · risk</dt><dd>A key, the network, one or two calls a session. Your rulings: a development tool, never a dependency, and nothing that runs at session time. So only ever an optional extra that can add sections, never remove one. After Friday, and yours to allow.</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AFTER FRIDAY ============ -->
+<section id="after">
+  <div class="wrap">
+    <p class="label">After Friday</p>
+    <h2>Six steps, in this order.</h2>
+    <ol class="steps">
+      <li><div><b>Copy the memory store into the repo.</b><span>One helper, about 10K tokens. Nothing in memory changes.</span></div></li>
+      <li><div><b>Index the handoff and the chain, and add the better ranking.</b><span>A separate script, so the Memento package stays untouched. It takes the search from 2 to about 11 of 18.</span></div></li>
+      <li><div><b>Build the short card and run the quiz on three fresh chats.</b><span>The card carries the handoff’s cautions word for word; the quote check guards it. It replaces the handoff read only if it passes.</span></div></li>
+      <li><div><b>Prepare the Mac seat, then trial it for one session.</b><span>Rewrite the old instruction file, port the render setup and 17 scripts, write one gate declaration for the big drop. The trial runs the quiz.</span></div></li>
+      <li><div><b>Your rulings.</b><span>Listed below.</span></div></li>
+      <li><div><b>Only then, with your word: cut the memory store to a handful of files.</b><span>About 18K lighter at every boot.</span></div></li>
+    </ol>
+
+    <div class="split" style="margin-top:var(--s6)">
+      <div><p class="label">Yours to rule</p><h3>Seven questions. None is needed before Friday.</h3></div>
+      <ol style="margin:0;padding-left:1.2em">
+        <li><strong>The start.</strong> Keep both the handoff and the chain (today’s answer), or — after three quiz passes — move to the card plus the chain?</li>
+        <li><strong>The memory note.</strong> Keep placing it once you say you’re done, or stop writing Project memory for Apollo? Nothing in the repo reads the store; your other Apollo chats would stop seeing the wrap lines.</li>
+        <li><strong>The memory store.</strong> Cut it to a handful after the copy, or leave it?</li>
+        <li><strong>The seat.</strong> Trial Claude Code on your Mac once the porting is done?</li>
+        <li><strong>The boot ceiling.</strong> Only the Mac seat gets the boot under 72,768 — no switch does. Keep the wrap gate’s declared path until the seat is decided?</li>
+        <li><strong>The silent check-in.</strong> Restore its five checks as one line at the start, or retire them by name?</li>
+        <li><strong>Jev at the start.</strong> Allow it as an optional extra that can only add sections — a narrow exception to “never at session time” — or keep it for development only?</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ADVERSARY ============ -->
+<section id="check" class="grey tight">
+  <div class="wrap">
+    <p class="label">The adversary’s check</p>
+    <h2>Most of it held. Four claims fell, and the plan changed with them.</h2>
+    <ul class="vd">
+      <li><b>Held</b><span>The boot figures. The start routine’s 62K and the 50K the new instructions save. Thinking stays in the window, across your messages too. The second memory list is identical and any store change triggers it. The memory census. The dead check-in. The saved copy of today’s instructions.</span></li>
+      <li><b>Weakened</b><span>The Mac seat — still the biggest saving, but a build, not a switch. Tool access “On demand” — expect nothing. The memory cut — about 18K, not 19–20K. “The cloud is the source” — at the 184K you saw, it added 28%, not most of it.</span></li>
+      <li><b>False, removed</b><span>“The short card alone is enough at the start.” “Thinking isn’t carried between messages.” “The gauge can’t read its key.” “The memory list shows the first 150 files.”</span></li>
+      <li><b>New</b><span>A stop mid-run throws the running turn away. The ending chat pays the second memory list, and this chat is already past 256K. A memory write from any of your chats may trigger it. The repo’s July instruction file would mislead a Mac seat. The graph explorer is in Friday’s demo.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ TECHNICAL ============ -->
+<section id="technical">
+  <div class="wrap">
+    <p class="label mute">Technical</p>
+    <h2>Receipts, units and the paste-ready text.</h2>
+    <p class="small" style="max-width:760px">Everything above is readable without this section. Open a block when you want the working.</p>
+
+    <details>
+      <summary>The new start-of-chat instructions — paste-ready</summary>
+      <div class="body">
+        <p>Replaces the whole Project instructions box. Standing and Rendering are today’s, with one sentence added about the check-in. Step 4 differs from the draft in the start-routine report: an unplaced note is left for the repo, instead of being placed at the start, which would bring the 19K second list back. Today’s text is saved byte for byte (md5 <code>a6e11674…</code>, checked by the adversary) at <code>notes/_lanes/300/C/PROJECT-INSTRUCTIONS-as-of-2026-09-23-ROLLBACK.txt</code>.</p>
+<pre>This is Apollo, a governed design-system engine. The repo is the folder mounted at $HOME/mnt/Projects--UX-design on Dave's computer (never the empty UX-design--UX-design). The repo is the record; Project memory is the accelerator.
+
+On the first turn of every session, before replying:
+
+1. In one shell call at Dave's seat: cd "$HOME/mnt/Projects--UX-design"; ls _HANDOFF-*.md | sort -t- -k2 -n | tail -1; bash knowledge/_render/ensure_env.sh 2>&1 | tail -1. If ensure_env prints FAIL, read the ninth stratum of knowledge/_RUNBOOK-render-verify.md before anything renders.
+2. Read that newest _HANDOFF-*.md. It outranks everything, including _CHAIN.md.
+3. Read _CHAIN.md.
+4. Do not read or write Project memory at the opener, or anywhere while the chat is live: any store change re-sends the whole memory list into the next turn. The last session's note is placed only after Dave says he is done; if it was not placed, leave it — the repo keeps every note at notes/_lanes/&lt;n&gt;/WRAP-MEMORY-HOOK.md.
+5. Reply in dave-voice with the session's first beat — not a greeting, not a question.
+
+Standing: Dave rules from plain prose and visuals, never ID codes. Commits only via knowledge/_git_commit.sh; push is at the conductor's judgement with a CI read-back in chat. Every sub files its report at notes/_subreports/. At the cloud seat _checkin.py cannot see the conductor's transcript; when the fill matters, hand-sum it in the cloud shell.
+
+Rendering: every render runs at Dave's seat, on the mount, in one bash call — export TMPDIR=/dev/shm; bash knowledge/_render/ensure_env.sh; source knowledge/_render/seat_env.sh; python3 &lt;driver&gt; with executable_path=$RENDER_SHELL. Never route a build through the cloud workspace because the seat "has no Playwright" — it does once ensure_env.sh has run. Files written for Dave live in the repo beside their source; give him the path, not a download.</pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>The optional probe — Tool access “On demand”</summary>
+      <div class="body">
+        <p>In a new chat in the Apollo project, set “+” → Connectors → Tool access → On demand before typing. Then paste this as the whole message:</p>
+<pre>Boot probe, not a session. Do not run the start-of-session steps, and do not touch Project memory or the repo. Run this one command in your own shell and reply with its three lines only:
+python3 -c "import json,glob,os,collections as C;p=max(glob.glob('/root/.claude/projects/*/*.jsonl'),key=os.path.getmtime);R=[json.loads(l) for l in open(p)];u=next(r['message']['usage'] for r in R if r.get('type')=='assistant');print('BOOT',u['input_tokens']+u.get('cache_creation_input_tokens',0)+u.get('cache_read_input_tokens',0));T=next((r['attachment']['tools'] for r in R if r.get('type')=='attachment' and r['attachment'].get('type')=='prompt_snapshot' and r['attachment'].get('tools')),[]);f=C.Counter(('mcp__'+t['name'].split('__')[1]) if t['name'].startswith('mcp__') else 'core' for t in T);print('LOADED',len(T),dict(f));print('MEMORY LIST AT BOOT',any(r.get('type')=='attachment' and r['attachment'].get('type')=='cowork_memory_context' for r in R))"</pre>
+        <p><strong>Reading it.</strong> Today’s conductor prints <code>BOOT 126185</code> and <code>LOADED 68</code>, with 17 widget, 7 Mac-link, 6 scheduled-task and 5 memory tools. A pass would be a boot well under 126K with those families gone. The first line is fixed before the model acts, so it is honest even if the probe chat misbehaves.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Units — how the numbers were made</summary>
+      <div class="body">
+        <p><strong>Real tokens</strong> come only from the transcript’s usage fields: input + cache creation + cache read, per distinct message. The boot (126,185), the first reply (187,863), your first message (211,454) and the moment the helpers launched (250,519) are real.</p>
+        <p><strong>Tape</strong> is a cl100k estimate of a recorded payload, scaled to real with two ratios solved from this transcript: tool descriptions ×0.983, prose ×1.453. The adversary re-derived prose at 1.40–1.45 from six helper boots and 1.43 from the second memory list.</p>
+        <p><strong>Projected</strong> means measured parts added up, not a session that has run. The Friday-set figures remove measured items from measured totals. The Mac seat’s 30K is a bare core measured at 20.1K (Claude Code 2.1.280, print mode) plus sized additions: synced skills, the instruction file, three interactive tools; Artifact tool off.</p>
+        <p><strong>The charts</strong> use one accent plus two greys. Colour-blind separation passes (ΔE ≥ 13) and every mark clears 3:1 on white; the greys fail the categorical colourfulness rule by design, as an emphasis palette.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Where the lanes disagreed, and how it settled</summary>
+      <div class="body">
+        <p><strong>Is thinking kept between messages?</strong> The attribution lane said yes; the levers lane said no. Settled yes: at your #300 message the cache read 187,861 — the whole prior window, turn 1’s thinking included. The “no” came from counting a reply’s visible text instead of its 4,220 billed tokens.</p>
+        <p><strong>The prose ratio.</strong> The memory lane used 1.53–1.63, so its memory figures ran high. Settled at about 1.43: the list is about 19K, a cut to five files saves about 17.7K.</p>
+        <p><strong>Which 150 files the list shows.</strong> “The first 150 by path” is false: only 87 overlap. The memory lane’s “no simple rule” stands.</p>
+        <p><strong>The gauge key.</strong> “It can’t parse a bare key” is false; the parser accepts it. The refusal by the API (one call) was not re-tested.</p>
+        <p><strong>Is the cloud the source?</strong> At 184K: 40% harness the desktop also paid, 28% added by the cloud, 32% our own start routine.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How the levers were ranked</summary>
+      <div class="body">
+        <p>Score = saving × confidence × undo ÷ risk, then judgement. Confidence: 1 measured, 0.5 projected or weakened, 0.25 untested. Undo: 1 easy, 0.3 only from a copy. Risk: 1 low, 2 medium, 3 medium–high, 4 high. Two judgements on top: a Friday-set move ranks first among equals because it is cheap to try and to undo, and a project-scoped memory cut ranks above an account-wide pause because the pause’s cost falls on your client work. The order is an aid, not a measurement.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>A security note, not a lever</summary>
+      <div class="body">
+        <p>The repo’s remote address in <code>.git/config</code> carries a GitHub token. The adversary found no copy of it anywhere in the repo or in today’s transcripts. It is worth replacing with a credential helper or the GitHub app, and a cloud move must never reuse it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Receipts — reports and work files</summary>
+      <div class="body">
+        <p>Brief: <code>notes/_lanes/300/BRIEF-300-boot-diet.md</code></p>
+        <p>The window, attributed: <code>notes/_subreports/2026-09-23-300-A-attribute-the-window.md</code></p>
+        <p>Levers and seats (web research, sources read 2026-09-23): <code>notes/_subreports/2026-09-23-300-B-levers-and-seats.md</code></p>
+        <p>The start routine, its dependencies, the card prototype, the instructions draft: <code>notes/_subreports/2026-09-23-300-C-lean-opener-and-dependencies.md</code></p>
+        <p>The memory store census: <code>notes/_subreports/2026-09-23-300-D-memory-store.md</code></p>
+        <p>The adversary, with the quiz proxy and the look-up test: <code>notes/_subreports/2026-09-23-300-X-adversary.md</code> · <code>notes/_lanes/300/X/drill_proxy.py</code> · <code>notes/_lanes/300/X/lookup_probe.py</code></p>
+        <p>This page’s filed report and render driver: <code>notes/_subreports/2026-09-23-300-P-plan.md</code> · <code>notes/_lanes/300/P/shoot_p.py</code></p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Apollo · session #300 · the boot diet · plan v1 · 23 September 2026 · built from four lane reports and the adversary’s check</div>
+</footer>
+
+<script>
+(function(){
+  var bar=document.getElementById('progress');
+  function onScroll(){
+    var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+    bar.style.transform='scaleX('+(max>0?(h.scrollTop/max):0)+')';
+  }
+  document.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  function fitLabels(){
+    document.querySelectorAll('.seg .t').forEach(function(t){
+      t.style.visibility='visible';
+      var seg=t.parentNode; if(t.offsetWidth>seg.clientWidth-12){t.style.visibility='hidden';}
+    });
+  }
+  window.addEventListener('resize',fitLabels); fitLabels();
+  var tip=document.getElementById('tip');
+  document.querySelectorAll('[data-tip]').forEach(function(el){
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label',el.getAttribute('data-tip'));
+    function show(x,y){tip.textContent=el.getAttribute('data-tip');tip.style.opacity=1;
+      var w=tip.offsetWidth, vw=window.innerWidth; tip.style.left=Math.min(x+12,vw-w-8)+'px'; tip.style.top=(y+14)+'px';}
+    el.addEventListener('mousemove',function(e){show(e.clientX,e.clientY);});
+    el.addEventListener('focus',function(){var r=el.getBoundingClientRect();show(r.left,r.bottom);});
+    el.addEventListener('mouseleave',function(){tip.style.opacity=0;});
+    el.addEventListener('blur',function(){tip.style.opacity=0;});
+  });
+})();
+</script>
+</body>
+</html>

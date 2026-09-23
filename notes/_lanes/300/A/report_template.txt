@@ -1,0 +1,167 @@
+# #300 · Lane A — Attribute the window
+
+provenance: 300 · 2026-09-23 · lane A (Opus 5.5, sub of the cloud conductor) · read-only · status: observed
+work files: `notes/_lanes/300/A/` (scripts `attribute_window.py`, `features.py`, `top25.py`; outputs in `out/`)
+
+## For Dave, in plain words
+
+**The cloud boot is 126,185 tokens before anyone speaks, and three things make it up.**
+
+1. **Tool definitions — about 65K (half the boot).** The cloud seat loads the full instructions for 68 tools. The biggest: 17 in-chat widgets (maps, recipes, quizzes, charts, sport scores) at 16K, the Artifact tool at 12K, scheduled tasks at 7.5K, the Mac link at 6K.
+2. **Anthropic's system prompt — about 31.5K.** A quarter of it (8K) is guidance on how to use Project memory.
+3. **The memory list — 19K.** The names and one-line summaries of 150 files in our Project memory, laid in at the start. Our own Project instructions are under 1K.
+
+**Against the desktop seat (74.7K), the cloud adds about 40K of tool definitions and 19K of memory list, and saves about 8K of prompt.** That is the whole jump from 72K to 126K.
+
+**When the four #300 subs were launched, the window stood at 250,519:**
+- the boot: 126K (50%)
+- the conductor's own thinking and writing, kept in the window: 56K (22%)
+- files and notes read at the opener and since: 49K (20%)
+- the memory list sent a second time: 19K (8%)
+
+**Two surprises.**
+- **The second memory list was identical to the first, byte for byte.** It is re-sent whenever anything in the memory store changes, even when the list itself shows no change. The opener's five memory edits cost 19K on your next message and bought nothing.
+- **The conductor's thinking stays in its own window.** Thinking hard about your 15:58 message cost 22K. Writing this brief at the conductor cost another 15K. The subs' thinking stays in the subs' windows. Only their short stubs come back.
+
+**Next step:** P should rank these levers. The sizes are in section 6.
+
+---
+
+## 1. The boot, itemised — 126,185 real
+
+**Measured:** message 1 (`msg_…VxxaQUZG`, transcript row 26, 14:46:53 UTC): `input 2 + cache_creation 30,004 + cache_read 96,179 = 126,185`. The cache boundary splits the boot for free:
+- **the prefix (tool definitions + system prompt) = 96,179 real, measured.** Evidence that the boundary sits exactly there: CLI bundle `/opt/node22/bin/claude` @198582500 puts the system prompt in `cacheScope:"org"` blocks with nothing dynamic before them, and the #300 system prompt carries no dynamic-boundary marker. Cached from an earlier same-day request with the same prefix (inference: #299, same date and project; the prompt holds the date and the project id).
+- **the first user turn (every attachment + your "Good Morning!") = 30,006 real, measured.**
+
+### 1a. How tape becomes real (rule 6)
+
+Two ratios, both derived from this transcript's own usage fields:
+
+| ratio | value | derivation |
+|---|--:|---|
+| `rt` — tool definitions (tape of `<function>{json}</function>`, `ensure_ascii=False`) | **{rt}** | two-seat solve. Conductor prefix 96,179 = 65,765·rt + 21,698·rs. Sub-seat prefix 57,572 (the cache_read shared by subs B, C and D; A wrote it) = 57,722·rt + 571·rs. The subs load 60 of the same tool definitions byte-for-byte, drop 8 and add `SubagentHandback`. |
+| `rs` — prose, markdown, tool results | **{rs}** | same solve. **Cross-checked independently.** (i) The memory re-send, where the content is byte-identical, gives **{resend_ratio}**. (ii) Every step of the session trace (section 2) reconciles as *retained output + user-side tape × rs* with residuals of −297 to +770 real per step. (iii) The desktop #294 boot's cache_creation side reconciles within ~33 real at the same ratio (section 4, inference). |
+
+⚠ A constant tool-use preamble P that the snapshot does not show is absorbed into the ratios. With P = 500 the solve gives rs 1.457 and rt 0.974, so the split moves by under 600 real. Why tools come out near 1.0 but prose near 1.45 is **inference**. The likely reason is a more compact server-side rendering of JSON schemas. The ratios are empirical and the split does not depend on that explanation.
+
+### 1b. The boot by group
+
+{group_table}
+
+**Residual: measured 126,185 − estimated {boot_est} = {boot_res} real ({boot_res_pct}).** All of it sits in the first user turn (estimated {turn_est} against 30,006 measured). The prefix reconciles by construction because its ratios are solved from it. Inference: the residual comes from attachment wrapper strings I rebuilt from the CLI bundle but could not reproduce to the byte.
+
+### 1c. The system prompt by top-level section (3 strings + `cliPrefix`, from `prompt_snapshot` row 35)
+
+{system_table}
+
+Second level, real (est): **claude_behavior** covers refusal handling 3,281 · product information 1,665 · tone and formatting 1,303 · user wellbeing 1,183 · evenhandedness 461 · cyber 301 · knowledge cutoff 283 · reminders 257 · mistakes 198 · legal 90. **agentic_behavior** covers the_work 3,785 · workspace_and_tools 4,978 · how_a_task_runs 1,662 · situation 520 · send_user_message_tool 238. Inside workspace_and_tools: device_bridge 1,072 · browsers 834 · artifacts 683 · skills 612 · where_files_live 356 · workspace 327 · desktop_computer_use 230 · delivering_files 214 · scheduled_tasks 199 · web_content 154 · connectors 135 · questions_and_task_list 113. **<user_memory>** covers two privacy_requirements blocks (895 + 1,384 tape), memory_application 1,227 tape, Writing 1,454 tape and Reading 295 tape.
+
+### 1d. Every loaded tool, by family (68 loaded; 114 more are deferred and cost only their names)
+
+{tools_table}
+
+**Deferred (names only, 1,217 tape ≈ 1,768 real):** 43 computer-use, 22 Claude in Chrome, 17 built-in browser, 28 core/other (Artifact comments/data, Cron×3, plan mode, worktrees, plugins, skills search, MCP resources, notebook, push, monitor, task get/list/stop, SendMessage, connectors), 2 visualize, 1 memory (`memory_delete`), 1 remote-devices. **No Claude Docs tool is present, loaded or deferred.** The boot went 127,661 (#298) → 126,178 (#299) → 126,185 (#300). Inference: part of that −1.5K is the Docs connector's absence.
+
+### 1e. The first user turn (attachments, rendered as the model sees them)
+
+{firstturn_table}
+
+⚠ **The brief's attachment figures were tapes of the JSON, not of what the model sees.** Rendered, the memory snapshot is 13,296 tape, not 14,680 (the JSON escapes add ~1.4K). The skill listing is 2,857, not 3,112. The deferred list is 1,217, not 2,601: the JSON carries every name twice, in `addedNames` and in `addedLines`.
+
+**Inside the memory snapshot (13,296 tape, row 18):** profile 123 · preferences 198 · **listing 12,822** (150 file lines at ~84 tape each, plus "… and more (showing 150 — memory_list for the rest)"). **The 48-character project path prefix repeats on all 150 lines: 28 tape × 150 = 4,200 tape (~6.1K real), 32% of the listing.** Lane D owns the store; this is the attribution only.
+
+---
+
+## 2. The opener and the session, message by message
+
+Fill is REAL: `input + cache_creation + cache_read` per distinct `message.id`. Each delta splits into the prior message's `output_tokens` (measured, and fully retained, thinking included) plus the user-side items sent since (tape × rs). The residual is what is left over.
+
+{trace_table}
+
+**The three bands at message 17 (250,519 real):**
+- **BOOT** 126,185 (50.4%).
+- **OPENER, msgs 2–13: +61,678 (24.6%).** Retained outputs 14,317 + reads and results ~45,323 (31,190 tape) + residual 2,036. Largest reads: `_CHAIN.md` ~10.8K · `MEMORY-ARCHIVE-3.md` + presentation area ~9.8K · `_HANDOFF-150` ~7.4K · `index.md` ~3.1K · #299 hook ~2.5K · dave-voice skill body ~2.2K · memory_list page ~2.2K · git log + rulings ~1.9K · repo listing ~1.9K · "the ask" grep ~1.5K. The hook-placement turn's own output (the memory_write, append and edit calls, plus thinking) is 6,529. `_checkin.py` returned `NO TRANSCRIPT FOUND` (row 60), so it cost almost nothing and measured nothing.
+- **RUNNING, msgs 14–17: +62,656 (25.0%).** Retained outputs 41,994, of which your "think hard" answer's reasoning is 21,985 and the in-seat brief write is 14,785. Memory re-send ~19,038. Your message plus tool results ~1.8K. Residual −178.
+- **Across the window, the conductor's own retained outputs total 56,311 real (22.5%).** That is more than every file the opener read put together.
+
+**The re-send, pinned down:**
+1. **Byte-identical.** Row 18 (14:46:47) and row 130 (14:58:11) have the same content, sha256 `8388cdd7538824d9…`. The `version` changes: `e53a76267c2f` → `e87e7f1c401e`.
+2. **Why nothing visible changed.** The listing is alphabetical and shows the first 150 files. `index.md`, `MEMORY-ARCHIVE-3.md` and `areas/presentation-friday-25th-288.md` were edited and are in view, but a line shows path, source and description, not size or date. So body edits leave the line unchanged. The new `wrap-299-…md` sorts after the 150th line (`wrap-281-…`) and lands out of view.
+3. **The trigger is the version, not the content.** The CLI bundle's `pG()` (@200301575) re-attaches when `r?.version !== n.version`. It never compares content.
+4. **It fires only at a user turn.** The writes landed at msgs 7–10 (14:48:04–14:48:38). No snapshot arrived during msgs 8–13 of the same turn. It arrived with your next message (row 130). The code agrees: the per-turn fetch runs for the main thread only (`g8r`, `Js(r)!=="main"` returns early). That is also why the subs never receive a snapshot.
+
+**Thinking is retained in full.** Msg 15's delta is +22,715 against msg 14's 21,985 output tokens plus a 464-tape result. Msg 17's delta is +14,917 against msg 16's 14,785. Msg 14's delta fits the same model across the user-turn boundary: 4,220 retained plus the snapshot at 1.431. A model that drops the thinking would need an implausible ratio of 1.68.
+
+---
+
+## 3. Top 25 by cost, and what brings each in
+
+Real figures are measured for outputs and estimated (tape × ratio) for everything else. The **brought in by** column is **inference from names and placement**. Whether a switch exists is lane B's to establish.
+
+{top_table}
+
+**The same boot grouped by the feature that brings it in** (real est; the mapping is INFERENCE):
+
+{feature_table}
+
+Left over, fixed as far as the names show: claude_behavior 9,052 · agentic_behavior minus its feature subsections ~7,570 · core tools 9,541 (Agent, AskUserQuestion, Bash, Edit, Glob, Grep, ListAgents, Read, ReadNotifications, RefreshMcpTools, SendUserFile, SendUserMessage, ToolSearch, WebFetch, WebSearch, Write) · agent roster 863 · environment, model, date and attribution lines ~800.
+
+---
+
+## 4. The two seats lined up — desktop #294 against cloud #300
+
+The desktop figures come from the repo. `knowledge/_gauge_tokens.py:179–180` has boot 74,656 = input 2 + cache_creation 38,612 + cache_read 36,042. `:205` has systemPrompt 4 strings 26,984 tape = 7,901 · 8 · 13,662 · 5,413, `<env>` 10,095 of it. `:206` has opener attachments 6,719 tape (skills 2,717 · MCP blocks 2,400 · deferred names 986 · agents 552 · rest 64). `:209` has residual ≈40,953 by mixed-unit subtraction. #295 read 72,768 (`:337`, `:351`, the ruled ceiling).
+
+**★ The desktop's 8-tape string is `__SYSTEM_PROMPT_DYNAMIC_BOUNDARY__`.** It is exactly 8 cl100k tokens, and the CLI bundle defines `$L="__SYSTEM_PROMPT_DYNAMIC_BOUNDARY__"` (@191053600). Blocks before it are cached `global`, blocks after it `org` (@198582500). **This splits the desktop boot (inference):**
+- **cache_read 36,042** = tools + the 7,901-tape static block (×1.453 = 11,480) ⇒ **desktop tool definitions ≈ 24,530 real**. The cliPrefix and header take ~30.
+- **Check:** cache_creation 38,614 = dynamic prompt 19,075 tape (×1.453 = 27,716) + attachments 6,719 tape (9,763) + ~1,135 for the first message and small lines. That fits, and the leftover is the right size.
+
+| component (real) | desktop #294 | cloud #300 | the cloud adds |
+|---|--:|--:|--:|
+| tool definitions | ~24,530 (inference, cache boundary) | ~64,648 (est) | **≈ +40,100** |
+| system prompt | ~39,208 (26,984 tape × 1.453) | ~31,531 (est) | **≈ −7,700** |
+| memory snapshot | 0 recorded at boot (`2026-09-21-294-G…md:238–241`) | 19,038 (measured by difference) | **≈ +19,000** |
+| other first-turn items | ~10,900 | ~10,968 (30,006 − 19,038) | ≈ 0 |
+| **boot, measured** | **74,656** | **126,185** | **+51,529** |
+
+Cloud-only families by name (inference: none appears in the desktop seat's list in `notes/_lanes/293/NOTE-boot-has-three-bands.md`) add ~34.7K real: widgets 16,269 · the Mac link 6,305 · triggers 5,452 · the rest (skills, onboarding and review UI) 2,616 · claude.ai chat tools 2,186 · Projects 1,836. The other ~5K of the +40K would be a larger core set (inference).
+
+⚠ **Caveats.** The desktop reading is n=1 and may have run a different model and tokenizer. On the desktop "laptop" leg the CLI filters memory snapshots out of some transcript paths (`I4e`, @205188476), so "0 recorded" may not prove "0 sent". The 74,656 total, though, leaves no room for a 19K snapshot beside ~24.5K of tools. **UNPROVEN either way.**
+
+---
+
+## 5. What this corrects or sharpens in the brief
+
+1. **"Cloud is the source."** HOLDS for the boot: +51.5K, being +40K of tools and +19K of memory snapshot, less 7.7K of prompt. It does NOT hold for the running band. The biggest single item in the window is the conductor's own retained thinking, which the seat does not cause.
+2. **"Store writes trigger the re-send."** HOLDS, more sharply. The version triggers it, not the content. It fires at the next user turn even when the rendered list is identical. Any writer counts, sub or other chat (inference from the code: the version is the store's).
+3. **"prompt_snapshot equals what is billed."** HOLDS to within 0.5% at boot and ±770 real per step, under ratios derived from the transcript itself. The snapshot is written after the first call (row 35). Row 22 has no `tools`. Message 2 read message 1's whole prompt from cache (cache_read 126,183), so the tools and prompt were byte-identical across the two calls.
+4. **The brief's attachment tapes** were JSON tapes (section 1e). Use the rendered figures.
+5. **The conductor is at 250,519 real at message 17**, not ~212K. Inference: when the four stubs land, its next turn reads ~253K (250,519 + 1,714 retained + four stubs).
+
+## 6. What the sizes suggest (INFERENCE, handed to B, C, D, X and P; nothing enacted)
+
+| lever | size, real | status |
+|---|--:|---|
+| No memory writes in a chat that continues (hook at the wrap seat, last act) | **−19,038 per re-send** | size measured; the mechanism is from code, see section 2 |
+| Keep heavy thinking and long writes off the conductor (subs think; a sub writes the brief) | **up to −36,770** (msgs 14 + 16 outputs) | measured sizes; the saving is inference |
+| Opener reads on demand (chain, handoff, archive shard, index, hook, list, voice) | **up to ~38,000** | measured reads; lane C |
+| Project memory for Apollo (snapshot, guidance, tools, note) | **up to 31,498 at boot** | lane B: is there a per-project switch, and what does it remove? |
+| Loaded families: widgets 16,269 · Artifacts 12,708 · scheduled tasks 7,486 · skills 7,312 · chat tools 2,186 | up to ~46,000 | lane B: which are switchable |
+| Seat: desktop boot 74,656 against cloud 126,185 | **−51,529** | lane B: is the desktop seat still offered |
+| Harness asks, via feedback, not ours: defer widgets the way Chrome is deferred (~15 real per deferred name against 957 per loaded widget); re-send memory only when the rendered content changes | 16K; 19K per re-send | UNPROVEN whether Anthropic would act |
+
+## 7. Receipts and replay
+
+- **Transcript:** `/root/.claude/projects/-home-claude/d75f51cc-494a-56b1-9272-190e7fc46cbb.jsonl` (cloud container). Rows cited are 0-based line numbers: 18 and 130 (memory snapshots), 22 and 35 (`prompt_snapshot`), 26 (message 1).
+- **Sub transcripts:** `…/d75f51cc-…/subagents/agent-*.jsonl`. The first-message cache_read is 57,572 for B, C and D. A has 0 (it wrote the cache).
+- **CLI bundle:** `/opt/node22/bin/claude`, byte offsets as cited (read with python `mmap`).
+- **Repo:** `knowledge/_gauge_tokens.py:179–209, 337, 351` · `notes/_subreports/2026-09-21-294-G-enact-d4-d5-d6-d7.md:230–265` · `notes/_lanes/298/DAVE-WORDS-AND-BOOT-FINDING-2026-09-23.md` · `notes/_GAUGE-LOG.md:4105, 4131` (the #297 and #298 boots; #298's read 65,194 ≈ tools est 64,648 + cliPrefix, within 0.8%, inference) · memory `areas/boot-three-bands-293.md` (read-only).
+
+**REPLAY-THESE** (in the cloud container, after `pip install tiktoken --break-system-packages`; copy the scripts from `notes/_lanes/300/A/` via `device_bash cat`):
+1. `python3 attribute_window.py /root/.claude/projects/-home-claude/d75f51cc-494a-56b1-9272-190e7fc46cbb.jsonl --csv out` prints the boot split, the ratios, the reconciliation and the trace.
+2. `python3 features.py <same path>` prints the feature groups, and `python3 top25.py` the ranked items. Both need `out/attribution.json` from step 1.
+3. The re-send identity check: `python3 -c "import json;R=[json.loads(l) for l in open('<path>')];print(R[18]['attachment']['content']==R[130]['attachment']['content'])"` prints `True`.
+
+## 8. Spend
+
+Hand-summed from `…/subagents/agent-a3b362defba4eb634.jsonl` (this lane) at filing, message 59: first fill 66,307, last fill 267,134 real (input side). Cumulative input side is 9,421,377, almost all of it cache reads. `output_tokens` recorded sum to 3,676; this sub's usage lines appear to leave out thinking, so treat that figure as a floor. A few messages follow the filing.

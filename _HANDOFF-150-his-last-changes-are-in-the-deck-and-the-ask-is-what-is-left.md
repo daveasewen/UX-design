@@ -127,3 +127,12 @@ Rail: **Problem** 03 · **Research** 04[05] · **Evaluation** 06 · **Evolution*
    **IDENTICAL to #298's wrap read (`35854057936`).** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/299/W/_ci-gates-W.log`.
 6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **6,790 tape (slice 5,938 + 852 wrapper), ratio 20%**. After this addendum's ⏱ delta line: **7,428 (slice 6,576 + 852), ratio 22%** of a `GOOD-MORNING.md` of 33,535 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
 7. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.
+
+---
+
+## ⬛ STRUCK AT THE #300 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN (`s183-D1` / `s188-D2`)
+
+*One HEADLINE of § OWED TO #300 is struck here, with its receipt. Every other item — and every other headline of item 8 — stands and is carried in `_CARRIES.md` § `residual → #301`, with the next steps in `_HANDOFF-151-the-boot-was-measured-and-the-reading-stays.md`.*
+
+- ⛔ **8, FIRST HEADLINE ONLY — STRUCK: his "careful plan" for where the memory hook is placed and what it costs at the opener.** The plan was made and measured on his 15:58 BST words (*"… come up with a careful plan for this … hatch a plan, then lets do some quick wins before Friday"*, verbatim in `notes/_lanes/300/WRAP-BRIEF.md`): the opener cost 81,049 real (lane C, `notes/_subreports/2026-09-23-300-C-lean-opener-and-dependencies.md`), graded by lane X (`notes/_subreports/2026-09-23-300-X-adversary.md`) and set out on lane P's page (`notes/_PLAN-300-boot-diet-2026-09-23-v1.html`). **He enacted its first move himself** before "wrap": the pasted Project instructions place the note only after he says he is done (`notes/_lanes/300/PROJECT-INSTRUCTIONS-v2-LIVE.txt`, md5 `9d7837a3a5558553d404463adf8e72bc`). His act, not a ruling; `_rulings.json` 638. What the new opener costs is NOT yet measured — `_HANDOFF-151` owed item 2.
+- ⛔ **NOT STRUCK, STILL OPEN:** item 8's other two headlines — **the chain made more efficient** and **his 256K question** — and items 1–7 and 9.

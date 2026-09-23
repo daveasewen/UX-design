@@ -1,5 +1,21 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-23 #300
+
+> **COMMIT STATE #299:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-299-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. The session's six lane commits — **`2f0a385d` · `0e23408e`** (lane C) · **`d5583dee` · `e3f0de60` · `a7b2c9f2`** (lane D) · **`119f3615`** (lane E) — go out with this wrap's push. Handoff `_HANDOFF-150-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **~243,000 real when the conductor called the wrap — a DECLARED hand sum, 248,704 re-read at this seat at the launch; no band claimed.**
+
+> ## ★ PRIOR — 2026-09-23 (Wed **#298**, Opus 5.5 conductor in the CLOUD, **2 Opus lanes**, DELEGATED wrap on Opus 5.5 — ★★ **THE RUNNING ORDER IS SETTLED, AND THE WORK IS TO ENACT WHAT HE DECIDED**)
+>
+> - ★★★ ① **HIS WORDS, 11:58 — *"the running order is fine, we just need to enact the changes I've decided"*** · *"we need to do all the copy changes and style changes for the diagrams"*. Evolution after Evaluation already landed (`999cba4a`). Which changes are decided-but-not-enacted is NOT reconciled — #299's first job. **NOTHING INSCRIBED — `_rulings.json` STAYS 638.**
+> - ★★ ② **HE ANSWERED #297's OPEN FIVE (11:38):** 12's lines *"this is fine"* · 07's count *"do it"* (`81541832`) · 07/08 headlines after structure · demo brief *"we'll do that last"* · the brain *"B"* → **B** `f54562e2`, yaw −35 → −27. ⛔ **THREE CARRIES STRUCK WITH RECEIPTS.** The ask (15) is still a DRAFT.
+> - ⚙ ③ **CLAUDE DOCS IS A FEATURE, NOT A CONNECTOR** (**A**, `notes/_subreports/2026-09-23-298-A-claude-docs-connector-removal.md`) — off switch Settings > Capabilities; the remove error is open issue #509. He blocked its eight tools.
+> - ⚙ ④ **THE 72K → 128K BOOT STEP IS THE CLOUD SEAT, NOT THE WRAP** (conductor's reading: 127,609 · 127,600 · 127,661 cloud vs 72,768 desktop). FILL a HAND SUM, ~243,000 at the brief, re-read to the token. The gate's `s294-D12` refusal cleared by deleting `_to_delete/.DS_Store` on a granted request. **`_HANDOFF-149-the-running-order-is-settled-and-the-work-is-to-enact-what-he-decided.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #299:** ⬛ **ENACT HIS DECIDED COPY AND DIAGRAM CHANGES FOR FRIDAY** [NEW — 0, DAVE'S] — reconcile first, show him the list, then lanes. `s225-D2`. **678 items, 9 new, 3 STRUCK**, `_CARRIES.md` § `residual → #299` `carries:residual-299`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#299:**' in l][0])))"` = 678. ⚠ **9 new INVISIBLE to it**; 666→678.
+> **residual (GENERATED #298):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #297) — _roll_state.py · 2026-09-23
+
+
+*Rolled at the #300 wrap (2c). The #298 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #299` onward, now § `residual → #301`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-23 #299
 
 > **COMMIT STATE #298:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-298-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. The session's one lane commit, **`f54562e2`** (lane B, the brain to reading B), goes out with this wrap's push. Handoff `_HANDOFF-149-the-running-order-is-settled-and-the-work-is-to-enact-what-he-decided.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **~243,000 real at the brief — a DECLARED hand sum, 247,464 re-read at this seat; no band claimed.**

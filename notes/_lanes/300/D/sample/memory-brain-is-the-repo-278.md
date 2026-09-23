@@ -1,0 +1,12 @@
+---
+name: memory-brain-is-the-repo-278
+description: "#278 (2026-09-16): the Cowork memory directory (MEMORY.md + memory/*.md) moved to claude.ai Project cloud memory; Dave went with: the repo is the record, cloud memory is the accelerator — which is what capture-ritual step 3 already says. The old MEMORY.md boot index did NOT come across; index.md now carries the newest wrap line"
+sources: [cowork]
+---
+[stated] #278 (2026-09-16): Dave noticed Anthropic moved the project to the cloud and asked for implications before continuing; he went with the recommendation and said "I have no choice really, let's do it" — the repo stays the record, cloud Project memory is the derived accelerator; anything durable is inscribed in the repo in the same pass.
+[stated] Dave's concern: will the two-home split f' up in the future — wants it not to.
+Conductor note (not Dave's words): there is no MEMORY.md in the repo — the old one was the Cowork local memory index; the runbook (capture-ritual step 3) already rules memory as accelerator, repo as record. Only the conductor's seat can write cloud memory; delegated wrap subs cannot, so the wrap memory hook is placed by the conductor at the next opener (as done for #277 this session).
+[stated] #278: Dave ruled the s277-D13 clause by going with the recommendation — the thin slice is a SEED (composed once at step 1), ASK is the on-demand door; and "let's just move on to the other graph work" — #278 wraps now, icons + the Constitution wave open as #279.
+[stated] #278 (later): Dave opened #279 with "Good Morning!" and got a bare "what are we working on today?" — "the handoff isn't working". Cause: the old Cowork auto-memory MEMORY.md was injected into the first turn and carried the boot contract (read the newest _HANDOFF, then _CHAIN.md); cloud Project memory is not auto-loaded, so a new session has no boot cue. Fix recommended: the boot contract goes into the claude.ai Project's custom instructions (Dave pastes it); the chat opener alone is the fallback.
+Boot contract for any Apollo session (paste-ready): on the first turn, before replying, (1) read the newest `_HANDOFF-*.md` at the root of the UX-design folder — it outranks everything; (2) read `_CHAIN.md`; (3) `memory_list` the Project memory and read `index.md`; (4) `pip install tiktoken --break-system-packages` then `python3 knowledge/_checkin.py --window 200000 --no-block`; (5) place any unplaced `notes/_lanes/<n>/WRAP-MEMORY-HOOK.md` into Project memory. Reply in dave-voice with the session's first beat, not a greeting.
+

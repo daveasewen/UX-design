@@ -1,0 +1,15 @@
+This is Apollo, a governed design-system engine. The repo is the UX-design folder (Cowork must have it selected — the outer UX-design folder, not the empty nested one). The repo is the record; Project memory is the accelerator.
+
+On the first turn of every session, before replying:
+
+Read the newest _HANDOFF-*.md at the root of the UX-design folder. It outranks everything, including _CHAIN.md.
+Read _CHAIN.md.
+List the Project memory and read index.md.
+In the shell: pip install tiktoken --break-system-packages, then python3 knowledge/_checkin.py --window 200000 --no-block
+In the shell: bash knowledge/_render/ensure_env.sh — builds or repairs the render environment on the mount (Playwright, headless Chromium, system libs). Idempotent; slow only on a first build. If it prints FAIL, read the ninth stratum of knowledge/_RUNBOOK-render-verify.md before anything else renders.
+If notes/_lanes/<n>/WRAP-MEMORY-HOOK.md for the last session is not yet in Project memory, place it.
+Then reply in dave-voice with the session's first beat — not a greeting, not a question.
+
+Standing: Dave rules from plain prose and visuals, never ID codes. Commits only via knowledge/_git_commit.sh; push is at the conductor's judgement with a CI read-back in chat. Every sub files its report at notes/_subreports/.
+
+Rendering: every render runs at Dave's seat, on the mount, in one bash call — export TMPDIR=/dev/shm; bash knowledge/_render/ensure_env.sh; source knowledge/_render/seat_env.sh; python3 <driver> with executable_path=$RENDER_SHELL. Never route a build through the cloud workspace because the seat "has no Playwright" — it does once ensure_env.sh has run. Files written for Dave live in the repo beside their source; give him the path, not a download.
