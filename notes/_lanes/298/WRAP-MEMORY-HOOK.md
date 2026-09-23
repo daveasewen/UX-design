@@ -57,4 +57,4 @@ provenance: 298 · 2026-09-23 · status: observed · repo record: `_HANDOFF-149-
 
 ## THE `s271-D4` RE-READ
 
-*Filled in at the ritual's final beat, after 5 and 5b.*
+Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json`. **Result: 638 records, newest `s295-D4`; #298 inscribed nothing, so NO item above is closed by a #298 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck` was asked with this file's path and read 0 open items (its parser does not match this file's heading form, as at #297) — recorded in `notes/_subreports/2026-09-23-298-W-wrap.md` § POST-WRAP.
