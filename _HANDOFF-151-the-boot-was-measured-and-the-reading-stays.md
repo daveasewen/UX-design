@@ -144,3 +144,24 @@ On `_HANDOFF-150` § OWED (addendum at its foot) and in `_CARRIES.md` § `residu
 *Filed report: `notes/_subreports/2026-09-23-300-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-23-300-the-boot-was-measured-and-the-reading-stays.md`. Memory hook: `notes/_lanes/300/WRAP-MEMORY-HOOK.md`. His words and the facts: `notes/_lanes/300/WRAP-BRIEF.md`.*
 
 *Title the next chat:* `Apollo - #301: the ask on slide 15, then polish for friday`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no ★ LATEST banner addendum is owed. The `s271-D4` re-read of the memory hook's open list strikes nothing: `_rulings.json` reads **638, newest `s295-D4`** (`json.load`).
+
+1. ⛔★★ **THE WRAP COMMIT IS `72c6ca9c` AND IT WENT ON THE DECLARED NOT-A-WRAP PATH, NOT `--wrap`.** The wrap gate, run inside the committer: **`capture gate [wrap]: 238 in scope · 1 fail · 66 warn`** → **`⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)`**. The one fail is the boot ceiling, now with three cloud readings (*"#297 127,600 · #298 127,661 · #299 126,178"*) — owed item 7, his call. 138 files changed, 21,935 insertions, 1,001 deletions; `✓ done — locks clear`, exit 0 (transcript `notes/_lanes/300/W/_gitcommit-W1.log`). ⚠ A first run refused at the chain check — the store rows were minted after the chain was generated, and the chain's wrapper carries the store's counts; regenerated, re-run. Nothing was committed by the refused run.
+2. ⚠ **The gate stranded `.git/index.lock` at open AND before the commit** — moved as `index.lock.300-W-1` and `index.lock.300-W-2`; `git reset -q` then stranded `HEAD.lock` and `master.lock`, moved as `*.300-W-3`. The committer's own run left no lock.
+3. **THE ★ LATEST BANNER, by the gate's own arm (`_gm_usage.py`): LATEST 617 tape** against `s241-D2`'s **1,200 / 10**.
+4. ⬛ **THE PUSH: `6afe3f8b..72c6ca9c`** by **plain `git push origin master`, DECLARED** — the sanctioned `--push` arm runs `git status`. Branch `master` and fast-forward checked first (remote `6afe3f8b`, an ancestor). **`git ls-remote origin refs/heads/master` = `72c6ca9cdaffddaa0f7dd3964673cd4bb9ecbe3e` = local HEAD.** Transcript `notes/_lanes/300/W/_push-W1-plain.log`.
+5. ⬛★ **CI, READ BACK FOR THE WRAP SHA — run `35895619087`, POLLED TO COMPLETION, verdict taken AFTER `render` closed:** `release` ✅ 17:27:17 UTC · `gates` ⛔ FAILURE 17:33:36, **steps 5 and 6** · `render` ✅ **17:40:50 — 7m14s after `gates`**.
+
+   ```
+   SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 77 not asked (mutating)
+   ```
+
+   **IDENTICAL to #299's wrap read (`35873846048`).** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. **No fail beyond the inherited six.** ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/300/W/_ci-gates-W.log`.
+6. ⬛★ **MEMORY — PLACED BY THIS SEAT, LAST, AFTER THE COMMIT AND THE PUSH, under the instructions he pasted before "wrap".** Receipts from the store's own write results: `wrap-300-the-boot-was-measured-and-the-reading-stays.md` **3,972 B** (= the frontmatter's 576 + the hook body's 3,396, byte for byte) · the #297 line appended to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-23 #300 (wrap)* (+745 B, now **21,467 B**), **then removed from `index.md` with the same string — the match held (694 B)**, which proves the archived copy verbatim · the #300 line put at the top (819 B, the hook's line length plus its newline) · the description now says `MEMORY-ARCHIVE-3` holds #292–#297 · a cut note added · **`index.md` 6,825 B at 17:28:41 UTC, lines #300 · #299 · #298.** The #299 hook's opener placement was re-read from the store first and matches every declared figure (receipt at the foot of `notes/_lanes/299/WRAP-MEMORY-HOOK.md`). ⚠ **#301's opener must NOT read or write the store** (his instructions); ⚠ the #300 chat's next turn — the conductor reading this seat's stub — should carry the memory list once more (~19K), because the store changed (INFERENCE from lane X's finding that the client re-checks the store version on every main-thread turn).
+7. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **6,822 tape (slice 5,970 + 852 wrapper), ratio 21%**. After this addendum's ⏱ delta line: **7,570 (slice 6,718 + 852), ratio 23%** of a `GOOD-MORNING.md` of 33,427 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
+8. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.

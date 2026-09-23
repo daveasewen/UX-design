@@ -1,0 +1,25 @@
+# #300 wrap seat - step 5b, part 1: the LS 5b line (replaces only its placeholder), the chain re-read.
+import json, os, subprocess, sys
+sys.path.insert(0, 'notes/_lanes/300/W/_work')
+from names_300 import *
+CI = ("**CI run `35895619087`, verdict taken AFTER `render` closed** (17:40:50 UTC, 7m14s after `gates`): "
+      "**`release` ✅ 17:27:17 · `gates` ⛔ FAILURE 17:33:36 at steps 5 and 6 · `render` ✅ 17:40:50**. "
+      "`SURVEY: 59 pass · 6 FAIL · 4 COULD-NOT-ASK · 0 unaskable · 77 not asked` — **IDENTICAL to #299's wrap read (`35873846048`)**, the same six BY NAME "
+      "(`[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest), "
+      "`[120]` read chain determinism ✅, step 6's `help-gate: 264 script(s) scanned, 12 failure(s)` as before. ⛔ Nothing CI reported was repaired.")
+LS5B = ("> ⛔★ **5b — BY ADDITION, NOTHING ABOVE REWRITTEN (this line replaces only its own placeholder). THE WRAP COMMIT IS `72c6ca9c` AND IT WENT ON THE DECLARED NOT-A-WRAP PATH, NOT `--wrap`** — the wrap gate, run inside the committer: "
+        "**`capture gate [wrap]: 238 in scope · 1 fail · 66 warn`** then **`⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)`**. The one fail is the boot ceiling, now *\"3 post-diet reading(s) EXCEED it — #297 127,600 · #298 127,661 · #299 126,178\"* against `BOOT_CEILING_TK` 72,768. "
+        "138 files changed, 21,935 insertions, 1,001 deletions; `✓ done — locks clear`, exit 0 (a first run refused on a stale `_CHAIN.md` — the store rows minted after the chain moved its counts — and staged nothing). "
+        "**PUSHED: `6afe3f8b..72c6ca9c`** by plain `git push origin master`, DECLARED — the sanctioned `--push` arm runs `git status`; branch `master` and fast-forward checked first. "
+        "`git ls-remote origin refs/heads/master` = **`72c6ca9cdaffddaa0f7dd3964673cd4bb9ecbe3e`** = local HEAD. " + CI + " "
+        "**MEMORY PLACED BY THIS SEAT AFTER HIS \"wrap\"** (his pasted instructions): `wrap-300-the-boot-was-measured-and-the-reading-stays.md` 3,972 B · the #297 line appended VERBATIM to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-23 #300 (wrap)* (now 21,467 B), then removed from `index.md` with the same string — the match held · `index.md` 6,825 B, **#300 · #299 · #298**, its description fixed. "
+        "**No ruling landed after the gate** ⇒ no banner addendum; the `s271-D4` re-read strikes nothing (`_rulings.json` 638, `s295-D4` newest, `json.load`). Full readings: `" + HO + "` § POST-WRAP ADDENDUM.")
+ls = open('_LIVE-STATE.md', encoding='utf-8').read().split('\n')
+ph = [l for l in ls if l.startswith('> ⛔★ **5b — PLACEHOLDER-300W')]
+assert len(ph) == 1
+ops = [{"op": "replace", "file": "_LIVE-STATE.md", "find": ph, "replace": [LS5B]}]
+p = 'notes/_lanes/300/W/_ops-300W-5b.json'; json.dump(ops, open(p, 'w', encoding='utf-8'), ensure_ascii=False); assert os.path.getsize(p) > 1000
+print(subprocess.run(['python3', 'knowledge/_gm_move.py', '--ops', p], capture_output=True, text=True).stdout.strip()[:120])
+out = subprocess.run(['python3', 'knowledge/_gen_chain.py'], capture_output=True, text=True).stdout.strip().split('\n')[-1]
+print(out[:260])
+open('notes/_lanes/300/W/_work/chain_after_5b.txt', 'w').write(out)

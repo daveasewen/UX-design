@@ -59,3 +59,9 @@ provenance: 299 · 2026-09-23 · status: observed · repo record: `_HANDOFF-150-
 ## THE `s271-D4` RE-READ
 
 Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json`. **Result: 638 records, newest `s295-D4`; #299 inscribed nothing, so NO item above is closed by a #299 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck`, asked with this file's path, read 0 open items (its parser does not match this file's heading form, as at #297 and #298) — recorded in `notes/_subreports/2026-09-23-299-W-wrap.md` § POST-WRAP.
+
+---
+
+## RECEIPT — PLACED AT #300's OPENER (appended by addition at the #300 wrap)
+
+The #300 opener placed this hook **from the conductor's own seat** (not a sub), under the Project instructions of that morning. **Read from the Project store by the #300 wrap seat after Dave's "wrap", before its own placement:** `wrap-299-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md` **3,361 B**, 2026-09-23 14:48:06 UTC · `index.md` **6,091 B**, 14:48:39 UTC, lines **#299 · #298 · #297** · `MEMORY-ARCHIVE-3.md` **20,721 B**, 14:48:12 UTC, the #296 line VERBATIM under § *Batch 2026-09-23 #300 (opener)* · `areas/presentation-friday-25th-288.md` **4,144 B**, 14:48:17 UTC. Each figure matches the conductor's declaration. ⚠ **It cost the #300 chat a re-send:** his next message carried the whole memory list again (+23,591 on a one-paragraph message) — the measurement that led to his new instructions.

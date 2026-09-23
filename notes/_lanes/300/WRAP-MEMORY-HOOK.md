@@ -59,3 +59,11 @@ provenance: 300 · 2026-09-23 · status: observed · repo record: `_HANDOFF-151-
 ## THE `s271-D4` RE-READ
 
 *Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json` — its result is appended below by addition.*
+
+**Result: 638 records, newest `s295-D4`; #300 inscribed nothing, so NO item above is closed by a #300 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck`, asked with this file's path, read 0 open items and 0 same-day rulings (its parser does not match this file's heading form, as at #297–#299) — recorded in `notes/_subreports/2026-09-23-300-W-wrap.md` § POST-WRAP.
+
+---
+
+## RECEIPT — PLACED BY THE #300 WRAP SEAT, AFTER HIS "wrap" (appended by addition)
+
+Placed LAST, after the wrap commit `72c6ca9c` and its push, under the Project instructions he pasted before "wrap". **From the store's own write results, 2026-09-23 ~17:28 UTC:** `wrap-300-the-boot-was-measured-and-the-reading-stays.md` **3,972 B** — the frontmatter (576 B) plus the body above (3,396 B, md5 `a09f0a68216cd533b59d1f3d34b6383b` in the repo), byte for byte · the #297 line appended to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-23 #300 (wrap)* (+745 B → **21,467 B**), **then removed from `index.md` with the same string: the match held (694 B)** · the index line above put at the top (819 B = its length plus the newline) · the description now says `MEMORY-ARCHIVE-3` holds #292–#297, and a cut note was added · **`index.md` 6,825 B at 17:28:41 UTC, three lines: #300 · #299 · #298.** `areas/presentation-friday-25th-288.md` left as it is (4,144 B, 14:48:17 UTC).
