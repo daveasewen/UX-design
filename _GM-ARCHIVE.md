@@ -1,5 +1,22 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-23 #299
+
+> **COMMIT STATE #298:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-298-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. The session's one lane commit, **`f54562e2`** (lane B, the brain to reading B), goes out with this wrap's push. Handoff `_HANDOFF-149-the-running-order-is-settled-and-the-work-is-to-enact-what-he-decided.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **~243,000 real at the brief — a DECLARED hand sum, 247,464 re-read at this seat; no band claimed.**
+
+> ## ★ PRIOR — 2026-09-23 (Wed **#297**, Opus 5.5 conductor in the CLOUD, **6 Opus lanes**, DELEGATED wrap on Opus 5.5 — ★★ **THE PLAIN DECK CARRIES FRIDAY, AND HIS EYE RULED IT SLIDE BY SLIDE**)
+>
+> - ★★★ ① **DATE SPLIT, SEVENTH — `s294-D11`'s shape, one header line. TWO CHATS. NOTHING INSCRIBED — `_rulings.json` STAYS 638** (`json.load`). The first chat closed *"fresh"* after `22a6a6a8` (routing doc → Opus 5.5 for subs).
+> - ★★★ ② **HE RULED #296's OPEN FIVE AT 22:00 — *"plain"***: shared angle, s7b words kept, both footnotes out (**A** `57e885b0`, PUSHED, CI `35785910901` = baseline); the demo's brief is the HSBC grill source, *"we'll make changes to it"*. ⛔ **EIGHT `_HANDOFF-147` OWED ITEMS STRUCK WITH RECEIPTS.**
+> - ★★ ③ **A REVIEW, THEN HIS EYE, SLIDE BY SLIDE:** **R** `75a8598c` — 37 suggestions, `notes/_DEMO-SLIDES-apollo-2026-09-22-v14-plain-REVIEW.html` · **B** `cde7107d` the rail gets a 200px column, 1440 collisions 12→0 · **C** `38be9376` five diagrams in, 11's second state · **D** `999cba4a` cover strap, Evolution 07–13, Components · Knowledge · Judgment · **E** `f848330e` 11's red text + †, 06 on friction · **W** `81541832` 07's count reads true, on a READING of *"this"*.
+> - ⛔ ④ **THE ASK (15) IS STILL A DRAFT — *"were discussing this today"*.** Review pages still cannot open from his repo: the `computer://` link failed (*"can you surface the file"*).
+> - ⚙ ⑤ **FILL 245,372 real at the brief — a HAND SUM over the cloud transcript, which `_checkin.py` cannot see; boot 127,600, 54,832 over the ceiling, UNATTRIBUTED.** Lanes A · R · B · C · D · E. **`_HANDOFF-148-the-plain-deck-carries-friday-and-his-eye-ruled-it-slide-by-slide.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #298:** ⬛ **FRIDAY IS TWO DAYS OUT — THE ASK AND THE LAST POLISH** [NEW — 0, DAVE'S] — ask at the opener what came of the ask. `s225-D2`. **666 items, 12 new, 8 STRUCK**, `_CARRIES.md` § `residual → #298` `carries:residual-298`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#298:**' in l][0])))"` = 666. ⚠ **12 new INVISIBLE to it**; 654→666.
+> **residual (GENERATED #297):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #296) — _roll_state.py · 2026-09-23
+
+
+*Rolled at the #299 wrap (2c). The #297 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #298` onward, now § `residual → #300`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-23 #298
 
 > **COMMIT STATE #297:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-22-297-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. ⛔ **DATE SPLIT, SEVENTH** — the session's commits span 09-22 (`22a6a6a8` · `4fe02e0e` · `57e885b0` · `75a8598c`) and 09-23 (`cde7107d` · `38be9376` · `999cba4a` · `f848330e` · `81541832`). **`57e885b0` was pushed by lane A** (CI `35785910901`); the rest go with this wrap. Handoff `_HANDOFF-148-the-plain-deck-carries-friday-and-his-eye-ruled-it-slide-by-slide.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **245,372 real at the brief — a DECLARED hand sum, 247,700 re-read at this seat; no band claimed.**

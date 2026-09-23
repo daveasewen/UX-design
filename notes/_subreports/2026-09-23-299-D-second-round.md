@@ -126,3 +126,16 @@ Working files, **not committed**: everything in `notes/_lanes/299/D/_work/`:
 - peeks `peek-*.png`
 
 Also not committed: the msgfiles `notes/_lanes/299/D/_msg-D*.txt` and the transcripts `_gitcommit-D*.log`.
+
+---
+
+## § POST-COMMIT (added AFTER the commit, not in it)
+
+- **Commit 3: `a7b2c9f2`** (`a7b2c9f2107d572be71cf98b2498e12444908d00`), subject `after #299 2026-09-23 — slide 13's knowledge graph 15% smaller and turning slowly, a full turn a minute`. 4 files, +306 / -26: the source, the rebuilt deck, `notes/_lanes/299/D/before-after.png` and this report.
+  - Gates: doc-row is a DECLARED GAP, covering this report and #299 C's. Everything else is as for commits 1 and 2, and the run ended with "locks clear".
+  - The transcript is `notes/_lanes/299/D/_gitcommit-D3.log` (exit 0).
+- **Read-back:** the four paths, plus `build_c.py`, are byte-identical to HEAD. `git log`: `a7b2c9f2` ← `e3f0de60` ← `d5583dee` ← `0e23408e`.
+- **Locks:** none stranded. `.git/*.lock` and `.git/refs/heads/*.lock` were empty.
+- **Not pushed.**
+- **Owed to the conductor:** `_state.json` rows for this report and for #299 C's.
+- This tail is itself uncommitted.

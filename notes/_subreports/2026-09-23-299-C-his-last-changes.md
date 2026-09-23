@@ -110,3 +110,17 @@ Pre-edit premise: the deck, the source and `build_c.py` were each byte-identical
 Changed, committed: `notes/_lanes/296/C/v14-plain-before-c.html` (the source) · `notes/_DEMO-SLIDES-apollo-2026-09-22-v14-plain.html` (rebuilt) · `notes/_lanes/296/C/build_c.py` (the rail label, declared).
 Created, committed: `notes/_lanes/299/C/before-after.png` · this report.
 Working files, **not committed**: `notes/_lanes/299/C/_work/`. This holds the pre-edit copies `before.html`, `source.before.html` and `build_c.before.py`; the mid-state `after-copy.html` and `source.after-copy.html`; the final `after.html`; the six render folders `before-*`, `copy-*` and `after-*` with `_facts.json`; the drivers `shoot_c.py`, `pdiff_c.py`, `sheet_c.py`, `probe_strap.py`, `probe_after.py`, `probe_cal.py`, `edit_copy.py`; and the peeks and orbit shots. Also not committed: the msgfiles `_msg-C1.txt` / `_msg-C2.txt` and the committer transcripts `_gitcommit-C*.log`.
+
+---
+
+## § POST-COMMIT (added AFTER the commit, not in it)
+
+- **Commit 2: `0e23408e`** (`0e23408e4d097b68c2e02ecff9f2967527837487`), subject `after #299 2026-09-23 — slide 09's callipers rest at the brain's angle`. 4 files, +122 / -2: the source, the rebuilt deck, `notes/_lanes/299/C/before-after.png` and this report.
+  - Gates: the reuse gate passed. The chain is fresh. The doc-row gate is a DECLARED GAP (the store row for this report is owed). The showroom is in sync, the polarity gate is green and the mention map is fresh. The session witness agrees (#299). The wrap gate is red but visible, not blocking (declared not-a-wrap). The subject is identical to T3's, with one prefix. The same two non-blocking boot-drift ❌ lines appeared as in commit 1. The run ended with "locks clear".
+  - The transcript is `notes/_lanes/299/C/_gitcommit-C2.log` (exit 0).
+- **Read-back:** the four paths, plus `build_c.py`, are byte-identical to HEAD. `git log`: `0e23408e` ← `2f0a385d` ← `4c9b4040`.
+- **Locks:** none stranded. During commit 2, git printed `unable to unlink .git/index.lock: Operation not permitted` (transcript line 234). The script's own lock clearing handled it ("locks clear"), and `.git/*.lock` and `.git/refs/heads/*.lock` were empty after each commit. This lane moved no lock into `notes/_lanes/_orphan-locks/`.
+- `INSTRUMENT_AUTOSTAGE=0` on both commits: any gate appends to `notes/_REHEARSAL-LOG.jsonl` stay uncommitted dirt for the conductor. The committer reported 64, then 70, dirty paths not staged. They belong to other seats or are this lane's `_work/`, msgfiles and transcripts, and none were touched.
+- **Not pushed**, per the brief.
+- **Owed to the conductor:** a `_state.json` row whose `home` is this report.
+- This tail is itself uncommitted.

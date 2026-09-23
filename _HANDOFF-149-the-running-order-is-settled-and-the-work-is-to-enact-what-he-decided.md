@@ -136,3 +136,26 @@ Rail: **Problem** 03 · **Research** 04[05] · **Evaluation** 06 · **Evolution*
    **IDENTICAL to #297's wrap read (`35842716140`).** The six BY NAME: `[3]` token blast-radius + graph report · `[13]` capture/provenance selftest · `[38]` component-partials sync · `[125]` memento schematic determinism · `[128]` memento-package delta-audit selftest · `[136]` governs matcher selftest. ✅ `[120]` read chain determinism GREEN. Step 6 as before (`help-gate: 264 script(s) scanned, 12 failure(s)`). ⛔ **Nothing CI reported was repaired.** Log: `notes/_lanes/298/W/_ci-gates-W.log`.
 6. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **6,797 tape (slice 5,947 + 850 wrapper), ratio 20%**. After this addendum's ⏱ delta line: **7,445 (slice 6,595 + 850), ratio 22%** of a `GOOD-MORNING.md` of 33,578 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
 7. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.
+
+
+---
+
+## ⬛ POST-WRAP, CONDUCTOR SEAT, 2026-09-23 12:44–12:49 BST — BY ADDITION, UNCOMMITTED
+
+His words, verbatim:
+> is there anything we can do fairly quickly to get this 128 down?
+
+> the chain is fundamental to the project management surly , it might be made more efficient but getting rid of it doesnt make sense to me... I dont think you have enough context to advise this
+>
+> The memory note is an interesting idea maybe, we need a carful plan for this 30k isn't enough to do real work, unless we cnange the token limit to 256 or something too.
+
+Reading: the conductor had suggested reading only the handoff at the opener. He REJECTED dropping the chain; making the chain more efficient is open. Placing the memory hook at the wrap rather than the opener is "interesting maybe" and needs a CAREFUL PLAN, not an enactment. Raising the working line toward 256K is HIS question, unruled. Friday first.
+
+---
+
+## ⬛ STRUCK AT THE #299 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN (`s183-D1` / `s188-D2`)
+
+*Two items of § OWED TO #299 are struck here, each with its receipt. Every other item stands and is carried in `_CARRIES.md` § `residual → #300`, with the next steps in `_HANDOFF-150-his-last-changes-are-in-the-deck-and-the-ask-is-what-is-left.md`.*
+
+- ⛔ **1 — STRUCK: RECONCILED AND ENACTED.** Lane R (`notes/_subreports/2026-09-23-299-R-reconcile-decided-changes.md`): 42 decided · 40 enacted · 2 partly · 0 not enacted. His 13:34 BST list went in as `2f0a385d` · `0e23408e` (lane C), his 14:12 BST changes as `d5583dee` · `e3f0de60` · `a7b2c9f2` (lane D), and his 14:56 BST *"Checked automatically, then by a human. - cool lets do it, it's punchier anyway"* as `119f3615` (lane E). The two PARTLY items close on the conductor's READING, not a ruling: his *"6. good"* leaves 06 as it is (P1), and his item 2 renamed chapter 5 on 02 (P2). His words: `notes/_lanes/299/WRAP-BRIEF.md`.
+- ⛔ **5 — STRUCK: ANSWERED BY MEASUREMENT.** No Claude Docs tool is in the #299 conductor's deferred-tools list (its transcript's 11th line), and the first-turn boot read **126,178**, 1,483 below 127,661 — a hand sum, re-read to the token at the #299 wrap seat. His block held for that chat.
