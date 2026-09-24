@@ -205,12 +205,15 @@ def build(src, dst, chapters, must=('you can bank on',)):
 # slide 07". Evolution runs 07-13 (s6 ... s10map); Evaluation keeps 06 (s4p) alone. Six chapters, the same 14 items.
 # v9 (#299 lane C): Dave 2026-09-23 13:34, the order of play's "The result" -> "Result"; the rail follows it (his
 # standing rule: the order of play matches the tracker). Only chapter 5's title changes.
+# v10 (#302 lane B): Dave 2026-09-24 11:28, "I want to add another slide probably between 11 and 12, but you might have
+# other ideas: Benefits beyond speed, quality and consistency". Placed after the demo (s9) as Result's one sub,
+# s11pre; the chapters and the order of play are unchanged. 17 slides.
 PLAIN_CHAPTERS = '''  chapters: [
     {n:1, title:'Problem',     id:'s3',  subs:[]},
     {n:2, title:'Research',    id:'s5x', subs:['s5r']},
     {n:3, title:'Evaluation',  id:'s4p', subs:[]},
     {n:4, title:'Evolution',   id:'s6',  subs:['s7','s8','s7b','s6b','s10','s10map']},
-    {n:5, title:'Result',      id:'s9',  subs:[]},
+    {n:5, title:'Result',      id:'s9',  subs:['s11pre']},
     {n:6, title:'The ask',     id:'s11', subs:['s12']}
   ]
 '''
