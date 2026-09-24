@@ -212,9 +212,8 @@ PLAIN_CHAPTERS = '''  chapters: [
     {n:1, title:'Problem',     id:'s3',  subs:[]},
     {n:2, title:'Research',    id:'s5x', subs:['s5r']},
     {n:3, title:'Evaluation',  id:'s4p', subs:[]},
-    {n:4, title:'Evolution',   id:'s6',  subs:['s7','s8','s7b','s6b','s10','s10map']},
-    {n:5, title:'Result',      id:'s9',  subs:['s11pre']},
-    {n:6, title:'The ask',     id:'s11', subs:['s12']}
+    {n:4, title:'Evolution',   id:'s6',  subs:['s7','s7b','s8','s10','s10map','s9','s11pre']},
+    {n:5, title:'Adoption',    id:'s11', subs:['s12']}
   ]
 '''
 
