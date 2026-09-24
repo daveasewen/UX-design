@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-24 #302
+
+> **COMMIT STATE #301:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-301-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **No lane committed this session:** lane G's code and report and the judgement fix go out with this wrap's commit. Handoff `_HANDOFF-152-the-window-was-raised-and-the-ask-is-still-open.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **244,884 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; no band claimed.**
+
+> ## ★ PRIOR — 2026-09-23 (Wed **#300**, Opus 5.5 conductor in the CLOUD, **8 Opus subs**, DELEGATED wrap on Opus 5.5 — ★★ **THE BOOT WAS MEASURED, AND THE READING STAYS**)
+>
+> - ★★★ ① **THE BOOT WAS MEASURED.** Cloud boot **126,185** = tools ~65K · Anthropic's prompt ~31.5K · the memory list ~19K; our own opener **81,049**, a 19,371 memory re-send inside it. Lanes **A B C D**, adversary **X**, plan **P** (`notes/_PLAN-300-boot-diet-2026-09-23-v1.html`). **NOTHING INSCRIBED — `_rulings.json` STAYS 638.**
+> - ★★ ② **THE READING STAYS** — X's cold-seat quiz: card alone 4/18, FALSE · card + chain 12/18 · handoff + chain 18/18. A BM25 look-up finds 11/18 against today's 2/18: it complements the reading, never replaces it. ⛔ **HE PASTED THE NEW START — his act, not a ruling:** no memory at the opener or while a chat is live. **ONE HEADLINE STRUCK.**
+> - ⚙ ③ **FILL A HAND SUM, 278,666 AT THE WRAP; THE ASK ON 15 WENT UNANSWERED.** The wrap gate is RED on the boot ceiling (only the Mac seat clears it), so the DECLARED not-a-wrap path again. **`_HANDOFF-151-the-boot-was-measured-and-the-reading-stays.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #301:** ⬛ **THE ASK ON SLIDE 15, THEN POLISH FOR FRIDAY** [1, DAVE'S] — ask at the opener. `s225-D2`. **692 items, 5 new, 1 HEADLINE STRUCK**, `_CARRIES.md` § `residual → #301` `carries:residual-301`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#301:**' in l][0])))"` = 692. ⚠ **5 new INVISIBLE to it**; 687→692.
+> **residual (GENERATED #300):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #299) — _roll_state.py · 2026-09-23
+
+
+*Rolled at the #302 wrap (2c). The #300 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #301` onward, now § `residual → #303`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-23 #301
 
 > **COMMIT STATE #300:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-300-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **No lane committed this session:** the six reports, the lanes' work files and the plan page go out with this wrap's commit. Handoff `_HANDOFF-151-the-boot-was-measured-and-the-reading-stays.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **278,666 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; no band claimed.**
