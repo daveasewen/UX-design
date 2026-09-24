@@ -58,3 +58,11 @@ provenance: 302 · 2026-09-24 · status: observed · repo record: `_HANDOFF-153-
 ## THE `s271-D4` RE-READ
 
 *Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json` — its result is appended below by addition.*
+
+**Result: 638 records, newest `s295-D4` (`json.load`, 12:13 UTC); #302 inscribed nothing, so NO item above is closed by a #302 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck('.', <this file>)` read 0 open items and 0 same-day rulings — its parser does not match this file's heading form, as at #297–#301. Recorded in `notes/_subreports/2026-09-24-302-W-wrap.md` § POST-WRAP.
+
+---
+
+## RECEIPT — PLACED BY THE #302 WRAP SEAT, AFTER HIS "wrap" (appended by addition)
+
+Placed LAST, after the wrap commit `c2d66ff0`, its push (`7f10b5b8..c2d66ff0`) and its CI read (run `35996097383`, `render` closed 12:12:03 UTC), under the Project instructions he pasted at #300. **From the store's own write results, 2026-09-24 ~12:12–12:14 UTC:** `wrap-302-the-deck-grew-a-slide-and-the-ask-went-to-his-colleagues.md` **3,574 B** — the frontmatter (774 B, `notes/_lanes/302/W/_work/memory_front_302.txt`) plus the body above (2,800 B, md5 `168898235c7599f4c59bfd22f4e2296a`), byte for byte (the joined file `notes/_lanes/302/W/_work/memory_file_302.md`, 3,574 B, md5 `300e8204d82b4a4a2d2eeeb538ecb385`) · the #299 line appended to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-24 #302 (wrap)* (+775 B → **23,050 B**), **then removed from `index.md` with the same string: the match held (724 B = the line plus its newline)** · the index line above put at the top (+860 B = its 859 bytes plus the newline) · the description now says `MEMORY-ARCHIVE-3` holds #292–#299 (49 B → 49 B) · a cut note added (+631 B) · **`index.md` 8,305 B at 12:13:28 UTC, three lines: #302 · #301 · #300** (re-read from the store). `areas/presentation-friday-25th-288.md` **+742 B by addition** (4,144 → 4,887 B), because it names the ask. Every edit was sent in sequence on the version token the previous write returned — no parallel edits this time.
