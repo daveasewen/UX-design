@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal: Apollo-MCP, v1</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max-width:1100px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--black);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--grey-6)}.label.mute::before{background:var(--grey-3)}
+header{padding:64px 0 48px;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:56px;font-weight:200;line-height:1.08;letter-spacing:-.01em;margin:0}
+.sub{font-size:26px;font-weight:300;line-height:1.3;margin:var(--s3) 0 0;max-width:24em}
+h2{font-size:34px;font-weight:300;line-height:1.18;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:13px;line-height:1.7;color:var(--grey-7)}
+.meta b{font-weight:500;color:var(--black)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white)}
+section.dark h2{color:var(--white)}section.dark p{color:var(--grey-3)}section.dark .label{color:var(--white)}section.dark .label::before{background:var(--white)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s5);align-items:start}
+.beats{list-style:none;padding:0;margin:var(--s4) 0 0;counter-reset:b}
+.beats li{counter-increment:b;display:grid;grid-template-columns:72px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--grey-3)}
+.beats li::before{content:counter(b,decimal-leading-zero);font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6)}
+.beats b{display:block;font-weight:500;margin-bottom:4px;font-size:18px;line-height:1.35}
+.beats p{margin:0 0 var(--s1);color:var(--grey-8)}
+.beats .show{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--black);margin-top:6px;line-height:1.5}
+.beats .note{font-size:13px;color:var(--grey-7);margin-top:var(--s1)}
+.line{font-size:26px;font-weight:300;line-height:1.4;max-width:28em;margin:0}
+.line b{font-weight:500}
+dl.facts{margin:var(--s4) 0 0;display:grid;grid-template-columns:120px 1fr;gap:var(--s2) var(--s3);font-size:15px}
+dl.facts dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);padding-top:4px;line-height:1.5}
+dl.facts dd{margin:0}
+dl.facts dd b{font-weight:500}
+blockquote{margin:var(--s4) 0 0;padding:0 0 0 var(--s3);border-left:2px solid var(--accent);font-size:20px;font-weight:300;line-height:1.5;max-width:40em}
+blockquote cite{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:10px;font-style:normal;line-height:1.5}
+.q{font-weight:300}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);margin-top:var(--s4);border:1px solid var(--grey-3)}
+.cols.two-up{grid-template-columns:repeat(2,1fr)}
+.cols>div{background:var(--white);padding:var(--s3)}
+.cols .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--black);font-weight:500;margin-bottom:4px;line-height:1.5}
+.cols .st{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2);line-height:1.5}
+.cols p{font-size:15px;margin:0 0 var(--s1);color:var(--grey-8)}
+.cols p.for{margin-top:var(--s2);padding-top:var(--s1);border-top:1px solid var(--grey-2);color:var(--black)}
+sup{font-size:10px;line-height:0;color:var(--grey-6);letter-spacing:.02em}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:var(--s3)}
+th,td{text-align:left;padding:.7rem .9rem .7rem 0;border-bottom:1px solid var(--grey-3);vertical-align:top;line-height:1.55}
+th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500}
+td b{font-weight:500}
+/* the diagram */
+.diag{margin-top:var(--s4);background:var(--white);border:1px solid var(--grey-3);padding:var(--s3)}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.diag .tall{display:none;max-width:420px;margin:0 auto}
+.diag-cap{font-size:13px;color:var(--grey-7);margin-top:var(--s2);max-width:60em}
+/* three routes */
+.routes{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:auto;gap:0 1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.route{display:grid;grid-row:span 6;grid-template-rows:subgrid;background:var(--white);padding:0 var(--s3)}
+.route>div{padding:var(--s2) 0;border-top:1px solid var(--grey-2);font-size:15px;line-height:1.55;color:var(--grey-8)}
+.route>div:first-child{border-top:0;padding-top:var(--s3)}
+.route .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:4px;line-height:1.5}
+.route .letter{font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6);display:block}
+.route h3{margin:6px 0 4px;font-size:19px}
+.route .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.route.pick{box-shadow:inset 0 3px 0 var(--black)}
+.route.pick .tag{color:var(--accent);font-weight:500}
+.route .verdict{color:var(--black)}
+.route .verdict b{font-weight:500}
+/* measured stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.stats>div{background:var(--white);padding:var(--s3)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.1;display:block}
+.stats .n small{font-size:20px;font-weight:300;color:var(--grey-7);margin-left:4px}
+.stats .c{font-size:14px;line-height:1.5;color:var(--grey-8);display:block;margin-top:var(--s1)}
+.gaps{list-style:none;padding:0;margin:0;counter-reset:g}
+.gaps li{counter-increment:g;display:grid;grid-template-columns:48px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--grey-3)}
+.gaps li::before{content:counter(g);font-size:28px;font-weight:200;line-height:1.15;color:var(--grey-6)}
+.gaps b{font-weight:500;display:block}
+.gaps p{margin:0 0 4px;color:var(--grey-8);font-size:15px}
+.gaps .fix{color:var(--black)}
+.moved{list-style:none;padding:0;margin:var(--s3) 0 0}
+.moved li{padding:var(--s1) 0;border-top:1px solid var(--grey-3);font-size:15px}
+.moved b{font-weight:500}
+.tech{font-size:13px;color:var(--grey-7);max-width:64em}
+.tech p{margin:0 0 var(--s2)}
+.tech code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--grey-1);padding:.1em .35em;overflow-wrap:anywhere}
+ol.src{font-size:13px;color:var(--grey-7);padding-left:2.2em;margin:var(--s3) 0 0;max-width:64em}
+ol.src li{margin:0 0 6px;line-height:1.55;overflow-wrap:anywhere}
+ol.src a{color:var(--grey-8)}
+ol.src .re{color:var(--black);font-weight:500}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+@media(max-width:820px){
+  .wrap{padding:0 16px}header .grid,.two,.cols,.cols.two-up{grid-template-columns:1fr}
+  .two{gap:0}
+  h1{font-size:40px}.sub{font-size:21px}h2{font-size:26px}.line{font-size:21px}
+  blockquote{font-size:18px}
+  .beats li{grid-template-columns:44px 1fr;gap:var(--s2)}.beats li::before{font-size:30px}
+  dl.facts{grid-template-columns:1fr;gap:4px var(--s2)}dl.facts dd{margin-bottom:var(--s2)}
+  .diag{padding:var(--s2) 12px}.diag .wide{display:none}.diag .tall{display:block}
+  .routes{grid-template-columns:1fr;gap:1px 0}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}.stats>div{padding:var(--s2)}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack tr{border-top:1px solid var(--grey-3);padding:.6rem 0}
+  table.stack td{border:0;padding:.25rem 0}
+  table.stack td::before{content:attr(data-l);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+}
+</style></head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · proposal v1 · working title</p>
+        <h1>Apollo-MCP</h1>
+        <p class="sub">Live screens an agent can ask for, built only from Apollo's parts, and checked before anyone sees them.</p>
+      </div>
+      <p class="meta"><b>Proposal v1 · 26 September 2026</b><br>Session 304<br>Status: a recommendation for you to rule on. Nothing here is decided.<br>Research re-checked today; what moved is marked.</p>
+    </div>
+    <blockquote>Can I have this as a page, do you think we could create our own MCP-UI -- Apollo-MCP maybe or something that has the same capabilities as  Google's A2UI and MCP-UI. I think we have to come up with a proposal for this, we also did some work around Gen-UI earlier in the year, I think its time to pull these ideas together, maybe do a bit more research and get this doc together<cite>Dave · Saturday 26 September 2026, 13:29</cite></blockquote>
+  </div>
+</header>
+
+<section id="answer">
+  <div class="wrap two">
+    <p class="label">The answer</p>
+    <div>
+      <p class="line"><b>Yes, we can have our own. But not our own protocol.</b> Apollo should speak the two standards that already exist: publish our parts as an A2UI catalogue served through MCP, and where a host can't draw A2UI, send an MCP App running Apollo's own renderer. We own what neither standard has: knowing when each part is right, gating before anything is drawn, checking what each person may see, and recording every screen. The first thing to build with it is June's contextual dashboard.</p>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="thread" class="grey">
+  <div class="wrap two">
+    <p class="label">How we got here</p>
+    <div>
+      <h2>One idea, carried since June. Now there are standards to carry it on.</h2>
+      <dl class="facts">
+        <dt>20 June</dt><dd><b>The strategy lock.</b> Making screens is becoming a commodity; the value is upstream of it. Wrap the editor, don't build it.</dd>
+        <dt>29 June</dt><dd><b>The engine in a second vehicle.</b> Apollo's gated parts are a trust layer for any assembled screen. The first vehicle: a dashboard that assembles itself for each person from certified cards. Making the screen becomes choosing, ranking and arranging. No taste call at run time; the taste was spent certifying the cards.</dd>
+        <dt>2 July</dt><dd><b>The north star.</b> One screen, one day. The gap that matters here: the gates have to run while a screen is made, not in review afterwards.</dd>
+        <dt>3 July</dt><dd><b>The iteration machine.</b> The loop as a front end, with the checks present under every temperature. Your note on it: "It can run hot".</dd>
+        <dt>14 July</dt><dd><b>Gates as a service.</b> Your idea: serve Apollo's checks as MCP tools, so an agent can check its own work mid-task. Recorded, never built. This is Apollo-MCP's direct ancestor.</dd>
+        <dt>19 Sept</dt><dd><b>Apollo composes.</b> You ruled by eye that tracing an existing page is not Apollo: "this isn't Apollo its a dot-to-dot book". A live screen has to be composed too, not traced.</dd>
+        <dt>25 Sept</dt><dd><b>Your question.</b> "so we talked in the past about how we might be able to translate what we have to generating live GenUI, can you find this or let me know how we might use parts of Apollo for realtime GenUI"</dd>
+        <dt>26 Sept</dt><dd><b>This page.</b> The June idea, the July tool idea and September's composing, pulled into one proposal.</dd>
+      </dl>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="field">
+  <div class="wrap">
+    <p class="label">The field, in plain words</p>
+    <h2>Three layers. The standards own the wire; Apollo brings the parts and the checks.</h2>
+    <table class="stack">
+      <thead><tr><th>Layer</th><th>What it means</th><th>Who fills it today</th><th>Apollo's part</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Layer"><b>The wire</b></td><td data-l="What it means">How messages travel between the agent, its tools and the app.</td><td data-l="Who fills it today">MCP (agent to tools). AG-UI (agent to app, streamed). A2A (agent to agent).</td><td data-l="Apollo's part">An MCP server. We use the wire; we don't make one.</td></tr>
+        <tr><td data-l="Layer"><b>The screen, as data</b></td><td data-l="What it means">What to draw, written as a description rather than as code.</td><td data-l="Who fills it today">A2UI. Microsoft Adaptive Cards. Vercel's json-render.</td><td data-l="Apollo's part">The catalogue: our parts, their settings and their rules.</td></tr>
+        <tr><td data-l="Layer"><b>The drawing</b></td><td data-l="What it means">Who turns the description into pixels.</td><td data-l="Who fills it today">A2UI renderers for React, Flutter, Lit, Angular and Android. MCP Apps: a sealed frame running the server's own HTML.</td><td data-l="Apollo's part">Apollo's renderer, drawing canon markup. The same renderer runs inside the MCP Apps frame.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cols two-up">
+      <div><p class="hd">A2UI</p><p class="st">Google · v0.9.1 in production · v1.0 due Q4 2026</p>
+        <p>The agent sends a description of the screen as data, never code. The app keeps a catalogue of approved parts and draws them itself.<sup>[1][3][4]</sup></p>
+        <p>Google's own guidance: a catalogue should "directly reflect a client's design system", and be versioned like an API.<sup>[5]</sup></p>
+        <p class="for">For us: the catalogue is exactly where Apollo fits.</p></div>
+      <div><p class="hd">MCP Apps, and MCP-UI</p><p class="st">Official MCP extension since 26 January 2026</p>
+        <p>A tool points to an HTML page, and the host shows it in a sealed frame inside the chat. The widest reach today: Claude, ChatGPT, Microsoft 365 Copilot, VS Code Copilot, Cursor and more.<sup>[14][41]</sup></p>
+        <p>MCP-UI is the community project it grew from. It now says its packages "implement the spec, and serve as a community playground".<sup>[17]</sup></p>
+        <p class="for">For us: the fallback shell, carrying our renderer.</p></div>
+      <div><p class="hd">OpenAI Apps SDK</p><p class="st">ChatGPT · built on MCP</p>
+        <p>ChatGPT's way of putting apps into the chat. ChatGPT now implements the MCP Apps standard; its own hooks stay on as compatibility aliases.<sup>[21][22]</sup></p>
+        <p class="for">For us: no separate work. MCP Apps covers it.</p></div>
+      <div><p class="hd">AG-UI</p><p class="st">CopilotKit · an event stream</p>
+        <p>A live stream of events between an agent and an app: text, tool calls, state. In its makers' words, it "is not a generative UI specification"; it carries A2UI or MCP Apps.<sup>[23][24]</sup></p>
+        <p class="for">For us: a road we could add later, not a choice now.</p></div>
+    </div>
+
+    <p class="label mute" style="margin-top:var(--s5)">Re-checked today, 26 September</p>
+    <ul class="moved">
+      <li><b>A2UI: unchanged.</b> Still v0.9.1 in production; v1.0 still a release candidate aimed at Q4 2026. The roadmap was last updated in June, and the iPhone and Mac renderer is still marked planned.<sup>[3][6]</sup></li>
+      <li><b>MCP Apps hosts: firmer.</b> The official client list now names ChatGPT, Cursor and PostHog Code. The first pass had those only from a secondary source.<sup>[41]</sup></li>
+      <li><b>A2UI in chat hosts: narrower.</b> No general chat host (Claude, ChatGPT, Copilot, the Gemini app) draws A2UI itself. Gemini Enterprise does, but only for agents registered through its agent-to-agent route.<sup>[7]</sup> This is why the fallback shell matters.</li>
+      <li><b>MCP itself: new to this page.</b> July's spec made MCP stateless and put tool names in headers, so a bank's gateway can route and authorise a call without opening it.<sup>[20]</sup></li>
+      <li><b>Bank sign-in: new to this page.</b> Enterprise-managed authorisation is now an official MCP extension. The bank's identity provider decides who can reach which server.<sup>[42]</sup></li>
+      <li><b>Our fallback is Google's own pattern.</b> Google's June post names "packaging the A2UI rendering engine directly within the MCP App bundle" as a supported way to reach hosts that don't draw A2UI.<sup>[12]</sup></li>
+    </ul>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="flow" class="grey">
+  <div class="wrap">
+    <p class="label">How one screen gets made</p>
+    <h2>The agent asks. Apollo chooses, checks and sends. The host draws. The graph remembers.</h2>
+    <div class="diag">
+      <svg class="wide" viewBox="0 0 1040 484" role="img" aria-labelledby="dw-t dw-d">
+        <title id="dw-t">How Apollo-MCP makes one screen</title>
+        <desc id="dw-d">The agent asks for a screen with an MCP call. The Apollo server chooses parts by their when-rules, checks what the person may see, runs the gates, and sends an A2UI surface. The host draws it natively or in an MCP Apps frame running Apollo's renderer. Actions come back as tool calls through the same checks. The graph keeps a record of every screen sent.</desc>
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <!-- return path -->
+        <path d="M913,60 L913,40 L466,40 L466,58" fill="none" stroke="#545454" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+        <text x="690" y="30" text-anchor="middle" font-size="13" fill="#333">What the person does comes back as a tool call, and passes the same checks</text>
+        <!-- agent -->
+        <rect x="0" y="165" width="140" height="120" fill="#F3F3F3"/>
+        <text x="14" y="190" font-size="11" letter-spacing="1.3" fill="#545454">THE AGENT</text>
+        <text x="14" y="218" font-size="15" font-weight="500" fill="#000">Asks for</text>
+        <text x="14" y="238" font-size="15" font-weight="500" fill="#000">a screen</text>
+        <text x="14" y="262" font-size="12" fill="#545454">Claude, ChatGPT,</text>
+        <text x="14" y="278" font-size="12" fill="#545454">Copilot, Gemini</text>
+        <line x1="140" y1="225" x2="194" y2="225" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+        <text x="168" y="214" text-anchor="middle" font-size="11" fill="#333">MCP call</text>
+        <!-- server -->
+        <rect x="196" y="60" width="540" height="320" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="212" y="88" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">APOLLO SERVER</text>
+        <text x="212" y="110" font-size="12.5" fill="#545454">Reads the catalogue, each part's when-rules, and the gates:</text>
+        <text x="212" y="127" font-size="12.5" fill="#545454">all built ahead of time from the knowledge graph.</text>
+        <g>
+          <rect x="212" y="165" width="118" height="120" fill="#F3F3F3"/>
+          <text x="224" y="197" font-size="28" font-weight="200" fill="#767676">1</text>
+          <text x="224" y="226" font-size="15" font-weight="500" fill="#000">Choose</text>
+          <text x="224" y="248" font-size="12" fill="#333">the right part</text>
+          <text x="224" y="264" font-size="12" fill="#333">by its when-rules</text>
+          <rect x="342" y="165" width="118" height="120" fill="#F3F3F3"/>
+          <text x="354" y="197" font-size="28" font-weight="200" fill="#767676">2</text>
+          <text x="354" y="226" font-size="15" font-weight="500" fill="#000">Entitle</text>
+          <text x="354" y="248" font-size="12" fill="#333">only what this</text>
+          <text x="354" y="264" font-size="12" fill="#333">person may see</text>
+          <rect x="472" y="165" width="118" height="120" fill="#F3F3F3"/>
+          <text x="484" y="197" font-size="28" font-weight="200" fill="#767676">3</text>
+          <text x="484" y="226" font-size="15" font-weight="500" fill="#000">Gate</text>
+          <text x="484" y="248" font-size="12" fill="#333">accessibility,</text>
+          <text x="484" y="264" font-size="12" fill="#333">contrast, spans</text>
+          <rect x="602" y="165" width="118" height="120" fill="#F3F3F3"/>
+          <text x="614" y="197" font-size="28" font-weight="200" fill="#767676">4</text>
+          <text x="614" y="226" font-size="15" font-weight="500" fill="#000">Send</text>
+          <text x="614" y="248" font-size="12" fill="#333">an A2UI surface:</text>
+          <text x="614" y="264" font-size="12" fill="#333">data, not code</text>
+          <line x1="330" y1="225" x2="341" y2="225" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+          <line x1="460" y1="225" x2="471" y2="225" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+          <line x1="590" y1="225" x2="601" y2="225" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+        </g>
+        <line x1="531" y1="285" x2="531" y2="310" stroke="#000" stroke-width="1.2"/>
+        <text x="531" y="330" text-anchor="middle" font-size="12.5" fill="#000">Fails: refused,</text>
+        <text x="531" y="347" text-anchor="middle" font-size="12.5" fill="#000">nothing is sent</text>
+        <!-- host -->
+        <rect x="786" y="60" width="254" height="320" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="802" y="88" font-size="11" letter-spacing="1.3" fill="#545454">THE HOST DRAWS IT</text>
+        <rect x="802" y="104" width="222" height="100" fill="#F3F3F3"/>
+        <text x="816" y="132" font-size="15" font-weight="500" fill="#000">Natively</text>
+        <text x="816" y="154" font-size="12" fill="#333">with an A2UI renderer</text>
+        <text x="816" y="172" font-size="12" fill="#545454">Gemini Enterprise, and apps</text>
+        <text x="816" y="188" font-size="12" fill="#545454">built on React, Flutter, Angular</text>
+        <rect x="802" y="222" width="222" height="142" fill="#F3F3F3"/>
+        <text x="816" y="250" font-size="15" font-weight="500" fill="#000">Or in an MCP Apps frame</text>
+        <text x="816" y="272" font-size="12" fill="#333">a sealed frame running</text>
+        <text x="816" y="288" font-size="12" fill="#333">Apollo's own renderer</text>
+        <text x="816" y="316" font-size="12" fill="#545454">Claude, ChatGPT, M365</text>
+        <text x="816" y="332" font-size="12" fill="#545454">Copilot, VS Code, Cursor</text>
+        <!-- to host, drawn over the host frame -->
+        <line x1="736" y1="225" x2="762" y2="225" stroke="#000" stroke-width="1.2"/>
+        <line x1="762" y1="154" x2="762" y2="293" stroke="#000" stroke-width="1.2"/>
+        <line x1="762" y1="154" x2="801" y2="154" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+        <line x1="762" y1="293" x2="801" y2="293" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+        <!-- audit -->
+        <line x1="661" y1="285" x2="661" y2="408" stroke="#000" stroke-width="1.2" marker-end="url(#ah)"/>
+        <rect x="212" y="410" width="524" height="66" fill="#fff" stroke="#000" stroke-width="1"/>
+        <text x="228" y="434" font-size="11" letter-spacing="1.3" fill="#545454">THE GRAPH KEEPS A RECORD</text>
+        <text x="228" y="458" font-size="13" fill="#000">Catalogue version, parts used, rulings obeyed: for every screen sent</text>
+      </svg>
+      <svg class="tall" viewBox="0 0 360 842" role="img" aria-labelledby="dt-t dt-d">
+        <title id="dt-t">How Apollo-MCP makes one screen</title>
+        <desc id="dt-d">The agent asks with an MCP call. Apollo chooses by when-rules, checks entitlement, runs the gates and sends an A2UI surface. The host draws it natively or in an MCP Apps frame running Apollo's renderer. The graph keeps a record of every screen.</desc>
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <rect x="0" y="0" width="360" height="84" fill="#F3F3F3"/>
+        <text x="14" y="24" font-size="11" letter-spacing="1.3" fill="#545454">THE AGENT</text>
+        <text x="14" y="48" font-size="15" font-weight="500" fill="#000">Asks for a screen</text>
+        <text x="14" y="70" font-size="12" fill="#545454">Claude, ChatGPT, Copilot, Gemini</text>
+        <line x1="180" y1="84" x2="180" y2="114" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <text x="192" y="104" font-size="11" fill="#333">MCP call</text>
+        <rect x="1" y="116" width="358" height="338" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="14" y="142" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">APOLLO SERVER</text>
+        <text x="14" y="162" font-size="12" fill="#545454">Reads the catalogue, when-rules and gates,</text>
+        <text x="14" y="178" font-size="12" fill="#545454">built ahead of time from the graph.</text>
+        <rect x="14" y="192" width="332" height="54" fill="#F3F3F3"/>
+        <text x="26" y="228" font-size="26" font-weight="200" fill="#767676">1</text>
+        <text x="56" y="214" font-size="15" font-weight="500" fill="#000">Choose</text>
+        <text x="56" y="233" font-size="12" fill="#333">the right part, by its when-rules</text>
+        <rect x="14" y="256" width="332" height="54" fill="#F3F3F3"/>
+        <text x="26" y="292" font-size="26" font-weight="200" fill="#767676">2</text>
+        <text x="56" y="278" font-size="15" font-weight="500" fill="#000">Entitle</text>
+        <text x="56" y="297" font-size="12" fill="#333">only what this person may see</text>
+        <rect x="14" y="320" width="332" height="54" fill="#F3F3F3"/>
+        <text x="26" y="356" font-size="26" font-weight="200" fill="#767676">3</text>
+        <text x="56" y="342" font-size="15" font-weight="500" fill="#000">Gate</text>
+        <text x="334" y="342" text-anchor="end" font-size="12" fill="#000">fails: nothing sent</text>
+        <text x="56" y="361" font-size="12" fill="#333">accessibility, contrast, spans</text>
+        <rect x="14" y="384" width="332" height="54" fill="#F3F3F3"/>
+        <text x="26" y="420" font-size="26" font-weight="200" fill="#767676">4</text>
+        <text x="56" y="406" font-size="15" font-weight="500" fill="#000">Send</text>
+        <text x="56" y="425" font-size="12" fill="#333">an A2UI surface: data, not code</text>
+        <line x1="180" y1="454" x2="180" y2="484" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <rect x="1" y="486" width="358" height="222" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="14" y="512" font-size="11" letter-spacing="1.3" fill="#545454">THE HOST DRAWS IT</text>
+        <rect x="14" y="526" width="332" height="74" fill="#F3F3F3"/>
+        <text x="28" y="550" font-size="15" font-weight="500" fill="#000">Natively</text>
+        <text x="28" y="569" font-size="12" fill="#333">with an A2UI renderer</text>
+        <text x="28" y="586" font-size="12" fill="#545454">Gemini Enterprise, React, Flutter, Angular</text>
+        <rect x="14" y="610" width="332" height="86" fill="#F3F3F3"/>
+        <text x="28" y="634" font-size="15" font-weight="500" fill="#000">Or in an MCP Apps frame</text>
+        <text x="28" y="653" font-size="12" fill="#333">a sealed frame running Apollo's renderer</text>
+        <text x="28" y="670" font-size="12" fill="#545454">Claude, ChatGPT, M365 Copilot,</text>
+        <text x="28" y="686" font-size="12" fill="#545454">VS Code, Cursor</text>
+        <text x="14" y="734" font-size="12" fill="#333">Actions come back as tool calls, and pass</text>
+        <text x="14" y="750" font-size="12" fill="#333">the same checks.</text>
+        <rect x="1" y="766" width="358" height="74" fill="#fff" stroke="#000" stroke-width="1"/>
+        <text x="14" y="790" font-size="11" letter-spacing="1.3" fill="#545454">THE GRAPH KEEPS A RECORD</text>
+        <text x="14" y="812" font-size="12.5" fill="#000">Catalogue version, parts used, rulings</text>
+        <text x="14" y="829" font-size="12.5" fill="#000">obeyed: for every screen sent</text>
+      </svg>
+    </div>
+    <p class="diag-cap">Steps one to four run on the server, before anything reaches the person. The host never decides what is allowed; it only draws what Apollo sent.</p>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="routes">
+  <div class="wrap">
+    <p class="label">Three routes, side by side</p>
+    <h2>Build our own, speak the standards, or ship pages.</h2>
+    <div class="routes">
+      <div class="route">
+        <div><span class="letter">A</span><h3>Our own protocol</h3><span class="tag">From scratch</span></div>
+        <div><span class="k">What we own</span>Everything: the message format, the renderers, and the work of getting each host to support it.</div>
+        <div><span class="k">Reach</span>None on day one. No host speaks it; each would need our renderer built in.</div>
+        <div><span class="k">Cost</span>The highest. A protocol, a renderer per platform, and keeping pace with two standards that move every quarter.</div>
+        <div><span class="k">Risk for a bank</span>A new, unreviewed protocol that a security team has to certify from nothing.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>No.</b> It rebuilds what Google and the MCP group give away, and owns nothing extra that matters.</div>
+      </div>
+      <div class="route pick">
+        <div><span class="letter">B</span><h3>An A2UI catalogue over MCP</h3><span class="tag">Recommended · MCP Apps as the fallback</span></div>
+        <div><span class="k">What we own</span>The catalogue, the renderer, and everything the server does: choosing, entitlement, gates, the record. Not the wire.</div>
+        <div><span class="k">Reach</span>Natively in Gemini Enterprise and any React, Flutter, Angular or Android app. Everywhere else through MCP Apps: Claude, ChatGPT, M365 Copilot, VS Code, Cursor.</div>
+        <div><span class="k">Cost</span>Medium. A catalogue generated from the metas, one renderer, one server. Phased below.</div>
+        <div><span class="k">Risk for a bank</span>The lowest of the three. Screens travel as data; the only HTML is ours, fixed and versioned; every check runs on the server.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>Yes.</b> We speak both standards and own only what is ours: the knowledge and the checks.</div>
+      </div>
+      <div class="route">
+        <div><span class="letter">C</span><h3>MCP Apps pages only</h3><span class="tag">Raw HTML</span></div>
+        <div><span class="k">What we own</span>HTML pages, served into a sealed frame.</div>
+        <div><span class="k">Reach</span>Every MCP Apps host, the same list as B's fallback. Nothing native.</div>
+        <div><span class="k">Cost</span>The lowest to start: our snippets are already HTML.</div>
+        <div><span class="k">Risk for a bank</span>The highest. The server ships code, and planted-script attacks through MCP Apps were reported this month. There is no structure to gate.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>Only as B's shell.</b> On its own it serves our baked pages as they are: tracing, not composing.</div>
+      </div>
+    </div>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="adds" class="grey">
+  <div class="wrap two">
+    <p class="label">What Apollo brings that the specs don't</p>
+    <div>
+      <h2>The standards say what may be drawn. Apollo says what should be.</h2>
+      <p>A2UI and MCP Apps both stop at "these parts are allowed". Neither says which part is right, whether it is accessible, who may see it, or what was shown. Those four are Apollo's.</p>
+      <ol class="beats">
+        <li><div><b>It knows when to use each part.</b>
+          <p>Each part's notes say which question it answers, what shape of data it takes and which rulings govern it. The chooser reads those, not a prompt.</p>
+          <p class="note">Today 39 of 138 parts carry a when-rule. The dashboard's parts need them all.</p></div></li>
+        <li><div><b>Gates run before anything is drawn.</b>
+          <p>Neither spec requires accessibility: A2UI lists it as long-term vision, and MCP Apps is silent. Apollo runs its gates on the server. A screen that fails is not sent.</p></div></li>
+        <li><div><b>What you may see is settled at the door, not in the screen.</b>
+          <p>Entitlements are enforced where the data is fetched, at the MCP tool, never by hiding things in the interface. Anything that moves money is data-only: no HTML or script from the server.</p></div></li>
+        <li><div><b>Every screen leaves a record.</b>
+          <p>The knowledge graph becomes the audit trail: which catalogue version, which parts, and which rulings each one obeyed, for every screen sent. Neither spec says anything about replay or audit.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="mechanical" class="dark">
+  <div class="wrap two">
+    <p class="label">One hard line</p>
+    <div>
+      <h2>Every choice made at run time is mechanical.</h2>
+      <p>Jev stays a design-time tool, as you ruled on 21 September. At run time Apollo chooses with the parts' notes, the when-rules and a fixed evaluator. The same question, data and person give the same screen, every time.</p>
+      <p>That is also what makes a screen replayable for audit. Where the rules can't decide, the screen falls back to a fixed default order, and the record says so.</p>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="today">
+  <div class="wrap">
+    <p class="label">What exists today · measured 26 September</p>
+    <h2>Most of the engine is built. The live half is not.</h2>
+    <div class="stats">
+      <div><span class="n">137</span><span class="c">parts in the catalogue, plus 8 foundations, each with a name, level and status</span></div>
+      <div><span class="n">39<small>of 138</small></span><span class="c">parts carry a when-rule saying when they are the right choice</span></div>
+      <div><span class="n">0.82<small>s</small></span><span class="c">for the chooser to pick 14 parts for a treasury dashboard sentence</span></div>
+      <div><span class="n">0.68<small>s</small></span><span class="c">for the screen gate's static checks on one dashboard page: pass</span></div>
+      <div><span class="n">107<small>s</small></span><span class="c">to build the knowledge graph, 4,888 nodes: an offline build, not a live read</span></div>
+      <div><span class="n">0<small>of 137</small></span><span class="c">code snippets take settings or live data. Each is a finished page with mock data baked in</span></div>
+    </div>
+    <div class="two" style="margin-top:var(--s5)">
+      <p class="label mute">The five gaps</p>
+      <div>
+        <ol class="gaps">
+          <li><div><b>No way to describe a screen as data.</b><p>Our parts are finished pages, not parts you can fill. The one exception is the chart renderer, which already draws from a data description.</p><p class="fix">Closes with: the A2UI catalogue, generated from the metas, and a renderer grown from the chart renderer's pattern.</p></div></li>
+          <li><div><b>No way to plug live data in.</b><p>We name 23 shapes of data, but nothing maps a real source onto a part.</p><p class="fix">Closes with: A2UI's data model and bindings, mapped to our 23 shapes.</p></div></li>
+          <li><div><b>The gates are fast but tied to files.</b><p>They read files from the repo and write reports to disk. The render check needs a browser, and its time is unmeasured.</p><p class="fix">Closes with: gates that take a screen in memory and return a verdict, served as MCP tools. The July idea, built.</p></div></li>
+          <li><div><b>Choosing is by keyword and role, not a plan.</b><p>For a treasury cash view the chooser offered a candlestick chart. It returns candidates, not a layout.</p><p class="fix">Closes with: a fixed evaluator over the when-rules, and when-rules for every dashboard part.</p></div></li>
+          <li><div><b>Nothing knows about the person.</b><p>Entitlements, context, consent and audit, the whole vehicle half of June's note, have nothing in the repo yet.</p><p class="fix">Closes with: the bank's identity service at the tool, and the graph record per screen.</p></div></li>
+        </ol>
+        <div class="dd-host"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="path" class="grey">
+  <div class="wrap two">
+    <p class="label">The build path</p>
+    <div>
+      <h2>Six phases. The first four pay back at design time too.</h2>
+      <p>Estimates are in sessions, and they are estimates, not measurements. Each phase ends with something you can look at.</p>
+      <ol class="beats">
+        <li><div><b>The catalogue.</b>
+          <p>Generate an A2UI catalogue from the metas for the dashboard's parts, about 15 of them.</p>
+          <p class="show">Proves · our notes are enough to describe a part as data</p>
+          <p class="note">Estimate: 1 to 2 sessions.</p></div></li>
+        <li><div><b>The renderer.</b>
+          <p>One renderer that turns an A2UI screen into canon markup, grown from the chart renderer. The same file runs inside the MCP Apps frame.</p>
+          <p class="show">Proves · a screen drawn from data matches its reference, by eye and by gate</p>
+          <p class="note">Estimate: 2 to 3 sessions.</p></div></li>
+        <li><div><b>Gates as a service.</b>
+          <p>The July idea, built: gates that take a screen in memory and return a verdict, served as MCP tools.</p>
+          <p class="show">Proves · a bad screen is refused before it is drawn</p>
+          <p class="note">Estimate: 2 sessions. The static checks take 0.68 s on a file today.</p></div></li>
+        <li><div><b>The chooser.</b>
+          <p>A fixed evaluator over the when-rules, with when-rules written for every dashboard part.</p>
+          <p class="show">Proves · same question and data, same screen; no candlestick in a cash view</p>
+          <p class="note">Estimate: 2 to 3 sessions.</p></div></li>
+        <li><div><b>The contextual dashboard, on mock data.</b>
+          <p>June's vehicle. In: a role, mock entitlements, mock company data and time triggers such as cut-offs and month end. Out: a dashboard for that person, shown in Claude Desktop through MCP Apps and in a small A2UI host. Email and Teams signals stay out, as June said.</p>
+          <p class="show">Proves · the whole loop, with a record written for every screen</p>
+          <p class="note">Estimate: 3 to 4 sessions. Phases one to five together: 10 to 14 sessions, estimated.</p></div></li>
+        <li><div><b>The bank's half.</b>
+          <p>The real identity and entitlement service, real data connectors, a security review.</p>
+          <p class="show">Proves · it can go near real data</p>
+          <p class="note">Not estimated. Not ours alone.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="wrap">
+    <p class="label">Risks and controls for a regulated bank</p>
+    <h2>In agent screens, the screen itself is part of the attack surface.</h2>
+    <table class="stack">
+      <thead><tr><th style="width:18%">Risk</th><th style="width:36%">What it looks like</th><th>The control</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Risk"><b>A steered agent</b></td><td data-l="What it looks like">A document or message tells the agent to show something else, or act for someone else.<sup>[36][37]</sup></td><td data-l="The control">The agent can only pick from the catalogue. Entitlements are checked at the tool, never taken from the agent. The gates refuse what breaks the rules.</td></tr>
+        <tr><td data-l="Risk"><b>A planted script</b></td><td data-l="What it looks like">A tool stores harmful HTML that later runs inside a trusted chat window. Reported 7 September 2026.<sup>[40]</sup></td><td data-l="The control">No HTML made by the server. The only HTML is Apollo's renderer, fixed and versioned; every screen travels as data.</td></tr>
+        <tr><td data-l="Risk"><b>A convincing fake</b></td><td data-l="What it looks like">A well-branded screen is itself a way to fool people.<sup>[38]</sup></td><td data-l="The control">Money screens are data-only, and step-up confirmation stays in the bank's own flow. Every screen carries its catalogue version and its record.</td></tr>
+        <tr><td data-l="Risk"><b>Too much power</b></td><td data-l="What it looks like">The agent can reach more than the task needs, or borrow the person's rights.<sup>[36][39]</sup></td><td data-l="The control">Least-privilege tool scopes with step-up. No passing tokens through. The bank's identity provider decides who reaches the server.<sup>[42]</sup> Hosts can limit which tools a screen may call.<sup>[16]</sup></td></tr>
+        <tr><td data-l="Risk"><b>Inaccessible screens</b></td><td data-l="What it looks like">Neither spec requires accessibility.<sup>[6][15]</sup></td><td data-l="The control">Apollo's gates run before sending: contrast, names, focus, spans.</td></tr>
+        <tr><td data-l="Risk"><b>No record</b></td><td data-l="What it looks like">Neither spec says anything about replay, determinism or keeping records.</td><td data-l="The control">The graph record per screen. The fixed chooser makes every screen replayable.</td></tr>
+        <tr><td data-l="Risk"><b>Everyone sees a different bank</b></td><td data-l="What it looks like">Personal screens wear away the shared picture people work from. June's own risk.</td><td data-l="The control">A stable spine, with the edges personalised.</td></tr>
+      </tbody>
+    </table>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="decide" class="grey">
+  <div class="wrap two">
+    <p class="label">What you decide</p>
+    <div>
+      <h2>Seven calls. Each comes with a recommendation.</h2>
+      <ol class="beats decide">
+        <li><div><b>The route.</b>
+          <p>Recommend route B: Apollo as an A2UI catalogue over MCP, with MCP Apps as the fallback shell. It reaches every major host today, and we own only what is ours.</p></div></li>
+        <li><div><b>The name.</b>
+          <p>Apollo-MCP names the pipe, and the pipe may change: A2UI also travels over A2A and AG-UI. Plain alternatives: Apollo Live, Apollo Wire, Apollo Floor.</p>
+          <p>Recommend Apollo Live, because it says what it does and outlasts any one standard.</p></div></li>
+        <li><div><b>The first vehicle.</b>
+          <p>Recommend June's contextual dashboard, on mock data. It is choosing and arranging certified cards, so no taste call happens at run time.</p></div></li>
+        <li><div><b>Screens that move money.</b>
+          <p>Recommend data-only, never raw HTML, with confirmation kept in the bank's own flow. Planted-script attacks through MCP Apps were reported this month.</p></div></li>
+        <li><div><b>What your Jev ruling covers.</b>
+          <p>Recommend reading it as covering the live screen too, so the chooser stays mechanical. Same inputs, same screen, replayable for audit.</p></div></li>
+        <li><div><b>Where the first catalogue stops.</b>
+          <p>Recommend the dashboard's parts only, about 15, not all 137. Only 39 parts carry a when-rule today; prove the shape small first.</p></div></li>
+        <li><div><b>When to start.</b>
+          <p>Recommend phases one to four now, with the dashboard after. June called run-time gates "the one shared investment", and building them is one of its own triggers to revisit.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <p class="label mute">Sources · dated</p>
+    <p class="tech">Numbers 1 to 40 come from the first research pass, earlier today, each accessed 26 September 2026 unless it carries its own date. Those marked re-checked were opened again for this page on 26 September 2026. 41 and 42 are new.</p>
+<!--SOURCES-->
+  </div>
+</section>
+
+<section id="tech">
+  <div class="wrap">
+    <p class="label mute">Technical · paths, ids and counts</p>
+    <div class="tech">
+<!--TECH-->
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · proposal · Apollo-MCP · v1 · 2026-09-26 · session 304</span>
+    <span>Nothing here is decided. Every section takes a decision below it.</span>
+  </div>
+</footer>
+
+<!--OVERLAY-->
+</body></html>

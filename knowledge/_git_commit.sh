@@ -567,6 +567,56 @@ else
   echo "— mention-map gate: DECLARED GAP — $MENTION_MAP_ACK"
 fi
 
+# ── MEMENTO-SCHEMATIC FRESHNESS GATE — CI survey step [125]'s re-stale class (#304 R1, lane 1c) ──
+# ⛔ THE PREMISE THE BRIEF CARRIED, AND WHY IT WAS WRONG. The #304 plan asked for "the same
+# head-only advance the chain got at c896bcaf". Probed at #304 R1 in a full-history clone of
+# 571d458c: regenerate the schematic, COMMIT, re-ask `--check` → FRESH. A HEAD-only advance does
+# NOT stale this file (it renders no sha). What staled it is CONTENT: every figure is read off
+# disk at generation time (`_state.json` rows, `_rulings.json`, `_CHAIN.md` / GOOD-MORNING size,
+# dossiers, the memento index, `_graph-mark-observations.jsonl`, the mention map), those move on
+# nearly every commit, and NOTHING at the commit seam ever regenerated it — last regenerated at
+# f81bbdd4 (2026-09-21), red in CI's survey on every push since. Softening `--check` to forgive
+# figure drift would launder exactly the staleness the schematic exists to refuse (c896bcaf's own
+# M1 bite: "REAL content staleness is STILL RED"). So the fix is the #208 mention-map precedent,
+# at the one seam where staleness turns durable: regenerate, and never stage what was not named.
+#
+# OWNED REGION, WRITTEN DOWN BEFORE RUNNING THE GENERATOR [[do-not-rule-list-cannot-fence-a-generator]]:
+#   `_gen_schematic.py` (no args) writes EXACTLY ONE path — OUT_REL,
+#   reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html (`write()`, :1033); its other three
+#   `open(..., "w")` sit inside `selftest()`'s TemporaryDirectory. It READS the mention map, so
+#   this gate sits AFTER the mention-map gate: a stale map refuses first, and this asks next run.
+# ONE DIFFERENCE FROM #208, BY DESIGN: a caller who ALREADY NAMED the schematic path (or passed
+#   --all-dirty) has consented to staging it, so a regeneration rides with the commit instead of
+#   costing a second full run of this script. Unnamed ⇒ REFUSED, exactly as #208 (P5 holds).
+# EXIT 77 is the generator's own tier refusal (#193: this environment cannot reproduce the
+#   committed page's token unit). It is NOT regenerated here — that would publish a weaker
+#   instrument's figures under the committed tier's name — and it does not block: visible, named.
+SCHEMATIC_PATH="reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html"
+if [ -z "${SCHEMATIC_ACK:-}" ]; then
+  python3 knowledge/_gen_schematic.py --check >/dev/null 2>&1
+  _sch_rc=$?
+  if [ "$_sch_rc" -eq 0 ]; then
+    echo "— memento schematic fresh (_gen_schematic.py --check passed, #304 R1 [125] class gate)"
+  elif [ "$_sch_rc" -eq 77 ]; then
+    echo "— memento schematic COULD-NOT-ASK here (_gen_schematic.py --check exit 77, its tier refusal) — NOT regenerated, NOT blocking: a weaker instrument's figures are never published under the committed tier's name (#193)"
+  else
+    echo "— memento schematic STALE — regenerating the ONE file this generator writes:"
+    python3 knowledge/_gen_schematic.py ||
+      fail "the memento-schematic generator itself REFUSED (its named cause is printed above; it is the authority on it — this script does not second-guess it). Nothing has been staged."
+    python3 knowledge/_gen_schematic.py --check >/dev/null 2>&1 ||
+      fail "memento schematic STILL stale after a targeted regeneration — nondeterminism in the generator or a mid-flight input (another seat appending to an input it reads), NOT the ordinary re-stale class. Do not re-run blind; run python3 knowledge/_gen_schematic.py --check and read its diff. Nothing has been staged."
+    _sch_named="$ALLDIRTY"
+    for _q in "${PATHS[@]}"; do [ "$_q" = "$SCHEMATIC_PATH" ] && _sch_named=1; done
+    if [ "$_sch_named" -eq 1 ]; then
+      echo "— memento schematic REGENERATED just now and already among your named paths ($SCHEMATIC_PATH) — it rides with this commit"
+    else
+      fail "MEMENTO-SCHEMATIC GATE (#304 R1, CI survey step [125]'s re-stale class): the schematic was stale and has been REGENERATED just now — $SCHEMATIC_PATH. It is NOT staged, because this script never stages a path you did not name (P5, ruled 2026-08-02). Re-run this exact command with that path appended to your list. Nothing has been staged by this run."
+    fi
+  fi
+else
+  echo "— memento-schematic gate: DECLARED GAP — $SCHEMATIC_ACK"
+fi
+
 # session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
 # ⛔ WHY THIS CANNOT BE FOLDED INTO THE CHECK ABOVE: `_gen_chain.py --check` compares _CHAIN.md
 # against GOOD-MORNING.md. If GM is a session stale (a skipped wrap), the chain regenerates
@@ -912,6 +962,19 @@ if ! git diff --quiet -- "$MAP_PATH" 2>/dev/null; then
   fail "MENTION-MAP GATE (#208, second half): '$MAP_PATH' differs from HEAD and is NOT staged — the commit would carry the OLD map against a NEW corpus, which is exactly what CI's survey step [110] reads (it asks the committed tree BEFORE any rebuild). Append '$MAP_PATH' to your named paths and re-run. Nothing has been committed."
 fi
 echo "— mention map is either unchanged or staged (#208 [110] second-half assert)"
+
+# ── MEMENTO-SCHEMATIC GATE, SECOND HALF: REGENERATED-BUT-NOT-STAGED (#304 R1) ─────────────────
+# Same argument as the mention map's second half above: fresh on DISK is not fresh in the COMMIT
+# under explicit-path staging. A schematic that differs from HEAD and is not staged means CI's
+# survey reads the OLD blob against the NEW corpus. ⚠ Residual, declared: an INPUT the schematic
+# counts (e.g. knowledge/_graph-mark-observations.jsonl, appended by every memento search) left
+# dirty and unnamed is rendered into the staged schematic but not committed — name it too.
+# Unconditional, as #208's second half is: SCHEMATIC_ACK passes a STALE schematic, never an
+# unstaged regenerated one.
+if ! git diff --quiet -- "$SCHEMATIC_PATH" 2>/dev/null; then
+  fail "MEMENTO-SCHEMATIC GATE (#304 R1, second half): '$SCHEMATIC_PATH' differs from HEAD and is NOT staged — the commit would carry the OLD schematic against a NEW corpus, which is exactly what CI's survey step [125] reads. Append '$SCHEMATIC_PATH' to your named paths and re-run. Nothing has been committed."
+fi
+echo "— memento schematic is either unchanged or staged (#304 R1 [125] second-half assert)"
 
 # ── DOC-ROW GATE, SECOND HALF: THE DOCS OF *THIS* COMMIT (#208) ─────────────────────────────
 # The pre-staging run above can only see docs that are ALREADY COMMITTED (its population comes

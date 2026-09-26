@@ -103,7 +103,7 @@
       "click",
       "keydown"
     ],
-    "fallback": "Every row is a native `<a>` and stays focusable and in the tab order; the authored `aria-current=\"page\"` stands and both its visual carriers (the 3px leading bar and the label's weight step) follow it, because they are bound to the attribute in CSS. What goes: clicking another row never moves `aria-current`, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group cannot be toggled (it renders in the `aria-expanded`/`hidden` state the markup authors), and the rail collapse toggle does nothing.",
+    "fallback": "Every destination is a native <a>, focusable and in the tab order; the authored aria-current=\"page\" stands and both its visual carriers (the 3px leading bar and the surface change) follow it, because they are bound to the attribute in CSS. The rail tooltip still appears on hover and focus — it is CSS, not script. What goes: clicking another row never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group renders in whatever aria-expanded/hidden state the markup authors, the rail collapse toggle does nothing, and the overlay cannot be opened or closed.",
     "$note": {
       "current": "\"You are here\" is a STATE, not an authored fact — the measured defect was a static aria-current no interaction could move. Each `nav.sn` is its own scope, so two specimens do not share a current location.",
       "keyboard": "NO roving tabindex by decision: a nav list is not a composite widget, so arrows move FOCUS only and every destination stays in the tab order. Hidden rows (a collapsed group) are skipped.",
@@ -111,7 +111,13 @@
       "rail": "Rail collapse copies App-shell-side-nav's mechanics scoped to the column: labels are hidden, never removed, so accessible names survive; the toggle swaps its label, the chevron href and the nav's own aria-label.",
       "$unproven": "Prose derived from the snippet's own script and comments at #258 L3, not from a driven probe."
     },
-    "$261N2": "COUNT PROMOTION. #261 N2, Dave verbatim: \"the badge should be promoted to the category heading when collapsed\" and \"when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level\". A shut group's heading carries the TOTAL of its children's counts, read from the children so it cannot drift from them; the chip is the same .nv-count, aria-hidden, with the number restated in the button's own accessible name. Entering the rail shuts every group, remembers what it shut, and hands it back on expand. In the rail the chip hangs off the GLYPH at the tab bar's offsets — it was pinned to the row corner and read as floating."
+    "$261N2": "COUNT PROMOTION. #261 N2, Dave verbatim: \"the badge should be promoted to the category heading when collapsed\" and \"when the menu is fully collapsed the submenu should collapse too and the badge promoted to the category level\". A shut group's heading carries the TOTAL of its children's counts, read from the children so it cannot drift from them; the chip is the same .nv-count, aria-hidden, with the number restated in the button's own accessible name. Entering the rail shuts every group, remembers what it shut, and hands it back on expand. In the rail the chip hangs off the GLYPH at the tab bar's offsets — it was pinned to the row corner and read as floating.",
+    "$r1_304": {
+      "why": "typed #304 R1 from the #behaviour-manifest block #261 N hand-authored in the snippet at c0225a0e (s234-D5: the meta is the one home, so the block's four address fields are carried here verbatim and the block is re-derived). events match the snippet's own addEventListener set.",
+      "before": {
+        "fallback": "Every row is a native `<a>` and stays focusable and in the tab order; the authored `aria-current=\"page\"` stands and both its visual carriers (the 3px leading bar and the label's weight step) follow it, because they are bound to the attribute in CSS. What goes: clicking another row never moves `aria-current`, Space does not activate, the arrow/Home/End focus walk is gone, the collapsible group cannot be toggled (it renders in the `aria-expanded`/`hidden` state the markup authors), and the rail collapse toggle does nothing."
+      }
+    }
   },
   "accessibility": {
     "landmarks": "A <nav> landmark with an accessible name. The rail keeps its own name so the two states are distinguishable in a landmark list.",

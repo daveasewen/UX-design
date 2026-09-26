@@ -1,0 +1,113 @@
+— 146 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 60s · ALL steps (mutating included)
+
+⚠ --resume: proceeding over a dirty tree. The dirt below must be the PRIOR
+  chunk's regeneration — if you cannot name why every path is dirty, STOP.
+  (#61's 'gutted' state IS this state: stripped-not-yet-re-enriched, healed
+  only by a COMPLETE pass over the remaining steps.)
+    M _CHAIN.md
+     M knowledge/_ADVISORY-SIGNALS.md
+     M knowledge/_ASSERTIONS.md
+     M knowledge/_CAPTURE-GATE.md
+     M knowledge/_DARK-MODE-AUDIT.json
+     M knowledge/_DARK-MODE-AUDIT.md
+     M knowledge/_GRAPH-REPORT.md
+     M knowledge/_ICON-CONTRAST-DELTA.md
+     M knowledge/_LIVE-STATE-CHECK.md
+     M knowledge/_REVIEW-QUEUE.json
+     M knowledge/_REVIEW-QUEUE.md
+     M knowledge/_RUNBOOKS.md
+     M knowledge/_SCREEN-GATE.md
+     M knowledge/_STATES-COMPLETENESS.md
+     M knowledge/_SUTHERLAND-FIXTURES.md
+     M knowledge/_TYPE-BLAST-GATE.md
+     M knowledge/_VERIFICATION-EDGES.md
+     M knowledge/_XREF-INDEX.json
+     M knowledge/_XREF-INDEX.md
+     M knowledge/_consult-index.json
+     M knowledge/_screen-gate/nio-dash-console-v1.canon.md
+     M knowledge/_screen-gate/nio-dash-console-v2.canon.md
+     M knowledge/_screen-gate/payments-journey.canon.md
+     M knowledge/_screen-gate/sme-payments-desktop.canon.md
+     M knowledge/_screen-gate/sme-payments-swiss.canon.md
+     M knowledge/_screen-gate/sme-payments.canon.md
+     M knowledge/_type_ratchet.json
+     M knowledge/compliance/graph-index.json
+     M knowledge/compliance/rules/wcag-1.3.1-info-and-relationships.json
+     M knowledge/compliance/rules/wcag-1.4.1-use-of-color.json
+     M knowledge/compliance/rules/wcag-1.4.11-non-text-contrast.json
+     M knowledge/compliance/rules/wcag-1.4.3-contrast-minimum.json
+     M knowledge/compliance/rules/wcag-2.3.3-animation-from-interactions.json
+     M knowledge/compliance/rules/wcag-2.4.3-focus-order.json
+     M knowledge/compliance/rules/wcag-2.4.8-location.json
+     M knowledge/compliance/rules/wcag-2.5.5-target-size-enhanced.json
+     M knowledge/compliance/rules/wcag-2.5.8-target-size-minimum.json
+     M knowledge/compliance/rules/wcag-4.1.2-name-role-value.json
+     M knowledge/compliance/rules/wcag-4.1.3-status-messages.json
+     M knowledge/tokens/_blast-radius.json
+     M knowledge/tokens/_manifests/states-probe.json
+     M knowledge/tokens/_manifests/sutherland-fixtures.json
+     M notes/_BUILD-VERDICT-LOG.jsonl
+     M reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html
+  ✅ [126] memento schematic selftest — figure provenance, caption geomet
+  ❌ [127] memento-package delta-audit — #64 boundary enforcement (#79)  exit 1
+  ❌ [128] memento-package delta-audit selftest — mutation-tested, all 4   exit 1
+  ✅ [129] enactment register — is each ruling IN FORCE? (advisory, ADR-0
+  ✅ [130] instrument-fit selftest (advisory, ds-015)
+  ✅ [131] instrument fit — can the gate SEE the property? (advisory, ds-
+  ❌ [132] integrity lint (gate)  exit 1
+  ✅ [133] could-not-ask convention selftest (#193 — the third verdict's 
+  ❌ [134] probe registry — every historically-found defect class, re-dri  exit 1
+  ❌ [135] claim-table evidence linter — s182-D1 tokens + expected observ  exit 1
+  ❌ [136] governs matcher selftest — the [12]/[13] trigger-index arm, na  exit 1
+  ✅ [137] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [138] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [139] pack ship-list audit — the manifest is byte-identical to a fre
+  ✅ [140] release-audit selftest — manifest compare + the pack arm's res
+  ✅ [141] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [142] pack-side CI template selftest — 10 mutants incl. a smuggled c
+  ✅ [143] baked-pack audit — a zip in apollo-spider/dist/ must match the
+  ❌ [144] pack ship-list drift — how far behind HEAD the manifest is (AD  exit 1
+  ✅ [145] polarity gate — five refusals + content-fresh derived status/e
+  ✅ [146] polarity gate selftest — control + every refusal arm on a copy
+
+==============================================================================
+SURVEY: 14 pass · 7 FAIL · 0 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 0 not asked (mutating) · 125 outside --range 126:146 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (7) — this is the number no single `_build_all.py` run can tell you:
+
+  [127] memento-package delta-audit — #64 boundary enforcement (#79)
+      python3 knowledge/_validate_package_delta.py    (exit 1)
+      ✗ VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ file=_gen_chain.py) — 295 line(s) differ
+
+  [128] memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)
+      python3 knowledge/_validate_package_delta.py --selftest   (exit 1)
+      ✗ real repo: clean (0 findings; got 2: ['VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ f
+
+  [132] integrity lint (gate)
+      python3 knowledge/_build_integrity.py    (exit 1)
+      integrity: FAIL — 13 errors, 25 warnings
+
+  [134] probe registry — every historically-found defect class, re-driven (W-45, advisory)
+      python3 knowledge/_probe_registry/_registry.py --run   (exit 1)
+      OK  knowledge/snippets/Action-bar.reference.html         containers=1  @container-targets=5   FAIL=0 WARN=0
+
+  [135] claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)
+      python3 knowledge/_validate_evidence.py notes/_claims   (exit 1)
+      ⛔ EVIDENCE GATE FAIL — 6 lint · 0 unparsed · 5 rc/observation mismatch
+
+  [136] governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)
+      python3 knowledge/_governs.py --selftest   (exit 1)
+      FAIL _governs: ruling s282-D2 evidence `col26-012 override cross-ref measured present at colour-standards-2026.md:79-81 before this ruling; grep 'seco
+
+  [144] pack ship-list drift — how far behind HEAD the manifest is (ADVISORY, ⬛ re-cutting is Dave's) (#219)
+      python3 knowledge/_release/_gate_release_audit.py --drift   (exit 1)
+      (no ✗/FAIL line — see full output)
+
+— recorded → /sessions/rcw-0115rtjy4mpbeejfbjiuhael/clone304r1/notes/_BUILD-VERDICT-LOG.jsonl

@@ -1,0 +1,11 @@
+R1 progress: clone at $HOME/clone304r1 HEAD 571d458c full history; BEFORE survey chunks -> before_*.log
+- BEFORE survey DONE (clone 571d458c): 127 pass? 15 FAIL [8 10 13 38 81 82 86 94 127 128 132 134 135 136 144], 4 CNA [61 68 73 74]. logs before_*.log
+- next: 1a help-gate guards
+- 1a DONE: 12 guards applied on mount (guard.py in $HOME/r1tools); help-gate OK 264 scanned; selftest OK
+- 1b(i) DONE on mount: s282-D2..D5 pointers via _inscribe_ruling --amend-evidence (script R1/s282_pointers.py, idempotent). governs selftest rc=77 (CNA, 0 failures) in clone
+- 1b(ii) DONE mount: 3 metas typed from blocks + gen_component_partials regen (3 snippet blocks, whitespace/escape only); --check OK. 1b(iii) DONE mount: _type-bindings --update + note; gate passes. NB --update also writes knowledge/_TYPE-BLAST-GATE.md? (check)
+- 1c DONE mount: door arm (_git_commit.sh + harness 48 arms green) — premise 'head-only advance' FALSE (schematic survives a commit; stale by content). ASSERT-009 137->138 + README:13 applied LAST on mount. next: AFTER survey in clone
+- AFTER: clone reset to 571d458c, scripts re-applied, committed 98af3643 (clone only); survey -> after_*.log
+- AFTER mutating survey DONE (after_*.log); non-mutating on sources+showroom (after_nm_*) then regen serial + REAL door commit in clone 231c7ed0 (after2_nm_*)
+- FINAL mutating survey on clone 231c7ed0 DONE (final_*.log). next: write report
+- REPORT written: notes/_subreports/2026-09-26-304-R1-ci-sees-to-146.md

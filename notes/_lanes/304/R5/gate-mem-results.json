@@ -1,0 +1,279 @@
+{
+ "$run_utc": "2026-09-26T15:49:09Z",
+ "T1_ten": {
+  "files": 10,
+  "identical": 10,
+  "differ": [],
+  "disk_s": 0.079,
+  "memory_s": 0.068,
+  "list": [
+   "App-shell-top-nav.reference.html",
+   "Breadcrumbs.reference.html",
+   "Button.reference.html",
+   "Chart-bar.reference.html",
+   "Chart-line.reference.html",
+   "Data-grid.reference.html",
+   "Filter-toolbar-bar.reference.html",
+   "Footer.reference.html",
+   "Headers.reference.html",
+   "Kpi-tile.reference.html"
+  ],
+  "verdicts": {
+   "App-shell-top-nav.reference.html": "PASS",
+   "Breadcrumbs.reference.html": "PASS",
+   "Button.reference.html": "PASS",
+   "Chart-bar.reference.html": "PASS",
+   "Chart-line.reference.html": "PASS",
+   "Data-grid.reference.html": "PASS",
+   "Filter-toolbar-bar.reference.html": "PASS",
+   "Footer.reference.html": "PASS",
+   "Headers.reference.html": "PASS",
+   "Kpi-tile.reference.html": "PASS"
+  }
+ },
+ "T1_all": {
+  "files": 137,
+  "identical": 137,
+  "differ": [],
+  "disk_s": 0.794,
+  "memory_s": 0.533
+ },
+ "T2_cases": [
+  {
+   "case": "P0 clean dashboard surface (6 parts, stand-in splice)",
+   "expect": "PASS",
+   "got": "PASS",
+   "ok": true,
+   "refusals": [],
+   "ms": 70.04,
+   "why": ""
+  },
+  {
+   "case": "P1 clean minimal page string: one 44px button",
+   "expect": "PASS",
+   "got": "PASS",
+   "ok": true,
+   "refusals": [],
+   "ms": 12.38,
+   "why": ""
+  },
+  {
+   "case": "P2 planted: 16px button (2.5.8 floor)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "A a11y FAIL: `button.probe-tiny` — 16x16 is under the 24 floor (2.5.8) — enlarge, add a ::before/::after hit-expander, or claim an exception via data-a11y-target-exception"
+   ],
+   "ms": 11.57,
+   "why": "mutation of P1: one size change"
+  },
+  {
+   "case": "P3 planted into the real spliced page: + a 16px button",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "A a11y FAIL: `button.probe-tiny` — 16x16 is under the 24 floor (2.5.8) — enlarge, add a ::before/::after hit-expander, or claim an exception via data-a11y-target-exception"
+   ],
+   "ms": 60.52,
+   "why": "mutation of P0's page by one added control"
+  },
+  {
+   "case": "P4 planted: animation with no reduced-motion block",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "A a11y FAIL: animates but has no `prefers-reduced-motion: reduce` block (2.3.3)"
+   ],
+   "ms": 11.64,
+   "why": ""
+  },
+  {
+   "case": "P5 planted: unknown ARIA role",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "A a11y FAIL: CTRL vocabulary: unknown ARIA role(s) ['probe-made-up-role'] — this gate cannot classify them as interactive or structural, so it cannot tell whether the elements carrying them are in scope for 2.5.8."
+   ],
+   "ms": 11.78,
+   "why": ""
+  },
+  {
+   "case": "P6 surface: part not in the catalogue",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S1b x: part 'Carousel' is not in catalogue https://apollo.invalid/catalogs/apollo-dashboard/v0.0.1-probe/catalog.json",
+    "S6 no reference snippet for ['Carousel']",
+    "S1 schema msg[1] (root): {'version': 'v0.9.1', 'updateComponents': {'surfaceId': 'probe', 'components': [{'id': 'root', 'component': 'AppShellTopNav', 'brand': "
+   ],
+   "ms": 63.55,
+   "why": ""
+  },
+  {
+   "case": "P7 surface: required slot missing (AppShellTopNav without content)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S1b root (AppShellTopNav) (root): 'content' is a required property",
+    "S1b root (AppShellTopNav) (root): Unevaluated properties are not allowed ('brand', 'component', 'primaryNav', 'trail', 'utilityActions' were unexpected)",
+    "S1 schema msg[1] (root): {'version': 'v0.9.1', 'updateComponents': {'surfaceId': 'probe', 'components': [{'id': 'root', 'component': 'AppShellTopNav', 'brand': "
+   ],
+   "ms": 62.64,
+   "why": ""
+  },
+  {
+   "case": "P8 surface: child reference does not resolve",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S4 root.content -> 'ghost' does not resolve"
+   ],
+   "ms": 61.11,
+   "why": "schema cannot see this: ids are plain strings; the structural layer must"
+  },
+  {
+   "case": "P9 surface: no root",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S2 no component with id 'root'"
+   ],
+   "ms": 61.53,
+   "why": ""
+  },
+  {
+   "case": "P10 surface: duplicate ids",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S3 duplicate ids ['kpi']"
+   ],
+   "ms": 66.8,
+   "why": ""
+  },
+  {
+   "case": "P11 surface: deprecated part (ViewOptions)",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S5 vo uses deprecated part ViewOptions"
+   ],
+   "ms": 75.0,
+   "why": ""
+  },
+  {
+   "case": "P12 surface: unknown property on a part",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S1b root (AppShellTopNav) (root): Unevaluated properties are not allowed ('probeUnknown' was unexpected)",
+    "S1 schema msg[1] (root): {'version': 'v0.9.1', 'updateComponents': {'surfaceId': 'probe', 'components': [{'id': 'root', 'component': 'AppShellTopNav', 'brand': "
+   ],
+   "ms": 63.24,
+   "why": ""
+  },
+  {
+   "case": "P13 surface: enum value outside the meta's values",
+   "expect": "REFUSE",
+   "got": "REFUSE",
+   "ok": true,
+   "refusals": [
+    "S1b kpi (KpiTile) state: 'probe-not-a-state' is not one of ['ready', 'loading', 'empty', 'error', 'stale']",
+    "S1b kpi (KpiTile) (root): Unevaluated properties are not allowed ('component', 'state' were unexpected)",
+    "S1 schema msg[1] (root): {'version': 'v0.9.1', 'updateComponents': {'surfaceId': 'probe', 'components': [{'id': 'root', 'component': 'AppShellTopNav', 'brand': "
+   ],
+   "ms": 62.08,
+   "why": ""
+  },
+  {
+   "case": "K1 KNOWN MISS: animation planted into a page whose other part already has a reduced-motion block",
+   "expect": "REFUSE",
+   "got": "PASS",
+   "ok": false,
+   "refusals": [],
+   "ms": 60.26,
+   "why": "the 2.3.3 clause is a whole-string substring test: one block anywhere in the page satisfies it"
+  },
+  {
+   "case": "K2 KNOWN MISS: animation + the phrase only inside a comment",
+   "expect": "REFUSE",
+   "got": "PASS",
+   "ok": false,
+   "refusals": [],
+   "ms": 11.95,
+   "why": "same clause: a comment mentioning the phrase satisfies it"
+  },
+  {
+   "case": "K3 KNOWN MISS: a control that is too small but sized only by padding",
+   "expect": "REFUSE",
+   "got": "PASS",
+   "ok": false,
+   "refusals": [],
+   "ms": 11.46,
+   "why": "layout-determined boxes are UNMEASURED by design (static gate); the render leg would see it"
+  }
+ ],
+ "T1b_planted_differential": {
+  "P1": {
+   "identical": true,
+   "disk_fails": 0,
+   "memory_fails": 0
+  },
+  "P2": {
+   "identical": true,
+   "disk_fails": 1,
+   "memory_fails": 1
+  },
+  "P3": {
+   "identical": true,
+   "disk_fails": 1,
+   "memory_fails": 1
+  },
+  "P4": {
+   "identical": true,
+   "disk_fails": 1,
+   "memory_fails": 1
+  },
+  "P5": {
+   "identical": true,
+   "disk_fails": 1,
+   "memory_fails": 1
+  },
+  "K3": {
+   "identical": true,
+   "disk_fails": 0,
+   "memory_fails": 0
+  }
+ },
+ "T3": {
+  "warm_ms_median": 61.13,
+  "warm_ms_max": 69.67,
+  "n": 25,
+  "cold_ms_incl_validator_build": 71.09,
+  "validator_build_ms_first": 2.53,
+  "a11y_only_ms_median": 48.9,
+  "page_bytes": 165242,
+  "warm_events": {
+   "writes": [],
+   "reads": 0
+  },
+  "cold_events": {
+   "writes": [],
+   "reads": [
+    "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/notes/_lanes/304/R5/a2ui-v0.9.1/json_common_types.json",
+    "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/notes/_lanes/304/R5/a2ui-v0.9.1/json_server_to_client.json"
+   ]
+  }
+ }
+}

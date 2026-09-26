@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal: Apollo-MCP, v2</title>
+<!--CSS-->
+<style>
+/* v2 additions */
+section.part{background:var(--black);color:var(--white);padding:var(--s5) 0;border-bottom:0}
+section.part .label{color:var(--white)}section.part .label::before{background:var(--white)}
+section.part h2{color:var(--white);font-size:44px;font-weight:200;margin:0 0 var(--s2)}
+section.part p{color:var(--grey-3);max-width:40em;margin:0}
+.glance{font-size:26px;font-weight:300;line-height:1.4;max-width:30em;margin:0 0 var(--s4)}
+.glance b{font-weight:500}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2);color:var(--grey-6)}
+.dist .alt .hd{color:var(--accent)}
+.dist dl{margin:0;display:grid;grid-template-columns:1fr;gap:4px}
+.dist dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin-top:var(--s1)}
+.dist dd{margin:0;font-size:15px;line-height:1.55;color:var(--grey-8)}
+.guess{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border:1px solid var(--black);padding:.3rem .6rem;line-height:1.4;margin:0 0 var(--s3)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);margin-top:var(--s3)}
+.lists h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);line-height:1.5;margin:0 0 var(--s1)}
+.lists ul{margin:0;padding:0;list-style:none}
+.lists li{padding:.55rem 0;border-top:1px solid var(--grey-3);font-size:15px;line-height:1.55}
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s3)}
+.ex>div{background:var(--white);padding:var(--s3)}
+.ex .who{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2)}
+.ex .scr{border:1px solid var(--black);padding:12px;display:grid;gap:8px}
+.ex .scr div{background:var(--grey-1);padding:8px 10px;font-size:13px;line-height:1.45}
+.ex .scr div span{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-7);line-height:1.5}
+.ex .scr .no{background:var(--white);border:1px dashed var(--grey-6);color:var(--grey-7)}
+.ex .rec{font-size:13px;color:var(--grey-7);margin-top:var(--s2);line-height:1.55}
+.ex .rec b{color:var(--black);font-weight:500}
+.ask{font-size:19px;font-weight:300;line-height:1.5;margin:var(--s2) 0 0}
+@media(max-width:820px){
+  section.part h2{font-size:32px}.glance{font-size:21px}
+  .dist,.ex,.lists{grid-template-columns:1fr}.lists{gap:var(--s3)}
+  .dist>div,.ex>div{padding:var(--s2)}
+}
+</style></head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · proposal v2 · working title</p>
+        <h1>Apollo-MCP</h1>
+        <p class="sub">Live screens an agent can ask for, built only from Apollo's parts, and checked before anyone sees them.</p>
+      </div>
+      <p class="meta"><b>Proposal v2 · 26 September 2026</b><br>Session 304<br>Status: a recommendation for you to rule on. Nothing here is decided.<br>v2 answers your 14:51 and 14:52 messages: a proof of concept in full, Jev corrected, entitlements guessed.</p>
+    </div>
+    <blockquote>Can I have this as a page, do you think we could create our own MCP-UI -- Apollo-MCP maybe or something that has the same capabilities as  Google's A2UI and MCP-UI. I think we have to come up with a proposal for this, we also did some work around Gen-UI earlier in the year, I think its time to pull these ideas together, maybe do a bit more research and get this doc together<cite>Dave · Saturday 26 September 2026, 13:29</cite></blockquote>
+  </div>
+</header>
+
+<section id="glance">
+  <div class="wrap two">
+    <p class="label">At a glance</p>
+    <div>
+      <p class="glance"><b>Both, at different depths.</b> This page defines the proof of concept in full. It sets the final architecture only as a direction: the shape the proof of concept must not paint out.</p>
+      <blockquote style="margin-top:0">are we defining the a poc too or the architecture for the final piece<cite>Dave · 14:51</cite></blockquote>
+      <p class="line" style="margin-top:var(--s4)"><b>Yes, we can have our own. But not our own protocol.</b> Apollo should speak the two standards that already exist: publish our parts as an A2UI catalogue served through MCP, and where a host can't draw A2UI, send an MCP App running Apollo's own renderer. We own what neither standard has: knowing when each part is right, gating before anything is drawn, checking what each person may see, and recording every screen. The proof of concept is June's contextual dashboard, on mock data, for four mock banking roles.</p>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part">
+  <div class="wrap">
+    <p class="label">Part one</p>
+    <h2>The target architecture</h2>
+    <p>Its shape only. Enough to choose a route and to know what the proof of concept must not paint out.</p>
+  </div>
+</section>
+
+<section id="field">
+  <div class="wrap">
+    <p class="label">The field, in plain words</p>
+    <h2>Three layers. The standards own the wire; Apollo brings the parts and the checks.</h2>
+    <table class="stack">
+      <thead><tr><th>Layer</th><th>What it means</th><th>Who fills it today</th><th>Apollo's part</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Layer"><b>The wire</b></td><td data-l="What it means">How messages travel between the agent, its tools and the app.</td><td data-l="Who fills it today">MCP (agent to tools). AG-UI (agent to app, streamed). A2A (agent to agent).</td><td data-l="Apollo's part">An MCP server. We use the wire; we don't make one.</td></tr>
+        <tr><td data-l="Layer"><b>The screen, as data</b></td><td data-l="What it means">What to draw, written as a description rather than as code.</td><td data-l="Who fills it today">A2UI. Microsoft Adaptive Cards. Vercel's json-render.</td><td data-l="Apollo's part">The catalogue: our parts, their settings and their rules.</td></tr>
+        <tr><td data-l="Layer"><b>The drawing</b></td><td data-l="What it means">Who turns the description into pixels.</td><td data-l="Who fills it today">A2UI renderers for React, Flutter, Lit, Angular and Android. MCP Apps: a sealed frame running the server's own HTML.</td><td data-l="Apollo's part">Apollo's renderer, drawing canon markup. The same renderer runs inside the MCP Apps frame.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cols two-up">
+      <div><p class="hd">A2UI</p><p class="st">Google · v0.9.1 in production · v1.0 due Q4 2026</p>
+        <p>The agent sends a description of the screen as data, never code. The app keeps a catalogue of approved parts and draws them itself.<sup>[1][3][4]</sup></p>
+        <p>Google's own guidance: a catalogue should "directly reflect a client's design system", and be versioned like an API.<sup>[5]</sup></p>
+        <p class="for">For us: the catalogue is exactly where Apollo fits.</p></div>
+      <div><p class="hd">MCP Apps, and MCP-UI</p><p class="st">Official MCP extension since 26 January 2026</p>
+        <p>A tool points to an HTML page, and the host shows it in a sealed frame inside the chat. The widest reach today: Claude, ChatGPT, Microsoft 365 Copilot, VS Code Copilot, Cursor and more.<sup>[14][41]</sup></p>
+        <p>MCP-UI is the community project it grew from. It now says its packages "implement the spec, and serve as a community playground".<sup>[17]</sup></p>
+        <p class="for">For us: the fallback shell, carrying our renderer.</p></div>
+      <div><p class="hd">OpenAI Apps SDK</p><p class="st">ChatGPT · built on MCP</p>
+        <p>ChatGPT's way of putting apps into the chat. ChatGPT now implements the MCP Apps standard; its own hooks stay on as compatibility aliases.<sup>[21][22]</sup></p>
+        <p class="for">For us: no separate work. MCP Apps covers it.</p></div>
+      <div><p class="hd">AG-UI</p><p class="st">CopilotKit · an event stream</p>
+        <p>A live stream of events between an agent and an app: text, tool calls, state. In its makers' words, it "is not a generative UI specification"; it carries A2UI or MCP Apps.<sup>[23][24]</sup></p>
+        <p class="for">For us: a road we could add later, not a choice now.</p></div>
+    </div>
+
+    <p class="label mute" style="margin-top:var(--s5)">Re-checked today, 26 September</p>
+    <ul class="moved">
+      <li><b>A2UI: unchanged.</b> Still v0.9.1 in production; v1.0 still a release candidate aimed at Q4 2026. The roadmap was last updated in June, and the iPhone and Mac renderer is still marked planned.<sup>[3][6]</sup></li>
+      <li><b>MCP Apps hosts: firmer.</b> The official client list now names ChatGPT, Cursor and PostHog Code. The first pass had those only from a secondary source.<sup>[41]</sup></li>
+      <li><b>A2UI in chat hosts: narrower.</b> No general chat host (Claude, ChatGPT, Copilot, the Gemini app) draws A2UI itself. Gemini Enterprise does, but only for agents registered through its agent-to-agent route.<sup>[7]</sup> This is why the fallback shell matters.</li>
+      <li><b>MCP itself: new to this page.</b> July's spec made MCP stateless and put tool names in headers, so a bank's gateway can route and authorise a call without opening it.<sup>[20]</sup></li>
+      <li><b>Bank sign-in: new to this page.</b> Enterprise-managed authorisation is now an official MCP extension. The bank's identity provider decides who can reach which server.<sup>[42]</sup></li>
+      <li><b>Our fallback is Google's own pattern.</b> Google's June post names "packaging the A2UI rendering engine directly within the MCP App bundle" as a supported way to reach hosts that don't draw A2UI.<sup>[12]</sup></li>
+    </ul>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="routes" class="grey">
+  <div class="wrap">
+    <p class="label">Three routes, side by side</p>
+    <h2>Build our own, speak the standards, or ship pages.</h2>
+    <div class="routes">
+      <div class="route">
+        <div><span class="letter">A</span><h3>Our own protocol</h3><span class="tag">From scratch</span></div>
+        <div><span class="k">What we own</span>Everything: the message format, the renderers, and the work of getting each host to support it.</div>
+        <div><span class="k">Reach</span>None on day one. No host speaks it; each would need our renderer built in.</div>
+        <div><span class="k">Cost</span>The highest. A protocol, a renderer per platform, and keeping pace with two standards that move every quarter.</div>
+        <div><span class="k">Risk for a bank</span>A new, unreviewed protocol that a security team has to certify from nothing.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>No.</b> It rebuilds what Google and the MCP group give away, and owns nothing extra that matters.</div>
+      </div>
+      <div class="route pick">
+        <div><span class="letter">B</span><h3>An A2UI catalogue over MCP</h3><span class="tag">Recommended · MCP Apps as the fallback</span></div>
+        <div><span class="k">What we own</span>The catalogue, the renderer, and everything the server does: choosing, entitlement, gates, the record. Not the wire.</div>
+        <div><span class="k">Reach</span>Natively in Gemini Enterprise and any React, Flutter, Angular or Android app. Everywhere else through MCP Apps: Claude, ChatGPT, M365 Copilot, VS Code, Cursor.</div>
+        <div><span class="k">Cost</span>Medium. A catalogue generated from the metas, one renderer, one server. The proof of concept builds a slice of each.</div>
+        <div><span class="k">Risk for a bank</span>The lowest of the three. Screens travel as data; the only HTML is ours, fixed and versioned; every check runs on the server.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>Yes.</b> We speak both standards and own only what is ours: the knowledge and the checks.</div>
+      </div>
+      <div class="route">
+        <div><span class="letter">C</span><h3>MCP Apps pages only</h3><span class="tag">Raw HTML</span></div>
+        <div><span class="k">What we own</span>HTML pages, served into a sealed frame.</div>
+        <div><span class="k">Reach</span>Every MCP Apps host, the same list as B's fallback. Nothing native.</div>
+        <div><span class="k">Cost</span>The lowest to start: our snippets are already HTML.</div>
+        <div><span class="k">Risk for a bank</span>The highest. The server ships code, and planted-script attacks through MCP Apps were reported this month. There is no structure to gate.</div>
+        <div class="verdict"><span class="k">Verdict</span><b>Only as B's shell.</b> On its own it serves our baked pages as they are: tracing, not composing.</div>
+      </div>
+    </div>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="wrap">
+    <p class="label">How one screen gets made</p>
+    <h2>The agent asks. Apollo chooses, checks and sends. The host draws. The graph remembers.</h2>
+<!--DIAG-->
+    <p class="diag-cap">Steps one to four run on the server, before anything reaches the person. The host never decides what is allowed; it only draws what Apollo sent.</p>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="adds" class="grey">
+  <div class="wrap two">
+    <p class="label">What Apollo brings that the specs don't</p>
+    <div>
+      <h2>The standards say what may be drawn. Apollo says what should be.</h2>
+      <p>A2UI and MCP Apps both stop at "these parts are allowed". Neither says which part is right, whether it is accessible, who may see it, or what was shown. Those four are Apollo's.</p>
+      <ol class="beats">
+        <li><div><b>It knows when to use each part.</b>
+          <p>Each part's notes say which question it answers, what shape of data it takes and which rulings govern it. The when-rules make the shortlist; a judgement model may rank inside it, never outside it.</p>
+          <p class="note">Today 39 of 138 parts carry a when-rule. The proof of concept's parts need them all.</p></div></li>
+        <li><div><b>Gates run before anything is drawn.</b>
+          <p>Neither spec requires accessibility: A2UI lists it as long-term vision, and MCP Apps is silent. Apollo runs its gates on the server. A screen that fails is not sent.</p></div></li>
+        <li><div><b>What you may see is settled at the door, not in the screen.</b>
+          <p>Entitlements are enforced where the data is fetched, at the MCP tool, never by hiding things in the interface. Anything that moves money is data-only: no HTML or script from the server.</p></div></li>
+        <li><div><b>Every screen leaves a record.</b>
+          <p>The knowledge graph becomes the audit trail: which catalogue version, which parts, which rulings each one obeyed, and which entitlement decisions were made, for every screen sent. Neither spec says anything about replay or audit.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="judgement">
+  <div class="wrap two">
+    <p class="label">Judgement at run time</p>
+    <div>
+      <h2>The rules make the shortlist. Jev could rank it.</h2>
+      <p>Jev was held back at build time to keep Apollo easy to hand on. It is not ruled out for a live GenUI layer. So the architecture carries two ways to choose, and you pick whether the second one is switched on.</p>
+      <blockquote>Also the reason we've rejected jev at build time is because it makes Apollo less transferable at the moment, its not rulled out completly for a GenUI project.<cite>Dave · 14:51</cite></blockquote>
+      <div class="dist">
+        <div><p class="hd">The baseline · rules only</p>
+          <dl><dt>How it chooses</dt><dd>The when-rules and a fixed evaluator pick the parts and their order.</dd>
+          <dt>What it buys</dt><dd>Works anywhere, with no key and nothing to call out to. The same request gives the same screen.</dd>
+          <dt>What it costs</dt><dd>The order is only as good as the rules, and where they tie or are silent it falls to a fixed default.</dd></dl></div>
+        <div class="alt"><p class="hd">The option · rules plus Jev</p>
+          <dl><dt>How it chooses</dt><dd>The rules make the shortlist. Jev ranks inside it, or reads the request for its intent and data shape. It can never add a part the rules did not allow.</dd>
+          <dt>What it buys</dt><dd>Judgement where the rules tie or say nothing, such as which of three eligible charts fits this question.</dd>
+          <dt>What it costs</dt><dd>A dependency, an API key and an outside service, which makes the GenUI layer less portable. A network hop: 579 to 621 ms per call when measured in September, three calls. One more thing that can be down.</dd>
+          <dt>How it degrades</dt><dd>Slow, down or no key: the server uses the rules' order, and the record says so.</dd></dl></div>
+      </div>
+      <p style="margin-top:var(--s3)">Either way the record keeps Jev's answer beside the screen, so a screen replays from the record, not by asking again. Build time does not change: no gate or build step calls Jev.</p>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part">
+  <div class="wrap">
+    <p class="label">Part two</p>
+    <h2>The proof of concept</h2>
+    <p>Defined in full. June's contextual dashboard, on mock data, for four mock banking roles. It is the first milestone, not the fifth.</p>
+  </div>
+</section>
+
+<section id="poc">
+  <div class="wrap two">
+    <p class="label">Scope</p>
+    <div>
+      <h2>One landing dashboard that assembles itself for whoever asks.</h2>
+      <p>A Global Transaction Banking landing screen. The person asks a plain question such as "what needs my attention this morning?", and Apollo builds the answer from certified parts, for their role, at that time of day.</p>
+      <div class="lists">
+        <div><h3>In</h3><ul>
+          <li>About 15 parts: headline figures, status, lists, a few charts, the page frame.</li>
+          <li>Mock company data: balances, payments awaiting approval, limits, exceptions.</li>
+          <li>Time triggers: cut-offs and month end.</li>
+          <li>Four mock roles, enforced at the tool call.</li>
+          <li>Two hosts: Claude Desktop through MCP Apps, and a small A2UI host of our own.</li>
+          <li>A record in the graph for every screen sent.</li>
+          <li>Jev as a switch, off by default.</li></ul></div>
+        <div><h3>Deliberately out</h3><ul>
+          <li>HSBC's real identity and entitlement services.</li>
+          <li>Any real customer or bank data.</li>
+          <li>Moving money. Screens can show and prepare, never execute.</li>
+          <li>Email and Teams signals, as June's note said.</li>
+          <li>The other 120-odd parts, and other transports such as A2A and AG-UI.</li>
+          <li>A security review and anything hosted beyond your machine.</li></ul></div>
+      </div>
+      <h3 style="margin-top:var(--s5)">What it proves</h3>
+      <ol class="gaps">
+        <li><div><p>A screen can be described as data and drawn to match its reference, by eye and by gate.</p></div></li>
+        <li><div><p>A bad screen is refused before anyone sees it.</p></div></li>
+        <li><div><p>The same request gives two different, correct screens for two roles, and the record says why.</p></div></li>
+        <li><div><p>The same screen reaches a chat host and our own host from one server.</p></div></li>
+        <li><div><p>Whether Jev's ranking is worth its cost, side by side with the rules alone.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="entitlements" class="grey">
+  <div class="wrap">
+    <p class="label">Entitlements in the proof of concept</p>
+    <h2>Four mock roles, checked at the tool call and written into the record.</h2>
+    <p class="guess">Best guess for the PoC, not HSBC's entitlement model</p>
+    <blockquote style="margin-top:0">sorry I wasn't clear :btw we can make a best guess for this for a poc for the entitlements.<cite>Dave · 14:52</cite></blockquote>
+    <table class="stack">
+      <thead><tr><th style="width:18%">Role</th><th style="width:30%">Tools it may call</th><th>Data it may see</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Role"><b>Corporate treasurer</b><br>client side</td><td data-l="Tools it may call">dashboard · positions · payments queue · prepare approval</td><td data-l="Data it may see">Their own company's accounts, all entities. Payments awaiting approval, up to a mock limit of £500,000; anything above needs a second approver.</td></tr>
+        <tr><td data-l="Role"><b>Relationship manager</b><br>bank side</td><td data-l="Tools it may call">dashboard · positions (summary) · client book</td><td data-l="Data it may see">Their own book of client companies, balances at summary level only. No payment detail. Cannot prepare approvals.</td></tr>
+        <tr><td data-l="Role"><b>Operations analyst</b><br>bank side</td><td data-l="Tools it may call">dashboard · payments queue (status only) · exceptions</td><td data-l="Data it may see">Payments in their region's queue, by stage. Repairs and exceptions in full. No balances. Cannot prepare approvals.</td></tr>
+        <tr><td data-l="Role"><b>Auditor</b><br>read only</td><td data-l="Tools it may call">dashboard · audit record</td><td data-l="Data it may see">The records of screens sent and decisions made. No live balances or payments. Cannot call anything that prepares or changes.</td></tr>
+      </tbody>
+    </table>
+    <div class="two" style="margin-top:var(--s5)">
+      <p class="label mute">How it is enforced</p>
+      <div>
+        <ol class="gaps">
+          <li><div><p>Every tool call carries the mock role. The server checks the role against the tool and the data scope before any data is fetched.</p></div></li>
+          <li><div><p>A part is only eligible if every tool it needs was allowed. Refused data never reaches the chooser, so it can't be drawn.</p></div></li>
+          <li><div><p>Every grant and every refusal is written into the screen's record: role, tool, scope, allowed or refused.</p></div></li>
+        </ol>
+      </div>
+    </div>
+    <h3 style="margin-top:var(--s5)">Worked example · one request, two roles</h3>
+    <p class="ask">"What needs my attention this morning?" · 09:10 on month end, two hours before the payments cut-off</p>
+    <div class="ex">
+      <div><p class="who">Corporate treasurer</p>
+        <div class="scr">
+          <div><span>Headline figure</span>Cash position today, with the change since yesterday</div>
+          <div><span>Status</span>Cut-off in 2 hours</div>
+          <div><span>List</span>3 payments awaiting approval: two within your limit, one flagged for a second approver</div>
+          <div><span>Line chart</span>Balance over the last 30 days</div>
+        </div>
+        <p class="rec"><b>Record:</b> positions allowed · payments queue allowed · prepare approval allowed up to the limit · four parts · catalogue version · rulings obeyed.</p></div>
+      <div><p class="who">Operations analyst</p>
+        <div class="scr">
+          <div><span>Headline figure</span>5 payments in repair</div>
+          <div><span>Status</span>Cut-off in 2 hours</div>
+          <div><span>List</span>Exceptions to clear, oldest first</div>
+          <div><span>Bar chart</span>Region's queue by stage</div>
+          <div class="no"><span>Not chosen</span>Cash position: positions refused for this role</div>
+        </div>
+        <p class="rec"><b>Record:</b> positions refused · payments queue allowed, status only · exceptions allowed · four parts · catalogue version · rulings obeyed.</p></div>
+    </div>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="path">
+  <div class="wrap two">
+    <p class="label">The build path</p>
+    <div>
+      <h2>Milestone one is the proof of concept. Everything else comes after it.</h2>
+      <p>Estimates are in sessions, and they are estimates, not measurements. Steps one to four pay back at design time too.</p>
+      <p class="label mute" style="margin-top:var(--s4)">Milestone one · the proof of concept</p>
+      <ol class="beats">
+        <li><div><b>The catalogue.</b>
+          <p>Generate an A2UI catalogue from the metas for the dashboard's 15 or so parts, with when-rules for each.</p>
+          <p class="show">Proves · our notes are enough to describe a part as data</p>
+          <p class="note">Estimate: 1 to 2 sessions.</p></div></li>
+        <li><div><b>The renderer.</b>
+          <p>One renderer that turns an A2UI screen into canon markup, grown from the chart renderer. The same file runs inside the MCP Apps frame.</p>
+          <p class="show">Proves · a screen drawn from data matches its reference, by eye and by gate</p>
+          <p class="note">Estimate: 2 to 3 sessions.</p></div></li>
+        <li><div><b>Gates as a service.</b>
+          <p>The July idea, built: gates that take a screen in memory and return a verdict, served as MCP tools.</p>
+          <p class="show">Proves · a bad screen is refused before it is drawn</p>
+          <p class="note">Estimate: 2 sessions. The static checks take 0.68 s on a file today.</p></div></li>
+        <li><div><b>The chooser.</b>
+          <p>A fixed evaluator over the when-rules, with a seam where a ranker can plug in.</p>
+          <p class="show">Proves · same request, same screen; no candlestick in a cash view</p>
+          <p class="note">Estimate: 2 to 3 sessions.</p></div></li>
+        <li><div><b>The dashboard, end to end.</b>
+          <p>Mock data, the four mock roles at the tool, the record per screen, both hosts. The worked example above, running.</p>
+          <p class="show">Proves · one request, two roles, two correct screens, with the reasons on record</p>
+          <p class="note">Estimate: 3 to 4 sessions.</p></div></li>
+        <li><div><b>Jev, side by side.</b>
+          <p>Switch the ranker on and run the same requests both ways, so you rule by eye whether it earns its cost.</p>
+          <p class="show">Proves · what Jev adds over the rules alone, and at what speed</p>
+          <p class="note">Estimate: 1 session. The whole proof of concept: 11 to 15 sessions, estimated.</p></div></li>
+      </ol>
+      <p class="label mute" style="margin-top:var(--s5)">After the proof of concept · not estimated</p>
+      <ul class="moved">
+        <li><b>The bank's half.</b> The real identity and entitlement service, real data connectors, a security review. Not ours alone.</li>
+        <li><b>Widen the catalogue.</b> When-rules for the rest of the 137 parts, a part family at a time.</li>
+        <li><b>More signals.</b> Email and Teams, once consent and privacy are settled.</li>
+        <li><b>More roads.</b> A2A and AG-UI, if a host needs them.</li>
+      </ul>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="today" class="grey">
+  <div class="wrap">
+    <p class="label">What exists today · measured 26 September</p>
+    <h2>Most of the engine is built. The live half is not.</h2>
+    <div class="stats">
+      <div><span class="n">137</span><span class="c">parts in the catalogue, plus 8 foundations, each with a name, level and status</span></div>
+      <div><span class="n">39<small>of 138</small></span><span class="c">parts carry a when-rule saying when they are the right choice</span></div>
+      <div><span class="n">0.82<small>s</small></span><span class="c">for the chooser to pick 14 parts for a treasury dashboard sentence</span></div>
+      <div><span class="n">0.68<small>s</small></span><span class="c">for the screen gate's static checks on one dashboard page: pass</span></div>
+      <div><span class="n">107<small>s</small></span><span class="c">to build the knowledge graph, 4,888 nodes: an offline build, not a live read</span></div>
+      <div><span class="n">0<small>of 137</small></span><span class="c">code snippets take settings or live data. Each is a finished page with mock data baked in</span></div>
+    </div>
+    <div class="two" style="margin-top:var(--s5)">
+      <p class="label mute">The five gaps</p>
+      <div>
+        <ol class="gaps">
+          <li><div><b>No way to describe a screen as data.</b><p>Our parts are finished pages, not parts you can fill. The one exception is the chart renderer, which already draws from a data description.</p><p class="fix">Closes with: the A2UI catalogue and the renderer, steps one and two.</p></div></li>
+          <li><div><b>No way to plug live data in.</b><p>We name 23 shapes of data, but nothing maps a real source onto a part.</p><p class="fix">Closes with: A2UI's data model and bindings, mapped to our 23 shapes. Mock data first.</p></div></li>
+          <li><div><b>The gates are fast but tied to files.</b><p>They read files from the repo and write reports to disk. The render check needs a browser, and its time is unmeasured.</p><p class="fix">Closes with: gates as a service, step three.</p></div></li>
+          <li><div><b>Choosing is by keyword and role, not a plan.</b><p>For a treasury cash view the chooser offered a candlestick chart. It returns candidates, not a layout.</p><p class="fix">Closes with: the rules' evaluator, step four, with Jev as an optional ranker, step six.</p></div></li>
+          <li><div><b>Nothing knows about the person.</b><p>Entitlements, context, consent and audit, the whole vehicle half of June's note, have nothing in the repo yet.</p><p class="fix">Closes with: the four best-guess roles in the proof of concept; the bank's identity service after it.</p></div></li>
+        </ol>
+        <div class="dd-host"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="wrap">
+    <p class="label">Risks and controls for a regulated bank</p>
+    <h2>In agent screens, the screen itself is part of the attack surface.</h2>
+    <table class="stack">
+      <thead><tr><th style="width:18%">Risk</th><th style="width:36%">What it looks like</th><th>The control</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Risk"><b>A steered agent</b></td><td data-l="What it looks like">A document or message tells the agent to show something else, or act for someone else.<sup>[36][37]</sup></td><td data-l="The control">The agent can only pick from the catalogue. Entitlements are checked at the tool, never taken from the agent. The gates refuse what breaks the rules.</td></tr>
+        <tr><td data-l="Risk"><b>A planted script</b></td><td data-l="What it looks like">A tool stores harmful HTML that later runs inside a trusted chat window. Reported 7 September 2026.<sup>[40]</sup></td><td data-l="The control">No HTML made by the server. The only HTML is Apollo's renderer, fixed and versioned; every screen travels as data.</td></tr>
+        <tr><td data-l="Risk"><b>A convincing fake</b></td><td data-l="What it looks like">A well-branded screen is itself a way to fool people.<sup>[38]</sup></td><td data-l="The control">Money screens are data-only, and step-up confirmation stays in the bank's own flow. Every screen carries its catalogue version and its record.</td></tr>
+        <tr><td data-l="Risk"><b>Too much power</b></td><td data-l="What it looks like">The agent can reach more than the task needs, or borrow the person's rights.<sup>[36][39]</sup></td><td data-l="The control">Least-privilege tool scopes with step-up. No passing tokens through. The bank's identity provider decides who reaches the server.<sup>[42]</sup> Hosts can limit which tools a screen may call.<sup>[16]</sup></td></tr>
+        <tr><td data-l="Risk"><b>A judge that goes quiet</b></td><td data-l="What it looks like">If Jev is switched on and is slow, down or unreachable, screens could stall.</td><td data-l="The control">A time limit, then the rules' order. Jev can only rank what the rules allowed. Its answer is kept in the record.</td></tr>
+        <tr><td data-l="Risk"><b>Inaccessible screens</b></td><td data-l="What it looks like">Neither spec requires accessibility.<sup>[6][15]</sup></td><td data-l="The control">Apollo's gates run before sending: contrast, names, focus, spans.</td></tr>
+        <tr><td data-l="Risk"><b>No record</b></td><td data-l="What it looks like">Neither spec says anything about replay, determinism or keeping records.</td><td data-l="The control">The graph record per screen, including entitlement decisions and any ranking. Screens replay from the record.</td></tr>
+        <tr><td data-l="Risk"><b>Everyone sees a different bank</b></td><td data-l="What it looks like">Personal screens wear away the shared picture people work from. June's own risk.</td><td data-l="The control">A stable spine, with the edges personalised.</td></tr>
+      </tbody>
+    </table>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="decide" class="grey">
+  <div class="wrap two">
+    <p class="label">What you decide</p>
+    <div>
+      <h2>Six calls. Each comes with a recommendation.</h2>
+      <ol class="beats decide">
+        <li><div><b>The route.</b>
+          <p>Recommend route B: Apollo as an A2UI catalogue over MCP, with MCP Apps as the fallback shell. It reaches every major host today, and we own only what is ours.</p></div></li>
+        <li><div><b>The proof of concept, as scoped.</b>
+          <p>Recommend it as written: the landing dashboard, about 15 parts, mock data, four best-guess roles, show and prepare only. It proves the whole loop without touching anything real.</p></div></li>
+        <li><div><b>Jev in the GenUI layer: yes, no or later.</b>
+          <p>Recommend yes for the proof of concept, as a ranker behind a switch that is off by default. You get the side-by-side evidence without making the layer depend on it.</p></div></li>
+        <li><div><b>The name.</b>
+          <p>Apollo-MCP names the pipe, and the pipe may change: A2UI also travels over A2A and AG-UI. Plain alternatives: Apollo Live, Apollo Wire, Apollo Floor.</p>
+          <p>Recommend Apollo Live, because it says what it does and outlasts any one standard.</p></div></li>
+        <li><div><b>Screens that move money.</b>
+          <p>Recommend data-only in the target, never raw HTML, with confirmation kept in the bank's own flow. The proof of concept moves no money at all.</p></div></li>
+        <li><div><b>When to start.</b>
+          <p>Recommend starting the proof of concept now. Its first four steps pay back at design time, and June called run-time gates "the one shared investment".</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="thread">
+  <div class="wrap two">
+    <p class="label">How we got here</p>
+    <div>
+      <h2>One idea, carried since June. Now there are standards to carry it on.</h2>
+      <dl class="facts">
+        <dt>20 June</dt><dd><b>The strategy lock.</b> Making screens is becoming a commodity; the value is upstream of it. Wrap the editor, don't build it.</dd>
+        <dt>29 June</dt><dd><b>The engine in a second vehicle.</b> Apollo's gated parts are a trust layer for any assembled screen. The first vehicle: a dashboard that assembles itself for each person from certified cards. Making the screen becomes choosing, ranking and arranging.</dd>
+        <dt>2 July</dt><dd><b>The north star.</b> One screen, one day. The gap that matters here: the gates have to run while a screen is made, not in review afterwards.</dd>
+        <dt>3 July</dt><dd><b>The iteration machine.</b> The loop as a front end, with the checks present under every temperature. Your note on it: "It can run hot".</dd>
+        <dt>14 July</dt><dd><b>Gates as a service.</b> Your idea: serve Apollo's checks as MCP tools, so an agent can check its own work mid-task. Recorded, never built. This is Apollo-MCP's direct ancestor.</dd>
+        <dt>19 Sept</dt><dd><b>Apollo composes.</b> You ruled by eye that tracing an existing page is not Apollo: "this isn't Apollo its a dot-to-dot book". A live screen has to be composed too, not traced.</dd>
+        <dt>21 Sept</dt><dd><b>Jev held back at build time.</b> To keep Apollo easy to hand on, with the option of fuller use kept open.</dd>
+        <dt>25 Sept</dt><dd><b>Your question.</b> "so we talked in the past about how we might be able to translate what we have to generating live GenUI, can you find this or let me know how we might use parts of Apollo for realtime GenUI"</dd>
+        <dt>26 Sept</dt><dd><b>This page.</b> v1 at 13:29's ask; v2 on your 14:51 and 14:52 answers.</dd>
+      </dl>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <p class="label mute">Sources · dated</p>
+    <p class="tech">Numbers 1 to 40 come from the first research pass, earlier today, each accessed 26 September 2026 unless it carries its own date. Those marked re-checked were opened again for this page on 26 September 2026. 41 and 42 are new.</p>
+<!--SOURCES-->
+  </div>
+</section>
+
+<section id="tech">
+  <div class="wrap">
+    <p class="label mute">Technical · paths, ids and counts</p>
+    <div class="tech">
+<!--TECH-->
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · proposal · Apollo-MCP · v2 · 2026-09-26 · session 304</span>
+    <span>Nothing here is decided. Every section takes a decision below it.</span>
+  </div>
+</footer>
+
+<!--OVERLAY-->
+</body></html>

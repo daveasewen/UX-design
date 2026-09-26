@@ -1,0 +1,51 @@
+— 146 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 60s · non-mutating steps only
+
+  ✅ [126] memento schematic selftest — figure provenance, caption geomet
+  ❌ [128] memento-package delta-audit selftest — mutation-tested, all 4   exit 1
+  ✅ [130] instrument-fit selftest (advisory, ds-015)
+  ✅ [133] could-not-ask convention selftest (#193 — the third verdict's 
+  ⊘ [136] governs matcher selftest — the [12]/[13] trigger-index arm, na  COULD-NOT-ASK
+  ✅ [137] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [138] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [139] pack ship-list audit — the manifest is byte-identical to a fre
+  ✅ [140] release-audit selftest — manifest compare + the pack arm's res
+  ✅ [141] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [142] pack-side CI template selftest — 10 mutants incl. a smuggled c
+  ✅ [145] polarity gate — five refusals + content-fresh derived status/e
+  ✅ [146] polarity gate selftest — control + every refusal arm on a copy
+
+==============================================================================
+SURVEY: 11 pass · 1 FAIL · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 8 not asked (mutating) · 125 outside --range 126:146 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (1) — this is the number no single `_build_all.py` run can tell you:
+
+  [128] memento-package delta-audit selftest — mutation-tested, all 4 arms (#79)
+      python3 knowledge/_validate_package_delta.py --selftest   (exit 1)
+      ✗ real repo: clean (0 findings; got 2: ['VERBATIM SET: memento-package/machinery/_gen_chain.py DIFFERS from knowledge/_gen_chain.py (copy=machinery/ f
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [136] governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)
+      python3 knowledge/_governs.py --selftest   (exit 77)
+      COULD-NOT-ASK: _governs.py --selftest — 4 evidence pointer(s) name paths this checkout cannot hold: ruling ds-034's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-034's evidence `outputs/_PARTITION-button-primary-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-035's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling s245-D6's evidence `knowledge/_tmp/l3-245/rename-plan.json` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer
+
+NOT ASKED (8 mutating steps) — run --include-mutating on a clean tree to include them:
+  [127] memento-package delta-audit — #64 boundary enforcement (#79)
+  [129] enactment register — is each ruling IN FORCE? (advisory, ADR-0016)
+  [131] instrument fit — can the gate SEE the property? (advisory, ds-015)
+  [132] integrity lint (gate)
+  [134] probe registry — every historically-found defect class, re-driven 
+  [135] claim-table evidence linter — s182-D1 tokens + expected observatio
+  [143] baked-pack audit — a zip in apollo-spider/dist/ must match the man
+  [144] pack ship-list drift — how far behind HEAD the manifest is (ADVISO
+
+— recorded → /sessions/rcw-0115rtjy4mpbeejfbjiuhael/clone304r1/notes/_BUILD-VERDICT-LOG.jsonl

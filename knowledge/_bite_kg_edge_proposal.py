@@ -7,6 +7,7 @@ Drives the REAL objects from knowledge/_build_kg_explorer.py — VERB_RX, MENTIO
 window/direction arithmetic of the mention loop — not a copy. Mutation-proven: widen VERB_RX back
 to a left boundary only and cases 1-5 fail; drop the neighbour clamp and case W2 fails.
 """
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)  # help gate (#158 write-by-default class; guarded #304 R1)
 import os, sys, importlib.util
 
 spec = importlib.util.spec_from_file_location(

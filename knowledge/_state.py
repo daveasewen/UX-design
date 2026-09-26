@@ -362,6 +362,42 @@ def check_homes(items, root=None):
 
 # ---- the gate ----------------------------------------------------------------------------------
 
+# ---- THE REGROWTH ARM (#304 Run 2c) — ADVISORY until Dave flips the dial --------------------------
+# #304 lane A2 measured this store as ONE-WAY: across #284–#303 it opened 169 rows and closed 4. The
+# mechanism is plain in the rows themselves: every wrap mints document rows whose close is an EVENT at
+# a named session ("the #N opener has read this report", "the #N wrap commit lands"), and once that
+# session is over nothing ever looks back. Run 2b closed 53 such rows by hand, each with its receipt;
+# without an instrument the same wraps grow them straight back [[instrument-without-a-consumer]].
+# This arm NAMES every LIVE row whose close condition names only opener/wrap events at sessions that
+# have ALREADY WRAPPED. It closes nothing (a close carries a receipt, and a regex cannot supply one)
+# and it does not change what a wrap mints (that is a ritual change, and Dave's).
+# "Already wrapped" is COMPUTED FROM THE STORE, never typed: session N has wrapped when a LATER session
+# has opened a row (N < max(opened)). No git, no clock — the same answer in a clone, a pack or a seat.
+# ⚠ Same dial shape as HOME_ROT_BLOCKING: False = one NOTE line; True = one FAILURE per named row.
+REGROWTH_BLOCKING = False   # Dave's dial (#304). Promotion to blocking is his word, not a lane's.
+PAST_SESSION_RE = re.compile(
+    r"#(\d{2,3})(?:'s)?\s+(?:opener|wrap|post-wrap|capture|record|commit|ran)\b", re.I)
+
+
+def past_session_closes(items):
+    """[(id, N, latest)] for every LIVE item whose `closes_when` names opener/wrap-type EVENTS only at
+    sessions that have already wrapped (every named N < the latest session that opened a row).
+    A condition that also names the latest session (or a later one) is NOT named: it may still fire."""
+    opened = [i.get("opened") for i in items
+              if isinstance(i.get("opened"), int) and not isinstance(i.get("opened"), bool)]
+    if not opened:
+        return []
+    latest = max(opened)
+    out = []
+    for it in items:
+        if it.get("state") not in LIVE_STATES or not isinstance(it.get("closes_when"), str):
+            continue
+        ns = [int(m.group(1)) for m in PAST_SESSION_RE.finditer(it["closes_when"])]
+        if ns and all(n < latest for n in ns):
+            out.append((it.get("id", "<no id>"), max(ns), latest))
+    return out
+
+
 def check(doc=None, path=STORE):
     """Return `(ok: bool, failures: list[str], notes: list[str])`.
 
@@ -538,6 +574,20 @@ def check(doc=None, path=STORE):
         notes.append(h_note)
     if h_fails:
         (fails if HOME_ROT_BLOCKING else notes).extend(h_fails)
+
+    # ---- the REGROWTH arm (#304) — see past_session_closes(). ADVISORY: a NOTE unless Dave's dial.
+    rg = past_session_closes(items)
+    if rg and REGROWTH_BLOCKING:
+        fails.extend(f"{i}: REGROWTH — closes on an event at #{n}, and #{n} has wrapped (the store "
+                     f"has rows opened up to #{last}); close it by addition with its receipt, or "
+                     f"restate the condition" for i, n, last in rg)
+    elif rg:
+        notes.append(f"REGROWTH (advisory, #304): {len(rg)} live row(s) close only on opener/wrap "
+                     f"events at sessions that have already wrapped (rows opened up to "
+                     f"#{rg[0][2]}) — each is MET (close it by addition, with its receipt) or STALE "
+                     f"(restate it): " + ", ".join(f"{i} (#{n})" for i, n, _ in rg[:15])
+                     + (f" …(+{len(rg) - 15} more)" if len(rg) > 15 else "")
+                     + ". REGROWTH_BLOCKING is Dave's dial.")
 
     return (not fails), fails, notes
 
@@ -923,6 +973,53 @@ def selftest():
             bite("home rot BLOCKS when Dave flips the dial", bad, False, "home UNRESOLVABLE")
         finally:
             HOME_ROT_BLOCKING = was
+
+    # 16. THE REGROWTH ARM (#304) — planted row, both sides of the dial, the controls, and the
+    # MUTATION: with the clause's pattern made unmatchable the planted row must NOT be named, which
+    # proves the naming comes from this clause and nothing else.
+    def _rg_doc(cw_old, state_old="open"):
+        d = healthy()
+        a = dict(d["items"][0], id="W-100", opened=200, owner="claude", closes_when=cw_old,
+                 state=state_old)
+        if state_old == "done":
+            a["closed_by"] = "fixture receipt"
+        b = dict(d["items"][0], id="W-101", opened=201, owner="claude")
+        d["items"] = [a, b]
+        return d
+
+    def _rg_named(d):
+        n_bites[0] += 1
+        ok, fs, ns = check(d)
+        return ok, [x for x in fs + ns if "REGROWTH" in x]
+
+    global REGROWTH_BLOCKING, PAST_SESSION_RE
+    _rg_was, _re_was = REGROWTH_BLOCKING, PAST_SESSION_RE
+    try:
+        REGROWTH_BLOCKING = False
+        ok, hit = _rg_named(_rg_doc("the #200 opener has read this report and carried its questions"))
+        if not (ok and hit and "W-100 (#200)" in hit[0]):
+            fails.append(f"[regrowth planted] a past-session close was not NAMED as a note: ok={ok} {hit}")
+        ok, hit = _rg_named(_rg_doc("the #201 opener has read this report and carried its questions"))
+        if hit:
+            fails.append(f"[regrowth current] a close at the LATEST session was named: {hit}")
+        ok, hit = _rg_named(_rg_doc("the #200 wrap commit lands and the #201 opener reads it"))
+        if hit:
+            fails.append(f"[regrowth partial] a condition that still names the latest session was named: {hit}")
+        ok, hit = _rg_named(_rg_doc("the #200 opener has read this report", state_old="done"))
+        if hit:
+            fails.append(f"[regrowth done] a CLOSED row was named: {hit}")
+        REGROWTH_BLOCKING = True
+        ok, hit = _rg_named(_rg_doc("the #200 opener has read this report and carried its questions"))
+        if ok or not any(x.startswith("W-100: REGROWTH") for x in hit):
+            fails.append(f"[regrowth dial] Dave's dial did not turn the note into a failure: ok={ok} {hit}")
+        REGROWTH_BLOCKING = False
+        PAST_SESSION_RE = re.compile(r"(?!x)x")          # the mutation: the clause cannot match
+        ok, hit = _rg_named(_rg_doc("the #200 opener has read this report and carried its questions"))
+        if hit:
+            fails.append(f"[regrowth mutation] with the clause removed the planted row was STILL named "
+                         f"— something else is naming it: {hit}")
+    finally:
+        REGROWTH_BLOCKING, PAST_SESSION_RE = _rg_was, _re_was
 
     # +4 non-`bite()` arms: the malformed-store raise, the duplicate-rank NOTE, the
     # coverage NOTE, and the counts-move arm. `_hn` counts the home-resolver arms, which are

@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan: the roadmap and the weekend runs, v1</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max-width:1100px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--black);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--grey-6)}.label.mute::before{background:var(--grey-3)}
+header{padding:64px 0 48px;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:56px;font-weight:200;line-height:1.08;letter-spacing:-.01em;margin:0}
+.sub{font-size:26px;font-weight:300;line-height:1.3;margin:var(--s3) 0 0;max-width:24em}
+h2{font-size:34px;font-weight:300;line-height:1.18;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:13px;line-height:1.7;color:var(--grey-7)}
+.meta b{font-weight:500;color:var(--black)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white)}
+section.dark h2{color:var(--white)}section.dark p{color:var(--grey-3)}section.dark .label{color:var(--white)}section.dark .label::before{background:var(--white)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s5);align-items:start}
+.beats{list-style:none;padding:0;margin:var(--s4) 0 0;counter-reset:b}
+.beats li{counter-increment:b;display:grid;grid-template-columns:72px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--grey-3)}
+.beats li::before{content:counter(b,decimal-leading-zero);font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6)}
+.beats b{display:block;font-weight:500;margin-bottom:4px;font-size:18px;line-height:1.35}
+.beats p{margin:0 0 var(--s1);color:var(--grey-8)}
+.beats .show{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--black);margin-top:6px;line-height:1.5}
+.beats .note{font-size:13px;color:var(--grey-7);margin-top:var(--s1)}
+.line{font-size:26px;font-weight:300;line-height:1.4;max-width:28em;margin:0}
+.line b{font-weight:500}
+dl.facts{margin:var(--s4) 0 0;display:grid;grid-template-columns:120px 1fr;gap:var(--s2) var(--s3);font-size:15px}
+dl.facts dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);padding-top:4px;line-height:1.5}
+dl.facts dd{margin:0}
+dl.facts dd b{font-weight:500}
+blockquote{margin:var(--s4) 0 0;padding:0 0 0 var(--s3);border-left:2px solid var(--accent);font-size:20px;font-weight:300;line-height:1.5;max-width:40em}
+blockquote cite{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:10px;font-style:normal;line-height:1.5}
+.q{font-weight:300}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);margin-top:var(--s4);border:1px solid var(--grey-3)}
+.cols.two-up{grid-template-columns:repeat(2,1fr)}
+.cols>div{background:var(--white);padding:var(--s3)}
+.cols .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--black);font-weight:500;margin-bottom:4px;line-height:1.5}
+.cols .st{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2);line-height:1.5}
+.cols p{font-size:15px;margin:0 0 var(--s1);color:var(--grey-8)}
+.cols p.for{margin-top:var(--s2);padding-top:var(--s1);border-top:1px solid var(--grey-2);color:var(--black)}
+sup{font-size:10px;line-height:0;color:var(--grey-6);letter-spacing:.02em}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:var(--s3)}
+th,td{text-align:left;padding:.7rem .9rem .7rem 0;border-bottom:1px solid var(--grey-3);vertical-align:top;line-height:1.55}
+th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500}
+td b{font-weight:500}
+/* the diagram */
+.diag{margin-top:var(--s4);background:var(--white);border:1px solid var(--grey-3);padding:var(--s3)}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.diag .tall{display:none;max-width:420px;margin:0 auto}
+.diag-cap{font-size:13px;color:var(--grey-7);margin-top:var(--s2);max-width:60em}
+/* three routes */
+.routes{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:auto;gap:0 1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.route{display:grid;grid-row:span 6;grid-template-rows:subgrid;background:var(--white);padding:0 var(--s3)}
+.route>div{padding:var(--s2) 0;border-top:1px solid var(--grey-2);font-size:15px;line-height:1.55;color:var(--grey-8)}
+.route>div:first-child{border-top:0;padding-top:var(--s3)}
+.route .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:4px;line-height:1.5}
+.route .letter{font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6);display:block}
+.route h3{margin:6px 0 4px;font-size:19px}
+.route .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.route.pick{box-shadow:inset 0 3px 0 var(--black)}
+.route.pick .tag{color:var(--accent);font-weight:500}
+.route .verdict{color:var(--black)}
+.route .verdict b{font-weight:500}
+/* measured stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.stats>div{background:var(--white);padding:var(--s3)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.1;display:block}
+.stats .n small{font-size:20px;font-weight:300;color:var(--grey-7);margin-left:4px}
+.stats .c{font-size:14px;line-height:1.5;color:var(--grey-8);display:block;margin-top:var(--s1)}
+.gaps{list-style:none;padding:0;margin:0;counter-reset:g}
+.gaps li{counter-increment:g;display:grid;grid-template-columns:48px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--grey-3)}
+.gaps li::before{content:counter(g);font-size:28px;font-weight:200;line-height:1.15;color:var(--grey-6)}
+.gaps b{font-weight:500;display:block}
+.gaps p{margin:0 0 4px;color:var(--grey-8);font-size:15px}
+.gaps .fix{color:var(--black)}
+.moved{list-style:none;padding:0;margin:var(--s3) 0 0}
+.moved li{padding:var(--s1) 0;border-top:1px solid var(--grey-3);font-size:15px}
+.moved b{font-weight:500}
+.tech{font-size:13px;color:var(--grey-7);max-width:64em}
+.tech p{margin:0 0 var(--s2)}
+.tech code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--grey-1);padding:.1em .35em;overflow-wrap:anywhere}
+ol.src{font-size:13px;color:var(--grey-7);padding-left:2.2em;margin:var(--s3) 0 0;max-width:64em}
+ol.src li{margin:0 0 6px;line-height:1.55;overflow-wrap:anywhere}
+ol.src a{color:var(--grey-8)}
+ol.src .re{color:var(--black);font-weight:500}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+@media(max-width:820px){
+  .wrap{padding:0 16px}header .grid,.two,.cols,.cols.two-up{grid-template-columns:1fr}
+  .two{gap:0}
+  h1{font-size:40px}.sub{font-size:21px}h2{font-size:26px}.line{font-size:21px}
+  blockquote{font-size:18px}
+  .beats li{grid-template-columns:44px 1fr;gap:var(--s2)}.beats li::before{font-size:30px}
+  dl.facts{grid-template-columns:1fr;gap:4px var(--s2)}dl.facts dd{margin-bottom:var(--s2)}
+  .diag{padding:var(--s2) 12px}.diag .wide{display:none}.diag .tall{display:block}
+  .routes{grid-template-columns:1fr;gap:1px 0}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}.stats>div{padding:var(--s2)}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack tr{border-top:1px solid var(--grey-3);padding:.6rem 0}
+  table.stack td{border:0;padding:.25rem 0}
+  table.stack td::before{content:attr(data-l);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+}
+</style>
+<style>
+/* v2 additions */
+section.part{background:var(--black);color:var(--white);padding:var(--s5) 0;border-bottom:0}
+section.part .label{color:var(--white)}section.part .label::before{background:var(--white)}
+section.part h2{color:var(--white);font-size:44px;font-weight:200;margin:0 0 var(--s2)}
+section.part p{color:var(--grey-3);max-width:40em;margin:0}
+.glance{font-size:26px;font-weight:300;line-height:1.4;max-width:30em;margin:0 0 var(--s4)}
+.glance b{font-weight:500}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2);color:var(--grey-6)}
+.dist .alt .hd{color:var(--accent)}
+.dist dl{margin:0;display:grid;grid-template-columns:1fr;gap:4px}
+.dist dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin-top:var(--s1)}
+.dist dd{margin:0;font-size:15px;line-height:1.55;color:var(--grey-8)}
+.guess{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border:1px solid var(--black);padding:.3rem .6rem;line-height:1.4;margin:0 0 var(--s3)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);margin-top:var(--s3)}
+.lists h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);line-height:1.5;margin:0 0 var(--s1)}
+.lists ul{margin:0;padding:0;list-style:none}
+.lists li{padding:.55rem 0;border-top:1px solid var(--grey-3);font-size:15px;line-height:1.55}
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s3)}
+.ex>div{background:var(--white);padding:var(--s3)}
+.ex .who{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2)}
+.ex .scr{border:1px solid var(--black);padding:12px;display:grid;gap:8px}
+.ex .scr div{background:var(--grey-1);padding:8px 10px;font-size:13px;line-height:1.45}
+.ex .scr div span{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-7);line-height:1.5}
+.ex .scr .no{background:var(--white);border:1px dashed var(--grey-6);color:var(--grey-7)}
+.ex .rec{font-size:13px;color:var(--grey-7);margin-top:var(--s2);line-height:1.55}
+.ex .rec b{color:var(--black);font-weight:500}
+.ask{font-size:19px;font-weight:300;line-height:1.5;margin:var(--s2) 0 0}
+@media(max-width:820px){
+  section.part h2{font-size:32px}.glance{font-size:21px}
+  .dist,.ex,.lists{grid-template-columns:1fr}.lists{gap:var(--s3)}
+  .dist>div,.ex>div{padding:var(--s2)}
+}
+</style>
+<style>
+/* plan additions */
+.stats.six{grid-template-columns:repeat(3,1fr)}
+.run{border:1px solid var(--grey-3);background:var(--white);margin-top:var(--s4)}
+.run .head{display:grid;grid-template-columns:72px 1fr auto;gap:var(--s3);align-items:start;padding:var(--s3);border-bottom:1px solid var(--grey-2)}
+.run .head .num{font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6)}
+.run .head h3{font-size:22px;font-weight:500;line-height:1.25;margin:4px 0 4px}
+.run .head p{margin:0;color:var(--grey-8);font-size:15px;max-width:44em}
+.tag{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .6rem;border:1px solid var(--black);color:var(--black);line-height:1.4;white-space:nowrap}
+.tag.go{background:var(--black);color:var(--white)}
+.tag.his{border-color:var(--accent);color:var(--accent)}
+.run .body{padding:0 var(--s3) var(--s3)}
+.run .body h4{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);font-weight:500;margin:var(--s3) 0 var(--s1);line-height:1.5}
+.run .body p{font-size:15px;color:var(--grey-8);margin:0 0 var(--s1)}
+.run ol.nailed{margin:0;padding-left:1.4em;font-size:15px;color:var(--grey-8)}
+.run ol.nailed li{margin:0 0 4px;line-height:1.55}
+.run table{margin-top:var(--s1);font-size:14px}
+.run table td,.run table th{padding:.5rem .8rem .5rem 0}
+.run .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin-top:var(--s2)}
+.run .kv p{margin:0}
+.run .kv b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500;margin-bottom:4px}
+.days{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.days>div{background:var(--white);padding:var(--s3)}
+.days .d{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;margin-bottom:var(--s1);line-height:1.5}
+.days p{font-size:15px;color:var(--grey-8);margin:0 0 6px}
+.est{font-size:12px;color:var(--grey-6);letter-spacing:.04em}
+.beats.decide li p.rec{color:var(--black)}
+.beats.decide li p.rec b{display:inline;font-size:inherit}
+.diag .tall{max-width:440px}
+@media(max-width:820px){
+  .stats.six{grid-template-columns:1fr 1fr}
+  .run .head{grid-template-columns:44px 1fr;gap:var(--s2)}
+  .run .head .num{font-size:30px}
+  .run .head .tags{grid-column:2}
+  .run .kv{grid-template-columns:1fr;gap:var(--s2)}
+  .days{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · plan v1 · session 304</p>
+        <h1>The roadmap, and the weekend runs</h1>
+        <p class="sub">Where Apollo stands after Friday, what to build by Tuesday, and which runs can start tonight without a word from you.</p>
+      </div>
+      <p class="meta"><b>Plan v1 · Saturday 26 September 2026</b><br>Session 304, seat F (Fable), from four analysis reports<br>Status: a recommendation for you to rule on. Nothing here is decided.<br>Estimates are marked as estimates. Counts were re-measured at your seat today.</p>
+    </div>
+    <blockquote>Okay this is cool for now, I think we need to return to the Apollo track, I need to set you off in a couple of big runs to get the best out our tokens. […] I think we need an analysis of all the proposed development of Apollo we already have and, check out the future state too. then lets layout a proposed roadmap so we can make some progress. Put together a plan, lets leverage some big pushes over this weekend that I can leave you to churn though, recommend the models, effort levels and subs structure you propose to get some work nailed by early next week. don't worry about token spend. lets get ripping, you know the usual instructions, watch the externalities, dependancies and test it hard :)<cite>Dave · Saturday 26 September 2026, 15:33</cite></blockquote>
+  </div>
+</header>
+
+<section id="answer">
+  <div class="wrap two">
+    <p class="label">The answer first</p>
+    <div>
+      <p class="glance"><b>The parts, the gates and the graph are built. The pack your audience holds does not carry them, and the build that would prove they work has been blind since 9 September.</b></p>
+      <p class="line">By Tuesday morning: a build that runs to the end and reports honestly, a ruling store that says what is really enacted, five rulings you already gave now in the tree, and a candidate Spider v1.0.14 that carries the graph, the brain and all 638 rulings, composes instead of tracing the template, and has been scored cold against v1.0.13. Beside it, a probe that says what the metas can and cannot hand to an Apollo-MCP catalogue. You get one sitting of ten plain questions, then you cut.</p>
+      <p style="margin-top:var(--s3);color:var(--grey-8)">Three of the six runs need no word from you and can start tonight. Tokens are not the constraint this weekend; your decision load and the seat staying alive are, so the plan spends tokens on verification and keeps your Tuesday short.</p>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part">
+  <div class="wrap">
+    <p class="label">Part one</p>
+    <h2>Where we are</h2>
+    <p>Four reports boiled down: health, the backlog, and the gap between what Friday's deck promised and what the pack does.</p>
+  </div>
+</section>
+
+<section id="where" class="grey">
+  <div class="wrap">
+    <p class="label">Measured today, 26 September</p>
+    <h2>Most of the engine exists. Nothing can see all of it at once.</h2>
+    <div class="stats six">
+      <div><span class="n">138<small>steps unasked</small></span><span class="c">CI stops the knowledge build at step 8 of 146 on every push since 9 September. The 138 behind it have not been asked by CI for 17 days</span></div>
+      <div><span class="n">12<small>blocking reds</small></span><span class="c">the full 146 steps, run in a throwaway clone today: 127 pass, 12 blocking fails, 3 advisory, 4 could not ask. Six of the twelve CI shows; six it has never shown. Five need your word</span></div>
+      <div><span class="n">0<small>of 638 rulings</small></span><span class="c">in the pack your audience holds (Spider v1.0.13, 11 September). No brain, no principles, and a generate skill that says "splice the snippet". 322 commits since</span></div>
+      <div><span class="n">114<small>of 746</small></span><span class="c">live rows that are work. The other 632 are document rows minted so a gate would pass. The store opened 169 rows in the last twenty sessions and closed 4</span></div>
+      <div><span class="n">482<small>rows</small></span><span class="c">close only on your word, carrying at least 531 named questions. Eight blanket answers settle or park 305 of them</span></div>
+      <div><span class="n">11<small>ruled, not built</small></span><span class="c">rulings you gave that are verifiably not in the tree, some seven weeks old. Another 17 are built but the store still says they are not</span></div>
+    </div>
+
+    <div class="cols" style="margin-top:var(--s5)">
+      <div>
+        <div class="hd">Health</div>
+        <div class="st">Lane A4</div>
+        <p>The help-gate at step 8 aborts the build in CI, so the six reds you have been reading are the front of a longer list. Behind step 8 sit an abort at step 10 (a stale component count), a schema that thirteen of the #261 dashboard metas break, a 7px badge, four chart-ink forks and two stale package copies.</p>
+        <p>The commit path allows one writer. The seat dies with the Mac. Every wrap since #297 has gone on the declared not-a-wrap path because the boot ceiling (72,768) sits under the cloud seat's boot (about 128,000).</p>
+        <p class="for">Fixable tonight: the abort chain and six of the twelve. The other five are yours.</p>
+      </div>
+      <div>
+        <div class="hd">The backlog</div>
+        <div class="st">Lanes A1, A2</div>
+        <p>The store reads 746 but is 114 pieces of work. 93 of Claude's rows have already had their close event and can close with a receipt. The carry list is 709 items, 48% dead weight by construction.</p>
+        <p>Five proposals answer one question nobody has ruled: what does Apollo hand to a developer or a host. Minted CSS, framework emitters, adapters, the factory north star and Apollo-MCP all sit unordered.</p>
+        <p class="for">The weight is on you: 482 rows, 531 questions. The way through is ten blanket decisions, not a reading.</p>
+      </div>
+      <div>
+        <div class="hd">The deck and the pack</div>
+        <div class="st">Lane A3</div>
+        <p>Of Friday's twelve claims, the counts are true. "Retrieved at build time", "a designer's judgement" and "checks its own work" are partly true in the repo and not yet true in v1.0.13. The reader and the Constitution are built but version-gated to v1.0.14.</p>
+        <p>Your own two verdicts from 19 September stand unanswered: "this isn't Apollo its a dot-to-dot book" and "we need to do something about the sloppiness". No session since has worked on either.</p>
+        <p class="for">Friday's outcome is not in the record. Add it in the decisions below; it can reorder this plan.</p>
+      </div>
+    </div>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section class="part">
+  <div class="wrap">
+    <p class="label">Part two</p>
+    <h2>The roadmap</h2>
+    <p>Milestones in order, with what each one waits on. This weekend, the week of the 29th, then October.</p>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <p class="label">Next milestone</p>
+    <h2>Spider v1.0.14, the pack the deck describes, built on a build that can see it.</h2>
+    <p class="line" style="max-width:40em">The three reports pulled three ways: fix CI first (A4), rule Apollo-MCP and cut a thin proof of concept (A1), or make the pack do what the deck said (A3). They combine, in that order of dependency, and the milestone is the third.</p>
+    <p style="margin-top:var(--s3);max-width:44em">Why the pack. Friday's audience holds a zip that does not do what slides 8, 9 and 10 said, and it is the one artefact they can test. It answers your own two open verdicts. And Apollo-MCP needs the same three things it needs: when-rules on the parts, a schema the metas obey, and gates that run before anything is drawn. Why CI first, but only as a night's work: nothing built this weekend can be trusted while 138 steps go unasked, and the fix is hours, not days. Why MCP as a probe and not a build: its six decisions and the schema are yours, and building a catalogue from metas that fail their own schema publishes the drift.</p>
+
+    <div class="diag">
+<svg class="wide" viewBox="0 0 1100 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Roadmap dependency diagram">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#767676"/></marker></defs>
+<text x="118" y="18" font-size="12" letter-spacing="1.2" fill="#767676">SAT NIGHT</text>
+<line x1="110" y1="26" x2="110" y2="430" stroke="#EDEDED"/>
+<text x="281" y="18" font-size="12" letter-spacing="1.2" fill="#767676">SUNDAY</text>
+<line x1="273" y1="26" x2="273" y2="430" stroke="#EDEDED"/>
+<text x="444" y="18" font-size="12" letter-spacing="1.2" fill="#767676">MONDAY</text>
+<line x1="436" y1="26" x2="436" y2="430" stroke="#EDEDED"/>
+<text x="607" y="18" font-size="12" letter-spacing="1.2" fill="#767676">TUE 29 SEP</text>
+<line x1="599" y1="26" x2="599" y2="430" stroke="#EDEDED"/>
+<text x="770" y="18" font-size="12" letter-spacing="1.2" fill="#767676">WEEK OF 29TH</text>
+<line x1="762" y1="26" x2="762" y2="430" stroke="#EDEDED"/>
+<text x="933" y="18" font-size="12" letter-spacing="1.2" fill="#767676">OCTOBER</text>
+<line x1="925" y1="26" x2="925" y2="430" stroke="#EDEDED"/>
+<text x="0" y="77" font-size="12" letter-spacing="1.2" fill="#767676">BUILD HEALTH</text>
+<text x="0" y="173" font-size="12" letter-spacing="1.2" fill="#767676">THE RECORD</text>
+<text x="0" y="269" font-size="12" letter-spacing="1.2" fill="#767676">THE PACK</text>
+<text x="0" y="365" font-size="12" letter-spacing="1.2" fill="#767676">APOLLO-MCP</text>
+<path d="M270,73 L434,73 L434,265 L444,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,169 L434,169 L434,265 L444,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,73 L607,73" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,169 L444,169" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M596,169 L607,169" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M357,294 L357,313 L597,313 L597,265 L607,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M596,265 L607,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M683,198 L683,236" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,361 L607,361" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M759,361 L933,361" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M759,73 L770,73" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M759,265 L770,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M759,169 L933,169" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,73 L271,73 L271,265 L281,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<path d="M270,169 L271,169 L271,265 L281,265" fill="none" stroke="#767676" stroke-width="1" marker-end="url(#ah)"/>
+<rect x="118" y="44" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="128" y="68" font-size="14" font-weight="500" fill="#fff">Run 1</text>
+<text x="128" y="87" font-size="12" fill="#D7D8D6">CI sees to step 146</text>
+<rect x="607" y="44" width="152" height="58" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="617" y="68" font-size="14" font-weight="500" fill="#000">Your five CI calls</text>
+<text x="617" y="87" font-size="12" fill="#545454">schema, badge, forks</text>
+<rect x="770" y="44" width="152" height="58" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="780" y="68" font-size="14" font-weight="500" fill="#000">CI green</text>
+<text x="780" y="87" font-size="12" fill="#545454">first time since 3 Sep</text>
+<rect x="118" y="140" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="128" y="164" font-size="14" font-weight="500" fill="#fff">Run 2</text>
+<text x="128" y="183" font-size="12" fill="#D7D8D6">store tells the truth</text>
+<rect x="444" y="140" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="454" y="164" font-size="14" font-weight="500" fill="#fff">Run 6</text>
+<text x="454" y="183" font-size="12" fill="#D7D8D6">six pages for Tuesday</text>
+<rect x="607" y="140" width="152" height="58" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="617" y="164" font-size="14" font-weight="500" fill="#000">Your sitting</text>
+<text x="617" y="183" font-size="12" fill="#545454">ten calls, one hour</text>
+<rect x="933" y="140" width="152" height="58" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="943" y="164" font-size="14" font-weight="500" fill="#000">Mac seat + ceiling</text>
+<text x="943" y="183" font-size="12" fill="#545454">wraps legal again</text>
+<rect x="281" y="236" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="291" y="260" font-size="14" font-weight="500" fill="#fff">Run 3</text>
+<text x="291" y="279" font-size="12" fill="#D7D8D6">five rulings enacted</text>
+<rect x="444" y="236" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="454" y="260" font-size="14" font-weight="500" fill="#fff">Run 4</text>
+<text x="454" y="279" font-size="12" fill="#D7D8D6">v1.0.14 candidate, scored</text>
+<rect x="607" y="236" width="152" height="58" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="617" y="260" font-size="14" font-weight="500" fill="#000">Cut v1.0.14</text>
+<text x="617" y="279" font-size="12" fill="#545454">frozen gate, your machine</text>
+<rect x="770" y="236" width="152" height="58" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="780" y="260" font-size="14" font-weight="500" fill="#000">Blocking flips</text>
+<text x="780" y="279" font-size="12" fill="#545454">44px, 24px, geometry</text>
+<rect x="118" y="332" width="152" height="58" fill="#000" stroke="#000"/>
+<text x="128" y="356" font-size="14" font-weight="500" fill="#fff">Run 5</text>
+<text x="128" y="375" font-size="12" fill="#D7D8D6">MCP catalogue probe</text>
+<rect x="607" y="332" width="152" height="58" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="617" y="356" font-size="14" font-weight="500" fill="#000">MCP decisions</text>
+<text x="617" y="375" font-size="12" fill="#545454">its six, plus the shape</text>
+<rect x="933" y="332" width="152" height="58" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="943" y="356" font-size="14" font-weight="500" fill="#000">MCP proof of concept</text>
+<text x="943" y="375" font-size="12" fill="#545454">steps 1 to 4, then live</text>
+</svg>
+<svg class="tall" viewBox="0 0 400 1400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Roadmap dependency diagram, narrow">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#767676"/></marker></defs>
+<text x="12" y="20" font-size="11" letter-spacing="1.2" fill="#767676">SAT NIGHT</text>
+<rect x="12" y="30" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="52" font-size="14" font-weight="500" fill="#fff">Run 1</text>
+<text x="22" y="72" font-size="12" fill="#D7D8D6">CI sees to step 146</text>
+<line x1="200" y1="104" x2="200" y2="118" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="120" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="142" font-size="14" font-weight="500" fill="#fff">Run 2</text>
+<text x="22" y="162" font-size="12" fill="#D7D8D6">store tells the truth</text>
+<line x1="200" y1="194" x2="200" y2="208" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="210" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="232" font-size="14" font-weight="500" fill="#fff">Run 5</text>
+<text x="22" y="252" font-size="12" fill="#D7D8D6">MCP catalogue probe</text>
+<text x="12" y="312" font-size="11" letter-spacing="1.2" fill="#767676">SUNDAY</text>
+<line x1="200" y1="284" x2="200" y2="320" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="322" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="344" font-size="14" font-weight="500" fill="#fff">Run 3</text>
+<text x="22" y="364" font-size="12" fill="#D7D8D6">five rulings enacted</text>
+<text x="22" y="382" font-size="12" fill="#D7D8D6">needs Run 1, Run 2</text>
+<text x="12" y="424" font-size="11" letter-spacing="1.2" fill="#767676">MONDAY</text>
+<line x1="200" y1="396" x2="200" y2="432" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="434" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="456" font-size="14" font-weight="500" fill="#fff">Run 6</text>
+<text x="22" y="476" font-size="12" fill="#D7D8D6">six pages for Tuesday</text>
+<text x="22" y="494" font-size="12" fill="#D7D8D6">needs Run 2</text>
+<line x1="200" y1="508" x2="200" y2="522" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="524" width="376" height="74" fill="#000" stroke="#000"/>
+<text x="22" y="546" font-size="14" font-weight="500" fill="#fff">Run 4</text>
+<text x="22" y="566" font-size="12" fill="#D7D8D6">v1.0.14 candidate, scored</text>
+<text x="22" y="584" font-size="12" fill="#D7D8D6">needs Run 1, Run 2</text>
+<text x="12" y="626" font-size="11" letter-spacing="1.2" fill="#767676">TUE 29 SEP</text>
+<line x1="200" y1="598" x2="200" y2="634" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="636" width="376" height="74" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="22" y="658" font-size="14" font-weight="500" fill="#000">Your five CI calls</text>
+<text x="22" y="678" font-size="12" fill="#545454">schema, badge, forks</text>
+<text x="22" y="696" font-size="12" fill="#545454">needs Run 1</text>
+<line x1="200" y1="710" x2="200" y2="724" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="726" width="376" height="74" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="22" y="748" font-size="14" font-weight="500" fill="#000">Your sitting</text>
+<text x="22" y="768" font-size="12" fill="#545454">ten calls, one hour</text>
+<text x="22" y="786" font-size="12" fill="#545454">needs Run 6</text>
+<line x1="200" y1="800" x2="200" y2="814" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="816" width="376" height="74" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="22" y="838" font-size="14" font-weight="500" fill="#000">Cut v1.0.14</text>
+<text x="22" y="858" font-size="12" fill="#545454">frozen gate, your machine</text>
+<text x="22" y="876" font-size="12" fill="#545454">needs Run 3, Run 4, Your sitting</text>
+<line x1="200" y1="890" x2="200" y2="904" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="906" width="376" height="74" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="22" y="928" font-size="14" font-weight="500" fill="#000">MCP decisions</text>
+<text x="22" y="948" font-size="12" fill="#545454">its six, plus the shape</text>
+<text x="22" y="966" font-size="12" fill="#545454">needs Run 5</text>
+<text x="12" y="1008" font-size="11" letter-spacing="1.2" fill="#767676">WEEK OF 29TH</text>
+<line x1="200" y1="980" x2="200" y2="1016" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="1018" width="376" height="74" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="22" y="1040" font-size="14" font-weight="500" fill="#000">CI green</text>
+<text x="22" y="1060" font-size="12" fill="#545454">first time since 3 Sep</text>
+<text x="22" y="1078" font-size="12" fill="#545454">needs Your five CI calls</text>
+<line x1="200" y1="1092" x2="200" y2="1106" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="1108" width="376" height="74" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+<text x="22" y="1130" font-size="14" font-weight="500" fill="#000">Blocking flips</text>
+<text x="22" y="1150" font-size="12" fill="#545454">44px, 24px, geometry</text>
+<text x="22" y="1168" font-size="12" fill="#545454">needs Cut v1.0.14</text>
+<text x="12" y="1210" font-size="11" letter-spacing="1.2" fill="#767676">OCTOBER</text>
+<line x1="200" y1="1182" x2="200" y2="1218" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="1220" width="376" height="74" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="22" y="1242" font-size="14" font-weight="500" fill="#000">Mac seat + ceiling</text>
+<text x="22" y="1262" font-size="12" fill="#545454">wraps legal again</text>
+<text x="22" y="1280" font-size="12" fill="#545454">needs Your sitting</text>
+<line x1="200" y1="1294" x2="200" y2="1308" stroke="#D7D8D6" marker-end="url(#ah2)"/>
+<rect x="12" y="1310" width="376" height="74" fill="#F3F3F3" stroke="#D7D8D6"/>
+<text x="22" y="1332" font-size="14" font-weight="500" fill="#000">MCP proof of concept</text>
+<text x="22" y="1352" font-size="12" fill="#545454">steps 1 to 4, then live</text>
+<text x="22" y="1370" font-size="12" fill="#545454">needs MCP decisions</text>
+</svg>
+    </div>
+    <p class="diag-cap">Boxes are runs and milestones; arrows are "cannot land honestly before". Black boxes need no word from you. Red-edged boxes wait on your word. Dates after Tuesday are estimates.</p>
+
+    <ol class="beats" style="margin-top:var(--s5)">
+      <li><div><b>Tonight: the build can see again, the store tells the truth, the MCP probe runs.</b>
+        <p>Runs 1, 2 and 5. No ruling needed. One commit wave per run, pushed, CI read back by name.</p></div></li>
+      <li><div><b>Sunday to Monday: five rulings enacted, the v1.0.14 candidate built and scored, six decision pages written.</b>
+        <p>Runs 3, 4 and 6. The candidate is cut as a candidate zip, never frozen: the cut is yours.</p></div></li>
+      <li><div><b>Tuesday 29 September: your sitting.</b>
+        <p>Ten decisions on this page, the six pages from Run 6, and a render pair for your eye. About an hour. Then the v1.0.14 cut, the frozen-release gate, CI read back, and the zip to your work machine.</p></div></li>
+      <li><div><b>Week of 29 September: the his-word reds close, CI goes green, the blocking flips are re-measured.</b>
+        <p>Your five CI calls land the same day you make them. The 44px and 24px blocking halves (ruled 6 August) flip only after the re-measure page and your eye, because they can turn the library red.</p></div></li>
+      <li><div><b>October, first half: Apollo-MCP proof of concept, design-time half.</b>
+        <p>Catalogue from the metas, gates as a service, the rules' evaluator, parts that take data: steps 1 to 4 of the proposal. Gated on your six MCP decisions, the delivery-shape order and the schema. Estimate: 6 to 8 sessions of lane work.</p></div></li>
+      <li><div><b>October, second half: the run-time vehicle, and the seat move.</b>
+        <p>Entitlements, a record per screen, two hosts: the June dashboard on mock data for four roles. In parallel the conductor moves to Claude Code on your Mac (the #300 plan), which is the real fix for the boot ceiling and the sleeping Mac. The push credential expires 6 November; re-issuing it takes your hands.</p></div></li>
+    </ol>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section class="part">
+  <div class="wrap">
+    <p class="label">Part three</p>
+    <h2>The weekend runs</h2>
+    <p>Six runs. Three start tonight on no ruling. Each says what "nailed" means in tests that can fail, which model runs each lane, how hard it is checked, and what it waits on.</p>
+  </div>
+</section>
+
+<section id="runs" class="grey">
+  <div class="wrap">
+    <p class="label">The shape of every run</p>
+    <h2>Lanes build. One seat commits. A seat that built nothing checks.</h2>
+    <p style="max-width:44em">Every run is a Fable conductor that dispatches and does nothing else, Opus 5.5 lanes in their own windows (Sonnet where the judgement is already made, Haiku for chores), one Opus commit seat that runs the whole regen serial and the clone survey and makes one commit per wave with named paths, then a Fable verifier that did not build the work. Effort is set at the window, per Cowork; "xhigh" below means open that lane's window at xhigh and give it a premise probe and a verifier. Estimates of time are estimates.</p>
+    <p style="max-width:44em">The balance. Runs 1 and 2 are plumbing, about six lanes, and they run tonight while you are away. Runs 3, 4 and 5 are Apollo, about sixteen lanes, from Sunday. Run 6 is your Tuesday. The plumbing is not optional: without it, nothing Sunday builds can be verified by the build of record, and the store would keep telling the roadmap a false backlog.</p>
+
+    <div class="days">
+      <div><div class="d">Saturday night</div><p>Runs 1, 2, 5 launch in parallel, disjoint files.</p><p>Wave 1 commit and push (Run 1), CI read back. Wave 2 (Runs 2 and 5).</p><p class="est">Estimate: 3 to 4 hours wall.</p></div>
+      <div><div class="d">Sunday</div><p>Runs 3, 4 (lanes a to e) and 6 launch.</p><p>Wave 3 (Run 3) push, CI read back. Renders for your eye filed.</p><p class="est">Estimate: the full day.</p></div>
+      <div><div class="d">Monday</div><p>Run 4 cold runs, eval, candidate build. Wave 4 push, CI.</p><p>Fable verifications. Run 6 pages finished and rendered.</p><p class="est">Estimate: the full day.</p></div>
+      <div><div class="d">Tuesday 29</div><p>Your sitting: this page, six pages, one render pair.</p><p>Then the cut, the frozen-release gate, CI, the zip to your machine.</p><p class="est">Estimate: one hour of yours.</p></div>
+    </div>
+
+    <!-- RUN 1 -->
+    <div class="run" id="run1">
+      <div class="head"><div class="num">01</div>
+        <div><h3>The build can see again</h3><p>CI's knowledge build runs to step 146 for the first time since 9 September and prints its whole failure set honestly. Six of the twelve reds close; the five that are yours are left standing and named.</p></div>
+        <div class="tags"><span class="tag go">No ruling · tonight</span></div></div>
+      <div class="body">
+        <h4>Nailed when</h4>
+        <ol class="nailed">
+          <li>The CI gates job's log shows step 146 asked. It has not since 9 September.</li>
+          <li>The failure set, by name, is a subset of the five his-word reds (the 7px badge, the chart forks, the two package copies, the schema and its six slugs) and nothing else.</li>
+          <li>The help-gate, the stale count at step 10, the four evidence pointers at step 136 and 13, the navigations manifest at 38, the tab-bar selector at 82, the blast radius at 3 and the schematic at 125 are green in CI, not only in the clone.</li>
+          <li>The rulings store still loads 638 by count. The schematic stays green on the next commit, not only this one.</li>
+          <li>The clone survey before the commit shows no new red against today's fifteen-name baseline.</li>
+          <li>The push is read back until the render job closes, and the failure set is recorded by name.</li>
+        </ol>
+        <h4>Lanes</h4>
+        <table class="stack">
+          <thead><tr><th style="width:24%">Lane</th><th style="width:20%">Model · effort</th><th>What it does, and how hard it is checked</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Lane"><b>1a · the guards</b></td><td data-l="Model">Sonnet · high</td><td data-l="What">Twelve entry points get the help-gate guard, the six render drivers in the walk-up form the build uses. Retiring the six is your call (decision 8), so tonight they are guarded, not retired. Check: the help-gate's own count reads 0 failures.</td></tr>
+            <tr><td data-l="Lane"><b>1b · pointers, manifest, selector</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Four evidence strings on s282-D2 to D5 get their legal pointer by textual span. The navigations meta gets its behaviour typed from the manifest block it already carries. The tab-bar selector is namespaced or re-seeded with the diff reviewed. Premise probe first: is the manifest block or the meta the source of truth? That is the #244 class of error. Check: governs selftest 0 failures; partials sync green; type-blast green.</td></tr>
+            <tr><td data-l="Lane"><b>1c · the schematic</b></td><td data-l="Model">Opus 5.5 · xhigh</td><td data-l="What">The memento schematic's check gets the same head-only advance the chain got at c896bcaf, so it stops going red on every commit that moves a figure. It is a gate, so a Fable verifier that did not write it tries to make it pass a stale schematic and fail a fresh one.</td></tr>
+            <tr><td data-l="Lane"><b>1d · the commit seat</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">The #294 C2 pattern. Re-bases the component count at step 10 last, runs the regen serial whole and in order, runs the clone survey, adds today's untracked Apollo-MCP pages and lane files to the named paths, makes one commit on the declared not-a-wrap path, pushes, reads CI back.</td></tr>
+            <tr><td data-l="Lane"><b>1v · the verifier</b></td><td data-l="Model">Fable · high</td><td data-l="What">Reads the CI log against the baseline by name and against the six "nailed" lines. Touches nothing.</td></tr>
+          </tbody>
+        </table>
+        <div class="kv">
+          <p><b>Depends on</b>Nothing. Runs beside 2 and 5; the files are disjoint.</p>
+          <p><b>Externalities</b>The mount strands locks for anyone but the committer. The push uses the token in the remote URL as it stands (moving it is yours, decision 9). The seat is arm64 and CI is x64: the clone predicts, CI decides.</p>
+          <p><b>Estimate</b>Three lanes at once, about two hours; one commit wave; nine minutes for CI to close.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 2 -->
+    <div class="run" id="run2">
+      <div class="head"><div class="num">02</div>
+        <div><h3>The store tells the truth</h3><p>The ruling store's status says what is really in the tree, Claude's provably closed rows close with receipts, and the store gets a visible check so it cannot regrow the same way.</p></div>
+        <div class="tags"><span class="tag go">No ruling · tonight</span></div></div>
+      <div class="body">
+        <h4>Nailed when</h4>
+        <ol class="nailed">
+          <li>Every ruling with an enactment receipt (a commit body naming its id with an enacting verb, or a file it governs carrying its id) is stamped enacted with the sha, through the sanctioned writer only. The count stays 638. The governs selftest stays green.</li>
+          <li>The rulings the audit could not settle sit on one review page, each with the nearest receipt and a recommendation. The 11 verified ruled-not-built are confirmed against the tree and handed to Run 3.</li>
+          <li>The 93 Claude-owned rows whose close event has passed close by addition, each with its receipt quoted; where the "relayed to Dave in chat" half cannot be proved, the gap is declared in the row. The store prints live at 655 or fewer.</li>
+          <li>A new advisory arm in the store's check names any row whose close condition names a session that has already wrapped. Mutation test: a planted row with a past-session close must be named; remove the clause and it must not be. Promotion to blocking is yours.</li>
+          <li>The chain regenerates last; the clone survey shows no new red.</li>
+        </ol>
+        <h4>Lanes</h4>
+        <table class="stack">
+          <thead><tr><th style="width:24%">Lane</th><th style="width:20%">Model · effort</th><th>What it does, and how hard it is checked</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Lane"><b>2a · the back-stamp audit</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Owns the rulings store this wave. For the 424 bare "ruled" rows and the 23 "not enacted" in free text, finds receipts in git and the tree, proposes enacted / not found / uncertain, and stamps only the certain ones. Two lanes disagreed today on whether a stamping tool exists; it does (built at #295), so nothing is hand-edited.</td></tr>
+            <tr><td data-l="Lane"><b>2b · the receipted closes</b></td><td data-l="Model">Sonnet · high</td><td data-l="What">Owns the work store this wave. Works A2's list of 93 to the rule "re-read each receipt before writing closed_by". Also closes the two parked rows later rulings answered (list-vs-card, the logo review) with their receipts.</td></tr>
+            <tr><td data-l="Lane"><b>2c · the regrowth check</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">The advisory arm, visible not blocking, with the mutation test above. Does not change what rows the wrap mints; that is a ritual change and goes on the Tuesday page.</td></tr>
+            <tr><td data-l="Lane"><b>2v · the verifier</b></td><td data-l="Model">Fable · high</td><td data-l="What">Samples thirty stamps and thirty closes, re-reads each receipt cold, reports any stamp whose receipt does not say what the stamp says.</td></tr>
+          </tbody>
+        </table>
+        <div class="kv">
+          <p><b>Depends on</b>Nothing to build. Commits in wave 2, after Run 1's push, because there is one committer.</p>
+          <p><b>Externalities</b>The doc-row gate: every new report needs a row before the commit. The store refuses a row whose home is missing. The chain goes stale on every mint and regenerates last.</p>
+          <p><b>Not in this run</b>Your 17 passed-event rows, the 14 legacy rows, the carry diet and the stale-parked closes that need your word: decision 7.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 3 -->
+    <div class="run" id="run3">
+      <div class="head"><div class="num">03</div>
+        <div><h3>Ruled, now built</h3><p>Five rulings you gave weeks ago, with their values fully specified, go into the tree. The visual ones end at a render page for your eye; the build does not wait for it.</p></div>
+        <div class="tags"><span class="tag go">No ruling · Sunday</span></div></div>
+      <div class="body">
+        <h4>What lands</h4>
+        <p>The console radius set of 3 September (control 6, surface 8, container 12; segmented xs 4/2, s 6/4, m 8/6, l 10/6; canon still carries 8/20/20). The notification shell per theme of 8 August (mono and console tint-only; legacy and supercharge keep the 1px border). Lifecycle status and content standard as graph entity kinds (14 September). Tokens at group grain with a bindsToken edge (16 September), which the MCP catalogue needs. The four edge types from the KG-gaps step 5 (setIn, behaviourFrom, capturedFrom, acceptsCapability).</p>
+        <p>Not in this run, on purpose: the 44px and 24px blocking flips (they can turn the library red; the re-measure goes on a Tuesday page), the theme publish tier and the framework emitters (they wait on the delivery-shape order, decision 6), the spans chord dial (marked TRIAL and hedged), the tier-mapping requirement (overtaken by the three-axis model; retiring it is your word).</p>
+        <h4>Nailed when</h4>
+        <ol class="nailed">
+          <li>Each commit body names the ruling it enacts; each ruling is stamped enacted with its sha at the commit seat.</li>
+          <li>The canon CSS parse gate is green: 2,067 rules once died to a parse error no content check saw.</li>
+          <li>Four-theme render pages for the radius set and the notification shell, at 1440 and 390, HSBC face forced, filed for your eye. Your eye closes the row.</li>
+          <li>The graph rebuilds, its validator passes, the explorer rebuilds, and the two new kinds and five new edge types appear in the explorer's counts.</li>
+          <li>The type-blast, token-fork and integrity gates report no new finding against the baseline; the clone survey shows no new red.</li>
+        </ol>
+        <h4>Lanes</h4>
+        <table class="stack">
+          <thead><tr><th style="width:24%">Lane</th><th style="width:20%">Model · effort</th><th>What it does, and how hard it is checked</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Lane"><b>3a · the canon lane</b></td><td data-l="Model">Opus 5.5 · xhigh</td><td data-l="What">Radius set then notification shell, in series, because both touch canon.css and one lane owns it. Premise probe first: does the derivation generator or the overrides file own the console values? Then a Fable verifier at canon, and a render lane (Sonnet, to a driver spec) for the pages.</td></tr>
+            <tr><td data-l="Lane"><b>3b · the graph lane</b></td><td data-l="Model">Opus 5.5 · xhigh</td><td data-l="What">The two kinds, the token grain and the five edge types, in the generators. The KG build is 107 seconds and fits one call tightly, so it is chunked. Fable verifier: tries to find a component whose token binding the graph gets wrong.</td></tr>
+            <tr><td data-l="Lane"><b>3c · the commit seat</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Wave 3: regen serial whole, explorer rebuild, mention map, memento index, chain, clone survey, one commit, push, CI read back.</td></tr>
+          </tbody>
+        </table>
+        <div class="kv">
+          <p><b>Depends on</b>Run 1 pushed, so CI can see canon change. Run 2's stamps, so this wave's stamps do not collide.</p>
+          <p><b>Externalities</b>canon.css is one file. The explorer builder is itself one of the twelve unguarded files, so Run 1 lands first. Disk: check before the clone.</p>
+          <p><b>Estimate</b>Two lanes, a day; one wave.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 4 -->
+    <div class="run" id="run4">
+      <div class="head"><div class="num">04</div>
+        <div><h3>The v1.0.14 candidate: the pack the deck describes</h3><p>A candidate zip that carries the graph, the brain and the 638 rulings; a generate skill that composes from the reader instead of splicing the bento template; a geometry gate for the sloppiness class; a check that parts render at their own size; when-rules drafted for the dashboard's parts; and an eval that scores the CEO Common prompt cold against v1.0.13 and the candidate.</p></div>
+        <div class="tags"><span class="tag go">No ruling to build</span> <span class="tag his">Your word to cut</span></div></div>
+      <div class="body">
+        <h4>Nailed when</h4>
+        <ol class="nailed">
+          <li>The candidate zip is built from HEAD by the pack manifest, the demo-page and pack-docs gates are green, and the frozen-release gate is not run: the cut is yours. Inside the zip: 638 rulings, the brain directory, the principle nodes, the reader, metas with provides on 108 and when on 39 or more.</li>
+          <li>The generate skill contains no instruction to splice the snippet or start from the bento template; its first step calls the reader; the reference template is fenced as a fixture, not a starting point.</li>
+          <li>The geometry gate names all four planted defects on a fixture page (unequal gutters, an unshared bottom edge, a filter bar narrower than its table, dead space in a tile) and passes the reference bento. Mutation test: removing each clause lets its defect through. It is wired into the build as advisory. Promotion is yours.</li>
+          <li>The own-size check flags a button and a table heading rendered under their reference height on a fixture, and passes the showroom. Your Thursday sentence: "sometimes it made buttons and table headings way smaller than they should".</li>
+          <li>Three cold runs of v1.0.13 and three of the candidate on the frozen CEO Common prompt, each in a fresh window with only the pack and the prompt, scored by the four-dimension rubric automated plus the geometry score, filed as a series. The candidate's median beats or matches v1.0.13 on every dimension. If it does not, the report says NOT READY and recommends against the cut. That is the line that can fail.</li>
+          <li>A render pair, best v1.0.13 run beside best candidate run, at 1440 with the HSBC face forced, for your eye on Tuesday.</li>
+          <li>After the push, CI's failure set is unchanged by name.</li>
+        </ol>
+        <h4>Lanes</h4>
+        <table class="stack">
+          <thead><tr><th style="width:24%">Lane</th><th style="width:20%">Model · effort</th><th>What it does, and how hard it is checked</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Lane"><b>4a · the skill</b></td><td data-l="Model">Opus 5.5 · xhigh</td><td data-l="What">Rewrites the pack's generate skill to compose from the reader's slice. Premise probe first: what the reader hands a cold agent today, and what "compose, not trace" means for a bento wall. Verifier: Fable, a pack change touches canon. Only the tree's skill changes; the frozen v1.0.13 zip is never touched.</td></tr>
+            <tr><td data-l="Lane"><b>4b · the geometry gate</b></td><td data-l="Model">Opus 5.5 · xhigh</td><td data-l="What">Shared edges, equal gutters across rows, filter bar as wide as its table, dead tile space: the #288 observations. Builds the fixture with the planted defects first. Fable verifier: it is a gate. Also writes the spec 4e executes.</td></tr>
+            <tr><td data-l="Lane"><b>4c · the own-size check</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Renders components on a composed page and compares to the showroom reference height. Rendered on the seat with the HSBC face forced; a fallback render is not a size reading.</td></tr>
+            <tr><td data-l="Lane"><b>4d · the when-rules</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Drafts when-rules for the dashboard's parts (about 15) in a proposals file the composer can read behind a flag. Ratifying the wording is yours; nothing is written into a meta.</td></tr>
+            <tr><td data-l="Lane"><b>4e · the eval harness</b></td><td data-l="Model">Sonnet · high</td><td data-l="What">Automates the rubric (visually rich, full, persistent, interactive, 0 to 3) plus the geometry score, to 4b's spec. Runs at the seat, one render per call.</td></tr>
+            <tr><td data-l="Lane"><b>4f · the cold runs</b></td><td data-l="Model">Opus 5.5 · high, six fresh windows</td><td data-l="What">One window per run, no memory of the others, given the pack and the prompt only. Model held constant, one thing changed at a time (the routing doc's rule 4).</td></tr>
+            <tr><td data-l="Lane"><b>4g · the candidate build and commit</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">The commit seat builds the zip by the manifest tool, runs the pack gates except the frozen one, regen serial, clone survey, one commit, push, CI read back.</td></tr>
+            <tr><td data-l="Lane"><b>4v · the verifier</b></td><td data-l="Model">Fable · xhigh</td><td data-l="What">A seat that built none of it: unzips the candidate, re-counts, re-reads the skill, re-runs the geometry gate on the fixture, re-scores one cold run by hand against the harness, and tries to make the candidate look better than it is.</td></tr>
+          </tbody>
+        </table>
+        <div class="kv">
+          <p><b>Depends on</b>Run 1 (or the verdict is blind) and Run 2 (stamped rulings ship in the pack). 4e waits on 4b's spec; 4f waits on 4a and the zip. 4a to 4d run at once.</p>
+          <p><b>Externalities</b>Cold runs are the longest work of the weekend and each render is one call. A new gate must be wired, not only built. The frozen release list is never edited. The reference template stays in the tree as a fixture.</p>
+          <p><b>Estimate</b>Ten to twelve lanes, Sunday morning to Monday night. The biggest run, and the one the milestone is named for.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 5 -->
+    <div class="run" id="run5">
+      <div class="head"><div class="num">05</div>
+        <div><h3>The Apollo-MCP probe</h3><p>Learn what the metas can and cannot hand to a catalogue, without touching canon. Everything after this is gated on your six MCP decisions, the delivery-shape order and the schema.</p></div>
+        <div class="tags"><span class="tag go">No ruling · tonight</span></div></div>
+      <div class="body">
+        <h4>Nailed when</h4>
+        <ol class="nailed">
+          <li>A catalogue file for the dashboard's parts, generated from the metas in the A2UI v0.9.1 shape, with a per-part list of what the meta could not supply (slots, data shape, status). The report names which of the thirteen schema errors the catalogue would publish.</li>
+          <li>One gate (accessibility) given a page as a string in memory returns the same verdict as the disk gate on ten showroom snippets, and its time is measured.</li>
+          <li>A deterministic when-evaluator over the 39 when fields picks the same part as the reader on the dashboard's parts, with every disagreement listed. Jev stays out: it is dev-time only.</li>
+        </ol>
+        <h4>Lanes</h4>
+        <table class="stack">
+          <thead><tr><th style="width:24%">Lane</th><th style="width:20%">Model · effort</th><th>What it does, and how hard it is checked</th></tr></thead>
+          <tbody>
+            <tr><td data-l="Lane"><b>5a · the catalogue generator</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">Reads metas, writes the catalogue and the gap list under the lane folder. Also writes the spec 5c executes.</td></tr>
+            <tr><td data-l="Lane"><b>5b · a gate in memory</b></td><td data-l="Model">Opus 5.5 · high</td><td data-l="What">An entry point that takes a string and writes nothing to disk, compared against the disk gate.</td></tr>
+            <tr><td data-l="Lane"><b>5c · the when-evaluator</b></td><td data-l="Model">Sonnet · high</td><td data-l="What">To 5a's spec, unit tested, compared to the reader.</td></tr>
+          </tbody>
+        </table>
+        <div class="kv">
+          <p><b>Depends on</b>Nothing. Research, so no verifier (routing rule 7); the conductor reads.</p>
+          <p><b>Externalities</b>The A2UI spec is v0.9.1 with v1.0 due Q4 2026. The seat's network may not reach the schema; fetch it in the cloud and bring the file over. No file outside the lane folder.</p>
+          <p><b>Estimate</b>Three lanes, one evening.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUN 6 -->
+    <div class="run" id="run6">
+      <div class="head"><div class="num">06</div>
+        <div><h3>The pages for Tuesday</h3><p>Everything that needs your word arrives as one decision page each, a recommendation per item, rendered and linked from this plan's footer.</p></div>
+        <div class="tags"><span class="tag go">No ruling to write</span></div></div>
+      <div class="body">
+        <h4>The six pages</h4>
+        <ol class="nailed">
+          <li>The schema: the thirteen errors and the six slugs from the #261 dashboard metas, each with "extend the schema" or "bring the meta back", one recommendation. This is the schema a catalogue would publish.</li>
+          <li>The four small CI calls: the 7px badge rendered at 7 and at 8, the four chart-ink forks, the two package copies, the six one-off drivers.</li>
+          <li>The delivery shape: the five answers to "what does Apollo hand to a developer or a host", in one order.</li>
+          <li>The blocking flips: the 72 controls and 107 marks re-measured at HEAD, fix or exempt per item, and what the library looks like red.</li>
+          <li>Your three observations as proposed graph nodes, with the conflict stated: the bento ground sentence against the full-page grey ruling of 22 August.</li>
+          <li>The uncertain back-stamps and the ritual change (stop minting rows whose only close is "the next opener read it").</li>
+        </ol>
+        <div class="kv">
+          <p><b>Lanes</b>Opus 5.5 · high per page, one page per lane. Fable reads pages 1 and 3, because they are architecture. Every page renders at 1440 and 390 with no overflow before it is filed.</p>
+          <p><b>Depends on</b>Run 1's clone verdict (pages 1, 2, 4), Run 2's audit (page 6).</p>
+          <p><b>Estimate</b>Six lanes, Sunday to Monday.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="testing">
+  <div class="wrap two">
+    <p class="label">Test it hard</p>
+    <div>
+      <h2>Five nets, and every one of them can say no.</h2>
+      <ol class="gaps">
+        <li><div><b>Acceptance tests per run, written to fail.</b><p>Each run's "nailed" list above is the test. A run that misses a line reports NOT NAILED with the line named; nobody rounds it up.</p></div></li>
+        <li><div><b>A premise probe before every canon lane, a verifier after.</b><p>A small Opus seat tries to break the brief's premise before the build (the #250 shape). Then a Fable seat that built nothing audits the output where it touches canon: gates, canon.css, rulings, the pack. Analysis lanes get neither; they get the conductor's read.</p></div></li>
+        <li><div><b>The full 146 steps in a throwaway clone before every commit.</b><p>A4's method: clone with full history, apply the wave, run the survey in four chunks, about four minutes. Baseline is today's fifteen-name set. No new red may appear. Then the clone is removed; disk is checked first.</p></div></li>
+        <li><div><b>Render by eye, on the real face.</b><p>Every visual lands as shots at 1440 and 390 with the HSBC face forced and the fact stated. No lane judges type, wrap or size from a fallback render. Your eye is the final judge, and the pages queue for Tuesday rather than blocking the weekend.</p></div></li>
+        <li><div><b>CI read back after every push, by name.</b><p>The verdict of record is CI on x64, not the arm64 seat. Each wave pushes on its own so its verdict attaches to it. The failure set is recorded by name, since step numbers shift.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="watch" class="grey">
+  <div class="wrap">
+    <p class="label">Watch list</p>
+    <h2>What will bite an unattended weekend, and the control for each.</h2>
+    <table class="stack">
+      <thead><tr><th style="width:22%">Externality</th><th style="width:36%">What it does</th><th>The control</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Externality"><b>The Mac asleep or the app closed</b></td><td data-l="What it does">Every lane at your seat runs through the desktop app. If the Mac sleeps, the link drops and lanes die at the call boundary. Not measured in the record; it follows from the architecture.</td><td data-l="The control">Before you leave: power in, sleep off, the desktop app open and linked. Every lane checkpoints to disk after each chunk and resumes from its last file. The cloud-only lanes (reading and writing nothing on the mount) are the few that survive.</td></tr>
+        <tr><td data-l="Externality"><b>The VM restarts</b></td><td data-l="What it does">Uptime was 17 minutes at 14:42 today. Clones, pip installs and the render temp vanish.</td><td data-l="The control">Seat hygiene at every lane start: install tiktoken, jsonschema, pyyaml; check disk under 90%; run the render env script. The clone is rebuilt per wave, never assumed.</td></tr>
+        <tr><td data-l="Externality"><b>The 180 second call cap</b></td><td data-l="What it does">Nothing survives the end of a call; background jobs are killed.</td><td data-l="The control">180 seconds is the unit of work. Foreground only, chunked with range and resume. A job that cannot be chunked does not run at the seat.</td></tr>
+        <tr><td data-l="Externality"><b>Git locks</b></td><td data-l="What it does">The mount strands index.lock on git status, git reset and the wrap gate run outside the committer. 321 moved locks sit in two folders today.</td><td data-l="The control">No lane runs git status, git reset or the wrap gate. Read-only git only. The committer clears its own locks; stranded ones are moved to the orphan folder, never deleted.</td></tr>
+        <tr><td data-l="Externality"><b>One commit writer</b></td><td data-l="What it does">Two commits at once collide on one index; #261's per-lane commits left five reds CI could not see.</td><td data-l="The control">One commit seat per wave, named paths, the whole regen serial first, the clone survey before. Every shared file is owned by one lane per wave: the rulings store, the work store, the assertions, the schema, canon.css, the chain, the mention map, the memento index.</td></tr>
+        <tr><td data-l="Externality"><b>The boot ceiling is red</b></td><td data-l="What it does">The ceiling is 72,768 and the cloud seat boots at about 128,000, so every wrap commit is refused.</td><td data-l="The control">Every commit goes on the declared not-a-wrap path, stated in the message body, until you move the ceiling (decision 5) or the Mac seat lands.</td></tr>
+        <tr><td data-l="Externality"><b>The window</b></td><td data-l="What it does">Working 256,000 and hard 300,000 per seat, your #301 words; stop 180,000 and tolerance 220,000 unmoved. #303 ran to 402,607 on picture-by-picture work.</td><td data-l="The control">The conductor dispatches and does nothing else: reports read by path and headline, fill hand-summed from the transcript, the seam check obeyed. No visual iteration in the conductor's window; lanes iterate in their own.</td></tr>
+        <tr><td data-l="Externality"><b>The font fallback</b></td><td data-l="What it does">No Univers on the seat. Renders fall back and wrap differently from your screen; slide 14 bit this way.</td><td data-l="The control">Every render driver forces the HSBC face and says so in its report. Type, wrap and size are never judged from a fallback render.</td></tr>
+        <tr><td data-l="Externality"><b>The token in the remote URL</b></td><td data-l="What it does">Every push this weekend uses it. The API key file sits at the repo root, gitignored; the risk is a zip of the working tree, not git.</td><td data-l="The control">Push logs are written without credentials. No lane zips the working tree; the candidate is built by the manifest tool from named paths. Moving the token to a credential helper is yours (decision 9). The push credential itself expires 6 November.</td></tr>
+        <tr><td data-l="Externality"><b>The six reds masking new reds</b></td><td data-l="What it does">"Gates green" has meant "no fail beyond the inherited six" since 3 September, and behind step 8 sat six more nobody saw.</td><td data-l="The control">The baseline is today's fifteen-name clone set, not six and not zero. Every verdict diffs by name against it. After Run 1 the baseline shrinks to the five that are yours.</td></tr>
+        <tr><td data-l="Externality"><b>Eye-bound work</b></td><td data-l="What it does">#291 ran nine lanes and six versions in series on your eye. It does not parallelise and cannot run unattended.</td><td data-l="The control">Nothing judged by eye blocks a run. Renders queue for Tuesday. Nothing you have to rule runs unattended: the schema, the exemptions, the forks, the port, any inscription, any release cut.</td></tr>
+      </tbody>
+    </table>
+    <div class="dd-host"></div>
+  </div>
+</section>
+
+<section id="decide">
+  <div class="wrap two">
+    <p class="label">What you decide</p>
+    <div>
+      <h2>Ten calls. Each comes with a recommendation. Together they settle or park about 340 rows.</h2>
+      <p style="color:var(--grey-8);max-width:40em">Merged from A2's eight blanket questions, A1's delivery-shape question, A3's ruling-shaped questions and A4's five CI calls. The six MCP decisions stay on their own page and are not repeated here.</p>
+      <ol class="beats decide">
+        <li><div><b>The next milestone.</b>
+          <p>Spider v1.0.14, "the pack the deck describes", built this weekend as a candidate on a build that runs to the end, with the Apollo-MCP probe beside it and the proof of concept after your MCP decisions.</p>
+          <p class="rec"><b>Recommend yes</b>, because the audience holds a pack the deck outruns, and MCP needs the same when-rules and schema anyway.</p></div></li>
+        <li><div><b>Friday is done. What came back?</b>
+          <p>Close the 95 deck, drawing and presentation rows and the handoffs whose close is "Friday's deck is final", keeping every file. And in your words: what came back from Friday, and did the CEO Common prompt run? A pilot or a date would reorder this plan.</p>
+          <p class="rec"><b>Recommend yes to the closes</b>, because they are records, not questions; the outcome is yours to add.</p></div></li>
+        <li><div><b>Park the stale questions.</b>
+          <p>105 rows of ruling-shaped questions on filed reports, two weeks old or more, parked with a tripwire that reopens each when its component or strand is next touched. Anything you still care about you name in one line and it stays open.</p>
+          <p class="rec"><b>Recommend park</b>, because parked costs nothing and loses nothing, and a 250-question sitting will never happen.</p></div></li>
+        <li><div><b>The releases, and which pack is on your work machine.</b>
+          <p>Close every ratify, cut and cold-test row for v1.0.1 to v1.0.12 as superseded by v1.0.13. The v1.0.14 cut is yours on Tuesday's evidence: the candidate's eval and the render pair. And which pack is on your work machine today?</p>
+          <p class="rec"><b>Recommend yes to the closes, cut on Tuesday if the candidate beats v1.0.13</b>, because a cut before CI runs to the end would ship blind.</p></div></li>
+        <li><div><b>The window and boot lines.</b>
+          <p>Inscribe your three window messages (working 256,000, hard 300,000). Move the stop and tolerance lines to 236,000 and 276,000 under them. Move the boot ceiling to the measured cloud boot, 130,000, shrink-only from there, so wraps go through the wrap path again. The ceiling ruling of 21 September says shrink-only; this is your word over your word, and your #301 sentence already points here: "just raise the ceiling until we do the Mac seat fix".</p>
+          <p class="rec"><b>Recommend yes, yes, and 130,000</b>, because the regime has been red on seven cloud readings and reads nothing.</p></div></li>
+        <li><div><b>The delivery shape: one order for five answers.</b>
+          <p>What Apollo hands to a developer or a host. Five proposals answer it and none is ruled against the others: the A2UI catalogue with Apollo's renderer (for hosts), minted theme CSS (the publish tier), reference snippets as acceptance fixtures (today), automated adapters, framework emitters on a registry (parked).</p>
+          <p class="rec"><b>Recommend this order: catalogue and renderer first, minted CSS with the fixtures second, emitters parked until technology names an owner</b>, because it matches what exists and what Friday asked for. Page 3 from Run 6 lays out the case for each.</p></div></li>
+        <li><div><b>Housekeeping in one batch.</b>
+          <p>Your 17 rows whose close event has passed, close with the receipt. The 14 legacy rows, take the proposed close or disposal for each. The carry diet: drop the struck, boilerplate, fragment and repeated-series items from the live residual (they stay in history), one line per recurring series. The stale parked rows later rulings answered, close with the receipt.</p>
+          <p class="rec"><b>Recommend yes to all</b>, because none of it is a question and 342 of 709 carries leave the residual.</p></div></li>
+        <li><div><b>The four small CI calls.</b>
+          <p>The nav badge's 7px: move to 8px or exempt from the 4px grid. The sparkline and bar chart resolve two status inks differently in mono: declare the forks or unify. The two package copies of the chain script: port now or at the cut. The six one-off deck-verify drivers from #268: retire to an archive folder or keep guarding them.</p>
+          <p class="rec"><b>Recommend 8px, declare, port now, retire</b>, because each is the smaller change and Run 6's page 2 shows the badge at both sizes.</p></div></li>
+        <li><div><b>The schema, and the token.</b>
+          <p>Thirteen of the #261 dashboard metas break the meta schema and six list their partners as bare strings. Extend the schema to the new shapes, or bring the metas back? The schema is yours by the v1.0.6 brief, and it is the schema a catalogue would publish. And separately: move the GitHub token out of the remote URL into a credential helper before Tuesday's push?</p>
+          <p class="rec"><b>Recommend extend, item by item on page 1, and yes to the helper</b>, because the #261 shapes are the richer ones and the token is a standing exposure.</p></div></li>
+        <li><div><b>Your three observations, and the Layer-2 waves.</b>
+          <p>Draft the bento ground, the own size and the lightest pattern over a modal as proposed graph nodes; you ratify at the cut. The bento ground sentence ("this doesn't mean the full page") conflicts with the full-page grey ruling of 22 August, and the dark leg is still yours. And the 27 organisms built at #210 and never ruled: park them with the tripwire "reopen when the catalogue lists the component", or sit with them now?</p>
+          <p class="rec"><b>Recommend draft all three, and park the waves</b>, because a 37-day-old eye pass on 43 components is the most expensive sitting on the list.</p></div></li>
+      </ol>
+      <div class="dd-host"></div>
+    </div>
+  </div>
+</section>
+
+<section id="tech" class="grey">
+  <div class="wrap">
+    <p class="label mute">Technical</p>
+    <div class="tech">
+      <p><b>Sources.</b> <code>notes/_subreports/2026-09-26-304-A1-proposals-inventory.md</code> · <code>…-304-A2-open-work-analysis.md</code> · <code>…-304-A3-future-state.md</code> · <code>…-304-A4-health-and-dependencies.md</code> · <code>notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html</code> · <code>MODEL-ROUTING.md</code> · <code>_HANDOFF-154-*.md</code>. This seat's report: <code>notes/_subreports/2026-09-26-304-F-roadmap-plan.md</code>. Build and render: <code>notes/_lanes/304/F/</code> (<code>page.src.html</code>, <code>build.py</code>, <code>render.py</code>, <code>shots/</code>). House CSS and the decisions overlay are copied from the v2 proposal page by the build, not redrawn.</p>
+      <p><b>HEAD and the handoff.</b> HEAD is <code>571d458c</code> (the #303 5b addendum commit, "wrap 5b: the wrap commit read back"); the wrap commit itself is <code>efe3bb47</code>. Nothing else landed between them. A4 reported the former, the handoff the latter; both are right.</p>
+      <p><b>Re-measured at your seat today.</b> Rulings 638, newest <code>s295-D4</code>, 424 with bare status <code>ruled</code>. <code>CONTROL_TIER_44 = "warn"</code>, <code>MARK_TIER = "warn"</code> (<code>knowledge/_validate_a11y.py:64-65</code>). <code>READER_SHIPS_FROM = "v1.0.14"</code> (<code>_gen_pack_manifest.py:507</code>). <code>SKILL.md:119</code> "splice the snippet". <code>BOOT_CEILING_TK = 72_768</code>. <code>_state.py</code>: items 855, live 746, dave 443, claude 303, unconditioned 14. A2's close list: 93 rows. Metas 138, when 39, provides 108. Commits since v1.0.13: 322. Console overrides carry radius control 8, surface 20, container 20 against <code>s245-D10</code>'s 6 / 8 / 12. <code>_CARRIES.md</code>: 36,276,633 bytes. The Apollo-MCP pages v1 and v2 are untracked. <code>_inscribe_ruling.py --set-status</code> exists (line 49, <code>set_status()</code> at 494). <code>_gen_chain.py --check</code> exits 0 on the mount.</p>
+      <p><b>A4's clone verdict, re-read.</b> <code>notes/_lanes/304/A4/clone-BUILD-VERDICT-LOG.jsonl</code>, last four rows: passed 127, failed 15: <code>[8] [10] [13] [38] [81] [82] [86] [94] [127] [128] [132] [134] [135] [136] [144]</code>. A4's own table marks <code>[134] [135] [144]</code> advisory, so the blocking set is twelve; <code>[3]</code> and <code>[125]</code> pass in serial order and fail in CI because the committed files are stale. The his-word set: <code>[81] [86] [127]/[128] [132]/[94]</code>.</p>
+      <p><b>Where the reports disagree, and what this page took.</b> (1) A2's Lane E would enact <code>s130-D4</code>, <code>s130-D5</code>, <code>s130-D6</code>, <code>s149-D1</code>, <code>s151-D1</code>, <code>s151-D2</code>; A1 §2b shows them enacted with receipts (<code>canon.css:6679</code>, <code>s158-D1..D4</code>). Taken: A1; Run 2's audit runs before Run 3 builds. (2) A2 says no tool can stamp status (<code>W-295i</code>) and asks for one; A1 says <code>--set-status</code> exists since #295. Measured: it exists. (3) A2's D3 "cut v1.0.14 from today's tree this weekend" and A3's "v1.0.14, the pack the deck describes" share a version number and not a content; A4 says no cut before CI runs to the end. Taken: A3's content, A4's gate, cut on Tuesday. (4) A2's D8 says <code>_gen_chain.py --check</code> is red by construction on every pushed tree; A4 says <code>c896bcaf</code> gave it head-only advance and CI's step 120 is green. Measured: exit 0 today. Taken: the first half of D8 is dropped; only the carry diet survives (decision 7). (5) A2's D4 moves the boot ceiling up; <code>s295-D3</code> is shrink-only. Put to you as your word over your word (decision 5). (6) A1's item 8 wants a review page for the 27 organisms; A2's D6 parks them. Taken: park (decision 10). (7) A1 recommends "rule MCP and cut the PoC" first; A3 makes MCP the second track. Taken: probe now, PoC after your MCP decisions and the schema.</p>
+      <p><b>Ruling ids this plan obeys or enacts.</b> Enacts in Run 3: <code>s245-D10</code>, <code>s135-D1</code>, <code>s269-D6</code>, <code>s277-D12</code>, <code>s269-D1</code> step 5. Obeys: <code>s294-D10</code> (Jev dev-time only), <code>s295-D2</code> (the enacting lane stamps status), <code>s295-D3</code> (ceiling shrink-only, until you say otherwise), <code>s219-D4(2)</code> (the re-cut is yours), <code>s260-D2</code>/<code>s271-D1</code>/<code>s272-D93</code> (the window lines), <code>s283-D1</code> (the seam check), <code>s183-D1</code>/<code>s188-D2</code> (strike by addition), <code>s215-D3</code> and routing rule 7 (adversary at the brief, verifier at canon), <code>s251-D6</code> (with as slug objects), <code>#74-D1</code> (the declared path). Left standing for your word: <code>s114-D6</code>, <code>s116-D1</code> blocking halves, <code>s216-D1</code>, <code>s246-D3</code>, <code>s135-D3</code>, <code>s114-D2</code>, <code>P-269-1</code>, <code>P-277-5</code>, <code>W-329</code>, <code>W-304</code>.</p>
+      <p><b>Not done by this seat.</b> No git write, no <code>git status</code>, no Project memory, no build on the mount, no GitHub API read. The 424 bare rows were not probed one by one (Run 2a does that). The Mac-sleep claim is architectural, not observed.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · plan · the roadmap and the weekend runs · v1 · 2026-09-26 · session 304 · seat F</span>
+    <span>Nothing here is decided. Every section takes a decision below it.</span>
+  </div>
+</footer>
+<!-- ===== DAVE'S DECISIONS & COMMENTS — copied from the Apollo-MCP proposal v2 (#304 lane M) by seat F, self-contained, autosaves in this browser, exports markdown ===== -->
+<style>
+.dd-box{margin:var(--s4,2rem) 0 0;border:1px solid var(--grey-3,#D7D8D6);background:var(--white,#fff);color:var(--black,#000);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;padding:1.25rem 1.5rem;
+  border-left:4px solid var(--accent,#DA1A00)}
+.dd-box.dd-has{border-left-color:var(--black,#000)}
+.dd-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem}
+.dd-label{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent,#DA1A00)}
+.dd-box.dd-has .dd-label{color:var(--grey-6,#767676)}
+.dd-chips{display:flex;gap:.35rem;flex-wrap:wrap}
+.dd-chip{font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--grey-3,#D7D8D6);
+  background:var(--white,#fff);color:var(--grey-7,#545454);cursor:pointer;border-radius:0}
+.dd-chip:hover{border-color:var(--black,#000);color:var(--black,#000)}
+.dd-chip.on{background:var(--black,#000);color:var(--white,#fff);border-color:var(--black,#000)}
+.dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.dd-field{display:flex;flex-direction:column;gap:.3rem}
+.dd-field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6,#767676);font-weight:500}
+.dd-field textarea{font:inherit;font-size:14px;line-height:1.5;color:var(--black,#000);background:var(--grey-1,#F3F3F3);border:0;
+  border-bottom:1px solid var(--grey-3,#D7D8D6);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.dd-field textarea:focus{outline:none;border-bottom-color:var(--accent,#DA1A00);background:var(--white,#fff);box-shadow:inset 0 0 0 1px var(--grey-3,#D7D8D6)}
+.dd-stamp{font-size:11px;color:var(--grey-5,#9B9B9B);margin-top:.5rem;min-height:1em}
+.dd-bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:var(--black,#000);color:var(--white,#fff);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:.04em}
+.dd-bar .in{max-width:var(--max-width,var(--max,1200px));margin:0 auto;padding:.6rem 2rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.dd-bar b{font-weight:500}
+.dd-bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .9rem;border:1px solid var(--grey-6,#767676);
+  background:transparent;color:var(--white,#fff);cursor:pointer;border-radius:0}
+.dd-bar button:hover{border-color:var(--white,#fff)}
+.dd-bar button.pri{background:var(--accent,#DA1A00);border-color:var(--accent,#DA1A00)}
+.dd-bar .msg{color:var(--grey-5,#9B9B9B);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body{padding-bottom:64px}
+@media (max-width:820px){.dd-grid{grid-template-columns:1fr}.dd-bar .in{padding:.6rem 1rem;gap:.6rem}}
+@media print{.dd-bar{display:none}body{padding-bottom:0}}
+</style>
+<script>
+(function(){
+  var CFG = {
+    page:'plan-304-roadmap-v1', title:'The roadmap and the weekend runs, plan v1', path:'notes/_PLAN-304-roadmap-and-weekend-runs-2026-09-26-v1.html',
+    pageHost:'footer .wrap',
+    targets:[
+      { sel:'section[id]', kind:'Section', fallbackNum:'.label', title:'h2, .line', host:'.dd-host',
+        skip:function(el){ return el.id==='tech'; } },
+      { sel:'.decide > li', kind:'Decision', title:'b', host:'div', prefix:'decision', count:true }
+    ]
+  };
+  var KEY = 'dave-decisions:' + CFG.page;
+  var CHIPS = ['Inscribe','Do it','Later','No','Question'];
+  var state = {}; try{ state = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ state = {}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function txt(el){ return (el ? el.textContent : '').replace(/\s+/g,' ').trim(); }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+
+  // ---- collect anchors -------------------------------------------------
+  var items = [];
+  CFG.targets.forEach(function(t){
+    var nodes = document.querySelectorAll(t.sel);
+    Array.prototype.forEach.call(nodes, function(el, i){
+      if (t.skip && t.skip(el)) return;
+      var id = el.id || (t.prefix + '-' + (i+1));
+      var num = txt(el.querySelector(t.num||'.idx')) || (t.count ? String(i+1).padStart(2,'0') : '') || (t.fallbackNum ? txt(el.querySelector(t.fallbackNum)) : '');
+      var title = txt(el.querySelector(t.title));
+      items.push({ id:id, kind:t.kind, num:num, title:title, host: (typeof t.host==='function' ? t.host(el) : (t.host && el.querySelector(t.host))) || el.querySelector('.wrap') || el });
+    });
+  });
+  items.push({ id:'page', kind:'Whole page', num:'', title:'Anything that belongs to the page rather than one section', host: document.querySelector(CFG.pageHost) });
+
+  // ---- render ----------------------------------------------------------
+  items.forEach(function(it){
+    var s = state[it.id] || {};
+    var box = document.createElement('div');
+    box.className = 'dd-box'; box.dataset.id = it.id; box.id = 'dd-'+it.id;
+    box.innerHTML =
+      '<div class="dd-head"><span class="dd-label">Dave · '+esc(it.kind)+(it.num?' '+esc(it.num):'')+'</span>'+
+      '<span class="dd-chips">'+CHIPS.map(function(c){return '<button type="button" class="dd-chip'+(s.verdict===c?' on':'')+'" data-v="'+c+'">'+c+'</button>';}).join('')+'</span></div>'+
+      '<div class="dd-grid">'+
+        '<label class="dd-field"><span>Decision — in your words</span><textarea data-f="decision" placeholder="What you rule, or what you want done.">'+esc(s.decision)+'</textarea></label>'+
+        '<label class="dd-field"><span>Comment</span><textarea data-f="comment" placeholder="Anything else — a doubt, a question back, a reason.">'+esc(s.comment)+'</textarea></label>'+
+      '</div><div class="dd-stamp">'+(s.at?'saved '+esc(s.at):'')+'</div>';
+    it.host.appendChild(box);
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('.dd-chip'); if(!b) return;
+      var v = b.dataset.v; var cur = state[it.id]||{};
+      cur.verdict = (cur.verdict===v) ? '' : v; cur.at = now(); state[it.id]=cur; save();
+      box.querySelectorAll('.dd-chip').forEach(function(c){ c.classList.toggle('on', c.dataset.v===cur.verdict); });
+    });
+    box.addEventListener('input', function(e){
+      var f = e.target.dataset && e.target.dataset.f; if(!f) return;
+      var cur = state[it.id]||{}; cur[f]=e.target.value; cur.at=now(); state[it.id]=cur; save();
+    });
+  });
+
+  function has(s){ return s && (s.verdict || (s.decision||'').trim() || (s.comment||'').trim()); }
+  function refresh(){
+    var n=0;
+    items.forEach(function(it){
+      var s=state[it.id], box=document.querySelector('.dd-box[data-id="'+it.id+'"]');
+      if(has(s)) n++;
+      if(box){ box.classList.toggle('dd-has', !!has(s)); box.querySelector('.dd-stamp').textContent = (s&&s.at)?'saved '+s.at:''; }
+    });
+    var c=document.getElementById('dd-count'); if(c) c.textContent = n+' of '+items.length+' answered';
+  }
+
+  // ---- export ----------------------------------------------------------
+  function markdown(){
+    var lines = ['# DAVE-RULINGS — '+CFG.title, '', 'source: `'+CFG.path+'`  ', 'exported: '+now()+'  ', 'status: his words, verbatim — quote, never paraphrase', ''];
+    var n=0;
+    items.forEach(function(it){
+      var s=state[it.id]; if(!has(s)) return; n++;
+      lines.push('## '+(it.num?it.num+' · ':'')+it.title+'  ');
+      lines.push('<sub>'+it.kind+' · anchor `#dd-'+it.id+'` · saved '+s.at+'</sub>', '');
+      if(s.verdict) lines.push('**Verdict:** '+s.verdict, '');
+      if((s.decision||'').trim()) lines.push('**Decision, verbatim:**', '', '> '+s.decision.trim().replace(/\n/g,'\n> '), '');
+      if((s.comment||'').trim()) lines.push('**Comment, verbatim:**', '', '> '+s.comment.trim().replace(/\n/g,'\n> '), '');
+    });
+    if(!n) lines.push('_Nothing answered yet._');
+    lines.push('', '---', '', '<details><summary>machine copy</summary>', '', '```json', JSON.stringify({page:CFG.page, path:CFG.path, exported:now(), answers:state}, null, 2), '```', '', '</details>', '');
+    return lines.join('\n');
+  }
+  function download(){
+    var d=new Date(),p=function(n){return (n<10?'0':'')+n;};
+    var name='DAVE-RULINGS-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+CFG.page+'.md';
+    var blob=new Blob([markdown()],{type:'text/markdown'}); var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    msg('Saved '+name+' to Downloads — drop it in notes/_lanes/304/');
+  }
+  function copy(){ var t=markdown(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('Copied — paste it into the chat');},function(){ var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();msg('Copied — paste it into the chat'); }); }
+  function clear(){ if(!confirm('Clear every decision and comment on this page?')) return; state={}; save(); document.querySelectorAll('.dd-box textarea').forEach(function(t){t.value='';}); document.querySelectorAll('.dd-chip.on').forEach(function(c){c.classList.remove('on');}); msg('Cleared'); }
+  function msg(s){ var m=document.getElementById('dd-msg'); if(m){ m.textContent=s; } }
+
+  var bar=document.createElement('div'); bar.className='dd-bar';
+  bar.innerHTML='<div class="in"><b>Your decisions</b><span id="dd-count"></span><span class="msg" id="dd-msg">Autosaves as you type</span>'+
+    '<button type="button" id="dd-copy">Copy as text</button><button type="button" class="pri" id="dd-dl">Export rulings .md</button><button type="button" id="dd-clear">Clear</button></div>';
+  document.body.appendChild(bar);
+  document.getElementById('dd-dl').onclick=download; document.getElementById('dd-copy').onclick=copy; document.getElementById('dd-clear').onclick=clear;
+  refresh();
+})();
+</script>
+</body></html>

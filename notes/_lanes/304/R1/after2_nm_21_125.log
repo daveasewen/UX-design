@@ -1,0 +1,82 @@
+— 146 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 60s · non-mutating steps only
+
+  ✅ [21] lane records selftest — schema refusals + routing contract (O1
+  ✅ [26] worklist store selftest — schema presence gates incl. priority
+  ✅ [28] decision-graph selftest — conflict gate bites on unresolved/op
+  ✅ [29] spine-writer selftest — splice invariants + no-half-writes (#7
+  ✅ [38] component-partials sync — AUTO-PARTIAL injection + contracts (
+  ✅ [39] component-partials selftest (ADR-0013)
+  ✅ [40] token-set distribution sync — AUTO-TOKENS injection (s121-D1)
+  ✅ [41] token-set distribution selftest (s121-D1)
+  ✅ [43] Behaviour contract selftest (ADR-0015)
+  ✅ [45] canon components determinism check (ADR-0013 ruling 4)
+  ✅ [47] partial-ratchet selftest (ADR-0013)
+  ✅ [50] theme cascade sync — [data-apollo-theme] layer (ADR-0011)
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ⊘ [61] dashboard sync — generated progress dashboard (RULED #164, bui  COULD-NOT-ASK
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ✅ [70] wiring gate selftest — 4 bites
+  ⊘ [74] state-contrast gate selftest — paint stack, report arithmetic,  COULD-NOT-ASK
+  ✅ [76] type-composites selftest
+  ✅ [85] KG edge gate selftest (6 bites)
+  ✅ [87] Token fork-ban selftest (2-direction)
+  ✅ [91] binds-resolve selftest — 5 bites incl. any-store clause (#146)
+  ✅ [93] chart-intent resolve selftest — 4 bites incl. list case + abse
+  ✅ [95] roles/answers resolve selftest — 15 bites incl. in-role priori
+  ✅ [97] DataViz gate selftest — bite-tests dv-004 + the dtype vocabula
+  ✅ [99] property-resolves gate C2 selftest — 4 bites + a bite-the-bite
+  ✅ [101] dataviz var-resolution gate selftest — 8 arms incl. alias chai
+  ✅ [103] minted-consumption selftest — 10 arms incl. both false-positiv
+  ✅ [105] hidden-attr display selftest — 16 bites incl. the real #218 mu
+  ✅ [110] consult tool selftest (advisory)
+  ✅ [111] search core selftest — two-stage engine + receipt format (O2′ 
+  ✅ [113] memento index determinism check (O2′ #25)
+  ✅ [114] memento index selftest — contract refusals + determinism (O2′ 
+  ✅ [115] memento search selftest — known-answer retrieval + fetch refus
+  ✅ [117] graph mention map determinism check (#115 step 0)
+  ✅ [118] graph mention map selftest — hit/miss/refusal bites (#115 step
+  ✅ [120] read chain determinism check — stale _CHAIN.md serves a PREVIO
+  ✅ [121] read chain selftest — verbatim terms + the CUT + refusal on a 
+  ✅ [122] GM size stamp check — a TYPED `size:` figure / drift past the 
+  ✅ [123] GM size stamp selftest — the fixed point, the 2-cycle refusal,
+  ✅ [125] memento schematic determinism check — a stale diagram publishe
+
+==============================================================================
+SURVEY: 43 pass · 0 FAIL · 2 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 60 not asked (mutating) · 41 outside --range 21:125 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (2) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 77)
+      COULD-NOT-ASK: dashboard/index.html — the page differs, but a live gate baked into it is reading INPUTS OUTSIDE THE COMMITTED TREE, so its verdict — and therefore this page — cannot be reproduced here: provenance names `knowledge/_tmp/l3-245/rename-plan.json`; provenance names `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`; provenance names `outputs/_PARTITION-button-primary-2026-08-06-v1.md`. Every one of those paths is untracked, so an environment that has them and one that does not will render different prose from the SAME commit. This is a REFUSAL, not a staleness verdict in either direction: the page's agreement with the stores is UNKNOWN here and is reported as unknown. Ask it where those inputs are present (a working tree that holds them), or commit them.
+
+  [74] state-contrast gate selftest — paint stack, report arithmetic, named args
+      python3 knowledge/_validate_state_contrast.py --selftest   (exit 77)
+      COULD-NOT-ASK: _validate_state_contrast.py — the 'playwright' module is not installed (ModuleNotFoundError("No module named 'playwright'")) — this gate cannot be proven without it; run `pip install playwright && playwright install chromium` ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run BLOCKING in the `render` job of .github/workflows/gates.yml, which installs chromium — that job is where this gate's proof of record lives. Nothing here is claimed green; the question was unaskable on this box.
+
+NOT ASKED (60 mutating steps) — run --include-mutating on a clean tree to include them:
+  [22] cross-reference index
+  [23] sutherland acceptance fixtures
+  [24] states-completeness probe (advisory)
+  [25] worklist store gate — open items state what would close them; opti
+  [27] decision-graph — typed edges + conflict gate (advisory, ADR-0012)
+  [30] _LIVE-STATE staleness gate + lifecycle-block generation (advisory,
+  [31] advisory signals — prose rules (advisory)
+  [32] review queue
+  … and 52 more
+
+— recorded → /sessions/rcw-0115rtjy4mpbeejfbjiuhael/clone304r1/notes/_BUILD-VERDICT-LOG.jsonl

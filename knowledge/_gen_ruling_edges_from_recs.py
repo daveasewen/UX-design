@@ -24,6 +24,7 @@ Rules applied, each from the ruling:
     literal rows): `superseded_by: X` on C yields X -> C; a `superseded_note_<X>` key on C
     yields X -> C.  Each such edge carries source "store-field:<key>".
 """
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)  # help gate (#158 write-by-default class; guarded #304 R1)
 import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

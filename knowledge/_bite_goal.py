@@ -14,6 +14,7 @@ by name, never softened.
 The driver is any live assistant fed boot.md as its instructions and scenario.json's turns in
 order; the sandbox has no API auth (claude -p → api_error), so at #265 the driver is an Agent lane.
 """
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)  # help gate (#158 write-by-default class; guarded #304 R1)
 import json, re, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent

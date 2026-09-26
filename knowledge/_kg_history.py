@@ -20,6 +20,7 @@ artefact is therefore not recoverable from this file; the ruling's own birthday 
 The DAY LIST is unchanged (still driven by knowledge/components + knowledge/_rulings.json only),
 so adding the compliance read does not add snapshots.
 """
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)  # help gate (#158 write-by-default class; guarded #304 R1)
 import json, os, subprocess, sys, tempfile, tarfile, io
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 K = os.path.join(ROOT, 'knowledge'); OUT = os.path.join(K, '_kg_history.json')

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decide: the schema and the shape of a part</title>
+<!--CSS-->
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · decision page 1 of 6 · session 304</p>
+        <h1>The schema, and the shape of a part</h1>
+        <p class="sub">What the rulebook for every part must accept before a catalogue can publish it, and four shape questions the MCP probe surfaced.</p>
+      </div>
+      <p class="meta"><b>Decision page v1 · Saturday 26 September 2026</b><br>Run 6, seat R6a, for your sitting on Tuesday 29 September<br>Six questions, each with a recommendation and a box for your word.<br>Counts are measured at your seat today unless marked as an estimate.</p>
+    </div>
+    <blockquote>It seems to me the simplest and most mechanical version is designing with built ready components that flex against rules and rails that are predefined, but i dont have all the answers.<cite>Dave · 31 August 2026 · the factory north star</cite></blockquote>
+  </div>
+</header>
+
+<section id="answer">
+  <div class="wrap two">
+    <p class="label">The answer first</p>
+    <div>
+      <p class="glance"><b>Widen the schema for one thing only, the part states. Bring the other nine errors back to the schema. Then settle four shape questions, so a catalogue can describe a whole screen and not just its parts.</b></p>
+      <p class="line">The meta schema is the rulebook every part's notes must pass, and it is the thing an Apollo-MCP catalogue would publish. 133 of 137 parts pass it today. The four that fail are the dashboard parts you nominated in September: the data grid, the filter bar, the KPI tile and the legend. Their notes grew richer than the rulebook.</p>
+      <div class="stats four">
+        <div><span class="n">13</span><span class="c">errors against the schema, all on those four parts</span></div>
+        <div><span class="n">4</span><span class="c">of the 13 would be published in a catalogue: all are the part states</span></div>
+        <div><span class="n">45</span><span class="c">parts with no field for their own words, the button among them</span></div>
+        <div><span class="n">27</span><span class="c">parts that give a setting and a slot the same name</span></div>
+      </div>
+      <p class="lead" style="margin-top:var(--s3)">The schema is yours: the v1.0.6 brief says schema changes are yours, ratified at your eye before anything is filled in. Nothing on this page has been changed. Estimate for the whole page once you have ruled: 2 to 4 hours of lane work, plus your look at the result.</p>
+    </div>
+  </div>
+</section>
+
+<section id="q1" class="q grey">
+  <div class="wrap">
+    <p class="label">Question 1 · the part states</p>
+    <ol class="decide"><li><div>
+      <h2>Should the schema accept a part's states, such as ready, loading, empty, error and stale?</h2>
+      <p class="rec"><b>Recommend: widen the schema, with one shape for states.</b> Because a live screen has to draw loading, empty and error as well as ready, and a catalogue can only carry what the schema allows.</p>
+      <p class="lead">Today the schema allows only two words here: "simple" or "full". The four new parts each describe their states properly, but each in its own way. These four errors are the only ones a catalogue would publish.</p>
+
+      <div class="opts">
+        <div class="opt"><span class="k">Data grid · today</span>
+<pre class="code">"stateModel": {
+  "$scope": "the column header …",
+  "states": ["rest", "hover", "focus-visible",
+    "sorted", "filtered-active", "menu-open",
+    "resizing", "disabled", "truncated"],
+  "sorted": "aria-sort … a 2px underline …",
+  …
+}</pre></div>
+        <div class="opt"><span class="k">Filter bar · today</span>
+<pre class="code">"stateModel": {
+  "attribute": "data-ftb-state",
+  "states": [
+    {"name": "no-filters", "shows": "the total count …"},
+    {"name": "filtered",   "shows": "N of M, the chips …"},
+    … loading, empty, error
+  ]
+}</pre></div>
+        <div class="opt"><span class="k">KPI tile · today</span>
+<pre class="code">"stateModel": {
+  "states": ["ready", "loading", "empty",
+             "error", "stale"],
+  "loading": "aria-busy=true, four skeleton blocks …",
+  "empty": "label + em-dash value + why …",
+  …
+}</pre></div>
+        <div class="opt"><span class="k">Legend · today</span>
+<pre class="code">"stateModel": {
+  "rest":    "every series shown; Reset disabled",
+  "check":   "one or more swatches unchecked …",
+  "isolate": "a label is pressed …"
+}</pre></div>
+      </div>
+
+      <div class="opts">
+        <div class="opt pick"><span class="k">Recommended · widen, one shape</span>
+          <h3>A list of state names, and one sentence per state</h3>
+<pre class="code">"stateModel": "simple" | "full"
+  or
+"stateModel": {
+  "states": ["ready", "loading", …],
+  "loading": "what the part shows",
+  "attribute": "optional",
+  "$…": notes
+}</pre>
+          <p class="for">The data grid and the KPI tile already fit. The legend gains its list of names. The filter bar's name-and-sentence pairs become a sentence under each name. Nothing is lost.</p>
+        </div>
+        <div class="opt"><span class="k">Or · bring the four back</span>
+          <h3>Back to "simple" or "full"</h3>
+          <p>The four parts go back to one word each, and the states live only in the drawn snippet and its comments.</p>
+          <p class="for">The catalogue could then never tell a host that a part has a loading or an error state, and a live screen would have to guess.</p>
+        </div>
+      </div>
+
+      <figure class="spec"><img src="_lanes/304/R6a/specimens/kpi-states.png" alt="The KPI tile's drawn loading, empty, error and stale states, rendered from its reference snippet" loading="lazy"><figcaption>What the state shape carries. The KPI tile's loading, empty, error and stale states, rendered from its own reference snippet. Not redrawn.</figcaption></figure>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="q2" class="q">
+  <div class="wrap">
+    <p class="label">Question 2 · the other nine errors</p>
+    <ol class="decide"><li><div>
+      <h2>For the other nine errors, do the parts come back to the schema?</h2>
+      <p class="rec"><b>Recommend: yes, bring all nine back, as listed below.</b> Because a catalogue never reads these fields, and the schema already has a legal place for each of them.</p>
+      <table class="stack">
+        <thead><tr><th>Part</th><th>What the schema refuses</th><th>Errors</th><th>In a catalogue?</th><th>Recommend</th></tr></thead>
+        <tbody>
+          <tr><td data-l="Part"><b>Data grid</b></td><td data-l="What the schema refuses">Its six companion parts (checkbox, filter bar, pagination, search, tags, skeleton) are written as plain names.</td><td data-l="Errors">6</td><td data-l="In a catalogue?">No</td><td data-l="Recommend" class="rc">Bring back. Each becomes a named entry, with its note kept beside it, in the form you ruled on 7 September.</td></tr>
+          <tr><td data-l="Part"><b>Data grid</b></td><td data-l="What the schema refuses">A list of the parts it is built from, placed inside its relationships.</td><td data-l="Errors">1</td><td data-l="In a catalogue?">No</td><td data-l="Recommend" class="rc">Bring back. Move the list to the field that already exists for a part's inner parts.</td></tr>
+          <tr><td data-l="Part"><b>Legend</b></td><td data-l="What the schema refuses">Its source is written "hand-authored", which is not one of the allowed sources.</td><td data-l="Errors">1</td><td data-l="In a catalogue?">No</td><td data-l="Recommend" class="rc">Bring back. Its source is "code", since it points at the canon legend script. The data grid made the same move in September.</td></tr>
+          <tr><td data-l="Part"><b>Legend</b></td><td data-l="What the schema refuses">Its one companion carries a "when" sentence the schema has no field for.</td><td data-l="Errors">1</td><td data-l="In a catalogue?">No</td><td data-l="Recommend" class="rc">Bring back. Keep the sentence as a note and mark the companion as recommended.</td></tr>
+        </tbody>
+      </table>
+      <p class="lead" style="margin-top:var(--s3)">With question 1 widened and these nine brought back, all 137 parts pass the schema and the build's integrity check turns green on this point. Estimate: under an hour of lane work, one verifier.</p>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="q3" class="q grey">
+  <div class="wrap">
+    <p class="label">Question 3 · where a part's words come from</p>
+    <ol class="decide"><li><div>
+      <h2>Where does a part's own text come from: a field on the part, or a separate text part placed inside it?</h2>
+      <p class="rec"><b>Recommend: a field on the part, such as the button's label and the header's title.</b> Because the words are checked with the part: the label's length, its wrap, the 44px target and the name a screen reader hears.</p>
+      <p class="lead">45 parts describe how they look but not what they say. The button, the header, the status dot, the list and the summary have no field for their words. In the snippet the words are simply typed into the markup.</p>
+      <div class="specs">
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/button-row.png" alt="The primary button row from the Button reference snippet, each labelled Example" loading="lazy"><figcaption>The button's reference snippet. "Example" is typed into the markup; no field on the part names it.</figcaption></figure>
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/button-bar.png" alt="The action bar from the Button reference snippet with Cancel and Confirm payment" loading="lazy"><figcaption>The same snippet's action bar. "Confirm payment" is the kind of word a live screen must supply.</figcaption></figure>
+      </div>
+      <div class="opts">
+        <div class="opt pick"><span class="k">Recommended · a field on the part</span>
+          <h3>The button carries its label</h3>
+<pre class="code">{ "id": "pay", "component": "button",
+  "variant": "primary",
+  "label": "Confirm payment" }</pre>
+          <p class="for">Apollo's gate sees the words as the button's own and can check them with it. Each of the 45 parts gains one or two plainly named fields: label, title, items, rows, trail.</p>
+        </div>
+        <div class="opt"><span class="k">Or · a text part inside</span>
+          <h3>The button holds a separate text part</h3>
+<pre class="code">{ "id": "pay", "component": "button",
+  "variant": "primary", "child": "pay-text" }
+{ "id": "pay-text", "component": "Text",
+  "text": "Confirm payment" }</pre>
+          <p class="for">This is how A2UI's own basic button works, so it costs nothing to write. But the words become a loose child the gate cannot tell apart from any other text.</p>
+        </div>
+      </div>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="q4" class="q">
+  <div class="wrap">
+    <p class="label">Question 4 · a part that holds several parts</p>
+    <ol class="decide"><li><div>
+      <h2>What holds four parts side by side on a screen: Apollo's own bento wall, or A2UI's rows and columns?</h2>
+      <p class="rec"><b>Recommend: give Apollo's bento wall a slot that takes several tiles.</b> Because the spans, the gutters and the no-orphan rule are ruled on the bento wall, and A2UI's rows and columns know none of them.</p>
+      <p class="lead">No part in the dashboard set can hold more than one child today. The layout part declares no slot, and the page shell's content slot takes a single child. So a dashboard of four parts cannot yet be written as a tree from the catalogue alone.</p>
+      <div class="specs">
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/bento-ruled.png" alt="The dashboard bento template rendered from its reference snippet: masthead, page header, a row of four KPI tiles and a chart and list below" loading="lazy"><figcaption>The bento wall, rendered from the dashboard bento template's reference snippet (demo chrome hidden). Its tiles span 3 or 6 of 12 columns by rule.</figcaption></figure>
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/layout.png" alt="The twelve-column grid from the Layout-utilities reference snippet" loading="lazy"><figcaption>The layout part's twelve-column grid, rendered from its reference snippet. It arranges, but declares no slot.</figcaption></figure>
+      </div>
+      <div class="opts">
+        <div class="opt pick"><span class="k">Recommended · Apollo's own container</span>
+          <h3>The bento wall takes tiles</h3>
+<pre class="code">{ "id": "wall", "component": "bento-wall",
+  "tiles": ["cash", "cutoff", "queue", "trend"] }</pre>
+          <p class="for">The slot accepts parts by what they provide, not by a list of names, as your 9 August ruling on slots requires. Every screen the catalogue describes passes through the bento rules and gates.</p>
+        </div>
+        <div class="opt"><span class="k">Or · import A2UI's rows and columns</span>
+          <h3>Borrow Row and Column from A2UI's basic set</h3>
+<pre class="code">{ "id": "row", "component": "Row",
+  "children": ["cash", "cutoff", "queue", "trend"] }</pre>
+          <p class="for">Quickest, and every A2UI host already draws them. But a screen built this way steps round the bento spans and gutters, so our gates would have to re-learn them.</p>
+        </div>
+      </div>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="q5" class="q grey">
+  <div class="wrap">
+    <p class="label">Question 5 · a setting and a slot with the same name</p>
+    <ol class="decide"><li><div>
+      <h2>When a part names a setting and a slot the same, such as a chart's "data", which one is it?</h2>
+      <p class="rec"><b>Recommend one rule: data is a setting, bound to a data shape; a slot only ever holds another part.</b> Because chart data modelled as child parts is the open gap the probe named, and the chooser reads data shapes, not children.</p>
+      <p class="lead">27 parts give both a setting and a slot the same name. A catalogue entry can only have one of them. The probe let the slot win on every part and logged 195 losses. Applied to the 27, the rule sorts them like this:</p>
+      <div class="mini">
+        <div><p class="hd">Becomes a setting · 16</p><ul>
+          <li>All 14 charts: data, series, slices, bins, sessions, categories, rows, ranges, outliers</li>
+          <li>KPI tile: target</li>
+          <li>Account selector: accounts</li></ul></div>
+        <div><p class="hd">Stays a slot · 7</p><ul>
+          <li>Action bar, banner, confirmation, drawer: actions</li>
+          <li>Cards, popover: content</li>
+          <li>Side rail shell: flyout</li></ul></div>
+        <div><p class="hd">Needs your eye · 4</p><ul>
+          <li>Data grid: columns, filters</li>
+          <li>Lightbox: items</li>
+          <li>Stepper: steps</li>
+          <li>Tab bar: items</li></ul></div>
+      </div>
+      <p class="est" style="margin-top:var(--s2)">The sort is this seat's reading of each name, not a measurement. The four in the last column could go either way and are put to you by name.</p>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="q6" class="q">
+  <div class="wrap">
+    <p class="label">Question 6 · proposed parts in the first catalogue</p>
+    <ol class="decide"><li><div>
+      <h2>Do the five dashboard parts still marked as proposals go into the proof-of-concept catalogue?</h2>
+      <p class="rec"><b>Recommend: yes, all five, marked as proposals, with every screen's record naming any proposal it used.</b> Because the June dashboard cannot be drawn without the page shell and the layout, and the proof of concept never leaves your machine.</p>
+      <p class="lead">Each of these still carries "your eye owed" in its notes. Putting them in the proof of concept is not a ruling on them. For the KPI tile in particular, your words still stand: "might be a partially built trend card with option, I haven't decided yet". Any catalogue that leaves your machine would carry settled parts only.</p>
+      <div class="specs">
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/appshell.png" alt="The page shell with top navigation, rendered from its reference snippet" loading="lazy"><figcaption>Page shell with top navigation</figcaption></figure>
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/kpi-default.png" alt="One KPI tile: Net cash flow, rendered from its reference snippet" loading="lazy" style="max-width:320px"><figcaption>KPI tile</figcaption></figure>
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/legend.png" alt="The horizontal chart legend above a bar chart, rendered from its reference snippet" loading="lazy"><figcaption>Legend</figcaption></figure>
+        <figure class="spec"><img src="_lanes/304/R6a/specimens/footer.png" alt="The default footer band, rendered from its reference snippet" loading="lazy"><figcaption>Footer</figcaption></figure>
+      </div>
+      <p class="est" style="margin-top:var(--s2)">The fifth, the layout part, is shown under question 4. All five are rendered from their reference snippets, not redrawn.</p>
+    </div></li></ol>
+  </div>
+</section>
+
+<section id="tech" class="grey">
+  <div class="wrap">
+    <p class="label mute">Technical</p>
+    <div class="tech">
+      <p><b>Sources.</b> <code>notes/_subreports/2026-09-26-304-A4-health-and-dependencies.md</code> (<code>[132]</code> integrity 13 errors, <code>[94]</code> data-grid <code>with</code> slugs, H4) · <code>notes/_lanes/304/A4/clone-INTEGRITY-REPORT.md:10-28</code> · <code>notes/_subreports/2026-09-26-304-R5-mcp-probe.md</code> (decisions 1–4 and 7) · <code>notes/_lanes/304/R5/catalogue-report.json</code> (<code>schemaErrorPublication</code>: 4 of 13 published, all <code>stateModel</code> via <code>x-apollo.states</code>; <code>gapTally</code>; 27 <code>G-SLOT-PROP-SAME-NAME</code> entries) · <code>notes/_lanes/304/R5/catalogue-summary.json</code> · <code>knowledge/components/meta.schema.json</code> (read, not touched) · the four metas <code>data-grid</code>, <code>filter-toolbar-bar</code>, <code>kpi-tile</code>, <code>legend</code>.</p>
+      <p><b>Ruling ids behind the words.</b> The schema is Dave's: <code>notes/_briefs/2026-09-02-234-v106-brief.md:47</code>. "The form you ruled on 7 September" = <code>s251-D6</code> (<code>with</code> entries as <code>{slug, rel}</code>, reciprocals derived). "Your 9 August ruling on slots" = <code>s140-D1</code> (accepts by tier or capability; a child list is refused), enacting <code>s136-D1</code> clause C. The data grid's provenance precedent is its own <code>$source</code> note "#265-C". The trend card is floated, not ruled, in <code>s182-D2</code>. The field for inner parts is <code>subComponents</code> (object or array, already in the schema). Question 5's rule follows G1 gap 2 (chart data as a binding onto the 23 shapes in <code>shapes.json</code>, <code>s254-D2</code>).</p>
+      <p><b>Not on this page.</b> R5's decision 6 (the reduced-motion clause goes blind on composed pages, K1) and the GitHub token helper sit with the MCP decisions and the plan's decision 9 respectively. The CI calls are page 2.</p>
+      <p><b>Specimens.</b> <code>notes/_lanes/304/R6a/specimens/*.png</code>, made by <code>notes/_lanes/304/R6a/specimens.py</code> from <code>knowledge/snippets/*.reference.html</code> at Dave's seat (Playwright, real face). The bento shot hides the snippet's demo bar and nothing else. Build: <code>notes/_lanes/304/R6a/build.py</code> copies the house CSS and the decisions overlay from <code>notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html</code>. Report: <code>notes/_subreports/2026-09-26-304-R6a-decision-pages.md</code>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · decision page 1 · the schema and the shape of a part · v1 · 2026-09-26 · session 304 · seat R6a</span>
+    <span>Nothing here is decided. Every question takes your word below it.</span>
+  </div>
+</footer>
+<!--OVERLAY-->
+</body></html>
