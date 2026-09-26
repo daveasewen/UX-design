@@ -1,0 +1,25 @@
+PASS pending-approval card links to the payment record (drawer open, URL carries the id)  :: ['PAY-24226', 'file:///sessions/rcw-0115rtjy4mpbeejfbjiuhael/cold/cand-r3/out/index.html#/payments/PAY-24226']
+PASS focus moved into the drawer
+PASS Approve opens the confirmation dialog  :: Approve PAY-24226
+PASS a £5m+ approval without a note is refused with an inline error  :: Approval note
+
+At least 10 characters. Recorded in the audit trail.
+
+0/300
+
+Payments of £5m or more need an approval note of at least 10 characters.
+PASS approval releases the payment and writes an audit entry  :: Released
+PASS a confirmation toast is announced (role=status)
+PASS Escape closes the drawer and the URL drops the record  :: file:///sessions/rcw-0115rtjy4mpbeejfbjiuhael/cold/cand-r3/out/index.html#/payments
+PASS status deep link filters the payments grid to pending approval  :: ['Pending approval', 'Pending approval', 'Pending approval']
+PASS rejection with a reason under 10 characters is refused
+PASS rejection records the status  :: PAY-24100
+PASS approve and reject outcomes survive a reload
+PASS sorting by GBP equivalent orders ascending and sets aria-sort  :: [0.16, 0.16, 0.16, 0.17]
+PASS second click sorts descending  :: [23.08, 22.86, 21.87, 20.32]
+PASS next page moves the range  :: 11–20 of 140
+PASS rows per page 25 shows 25 rows
+PASS sort and page size persist across reload
+PASS clicking a region bar drills to Risk and limits, filtered to that region, on the positions tab  :: ['A · USD · United Kingdom: 4.7 £m', 'United Kingdom', 'file:///sessions/rcw-0115rtjy4mpbeejfbjiuhael/cold/cand-r3/out/index.html#/risk?region=United%20Kingdom&tab=positions']
+PASS the drilled positions all belong to that region  :: ['United Kingdom']
+PASS zero console errors or page errors during this section  :: []

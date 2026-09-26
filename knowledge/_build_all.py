@@ -663,6 +663,21 @@ STEPS = [
      "_validate_polarities.py", ["--check"]),
     ("polarity gate selftest — control + every refusal arm on a copy of the real rows (s238-D7)",
      "_validate_polarities.py", ["--selftest"]),
+    # ── #304 lane R4b · THE GEOMETRY AND OWN-SIZE GATES (the #288 sloppiness class; Dave, Thu 24 Sep:
+    # "buttons and table headings way smaller than they should"). APPENDED, never inserted: every
+    # existing step index stays where CI and the chain quote it; the total moves 146 → 148.
+    # ADVISORY, both, and the route rows land in the SAME edit (the (a)-class omission recorded four
+    # times above). Browser-bound like the hit-area gate: in a job without playwright + chromium each
+    # exits 77 COULD-NOT-ASK and the build continues DECLARED; where the browser is staged `--build`
+    # runs the selftest (planted fixture, clean fixture, reference bento / showroom, the real #288
+    # page, a mutation per clause) and then the TRACKED generated pages. Blocking is Dave's (the #304
+    # plan puts "blocking flips" after Tuesday). The same `<gate> PAGE --json` form is what lane 4c's
+    # eval harness calls per cold run — the second consumer.
+    ("geometry gate — alignment, gutters, edges, bar width, dead space, overlap, clipped text, "
+     "overflow, stretch on generated pages (ADVISORY, built #304)",
+     "_validate_geometry.py", ["--build"]),
+    ("own-size gate — every part at its reference size on generated pages (ADVISORY, built #304)",
+     "_validate_own_size.py", ["--build"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1068,6 +1083,12 @@ ROUTE_ROWS = [
      "commit seam)"),
     ("polarity gate selftest — control + every refusal arm on a copy of the real rows (s238-D7)",
      ABORT, None),
+    # ── #304 lane R4b · the geometry and own-size gates' rows, in the SAME edit as their STEPS entries.
+    # ADVISORY per their own declared tier; rc=77 (no browser / no HSBC face) is a declared refusal upstream.
+    ("geometry gate — alignment, gutters, edges, bar width, dead space, overlap, clipped text, "
+     "overflow, stretch on generated pages (ADVISORY, built #304)", ADVISORY, None),
+    ("own-size gate — every part at its reference size on generated pages (ADVISORY, built #304)",
+     ADVISORY, None),
 ]
 
 

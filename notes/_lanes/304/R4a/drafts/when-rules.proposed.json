@@ -1,0 +1,304 @@
+{
+ "$what": "DRAFT when-rules for the dashboard's parts (R5's 18, derived by script from the two dashboard templates' $composes + the #261 metas) plus the dashboard frame, and the four parts observation C touches. NOT IN CANON. Dave rules the wording on Tuesday 29 September.",
+ "$how_to_enact": "On his yes, for each row with change != KEEP: set the meta's `when` to `proposed` (a plain string replace of one field; rows marked AMEND append clauses to the gate half and keep the prose half byte-identical), add the `registry` fields to knowledge/when-fields.json `fields` by addition (s273-D4 lets a lane add a name with its definition and example), then run the yieldsTo derivation and knowledge/_validate_roles_resolve.py (check 10 when-fields-known). check_drafts.py in this folder rehearses every step on a scratch copy.",
+ "$source": "R5 notes/_subreports/2026-09-26-304-R5-mcp-probe.md §5c; notes/_DECIDE-304-when-rules-2026-09-26-v1.html",
+ "registry_additions": {
+  "needs": {
+   "definition": "what the person must do to the records as a set (`sort`, `filter`, `select`, `edit`; `none` = they only read them)",
+   "kind": "enum",
+   "example": "needs in (sort, filter, select, edit)"
+  },
+  "layout.grammar": {
+   "definition": "the layout grammar the page is built on (`bento` = canon's bento-of-bentos, s217-D2; `grid` = the layout-utilities grid)",
+   "kind": "enum",
+   "example": "layout.grammar = bento"
+  },
+  "interrupts": {
+   "definition": "whether the moment must stop the person until they answer (`required` = a confirmation or a task that cannot share the screen; `none` = the choice can be made in place)",
+   "kind": "enum",
+   "example": "interrupts = required"
+  },
+  "actions": {
+   "definition": "how many related actions hang off one trigger",
+   "kind": "count",
+   "example": "actions >= 2"
+  },
+  "options": {
+   "definition": "how many choices one selection offers",
+   "kind": "count",
+   "example": "options >= 5"
+  }
+ },
+ "rows": [
+  {
+   "slug": "app-shell-top-nav",
+   "meta": "knowledge/components/app-shell-top-nav.meta.json",
+   "field": "when",
+   "provides": "page-frame",
+   "current": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+   "change": "KEEP",
+   "proposed": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "breadcrumbs",
+   "meta": "knowledge/components/breadcrumbs.meta.json",
+   "field": "when",
+   "provides": "wayfinding",
+   "current": "shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global — masthead / main-nav family\") for global movement and to tabs (when: \"local — peer views in one context\") for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.",
+   "change": "KEEP",
+   "proposed": "shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global — masthead / main-nav family\") for global movement and to tabs (when: \"local — peer views in one context\") for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "button",
+   "meta": "knowledge/components/button.meta.json",
+   "field": "when",
+   "provides": "action",
+   "current": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text — the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.",
+   "change": "AMEND",
+   "proposed": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text AND actions <= 1 — the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.",
+   "why": "Makes the button's existing 'yields to split-button when a menu hangs off the action' readable, so the chooser can hand an action with related actions to the split button (observation C). An unknown `actions` stays unknown: every existing button pick is unchanged.",
+   "decision_page": "_DECIDE-304-when-rules question 6 (this seat's addition, for his eye)",
+   "registry_fields_used": [
+    "actions"
+   ],
+   "observation": "C"
+  },
+  {
+   "slug": "chart-bar",
+   "meta": "knowledge/components/chart-bar.meta.json",
+   "field": "when",
+   "provides": "chart-panel",
+   "current": "answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, ≤ 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.",
+   "change": "KEEP",
+   "proposed": "answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, ≤ 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "chart-line",
+   "meta": "knowledge/components/chart-line.meta.json",
+   "field": "when",
+   "provides": "chart-panel",
+   "current": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 — the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6.",
+   "change": "AMEND",
+   "proposed": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 AND units = same AND shape = time-series × 1–5-series — the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6.",
+   "why": "The line chart's own sentence already says it gives way when units differ (to chart-combo) and when OHLC is the claim (to Chart-candlestick); the two clauses make that sentence readable by the chooser. R5 what-if: closes W10 and W1c, no other pick changes.",
+   "decision_page": "_DECIDE-304-when-rules question 1",
+   "registry_fields_used": []
+  },
+  {
+   "slug": "data-grid",
+   "meta": "knowledge/components/data-grid.meta.json",
+   "field": "when",
+   "provides": "record-list",
+   "current": null,
+   "change": "NEW",
+   "proposed": "records >= 2 AND needs in (sort, filter, select, edit) — the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) whenever sorting, filtering, selecting or editing is required, and yields to list-items when needs = none.",
+   "why": "R5 W18: the grid has no rule, so it can never be picked on evidence; list-items' own prose already hands this case to the grid.",
+   "decision_page": "_DECIDE-304-when-rules question 3",
+   "registry_fields_used": [
+    "needs"
+   ]
+  },
+  {
+   "slug": "filter-toolbar-bar",
+   "meta": "knowledge/components/filter-toolbar-bar.meta.json",
+   "field": "when",
+   "provides": null,
+   "current": null,
+   "change": "NEW",
+   "proposed": "records >= 2 AND needs in (filter, sort) — one row of controls that drives the record-list and the panels beside it (edges.drivesConsumer, s268-D5; the wiring is the author's, s258-D1); it is placed only above the thing it drives, never on its own.",
+   "why": "R5: no when-rule, so the chooser cannot place it; its drivesConsumer edge already states its consumer.",
+   "decision_page": "_DECIDE-304-when-rules question 3 ('the filter bar … drafted the same way')",
+   "registry_fields_used": [
+    "needs"
+   ]
+  },
+  {
+   "slug": "footer",
+   "meta": "knowledge/components/footer.meta.json",
+   "field": "when",
+   "provides": null,
+   "current": null,
+   "change": "NEW",
+   "proposed": "platform = app — every app page shell ends in the app footer, the body-level sibling after the main region and never inside the bento wall (the meta's own $finding-site-footer, #258: \"the page shells should include the footer\").",
+   "why": "R5: no when-rule. The field and the fact are already in the record; the rule states them where the chooser reads.",
+   "decision_page": "_DECIDE-304-when-rules question 3 ('the footer … drafted the same way')",
+   "registry_fields_used": []
+  },
+  {
+   "slug": "headers",
+   "meta": "knowledge/components/headers.meta.json",
+   "field": "when",
+   "provides": "page-title",
+   "current": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
+   "change": "KEEP",
+   "proposed": "level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "kpi-tile",
+   "meta": "knowledge/components/kpi-tile.meta.json",
+   "field": "when",
+   "provides": "headline-metric",
+   "current": "shape = one-measure × value-delta-and-series AND series != none — beats stat-card (roles.json when: \"default — label · value · delta · period, no series\") whenever a series exists to show; yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") when target != none, and to runway-bar (when: \"the number is 'money vs what is already scheduled'\") when the measure is money-vs-scheduled.",
+   "change": "KEEP",
+   "proposed": "shape = one-measure × value-delta-and-series AND series != none — beats stat-card (roles.json when: \"default — label · value · delta · period, no series\") whenever a series exists to show; yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") when target != none, and to runway-bar (when: \"the number is 'money vs what is already scheduled'\") when the measure is money-vs-scheduled.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "layout-utilities",
+   "meta": "knowledge/components/layout-utilities.meta.json",
+   "field": "when",
+   "provides": "arrangement",
+   "current": "content = arbitrary-blocks AND surface = none — the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3–6 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider (when: \"a rule alone\") when a rule alone is the whole need.",
+   "change": "KEEP",
+   "proposed": "content = arbitrary-blocks AND surface = none — the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3–6 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider (when: \"a rule alone\") when a rule alone is the whole need.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "legend",
+   "meta": "knowledge/components/legend.meta.json",
+   "field": "when",
+   "provides": null,
+   "current": "series ≥ 2 AND label = text — a key is needed only where more than one series is drawn; a single-series chart names its series in the title (chart-sparkline's rule). Placed on its own only when the charts it keys are more than one (small multiples, a comparison row); a lone chart carries its legend inside its own figure, which is what every registered chart type already does.",
+   "change": "KEEP",
+   "proposed": "series ≥ 2 AND label = text — a key is needed only where more than one series is drawn; a single-series chart names its series in the title (chart-sparkline's rule). Placed on its own only when the charts it keys are more than one (small multiples, a comparison row); a lone chart carries its legend inside its own figure, which is what every registered chart type already does.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "list-items",
+   "meta": "knowledge/components/list-items.meta.json",
+   "field": "when",
+   "provides": "record-list",
+   "current": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) — surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\").",
+   "change": "AMEND",
+   "proposed": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none — surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\").",
+   "why": "Makes list-items' existing yield to the data grid machine-readable (the other half of question 3). An unknown `needs` stays unknown, so a brief that says nothing about sorting still gets the list.",
+   "decision_page": "_DECIDE-304-when-rules question 3 (drafted 'the same way, for you to see at the wrap')",
+   "registry_fields_used": [
+    "needs"
+   ],
+   "also": {
+    "shape": {
+     "proposed": "records × fields",
+     "note": "shapes.json is a CLOSED store (s254-D2 item 1): `records × fields` is a proposed addition to it, for the same wrap. Without it list-items and data-grid stay the two record-list parts with no data shape (R5 L3 blocker)."
+    }
+   }
+  },
+  {
+   "slug": "navigations",
+   "meta": "knowledge/components/navigations.meta.json",
+   "field": "when",
+   "provides": "wayfinding",
+   "current": "shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
+   "change": "KEEP",
+   "proposed": "shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "stat-card",
+   "meta": "knowledge/components/stat-card.meta.json",
+   "field": "when",
+   "provides": "headline-metric",
+   "current": "shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \"a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)\") exactly when no series exists, and beats Chart-bullet (when: \"a target or performance band is the point, not the delta\") when the delta, not a band, is the claim.",
+   "change": "KEEP",
+   "proposed": "shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: \"a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)\") exactly when no series exists, and beats Chart-bullet (when: \"a target or performance band is the point, not the delta\") when the delta, not a band, is the claim.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "status-indicator",
+   "meta": "knowledge/components/status-indicator.meta.json",
+   "field": "when",
+   "provides": "status-surface",
+   "current": "shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary (roles.json when: \"n × count as a key/value list, 6–12 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.",
+   "change": "KEEP",
+   "proposed": "shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary (roles.json when: \"n × count as a key/value list, 6–12 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "summary",
+   "meta": "knowledge/components/summary.meta.json",
+   "field": "when",
+   "provides": "status-surface",
+   "current": "shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6 — beats status-indicator (roles.json when: \"one state, one dot + label, 2–4 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.",
+   "change": "KEEP",
+   "proposed": "shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6 — beats status-indicator (roles.json when: \"one state, one dot + label, 2–4 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.",
+   "why": "authored, parses, and R5's tests pass on it; nothing in this draft changes it"
+  },
+  {
+   "slug": "view-options",
+   "meta": "knowledge/components/view-options.meta.json",
+   "field": "when",
+   "provides": "input",
+   "current": "NEVER — superseded 2026-07-24; the view switch is Segmented-control — carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says \"Consuming View-options instead of Segmented-control for the view switch — View-options was superseded\"; the honest `when` here is a redirect, not a predicate.",
+   "change": "KEEP",
+   "proposed": "NEVER — superseded 2026-07-24; the view switch is Segmented-control — carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says \"Consuming View-options instead of Segmented-control for the view switch — View-options was superseded\"; the honest `when` here is a redirect, not a predicate.",
+   "why": "deprecated — its `when` is a redirect, not a predicate"
+  },
+  {
+   "slug": "template-dashboard-bento",
+   "meta": "knowledge/components/template-dashboard-bento.meta.json",
+   "field": "when",
+   "provides": null,
+   "current": null,
+   "change": "ENACT-RULED",
+   "proposed": "the question is 'how are things, and what needs me?' AND layout.grammar = bento — the dashboard frame when the designer's answer to 'dashboard bento — is that right?' is yes (s230-D1 beat 2); its tiles are themselves bentos (s217-D2, s217-D3). A composer borrows its grammar ($bentoGrammar) and chooses every module from the graph; it yields to template-dashboard when layout.grammar = grid.",
+   "why": "s272-D85 RATIFIED this gate (status: ruled) and it never reached the meta. The first clause stays prose inside the gate (no registry field says 'the question'); `layout.grammar` is a registry addition. The prose half is where the graph, not the skill, says 'compose, never trace'.",
+   "decision_page": "s272-D85 (already Dave's); the registry addition and the prose half are this seat's draft",
+   "registry_fields_used": [
+    "layout.grammar"
+   ]
+  },
+  {
+   "slug": "modals",
+   "meta": "knowledge/components/modals.meta.json",
+   "field": "when",
+   "provides": "overlay",
+   "current": null,
+   "change": "NEW",
+   "proposed": "interrupts = required — the person must stop: confirm a consequential action, or finish a task that cannot share the screen; yields to split-button when interrupts = none AND actions >= 2 (one main action with a few related ones beside it), and to dropdown when interrupts = none AND options >= 5 (one choice from a list, made in place, s270-D1).",
+   "why": "Dave's third Thursday observation as a rule the graph can read (observation C).",
+   "decision_page": "_DECIDE-304-when-rules question 6",
+   "registry_fields_used": [
+    "interrupts",
+    "actions",
+    "options"
+   ],
+   "observation": "C"
+  },
+  {
+   "slug": "split-button",
+   "meta": "knowledge/components/split-button.meta.json",
+   "field": "when",
+   "provides": "action",
+   "current": null,
+   "change": "NEW",
+   "proposed": "actions >= 2 AND interrupts = none — one main action plus a menu of related ones, offered in place (button's own `when` already hands this case here); beats modals whenever the related actions can be offered without stopping the person.",
+   "why": "Observation C: the part a modal gives way to.",
+   "decision_page": "_DECIDE-304-when-rules question 6",
+   "registry_fields_used": [
+    "actions",
+    "interrupts"
+   ],
+   "observation": "C"
+  },
+  {
+   "slug": "dropdown",
+   "meta": "knowledge/components/dropdown.meta.json",
+   "field": "when",
+   "provides": "input",
+   "current": null,
+   "change": "NEW",
+   "proposed": "options >= 5 AND interrupts = none — one choice from a list, made in place (s270-D1: \"we use dropdowns for 5 and above\"); beats modals whenever the choice does not need to stop the person.",
+   "why": "Observation C, with Dave's own 5-and-above cut-off (s270-D1) as the count.",
+   "decision_page": "_DECIDE-304-when-rules question 6",
+   "registry_fields_used": [
+    "options",
+    "interrupts"
+   ],
+   "observation": "C"
+  }
+ ]
+}

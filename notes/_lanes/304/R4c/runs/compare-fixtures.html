@@ -1,0 +1,44 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Cold runs side by side</title><style>
+:root{--ink:#1a1a1a;--mute:#5c5c5c;--rule:#d7d8d6;--bg:#fff;--soft:#f3f3f3;--ok:#0a7a44;--bad:#b3261e;--warn:#8a5a00}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#eee;--mute:#aaa;--rule:#444;--bg:#141414;--soft:#1f1f1f;--ok:#5fcf93;--bad:#ff8a80;--warn:#e0b050}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Univers Next for HSBC","Helvetica Neue",Arial,sans-serif}
+main{max-width:1240px;margin:0 auto;padding:40px 16px 80px}h1{font-size:34px;line-height:1.1;margin:0 0 8px;font-weight:500}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:40px 0 12px;border-top:2px solid var(--ink);padding-top:10px}
+.sub{color:var(--mute);margin:0 0 24px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.cell{background:var(--bg);padding:16px}.big{font-size:48px;line-height:1;font-weight:300}.lab{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.fact{font-size:13px;color:var(--mute);margin-top:8px}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:500;color:var(--mute)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.shots img{width:100%;border:1px solid var(--rule)}code{font-size:12px}ul{padding-left:18px}.tag{display:inline-block;padding:2px 8px;border:1px solid currentColor;font-size:12px}
+.scroll{overflow-x:auto}@media (max-width:720px){.grid4{grid-template-columns:1fr 1fr}.shots{grid-template-columns:1fr}}
+</style></head><body><main>
+<p class='lab'>Apollo eval harness r4c-1.0 · #304 R4c</p><h1>Harness self-test: planted bad against known good</h1><p class='sub'>6 runs. Every number links back to its scorecard; every scorecard says how to reproduce it.</p>
+<div class='scroll'><table><tr><th></th><th><a href='fx-good/scorecard.html'>fixture good-composed</a></th><th><a href='fx-bad/scorecard.html'>fixture bad-traced</a></th><th><a href='fx-wrong-theme/scorecard.html'>fixture good--wrong-theme</a></th><th><a href='fx-clipped/scorecard.html'>fixture good--clipped-chart</a></th><th><a href='fx-no-persist/scorecard.html'>fixture good--no-persist</a></th><th><a href='fx-good-rerun/scorecard.html'>fixture good-composed</a></th></tr>
+<tr><td>kind</td><td>fixture</td><td>fixture</td><td>fixture</td><td>fixture</td><td>fixture</td><td>fixture</td></tr>
+<tr><td>profile</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td></tr>
+<tr><td>pack</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td></tr>
+<tr><td>visually rich</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>full</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>persistent</td><td>3</td><td>0</td><td>3</td><td>3</td><td>0</td><td>3</td></tr>
+<tr><td>interactive</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>mechanical total /12</td><td>6</td><td>2</td><td>6</td><td>6</td><td>3</td><td>6</td></tr>
+<tr><td>geometry score (4b) /3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>composed or traced</td><td>COMPOSED (0.041)</td><td>TRACED (1.0)</td><td>COMPOSED (0.041)</td><td>COMPOSED (0.041)</td><td>COMPOSED (0.041)</td><td>COMPOSED (0.041)</td></tr>
+<tr><td>theme</td><td>PASS</td><td>FAIL</td><td>FAIL</td><td>PASS</td><td>PASS</td><td>PASS</td></tr>
+<tr><td>components</td><td>13</td><td>3</td><td>13</td><td>13</td><td>13</td><td>13</td></tr>
+<tr><td>charts rendered</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>chart types</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>clipped charts</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>pack screen gate</td><td>PASS</td><td>FAIL</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td></tr>
+<tr><td>dataviz gate blocking</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>a11y unnamed controls</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>a11y small targets</td><td>9</td><td>3</td><td>9</td><td>9</td><td>9</td><td>9</td></tr>
+<tr><td>geometry (4b)</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td></tr>
+<tr><td>own size (4b)</td><td>FINDINGS</td><td>NO-PARTS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td></tr>
+</table></div><h2>Light renders</h2><div class='shots' style='grid-template-columns:repeat(4,1fr)'>
+<figure style='margin:0'><img alt='fixture good-composed' src='fx-good/shots/light-1440.png'><figcaption class='fact'>fixture good-composed</figcaption></figure>
+<figure style='margin:0'><img alt='fixture bad-traced' src='fx-bad/shots/light-1440.png'><figcaption class='fact'>fixture bad-traced</figcaption></figure>
+<figure style='margin:0'><img alt='fixture good--wrong-theme' src='fx-wrong-theme/shots/light-1440.png'><figcaption class='fact'>fixture good--wrong-theme</figcaption></figure>
+<figure style='margin:0'><img alt='fixture good--clipped-chart' src='fx-clipped/shots/light-1440.png'><figcaption class='fact'>fixture good--clipped-chart</figcaption></figure>
+<figure style='margin:0'><img alt='fixture good--no-persist' src='fx-no-persist/shots/light-1440.png'><figcaption class='fact'>fixture good--no-persist</figcaption></figure>
+<figure style='margin:0'><img alt='fixture good-composed' src='fx-good-rerun/shots/light-1440.png'><figcaption class='fact'>fixture good-composed</figcaption></figure>
+</div><h2>Left to judgment</h2><ul><li>Taste: does the page look like Apollo at its best — hierarchy, rhythm, restraint (Dave&#x27;s eye on the light/dark shots).</li><li>Alignment and spacing that the geometry signals cannot name (optical alignment, crowding, the &#x27;sloppiness class&#x27; of #288).</li><li>Whether each chart is the RIGHT chart for its figure (form-to-question fit), not only present and rendered.</li><li>Data believability: realistic entities, currencies, FX and magnitudes for a CEO audience.</li><li>Whether the overview actually answers the three CEO questions, as read by a person, not by keyword.</li><li>Whether each workflow (approve, acknowledge, service request) is plausible end to end, beyond &#x27;the DOM changed&#x27;.</li><li>Composed vs traced is MEASURED as similarity; whether the composition is GOOD composition is judgment.</li></ul></main></body></html>

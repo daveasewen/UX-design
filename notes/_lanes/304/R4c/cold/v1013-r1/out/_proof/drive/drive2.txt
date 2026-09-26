@@ -1,0 +1,43 @@
+PASS approval card opens the payment record on its page  — PAY-26-4100 · Registrar — shareholder account
+PASS approve opens a modal with focus inside
+PASS page behind the modal is inert
+PASS approve without the check is refused, with a message  — Confirm you have checked the payment.
+PASS dual control: wrong confirmation digits refused  — That does not match. Enter the last four digits of PAY-26-4100.
+PASS approval recorded with the right next state  — ('PAY-26-4100', True, 'Awaiting second approver')
+PASS toast confirms the approval  — PAY-26-4100 approved. It now needs a second approver.
+PASS focus returns after the modal closes  — <main class="tpl-page ceo-ground" id="main" tabindex="-1">
+<div class="tpl-bento
+PASS approval persists across reload  — row not on this page
+PASS "Waiting for me" view narrows the grid  — 11 results
+PASS reject needs a reason of 15+ characters  — Give a reason of at least 15 characters.
+PASS rejection recorded  — PAY-26-4115
+PASS overview decisions card reflects the two decisions  — 12 payments · 5 under dual control -> 10 payments · 3 under dual control
+PASS exception card opens the exception record  — EXC-2609-01
+PASS acknowledgement refused: short note and unticked owner check
+PASS acknowledgement stored with its audit note  — {"EXC-2609-01":[{"at":"2026-09-26T20:08:05.998Z","by":"You (chief executive)","note":"Agreed with group treasury to roll £10m to Northbridge at maturity on 30 S
+PASS exception drawer shows the note on its timeline and status Acknowledged
+PASS exceptions export downloads a CSV with every row  — ('exceptions.csv', 13, 'lines')
+PASS drawdown refuses over-limit amount, weekend date and missing purpose  — ['That is more than the £380,000,000.00 undrawn on this facility.', 'That is a weekend. Choose a business day.']
+PASS valid drawdown creates a service request
+PASS drawdown request appears in service requests  — 17 results
+PASS service request refuses an empty form
+PASS service request refuses text that looks like a password  — Remove anything that looks like a password, passcode or PIN.
+PASS new request lands in the grid  — 17 results -> 18 results
+PASS opening a message marks it read
+PASS reply recorded
+PASS responding moves a waiting request back to HSBC
+PASS pair switch re-draws the candlestick
+PASS hedge quote validates currency and amount
+PASS valid hedge quote request accepted
+PASS trade instruction recorded on the instrument  — ('ELC-55013', 'amend')
+PASS report run needs the illustrative-data confirmation
+PASS report run downloads a CSV  — board-treasury-pack.csv
+PASS your exports KPI counts it  — 2
+PASS settings theme control switches the mode
+PASS notification preference persists
+PASS navigation collapse switch works
+PASS audit trail holds every recorded action  — 11
+PASS audit trail exports
+PASS reset clears the simulated workflow
+PASS no console errors in part 2
+SUMMARY 41 pass 0 fail

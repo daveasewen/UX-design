@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-GB" class="canon" data-apollo-theme="common" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEO international banking — Aldergrove Group</title>
+<script>
+/* Theme restore BEFORE first paint — the one dial the page reads from storage this early. */
+(function(){try{var q=new URLSearchParams(location.search).get('theme');var s=q||JSON.parse(localStorage.getItem('ceo-proto-v1')||'{}').theme;if(s==='dark'||s==='light'){document.documentElement.setAttribute('data-theme',s);}}catch(e){}}());
+</script>
+<link rel="stylesheet" href="../pack/knowledge/canon/canon.css">
+<link rel="stylesheet" href="../pack/knowledge/canon/type.css">
+<script type="application/json" id="token-manifest">
+{"vars": {"--surface-subtle": "surface/subtle", "--page": "page (canon alias)", "--gap-fixed-subsection-xsmall": "gap/fixed/subsection/xsmall", "--gap-fixed-subsection-medium": "gap/fixed/subsection/medium", "--padding-fixed-medium": "padding/fixed/medium"}}
+</script>
+<script type="application/json" id="provenance-receipt">
+{"pack": "1.0.14", "regions": []}
+</script>
+<script type="application/json" id="behaviour-manifest">
+{"$what": "One row per control: what it drives and where its state persists. Carried beside #token-manifest (ADS-generate-from-canon rule 2a).",
+ "carried": {
+  "knowledge/snippets/Data-grid.reference.html#script": "script[0] EXTENDED — one line: the specimen DATA literal is replaced by window.CEO_GRID_ROWS (rows derived from CEO_DATA); script[1] verbatim",
+  "knowledge/snippets/Filter-toolbar-bar.reference.html#script": "EXTENDED — the specimen consumer is short-circuited (return) and the bar's apply/state are exposed as window.CEO_FTB; everything above it verbatim",
+  "knowledge/snippets/Textarea.reference.html#script": "verbatim (drives the #t1 audit-note counter used by every approval and acknowledgement)",
+  "knowledge/canon/dv-*.js": "verbatim AUTO-BEHAVIOUR blocks spliced from the chart snippets"},
+ "authored": "CEO app script (bottom of page): routing, CEO_DATA-driven rendering, charts via dvRender, record lists, drawer/modal/toast wiring, workflows, persistence. KPI inline spark geometry is authored (the kpi-tile spark is a static specimen with no engine type).",
+ "controls": {
+  "sidebar nav": "switches view; URL ?view= + localStorage",
+  "filter bar search / add filter (entity, region, currency) / date range": "re-drives every KPI, chart and record list in the current view; URL ?q=&f=&days= + localStorage",
+  "filter bar view (table|cards) / density": "record lists render as table or card list; data-grid density; localStorage",
+  "filter bar export": "CSV / Excel-readable HTML table / print-to-PDF of the current view's records",
+  "theme switch (app bar + settings)": "html[data-theme]; URL ?theme= + localStorage",
+  "record sort / page / open": "per-list sort + page in localStorage; row opens the detail drawer",
+  "approve / reject / acknowledge / service request / message reply": "validated; audit trail appended; localStorage"}}
+</script>
+<style>
+/* PAGE PLACEMENT ONLY (ADS-generate-from-canon rule 3a): nothing here sizes, recolours or redefines a
+   component. Grounds are token-bound; spacing picks the ruled stops {1,2,4,16,24,40} through tokens. */
+body{margin:0; background:var(--page);}
+.ceo-view[hidden]{display:none;}
+.ceo-alerts:empty{display:none;}
+.ceo-stack{display:flex; flex-direction:column; gap:var(--gap-fixed-subsection-xsmall);}
+.ceo-ground{background:var(--surface-subtle); padding:var(--padding-fixed-medium);}
+/* Dark leg of the ground: --surface-subtle resolves to the SAME value as the tile surface in dark, so the
+   tiles would lose their definition. The rails' bentoBg option `transparent` (the page ground) is used in dark
+   instead — a page-level ground choice the rails leave open for the dark leg (named in the run report). */
+[data-theme="dark"] .ceo-ground{background:transparent;}
+.ceo-parking{display:none;}
+.ceo-split{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--padding-fixed-medium);}
+.ceo-tools{display:flex; flex-wrap:wrap; align-items:flex-end; gap:var(--padding-fixed-medium);}
+.ceo-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:var(--padding-fixed-medium);}
+@media print{ .sh-appbar, .sn, .ftb-outer, .sh-crumbs, .sh-foot{display:none !important;} }
+</style>
+</head>
+<body>
+<!--@SPRITES-->
+<!-- The three LIVE regions: their own scripts bind by id at parse time, so they are in the document
+     here and are moved into the shell by the app at boot (a DOM move keeps every listener). -->
+<div class="ceo-parking" id="ceo-parking">
+  <div class="cn-filter-toolbar-bar" id="ceo-ftb-scope">
+<!--@LIVE ftb-->
+  </div>
+  <div class="cn-data-grid" id="ceo-dg-scope">
+<!--@LIVE dg-->
+<!--@LIVE dghint-->
+<!--@LIVE dgstatus-->
+  </div>
+  <div class="cn-textarea" id="ceo-tx-scope">
+<!--@LIVE tx-->
+  </div>
+  <div data-apollo-filter-consumer id="ceo-consumer" data-apollo-result-state="ok"></div>
+  <div id="ceo-views">
+<!--@VIEWS-->
+  </div>
+</div>
+<div id="ceo-root"></div>
+<noscript><p class="t-ed-body">This prototype renders every screen from its in-page dataset and needs JavaScript.</p></noscript>
+<!--@TEMPLATES-->
+<script>
+<!--@FILE data.js-->
+</script>
+<script>
+<!--@FILE prep.js-->
+</script>
+<!--@SCRIPT ftb-->
+<!--@SCRIPT dg0-->
+<!--@SCRIPT dg1-->
+<!--@SCRIPT tx-->
+<script>
+<!--@FILE app-core.js-->
+</script>
+<script>
+<!--@FILE app-views.js-->
+</script>
+<script>
+<!--@FILE app-boot.js-->
+</script>
+<!-- The dv engine (verbatim AUTO-BEHAVIOUR blocks) sits LAST: the screen gate's icon regex reads
+     script text as markup, and a `<svg>` in dv-render.js's header comment must not find a `</svg>`
+     in a later script. The app boots on DOMContentLoaded, after these have run. -->
+<!--@BEHAVIOURS-->
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+ "asserts": [
+  {
+   "assert": "trace: good COMPOSED, bad TRACED",
+   "detail": "COMPOSED vs TRACED",
+   "ok": true
+  },
+  {
+   "assert": "theme: good PASS, bad FAIL",
+   "detail": "PASS vs FAIL",
+   "ok": true
+  },
+  {
+   "assert": "clip: good 0 clipped charts, bad >=1",
+   "detail": "0 vs 1",
+   "ok": true
+  },
+  {
+   "assert": "total: good > bad",
+   "detail": "6 vs 2",
+   "ok": true
+  },
+  {
+   "assert": "mutant wrong-theme: theme FAIL, four scores unchanged",
+   "detail": "FAIL {'full': 1, 'interactive': 1, 'persistent': 3, 'visually_rich': 1}",
+   "ok": true
+  },
+  {
+   "assert": "mutant clipped: >=1 clipped, theme and trace unchanged",
+   "detail": "1 clipped",
+   "ok": true
+  },
+  {
+   "assert": "mutant no-persist: persistent drops, theme/trace/clip unchanged",
+   "detail": "persistent 0 vs good 3",
+   "ok": true
+  },
+  {
+   "assert": "reproducible: an independent re-run of good gives the same scores and the same earning facts",
+   "detail": "{'full': 1, 'interactive': 1, 'persistent': 3, 'visually_rich': 1} / facts identical: True",
+   "ok": true
+  }
+ ],
+ "scores": {
+  "fx-bad": {
+   "clipped": 1,
+   "dims": {
+    "full": 0,
+    "interactive": 1,
+    "persistent": 0,
+    "visually_rich": 1
+   },
+   "theme": "FAIL",
+   "total": 2,
+   "trace": "TRACED"
+  },
+  "fx-clipped": {
+   "clipped": 1,
+   "dims": {
+    "full": 1,
+    "interactive": 1,
+    "persistent": 3,
+    "visually_rich": 1
+   },
+   "theme": "PASS",
+   "total": 6,
+   "trace": "COMPOSED"
+  },
+  "fx-good": {
+   "clipped": 0,
+   "dims": {
+    "full": 1,
+    "interactive": 1,
+    "persistent": 3,
+    "visually_rich": 1
+   },
+   "theme": "PASS",
+   "total": 6,
+   "trace": "COMPOSED"
+  },
+  "fx-good-rerun": {
+   "clipped": 0,
+   "dims": {
+    "full": 1,
+    "interactive": 1,
+    "persistent": 3,
+    "visually_rich": 1
+   },
+   "theme": "PASS",
+   "total": 6,
+   "trace": "COMPOSED"
+  },
+  "fx-no-persist": {
+   "clipped": 0,
+   "dims": {
+    "full": 1,
+    "interactive": 1,
+    "persistent": 0,
+    "visually_rich": 1
+   },
+   "theme": "PASS",
+   "total": 3,
+   "trace": "COMPOSED"
+  },
+  "fx-wrong-theme": {
+   "clipped": 0,
+   "dims": {
+    "full": 1,
+    "interactive": 1,
+    "persistent": 3,
+    "visually_rich": 1
+   },
+   "theme": "FAIL",
+   "total": 6,
+   "trace": "COMPOSED"
+  }
+ },
+ "verdict": "PASS"
+}

@@ -49,18 +49,18 @@
     "apollo-console": {
       "radii": {
         "default": 4,
-        "control": 8,
-        "surface": 20,
+        "control": 6,
+        "surface": 8,
         "indicator": 4,
-        "container": 20,
-        "segmented-container/xs": 6,
-        "segmented-thumb/xs": 4,
-        "segmented-container/m": 10,
-        "segmented-thumb/m": 8,
-        "segmented-container/l": 12,
-        "segmented-thumb/l": 8,
-        "segmented-container/s": 8,
-        "segmented-thumb/s": 6
+        "container": 12,
+        "segmented-container/xs": 4,
+        "segmented-thumb/xs": 2,
+        "segmented-container/m": 8,
+        "segmented-thumb/m": 6,
+        "segmented-container/l": 10,
+        "segmented-thumb/l": 6,
+        "segmented-container/s": 6,
+        "segmented-thumb/s": 4
       },
       "radii_provenance": {
         "default": "apollo-console override border-radius/default",
@@ -80,21 +80,21 @@
       "card": {
         "$ruled": "s201-D4 (#201, Dave, 2026-08-18) \u2014 max(radius, 8) snapped to 2px",
         "radius_role": "surface",
-        "radius": 20,
-        "padding": 20,
+        "radius": 8,
+        "padding": 8,
         "formula": "padding = max(radius, 8) snapped to 2px \u2014 RULED s201-D4, applied at MINT TIME only (s200-D1 clause a)",
         "inputs": {
-          "radius": 20,
+          "radius": 8,
           "min": 8,
           "snap": 2
         },
         "container_variant": {
           "$ruled": "s201-D4 formula applied to the container role radius",
           "radius_role": "container (MINTED role, s200-D2/s200-D3)",
-          "radius": 20,
-          "padding": 20,
+          "radius": 12,
+          "padding": 12,
           "inputs": {
-            "radius": 20,
+            "radius": 12,
             "min": 8,
             "snap": 2
           }
@@ -106,9 +106,32 @@
           "$law": "concentric",
           "padding": 2,
           "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/xs)",
-          "container_radius": 6,
+          "container_radius": 4,
           "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/xs)",
-          "container_role_radius": 20,
+          "container_role_radius": 12,
+          "thumb_dial": 6,
+          "thumb_subtrahend": 2,
+          "thumb_subtrahend_name": "track padding",
+          "thumb_radius_raw": 2,
+          "thumb_radius": 2,
+          "formula": "thumb = max(container_radius - padding, 0)",
+          "arithmetic": "track 4 - track padding 2 = thumb 2",
+          "inputs": {
+            "container_radius": 4,
+            "padding": 2
+          },
+          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
+          "$square": false,
+          "$squareNote": null
+        },
+        "s": {
+          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
+          "$law": "concentric",
+          "padding": 2,
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/s)",
+          "container_radius": 6,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/s)",
+          "container_role_radius": 12,
           "thumb_dial": 6,
           "thumb_subtrahend": 2,
           "thumb_subtrahend_name": "track padding",
@@ -124,14 +147,14 @@
           "$square": false,
           "$squareNote": null
         },
-        "s": {
+        "m": {
           "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
           "$law": "concentric",
           "padding": 2,
-          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/s)",
+          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/m)",
           "container_radius": 8,
-          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/s)",
-          "container_role_radius": 20,
+          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/m)",
+          "container_role_radius": 12,
           "thumb_dial": 6,
           "thumb_subtrahend": 2,
           "thumb_subtrahend_name": "track padding",
@@ -147,46 +170,23 @@
           "$square": false,
           "$squareNote": null
         },
-        "m": {
-          "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
-          "$law": "concentric",
-          "padding": 2,
-          "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/m)",
-          "container_radius": 10,
-          "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/m)",
-          "container_role_radius": 20,
-          "thumb_dial": 6,
-          "thumb_subtrahend": 2,
-          "thumb_subtrahend_name": "track padding",
-          "thumb_radius_raw": 8,
-          "thumb_radius": 8,
-          "formula": "thumb = max(container_radius - padding, 0)",
-          "arithmetic": "track 10 - track padding 2 = thumb 8",
-          "inputs": {
-            "container_radius": 10,
-            "padding": 2
-          },
-          "$paddingIsAnInput": "padding 2 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
-          "$square": false,
-          "$squareNote": null
-        },
         "l": {
           "$ruled": "Dave's ruling #227 (2026-08-30) restoring s200-D1 clause (c) for the two small scales; conductor inscribes as s227-D4",
           "$law": "concentric",
           "padding": 4,
           "$paddingStatus": "READ FROM STORE (apollo-console override padding/segmented-control/l)",
-          "container_radius": 12,
+          "container_radius": 10,
           "$containerStatus": "READ FROM STORE (apollo-console override border-radius/segmented-container/l)",
-          "container_role_radius": 20,
+          "container_role_radius": 12,
           "thumb_dial": 6,
           "thumb_subtrahend": 4,
           "thumb_subtrahend_name": "track padding",
-          "thumb_radius_raw": 8,
-          "thumb_radius": 8,
+          "thumb_radius_raw": 6,
+          "thumb_radius": 6,
           "formula": "thumb = max(container_radius - padding, 0)",
-          "arithmetic": "track 12 - track padding 4 = thumb 8",
+          "arithmetic": "track 10 - track padding 4 = thumb 6",
           "inputs": {
-            "container_radius": 12,
+            "container_radius": 10,
             "padding": 4
           },
           "$paddingIsAnInput": "padding 4 IS the subtrahend at this scale \u2014 CONCENTRIC, restored by Dave's ruling #227",
@@ -596,5 +596,5 @@
       }
     }
   },
-  "$generatedAt": "2026-08-31T20:38:19+00:00"
+  "$generatedAt": "2026-09-26T17:28:18+00:00"
 }

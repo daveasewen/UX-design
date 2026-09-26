@@ -1,0 +1,1123 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global liquidity and payments — Northwind Group</title>
+<link rel="stylesheet" href="../../../knowledge/canon/canon.css">
+<link rel="stylesheet" href="../../../knowledge/canon/type.css">
+<style>
+  /* HARNESS ONLY (skill step 3): page frame + view switching. No hex, no .c-*/.cn-* redefined. */
+  body{margin:0; background:var(--page); color:var(--text);}
+  .pg-shell{display:flex; flex-direction:column; min-height:100vh;}
+  .pg-main{flex:1 1 auto;}
+  [data-view-hidden]{display:none;}
+  .pg-toolbar{padding:0 40px 24px;}
+  .pg-grid-wrap{width:100%;}
+</style>
+</head>
+<body class="canon" data-apollo-theme="mono" data-theme="light">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"></path></symbol>
+    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"></path></symbol>
+    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"></path></symbol>
+    <symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"></path></symbol>
+    <symbol id="dr-download" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8 12V15.8H2.2V12H1V17H17V12H15.8ZM14 8.848V7.151L9.6 11.551V1H8.4V11.551L4 7.151V8.848L9 13.849L14 8.848Z" fill="currentColor"></path></symbol>
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"></path></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"></path></symbol>
+</svg>
+    <symbol id="dg-sort" viewbox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"></path></path></symbol>
+    <symbol id="dg-cup" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-cdown" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-cleft" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-cright" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-search" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-close" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"></path></symbol>
+    <symbol id="dg-edit" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.368 1.584L16.416 0.632C15.994 0.211 15.441 0 14.889 0C14.337 0 13.784 0.211 13.362 0.632L2.954 11.041L0 18L6.959 15.046L17.368 4.638C18.211 3.795 18.211 2.427 17.368 1.584ZM6.276 14.032L2.265 15.734L3.967 11.723L12.421 3.269L14.729 5.577L6.276 14.032ZM16.519 3.789L15.578 4.73L13.27 2.422L14.211 1.481C14.392 1.3 14.633 1.2 14.889 1.2C15.145 1.2 15.386 1.3 15.567 1.481L16.519 2.433C16.893 2.807 16.893 3.415 16.519 3.789Z" fill="currentColor"></path></symbol>
+    <symbol id="ic-clear" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"></path></symbol>
+    <symbol id="ic-close" viewbox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"></path></symbol>
+
+
+<div class="pg-shell cn-template-dashboard-bento">
+
+  <div class="cn-app-shell-top-nav">
+  <header class="sh-masthead">
+    <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../../../knowledge/assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../../../knowledge/assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
+    <nav class="sh-nav" aria-label="Primary">
+      <a class="t-cm-button" href="?view=overview" data-view-link="overview" aria-current="page">Overview</a>
+      <a class="t-cm-button" href="?view=payments" data-view-link="payments">Payments</a>
+      <a class="t-cm-button" href="?view=liquidity" data-view-link="liquidity">Liquidity</a>
+      <a class="t-cm-button" href="?view=fx" data-view-link="fx">FX</a>
+    </nav>
+    <div class="sh-actions">
+      <button type="button" id="btnSearch" aria-label="Search payments"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"></use></svg></button>
+      <button type="button" id="btnMode" aria-label="Switch to dark mode" aria-pressed="false"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"></use></svg></button>
+    </div>
+  </header>
+  </div>
+
+  <header class="tpl-header l-stack" data-gap="l">
+  <nav class="tpl-crumbs" aria-label="Breadcrumb">
+  <ol class="t-cm-caption">
+  <li><a class="crumb" href="#">Home</a></li>
+  <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"></use></svg></span><a class="crumb" href="#">Corporate banking</a></li>
+  <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"></use></svg></span><span class="t-cm-ctl-14" aria-current="page" id="crumbView">Overview</span></li>
+  </ol>
+  </nav>
+
+  <div class="l-row" data-align="end" data-gap="l">
+  <div class="tpl-display l-measure">
+  <h1 class="t-ed-heading-2" id="pgTitle">Global liquidity and payments</h1>
+  <p class="t-ed-body" id="pgSub">Northwind Group · five legal entities, six currencies. Figures shown to 8 September 2026, 14:32 London.</p>
+  </div>
+  <div class="tpl-actions l-row" data-gap="m">
+  <button type="button" class="btn tertiary" id="btnExport">Export selection<svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dr-download"></use></svg></button>
+  <button type="button" class="btn primary" id="btnRelease">Release payments</button>
+  </div>
+  </div>
+
+  <div class="l-row tpl-strip" data-justify="between" data-gap="m" role="region" aria-label="Status">
+  <div class="l-row" data-gap="m">
+  <span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="stripFeeds">All feeds up to date</span></span>
+  <a class="status warn tpl-strip-link" href="#dp08-na" data-dp08-anchor="" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal" id="stripApproval">Awaiting approval · 8 payments · 5 need you</span></a>
+  <span class="tpl-strip-plain t-cm-legal" id="stripFacility">Group intraday facility £40,000,000.00 · None used · Limit reviewed 4 Aug</span>
+  </div>
+  </div>
+  </header>
+
+  <div class="pg-toolbar cn-filter-toolbar-bar" id="filterRegion">
+    <div class="ftb-outer">
+      <div class="ftb">
+        <div class="ftb-row">
+          <div class="ftb-search">
+            <div class="search boxed">
+              <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"></use></svg></span>
+              <input type="search" id="qSearch" aria-label="Search beneficiaries and references" placeholder="Search beneficiary or reference" value="">
+              <button class="clear" type="button" id="qClear" aria-label="Clear search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-clear"></use></svg></button>
+            </div>
+          </div>
+          <div class="ftb-filter dd boxed" data-dd="entity">
+            <label id="ftbLabel1" for="ftbTrigger1" class="sr-only">Entity</label>
+            <button class="trigger t-cm-button" id="ftbTrigger1" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMenu1" aria-labelledby="ftbLabel1 ftbTrigger1">
+              <span class="ddval">All entities</span><span class="chev" aria-hidden="true">▾</span>
+            </button>
+            <ul class="menu" id="ftbMenu1" role="listbox" aria-labelledby="ftbLabel1" tabindex="-1"><li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1" data-v="">All entities <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="nw-uk">Northwind Group plc <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="nw-de">Northwind Deutschland GmbH <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="nw-us">Northwind Americas Inc <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="nw-sg">Northwind Asia Pte Ltd <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="nw-hk">Northwind Trading (HK) Ltd <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li></ul>
+          </div>
+          <div class="ftb-filter dd boxed" data-dd="ccy">
+            <label id="ftbLabel2" for="ftbTrigger2" class="sr-only">Currency</label>
+            <button class="trigger t-cm-button" id="ftbTrigger2" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMenu2" aria-labelledby="ftbLabel2 ftbTrigger2">
+              <span class="ddval">All currencies</span><span class="chev" aria-hidden="true">▾</span>
+            </button>
+            <ul class="menu" id="ftbMenu2" role="listbox" aria-labelledby="ftbLabel2" tabindex="-1"><li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1" data-v="">All currencies <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="GBP">GBP <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="EUR">EUR <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="USD">USD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="SGD">SGD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="HKD">HKD <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="JPY">JPY <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li></ul>
+          </div>
+          <div class="ftb-filter dd boxed" data-dd="status">
+            <label id="ftbLabel3" for="ftbTrigger3" class="sr-only">Status</label>
+            <button class="trigger t-cm-button" id="ftbTrigger3" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ftbMenu3" aria-labelledby="ftbLabel3 ftbTrigger3">
+              <span class="ddval">All statuses</span><span class="chev" aria-hidden="true">▾</span>
+            </button>
+            <ul class="menu" id="ftbMenu3" role="listbox" aria-labelledby="ftbLabel3" tabindex="-1"><li class="opt t-cm-label" role="option" aria-selected="true" tabindex="-1" data-v="">All statuses <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="Awaiting approval">Awaiting approval <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="In progress">In progress <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="Released">Released <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="Failed">Failed <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li><li class="opt t-cm-label" role="option" aria-selected="false" tabindex="-1" data-v="Returned">Returned <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"></path></svg></li></ul>
+          </div>
+          <div class="ftb-view">
+            <div class="seg md" role="group" aria-label="Period">
+              <span class="ind" aria-hidden="true" style="left: 2px; width: 76.2969px;"></span>
+              <button type="button" data-period="30" aria-pressed="true">30 days</button>
+              <button type="button" data-period="90" aria-pressed="false">90 days</button>
+              <button type="button" data-period="365" aria-pressed="false">12 months</button>
+            </div>
+          </div>
+        </div>
+        <div class="ftb-chips filterbar" id="ftbChips" tabindex="-1" hidden=""><div class="row" style="display:flex; flex-wrap:wrap;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="tpl-page pg-main" id="tplMain">
+    <div class="tpl-bento-stack">
+      <div class="c-bento tpl-wall" data-bento-role="dashboard" aria-label="Global liquidity and payments">
+        <div class="c-bento__grid">
+
+          <!-- GROUP 1 · lead — four KPIs, all DERIVED from DATA by the filter engine. -->
+          <section class="c-bento__tile c-bento tpl-group tpl-group-lead" data-bento-role="dashboard" data-c="6" data-r="1" aria-label="Position this period" data-view-in="overview payments liquidity fx" id="grpLead">
+            <div class="c-bento__grid">
+
+              <div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Group cash position" data-c="1" data-r="1">
+                <p class="lbl16 t-cm-caption">Group cash position</p>
+                <span class="amt t-cm-figure-3"><span>£</span><span data-kpi="cash">84,576,808.42</span></span>
+                <span class="delta down" data-kpi-delta="cash" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"></use></svg></span><span class="t-cm-figure-6">−53.6% down</span><span class="per t-cm-legal">vs prior period</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="down" data-spark="cash" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"></line>
+                    <polyline class="dv-series" points="3.0,12.7 20.6,14.7 38.3,17.1 55.9,16.9 73.5,26.0 91.2,8.3 108.8,21.3 126.5,11.8 144.1,3.0 161.7,14.3 179.4,5.0 197.0,45.0"></polyline>
+                    <circle class="dv-end" cx="197.0" cy="45.0" r="3"></circle>
+                  </svg>
+                </div>
+                <button type="button" class="kpi-cta" id="kpiTable" aria-label="View group cash position as a table"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpi-table"></use></svg></button>
+              </div>
+
+              <div class="c-bento__tile kpi-tile" role="group" aria-label="Payments out" data-c="1" data-r="1">
+                <p class="lbl16 t-cm-caption">Payments out</p>
+                <span class="amt t-cm-figure-3"><span>£</span><span data-kpi="out">17,977,295.80</span></span>
+                <span class="delta up" data-kpi-delta="out" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+497.6% up</span><span class="per t-cm-legal">vs prior period</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="down" data-spark="out" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"></line>
+                    <polyline class="dv-series" points="3.0,13.7 20.6,11.7 38.3,3.0 55.9,17.0 73.5,18.2 91.2,10.4 108.8,12.1 126.5,8.8 144.1,5.7 161.7,6.8 179.4,3.5 197.0,45.0"></polyline>
+                    <circle class="dv-end" cx="197.0" cy="45.0" r="3"></circle>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="c-bento__tile kpi-tile" role="group" aria-label="Awaiting approval" data-c="1" data-r="1">
+                <p class="lbl16 t-cm-caption">Awaiting approval</p>
+                <span class="amt t-cm-figure-3"><span>£</span><span data-kpi="pend">1,889,521.44</span></span>
+                <span class="delta up" data-kpi-delta="pend" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+0.0% up</span><span class="per t-cm-legal">vs prior period</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="up" data-spark="pend" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"></line>
+                    <polyline class="dv-series" points="3.0,31.6 20.6,28.1 38.3,16.1 55.9,40.6 73.5,45.0 91.2,27.0 108.8,33.0 126.5,25.4 144.1,18.0 161.7,21.5 179.4,13.9 197.0,3.0"></polyline>
+                    <circle class="dv-end" cx="197.0" cy="3.0" r="3"></circle>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="c-bento__tile kpi-tile" role="group" aria-label="Cross-border value" data-c="1" data-r="1">
+                <p class="lbl16 t-cm-caption">Cross-border value</p>
+                <span class="amt t-cm-figure-3"><span>£</span><span data-kpi="xb">9,579,373.12</span></span>
+                <span class="delta up" data-kpi-delta="xb" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+358.9% up</span><span class="per t-cm-legal">vs prior period</span></span>
+                <div class="kpi-spark">
+                  <svg class="spark-inline" data-trend="down" data-spark="xb" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                    <line class="dv-base" x1="3" y1="45" x2="197" y2="45"></line>
+                    <polyline class="dv-series" points="3.0,14.3 20.6,11.9 38.3,3.4 55.9,20.5 73.5,22.5 91.2,10.7 108.8,13.9 126.5,9.2 144.1,5.6 161.7,8.1 179.4,3.0 197.0,45.0"></polyline>
+                    <circle class="dv-end" cx="197.0" cy="45.0" r="3"></circle>
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- GROUP 2 · evidence — the corridor chart, re-drawn from the filtered rows. -->
+          <section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard" data-c="4" data-r="1" aria-label="Payment value by corridor" data-view-in="overview payments liquidity fx" id="grpChart">
+            <div class="c-bento__grid">
+              <div class="c-bento__tile stat-card" data-c="6" data-r="1">
+                <figure class="dv dv-fit-on" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="cb-h" data-lockup-title="Payment value by corridor">
+                  <figcaption id="cb-h" class="sr-only">Payment value by corridor for the selected period, pounds sterling equivalent</figcaption>
+                  <div class="dv-head">
+                    <h3 class="dv-title t-cm-section-label">Payment value by corridor</h3>
+                    <span class="t-cm-caption" style="opacity:.6" id="chartPeriod">30 days to 8 Sep 2026</span>
+                  </div>
+                  <div class="dv-stage"><div class="dv-chart-area">
+                    <svg class="dv-svg dv-fit" id="corridorSvg" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30" data-h-min="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 845 892" role="group" aria-label="Payment value by corridor. GB-GB £3,785,200.00, DE-GB £3,200,000.00, US-US £2,231,574.80, US-HK £1,893,840.00, GB-DE £1,823,028.48, US-GB £1,420,000.00.">
+                      <g data-role="axis"><line class="dv-grid" x1="46.0" y1="862.0" x2="833.0" y2="862.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1" data-fy1="1.0000" data-fy2="1.0000"></line><text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38.0" y="865.0" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3" data-fy="1.0000">0k</text><line class="dv-grid" x1="46.0" y1="650.0" x2="833.0" y2="650.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1" data-fy1="0.7500" data-fy2="0.7500"></line><text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38.0" y="653.0" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3" data-fy="0.7500">1.0m</text><line class="dv-grid" x1="46.0" y1="438.0" x2="833.0" y2="438.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1" data-fy1="0.5000" data-fy2="0.5000"></line><text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38.0" y="441.0" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3" data-fy="0.5000">2.0m</text><line class="dv-grid" x1="46.0" y1="226.0" x2="833.0" y2="226.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1" data-fy1="0.2500" data-fy2="0.2500"></line><text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38.0" y="229.0" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3" data-fy="0.2500">3.0m</text><line class="dv-grid" x1="46.0" y1="14.0" x2="833.0" y2="14.0" stroke="var(--data-grid)" data-fx="0" data-fx2="1" data-fy1="0.0000" data-fy2="0.0000"></line><text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38.0" y="17.0" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3" data-fy="0.0000">4.0m</text><line class="dv-axis" x1="46.0" y1="862.0" x2="833.0" y2="862.0" stroke="var(--baseline)" data-fx="0" data-fx2="1" data-fy1="1.0000" data-fy2="1.0000"></line></g>
+                      <g data-dv-view="orig"><rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="74.9" y="59.5" width="73.4" height="802.5" data-fx="0.0367" data-fw="0.0933" tabindex="0" role="img" aria-label="GB-GB: £3,785,200.00" data-tip="GB-GB: £3,785,200.00" data-fh="0.9463" data-fy="0.0537"></rect><rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="206.0" y="183.6" width="73.4" height="678.4" data-fx="0.2033" data-fw="0.0933" tabindex="0" role="img" aria-label="DE-GB: £3,200,000.00" data-tip="DE-GB: £3,200,000.00" data-fh="0.8000" data-fy="0.2000"></rect><rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="337.2" y="388.9" width="73.4" height="473.1" data-fx="0.3700" data-fw="0.0933" tabindex="0" role="img" aria-label="US-US: £2,231,574.80" data-tip="US-US: £2,231,574.80" data-fh="0.5579" data-fy="0.4421"></rect><rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="468.4" y="460.4" width="73.4" height="401.6" data-fx="0.5367" data-fw="0.0933" tabindex="0" role="img" aria-label="US-HK: £1,893,840.00" data-tip="US-HK: £1,893,840.00" data-fh="0.4736" data-fy="0.5264"></rect><rect class="dv-series" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="599.5" y="475.7" width="73.4" height="386.3" data-fx="0.7033" data-fw="0.0933" tabindex="0" role="img" aria-label="GB-DE: £1,823,028.48" data-tip="GB-DE: £1,823,028.48" data-fh="0.4556" data-fy="0.5444"></rect><rect class="dv-series" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="730.7" y="560.9" width="73.4" height="301.1" data-fx="0.8700" data-fw="0.0933" tabindex="0" role="img" aria-label="US-GB: £1,420,000.00" data-tip="US-GB: £1,420,000.00" data-fh="0.3551" data-fy="0.6449"></rect><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="111.6" y="878.0" text-anchor="middle" data-fx="0.0833" data-dy="16.0" data-fy="1.0000">GB-GB</text><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="242.8" y="878.0" text-anchor="middle" data-fx="0.2500" data-dy="16.0" data-fy="1.0000">DE-GB</text><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="373.9" y="878.0" text-anchor="middle" data-fx="0.4167" data-dy="16.0" data-fy="1.0000">US-US</text><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="505.1" y="878.0" text-anchor="middle" data-fx="0.5833" data-dy="16.0" data-fy="1.0000">US-HK</text><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="636.3" y="878.0" text-anchor="middle" data-fx="0.7500" data-dy="16.0" data-fy="1.0000">GB-DE</text><text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="767.4" y="878.0" text-anchor="middle" data-fx="0.9167" data-dy="16.0" data-fy="1.0000">US-GB</text></g>
+                    </svg>
+                  </div></div>
+                </figure>
+              </div>
+            </div>
+          </section>
+
+          <!-- GROUP 3 · context rail — needs attention, balances, FX. All derived. -->
+          <section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard" data-c="2" data-r="1" aria-label="Position" data-view-in="overview payments liquidity fx" id="grpRail">
+            <div class="c-bento__grid">
+              <div class="c-bento__tile stat-card" id="dp08-na" data-dp08-target="" data-c="3" data-r="1">
+                <div class="tpl-panel-head">
+                  <h3 class="t-cm-section-label">Needs attention</h3>
+                  <a class="tpl-link t-cm-caption" href="?view=payments&amp;status=Awaiting+approval" data-view-link="payments">View all</a>
+                </div>
+                <dl class="summary tpl-na-head">
+                  <div class="summary__row"><dt class="summary__k t-cm-label">Awaiting approval <span class="t-cm-legal" id="naCount">8 payments · 5 need you</span></dt><dd class="summary__v t-cm-figure-5" id="naValue">£1,889,521.44</dd></div>
+                </dl>
+                <div class="l-stack" data-gap="m" id="naList"><div class="l-row" data-gap="s" data-justify="between"><span class="t-cm-label">Siemens Energy AG</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></div><div class="l-row" data-gap="s" data-justify="between"><span class="t-cm-label">Maersk Line A/S</span><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></div><div class="l-row" data-gap="s" data-justify="between"><span class="t-cm-label">Li &amp; Fung Ltd</span><span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">In progress</span></span></div><div class="l-row" data-gap="s" data-justify="between"><span class="t-cm-label">Keppel Data Centres</span><span class="status err" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Failed</span></span></div></div>
+              </div>
+              <div class="c-bento__tile stat-card" data-c="3" data-r="1" id="cardBalances">
+                <div class="tpl-panel-head"><h3 class="t-cm-section-label">Balances by currency</h3></div>
+                <dl class="summary" id="balList"><div class="summary__row"><dt class="summary__k t-cm-label">USD <span class="t-cm-legal">£32,772,333.05 equiv.</span></dt><dd class="summary__v t-cm-figure-5">$41,531,280.00</dd></div><div class="summary__row"><dt class="summary__k t-cm-label">GBP <span class="t-cm-legal">£27,920,510.10 equiv.</span></dt><dd class="summary__v t-cm-figure-5">£27,920,510.10</dd></div><div class="summary__row"><dt class="summary__k t-cm-label">EUR <span class="t-cm-legal">£13,055,841.89 equiv.</span></dt><dd class="summary__v t-cm-figure-5">€15,262,850.00</dd></div><div class="summary__row"><dt class="summary__k t-cm-label">HKD <span class="t-cm-legal">£4,877,840.00 equiv.</span></dt><dd class="summary__v t-cm-figure-5">HK$48,200,000.00</dd></div><div class="summary__row"><dt class="summary__k t-cm-label">SGD <span class="t-cm-legal">£4,330,616.18 equiv.</span></dt><dd class="summary__v t-cm-figure-5">S$7,412,900.00</dd></div><div class="summary__row"><dt class="summary__k t-cm-label">JPY <span class="t-cm-legal">£1,619,667.20 equiv.</span></dt><dd class="summary__v t-cm-figure-5">¥310,400,000</dd></div></dl>
+              </div>
+              <div class="c-bento__tile stat-card" data-c="3" data-r="1" id="cardFx">
+                <div class="tpl-panel-head"><h3 class="t-cm-section-label">FX rates to GBP</h3></div>
+                <dl class="summary" id="fxList"><div class="summary__row"><dt class="summary__k t-cm-label">EUR/GBP</dt><dd class="summary__v t-cm-figure-5">0.8554 <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"></use></svg></span><span class="t-cm-figure-6">−0.66% down</span></span></dd></div><div class="summary__row"><dt class="summary__k t-cm-label">USD/GBP</dt><dd class="summary__v t-cm-figure-5">0.7891 <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+1.11% up</span></span></dd></div><div class="summary__row"><dt class="summary__k t-cm-label">SGD/GBP</dt><dd class="summary__v t-cm-figure-5">0.5842 <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+0.55% up</span></span></dd></div><div class="summary__row"><dt class="summary__k t-cm-label">HKD/GBP</dt><dd class="summary__v t-cm-figure-5">0.1012 <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"></use></svg></span><span class="t-cm-figure-6">+0.90% up</span></span></dd></div><div class="summary__row"><dt class="summary__k t-cm-label">JPY/GBP</dt><dd class="summary__v t-cm-figure-5">0.0052 <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"></use></svg></span><span class="t-cm-figure-6">−1.73% down</span></span></dd></div></dl>
+              </div>
+            </div>
+          </section>
+
+          <!-- GROUP 4 · the payments ledger. Data-grid snippet, spliced; its script extended
+               to read the page DATA and the page filters (rule 2a). -->
+          <section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard" data-c="6" data-r="1" aria-label="Payment instructions" data-view-in="overview payments" id="grpGrid">
+            <div class="c-bento__grid">
+              <div class="c-bento__tile stat-card" data-c="6" data-r="1">
+                <div class="pg-grid-wrap cn-data-grid">
+                  <div class="dg" id="dg" style="--dg-max:100%">
+                    <div class="dg-head">
+                      <span class="t-cm-section-label" id="dgTitle">Payment instructions</span>
+                      <span class="dg-count t-cm-caption" id="dgCount" aria-live="polite">44 results</span>
+                    </div>
+
+                    <div class="dg-toolbar">
+                      <div class="dgsearch">
+                        <span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-search"></use></svg></span>
+                        <input type="search" id="dgSearch" class="t-cm-input" aria-label="Filter payment instructions" placeholder="Filter payments — press enter to apply">
+                        <button class="dgs-clear" type="button" aria-label="Clear filter text"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"></use></svg></button>
+                      </div>
+                    </div>
+
+                    <div class="fbar" id="fbar" role="list" aria-label="Applied filters" hidden=""></div>
+
+                    <div class="dg-scroll">
+                      <table role="grid" id="tbl" aria-labelledby="dgTitle" aria-describedby="dgHint" aria-rowcount="45">
+                        <thead>
+                          <tr aria-rowindex="1">
+                            <th class="sel" scope="col" tabindex="-1">
+                              <label class="cbx"><input type="checkbox" id="selAll" tabindex="-1" aria-label="Select all rows on this page">
+                                <span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span>
+                              </label>
+                            </th>
+                            <th scope="col" aria-sort="none" data-key="date" tabindex="0"><button class="sort full t-cm-button" type="button" tabindex="-1">Value date
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                            <th scope="col" aria-sort="none" data-key="beneficiary" tabindex="-1"><button class="sort full t-cm-button" type="button" tabindex="-1">Beneficiary
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                            <th scope="col" aria-sort="none" data-key="ref" tabindex="-1"><button class="sort full t-cm-button" type="button" tabindex="-1">Reference
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                            <th scope="col" aria-sort="none" data-key="corridor" tabindex="-1"><button class="sort full t-cm-button" type="button" tabindex="-1">Corridor
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                            <th scope="col" aria-sort="none" data-key="status" tabindex="-1"><button class="sort full t-cm-button" type="button" tabindex="-1">Status
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                            <th scope="col" aria-sort="none" data-key="gbp" class="num" tabindex="-1"><button class="sort full t-cm-button" type="button" tabindex="-1">Amount
+                              <span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"></use></svg></span>
+                              <span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"></use></svg></span>
+                              <span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"></use></svg></span></button></th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody"><tr aria-rowindex="2" aria-selected="false" data-id="1"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Siemens Energy AG, 8 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">8 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Siemens Energy AG</span><br><span class="t-cm-legal">Northwind Group plc</span></td><td class="edit" data-id="1" tabindex="-1"><span class="val"><span class="t-cm-label">INV-88214 turbine parts</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">GB-DE</span><br><span class="t-cm-legal">SWIFT gpi</span></td><td tabindex="-1"><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">€412,800.00</span><br><span class="t-cm-legal">£353,109.12 equiv.</span></td></tr><tr aria-rowindex="3" aria-selected="false" data-id="2"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Maersk Line A/S, 8 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">8 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Maersk Line A/S</span><br><span class="t-cm-legal">Northwind Group plc</span></td><td class="edit" data-id="2" tabindex="-1"><span class="val"><span class="t-cm-label">Freight Aug 26</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">GB-DK</span><br><span class="t-cm-legal">SWIFT gpi</span></td><td tabindex="-1"><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">$188,400.00</span><br><span class="t-cm-legal">£148,666.44 equiv.</span></td></tr><tr aria-rowindex="4" aria-selected="false" data-id="3"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Robert Bosch GmbH, 8 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">8 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Robert Bosch GmbH</span><br><span class="t-cm-legal">Northwind Deutschland GmbH</span></td><td class="edit" data-id="3" tabindex="-1"><span class="val"><span class="t-cm-label">PO-44120</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">DE-DE</span><br><span class="t-cm-legal">SEPA</span></td><td tabindex="-1"><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Released</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">€96,500.00</span><br><span class="t-cm-legal">£82,546.10 equiv.</span></td></tr><tr aria-rowindex="5" aria-selected="false" data-id="4"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Flexport Inc, 7 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">7 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Flexport Inc</span><br><span class="t-cm-legal">Northwind Americas Inc</span></td><td class="edit" data-id="4" tabindex="-1"><span class="val"><span class="t-cm-label">Customs brokerage</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">US-US</span><br><span class="t-cm-legal">Fedwire</span></td><td tabindex="-1"><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Released</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">$74,200.00</span><br><span class="t-cm-legal">£58,551.22 equiv.</span></td></tr><tr aria-rowindex="6" aria-selected="false" data-id="5"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: PSA Corporation Ltd, 7 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">7 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">PSA Corporation Ltd</span><br><span class="t-cm-legal">Northwind Asia Pte Ltd</span></td><td class="edit" data-id="5" tabindex="-1"><span class="val"><span class="t-cm-label">Terminal handling Q3</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">SG-SG</span><br><span class="t-cm-legal">FAST</span></td><td tabindex="-1"><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">S$221,000.00</span><br><span class="t-cm-legal">£129,108.20 equiv.</span></td></tr><tr aria-rowindex="7" aria-selected="false" data-id="6"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Northwind Deutschland GmbH, 7 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">7 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Northwind Deutschland GmbH</span><br><span class="t-cm-legal">Northwind Group plc</span></td><td class="edit" data-id="6" tabindex="-1"><span class="val"><span class="t-cm-label">Intercompany sweep</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">GB-DE</span><br><span class="t-cm-legal">SWIFT gpi</span></td><td tabindex="-1"><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Released</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">€1,500,000.00</span><br><span class="t-cm-legal">£1,283,100.00 equiv.</span></td></tr><tr aria-rowindex="8" aria-selected="false" data-id="7"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Li &amp; Fung Ltd, 6 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">6 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Li &amp; Fung Ltd</span><br><span class="t-cm-legal">Northwind Trading (HK) Ltd</span></td><td class="edit" data-id="7" tabindex="-1"><span class="val"><span class="t-cm-label">Sourcing fee Aug</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">HK-HK</span><br><span class="t-cm-legal">CHATS</span></td><td tabindex="-1"><span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">In progress</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">HK$1,840,000.00</span><br><span class="t-cm-legal">£186,208.00 equiv.</span></td></tr><tr aria-rowindex="9" aria-selected="false" data-id="8"><td class="sel" tabindex="-1"><label class="cbx"><input type="checkbox" tabindex="-1" aria-label="Select row: Kaiser Permanente, 6 Sep 2026"><span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"></path><path class="mixed" d="M4 9 L14 9"></path></svg></span></label></td><td tabindex="-1"><span class="t-cm-label">6 Sep 2026</span></td><td tabindex="-1"><span class="t-cm-label">Kaiser Permanente</span><br><span class="t-cm-legal">Northwind Americas Inc</span></td><td class="edit" data-id="8" tabindex="-1"><span class="val"><span class="t-cm-label">Benefits Sep</span><span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"></use></svg></span></span></td><td tabindex="-1"><span class="t-cm-label">US-US</span><br><span class="t-cm-legal">ACH</span></td><td tabindex="-1"><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting approval</span></span></td><td class="num" tabindex="-1"><span class="t-cm-figure-5">$312,800.00</span><br><span class="t-cm-legal">£246,830.48 equiv.</span></td></tr></tbody>
+                      </table>
+                    </div>
+
+                    <div class="dg-foot">
+                      <span class="dg-range t-cm-caption" id="dgRange">1–8 of 44</span>
+                      <div class="dg-pp">
+                        <label class="t-cm-caption" for="pp">Rows per page</label>
+                        <select id="pp" class="t-cm-caption">
+                          <option value="8" selected="">8</option>
+                          <option value="12">12</option>
+                          <option value="24">24</option>
+                        </select>
+                      </div>
+                      <nav class="dgpg" aria-label="Grid pages"><ul id="pgList"><li><button class="pbtn" type="button" aria-label="Previous page" disabled="" data-go="prev"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cleft"></use></svg></button></li><li><button class="pbtn t-cm-button" type="button" data-go="1" aria-current="page" aria-label="Page 1, current page">1</button></li><li><button class="pbtn t-cm-label" type="button" data-go="2" aria-label="Page 2">2</button></li><li><button class="pbtn t-cm-label" type="button" data-go="3" aria-label="Page 3">3</button></li><li><button class="pbtn t-cm-label" type="button" data-go="4" aria-label="Page 4">4</button></li><li><button class="pbtn t-cm-label" type="button" data-go="5" aria-label="Page 5">5</button></li><li><button class="pbtn t-cm-label" type="button" data-go="6" aria-label="Page 6">6</button></li><li><button class="pbtn" type="button" aria-label="Next page" data-go="next"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cright"></use></svg></button></li></ul></nav>
+                    </div>
+                  </div>
+                  <p class="t-cm-legal" id="dgHint" style="opacity:.6; max-width:64ch; margin-top:16px;">
+                    Tab into the grid, then arrow keys move between cells. Enter sorts a header, toggles a row
+                    checkbox, or opens the reference cell for editing (F2 also edits; Esc cancels).
+                    Type in the filter and press Enter to apply it as a removable chip.
+                  </p>
+                  <div class="visually-hidden" role="status" id="dgStatus"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="cn-app-shell-top-nav">
+  <footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+    <div class="sh-legal">
+      <ul>
+        <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+        <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+        <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+      </ul>
+      <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+    </div>
+  </footer>
+  </div>
+
+</div>
+
+<script type="application/json" id="token-manifest">
+{
+  "screen": "Global liquidity and payments (cold-run 258 v3, arm A blind)",
+  "theme": "mono (grill-me default, announced)",
+  "stylesheets": ["knowledge/canon/canon.css", "knowledge/canon/type.css"],
+  "scopes": ["cn-template-dashboard-bento", "cn-app-shell-top-nav", "cn-data-grid", "cn-filter-toolbar-bar"],
+  "vars": {
+    "--page": "background/default", "--surface": "tertiary/background/default",
+    "--text": "text/default", "--icon": "icon/default", "--border": "border/subtle",
+    "--focus": "focus/ring", "--data-series-1": "data/series-1", "--data-grid": "data/grid",
+    "--data-axis": "data/axis", "--baseline": "data/baseline",
+    "--spark-up": "data/spark-up", "--spark-down": "data/spark-down"
+  },
+  "note": "No raw hex or px in the authored <style>; every visual value resolves from canon.css."
+}
+</script>
+
+<script type="application/json" id="behaviour-manifest">
+{
+  "sources": [
+    {"component": "component:data-grid", "script": "knowledge/snippets/Data-grid.reference.html#script", "carried": "EXTENDED — sort/page/chip/edit/roving-focus logic carried; DATA source, columns and the filter predicate rewritten to read the page DATA and the page filter state (s258-D1, NOTE:AUTHORED-JS expected)", "fallback": "tbody is script-rendered: with JS off there are no rows."},
+    {"component": "component:template-dashboard-bento", "script": "knowledge/canon/dv-behaviour.js", "carried": "VERBATIM — linked as the canon file, not re-typed", "fallback": "the baked SVG renders; no tooltip, no fit reflow."},
+    {"component": "component:template-dashboard-bento", "script": "knowledge/canon/dp08-anchor.js", "carried": "VERBATIM — linked as the canon file", "fallback": "the chip is still an in-page anchor; no arrival animation."},
+    {"component": "component:filter-toolbar-bar", "script": null, "carried": "AUTHORED — the snippet declares no script; the dropdown/segmented/chip wiring is written here (s258-D1)", "fallback": "the toolbar paints; no filtering."}
+  ],
+  "controls": [
+    {"control": "primary nav (4 links)", "drives": "view: which bento groups render, page title, breadcrumb, grid preset", "persists": "URL ?view="},
+    {"control": "entity dropdown", "drives": "KPIs, corridor chart, needs-attention, balances, grid", "persists": "URL ?entity="},
+    {"control": "currency dropdown", "drives": "KPIs, corridor chart, needs-attention, balances, grid", "persists": "URL ?ccy="},
+    {"control": "status dropdown", "drives": "KPIs, corridor chart, needs-attention, grid", "persists": "URL ?status="},
+    {"control": "period segmented (30/90/365)", "drives": "KPIs, sparklines, corridor chart, grid", "persists": "URL ?period="},
+    {"control": "toolbar search", "drives": "grid + KPIs + chart", "persists": "URL ?q="},
+    {"control": "filter chips (x)", "drives": "removes one filter, re-drives everything", "persists": "URL"},
+    {"control": "grid column sort (6 headers)", "drives": "row order", "persists": "URL ?sort=&dir="},
+    {"control": "grid pager + rows-per-page", "drives": "page window", "persists": "URL ?page=&size="},
+    {"control": "grid in-table search chips", "drives": "grid rows only", "persists": "URL ?gq="},
+    {"control": "row select / select-all", "drives": "Export selection button label", "persists": "session (not URL — selection is not a view)"},
+    {"control": "reference cell edit-in-place", "drives": "DATA.payments[].ref", "persists": "in-page only"},
+    {"control": "dark/light button", "drives": "data-theme on <body>", "persists": "URL ?mode= + localStorage"},
+    {"control": "masthead search button", "drives": "focuses the toolbar search", "persists": "n/a"},
+    {"control": "Release payments", "drives": "moves selected Awaiting-approval rows to Released; re-drives every panel", "persists": "in-page"},
+    {"control": "Export selection", "drives": "announces the CSV row count for the selection", "persists": "n/a"},
+    {"control": "KPI table CTA", "drives": "toggles the cash-position sparkline to a values row", "persists": "in-page"},
+    {"control": "status chip (Awaiting approval)", "drives": "anchors to and highlights the Needs attention card", "persists": "n/a"}
+  ]
+}
+</script>
+
+<script src="../../../knowledge/canon/dv-behaviour.js"></script><div class="dv-tip t-cm-chart-value" id="dvTip" role="status" aria-live="polite"></div>
+<script src="../../../knowledge/canon/dp08-anchor.js"></script>
+<script>
+/* ============================================================================================
+   THE PAGE'S OWN JAVASCRIPT (s258-D1 — the author writes it; s258-D2 — everything works).
+   ONE data model, read by every KPI, chart, card, filter option and grid row (rule 13).
+   The Data-grid snippet's script is CARRIED and EXTENDED, not replaced: its sort cycle, pager,
+   chip bar, edit-in-place and APG roving-cell focus are the snippet's own logic; the DATA
+   source, the column set and the filter predicate are authored here so the grid answers to the
+   page filters (rule 14). Addresses are named in #behaviour-manifest.
+   ============================================================================================ */
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------- 1 · THE DATA MODEL */
+  var DATA = {
+    asOf: '2026-09-08',
+    entities: [
+      { id: 'nw-uk', name: 'Northwind Group plc',         country: 'United Kingdom', base: 'GBP', bic: 'MIDLGB22' },
+      { id: 'nw-de', name: 'Northwind Deutschland GmbH',  country: 'Germany',        base: 'EUR', bic: 'HSBCDEHH' },
+      { id: 'nw-us', name: 'Northwind Americas Inc',      country: 'United States',  base: 'USD', bic: 'MRMDUS33' },
+      { id: 'nw-sg', name: 'Northwind Asia Pte Ltd',      country: 'Singapore',      base: 'SGD', bic: 'HSBCSGSG' },
+      { id: 'nw-hk', name: 'Northwind Trading (HK) Ltd',  country: 'Hong Kong',      base: 'HKD', bic: 'HSBCHKHH' }
+    ],
+    /* mid-market rates to GBP, and the same rates a month ago — the FX card derives its move */
+    fx:     { GBP: 1, EUR: 0.8554, USD: 0.7891, SGD: 0.5842, HKD: 0.1012, JPY: 0.005218 },
+    fxPrev: { GBP: 1, EUR: 0.8611, USD: 0.7804, SGD: 0.5810, HKD: 0.1003, JPY: 0.005310 },
+    accounts: [
+      { id: 'a1',  entity: 'nw-uk', ccy: 'GBP', kind: 'Operating',   iban: 'GB29 MIDL 4012 0682 1234 51', balance: 18420510.10 },
+      { id: 'a2',  entity: 'nw-uk', ccy: 'USD', kind: 'Collections', iban: 'GB44 MIDL 4012 0682 9911 02', balance:  6120880.00 },
+      { id: 'a3',  entity: 'nw-uk', ccy: 'EUR', kind: 'Pooling',     iban: 'GB18 MIDL 4012 0682 5510 77', balance:  4218000.00 },
+      { id: 'a4',  entity: 'nw-de', ccy: 'EUR', kind: 'Operating',   iban: 'DE89 3704 0044 0532 0130 00', balance:  9840550.00 },
+      { id: 'a5',  entity: 'nw-de', ccy: 'EUR', kind: 'Payroll',     iban: 'DE12 3704 0044 0532 0130 88', balance:  1204300.00 },
+      { id: 'a6',  entity: 'nw-us', ccy: 'USD', kind: 'Operating',   iban: 'US64 SVBK 0000 0000 3417 21', balance: 11250400.00 },
+      { id: 'a7',  entity: 'nw-us', ccy: 'USD', kind: 'Concentration', iban: 'US64 SVBK 0000 0000 3417 90', balance: 20980000.00 },
+      { id: 'a8',  entity: 'nw-sg', ccy: 'SGD', kind: 'Operating',   iban: 'SG56 HSBC 0000 4412 0087 31', balance:  7412900.00 },
+      { id: 'a9',  entity: 'nw-sg', ccy: 'USD', kind: 'Trade',       iban: 'SG56 HSBC 0000 4412 0087 44', balance:  3180000.00 },
+      { id: 'a10', entity: 'nw-hk', ccy: 'HKD', kind: 'Operating',   iban: 'HK22 HSBC 0040 5533 1129 08', balance: 48200000.00 },
+      { id: 'a11', entity: 'nw-hk', ccy: 'JPY', kind: 'Trade',       iban: 'HK22 HSBC 0040 5533 1129 66', balance: 310400000.00 },
+      { id: 'a12', entity: 'nw-uk', ccy: 'GBP', kind: 'Reserve',     iban: 'GB77 MIDL 4012 0682 4400 19', balance:  9500000.00 }
+    ],
+    /* 24 months of group cash flow in GBP thousands — long enough for a 12-month sparkline */
+    series: [
+      { m: '2024-10', in: 22140, out: 19880, pend: 3120, xb: 11240 }, { m: '2024-11', in: 23010, out: 20450, pend: 2980, xb: 11880 },
+      { m: '2024-12', in: 26880, out: 24110, pend: 3610, xb: 13950 }, { m: '2025-01', in: 21340, out: 19240, pend: 2740, xb: 10420 },
+      { m: '2025-02', in: 20980, out: 18760, pend: 2610, xb: 10110 }, { m: '2025-03', in: 24460, out: 21980, pend: 3340, xb: 12680 },
+      { m: '2025-04', in: 23180, out: 21050, pend: 3080, xb: 11940 }, { m: '2025-05', in: 24990, out: 22410, pend: 3260, xb: 12810 },
+      { m: '2025-06', in: 26140, out: 23380, pend: 3540, xb: 13620 }, { m: '2025-07', in: 25310, out: 22940, pend: 3410, xb: 13080 },
+      { m: '2025-08', in: 24020, out: 22110, pend: 3180, xb: 12440 }, { m: '2025-09', in: 26780, out: 23860, pend: 3720, xb: 14010 },
+      { m: '2025-10', in: 27410, out: 24380, pend: 3810, xb: 14380 }, { m: '2025-11', in: 28060, out: 25120, pend: 3940, xb: 14920 },
+      { m: '2025-12', in: 31240, out: 28410, pend: 4380, xb: 16840 }, { m: '2026-01', in: 25980, out: 23140, pend: 3480, xb: 12980 },
+      { m: '2026-02', in: 25110, out: 22680, pend: 3320, xb: 12540 }, { m: '2026-03', in: 28840, out: 25610, pend: 3980, xb: 15180 },
+      { m: '2026-04', in: 27620, out: 24980, pend: 3760, xb: 14460 }, { m: '2026-05', in: 29310, out: 26240, pend: 4040, xb: 15520 },
+      { m: '2026-06', in: 30880, out: 27410, pend: 4310, xb: 16340 }, { m: '2026-07', in: 29940, out: 26980, pend: 4180, xb: 15780 },
+      { m: '2026-08', in: 31620, out: 28240, pend: 4460, xb: 16920 }, { m: '2026-09', in: 14180, out: 12610, pend: 4860, xb:  7480 }
+    ],
+    payments: []
+  };
+
+  /* The ledger. Written out rather than generated so the rows read as real instructions:
+     named beneficiaries, real corridors, five statuses, four channels, six currencies. */
+  var P = [
+    ['2026-09-08','nw-uk','Siemens Energy AG','INV-88214 turbine parts','GB-DE','EUR',412800.00,'Awaiting approval','SWIFT gpi'],
+    ['2026-09-08','nw-uk','Maersk Line A/S','Freight Aug 26','GB-DK','USD',188400.00,'Awaiting approval','SWIFT gpi'],
+    ['2026-09-08','nw-de','Robert Bosch GmbH','PO-44120','DE-DE','EUR',96500.00,'Released','SEPA'],
+    ['2026-09-07','nw-us','Flexport Inc','Customs brokerage','US-US','USD',74200.00,'Released','Fedwire'],
+    ['2026-09-07','nw-sg','PSA Corporation Ltd','Terminal handling Q3','SG-SG','SGD',221000.00,'Awaiting approval','FAST'],
+    ['2026-09-07','nw-uk','Northwind Deutschland GmbH','Intercompany sweep','GB-DE','EUR',1500000.00,'Released','SWIFT gpi'],
+    ['2026-09-06','nw-hk','Li & Fung Ltd','Sourcing fee Aug','HK-HK','HKD',1840000.00,'In progress','CHATS'],
+    ['2026-09-06','nw-us','Kaiser Permanente','Benefits Sep','US-US','USD',312800.00,'Awaiting approval','ACH'],
+    ['2026-09-05','nw-uk','HM Revenue & Customs','VAT Q2 2026','GB-GB','GBP',684200.00,'Released','Faster payment'],
+    ['2026-09-05','nw-de','Deutsche Telekom AG','Network Aug','DE-DE','EUR',48300.00,'Released','SEPA'],
+    ['2026-09-05','nw-sg','Keppel Data Centres','Colocation Q3','SG-SG','SGD',96400.00,'Failed','FAST'],
+    ['2026-09-04','nw-uk','Nippon Express Co Ltd','Airfreight 09-1102','GB-JP','JPY',18400000.00,'In progress','SWIFT gpi'],
+    ['2026-09-04','nw-us','Northwind Trading (HK) Ltd','Intercompany funding','US-HK','USD',2400000.00,'Released','SWIFT gpi'],
+    ['2026-09-04','nw-hk','Cathay Pacific Cargo','AWB 160-88421','HK-HK','HKD',412000.00,'Released','CHATS'],
+    ['2026-09-03','nw-uk','Arup Group Ltd','Design services Aug','GB-GB','GBP',128400.00,'Awaiting approval','Faster payment'],
+    ['2026-09-03','nw-de','SAP SE','Licence renewal 2026','DE-DE','EUR',284000.00,'Awaiting approval','SEPA'],
+    ['2026-09-03','nw-sg','DBS Nominees','Custody fees Q3','SG-SG','SGD',34800.00,'Released','FAST'],
+    ['2026-09-02','nw-us','Amazon Web Services','Cloud Aug 2026','US-US','USD',196400.00,'Released','ACH'],
+    ['2026-09-02','nw-uk','Northwind Asia Pte Ltd','Intercompany sweep','GB-SG','SGD',890000.00,'Released','SWIFT gpi'],
+    ['2026-09-02','nw-hk','Foxconn Industrial','PO-99120 assemblies','HK-CN','HKD',3120000.00,'Returned','CHATS'],
+    ['2026-09-01','nw-uk','Aviva Insurance Ltd','Group cover Sep','GB-GB','GBP',94200.00,'Released','Direct debit'],
+    ['2026-09-01','nw-de','Munich Re','Cargo cover Q3','DE-DE','EUR',118600.00,'Released','SEPA'],
+    ['2026-09-01','nw-us','ADP Payroll Services','US payroll 09-01','US-US','USD',1840000.00,'Released','ACH'],
+    ['2026-08-31','nw-sg','Singtel Ltd','Connectivity Aug','SG-SG','SGD',28400.00,'Released','FAST'],
+    ['2026-08-31','nw-uk','Barclays Bank plc','FX settlement 8842','GB-GB','GBP',2400000.00,'Released','CHAPS'],
+    ['2026-08-30','nw-hk','Hutchison Ports','Terminal fees Aug','HK-HK','HKD',684000.00,'Released','CHATS'],
+    ['2026-08-29','nw-uk','Siemens Energy AG','INV-88101 service','GB-DE','EUR',218400.00,'Released','SWIFT gpi'],
+    ['2026-08-29','nw-de','Northwind Group plc','Dividend upstream','DE-GB','GBP',3200000.00,'Released','SWIFT gpi'],
+    ['2026-08-28','nw-us','Ryder System Inc','Fleet lease Aug','US-US','USD',88400.00,'Failed','ACH'],
+    ['2026-08-28','nw-sg','Maersk Line A/S','Freight SG-EU','SG-DK','USD',142000.00,'Released','SWIFT gpi'],
+    ['2026-08-27','nw-uk','Slaughter and May','Legal — Project Kite','GB-GB','GBP',312000.00,'Awaiting approval','Faster payment'],
+    ['2026-08-27','nw-de','Lufthansa Cargo AG','AWB 020-44810','DE-DE','EUR',64800.00,'Released','SEPA'],
+    ['2026-08-26','nw-hk','Standard Chartered HK','FX settlement 4419','HK-HK','HKD',9200000.00,'Released','CHATS'],
+    ['2026-08-26','nw-us','Northwind Group plc','Royalty Q2','US-GB','GBP',1420000.00,'Released','SWIFT gpi'],
+    ['2026-08-25','nw-uk','Thames Water Utilities','Sites Aug','GB-GB','GBP',18400.00,'Released','Direct debit'],
+    ['2026-08-25','nw-sg','Jurong Engineering','Fit-out phase 2','SG-SG','SGD',412000.00,'In progress','FAST'],
+    ['2026-08-24','nw-de','Bayerische Motoren Werke','Fleet purchase','DE-DE','EUR',384000.00,'Awaiting approval','SEPA'],
+    ['2026-08-23','nw-us','Blue Cross Blue Shield','Medical Aug','US-US','USD',248000.00,'Released','ACH'],
+    ['2026-08-22','nw-uk','Nippon Express Co Ltd','Airfreight 08-9940','GB-JP','JPY',9600000.00,'Released','SWIFT gpi'],
+    ['2026-08-22','nw-hk','Li & Fung Ltd','Sourcing fee Jul','HK-HK','HKD',1620000.00,'Released','CHATS'],
+    ['2026-08-21','nw-sg','PSA Corporation Ltd','Terminal handling Q2','SG-SG','SGD',198000.00,'Released','FAST'],
+    ['2026-08-21','nw-uk','Grant Thornton UK LLP','Audit interim','GB-GB','GBP',148000.00,'Released','Faster payment'],
+    ['2026-08-20','nw-de','E.ON SE','Energy Jul','DE-DE','EUR',92400.00,'Returned','SEPA'],
+    ['2026-08-20','nw-us','Flexport Inc','Customs brokerage Jul','US-US','USD',68200.00,'Released','Fedwire'],
+    ['2026-07-31','nw-uk','HM Revenue & Customs','PAYE Jul','GB-GB','GBP',921000.00,'Released','Faster payment'],
+    ['2026-07-24','nw-hk','Foxconn Industrial','PO-98220 assemblies','HK-CN','HKD',2840000.00,'Released','CHATS'],
+    ['2026-07-15','nw-sg','Northwind Group plc','Intercompany repayment','SG-GB','GBP',1800000.00,'Released','SWIFT gpi'],
+    ['2026-06-30','nw-de','SAP SE','Licence Q2','DE-DE','EUR',268000.00,'Released','SEPA'],
+    ['2026-05-29','nw-us','ADP Payroll Services','US payroll 05-29','US-US','USD',1780000.00,'Released','ACH'],
+    ['2026-04-30','nw-uk','Barclays Bank plc','FX settlement 7714','GB-GB','GBP',2100000.00,'Released','CHAPS']
+  ];
+  P.forEach(function (r, i) {
+    DATA.payments.push({
+      id: i + 1, date: r[0], entity: r[1], beneficiary: r[2], ref: r[3],
+      corridor: r[4], ccy: r[5], amount: r[6], status: r[7], channel: r[8],
+      gbp: Math.round(r[6] * DATA.fx[r[5]] * 100) / 100
+    });
+  });
+
+  var ENTITY = {}; DATA.entities.forEach(function (e) { ENTITY[e.id] = e; });
+  var STATUSES = ['Awaiting approval', 'In progress', 'Released', 'Failed', 'Returned'];
+  var CCYS = ['GBP', 'EUR', 'USD', 'SGD', 'HKD', 'JPY'];
+  var STATUS_TONE = { 'Awaiting approval': 'warn', 'In progress': 'inf', 'Released': 'ok', 'Failed': 'err', 'Returned': 'err' };
+  var VIEWS = {
+    overview:  { title: 'Global liquidity and payments', crumb: 'Overview',  groups: ['grpLead', 'grpChart', 'grpRail', 'grpGrid'] },
+    payments:  { title: 'Payment instructions',          crumb: 'Payments',  groups: ['grpLead', 'grpGrid', 'grpChart'] },
+    liquidity: { title: 'Liquidity by entity',           crumb: 'Liquidity', groups: ['grpLead', 'grpChart', 'grpRail'] },
+    fx:        { title: 'FX exposure',                   crumb: 'FX',        groups: ['grpLead', 'grpRail', 'grpChart'] }
+  };
+
+  /* ---------------------------------------------------------------- 2 · STATE + THE URL */
+  var S = { view: 'overview', entity: '', ccy: '', status: '', period: '30', q: '',
+            sort: null, dir: 'none', page: 1, size: 8, gq: [], mode: 'light' };
+
+  function readUrl() {
+    var p = new URLSearchParams(location.search);
+    ['view', 'entity', 'ccy', 'status', 'period', 'q', 'sort', 'dir', 'mode'].forEach(function (k) {
+      if (p.has(k)) S[k] = p.get(k);
+    });
+    if (p.has('page')) S.page = Math.max(1, parseInt(p.get('page'), 10) || 1);
+    if (p.has('size')) S.size = parseInt(p.get('size'), 10) || 8;
+    if (p.has('gq')) S.gq = p.get('gq').split('~').filter(Boolean);
+    if (!VIEWS[S.view]) S.view = 'overview';
+    if (!p.has('mode')) { try { S.mode = localStorage.getItem('nw-mode') || 'light'; } catch (e) {} }
+  }
+  function writeUrl() {
+    var p = new URLSearchParams();
+    if (S.view !== 'overview') p.set('view', S.view);
+    ['entity', 'ccy', 'status', 'q'].forEach(function (k) { if (S[k]) p.set(k, S[k]); });
+    if (S.period !== '30') p.set('period', S.period);
+    if (S.sort) { p.set('sort', S.sort); p.set('dir', S.dir); }
+    if (S.page !== 1) p.set('page', String(S.page));
+    if (S.size !== 8) p.set('size', String(S.size));
+    if (S.gq.length) p.set('gq', S.gq.join('~'));
+    if (S.mode !== 'light') p.set('mode', S.mode);
+    var qs = p.toString();
+    history.replaceState(null, '', qs ? location.pathname + '?' + qs : location.pathname);
+    try { localStorage.setItem('nw-mode', S.mode); } catch (e) {}
+  }
+
+  /* ---------------------------------------------------------------- 3 · DERIVATION */
+  var TODAY = new Date(DATA.asOf + 'T00:00:00Z').getTime(), DAY = 86400000;
+  function inPeriod(row, days) { return TODAY - new Date(row.date + 'T00:00:00Z').getTime() < days * DAY; }
+
+  function scope(extra) {                       /* the page filter — everything reads this */
+    var days = parseInt(S.period, 10);
+    return DATA.payments.filter(function (r) {
+      if (!inPeriod(r, days)) return false;
+      if (S.entity && r.entity !== S.entity) return false;
+      if (S.ccy && r.ccy !== S.ccy) return false;
+      if (S.status && r.status !== S.status) return false;
+      if (S.q) {
+        var q = S.q.toLowerCase();
+        if (r.beneficiary.toLowerCase().indexOf(q) < 0 && r.ref.toLowerCase().indexOf(q) < 0 &&
+            r.corridor.toLowerCase().indexOf(q) < 0) return false;
+      }
+      if (extra && !extra(r)) return false;
+      return true;
+    });
+  }
+  function priorScope() {                        /* the same window, one window earlier */
+    var days = parseInt(S.period, 10), a = TODAY - 2 * days * DAY, b = TODAY - days * DAY;
+    return DATA.payments.filter(function (r) {
+      var t = new Date(r.date + 'T00:00:00Z').getTime();
+      if (t < a || t >= b) return false;
+      if (S.entity && r.entity !== S.entity) return false;
+      if (S.ccy && r.ccy !== S.ccy) return false;
+      if (S.status && r.status !== S.status) return false;
+      return true;
+    });
+  }
+  var sum = function (rows, f) { return rows.reduce(function (a, r) { return a + (f ? f(r) : r.gbp); }, 0); };
+  var money = function (n, ccy) {
+    var sym = { GBP: '£', EUR: '€', USD: '$', SGD: 'S$', HKD: 'HK$', JPY: '¥' }[ccy || 'GBP'];
+    return (n < 0 ? '−' : '') + sym + Math.abs(n).toFixed(ccy === 'JPY' ? 0 : 2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+  var plain = function (n) { return Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var fmtDate = function (iso) { var a = iso.split('-'); return (+a[2]) + ' ' + MONTHS[+a[1] - 1] + ' ' + a[0]; };
+
+  function cashPosition() {
+    return DATA.accounts.filter(function (a) {
+      return (!S.entity || a.entity === S.entity) && (!S.ccy || a.ccy === S.ccy);
+    }).reduce(function (t, a) { return t + a.balance * DATA.fx[a.ccy]; }, 0);
+  }
+
+  /* ---------------------------------------------------------------- 4 · KPIs + SPARKLINES */
+  function sparkPoints(vals) {
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), span = (hi - lo) || 1;
+    return vals.map(function (v, i) {
+      var x = 3 + (194 * i) / (vals.length - 1);
+      var y = 45 - ((v - lo) / span) * 42;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    });
+  }
+  function drawSpark(key, vals) {
+    var svg = document.querySelector('[data-spark="' + key + '"]'); if (!svg) return;
+    var pts = sparkPoints(vals), last = pts[pts.length - 1].split(',');
+    svg.querySelector('.dv-series').setAttribute('points', pts.join(' '));
+    svg.querySelector('.dv-end').setAttribute('cx', last[0]);
+    svg.querySelector('.dv-end').setAttribute('cy', last[1]);
+    svg.setAttribute('data-trend', vals[vals.length - 1] >= vals[0] ? 'up' : 'down');
+  }
+  function setDelta(key, now, before) {
+    var el = document.querySelector('[data-kpi-delta="' + key + '"]'); if (!el) return;
+    var pc = before ? ((now - before) / before) * 100 : 0, up = pc >= 0;
+    el.classList.toggle('up', up); el.classList.toggle('down', !up);
+    el.querySelector('.arrow use').setAttribute('href', up ? '#kpi-up' : '#kpi-down');
+    el.querySelector('.t-cm-figure-6').textContent =
+      (up ? '+' : '−') + Math.abs(pc).toFixed(1) + '% ' + (up ? 'up' : 'down');
+  }
+  function renderKpis() {
+    var rows = scope(), prev = priorScope(), n = Math.min(12, DATA.series.length);
+    var out = sum(rows.filter(function (r) { return r.status !== 'Failed' && r.status !== 'Returned'; }));
+    var pend = sum(rows.filter(function (r) { return r.status === 'Awaiting approval'; }));
+    var xb = sum(rows.filter(function (r) { return r.corridor.split('-')[0] !== r.corridor.split('-')[1]; }));
+    var cash = cashPosition();
+    document.querySelector('[data-kpi="cash"]').textContent = plain(cash);
+    document.querySelector('[data-kpi="out"]').textContent = plain(out);
+    document.querySelector('[data-kpi="pend"]').textContent = plain(pend);
+    document.querySelector('[data-kpi="xb"]').textContent = plain(xb);
+    setDelta('out', out, sum(prev.filter(function (r) { return r.status !== 'Failed' && r.status !== 'Returned'; })));
+    setDelta('pend', pend, sum(prev.filter(function (r) { return r.status === 'Awaiting approval'; })));
+    setDelta('xb', xb, sum(prev.filter(function (r) { return r.corridor.split('-')[0] !== r.corridor.split('-')[1]; })));
+    var tail = DATA.series.slice(-n);
+    setDelta('cash', tail[n - 1].in - tail[n - 1].out, tail[n - 2].in - tail[n - 2].out);
+    drawSpark('cash', tail.map(function (s) { return s.in - s.out; }));
+    drawSpark('out', tail.map(function (s) { return s.out; }));
+    drawSpark('pend', tail.map(function (s) { return s.pend; }));
+    drawSpark('xb', tail.map(function (s) { return s.xb; }));
+  }
+
+  /* ---------------------------------------------------------------- 5 · THE CORRIDOR CHART
+     The baked geometry grammar is the snippet's (data-fx / data-fw / data-fx2 / data-dx / data-dy);
+     dv-behaviour.js re-derives every position from those fractions, so re-drawing the bars and
+     dispatching a resize is all the fit engine needs. */
+  var PL = 46, PR = 568, PT = 14, PB = 230, PW = PR - PL, PH = PB - PT;
+  function niceMax(v) { if (v <= 0) return 1; var e = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / (e / 2)) * (e / 2); }
+  function renderChart() {
+    var rows = scope(), by = {};
+    rows.forEach(function (r) { by[r.corridor] = (by[r.corridor] || 0) + r.gbp; });
+    var keys = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 6);
+    var svg = document.getElementById('corridorSvg');
+    var axis = svg.querySelector('[data-role="axis"]'), g = svg.querySelector('[data-dv-view="orig"]');
+    var max = niceMax(keys.length ? Math.max.apply(null, keys.map(function (k) { return by[k]; })) : 1);
+    var a = '';
+    for (var t = 0; t <= 4; t++) {
+      var val = (max / 4) * t, y = (PB - (PH * t) / 4).toFixed(0);
+      a += '<line class="dv-grid" x1="' + PL + '" y1="' + y + '" x2="' + PR + '" y2="' + y + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>' +
+           '<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + (PL - 8) + '" y="' + (+y + 3) + '" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">' +
+           (val >= 1000000 ? (val / 1000000).toFixed(1) + 'm' : (val / 1000).toFixed(0) + 'k') + '</text>';
+    }
+    a += '<line class="dv-axis" x1="' + PL + '" y1="' + PB + '" x2="' + PR + '" y2="' + PB + '" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>';
+    axis.innerHTML = a;
+
+    var n = keys.length || 1, slot = PW / n, bw = Math.min(64, slot * 0.56), b = '', labels = '';
+    keys.forEach(function (k, i) {
+      var h = (by[k] / max) * PH, x = PL + slot * i + (slot - bw) / 2, y = PB - h, cx = x + bw / 2;
+      b += '<rect class="dv-series" data-grow="up" style="animation-delay:' + (i * 45) + 'ms" fill="var(--data-series-1)"' +
+           ' x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '"' +
+           ' data-fx="' + ((x - PL) / PW).toFixed(4) + '" data-fw="' + (bw / PW).toFixed(4) + '" tabindex="0" role="img"' +
+           ' aria-label="' + k + ': ' + money(by[k]) + '" data-tip="' + k + ': ' + money(by[k]) + '"></rect>';
+      labels += '<text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="' + cx.toFixed(1) + '" y="246" text-anchor="middle" data-fx="' + ((cx - PL) / PW).toFixed(4) + '">' + k + '</text>';
+    });
+    g.innerHTML = b + labels;
+    svg.setAttribute('aria-label', 'Payment value by corridor. ' +
+      keys.map(function (k) { return k + ' ' + money(by[k]); }).join(', ') + '.');
+    document.getElementById('chartPeriod').textContent =
+      ({ '30': '30 days', '90': '90 days', '365': '12 months' }[S.period]) + ' to ' + fmtDate(DATA.asOf);
+    window.dispatchEvent(new Event('resize'));   /* dv-behaviour re-fits from the new fractions */
+  }
+
+  /* ---------------------------------------------------------------- 6 · THE CONTEXT RAIL */
+  function renderRail() {
+    var rows = scope();
+    var pending = rows.filter(function (r) { return r.status === 'Awaiting approval'; });
+    var mine = pending.filter(function (r) { return r.gbp > 200000; });
+    document.getElementById('naCount').textContent =
+      pending.length + ' payment' + (pending.length === 1 ? '' : 's') + ' · ' + mine.length + ' need you';
+    document.getElementById('naValue').textContent = money(sum(pending));
+    document.getElementById('stripApproval').textContent =
+      'Awaiting approval · ' + pending.length + ' payment' + (pending.length === 1 ? '' : 's') + ' · ' + mine.length + ' need you';
+
+    var exceptions = rows.filter(function (r) { return r.status === 'Failed' || r.status === 'Returned' || r.status === 'In progress'; }).slice(0, 3);
+    var items = pending.slice(0, 2).concat(exceptions).slice(0, 4);
+    document.getElementById('naList').innerHTML = items.length ? items.map(function (r) {
+      return '<div class="l-row" data-gap="s" data-justify="between">' +
+        '<span class="t-cm-label">' + r.beneficiary + '</span>' +
+        '<span class="status ' + STATUS_TONE[r.status] + '" data-carries="label"><span class="dot" aria-hidden="true"></span>' +
+        '<span class="t-cm-legal">' + r.status + '</span></span></div>';
+    }).join('') : '<p class="t-cm-label">Nothing needs attention in this selection.</p>';
+
+    var bal = {};
+    DATA.accounts.forEach(function (a) {
+      if (S.entity && a.entity !== S.entity) return;
+      if (S.ccy && a.ccy !== S.ccy) return;
+      bal[a.ccy] = (bal[a.ccy] || 0) + a.balance;
+    });
+    var ks = Object.keys(bal).sort(function (x, y) { return bal[y] * DATA.fx[y] - bal[x] * DATA.fx[x]; });
+    document.getElementById('balList').innerHTML = ks.length ? ks.map(function (c) {
+      return '<div class="summary__row"><dt class="summary__k t-cm-label">' + c +
+        ' <span class="t-cm-legal">' + money(bal[c] * DATA.fx[c]) + ' equiv.</span></dt>' +
+        '<dd class="summary__v t-cm-figure-5">' + money(bal[c], c) + '</dd></div>';
+    }).join('') : '<div class="summary__row"><dt class="summary__k t-cm-label">No accounts in this selection</dt><dd class="summary__v t-cm-figure-5">—</dd></div>';
+
+    document.getElementById('fxList').innerHTML = CCYS.filter(function (c) { return c !== 'GBP'; })
+      .filter(function (c) { return !S.ccy || c === S.ccy; })
+      .map(function (c) {
+        var mv = ((DATA.fx[c] - DATA.fxPrev[c]) / DATA.fxPrev[c]) * 100, up = mv >= 0;
+        return '<div class="summary__row"><dt class="summary__k t-cm-label">' + c + '/GBP</dt>' +
+          '<dd class="summary__v t-cm-figure-5">' + DATA.fx[c].toFixed(4) +
+          ' <span class="delta ' + (up ? 'up' : 'down') + '" data-carries="symbol label">' +
+          '<span class="arrow" aria-hidden="true"><svg><use href="#' + (up ? 'kpi-up' : 'kpi-down') + '"/></svg></span>' +
+          '<span class="t-cm-figure-6">' + (up ? '+' : '−') + Math.abs(mv).toFixed(2) + '% ' + (up ? 'up' : 'down') + '</span></span></dd></div>';
+      }).join('') || '<div class="summary__row"><dt class="summary__k t-cm-label">Sterling only</dt><dd class="summary__v t-cm-figure-5">—</dd></div>';
+  }
+
+  /* ---------------------------------------------------------------- 7 · THE GRID
+     CARRIED from knowledge/snippets/Data-grid.reference.html#script and EXTENDED (s258-D1):
+     sort cycle, pager, chip bar, edit-in-place and the APG roving-cell focus are the snippet's;
+     the row source, the seven columns and the predicate are authored to read the page filters. */
+  var tbody = document.getElementById('tbody'), tbl = document.getElementById('tbl');
+  var statusEl = document.getElementById('dgStatus');
+  var sel = new Set();
+  function announce(m) { statusEl.textContent = ''; requestAnimationFrame(function () { statusEl.textContent = m; }); }
+
+  function gridRows() {
+    return scope(function (r) {
+      return S.gq.every(function (t) {
+        var q = t.toLowerCase();
+        return r.beneficiary.toLowerCase().indexOf(q) >= 0 || r.ref.toLowerCase().indexOf(q) >= 0 ||
+               r.status.toLowerCase().indexOf(q) >= 0 || r.corridor.toLowerCase().indexOf(q) >= 0;
+      });
+    });
+  }
+  function sorted(rows) {
+    if (S.dir === 'none' || !S.sort) return rows;
+    var k = S.sort, d = S.dir === 'ascending' ? 1 : -1;
+    return rows.slice().sort(function (a, b) {
+      if (k === 'gbp') return (a.gbp - b.gbp) * d;
+      return String(a[k]).localeCompare(String(b[k])) * d;
+    });
+  }
+  function renderGrid() {
+    var rows = sorted(gridRows());
+    var total = rows.length, pages = Math.max(1, Math.ceil(total / S.size));
+    S.page = Math.min(S.page, pages);
+    var start = (S.page - 1) * S.size, pageRows = rows.slice(start, start + S.size);
+    tbl.setAttribute('aria-rowcount', String(total + 1));
+    document.getElementById('dgCount').textContent = total + ' result' + (total === 1 ? '' : 's');
+    document.getElementById('dgRange').textContent = total
+      ? (start + 1) + '–' + Math.min(start + S.size, total) + ' of ' + total : '0 of 0';
+
+    if (!pageRows.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="dg-empty">' +
+        '<span class="why t-cm-label">No payment instructions match your filters</span>' +
+        '<span class="try t-cm-caption">Try removing a filter, or clear them all</span>' +
+        '<button class="clearbtn t-cm-button" type="button" id="clearAll">Clear filters</button></td></tr>';
+      var cb = document.getElementById('clearAll');
+      if (cb) cb.addEventListener('click', function () { S.gq = []; S.entity = S.ccy = S.status = S.q = ''; S.page = 1; renderAll(); });
+      renderPager(pages); wireCells(); return;
+    }
+    tbody.innerHTML = pageRows.map(function (r, i) {
+      var on = sel.has(r.id);
+      return '<tr aria-rowindex="' + (start + i + 2) + '" aria-selected="' + on + '" data-id="' + r.id + '">' +
+        '<td class="sel"><label class="cbx"><input type="checkbox" tabindex="-1" ' + (on ? 'checked' : '') +
+          ' aria-label="Select row: ' + r.beneficiary + ', ' + fmtDate(r.date) + '">' +
+        '<span class="box" aria-hidden="true"><svg data-bespoke="checkbox tick, control glyph (Selection-controls anatomy)" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/><path class="mixed" d="M4 9 L14 9"/></svg></span></label></td>' +
+        '<td><span class="t-cm-label">' + fmtDate(r.date) + '</span></td>' +
+        '<td><span class="t-cm-label">' + r.beneficiary + '</span><br><span class="t-cm-legal">' + ENTITY[r.entity].name + '</span></td>' +
+        '<td class="edit" data-id="' + r.id + '"><span class="val"><span class="t-cm-label">' + r.ref + '</span>' +
+        '<span class="pen" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-edit"/></svg></span></span></td>' +
+        '<td><span class="t-cm-label">' + r.corridor + '</span><br><span class="t-cm-legal">' + r.channel + '</span></td>' +
+        '<td><span class="status ' + STATUS_TONE[r.status] + '" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">' + r.status + '</span></span></td>' +
+        '<td class="num"><span class="t-cm-figure-5">' + money(r.amount, r.ccy) + '</span><br><span class="t-cm-legal">' + money(r.gbp) + ' equiv.</span></td>' +
+      '</tr>';
+    }).join('');
+
+    var all = pageRows.length && pageRows.every(function (r) { return sel.has(r.id); });
+    var some = pageRows.some(function (r) { return sel.has(r.id); });
+    var selAll = document.getElementById('selAll');
+    selAll.checked = !!all; selAll.indeterminate = some && !all;
+
+    tbody.querySelectorAll('.cbx input').forEach(function (inp) {
+      inp.addEventListener('change', function (e) {
+        var tr = e.target.closest('tr'), id = +tr.dataset.id;
+        e.target.checked ? sel.add(id) : sel.delete(id);
+        tr.setAttribute('aria-selected', String(e.target.checked));
+        announce((e.target.checked ? 'Selected' : 'Deselected') + ' one row. ' + sel.size + ' selected.');
+        renderGrid(); renderExport(); restoreFocus();
+      });
+    });
+    tbody.querySelectorAll('td.edit').forEach(function (td) { td.addEventListener('dblclick', function () { startEdit(td); }); });
+    renderPager(pages); wireCells();
+  }
+  function renderPager(pages) {
+    var ul = document.getElementById('pgList');
+    var h = '<li><button class="pbtn" type="button" aria-label="Previous page" ' + (S.page === 1 ? 'disabled' : '') +
+      ' data-go="prev"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cleft"/></svg></button></li>';
+    for (var p = 1; p <= pages; p++) {
+      var cur = p === S.page;
+      h += '<li><button class="pbtn ' + (cur ? 't-cm-button' : 't-cm-label') + '" type="button" data-go="' + p + '" ' +
+        (cur ? 'aria-current="page" aria-label="Page ' + p + ', current page"' : 'aria-label="Page ' + p + '"') + '>' + p + '</button></li>';
+    }
+    h += '<li><button class="pbtn" type="button" aria-label="Next page" ' + (S.page === pages ? 'disabled' : '') +
+      ' data-go="next"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cright"/></svg></button></li>';
+    ul.innerHTML = h;
+    ul.querySelectorAll('.pbtn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var g = b.dataset.go;
+        S.page = g === 'prev' ? S.page - 1 : g === 'next' ? S.page + 1 : +g;
+        renderGrid(); writeUrl(); announce('Page ' + S.page + '.');
+      });
+    });
+  }
+  document.querySelectorAll('thead th[data-key]').forEach(function (th) {
+    th.querySelector('.sort').addEventListener('click', function () { cycleSort(th); });
+  });
+  function cycleSort(th) {
+    var key = th.dataset.key;
+    var next = S.sort !== key ? 'ascending' :
+      th.getAttribute('aria-sort') === 'ascending' ? 'descending' :
+      th.getAttribute('aria-sort') === 'descending' ? 'none' : 'ascending';
+    document.querySelectorAll('thead th[data-key]').forEach(function (t) { t.setAttribute('aria-sort', 'none'); });
+    th.setAttribute('aria-sort', next);
+    S.sort = next === 'none' ? null : key; S.dir = next; S.page = 1;
+    renderGrid(); writeUrl();
+    announce(next === 'none' ? 'Sort removed.' : 'Sorted by ' + th.querySelector('.sort').textContent.trim().toLowerCase() + ', ' + next + '.');
+  }
+  var dgSearch = document.getElementById('dgSearch');
+  dgSearch.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && dgSearch.value.trim()) {
+      S.gq.push(dgSearch.value.trim()); dgSearch.value = ''; S.page = 1;
+      renderGridChips(); renderGrid(); writeUrl(); announce('Filter applied. ' + gridRows().length + ' results.');
+    }
+  });
+  document.querySelector('.dgs-clear').addEventListener('click', function () { dgSearch.value = ''; dgSearch.focus(); });
+  function renderGridChips() {
+    var bar = document.getElementById('fbar');
+    bar.hidden = !S.gq.length;
+    bar.innerHTML = S.gq.map(function (t) {
+      return '<span class="fchip" role="listitem"><span class="t-cm-caption">' + t + '</span>' +
+        '<button class="x" type="button" aria-label="Remove filter: ' + t + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></span>';
+    }).join('');
+    bar.querySelectorAll('.x').forEach(function (x, i) {
+      x.addEventListener('click', function () {
+        var t = S.gq.splice(i, 1)[0]; S.page = 1;
+        renderGridChips(); renderGrid(); writeUrl();
+        announce('Filter removed: ' + t + '. ' + gridRows().length + ' results.');
+        (bar.querySelector('.x') || dgSearch).focus();
+      });
+    });
+  }
+  function startEdit(td) {
+    if (td.classList.contains('editing')) return;
+    var id = +td.dataset.id, row = DATA.payments.filter(function (r) { return r.id === id; })[0];
+    td.classList.add('editing');
+    td.innerHTML = '<input class="dg-editor t-cm-input" type="text" value="' + row.ref.replace(/"/g, '&quot;') +
+      '" aria-label="Edit reference for ' + row.beneficiary + '">';
+    var inp = td.querySelector('input'); inp.focus(); inp.select();
+    var done = false;
+    function finish(commit) {
+      if (done) return; done = true;
+      if (commit) { row.ref = inp.value.trim() || row.ref; announce('Reference saved: ' + row.ref + '.'); }
+      else announce('Edit cancelled.');
+      renderGrid(); focusCellById(id);
+    }
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+      e.stopPropagation();
+    });
+    inp.addEventListener('blur', function () { finish(true); });
+  }
+  function focusCellById(id) { var td = tbody.querySelector('td.edit[data-id="' + id + '"]'); if (td) setCurrent(td, true); }
+  var current = null;
+  function cellMatrix() {
+    var rows = [Array.prototype.slice.call(tbl.querySelectorAll('thead th'))];
+    tbl.querySelectorAll('tbody tr:not([aria-hidden])').forEach(function (tr) {
+      var cells = Array.prototype.slice.call(tr.querySelectorAll('th, td'));
+      if (cells.length) rows.push(cells);
+    });
+    return rows;
+  }
+  function wireCells() {
+    var m = cellMatrix();
+    m.forEach(function (r) { r.forEach(function (c) { if (!c.hasAttribute('tabindex')) c.setAttribute('tabindex', '-1'); }); });
+    if (!current || !document.contains(current)) current = m[0][1] || m[0][0];
+    current.setAttribute('tabindex', '0');
+  }
+  function setCurrent(cell, focus) {
+    if (!cell) return;
+    if (current && document.contains(current)) current.setAttribute('tabindex', '-1');
+    current = cell; cell.setAttribute('tabindex', '0');
+    if (focus) { cell.focus(); cell.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+  }
+  function restoreFocus() { if (current && document.contains(current)) current.focus(); }
+  tbl.addEventListener('click', function (e) {
+    var cell = e.target.closest('th, td');
+    if (cell && tbl.contains(cell)) setCurrent(cell, false);
+  });
+  tbl.addEventListener('keydown', function (e) {
+    if (e.target.classList.contains('dg-editor')) return;
+    var m = cellMatrix();
+    var r = -1;
+    for (var i = 0; i < m.length; i++) { if (m[i].indexOf(current) >= 0) { r = i; break; } }
+    var c = r >= 0 ? m[r].indexOf(current) : 0;
+    if (r < 0) { r = 0; c = 0; }
+    var nav = { ArrowRight: [0, 1], ArrowLeft: [0, -1], ArrowDown: [1, 0], ArrowUp: [-1, 0] }[e.key];
+    if (nav) {
+      e.preventDefault();
+      var nr = Math.min(Math.max(r + nav[0], 0), m.length - 1);
+      var nc = Math.min(Math.max(c + nav[1], 0), m[nr].length - 1);
+      setCurrent(m[nr][nc], true); return;
+    }
+    if (e.key === 'Home') { e.preventDefault(); setCurrent(e.ctrlKey ? m[0][0] : m[r][0], true); return; }
+    if (e.key === 'End') { e.preventDefault(); var lr = e.ctrlKey ? m.length - 1 : r; setCurrent(m[lr][m[lr].length - 1], true); return; }
+    if (e.key === 'F2' && current.classList.contains('edit')) { e.preventDefault(); startEdit(current); return; }
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (current.matches('thead th[data-key]')) { e.preventDefault(); cycleSort(current); }
+      else if (current.querySelector('.cbx input')) {
+        e.preventDefault(); var inp = current.querySelector('.cbx input');
+        inp.checked = !inp.checked; inp.dispatchEvent(new Event('change', { bubbles: true }));
+      } else if (e.key === 'Enter' && current.classList.contains('edit')) { e.preventDefault(); startEdit(current); }
+    }
+  });
+  document.getElementById('selAll').addEventListener('change', function (e) {
+    var rows = sorted(gridRows()), start = (S.page - 1) * S.size;
+    rows.slice(start, start + S.size).forEach(function (r) { e.target.checked ? sel.add(r.id) : sel.delete(r.id); });
+    announce((e.target.checked ? 'Selected' : 'Deselected') + ' this page. ' + sel.size + ' selected in total.');
+    renderGrid(); renderExport(); restoreFocus();
+  });
+  document.getElementById('pp').addEventListener('change', function (e) {
+    S.size = +e.target.value; S.page = 1; renderGrid(); writeUrl();
+    announce(S.size + ' rows per page.');
+  });
+
+  /* ---------------------------------------------------------------- 8 · THE TOOLBAR */
+  function options(kind) {
+    if (kind === 'entity') return [{ v: '', l: 'All entities' }].concat(DATA.entities.map(function (e) { return { v: e.id, l: e.name }; }));
+    if (kind === 'ccy') return [{ v: '', l: 'All currencies' }].concat(CCYS.map(function (c) { return { v: c, l: c }; }));
+    return [{ v: '', l: 'All statuses' }].concat(STATUSES.map(function (s) { return { v: s, l: s }; }));
+  }
+  function buildMenus() {
+    document.querySelectorAll('.ftb-filter.dd').forEach(function (dd) {
+      var kind = dd.dataset.dd, ul = dd.querySelector('.menu'), trig = dd.querySelector('.trigger');
+      ul.innerHTML = options(kind).map(function (o) {
+        var on = String(S[kind] || '') === o.v;
+        return '<li class="opt t-cm-label" role="option" aria-selected="' + on + '" tabindex="-1" data-v="' + o.v + '">' + o.l +
+          ' <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>';
+      }).join('');
+      var chosen = options(kind).filter(function (o) { return o.v === (S[kind] || ''); })[0];
+      trig.querySelector('.ddval').textContent = chosen ? chosen.l : options(kind)[0].l;
+      ul.querySelectorAll('.opt').forEach(function (li) {
+        li.addEventListener('click', function () {
+          S[kind] = li.dataset.v; S.page = 1; closeAll(); renderAll(); trig.focus();
+          announce(trig.querySelector('.ddval').textContent + ' selected. ' + gridRows().length + ' payments.');
+        });
+      });
+    });
+  }
+  function closeAll() {
+    document.querySelectorAll('.ftb-filter.dd').forEach(function (d) {
+      d.classList.remove('open'); d.querySelector('.trigger').setAttribute('aria-expanded', 'false');
+    });
+  }
+  document.querySelectorAll('.ftb-filter.dd .trigger').forEach(function (t) {
+    t.addEventListener('click', function () {
+      var dd = t.closest('.dd'), was = dd.classList.contains('open');
+      closeAll();
+      if (!was) { dd.classList.add('open'); t.setAttribute('aria-expanded', 'true'); dd.querySelector('.menu').focus(); }
+    });
+  });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.ftb-filter.dd')) closeAll(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+
+  document.querySelectorAll('.ftb-view .seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      S.period = b.dataset.period; S.page = 1;
+      document.querySelectorAll('.ftb-view .seg button').forEach(function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      renderAll(); announce(b.textContent.trim() + ' selected.');
+    });
+  });
+  var q = document.getElementById('qSearch');
+  q.addEventListener('input', function () { S.q = q.value.trim(); S.page = 1; renderAll(); });
+  document.getElementById('qClear').addEventListener('click', function () { q.value = ''; S.q = ''; S.page = 1; renderAll(); q.focus(); });
+  document.getElementById('btnSearch').addEventListener('click', function () { q.focus(); });
+
+  function renderChips() {
+    var row = document.querySelector('#ftbChips .row'), chips = [];
+    if (S.entity) chips.push(['entity', ENTITY[S.entity].name]);
+    if (S.ccy) chips.push(['ccy', S.ccy]);
+    if (S.status) chips.push(['status', S.status]);
+    if (S.q) chips.push(['q', '“' + S.q + '”']);
+    if (S.period !== '30') chips.push(['period', { '90': '90 days', '365': '12 months' }[S.period]]);
+    document.getElementById('ftbChips').hidden = !chips.length;
+    row.innerHTML = chips.map(function (c) {
+      return '<span class="tag t-cm-caption"><span class="lbl">' + c[1] + '</span>' +
+        '<button class="x" data-k="' + c[0] + '" aria-label="Remove filter: ' + c[1] + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>';
+    }).join('');
+    row.querySelectorAll('.x').forEach(function (x) {
+      x.addEventListener('click', function () {
+        var k = x.dataset.k;
+        S[k] = k === 'period' ? '30' : '';
+        if (k === 'q') q.value = '';
+        if (k === 'period') document.querySelectorAll('.ftb-view .seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.period === '30')); });
+        S.page = 1; renderAll();
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------- 9 · VIEWS, ACTIONS */
+  function applyView() {
+    var v = VIEWS[S.view];
+    ['grpLead', 'grpChart', 'grpRail', 'grpGrid'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (v.groups.indexOf(id) >= 0) el.removeAttribute('data-view-hidden');
+      else el.setAttribute('data-view-hidden', '');
+    });
+    document.getElementById('pgTitle').textContent = v.title;
+    document.getElementById('crumbView').textContent = v.crumb;
+    document.title = v.title + ' — Northwind Group';
+    document.getElementById('cardFx').style.order = S.view === 'fx' ? '-1' : '';
+    document.querySelectorAll('[data-view-link]').forEach(function (a) {
+      if (a.closest('.sh-nav')) {
+        if (a.dataset.viewLink === S.view) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      }
+    });
+  }
+  document.querySelectorAll('.sh-nav [data-view-link]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); S.view = a.dataset.viewLink; S.page = 1; renderAll();
+      announce(VIEWS[S.view].title + ' view.');
+    });
+  });
+  document.querySelector('.tpl-link[data-view-link]').addEventListener('click', function (e) {
+    e.preventDefault(); S.view = 'payments'; S.status = 'Awaiting approval'; S.page = 1; renderAll();
+    document.getElementById('dg').scrollIntoView({ block: 'start' });
+  });
+
+  function renderExport() {
+    var b = document.getElementById('btnExport');
+    b.firstChild.nodeValue = sel.size ? 'Export ' + sel.size + ' selected' : 'Export selection';
+  }
+  document.getElementById('btnExport').addEventListener('click', function () {
+    announce(sel.size ? sel.size + ' payment instructions queued for CSV export.' : 'Select rows in the grid first.');
+  });
+  document.getElementById('btnRelease').addEventListener('click', function () {
+    var moved = 0;
+    DATA.payments.forEach(function (r) {
+      if (sel.has(r.id) && r.status === 'Awaiting approval') { r.status = 'Released'; moved++; }
+    });
+    sel.clear(); renderAll();
+    announce(moved ? moved + ' payment instructions released.' : 'No selected instruction was awaiting approval.');
+  });
+  document.getElementById('kpiTable').addEventListener('click', function () {
+    var tile = this.closest('.kpi-tile'), spark = tile.querySelector('.kpi-spark');
+    var open = tile.hasAttribute('data-table-open');
+    if (open) { tile.removeAttribute('data-table-open'); spark.hidden = false; var t = tile.querySelector('[data-kpi-table]'); if (t) t.remove(); }
+    else {
+      tile.setAttribute('data-table-open', ''); spark.hidden = true;
+      var tail = DATA.series.slice(-6);
+      var p = document.createElement('p');
+      p.className = 't-cm-legal'; p.setAttribute('data-kpi-table', '');
+      p.textContent = tail.map(function (s) { return s.m.slice(5) + ': £' + ((s.in - s.out)).toLocaleString('en-GB') + 'k'; }).join('  ·  ');
+      tile.insertBefore(p, tile.querySelector('.kpi-cta'));
+    }
+    this.setAttribute('aria-label', open ? 'View group cash position as a table' : 'Hide the table view');
+  });
+  document.getElementById('btnMode').addEventListener('click', function () {
+    S.mode = S.mode === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', S.mode);
+    this.setAttribute('aria-pressed', String(S.mode === 'dark'));
+    this.setAttribute('aria-label', S.mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    writeUrl();
+  });
+
+  /* ---------------------------------------------------------------- 10 · THE ONE RENDER */
+  function renderAll() {
+    applyView(); buildMenus(); renderChips();
+    renderKpis(); renderChart(); renderRail();
+    renderGridChips(); renderGrid(); renderExport();
+    writeUrl();
+  }
+
+  readUrl();
+  document.body.setAttribute('data-theme', S.mode);
+  document.getElementById('btnMode').setAttribute('aria-pressed', String(S.mode === 'dark'));
+  q.value = S.q;
+  document.getElementById('pp').value = String(S.size);
+  document.querySelectorAll('.ftb-view .seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.period === S.period)); });
+  if (S.sort) {
+    var th = document.querySelector('thead th[data-key="' + S.sort + '"]');
+    if (th) th.setAttribute('aria-sort', S.dir);
+  }
+  renderAll();
+  window.NW = { DATA: DATA, S: S, renderAll: renderAll };   /* drive hook for step 6 */
+}());
+
+</script>
+
+
+</body></html>

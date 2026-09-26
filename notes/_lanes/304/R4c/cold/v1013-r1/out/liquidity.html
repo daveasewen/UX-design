@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en" class="canon" data-apollo-theme="common" data-theme="light" data-page="liquidity">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquidity and funding · HSBC CEO view (prototype)</title>
+<meta name="description" content="Available liquidity, committed facilities, utilisation and funding headroom after the policy buffer and planned commitments.">
+<!-- Apollo Spider v1.0.13, referenced in place. Theme: common (data-apollo-theme), light/dark (data-theme). -->
+<link rel="stylesheet" href="../pack/knowledge/canon/type.css">
+<link rel="stylesheet" href="../pack/knowledge/canon/canon.css">
+<script>/* theme before first paint: the stored choice, read defensively */
+try { var s = JSON.parse(localStorage.getItem('hsbc-ceo-proto.v1')) || {}; if (s.theme === 'dark' || s.theme === 'light') { document.documentElement.setAttribute('data-theme', s.theme); } } catch (e) {}</script>
+<style>
+/* HARNESS ONLY — page frame and the ruled page ground. No hex, no .c-* / .cn-* redefinition.
+   Every value is a token or a rail stop. */
+body { margin: 0; }
+.ceo-frame { height: 100vh; height: 100dvh; }                         /* the shell frame fills the window */
+.ceo-head { padding: var(--gap-fixed-subsection-xsmall) var(--gap-fixed-subsection-small) var(--gap-fixed-subsection-xsmall); }
+.ceo-ground { background: var(--surface-subtle); padding-top: var(--gap-fixed-subsection-xsmall); }  /* page rail: grey = --surface-subtle (s219-D3(4)) */
+/* DARK: the rail's grey (--surface-subtle) resolves to the SAME value as the tile surface in dark
+   (measured: both rgb(31,31,31)), so the tiles would lose the definition the brief asks the grey for.
+   The rail's own "page" member (--background-default) keeps it. Declared default; the dark ground is
+   an open question on the rail itself. */
+[data-theme="dark"] .ceo-ground { background: var(--background-default); }
+.ceo-page { flex: 1 0 auto; }
+.ceo-chart { min-width: 0; }
+.ceo-stack { display: flex; flex-direction: column; gap: var(--gap-fixed-content-medium); }
+.ceo-empty { padding: var(--padding-fixed-medium) 0; }
+.ceo-drill { margin-top: var(--padding-fixed-medium); }   /* clears the legend rows' 24px hit areas (measured overlap) */
+/* SCOPE COLLISION REPAIR (found by measurement in this build): the template's spliced chart CSS
+   (`:where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-svg{width:100%}` and the fixed
+   580x260 rule) is not scoped to its own chart, so it reaches a donut/pie nested in the template
+   and stretches the ring's fixed canvas. `auto` hands the size back to the svg's own width/height
+   attributes, exactly as the Chart-donut snippet ships them. No value is introduced. */
+.ceo-chart .dv-donut-row > svg.dv-svg { width: auto; height: auto; }
+/* THE COMMON DASHBOARD DIAL (knowledge/_render/_bento_edit_rails.json defaults.values.dashboard.legacy:
+   mainSpacing 24, subSpacing 4). The template snippet ships mono's 40 on the wall at (0,6,0); its own
+   header says "declare instance dials as `.c-bento.my-wall{…}`". This is that declaration, one class
+   heavier so it wins on weight, set to the rail stop 24 through its token. */
+.tpl-page.ceo-ground .c-bento.tpl-wall.ceo-wall[data-bento-role="dashboard"]:has(> .c-bento__grid > .c-bento) { --bento-gutter: var(--gap-fixed-subsection-xsmall); }
+</style>
+<script type="application/json" id="behaviour-manifest">
+{
+ "$what": "Behaviour manifest (ADS-generate-from-canon Output): what each control drives and where its state persists.",
+ "borrowed": [
+  "knowledge/canon/dv-behaviour.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-legend.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render-bar.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render-line.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render-combo.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render-bullet.js (loaded by <script src>, unmodified)",
+  "knowledge/canon/dv-render-sparkline.js (loaded by <script src>, unmodified)"
+ ],
+ "authored": [
+  "APP core (inline): shared filters, persistence, theme, Filter-toolbar-bar menus, Data-grid sort/search/page, Drawer, Modals, Toast, CSV export, dvRender calls",
+  "page script (inline): liquidity charts, KPIs, grids and workflows",
+  "Segmented-control indicator: the snippet moveInd() extended to every .seg on the page"
+ ],
+ "controls": {
+  "entity / region / date menus": "every KPI, chart, grid and card on the page; URL query (entity, region, days) + localStorage; carried on every in-app link",
+  "chip remove / Clear all": "resets that filter / all filters; same persistence",
+  "Light / Dark": "data-theme on <html>; localStorage; applied before first paint",
+  "navigation collapse": "Sidebar rail; localStorage",
+  "grid search, sort, page, rows per page": "that grid; URL p.<grid>.* + localStorage",
+  "row (click or Enter)": "opens the record in the Drawer; URL p.open",
+  "workflow actions (approve, reject, acknowledge, request, reply, run, reset)": "validated in a Modal or Drawer form; recorded in localStorage (hsbc-ceo-proto.v1.work) with an audit entry",
+  "export buttons": "download a CSV of the rows in view",
+  "chart legend, tooltip, table, copy CSV": "dv-legend / dv-behaviour, unmodified"
+ },
+ "fallback": "JavaScript off: the shell, header, filter bar and empty bento tiles render; no figures, charts or records (every number is drawn from DATA by script). Not a supported mode for this prototype."
+}
+</script>
+<script type="application/json" id="provenance-receipt">
+{
+ "$schema": "apollo/provenance-receipt/1",
+ "pack": "UNDECLARED",
+ "generator": "knowledge/gen_provenance_receipt.py",
+ "retrievalSet": null,
+ "$retrievalSetNote": "rC Q4 \u2014 the retrieval-set membership marker \u2014 is OPEN. null is the honest value; the gate reports it UNPROVEN rather than letting a green imply it was checked.",
+ "$key": "sha256 of the page's OWN region bytes (s235-D1). Valid against `pack` only: the hash moves on every regen serial.",
+ "regions": [
+  {
+   "region": "App-shell-side-nav#1",
+   "snippet": "App-shell-side-nav",
+   "kind": "markup",
+   "source": "knowledge/snippets/App-shell-side-nav.reference.html",
+   "select": null,
+   "behaviour": null,
+   "hash": "sha256:5dc9b504c5fd0594988fd3f691055d1149c1f65ee6084d6bbefd24d6f0197636",
+   "bytes": 555,
+   "variant": null,
+   "props": null,
+   "script": null,
+   "$scriptNote": "no ADDRESS exists to declare: the snippet carries no AUTO-BEHAVIOUR block, and meta `behaviour` is untyped prose (meta.schema.json:197). Typing it is s234-D5 (L2)."
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="ic-chevron-left" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+<symbol id="ic-chevron-right" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+<symbol id="ic-menu" viewBox="0 0 18 18"><path d="M0 15.6H18V14.4H0V15.6ZM0 2.40002V3.60002H18V2.40002H0ZM0 9.60002H18V8.40002H0V9.60002Z" fill="currentColor"/></symbol>
+<symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+<symbol id="ic-profile" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
+<symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+<symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+<symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
+<symbol id="kpi-table" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 8H8V1H1V8ZM1 17H8V10H1V17ZM10 1V8H17V1H10ZM10 17H17V10H10V17Z" fill="currentColor"/></symbol>
+<symbol id="dg-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
+<symbol id="dg-cup" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
+<symbol id="dg-cdown" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+<symbol id="dg-cleft" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></symbol>
+<symbol id="dg-cright" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
+<symbol id="dg-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+<symbol id="dg-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+<symbol id="ic-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+<symbol id="ic-filter" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.23 12.5C4.057 12.5 3.08 13.311 2.81 14.4H0V15.6H2.81C3.08 16.689 4.057 17.5 5.23 17.5C6.403 17.5 7.38 16.689 7.649 15.6H18V14.4H7.649C7.38 13.311 6.403 12.5 5.23 12.5ZM5.23 16.3C4.513 16.3 3.93 15.717 3.93 15C3.93 14.283 4.513 13.7 5.23 13.7C5.947 13.7 6.53 14.283 6.53 15C6.53 15.717 5.947 16.3 5.23 16.3ZM12.77 6.5C11.597 6.5 10.62 7.311 10.351 8.4H0V9.6H10.351C10.621 10.689 11.598 11.5 12.77 11.5C13.943 11.5 14.92 10.689 15.19 9.6H18V8.4H15.19C14.92 7.311 13.943 6.5 12.77 6.5ZM12.77 10.3C12.053 10.3 11.47 9.717 11.47 9C11.47 8.283 12.053 7.7 12.77 7.7C13.487 7.7 14.07 8.283 14.07 9C14.07 9.717 13.487 10.3 12.77 10.3ZM7.649 2.4C7.38 1.311 6.403 0.5 5.23 0.5C4.057 0.5 3.08 1.311 2.81 2.4H0V3.6H2.81C3.08 4.689 4.057 5.5 5.23 5.5C6.403 5.5 7.38 4.689 7.649 3.6H18V2.4H7.649ZM5.23 4.3C4.513 4.3 3.93 3.717 3.93 3C3.93 2.283 4.513 1.7 5.23 1.7C5.947 1.7 6.53 2.283 6.53 3C6.53 3.717 5.947 4.3 5.23 4.3Z" fill="currentColor"/></symbol>
+<symbol id="ic-calendar" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 1V0H13.8V1H4.2V0H3V1H0V18H14.2L18 14.2V1H15ZM14.2 16.303V14.2H16.303L14.2 16.303ZM16.8 13H13V16.8H1.2V6H16.8V13ZM16.8 4.8H1.2V2.2H3V3.5H4.2V2.2H13.8V3.5H15V2.2H16.8V4.8ZM8.8 10.029V15H10V7.971L7.003 9.667L7.594 10.712L8.8 10.029Z" fill="currentColor"/></symbol>
+<symbol id="ic-export" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.3 15.8H1.7V2.2H7.5V1H0.5V17H16.5V11H15.3V15.8ZM6.9 13H8.1V8.5C8.1 7.177 9.177 6.1 10.5 6.1H15.202L11.302 10H12.998L17.499 5.5L12.998 1H11.301L15.201 4.9H10.5C8.515 4.9 6.9 6.514 6.9 8.5V13Z" fill="currentColor"/></symbol>
+<symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path class="knock" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path class="knock" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+<symbol id="to-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+<symbol id="to-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+<symbol id="to-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+<symbol id="to-close" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z" fill="currentColor"/></symbol>
+<symbol id="al-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
+<symbol id="al-warning" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z"/><path style="fill:var(--mark)" d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z"/></symbol>
+<symbol id="al-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+<symbol id="al-info" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M9 6.25C9.69036 6.25 10.25 5.69036 10.25 5C10.25 4.30964 9.69036 3.75 9 3.75C8.30964 3.75 7.75 4.30964 7.75 5C7.75 5.69036 8.30964 6.25 9 6.25Z"/><path style="fill:var(--mark)" d="M9.89912 8.25H8.09912V14.25H9.89912V8.25Z"/></symbol>
+<symbol id="i-dashboard" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.901 16.8 1.539 13.62 1.23 9.6H3V8.4H1.23C1.36 6.7 2.034 5.153 3.083 3.931L4.333 5.181L5.182 4.333L3.932 3.082C5.296 1.912 7.065 1.2 9 1.2C10.935 1.2 12.704 1.912 14.068 3.083L12.818 4.334L13.667 5.182L14.917 3.932C15.965 5.153 16.639 6.7 16.77 8.4H15V9.6H16.77C16.461 13.62 13.099 16.8 9 16.8ZM9.6 7.102V3H8.4V7.102C7.591 7.358 7 8.106 7 9C7 10.105 7.896 11 9 11C10.104 11 11 10.105 11 9C11 8.106 10.409 7.358 9.6 7.102ZM9 9.8C8.559 9.8 8.2 9.441 8.2 9C8.2 8.559 8.559 8.2 9 8.2C9.441 8.2 9.8 8.559 9.8 9C9.8 9.441 9.441 9.8 9 9.8Z" fill="currentColor"/></symbol>
+<symbol id="i-dashboard-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM10 9C10 9.55228 9.55228 10 9 10C8.44771 10 8 9.55228 8 9C8 8.44771 8.44771 8 9 8C9.55228 8 10 8.44771 10 9ZM1.226 9.517H3.495V8.017H1.269C1.228 8.339 1.2 8.666 1.2 9C1.2 9.13727 1.20934 9.27267 1.21868 9.40817C1.22118 9.44442 1.22368 9.4807 1.226 9.517ZM4.577 5.404L3.093 3.921C3.42 3.541 3.782 3.193 4.176 2.883L5.637 4.344L4.577 5.404ZM6.5 9C6.5 10.381 7.619 11.5 9 11.5C10.381 11.5 11.5 10.381 11.5 9C11.5 7.882 10.762 6.947 9.75 6.627V3H8.25V6.627C7.238 6.947 6.5 7.882 6.5 9ZM12.362 4.344L13.823 2.883C14.217 3.194 14.579 3.541 14.906 3.921L13.422 5.404L12.362 4.344ZM14.505 8.017V9.517H16.774C16.7763 9.48069 16.7788 9.44443 16.7813 9.40818C16.7907 9.27268 16.8 9.13727 16.8 9C16.8 8.666 16.772 8.339 16.731 8.017H14.505Z" fill="currentColor"/></symbol>
+<symbol id="i-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5H1.5C0.675 5 0 5.675 0 6.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V6.5C18 5.675 17.325 5 16.5 5ZM16.8 16.5C16.8 16.663 16.663 16.8 16.5 16.8H1.5C1.337 16.8 1.2 16.663 1.2 16.5V6.5C1.2 6.337 1.337 6.2 1.5 6.2H16.5C16.663 6.2 16.8 6.337 16.8 6.5V16.5ZM3 12H5V10H3V12ZM14.8 2.6H3.2C2.537 2.6 2 3.137 2 3.8H16C16 3.137 15.463 2.6 14.8 2.6ZM12.8 0H5.2C4.537 0 4 0.537 4 1.2H14C14 0.537 13.463 0 12.8 0Z" fill="currentColor"/></symbol>
+<symbol id="i-account-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 6H1.5C0.675 6 0 6.675 0 7.5V16.5C0 17.325 0.675 18 1.5 18H16.5C17.325 18 18 17.325 18 16.5V7.5C18 6.675 17.325 6 16.5 6ZM5 12H3V10H5V12ZM16 4.2C16 3.537 15.463 3 14.8 3H3.2C2.537 3 2 3.537 2 4.2V4.5H16V4.2ZM14 1.2C14 0.537 13.463 0 12.8 0H5.2C4.537 0 4 0.537 4 1.2V1.5H14V1.2Z" fill="currentColor"/></symbol>
+<symbol id="i-cash" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.98584 8.99998C5.98584 7.32998 7.33584 5.97998 9.00584 5.97998C10.6758 5.97998 12.0258 7.32998 12.0258 8.99998C12.0258 10.67 10.6758 12.02 9.00584 12.02C7.33584 12.02 5.98584 10.67 5.98584 8.99998ZM7.18584 8.98998C7.18584 9.98998 8.00584 10.81 9.00584 10.81C10.0058 10.81 10.8258 9.98998 10.8258 8.98998C10.8258 7.98998 10.0058 7.16998 9.00584 7.16998C8.00584 7.16998 7.18584 7.98998 7.18584 8.98998Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00585938 15.5V2.5H18.0059V15.5H0.00585938ZM3.02586 3.7H1.20586V5.52C2.20586 5.52 3.02586 4.7 3.02586 3.7ZM1.20586 12.48V14.3H3.02586C3.02586 13.3 2.20586 12.48 1.20586 12.48ZM14.9859 14.3H16.8059V12.48C15.8059 12.48 14.9859 13.3 14.9859 14.3ZM13.7859 14.3C13.7859 12.63 15.1359 11.28 16.8059 11.28H16.8159V6.71C15.1459 6.71 13.7959 5.36 13.7959 3.69H4.22586C4.22586 5.36 2.87586 6.71 1.20586 6.71V11.28C2.87586 11.28 4.22586 12.63 4.22586 14.3H13.7859ZM14.9859 3.69C14.9859 4.69 15.8059 5.51 16.8059 5.51V3.69H14.9859Z" fill="currentColor"/></symbol>
+<symbol id="i-cash-active" viewBox="0 0 18 18"><path d="M16.8059 6.72C15.1359 6.72 13.7859 5.37 13.7859 3.7H16.8059V6.72ZM1.20586 3.7H4.22586C4.22586 5.37 2.87586 6.72 1.20586 6.72V3.7ZM16.8059 11.28V14.3H13.7859C13.7859 12.63 15.1359 11.28 16.8059 11.28ZM4.22586 14.3H1.20586V11.28C2.87586 11.28 4.22586 12.63 4.22586 14.3ZM0.00585938 2.5V15.5H18.0059V2.5H0.00585938ZM9.00586 12.02C7.33586 12.02 5.98586 10.67 5.98586 9C5.98586 7.33 7.33586 5.98 9.00586 5.98C10.6759 5.98 12.0259 7.33 12.0259 9C12.0259 10.67 10.6759 12.02 9.00586 12.02Z" fill="currentColor"/></symbol>
+<symbol id="i-payments-and-transfers" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.064 6.352C10.347 6.352 10.356 7.003 10.359 7.218L11.559 7.2C11.544 6.092 10.807 5.353 9.6 5.188V4H8.4V5.216C7.207 5.431 6.44 6.226 6.44 7.337C6.44 8.831 7.782 9.247 8.499 9.47L9.14 9.675C10.097 9.972 10.359 10.185 10.359 10.663C10.359 11.577 9.27 11.648 8.936 11.648C7.653 11.648 7.644 10.997 7.641 10.782L6.44 10.8C6.456 11.908 7.193 12.647 8.399 12.812V14H9.599V12.784C10.792 12.569 11.558 11.774 11.558 10.663C11.558 9.169 10.216 8.753 9.495 8.528L8.859 8.325C7.902 8.028 7.64 7.815 7.64 7.337C7.641 6.423 8.73 6.352 9.064 6.352Z" fill="currentColor"/></symbol>
+<symbol id="i-payments-and-transfers-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.029 0 0 4.029 0 9C0 13.971 4.029 18 9 18C13.971 18 18 13.971 18 9C18 4.029 13.971 0 9 0ZM8.776 8.141L9.667 8.427C10.655 8.734 12.493 9.303 12.493 11.328C12.493 12.86 11.419 13.953 9.749 14.227V16H8.249V14.254C6.564 14.047 5.528 13.041 5.505 11.518L7.005 11.497C7.017 12.36 7.658 12.799 8.909 12.799C9.398 12.799 10.992 12.693 10.992 11.329C10.992 10.615 10.595 10.286 9.222 9.86L9.217 9.857L8.326 9.571C7.344 9.268 5.506 8.697 5.506 6.672C5.506 5.14 6.58 4.047 8.25 3.773V2H9.75V3.746C11.435 3.953 12.471 4.959 12.494 6.482L10.994 6.503C10.982 5.64 10.341 5.201 9.09 5.201C8.601 5.201 7.007 5.307 7.007 6.671C7.006 7.386 7.403 7.715 8.776 8.141Z" fill="currentColor"/></symbol>
+<symbol id="i-global-money" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.82 10.8343C17.9391 10.2398 17.9994 9.63496 18 9.02856C17.9871 5.05247 15.3828 1.55289 11.5866 0.410172C7.79038 -0.732546 3.69583 0.750612 1.503 4.06274V1.86874L0.297 3.0786V6.02198H3.24L4.437 4.81213H2.457C3.47343 3.21494 5.03461 2.04352 6.849 1.51662C5.08103 3.38388 4.07578 5.84866 4.032 8.42364H1.233C1.25934 8.01841 1.32261 7.61646 1.422 7.22281H0.18C0.0608852 7.81731 0.000592582 8.42217 0 9.02856C0.0129405 13.0047 2.61716 16.5042 6.41339 17.647C10.2096 18.7897 14.3042 17.3065 16.497 13.9944V16.1884L17.703 14.9785V12.0351H14.895L13.698 13.245H15.498C14.4846 14.8393 12.9262 16.0079 11.115 16.5315C12.8769 14.6646 13.8786 12.2039 13.923 9.63349H16.722C16.6942 10.038 16.634 10.4395 16.542 10.8343H17.82ZM1.233 9.63349H4.032C4.07578 12.2085 5.08103 14.6732 6.849 16.5405C3.72559 15.6365 1.48806 12.8846 1.233 9.63349ZM8.433 16.2696C6.642 15.0959 5.4 12.5859 5.238 9.63349H8.397L8.433 16.2696ZM8.433 8.42364H5.238C5.4 5.47123 6.642 2.96123 8.397 1.80554L8.433 8.42364ZM9.603 16.2516V9.63349H12.771C12.6 12.5859 11.367 15.0959 9.603 16.2516ZM9.603 8.40558V1.80554C11.403 2.97928 12.618 5.48928 12.771 8.44169L9.603 8.40558ZM13.968 8.40558C13.9191 5.84141 12.9177 3.38792 11.16 1.52565C14.28 2.42706 16.5147 5.17631 16.767 8.42364L13.968 8.40558Z" fill="currentColor"/></symbol>
+<symbol id="i-warning" viewBox="0 0 18 18"><path d="M9.90107 3.80005H8.10107V9.80005H9.90107V3.80005Z" fill="#333333"/><path d="M9.00078 14.2C9.66352 14.2 10.2008 13.6628 10.2008 13C10.2008 12.3373 9.66352 11.8 9.00078 11.8C8.33804 11.8 7.80078 12.3373 7.80078 13C7.80078 13.6628 8.33804 14.2 9.00078 14.2Z" fill="#333333"/></symbol>
+<symbol id="i-trade-finance" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.164 0.0832969L11.814 1.7333C14.726 2.8653 16.8 5.6913 16.8 8.9993C16.8 12.9673 13.82 16.2453 9.981 16.7303L8.848 15.5983L10.049 14.3963C12.585 13.9063 14.5 11.6783 14.5 9.0003C14.5 6.6823 13.064 4.7033 11.035 3.8943L10.076 4.8533C11.925 5.3343 13.3 7.0023 13.3 9.0003C13.3 11.1933 11.643 12.9883 9.519 13.2473L7.151 15.5993L9.587 17.9703C14.283 17.6663 18 13.7713 18 8.9993C18 4.4243 14.583 0.655297 10.164 0.0832969ZM1.2 8.9993C1.2 5.0313 4.181 1.7523 8.019 1.2683L9.151 2.4003L7.948 3.6033C5.414 4.0943 3.5 6.3223 3.5 9.0003C3.5 11.3183 4.935 13.2963 6.964 14.1063L7.923 13.1473C6.075 12.6653 4.7 10.9973 4.7 9.0003C4.7 6.8073 6.356 5.0133 8.48 4.7533L10.849 2.4003L8.413 0.0292969C3.717 0.333297 0 4.2273 0 8.9993C0 13.5743 3.417 17.3443 7.837 17.9153L6.187 16.2653C3.274 15.1343 1.2 12.3073 1.2 8.9993ZM8.579 5.9083V6.3853C7.709 6.5393 7.15 7.1283 7.15 7.9533C7.15 9.0673 8.143 9.3753 8.614 9.5203L9.02 9.6503L9.024 9.6523C9.65 9.8473 9.65 9.9423 9.65 10.0753C9.65 10.4463 9.167 10.4863 8.96 10.4863C8.356 10.4863 8.352 10.2573 8.351 10.1473L7.151 10.1653C7.163 10.9763 7.712 11.5343 8.58 11.6593V12.0903H9.51V11.6223C10.327 11.4443 10.85 10.8713 10.85 10.0753C10.85 8.9643 9.858 8.6543 9.382 8.5063V8.5073L8.975 8.3773C8.35 8.1833 8.35 8.0863 8.35 7.9533C8.35 7.5823 8.833 7.5423 9.04 7.5423C9.644 7.5423 9.648 7.7713 9.649 7.8813L10.849 7.8633C10.837 7.0813 10.324 6.5383 9.509 6.3893V5.9093L8.579 5.9083Z" fill="currentColor"/></symbol>
+<symbol id="i-trade-finance-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.602 13.2551C5.806 12.6651 4.5 10.9941 4.5 9.00006C4.5 6.69806 6.236 4.82106 8.466 4.55406L10.596 2.42506L8.211 0.0390625C3.611 0.439063 0 4.29506 0 8.99906C0 13.4871 3.289 17.1981 7.586 17.8771L5.283 15.5741L7.602 13.2551ZM10.414 0.121063L12.717 2.42406L10.398 4.74306C12.194 5.33306 13.5 7.00506 13.5 9.00006C13.5 11.3031 11.764 13.1801 9.533 13.4461L7.405 15.5741L9.79 17.9591C14.39 17.5591 18 13.7031 18 8.99906C18 4.51106 14.711 0.801063 10.414 0.121063ZM8.579 5.90806V6.38606C7.709 6.53906 7.15 7.12806 7.15 7.95306C7.15 9.06706 8.143 9.37506 8.614 9.52006L9.02 9.65006L9.024 9.65206C9.65 9.84706 9.65 9.94206 9.65 10.0751C9.65 10.4461 9.167 10.4861 8.96 10.4861C8.356 10.4861 8.352 10.2571 8.351 10.1471L7.151 10.1651C7.163 10.9761 7.712 11.5341 8.58 11.6591V12.0901H9.51V11.6221C10.327 11.4441 10.85 10.8721 10.85 10.0761C10.85 8.96506 9.858 8.65506 9.382 8.50706L8.975 8.37706C8.35 8.18306 8.35 8.08606 8.35 7.95306C8.35 7.58206 8.833 7.54206 9.04 7.54206C9.644 7.54206 9.648 7.77106 9.649 7.88106L10.849 7.86306C10.837 7.08106 10.324 6.53806 9.509 6.38806V5.90806H8.579Z" fill="currentColor"/></symbol>
+<symbol id="i-document-report" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.3828 1.5H0.382812V16.5H11.3828C12.4878 16.5 13.3828 15.605 13.3828 14.5V3.5C13.3828 2.396 12.4878 1.5 11.3828 1.5ZM12.1828 14.5C12.1828 14.941 11.8238 15.3 11.3828 15.3H1.58281V2.7H11.3828C11.8238 2.7 12.1828 3.059 12.1828 3.5V14.5ZM3.38281 5.7H10.3828V4.5H3.38281V5.7ZM7.38281 13.5H10.3828V12.3H7.38281V13.5ZM14.5828 4.051V5.345L15.6308 5.768L14.5828 8.362V11.565L17.1928 5.105L14.5828 4.051Z" fill="currentColor"/></symbol>
+<symbol id="i-document-report-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.383 1.5 L0.383 1.5 L0.383 16.5 L11.383 16.5 C12.488 16.5 13.383 15.605 13.383 14.5 L13.383 3.5 C13.383 2.396 12.488 1.5 11.383 1.5 Z M14.583 4.051 L14.583 5.345 L15.631 5.768 L14.583 8.362 L14.583 11.565 L17.193 5.105 L14.583 4.051 Z M10.383 5.7 L3.383 5.7 L3.383 4.5 L10.383 4.5 L10.383 5.7 Z M10.383 13.5 L7.383 13.5 L7.383 12.3 L10.383 12.3 L10.383 13.5 Z" fill="currentColor"/></symbol>
+<symbol id="i-contact-message" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 2V16H18V2H0ZM15.952 3.2L9 10.151L2.048 3.2H15.952ZM1.2 14.8V4.048L9 11.848L16.8 4.048V14.8H1.2Z" fill="currentColor"/></symbol>
+<symbol id="i-contact-message-active" viewBox="0 0 18 18"><path d="M1.061 2H16.939L9 9.939L1.061 2Z" fill="currentColor"/><path d="M0 3.061L9 12.061L18 3.061V16H0V3.061Z" fill="currentColor"/></symbol>
+<symbol id="i-settings" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.206L16.319 3.592L14.408 1.68L12.794 2.365C12.225 2.04 11.626 1.791 11.007 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.377C11.625 16.209 12.225 15.961 12.794 15.635L14.408 16.32L16.32 14.408L15.635 12.794C15.961 12.225 16.209 11.626 16.377 11.007L18 10.352V7.648L16.376 6.992ZM15.374 10.118L15.218 10.694C15.077 11.214 14.867 11.72 14.593 12.198L14.298 12.715L14.53 13.263L14.899 14.132L14.132 14.899L12.716 14.297L12.199 14.593C11.721 14.866 11.215 15.077 10.694 15.218L10.119 15.374L9.542 16.8H8.458L7.882 15.375L7.306 15.219C6.785 15.078 6.28 14.867 5.802 14.594L5.285 14.298L4.736 14.53L3.868 14.899L3.101 14.132L3.703 12.716L3.407 12.199C3.134 11.721 2.923 11.215 2.782 10.694L2.626 10.119L1.2 9.542V8.458L2.625 7.882L2.781 7.307C2.922 6.786 3.133 6.28 3.406 5.802L3.702 5.285L3.47 4.737L3.101 3.868L3.868 3.101L5.285 3.703L5.802 3.407C6.28 3.134 6.786 2.924 7.307 2.782L7.882 2.626L8.458 1.2H9.543L10.119 2.625L10.694 2.781C11.215 2.922 11.721 3.133 12.199 3.406L12.716 3.702L14.133 3.1L14.9 3.867L14.297 5.285L14.593 5.802C14.866 6.279 15.076 6.785 15.218 7.306L15.374 7.881L15.927 8.104L16.8 8.458V9.542L15.374 10.118ZM9 4.8C7.878 4.8 6.823 5.237 6.03 6.03C5.237 6.823 4.8 7.878 4.8 9C4.8 10.122 5.237 11.177 6.03 11.97C6.823 12.763 7.878 13.2 9 13.2C10.122 13.2 11.176 12.763 11.97 11.97C12.764 11.177 13.2 10.122 13.2 9C13.2 7.878 12.763 6.823 11.97 6.03C11.177 5.237 10.122 4.8 9 4.8ZM11.121 11.121C10.536 11.707 9.768 12 9 12C8.232 12 7.464 11.707 6.878 11.121C5.707 9.95 5.707 8.05 6.878 6.879C7.464 6.293 8.232 6 9 6C9.768 6 10.536 6.293 11.121 6.879C12.293 8.05 12.293 9.95 11.121 11.121Z" fill="currentColor"/></symbol>
+<symbol id="i-settings-active" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10.352V7.648L16.376 6.992C16.208 6.374 15.96 5.774 15.634 5.205L16.319 3.591L14.408 1.68L12.794 2.365C12.225 2.039 11.626 1.791 11.008 1.623L10.352 0H7.648L6.992 1.624C6.374 1.791 5.774 2.04 5.206 2.365L3.592 1.68L1.68 3.592L2.365 5.206C2.04 5.774 1.791 6.374 1.624 6.992L0 7.648V10.351L1.624 11.007C1.791 11.626 2.04 12.225 2.366 12.794L1.68 14.408L3.592 16.32L5.206 15.635C5.775 15.961 6.374 16.209 6.993 16.377L7.648 18H10.351L11.007 16.376C11.626 16.209 12.225 15.96 12.794 15.634L14.408 16.319L16.32 14.407L15.635 12.793C15.961 12.224 16.209 11.625 16.377 11.006L18 10.352ZM11.828 11.829C10.266 13.391 7.733 13.391 6.171 11.829C4.609 10.267 4.609 7.734 6.171 6.172C7.733 4.61 10.266 4.61 11.828 6.172C13.39 7.734 13.39 10.266 11.828 11.829Z" fill="currentColor"/></symbol>
+</svg>
+<div class="cn-app-shell-side-nav">
+<div class="sh ceo-frame" data-nav="auto" id="shell">
+<a class="sh-skip t-cm-button" href="#main">Skip to main content</a>
+<header class="sh-appbar">
+<button class="sh-menu" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open main menu" data-menu="shell"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-menu"/></svg></button>
+<span class="sh-logo"><img class="sh-mark" data-mode="light" src="../pack/knowledge/assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../pack/knowledge/assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
+<div class="sh-actions">
+<div class="cn-segmented-control"><div class="seg s" role="group" aria-label="Colour mode"><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true" data-theme-btn="light">Light</button><button type="button" aria-pressed="false" data-theme-btn="dark">Dark</button></div></div>
+<button type="button" aria-label="Your profile: Chief executive, Harbourline Group" data-action="profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-profile"/></svg></button>
+</div>
+</header>
+<div class="sh-body">
+<nav class="sn" aria-label="Main" id="nav-main">
+<div class="sn-head"><span class="sn-brand t-cm-label">Harbourline Group</span>
+<button class="sn-toggle" type="button" aria-expanded="true" aria-controls="nav-main-body" aria-label="Collapse navigation" data-navtoggle="shell"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button></div>
+<div class="sn-body" id="nav-main-body">
+<div class="sn-group"><ul>
+<li><a class="sn-link" data-app-href="index.html" href="index.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-dashboard"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="ng-money">Money</span><ul aria-labelledby="ng-money">
+<li><a class="sn-link" data-app-href="accounts.html" href="accounts.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+<li><a class="sn-link" data-app-href="liquidity.html" href="liquidity.html" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-cash-active"/></svg></span><span class="sn-label t-cm-label">Liquidity and funding</span></a></li>
+<li><a class="sn-link" data-app-href="payments.html" href="payments.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-payments-and-transfers"/></svg></span><span class="sn-label t-cm-label">Payments and approvals</span></a></li>
+<li><a class="sn-link" data-app-href="fx.html" href="fx.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-global-money"/></svg></span><span class="sn-label t-cm-label">FX and markets</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="ng-risk-and-trade">Risk and trade</span><ul aria-labelledby="ng-risk-and-trade">
+<li><a class="sn-link" data-app-href="risk.html" href="risk.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-warning"/></svg></span><span class="sn-label t-cm-label">Risk and limits</span></a></li>
+<li><a class="sn-link" data-app-href="trade.html" href="trade.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-trade-finance"/></svg></span><span class="sn-label t-cm-label">Trade finance</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="ng-insight">Insight</span><ul aria-labelledby="ng-insight">
+<li><a class="sn-link" data-app-href="reports.html" href="reports.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-document-report"/></svg></span><span class="sn-label t-cm-label">Reports</span></a></li>
+<li><a class="sn-link" data-app-href="messages.html" href="messages.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-contact-message"/></svg></span><span class="sn-label t-cm-label">Messages and requests</span></a></li>
+</ul></div>
+</div>
+<div class="sn-foot"><ul><li><a class="sn-link" data-app-href="settings.html" href="settings.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li></ul></div>
+</nav>
+<div class="sh-content">
+<div class="cn-template-dashboard-bento ceo-page">
+<header class="tpl-header l-stack ceo-head" data-gap="l">
+<nav class="tpl-crumbs" aria-label="Breadcrumb"><ol class="t-cm-caption"><li><a class="crumb" data-app-href="index.html" href="index.html">Group overview</a></li><li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><span class="t-cm-ctl-14" aria-current="page">Liquidity and funding</span></li></ol></nav>
+<div class="l-row" data-align="end" data-gap="l">
+<div class="tpl-display l-measure"><h1 class="t-ed-heading-2">Liquidity and funding</h1><p class="t-ed-body">Can we fund our plans? Cash plus undrawn committed facilities, less the £400m policy buffer and planned commitments: <span data-scope-label></span>.</p></div>
+<div class="tpl-actions l-row" data-gap="m"><button type="button" class="btn tertiary" data-action="export-fac">Export facilities (CSV)</button><button type="button" class="btn primary" data-action="drawdown">Request a drawdown</button></div>
+</div>
+
+<div class="cn-filter-toolbar-bar"><div class="ftb-outer" id="ftb" data-ftb-state="no-filters" data-density="full">
+<form class="ftb" role="search" aria-label="Filter every figure on this page" onsubmit="return false;">
+<div class="ftb-primary">
+<div class="ftb-ctl dd boxed" id="dd-entity"><label id="dd-entity-l" for="dd-entity-t" class="sr-only">Entity</label>
+<button class="trigger t-cm-button" id="dd-entity-t" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="dd-entity-m" aria-labelledby="dd-entity-l dd-entity-t"><span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-filter"/></svg></span><span class="ddval">All entities</span><span class="chev" aria-hidden="true">▾</span></button>
+<ul class="menu" id="dd-entity-m" role="listbox" aria-labelledby="dd-entity-l" tabindex="-1"></ul></div>
+<div class="ftb-ctl dd boxed" id="dd-region"><label id="dd-region-l" for="dd-region-t" class="sr-only">Region</label>
+<button class="trigger t-cm-button" id="dd-region-t" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="dd-region-m" aria-labelledby="dd-region-l dd-region-t"><span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-filter"/></svg></span><span class="ddval">All regions</span><span class="chev" aria-hidden="true">▾</span></button>
+<ul class="menu" id="dd-region-m" role="listbox" aria-labelledby="dd-region-l" tabindex="-1"></ul></div>
+<div class="ftb-ctl dd boxed" id="dd-days"><label id="dd-days-l" for="dd-days-t" class="sr-only">Date range</label>
+<button class="trigger t-cm-button" id="dd-days-t" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="dd-days-m" aria-labelledby="dd-days-l dd-days-t"><span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-calendar"/></svg></span><span class="ddval">Last 30 days</span><span class="chev" aria-hidden="true">▾</span></button>
+<ul class="menu" id="dd-days-m" role="listbox" aria-labelledby="dd-days-l" tabindex="-1"></ul></div>
+</div>
+<div class="ftb-context">
+<p class="ftb-status t-cm-caption" role="status" aria-live="polite" aria-atomic="true"><span data-when="no-filters filtered empty error"><span class="num t-cm-figure-6" id="ftb-count">9</span> of <span class="num t-cm-figure-6" id="ftb-total">9</span> entities · GBP reporting · illustrative FX as at 25 Sep 2026</span></p>
+<span class="ftb-hint t-cm-caption" data-when="no-filters">No filters applied</span>
+<div class="ftb-chips filterbar" id="ftb-chips" tabindex="-1" data-when="filtered loading empty error" aria-label="Applied filters" role="group"><div class="row"></div></div>
+<div class="ftb-clear" data-when="filtered loading empty error"><button type="button" class="lnk t-cm-caption" data-ftb-clear>Clear all</button></div>
+</div>
+</form></div></div>
+</header>
+<main class="tpl-page ceo-ground" id="main" tabindex="-1">
+<div class="tpl-bento-stack">
+<div class="c-bento tpl-wall ceo-wall" data-bento-role="dashboard" aria-label="Liquidity and funding">
+<div class="c-bento__grid">
+<section class="c-bento__tile c-bento tpl-group tpl-group-lead" data-bento-role="dashboard" data-c="6" data-r="1" aria-label="Headline figures"><div class="c-bento__grid" id="kpis"><div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Available liquidity" data-c="1" data-r="1" data-kpi="liq"><p class="lbl16 t-cm-caption">Available liquidity</p><span class="amt t-cm-figure-3"><span>—</span></span></div><div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Cash" data-c="1" data-r="1" data-kpi="cash"><p class="lbl16 t-cm-caption">Cash</p><span class="amt t-cm-figure-3"><span>—</span></span></div><div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Undrawn committed facilities" data-c="1" data-r="1" data-kpi="undrawn"><p class="lbl16 t-cm-caption">Undrawn committed facilities</p><span class="amt t-cm-figure-3"><span>—</span></span></div><div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Funding headroom" data-c="1" data-r="1" data-kpi="head"><p class="lbl16 t-cm-caption">Funding headroom</p><span class="amt t-cm-figure-3"><span>—</span></span></div></div></section><section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard" data-c="4" data-r="1" aria-label="Liquidity against utilisation"><div class="c-bento__grid"><div class="c-bento__tile stat-card" data-c="6" data-r="1" id="host-combo"></div></div></section><section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard" data-c="2" data-r="1" aria-label="Facility headroom"><div class="c-bento__grid"><div class="c-bento__tile stat-card" data-c="3" data-r="1"><div class="tpl-panel-head"><h3 class="t-cm-section-label">Most-drawn facilities</h3></div><div id="lim-list"></div></div><div class="c-bento__tile stat-card" data-c="3" data-r="1"><div class="tpl-panel-head"><h3 class="t-cm-section-label">Planned commitments</h3></div><div id="commit-list"></div></div></div></section><section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard" data-c="6" data-r="1" aria-label="Facility utilisation and trends"><div class="c-bento__grid"><div class="c-bento__tile stat-card" data-c="3" data-r="1" id="host-bullet"></div><div class="c-bento__tile stat-card" data-c="3" data-r="1"><div class="tpl-panel-head"><h3 class="t-cm-section-label">Thirty-day shape</h3></div><div id="sparks"></div></div></div></section><section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard" data-c="6" data-r="1" aria-label="Facilities"><div class="c-bento__grid"><div class="c-bento__tile stat-card" data-c="6" data-r="1" id="host-gfac"></div></div></section>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- ===== APOLLO-SPLICE App-shell-side-nav#1 START (source=knowledge/snippets/App-shell-side-nav.reference.html kind=markup) ===== -->
+<footer class="sh-foot" role="contentinfo" aria-label="Legal footer">
+              <div class="sh-legal">
+                <ul>
+                  <li><a class="lnk t-ed-body-small" href="#">Terms and conditions</a></li>
+                  <li><a class="lnk t-ed-body-small" href="#">Privacy notice</a></li>
+                  <li><a class="lnk t-ed-body-small" href="#">Accessibility statement</a></li>
+                </ul>
+                <p class="copy t-cm-legal">© HSBC Group 2026. All rights reserved.</p>
+              </div>
+            </footer>
+<!-- ===== APOLLO-SPLICE App-shell-side-nav#1 END ===== -->
+</div>
+</div>
+<div class="sh-scrim" id="shell-scrim" data-scrim="shell"></div>
+<div class="sh-sheet" id="sheet" tabindex="-1" role="dialog" aria-modal="true" aria-label="Main menu">
+<nav class="sn" aria-label="Main, in menu">
+<div class="sn-head"><span class="sn-brand t-cm-label">Harbourline Group</span><button class="sn-toggle" type="button" aria-label="Close main menu" data-close="shell"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button></div>
+<div class="sn-body">
+<div class="sn-group"><ul>
+<li><a class="sn-link" data-app-href="index.html" href="index.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-dashboard"/></svg></span><span class="sn-label t-cm-label">Overview</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="sg-money">Money</span><ul aria-labelledby="sg-money">
+<li><a class="sn-link" data-app-href="accounts.html" href="accounts.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-account"/></svg></span><span class="sn-label t-cm-label">Accounts</span></a></li>
+<li><a class="sn-link" data-app-href="liquidity.html" href="liquidity.html" aria-current="page"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-cash-active"/></svg></span><span class="sn-label t-cm-label">Liquidity and funding</span></a></li>
+<li><a class="sn-link" data-app-href="payments.html" href="payments.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-payments-and-transfers"/></svg></span><span class="sn-label t-cm-label">Payments and approvals</span></a></li>
+<li><a class="sn-link" data-app-href="fx.html" href="fx.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-global-money"/></svg></span><span class="sn-label t-cm-label">FX and markets</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="sg-risk-and-trade">Risk and trade</span><ul aria-labelledby="sg-risk-and-trade">
+<li><a class="sn-link" data-app-href="risk.html" href="risk.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-warning"/></svg></span><span class="sn-label t-cm-label">Risk and limits</span></a></li>
+<li><a class="sn-link" data-app-href="trade.html" href="trade.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-trade-finance"/></svg></span><span class="sn-label t-cm-label">Trade finance</span></a></li>
+</ul></div>
+<div class="sn-group"><span class="sn-group-label t-cm-caption" id="sg-insight">Insight</span><ul aria-labelledby="sg-insight">
+<li><a class="sn-link" data-app-href="reports.html" href="reports.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-document-report"/></svg></span><span class="sn-label t-cm-label">Reports</span></a></li>
+<li><a class="sn-link" data-app-href="messages.html" href="messages.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-contact-message"/></svg></span><span class="sn-label t-cm-label">Messages and requests</span></a></li>
+</ul></div>
+</div>
+<div class="sn-foot"><ul><li><a class="sn-link" data-app-href="settings.html" href="settings.html"><span class="si" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#i-settings"/></svg></span><span class="sn-label t-cm-label">Settings</span></a></li></ul></div>
+</nav>
+</div>
+</div>
+</div>
+<div class="cn-drawer"><div class="scrim" id="scrim"></div>
+<div class="sheet" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-t" aria-describedby="drawer-b">
+<div class="sheet-head"><h3 class="t-ed-heading-4 em" id="drawer-t">Details</h3>
+<button class="close" type="button" aria-label="Close drawer"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button></div>
+<div class="sheet-body" id="drawer-b"></div>
+<div class="sheet-foot" id="drawer-f"></div>
+</div></div>
+<div class="cn-modals"><div class="overlay" id="modal" hidden>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-t" aria-describedby="modal-b" tabindex="-1">
+<button class="close" type="button" aria-label="Close dialog"><svg viewBox="0 0 18 18" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 2.35668L15.6433 1.5L9 8.14332L2.35668 1.5L1.5 2.35668L8.14332 9L1.5 15.6433L2.35668 16.5L9 9.85668L15.6433 16.5L16.5 15.6433L9.85668 9L16.5 2.35668Z"/></svg></button>
+<h2 id="modal-t">Confirm</h2>
+<div id="modal-b" class="ceo-stack"></div>
+<div class="actions" id="modal-a"></div>
+</div></div></div>
+<div class="cn-toast"><div class="toast-region" id="toasts" aria-live="polite"></div></div>
+<script src="../pack/knowledge/canon/dv-behaviour.js"></script>
+<script src="../pack/knowledge/canon/dv-legend.js"></script>
+<script src="../pack/knowledge/canon/dv-render.js"></script>
+<script src="../pack/knowledge/canon/dv-render-bar.js"></script>
+<script src="../pack/knowledge/canon/dv-render-line.js"></script>
+<script src="../pack/knowledge/canon/dv-render-combo.js"></script>
+<script src="../pack/knowledge/canon/dv-render-bullet.js"></script>
+<script src="../pack/knowledge/canon/dv-render-sparkline.js"></script>
+<script>
+/* ===== DATA — the ONE in-page dataset (ADS-generate-from-canon rule 13). Authored, illustrative.
+   Every KPI, chart, grid, filter option and drawer on every page reads from this object; nothing is
+   typed twice into the HTML. Deterministic: a seeded PRNG, so every page and every reload sees the
+   same numbers. No live banking connection; all entities, counterparties and figures are invented.
+   FX: GBP reporting. Rates are ILLUSTRATIVE, fixed, quoted as units of currency per 1 GBP, as at the
+   AS_OF close. They are not market data. ===== */
+const DATA = (function () {
+  'use strict';
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  var R = rng(20260925);
+  function pick(a) { return a[Math.floor(R() * a.length)]; }
+  function between(a, b) { return a + R() * (b - a); }
+  function round(v, d) { var k = Math.pow(10, d || 0); return Math.round(v * k) / k; }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+
+  var AS_OF = '2026-09-25';
+  var AS_OF_TIME = '17:00 BST';
+  var DAYS = [];
+  (function () { var end = new Date(AS_OF + 'T12:00:00Z'); for (var i = 29; i >= 0; i--) { var d = new Date(end); d.setUTCDate(end.getUTCDate() - i); DAYS.push(iso(d)); } }());
+  var SESSIONS = DAYS.filter(function (d) { var w = new Date(d + 'T12:00:00Z').getUTCDay(); return w !== 0 && w !== 6; });
+
+  var FX = { GBP: 1, EUR: 1.1712, USD: 1.2745, SGD: 1.7130, HKD: 9.9310, AED: 4.6810, MXN: 23.4100, CNY: 9.1840 };
+  var CCYS = Object.keys(FX);
+
+  var REGIONS = [
+    { id: 'uk', name: 'United Kingdom' }, { id: 'eu', name: 'Europe' }, { id: 'am', name: 'Americas' },
+    { id: 'ap', name: 'Asia-Pacific' }, { id: 'me', name: 'Middle East' }
+  ];
+  var ENTITIES = [
+    { id: 'HLH', name: 'Harbourline Holdings UK Ltd', short: 'Holdings UK', region: 'uk', ccy: 'GBP', country: 'United Kingdom' },
+    { id: 'HLE', name: 'Harbourline Europe BV', short: 'Europe BV', region: 'eu', ccy: 'EUR', country: 'Netherlands' },
+    { id: 'HLG', name: 'Harbourline Logistics GmbH', short: 'Logistics GmbH', region: 'eu', ccy: 'EUR', country: 'Germany' },
+    { id: 'HLU', name: 'Harbourline Trading Inc', short: 'Trading Inc', region: 'am', ccy: 'USD', country: 'United States' },
+    { id: 'HLM', name: 'Harbourline Mexico SA de CV', short: 'Mexico SA', region: 'am', ccy: 'MXN', country: 'Mexico' },
+    { id: 'HLS', name: 'Harbourline Asia Pte Ltd', short: 'Asia Pte', region: 'ap', ccy: 'SGD', country: 'Singapore' },
+    { id: 'HLK', name: 'Harbourline Hong Kong Ltd', short: 'Hong Kong Ltd', region: 'ap', ccy: 'HKD', country: 'Hong Kong SAR' },
+    { id: 'HLC', name: 'Harbourline (Shanghai) Co Ltd', short: 'Shanghai Co', region: 'ap', ccy: 'CNY', country: 'China' },
+    { id: 'HLA', name: 'Harbourline Middle East FZE', short: 'Middle East FZE', region: 'me', ccy: 'AED', country: 'United Arab Emirates' }
+  ];
+  var ENT = {}; ENTITIES.forEach(function (e) { ENT[e.id] = e; });
+  function toGBP(v, ccy) { return v / FX[ccy]; }
+
+  /* ---------- accounts, with a 30-day closing-balance series in local currency */
+  var ACCT_TYPES = ['Operating', 'Collections', 'Payroll', 'Deposit'];
+  var SIZE = { HLH: 260e6, HLE: 140e6, HLG: 70e6, HLU: 210e6, HLM: 900e6, HLS: 120e6, HLK: 520e6, HLC: 310e6, HLA: 160e6 };
+  var ACCOUNTS = [], n = 0;
+  ENTITIES.forEach(function (e) {
+    var types = e.id === 'HLH' || e.id === 'HLU' ? ACCT_TYPES : ACCT_TYPES.slice(0, 3);
+    types.forEach(function (t, i) {
+      var ccy = e.ccy; if (t === 'Collections' && (e.region === 'ap' || e.region === 'me')) { ccy = 'USD'; }
+      var base = SIZE[e.id] * [0.46, 0.28, 0.08, 0.36][i] * (ccy === e.ccy ? 1 : FX.USD / FX[e.ccy]);
+      var bal = [], v = base * between(0.9, 1.05), drift = between(-0.004, 0.009);
+      for (var d = 0; d < 30; d++) { v = Math.max(base * 0.35, v * (1 + drift + between(-0.03, 0.03))); if (t === 'Payroll' && d % 14 === 9) { v *= 0.55; } bal.push(round(v, 2)); }
+      n++;
+      ACCOUNTS.push({ id: 'AC' + String(n).padStart(3, '0'), entity: e.id, type: t, ccy: ccy, name: e.short + ' ' + t.toLowerCase(),
+        number: '•••• ' + String(1000 + Math.floor(R() * 8999)), bank: 'HSBC ' + e.country, balances: bal,
+        overdraft: t === 'Operating' ? round(base * 0.1, -3) : 0 });
+    });
+  });
+
+  /* ---------- committed and uncommitted facilities (drawn series moves a little) */
+  var FACILITIES = [
+    { id: 'FAC-01', entity: 'HLH', name: 'Syndicated revolving credit facility', type: 'Revolving credit', ccy: 'GBP', limit: 500e6, drawn: 120e6, committed: true, maturity: '2029-06-30', margin: 'SONIA + 1.35%' },
+    { id: 'FAC-02', entity: 'HLH', name: 'Commercial paper programme', type: 'Commercial paper', ccy: 'GBP', limit: 300e6, drawn: 90e6, committed: false, maturity: '2027-03-31', margin: 'Issued at discount' },
+    { id: 'FAC-03', entity: 'HLU', name: 'US dollar term loan', type: 'Term loan', ccy: 'USD', limit: 300e6, drawn: 300e6, committed: true, maturity: '2028-09-15', margin: 'SOFR + 1.60%' },
+    { id: 'FAC-04', entity: 'HLE', name: 'Euro revolving facility', type: 'Revolving credit', ccy: 'EUR', limit: 150e6, drawn: 40e6, committed: true, maturity: '2028-12-31', margin: 'EURIBOR + 1.25%' },
+    { id: 'FAC-05', entity: 'HLS', name: 'Asia working capital line', type: 'Working capital', ccy: 'SGD', limit: 200e6, drawn: 85e6, committed: true, maturity: '2027-11-30', margin: 'SORA + 1.40%' },
+    { id: 'FAC-06', entity: 'HLK', name: 'Hong Kong trade line', type: 'Trade line', ccy: 'HKD', limit: 800e6, drawn: 310e6, committed: false, maturity: '2027-04-30', margin: 'HIBOR + 1.10%' },
+    { id: 'FAC-07', entity: 'HLA', name: 'Dirham overdraft', type: 'Overdraft', ccy: 'AED', limit: 150e6, drawn: 12e6, committed: false, maturity: '2027-01-31', margin: 'EIBOR + 1.75%' },
+    { id: 'FAC-08', entity: 'HLM', name: 'Peso working capital line', type: 'Working capital', ccy: 'MXN', limit: 1200e6, drawn: 640e6, committed: true, maturity: '2027-08-31', margin: 'TIIE + 1.90%' },
+    { id: 'FAC-09', entity: 'HLG', name: 'Euro asset finance', type: 'Term loan', ccy: 'EUR', limit: 60e6, drawn: 48e6, committed: true, maturity: '2030-05-31', margin: 'EURIBOR + 1.55%' }
+  ];
+  FACILITIES.forEach(function (f) {
+    var s = [], v = f.drawn * between(0.85, 1.0);
+    for (var d = 0; d < 30; d++) { v = Math.min(f.limit, Math.max(0, v + f.limit * between(-0.012, 0.014))); s.push(round(d === 29 ? f.drawn : v, 0)); }
+    f.drawnSeries = s;
+  });
+  var POLICY_BUFFER_GBP = 400e6;
+  var COMMITMENTS = [
+    { id: 'CM-1', entity: 'HLH', name: 'Interim dividend', ccy: 'GBP', amount: 180e6, due: '2026-10-23' },
+    { id: 'CM-2', entity: 'HLG', name: 'Warehouse automation capex', ccy: 'EUR', amount: 64e6, due: '2026-11-14' },
+    { id: 'CM-3', entity: 'HLU', name: 'Bond coupon', ccy: 'USD', amount: 21e6, due: '2026-10-15' },
+    { id: 'CM-4', entity: 'HLS', name: 'Acquisition deposit', ccy: 'SGD', amount: 95e6, due: '2026-12-01' },
+    { id: 'CM-5', entity: 'HLM', name: 'Fleet renewal', ccy: 'MXN', amount: 410e6, due: '2026-11-28' }
+  ];
+
+  /* ---------- transactions — 30 days, enough rows to sort, filter and page */
+  var CPTY = {
+    uk: ['Kestrel Freight Ltd', 'Albion Packaging plc', 'Thameside Estates', 'HMRC', 'Northgate Utilities', 'Brightwater Foods'],
+    eu: ['Rhein Logistik AG', 'Lumière Distribution SA', 'Delta Haven BV', 'Iberia Cargo SL', 'Nordlicht Energie'],
+    am: ['Great Lakes Supply Co', 'Pacific Rim Traders', 'Lone Star Components', 'Sierra Madre Transportes', 'Hudson Ridge Retail'],
+    ap: ['Jade Harbour Shipping', 'Straits Electronics Pte', 'Pearl River Textiles', 'Kowloon Terminals', 'Lion City Foods'],
+    me: ['Gulf Horizon Trading', 'Dubai Creek Logistics', 'Arabian Sands Construction', 'Emirates Cold Chain']
+  };
+  var CATS = [
+    { k: 'Customer receipt', dir: 1, w: 34 }, { k: 'Supplier payment', dir: -1, w: 30 }, { k: 'Payroll', dir: -1, w: 7 },
+    { k: 'Tax', dir: -1, w: 4 }, { k: 'Intercompany', dir: 0, w: 10 }, { k: 'FX settlement', dir: 0, w: 8 },
+    { k: 'Loan interest', dir: -1, w: 3 }, { k: 'Trade settlement', dir: -1, w: 4 }
+  ];
+  function wcat() { var t = R() * 100, a = 0; for (var i = 0; i < CATS.length; i++) { a += CATS[i].w; if (t < a) { return CATS[i]; } } return CATS[0]; }
+  var TRANSACTIONS = [];
+  for (var i = 0; i < 360; i++) {
+    var ac = pick(ACCOUNTS), e = ENT[ac.entity], c = wcat(), dir = c.dir || (R() < 0.5 ? 1 : -1);
+    var scale = SIZE[e.id] / 400 * (ac.ccy === e.ccy ? 1 : FX.USD / FX[e.ccy]);
+    var amt = round(dir * scale * Math.exp(between(-2.2, 1.4)), 2);
+    var day = DAYS[Math.floor(R() * 30)];
+    var cp = c.k === 'Tax' ? (e.region === 'uk' ? 'HMRC' : 'Tax authority ' + e.country) : c.k === 'Payroll' ? 'Payroll bureau' :
+      c.k === 'Intercompany' ? pick(ENTITIES.filter(function (x) { return x.id !== e.id; })).name : c.k === 'Loan interest' ? 'HSBC facility agent' : pick(CPTY[e.region]);
+    TRANSACTIONS.push({ id: 'TX' + String(80000 + i * 7), date: day, entity: e.id, account: ac.id, counterparty: cp, category: c.k,
+      ccy: ac.ccy, amount: amt, gbp: round(toGBP(amt, ac.ccy), 2), status: day >= DAYS[27] && R() < 0.35 ? 'Pending' : 'Settled',
+      ref: (c.k === 'Customer receipt' ? 'INV-' : c.k === 'Supplier payment' ? 'PO-' : 'REF-') + String(Math.floor(between(10000, 99999))) });
+  }
+  TRANSACTIONS.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+
+  /* ---------- payments awaiting / through approval */
+  var PAY_TYPES = ['Supplier payment', 'Intercompany funding', 'Treasury deal settlement', 'Dividend', 'Tax payment', 'Capital expenditure'];
+  var BENE = ['Rhein Logistik AG', 'Jade Harbour Shipping', 'Great Lakes Supply Co', 'Albion Packaging plc', 'Gulf Horizon Trading',
+    'Straits Electronics Pte', 'Lumière Distribution SA', 'Sierra Madre Transportes', 'Kowloon Terminals', 'Nordlicht Energie', 'Harbourline Asia Pte Ltd', 'Harbourline Trading Inc'];
+  var INITIATORS = ['A. Mensah (Group treasury)', 'L. Fischer (Europe finance)', 'R. Tan (Asia treasury)', 'J. Ortega (Americas finance)', 'S. Haddad (ME finance)'];
+  var STATUS_PLAN = [].concat(Array(12).fill('Awaiting your approval'), Array(6).fill('Awaiting second approver'), Array(9).fill('Approved'),
+    Array(14).fill('Released'), Array(3).fill('Rejected'), Array(4).fill('Held for screening'));
+  var PAYMENTS = STATUS_PLAN.map(function (st, i) {
+    var e = pick(ENTITIES), ccy = R() < 0.7 ? e.ccy : pick(['USD', 'EUR', 'GBP']);
+    var gbp = Math.exp(between(Math.log(0.4e6), Math.log(38e6)));
+    if (i === 0) { gbp = 42.5e6; } if (i === 3) { gbp = 18.2e6; }
+    var amt = round(gbp * FX[ccy], 2), off = Math.floor(between(-6, 12));
+    var vd = new Date(AS_OF + 'T12:00:00Z'); vd.setUTCDate(vd.getUTCDate() + (/Released|Rejected/.test(st) ? -Math.abs(off) - 1 : Math.abs(off) + 1));
+    var created = new Date(AS_OF + 'T12:00:00Z'); created.setUTCDate(created.getUTCDate() - Math.floor(between(0, 9)));
+    var type = i === 0 ? 'Dividend' : pick(PAY_TYPES), bene = type === 'Dividend' ? 'Registrar — shareholder account' : pick(BENE);
+    var flags = [];
+    if (gbp > 10e6) { flags.push('Above £10m dual-control threshold'); }
+    if (R() < 0.18) { flags.push('New beneficiary'); }
+    if (st === 'Held for screening') { flags.push('Sanctions screening hold'); }
+    return { id: 'PAY-26-' + String(4100 + i * 3), entity: e.id, beneficiary: bene, type: type, ccy: ccy, amount: amt, gbp: round(toGBP(amt, ccy), 2),
+      valueDate: iso(vd), created: iso(created), initiator: pick(INITIATORS), approvals: gbp > 10e6 ? 2 : 1, status: st, flags: flags,
+      purpose: type + ' — ' + bene };
+  });
+
+  /* ---------- risk: positions by entity × currency, limits and exceptions */
+  var POS_TYPES = ['Cash', 'Receivables', 'Payables', 'Hedges', 'Borrowings'];
+  var POSITIONS = [];
+  ENTITIES.forEach(function (e) {
+    var ccys = [e.ccy].concat(e.ccy === 'USD' ? ['MXN'] : ['USD']).concat(e.region === 'eu' ? ['GBP'] : e.region === 'ap' ? ['CNY'] : []);
+    ccys.forEach(function (ccy, ci) {
+      POS_TYPES.forEach(function (pt) {
+        var mag = SIZE[e.id] / FX[e.ccy] * [0.9, 0.55, 0.25][ci] * { Cash: 0.5, Receivables: 0.6, Payables: -0.45, Hedges: -0.25, Borrowings: -0.3 }[pt] * between(0.6, 1.3);
+        if (pt === 'Hedges' && ccy === e.ccy) { return; }
+        POSITIONS.push({ id: 'POS-' + e.id + '-' + ccy + '-' + pt.slice(0, 3).toUpperCase(), entity: e.id, ccy: ccy, type: pt, gbp: round(mag, 0),
+          local: round(mag * FX[ccy], 0), tenor: pick(['Spot', '1M', '3M', '6M', '12M']) });
+      });
+    });
+  });
+  var REGION_LIMITS = { uk: 900e6, eu: 520e6, am: 640e6, ap: 700e6, me: 200e6 };
+  var CCY_LIMITS = { GBP: 1200e6, EUR: 420e6, USD: 520e6, SGD: 140e6, HKD: 180e6, AED: 120e6, MXN: 90e6, CNY: 110e6 };
+  var COUNTERPARTIES = [
+    { id: 'CP-01', name: 'Northbridge Bank', rating: 'AA-', limit: 250e6, exposure: 171e6, region: 'uk' },
+    { id: 'CP-02', name: 'Crestmark Capital', rating: 'A+', limit: 180e6, exposure: 166e6, region: 'eu' },
+    { id: 'CP-03', name: 'Meridian Trust', rating: 'A', limit: 120e6, exposure: 64e6, region: 'am' },
+    { id: 'CP-04', name: 'Aldgate Securities', rating: 'A-', limit: 90e6, exposure: 94e6, region: 'uk' },
+    { id: 'CP-05', name: 'Pacific Crown Bank', rating: 'A+', limit: 160e6, exposure: 118e6, region: 'ap' },
+    { id: 'CP-06', name: 'Gulfstar Bank', rating: 'A', limit: 80e6, exposure: 57e6, region: 'me' },
+    { id: 'CP-07', name: 'Lumen Bank AG', rating: 'AA', limit: 200e6, exposure: 88e6, region: 'eu' },
+    { id: 'CP-08', name: 'Riverside Savings', rating: 'BBB+', limit: 40e6, exposure: 37e6, region: 'am' },
+    { id: 'CP-09', name: 'Harbour Pacific Bank', rating: 'A-', limit: 70e6, exposure: 29e6, region: 'ap' },
+    { id: 'CP-10', name: 'Sterling Crescent Bank', rating: 'AA-', limit: 150e6, exposure: 112e6, region: 'uk' }
+  ];
+  COUNTERPARTIES.forEach(function (c) { var s = [], v = c.exposure * between(0.8, 1.0); for (var d = 0; d < 30; d++) { v = Math.max(0, v * (1 + between(-0.04, 0.045))); s.push(round(d === 29 ? c.exposure : v, 0)); } c.series = s; });
+  var EXCEPTIONS = [
+    { id: 'EXC-2609-01', type: 'Counterparty limit breach', severity: 'Material', entity: 'HLH', title: 'Aldgate Securities exposure above limit', value: 94e6, limit: 90e6, raised: '2026-09-24', owner: 'Group treasury', detail: 'Money-market deposits placed on 23 Sep took exposure to 104% of the approved limit. Treasury proposes to roll £10m to Northbridge Bank at maturity on 30 Sep.' },
+    { id: 'EXC-2609-02', type: 'Currency limit near breach', severity: 'Material', entity: 'HLU', title: 'Net Mexican peso position at 96% of limit', value: 86.4e6, limit: 90e6, raised: '2026-09-23', owner: 'Americas finance', detail: 'Receivables growth in Mexico has outpaced forward hedging. Hedge ratio is 52% against a 70% policy floor.' },
+    { id: 'EXC-2609-03', type: 'Unhedged exposure above policy', severity: 'High', entity: 'HLS', title: 'Singapore dollar acquisition deposit unhedged', value: 55.5e6, limit: 40e6, raised: '2026-09-22', owner: 'Asia treasury', detail: 'The SGD 95m acquisition deposit due 1 Dec is not yet covered by a forward. Policy requires cover once a commitment is signed.' },
+    { id: 'EXC-2609-04', type: 'Counterparty limit near breach', severity: 'High', entity: 'HLE', title: 'Crestmark Capital at 92% of limit', value: 166e6, limit: 180e6, raised: '2026-09-21', owner: 'Europe finance', detail: 'Euro cash sweeping concentrates balances with one counterparty. A second sweep bank is being onboarded.' },
+    { id: 'EXC-2609-05', type: 'Covenant headroom', severity: 'Material', entity: 'HLM', title: 'Mexico leverage covenant headroom below 10%', value: 2.71, limit: 3.0, raised: '2026-09-19', owner: 'Americas finance', detail: 'Net debt to EBITDA of 2.71x against a 3.00x covenant on the peso working capital line. Fleet renewal would reduce headroom further.' },
+    { id: 'EXC-2609-06', type: 'Sanctions screening hold', severity: 'High', entity: 'HLA', title: 'Payment held — beneficiary name match', value: 3.2e6, limit: 0, raised: '2026-09-24', owner: 'Compliance', detail: 'A supplier payment to Gulf Horizon Trading is held pending a false-positive review of a partial name match.' },
+    { id: 'EXC-2609-07', type: 'Regional limit near breach', severity: 'Medium', entity: 'HLK', title: 'Asia-Pacific exposure at 88% of regional limit', value: 616e6, limit: 700e6, raised: '2026-09-18', owner: 'Asia treasury', detail: 'Seasonal inventory build in Hong Kong and Shanghai. Expected to unwind by mid-November.' },
+    { id: 'EXC-2609-08', type: 'KYC document overdue', severity: 'Medium', entity: 'HLC', title: 'Shanghai entity KYC refresh overdue', value: 0, limit: 0, raised: '2026-09-15', owner: 'Legal entity management', detail: 'Updated beneficial ownership declaration requested by HSBC on 1 Sep is outstanding.' },
+    { id: 'EXC-2609-09', type: 'Counterparty rating change', severity: 'Medium', entity: 'HLU', title: 'Riverside Savings downgraded to BBB+', value: 37e6, limit: 40e6, raised: '2026-09-17', owner: 'Group treasury', detail: 'Policy limits BBB-rated counterparties to £25m. Current exposure of £37m requires reduction or a policy waiver.' },
+    { id: 'EXC-2609-10', type: 'Facility utilisation', severity: 'Medium', entity: 'HLG', title: 'Euro asset finance 80% drawn', value: 48e6, limit: 60e6, raised: '2026-09-12', owner: 'Europe finance', detail: 'Headroom on the asset finance line is €12m ahead of the warehouse automation programme.' },
+    { id: 'EXC-2609-11', type: 'Intraday overdraft', severity: 'Medium', entity: 'HLA', title: 'Dirham account overdrawn intraday on three days', value: 4.1e6, limit: 0, raised: '2026-09-10', owner: 'ME finance', detail: 'Payroll funding arrived after the payroll run on 5, 8 and 9 Sep.' },
+    { id: 'EXC-2609-12', type: 'Unhedged exposure above policy', severity: 'Material', entity: 'HLC', title: 'Renminbi receivables hedge ratio at 38%', value: 71e6, limit: 50e6, raised: '2026-09-20', owner: 'Asia treasury', detail: 'Onshore hedging capacity is constrained; an offshore non-deliverable forward proposal is with the treasury committee.' }
+  ];
+
+  /* ---------- FX: 30-day OHLC per pair, closing on the illustrative fixing */
+  var FX_SERIES = {};
+  CCYS.filter(function (c) { return c !== 'GBP'; }).forEach(function (c) {
+    var close = FX[c], v = close * between(0.97, 1.03), rows = [];
+    SESSIONS.forEach(function (d, k) {
+      var o = v, last = k === SESSIONS.length - 1, cl = last ? close : o * (1 + between(-0.006, 0.006));
+      var hi = Math.max(o, cl) * (1 + between(0.0005, 0.004)), lo = Math.min(o, cl) * (1 - between(0.0005, 0.004));
+      rows.push({ date: d, open: round(o, 4), high: round(hi, 4), low: round(lo, 4), close: round(cl, 4) }); v = cl;
+    });
+    FX_SERIES[c] = rows;
+  });
+  var HEDGES = [];
+  for (var h = 0; h < 28; h++) {
+    var he = pick(ENTITIES.filter(function (x) { return x.ccy !== 'GBP'; })), hc = pick([he.ccy, 'USD', 'EUR']);
+    if (hc === 'GBP') { hc = 'USD'; }
+    var hm = new Date(AS_OF + 'T12:00:00Z'); hm.setUTCDate(hm.getUTCDate() + Math.floor(between(5, 330)));
+    var notional = round(Math.exp(between(Math.log(2e6), Math.log(60e6))) * FX[hc], -3);
+    HEDGES.push({ id: 'FWD-' + String(7700 + h * 11), entity: he.id, ccy: hc, direction: R() < 0.6 ? 'Sell ' + hc + ' / buy GBP' : 'Buy ' + hc + ' / sell GBP',
+      notional: notional, gbp: round(toGBP(notional, hc), 0), rate: round(FX[hc] * between(0.985, 1.015), 4), maturity: iso(hm),
+      mtm: round(toGBP(notional, hc) * between(-0.03, 0.03), 0), counterparty: pick(['HSBC Bank plc', 'HSBC Bank USA', 'HSBC Singapore', 'HSBC Hong Kong']) });
+  }
+
+  /* ---------- trade finance instruments */
+  var TF_TYPES = ['Import letter of credit', 'Export letter of credit', 'Standby letter of credit', 'Bank guarantee', 'Documentary collection'];
+  var TF_STATUS = ['Issued', 'Issued', 'Documents presented', 'Discrepancy raised', 'Amendment requested', 'Settled', 'Expiring soon'];
+  var TRADE = [];
+  for (var t = 0; t < 40; t++) {
+    var te = pick(ENTITIES), tt = pick(TF_TYPES), tc = pick([te.ccy, 'USD', 'USD', 'EUR']);
+    var issued = new Date(AS_OF + 'T12:00:00Z'); issued.setUTCDate(issued.getUTCDate() - Math.floor(between(3, 150)));
+    var expiry = new Date(issued); expiry.setUTCDate(expiry.getUTCDate() + Math.floor(between(60, 300)));
+    var tamt = round(Math.exp(between(Math.log(0.3e6), Math.log(22e6))) * FX[tc], -2), ts = pick(TF_STATUS);
+    var prefix = { 'Import letter of credit': 'ILC', 'Export letter of credit': 'ELC', 'Standby letter of credit': 'SBLC', 'Bank guarantee': 'BG', 'Documentary collection': 'DC' }[tt];
+    var region = te.region, cp = pick(CPTY[pick(['uk', 'eu', 'am', 'ap', 'me'])]);
+    var ev = [{ date: iso(issued), title: 'Application approved and ' + (tt === 'Documentary collection' ? 'collection lodged' : 'instrument issued'), tone: 'ok' }];
+    var mid = new Date(issued); mid.setUTCDate(mid.getUTCDate() + 20);
+    if (ts !== 'Issued' && ts !== 'Expiring soon') { ev.push({ date: iso(mid), title: 'Shipping documents received by HSBC', tone: 'inf' }); }
+    if (ts === 'Discrepancy raised') { ev.push({ date: iso(mid), title: 'Discrepancy: late shipment date on bill of lading', tone: 'warn' }); }
+    if (ts === 'Amendment requested') { ev.push({ date: iso(mid), title: 'Beneficiary requested an expiry extension', tone: 'warn' }); }
+    if (ts === 'Settled') { ev.push({ date: iso(mid), title: 'Payment settled to beneficiary', tone: 'ok' }); }
+    TRADE.push({ id: prefix + '-' + String(55000 + t * 13), type: tt, entity: te.id, counterparty: cp, ccy: tc, amount: tamt, gbp: round(toGBP(tamt, tc), 0),
+      issued: iso(issued), expiry: iso(expiry), status: ts, events: ev, flow: /Export/.test(tt) ? 'Export' : /Import|Documentary/.test(tt) ? 'Import' : 'Guarantee' });
+  }
+
+  /* ---------- reports */
+  var REPORTS = [
+    { id: 'RPT-01', name: 'Group liquidity position', category: 'Liquidity', frequency: 'Daily', format: 'CSV' },
+    { id: 'RPT-02', name: 'Thirteen-week cash forecast', category: 'Liquidity', frequency: 'Weekly', format: 'CSV' },
+    { id: 'RPT-03', name: 'Facility utilisation and covenants', category: 'Funding', frequency: 'Monthly', format: 'CSV' },
+    { id: 'RPT-04', name: 'Counterparty exposure', category: 'Risk', frequency: 'Daily', format: 'CSV' },
+    { id: 'RPT-05', name: 'Net FX open positions', category: 'Risk', frequency: 'Daily', format: 'CSV' },
+    { id: 'RPT-06', name: 'Payments approved and released', category: 'Payments', frequency: 'Daily', format: 'CSV' },
+    { id: 'RPT-07', name: 'Trade finance instruments outstanding', category: 'Trade', frequency: 'Weekly', format: 'CSV' },
+    { id: 'RPT-08', name: 'Board treasury pack', category: 'Board', frequency: 'Monthly', format: 'CSV' },
+    { id: 'RPT-09', name: 'Bank account signatories', category: 'Governance', frequency: 'Quarterly', format: 'CSV' },
+    { id: 'RPT-10', name: 'Hedge effectiveness', category: 'Risk', frequency: 'Monthly', format: 'CSV' },
+    { id: 'RPT-11', name: 'Intercompany balances', category: 'Liquidity', frequency: 'Weekly', format: 'CSV' },
+    { id: 'RPT-12', name: 'Exceptions and acknowledgements audit', category: 'Governance', frequency: 'On demand', format: 'CSV' }
+  ];
+  var REPORT_RUNS = [];
+  DAYS.forEach(function (d) { REPORTS.forEach(function (r) {
+    var p = { Daily: 0.95, Weekly: 0.16, Monthly: 0.04, Quarterly: 0.01, 'On demand': 0.1 }[r.frequency];
+    if (R() < p) { REPORT_RUNS.push({ report: r.id, date: d, seconds: round(between(4, 70) * (r.category === 'Board' ? 3 : 1), 1), by: R() < 0.8 ? 'Scheduled' : 'Group treasury' }); }
+  }); });
+
+  /* ---------- HSBC messages and service requests */
+  var MESSAGES = [
+    { id: 'MSG-301', from: 'Your relationship director', subject: 'Revolving facility extension — indicative terms', category: 'Action required', date: '2026-09-25', body: 'Following the treasury committee, we have attached indicative terms for a one-year extension option on the £500m revolving credit facility. Please confirm whether you would like us to proceed to credit approval.' },
+    { id: 'MSG-302', from: 'HSBC Global Research', subject: 'Sterling outlook into the November budget', category: 'Market insight', date: '2026-09-25', body: 'Our FX strategists expect sterling to trade in a narrow range against the dollar ahead of the Autumn Budget. This note sets out the scenarios we are watching.' },
+    { id: 'MSG-303', from: 'Liquidity management service', subject: 'Euro sweep structure — second counterparty onboarding', category: 'Service update', date: '2026-09-24', body: 'The onboarding of the second euro sweep bank is complete on our side. Your Europe finance team needs to sign the updated mandate.' },
+    { id: 'MSG-304', from: 'Trade services, Hong Kong', subject: 'Discrepancy notice on an import letter of credit', category: 'Action required', date: '2026-09-24', body: 'Documents presented under your import letter of credit show a shipment date after the latest date allowed. Please tell us whether to accept the discrepancy.' },
+    { id: 'MSG-305', from: 'Payments operations', subject: 'Cut-off times for the UK bank holiday', category: 'Service update', date: '2026-09-23', body: 'Revised cut-off times apply to sterling payments ahead of the bank holiday. Payments submitted after 15:00 will be processed on the next business day.' },
+    { id: 'MSG-306', from: 'Know your customer team', subject: 'Beneficial ownership declaration for Shanghai entity', category: 'Action required', date: '2026-09-22', body: 'We still need the updated beneficial ownership declaration for Harbourline (Shanghai) Co Ltd. Accounts may be restricted if it is not received by 15 October.' },
+    { id: 'MSG-307', from: 'HSBC Global Research', subject: 'Asia supply chains: third-quarter review', category: 'Market insight', date: '2026-09-21', body: 'A review of freight rates, port throughput and working capital trends across Asia-Pacific supply chains.' },
+    { id: 'MSG-308', from: 'Statements service', subject: 'August statements are ready', category: 'Statement ready', date: '2026-09-19', body: 'Statements for all 29 accounts for August are ready to download from Reports.' },
+    { id: 'MSG-309', from: 'Your relationship director', subject: 'Mexican peso hedging capacity', category: 'Market insight', date: '2026-09-18', body: 'We can extend forward capacity on the peso to twelve months. Happy to walk the Americas finance team through pricing.' },
+    { id: 'MSG-310', from: 'Cyber security', subject: 'Reminder: HSBC will never ask for your security codes', category: 'Service update', date: '2026-09-16', body: 'We have seen an increase in impersonation attempts targeting treasury teams. HSBC will never ask you to share a security code or approve a payment you did not start.' },
+    { id: 'MSG-311', from: 'Trade services, London', subject: 'Standby letter of credit renewal', category: 'Action required', date: '2026-09-15', body: 'A standby letter of credit supporting your UK property lease expires in 60 days. Please confirm renewal instructions.' },
+    { id: 'MSG-312', from: 'Liquidity management service', subject: 'Interest rate change on deposit accounts', category: 'Service update', date: '2026-09-12', body: 'Following the policy rate decision, rates on your call deposit accounts change from 1 October.' },
+    { id: 'MSG-313', from: 'Statements service', subject: 'Facility interest advice — September', category: 'Statement ready', date: '2026-09-10', body: 'Interest advices for your facilities are available for September.' },
+    { id: 'MSG-314', from: 'HSBC Global Research', subject: 'Middle East growth and dirham liquidity', category: 'Market insight', date: '2026-09-08', body: 'A look at regional liquidity conditions and what they mean for corporate deposits and funding.' },
+    { id: 'MSG-315', from: 'Payments operations', subject: 'Confirmation of payee now live for euro payments', category: 'Service update', date: '2026-09-05', body: 'Name checks now run on euro payments to beneficiaries in the eurozone. Mismatches will be shown before you approve.' },
+    { id: 'MSG-316', from: 'Your relationship director', subject: 'Agenda for the quarterly review', category: 'Action required', date: '2026-09-02', body: 'Please share any topics you would like to add to the agenda for the quarterly relationship review on 14 October.' }
+  ];
+  var SR_TYPES = ['Mandate change', 'User access', 'Payment investigation', 'Statement copy', 'Facility amendment', 'KYC document'];
+  var SR_STATUS = ['Submitted', 'In progress', 'Awaiting your input', 'Completed'];
+  var REQUESTS = [];
+  for (var s = 0; s < 16; s++) {
+    var se = pick(ENTITIES), opened = new Date(AS_OF + 'T12:00:00Z'); opened.setUTCDate(opened.getUTCDate() - Math.floor(between(0, 29)));
+    var st2 = s < 3 ? 'Awaiting your input' : pick(SR_STATUS), ty = pick(SR_TYPES);
+    var upd = new Date(opened); upd.setUTCDate(upd.getUTCDate() + Math.floor(between(0, 4)));
+    if (upd > new Date(AS_OF + 'T12:00:00Z')) { upd = new Date(AS_OF + 'T12:00:00Z'); }
+    REQUESTS.push({ id: 'SR-' + String(20450 + s * 17), type: ty, entity: se.id, subject: ty + ' — ' + se.short, opened: iso(opened), updated: iso(upd),
+      status: st2, sla: { 'Mandate change': 5, 'User access': 2, 'Payment investigation': 3, 'Statement copy': 1, 'Facility amendment': 10, 'KYC document': 5 }[ty], priority: pick(['Normal', 'Normal', 'High']),
+      events: [{ date: iso(opened), title: 'Request submitted', tone: 'inf' }].concat(st2 !== 'Submitted' ? [{ date: iso(upd), title: st2 === 'Completed' ? 'Request completed by HSBC' : st2 === 'Awaiting your input' ? 'HSBC asked for more information' : 'Assigned to a service specialist', tone: st2 === 'Completed' ? 'ok' : st2 === 'Awaiting your input' ? 'warn' : 'inf' }] : []) });
+  }
+
+  return {
+    AS_OF: AS_OF, AS_OF_TIME: AS_OF_TIME, DAYS: DAYS, SESSIONS: SESSIONS, FX: FX, CCYS: CCYS, REGIONS: REGIONS, ENTITIES: ENTITIES, ENT: ENT,
+    ACCOUNTS: ACCOUNTS, FACILITIES: FACILITIES, POLICY_BUFFER_GBP: POLICY_BUFFER_GBP, COMMITMENTS: COMMITMENTS, TRANSACTIONS: TRANSACTIONS,
+    PAYMENTS: PAYMENTS, POSITIONS: POSITIONS, REGION_LIMITS: REGION_LIMITS, CCY_LIMITS: CCY_LIMITS, COUNTERPARTIES: COUNTERPARTIES,
+    EXCEPTIONS: EXCEPTIONS, FX_SERIES: FX_SERIES, HEDGES: HEDGES, TRADE: TRADE, REPORTS: REPORTS, REPORT_RUNS: REPORT_RUNS,
+    MESSAGES: MESSAGES, REQUESTS: REQUESTS, toGBP: toGBP
+  };
+}());
+
+</script>
+<script>
+/* ===== APP CORE — authored JavaScript (s258-D1: the author writes the wiring the snippets cannot
+   know about). Wires, by DELEGATION at the document (rule 14), every control the pages render from
+   DATA: the shared entity / region / date filters, persistence (URL query + localStorage, rule 15),
+   the theme switch, dropdown menus, the drawer, the modal, toasts, the records grid, CSV export and
+   the chart calls into the pack's own engine (window.dvRender — canon/dv-render.js, spliced).
+   Markup it writes is the markup of the named snippets, by class: Data-grid, Filter-toolbar-bar,
+   Drawer, Modals, Toast, Status-indicator, Summary, Input-fields, Textarea, Selection-controls,
+   Segmented-control, Kpi-tile (Template-dashboard-bento form), Timeline, Limits-meter, Alert. ===== */
+var APP = (function () {
+  'use strict';
+  var D = DATA;
+  var PAGE = document.documentElement.getAttribute('data-page');
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var SYM = { GBP: '£', EUR: '€', USD: '$', SGD: 'S$', HKD: 'HK$', AED: 'AED ', MXN: 'MX$', CNY: 'CN¥' };
+
+  /* ---------- formatting */
+  var F = {
+    date: function (iso) { if (!iso) { return '—'; } var p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1] - 1] + ' ' + p[0]; },
+    dshort: function (iso) { var p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1] - 1]; },
+    num: function (v, d) { return Number(v).toLocaleString('en-GB', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); },
+    gbpM: function (v) { return (v < 0 ? '−' : '') + '£' + F.num(Math.abs(v) / 1e6, 1) + 'm'; },
+    m: function (v) { return F.num(v / 1e6, 1); },
+    money: function (v, ccy) { return (v < 0 ? '−' : '') + (SYM[ccy] || ccy + ' ') + F.num(Math.abs(v), 2); },
+    moneyM: function (v, ccy) { return (v < 0 ? '−' : '') + (SYM[ccy] || ccy + ' ') + F.num(Math.abs(v) / 1e6, 2) + 'm'; },
+    pct: function (v, d) { return F.num(v, d == null ? 1 : d) + '%'; },
+    signedPct: function (v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + F.num(Math.abs(v), 1) + '%'; }
+  };
+
+  /* ---------- persistence: URL query (shareable) + localStorage (survives reload and page change) */
+  var KEY = 'hsbc-ceo-proto.v1', WKEY = 'hsbc-ceo-proto.v1.work';
+  function load(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode: state lives in the URL only */ } }
+  var stored = load(KEY);
+  var q = new URLSearchParams(location.search);
+  var S = {
+    entity: q.get('entity') || stored.entity || 'all',
+    region: q.get('region') || stored.region || 'all',
+    days: +(q.get('days') || stored.days || 30),
+    theme: stored.theme || 'light',
+    nav: stored.nav || 'auto'
+  };
+  if ([7, 14, 30].indexOf(S.days) < 0) { S.days = 30; }
+  if (S.entity !== 'all' && !D.ENT[S.entity]) { S.entity = 'all'; }
+  if (S.region !== 'all' && !D.REGIONS.some(function (r) { return r.id === S.region; })) { S.region = 'all'; }
+  if (S.entity !== 'all' && S.region !== 'all' && D.ENT[S.entity].region !== S.region) { S.entity = 'all'; }   /* a drill-through region wins */
+  var PS = (stored.pages && stored.pages[PAGE]) || {};          /* page-specific state */
+  q.forEach(function (v, k) { if (k.indexOf('p.') === 0) { PS[k.slice(2)] = v; } });
+  var W = load(WKEY);                                           /* workflow record: approvals, acknowledgements, requests */
+  ['pay', 'exc', 'msg'].forEach(function (k) { W[k] = W[k] || {}; });
+  ['sr', 'audit', 'runs'].forEach(function (k) { W[k] = W[k] || []; });
+
+  function persist() {
+    var all = load(KEY); all.entity = S.entity; all.region = S.region; all.days = S.days; all.theme = S.theme; all.nav = S.nav;
+    all.pages = all.pages || {}; all.pages[PAGE] = PS; save(KEY, all);
+    var u = new URLSearchParams();
+    if (S.entity !== 'all') { u.set('entity', S.entity); }
+    if (S.region !== 'all') { u.set('region', S.region); }
+    if (S.days !== 30) { u.set('days', S.days); }
+    Object.keys(PS).forEach(function (k) { if (PS[k] !== '' && PS[k] != null) { u.set('p.' + k, PS[k]); } });
+    var s = u.toString();
+    history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash);
+    decorateLinks();
+  }
+  function saveWork() { save(WKEY, W); }
+  function shared() {
+    var u = new URLSearchParams();
+    if (S.entity !== 'all') { u.set('entity', S.entity); }
+    if (S.region !== 'all') { u.set('region', S.region); }
+    if (S.days !== 30) { u.set('days', S.days); }
+    return u.toString();
+  }
+  /* every in-app link carries the shared filters, so the filter state follows the reader across pages */
+  function decorateLinks() {
+    var s = shared();
+    $$('a[data-app-href]').forEach(function (a) {
+      var h = a.getAttribute('data-app-href'), parts = h.split('#'), base = parts[0], hash = parts[1] ? '#' + parts[1] : '';
+      var extra = new URLSearchParams(base.indexOf('?') > -1 ? base.slice(base.indexOf('?') + 1) : ''), u = new URLSearchParams(s);
+      extra.forEach(function (v, k) { u.set(k, v); });   /* a drill-through parameter overrides the carried filter */
+      var path = base.split('?')[0], qs = u.toString();
+      a.setAttribute('href', path + (qs ? '?' + qs : '') + hash);
+    });
+  }
+
+  /* ---------- scope: entity / region / date filters */
+  function inScope(entityId) {
+    var e = D.ENT[entityId]; if (!e) { return false; }
+    if (S.entity !== 'all' && S.entity !== entityId) { return false; }
+    if (S.region !== 'all' && S.region !== e.region) { return false; }
+    return true;
+  }
+  function scopedEntities() { return D.ENTITIES.filter(function (e) { return inScope(e.id); }); }
+  function dayIdx() { var out = []; for (var i = 30 - S.days; i < 30; i++) { out.push(i); } return out; }
+  function days() { return dayIdx().map(function (i) { return D.DAYS[i]; }); }
+  function inWindow(iso) { return iso >= D.DAYS[30 - S.days] && iso <= D.AS_OF; }
+  function scopeLabel() {
+    var e = S.entity !== 'all' ? D.ENT[S.entity].name : null, r = S.region !== 'all' ? regionName(S.region) : null;
+    return (e || (r ? r + ' entities' : 'All entities')) + ' · last ' + S.days + ' days to ' + F.date(D.AS_OF);
+  }
+  function regionName(id) { var r = D.REGIONS.filter(function (x) { return x.id === id; })[0]; return r ? r.name : id; }
+
+  /* ---------- derived treasury figures, always from the rows (rule 13: never a hard-coded total) */
+  var calc = {
+    cashSeries: function () {   /* daily cash, £, over the window, for entities in scope */
+      return dayIdx().map(function (i) { return D.ACCOUNTS.reduce(function (a, ac) { return inScope(ac.entity) ? a + D.toGBP(ac.balances[i], ac.ccy) : a; }, 0); });
+    },
+    undrawnSeries: function () {
+      return dayIdx().map(function (i) { return D.FACILITIES.reduce(function (a, f) { return inScope(f.entity) && f.committed ? a + D.toGBP(f.limit - f.drawnSeries[i], f.ccy) : a; }, 0); });
+    },
+    commitments: function () { return D.COMMITMENTS.reduce(function (a, c) { return inScope(c.entity) ? a + D.toGBP(c.amount, c.ccy) : a; }, 0); },
+    buffer: function () {  /* policy buffer allocated by share of group cash */
+      var all = D.ACCOUNTS.reduce(function (a, ac) { return a + D.toGBP(ac.balances[29], ac.ccy); }, 0);
+      var mine = D.ACCOUNTS.reduce(function (a, ac) { return inScope(ac.entity) ? a + D.toGBP(ac.balances[29], ac.ccy) : a; }, 0);
+      return D.POLICY_BUFFER_GBP * (all ? mine / all : 0);
+    },
+    liquiditySeries: function () { var c = calc.cashSeries(), u = calc.undrawnSeries(); return c.map(function (v, i) { return v + u[i]; }); },
+    headroomSeries: function () { var l = calc.liquiditySeries(), b = calc.buffer(), cm = calc.commitments(); return l.map(function (v) { return v - b - cm; }); },
+    exposureByRegionCcy: function () {  /* net exposure, £, positions of in-scope entities */
+      var out = {};
+      D.POSITIONS.forEach(function (p) { if (!inScope(p.entity)) { return; } var r = D.ENT[p.entity].region; out[r] = out[r] || {}; out[r][p.ccy] = (out[r][p.ccy] || 0) + p.gbp; });
+      return out;
+    },
+    payments: function () { return D.PAYMENTS.map(function (p) { var w = W.pay[p.id]; return w ? Object.assign({}, p, { status: w.status, decidedAt: w.at, note: w.note, reason: w.reason }) : p; }); },
+    exceptions: function () { return D.EXCEPTIONS.map(function (x) { var w = W.exc[x.id]; return Object.assign({}, x, { status: w && w.length ? 'Acknowledged' : 'Open', notes: w || [] }); }); },
+    requests: function () { return W.sr.concat(D.REQUESTS); }
+  };
+
+  /* ---------- toasts (Toast snippet markup; polite live region) */
+  function toast(msg, kind) {
+    var host = $('#toasts'); if (!host) { return; }
+    var k = kind || 'ok', ic = { ok: 'to-success', info: 'to-info', warn: 'to-warning' }[k];
+    var t = document.createElement('div');
+    t.className = 'toast ' + k; t.setAttribute('role', 'status'); t.setAttribute('data-carries', 'symbol label');
+    t.innerHTML = '<span class="ic"><svg aria-hidden="true"><use href="#' + ic + '"/></svg></span><p class="msg t-ed-body">' + esc(msg) + '</p>' +
+      '<button class="x" type="button" aria-label="Dismiss message" data-action="toast-close"><svg aria-hidden="true"><use href="#to-close"/></svg></button>';
+    host.appendChild(t);
+    var timer = setTimeout(function () { close(); }, 6000);
+    t.addEventListener('mouseenter', function () { clearTimeout(timer); });
+    t.addEventListener('mouseleave', function () { timer = setTimeout(close, 3000); });
+    function close() { t.classList.add('leaving'); setTimeout(function () { t.remove(); }, 220); }
+    t.__close = close;
+  }
+
+  /* ---------- modal (Modals snippet: .overlay > .dialog; inert page, focus trap, Esc, return focus) */
+  var lastFocus = null;
+  function openModal(o) {
+    var ov = $('#modal'), dlg = $('.dialog', ov);
+    $('#modal-t').textContent = o.title;
+    $('#modal-b').innerHTML = o.body;
+    $('#modal-a').innerHTML = (o.actions || []).map(function (a) {
+      return '<button class="btn ' + (a.kind || 'secondary') + '" type="button" data-modal-act="' + a.id + '">' + esc(a.label) + '</button>';
+    }).join('');
+    ov.__on = o.onAction || function () {};
+    lastFocus = document.activeElement;
+    ov.classList.add('open'); ov.removeAttribute('hidden');
+    $('#shell').inert = true;
+    var f = $('input, textarea, select, button[data-modal-act]', dlg);
+    /* the overlay's visibility transitions in; focus lands once it is visible */
+    setTimeout(function () { (f || dlg).focus(); }, 40);
+  }
+  var lastRecord = null;
+  /* focus goes back to what opened the layer; when that was re-rendered (a decision re-draws the
+     grid) or never existed (a record opened from the URL), to the record's row, else to <main> */
+  function refocus(el) {
+    if (el && el !== document.body && document.contains(el) && el.focus) { el.focus(); return; }
+    var row = lastRecord && document.querySelector('tr[data-id="' + lastRecord + '"]');
+    (row || document.getElementById('main')).focus();
+  }
+  function closeModal() {
+    var ov = $('#modal'); ov.classList.remove('open'); ov.setAttribute('hidden', '');
+    $('#shell').inert = false; setTimeout(function () { refocus(lastFocus); }, 0);
+  }
+  /* ---------- drawer (Drawer snippet: .scrim + .sheet) */
+  var drawerFocus = null;
+  function openDrawer(o) {
+    $('#drawer-t').textContent = o.title;
+    $('#drawer-b').innerHTML = o.body;
+    $('#drawer-f').innerHTML = (o.actions || []).map(function (a) {
+      return '<button class="dbtn ' + (a.kind || 'secondary') + ' t-cm-button t-cm-slot" type="button" data-drawer-act="' + a.id + '">' + esc(a.label) + '</button>';
+    }).join('');
+    $('#drawer').__on = o.onAction || function () {};
+    drawerFocus = document.activeElement;
+    $('#scrim').classList.add('open'); $('#drawer').classList.add('open');
+    $('#shell').inert = true;
+    setTimeout(function () { $('#drawer .close').focus(); }, 40);   /* after the sheet's visibility transition */
+    if (o.id) { PS.open = o.id; lastRecord = o.id; persist(); }
+  }
+  function closeDrawer() {
+    $('#scrim').classList.remove('open'); $('#drawer').classList.remove('open');
+    $('#shell').inert = false; refocus(drawerFocus);
+    if (PS.open) { delete PS.open; persist(); }
+  }
+  /* a longer form (many options) goes in the Drawer's scrolling side sheet, not the Modal — the
+     modal's dialog does not scroll, so it is kept for short confirmations */
+  function openForm(o) {
+    openDrawer({ title: o.title, body: o.body, actions: o.actions, onAction: function (a) {
+      if (a === 'cancel') { closeDrawer(); return; }
+      if (o.onAction(a) !== false) { closeDrawer(); }
+    } });
+  }
+  function trap(e, root) {
+    if (e.key !== 'Tab') { return; }
+    var f = $$('a[href], button:not([disabled]), input:not([disabled]), textarea, select, [tabindex="0"]', root).filter(function (x) { return x.offsetParent !== null; });
+    if (!f.length) { return; }
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  /* ---------- markup helpers (snippet classes) */
+  var H = {
+    stat: function (tone, label) { return '<span class="cn-status-indicator"><span class="stat ' + tone + '" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">' + esc(label) + '</span></span></span>'; },
+    summary: function (rows) {
+      return '<div class="cn-summary"><dl class="summary">' + rows.map(function (r) {
+        return '<div class="summary__row' + (r.total ? ' summary__row--total' : '') + '"><dt class="summary__k">' + esc(r.k) + '</dt><dd class="summary__v">' + (r.html || esc(r.v)) + '</dd></div>';
+      }).join('') + '</dl></div>';
+    },
+    field: function (o) {   /* Input-fields boxed field */
+      return '<div class="cn-input-fields"><div class="field' + (o.error ? ' is-error' : '') + '" data-field="' + o.id + '"><div class="lbl"><label for="' + o.id + '">' + esc(o.label) + '</label></div>' +
+        (o.help ? '<p class="help-text" id="' + o.id + '-help">' + esc(o.help) + '</p>' : '') +
+        '<div class="box">' + (o.prefix ? '<span class="prefix" aria-hidden="true">' + esc(o.prefix) + '</span>' : '') +
+        '<input id="' + o.id + '" type="text" ' + (o.inputmode ? 'inputmode="' + o.inputmode + '" ' : '') + 'value="' + esc(o.value || '') + '"' + (o.help ? ' aria-describedby="' + o.id + '-help"' : '') + '></div>' +
+        '<div class="err-msg" hidden><span class="ic" aria-hidden="true"><svg class="icn" viewBox="0 0 18 18"><use href="#ic-error"/></svg></span><p id="' + o.id + '-err"></p></div></div></div>';
+    },
+    textarea: function (o) {
+      return '<div class="cn-textarea"><div class="tx-group" data-field="' + o.id + '"><div class="tx-lblrow"><label class="t-cm-label" for="' + o.id + '">' + esc(o.label) + '</label>' + (o.optional ? '<span class="tx-opt t-cm-caption">(optional)</span>' : '') + '</div>' +
+        '<div class="tx-box"><textarea id="' + o.id + '" class="t-ed-body" maxlength="' + (o.max || 500) + '" rows="' + (o.rows || 4) + '" aria-describedby="' + o.id + '-help ' + o.id + '-count"></textarea></div>' +
+        '<div class="tx-foot"><p class="tx-help t-ed-body-small" id="' + o.id + '-help">' + esc(o.help || '') + '</p><span class="tx-count t-cm-legal" id="' + o.id + '-count">0/' + (o.max || 500) + '</span></div>' +
+        '<p class="err-msg t-ed-body-small" id="' + o.id + '-err" hidden></p></div></div>';
+    },
+    check: function (o) {
+      return '<div class="cn-selection-controls"><div class="sc"><div class="field" data-field="' + o.id + '"><input type="checkbox" id="' + o.id + '"' + (o.checked ? ' checked' : '') + (o.role ? ' role="' + o.role + '"' : '') + '><label for="' + o.id + '">' +
+        (o.role === 'switch' ? '<span class="switch"><span class="thumb"></span></span> ' : '<span class="box"><svg data-bespoke="checkbox tick, animated stroke-draw control glyph" viewBox="0 0 18 18"><path class="tick" d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></span> ') +
+        esc(o.label) + '</label></div><p class="err-msg" id="' + o.id + '-err" hidden></p></div></div>';
+    },
+    radios: function (o) {
+      return '<div class="cn-selection-controls"><div class="sc"><fieldset data-field="' + o.name + '"><legend>' + esc(o.legend) + '</legend>' + o.options.map(function (op, i) {
+        var id = o.name + '-' + i;
+        return '<div class="field"><input type="radio" name="' + o.name + '" id="' + id + '" value="' + esc(op.v) + '"' + (op.v === o.value ? ' checked' : '') + '><label for="' + id + '"><span class="radio"><span class="dot"></span></span> ' + esc(op.label) + '</label></div>';
+      }).join('') + '<p class="err-msg" id="' + o.name + '-err" hidden></p></fieldset></div></div>';
+    },
+    alert: function (tone, title, text) {
+      var ic = { err: 'al-error', warn: 'al-warning', ok: 'al-success', info: 'al-info' }[tone];
+      return '<div class="cn-alert"><div class="alert ' + tone + '" role="' + (tone === 'err' ? 'alert' : 'status') + '" data-carries="symbol label"><span class="ic"><svg aria-hidden="true"><use href="#' + ic + '"/></svg></span><p class="main t-ed-body"><strong class="em">' + esc(title) + '</strong> ' + esc(text) + '</p></div></div>';
+    },
+    timeline: function (items) {
+      return '<div class="cn-timeline"><section class="tl" aria-label="History"><div class="tl-group"><ol class="tl-list">' + items.map(function (it) {
+        return '<li class="' + (it.tone || 'inf') + '"><span class="tl-node" aria-hidden="true"></span><span class="tl-line"><span class="tl-title t-cm-ctl-14">' + esc(it.title) + '</span>' +
+          (it.amount ? '<span class="tl-amount t-cm-figure-6">' + esc(it.amount) + '</span>' : '') + '</span><span class="tl-meta"><time class="t-cm-legal" datetime="' + esc(it.date) + '">' + esc(it.when || F.date(it.date.slice(0, 10))) + '</time></span>' +
+          (it.desc ? '<p class="tl-desc t-ed-body-small">' + esc(it.desc) + '</p>' : '') + '</li>';
+      }).join('') + '</ol></div></section></div>';
+    },
+    limit: function (o) {   /* Limits-meter: ink on track, the word changes, not the hue */
+      var pct = Math.max(0, Math.min(100, o.used / o.limit * 100)), tone = pct >= 100 ? 'err' : pct >= 85 ? 'warn' : 'ok', id = 'lim-' + o.id;
+      return '<div class="cn-limits-meter"><div class="lim" role="group" aria-labelledby="' + id + '"><div class="lim-head"><span class="lim-label t-cm-label" id="' + id + '">' + esc(o.label) + '</span>' +
+        '<span class="chip ' + tone + '"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">' + esc(o.chip || (F.pct(o.used / o.limit * 100, 0) + ' used')) + '</span></span></div>' +
+        '<span class="amount amount--display t-cm-figure-4"><span>£</span><span>' + F.m(Math.max(0, o.limit - o.used)) + 'm</span></span><span class="lim-verdict t-cm-caption">' + esc(o.verdict || 'Headroom') + '</span>' +
+        '<div class="pb-track" role="progressbar" aria-labelledby="' + id + '" aria-valuenow="' + Math.round(o.used) + '" aria-valuemin="0" aria-valuemax="' + Math.round(o.limit) + '" aria-valuetext="' + esc(F.gbpM(o.used) + ' used of a ' + F.gbpM(o.limit) + ' limit') + '"><div class="pb-fill" style="width:' + pct.toFixed(2) + '%"></div></div>' +
+        '<div class="lim-legend"><span class="lim-key t-cm-legal"><span class="sw sw--used" aria-hidden="true"></span>Used <span class="v t-cm-figure-6">' + F.gbpM(o.used) + '</span></span><span class="lim-key t-cm-legal"><span class="sw sw--left" aria-hidden="true"></span>Limit <span class="v t-cm-figure-6">' + F.gbpM(o.limit) + '</span></span></div></div></div>';
+    }
+  };
+
+  /* ---------- KPI tile (Template-dashboard-bento's kpi-tile, compact); the spark is data-driven polyline */
+  function spark(vals) {
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), span = hi - lo || 1, n = vals.length;
+    var pts = vals.map(function (v, i) { return [(3 + 194 * i / (n - 1)).toFixed(1), (45 - 42 * (v - lo) / span).toFixed(1)]; });
+    return { pts: pts.map(function (p) { return p.join(','); }).join(' '), end: pts[pts.length - 1] };
+  }
+  function kpi(o) {
+    var first = o.series[0], last = o.series[o.series.length - 1], ch = first ? (last - first) / Math.abs(first) * 100 : 0;
+    var dir = Math.abs(ch) < 0.05 ? 'flat' : ch > 0 ? 'up' : 'down', sp = spark(o.series);
+    return '<div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="' + esc(o.label) + '" data-c="1" data-r="1" data-kpi="' + o.id + '">' +
+      '<p class="lbl16 t-cm-caption">' + esc(o.label) + '</p>' +
+      (o.count ? '<span class="amt t-cm-figure-3"><span>' + F.num(last) + '</span></span>' : '<span class="amt t-cm-figure-3"><span>' + (last < 0 ? '−£' : '£') + '</span><span>' + F.m(Math.abs(last)) + 'm</span></span>') +
+      '<span class="delta ' + dir + '" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-' + (dir === 'flat' ? 'up' : dir) + '"/></svg></span><span class="t-cm-figure-6">' + F.signedPct(ch) + ' ' + (dir === 'flat' ? 'flat' : dir) + '</span><span class="per t-cm-legal">vs ' + F.dshort(days()[0]) + '</span></span>' +
+      '<div class="kpi-spark"><svg class="spark-inline" data-trend="' + dir + '" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">' +
+      '<line class="dv-base" x1="3" y1="45" x2="197" y2="45"/><polyline class="dv-series" points="' + sp.pts + '"/><circle class="dv-end" cx="' + sp.end[0] + '" cy="' + sp.end[1] + '" r="3"/></svg></div>' +
+      '<button type="button" class="kpi-cta" aria-label="' + esc(o.label) + ', daily figures" data-action="kpi-table" data-kpi="' + o.id + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#kpi-table"/></svg></button></div>';
+  }
+  var KPI = {};
+  function renderKpis(host, list) {
+    list.forEach(function (k) { KPI[k.id] = k; });
+    host.innerHTML = list.map(kpi).join('');
+  }
+  function kpiTable(id) {
+    var k = KPI[id]; if (!k) { return; }
+    var ds = days();
+    openDrawer({ title: k.label + ' — daily, ' + scopeLabel(), body:
+      '<p class="t-ed-body-small">' + esc(k.note || '') + '</p><div class="cn-table"><div class="scroll" role="region" aria-label="' + esc(k.label) + ' by day" tabindex="0"><table><caption>' + esc(k.label) + ' by day' + (k.count ? '' : ', £ millions') + '</caption><thead><tr><th scope="col">Date</th><th scope="col" class="num">£m</th></tr></thead><tbody>' +
+      k.series.map(function (v, i) { return '<tr><th scope="row" data-first><span class="v">' + F.date(ds[i]) + '</span></th><td class="num"><span class="v">' + (k.count ? F.num(v) : F.m(v)) + '</span></td></tr>'; }).reverse().join('') + '</tbody></table></div></div>',
+      actions: [{ id: 'csv', label: 'Export CSV', kind: 'primary' }, { id: 'close', label: 'Close' }],
+      onAction: function (a) { if (a === 'csv') { csv(k.label.toLowerCase().replace(/\W+/g, '-') + '.csv', [['Date', k.label + ' (GBP m)']].concat(k.series.map(function (v, i) { return [ds[i], F.m(v).replace(/,/g, '')]; }))); } else { closeDrawer(); } } });
+  }
+
+  /* ---------- CSV export (a real file, built from the rows the reader is looking at) */
+  function csv(name, rows) {
+    var body = rows.map(function (r) { return r.map(function (c) { c = String(c == null ? '' : c); return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c; }).join(','); }).join('\n');
+    var url = URL.createObjectURL(new Blob([body], { type: 'text/csv' })), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    W.audit.unshift({ at: new Date().toISOString(), what: 'Exported ' + name + ' (' + (rows.length - 1) + ' rows)' }); saveWork();
+    toast('Exported ' + (rows.length - 1) + ' rows to ' + name, 'ok');
+  }
+
+  /* ---------- charts: figure skeletons in the chart snippets' own grammar, drawn by dvRender */
+  var CSVBTN = "<button type=\"button\" class=\"dv-vt dv-act dv-csv t-cm-chart-label\"><svg class=\"dv-ico dv-ico-copy\" viewBox=\"0 0 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z\" fill=\"currentColor\"/></svg><svg class=\"dv-ico dv-ico-tick\" viewBox=\"0 0 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z\" fill=\"currentColor\"/></svg><span>Copy data (CSV)</span></button>", SUMM = "<summary class=\"dv-tbl-toggle dv-vt dv-dd t-cm-chart-label\" aria-controls=\"%ID%-tbl\"><span>View as table</span><svg class=\"dv-ico dv-ico-arrow\" viewBox=\"0 0 18 18\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M2 6H16L9 13L2 6Z\" fill=\"currentColor\"/></svg></summary>";
+  /* the chart snippets' scope classes, written out whole so every class name on the page is a literal */
+  var SCOPE = { column: 'cn-chart-bar', bar: 'cn-chart-bar', 'grouped-column': 'cn-chart-bar', 'stacked-column': 'cn-chart-bar', line: 'cn-chart-line', multiline: 'cn-chart-line',
+    'stacked-area': 'cn-chart-stacked-area', donut: 'cn-chart-donut', pie: 'cn-chart-pie', combo: 'cn-chart-combo', bullet: 'cn-chart-bullet', candlestick: 'cn-chart-candlestick',
+    scatter: 'cn-chart-scatter', boxplot: 'cn-chart-boxplot', histogram: 'cn-chart-histogram', 'butterfly-h': 'cn-chart-butterfly-h', 'butterfly-v': 'cn-chart-butterfly-v', spark: 'cn-chart-sparkline' };
+  var LETTERS = 'ABCDEFGHIJ';
+  function legend(id, names, pal) {
+    return '<ul class="dv-leg ' + (pal === 'vert' ? 'vert' : 'center') + ' t-cm-chart-label" id="' + id + '-legend" role="group" aria-label="Series — uncheck a swatch to dim it, click a name to isolate — then check swatches to add — Reset to show all">' +
+      names.map(function (n, i) {
+        var sc = 'var(--data-series-' + ((i % 5) + 1) + ')';
+        return '<li class="dv-legrow" data-series="' + (i + 1) + '"><span class="dv-leg-sw" role="checkbox" aria-checked="true" tabindex="0" aria-label="Show or hide ' + esc(n) + '" style="--sc:' + sc + '"></span><button type="button" class="dv-leg-item t-cm-chart-label" data-series="' + (i + 1) + '" aria-pressed="false" aria-label="Isolate ' + esc(n) + '"><span class="dv-key t-cm-chart-key">' + LETTERS[i] + '</span><span class="dv-leg-name">' + esc(n) + '</span></button></li>';
+      }).join('') + '<li class="dv-leg-reset-wrap"><button type="button" class="dv-leg-reset t-cm-chart-label" data-for="' + id + '-legend" disabled>Reset</button></li></ul><p class="dv-sr" id="' + id + '-live" role="status" aria-live="polite"></p>';
+  }
+  function figure(c) {
+    var t = c.type, id = c.id, radial = t === 'donut' || t === 'pie', dvt = t === 'spark' ? 'spark' : t;
+    var svg;
+    if (radial) { svg = '<svg class="dv-svg" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 300 260" width="300" height="260" role="group" aria-label="' + esc(c.caption) + '"></svg>'; }
+    else if (t === 'bullet') { svg = '<svg class="dv-svg dv-fit" data-pl="120" data-pl-fit="text.dv-label" data-pr="12" data-h="' + (c.h || 200) + '" data-pt="4" data-pb="16" data-h-min="' + (c.h || 200) + '" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 ' + (c.h || 200) + '" role="group" aria-label="' + esc(c.caption) + '"></svg>'; }
+    else if (t === 'spark') { svg = '<svg class="dv-svg spark-standalone" data-trend="flat" data-pl="4" data-pr="4" data-pt="4" data-pb="4" data-h="90" data-h-min="90" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 90" preserveAspectRatio="none" role="group" aria-label="' + esc(c.caption) + '"></svg>'; }
+    else {
+      var pl = t === 'bar' ? 46 : /butterfly-h/.test(t) ? 60 : 46, pr = t === 'combo' ? 44 : /butterfly-h/.test(t) ? 60 : 12;
+      svg = '<svg class="dv-svg dv-fit" data-pl="' + pl + '"' + (t === 'bar' ? ' data-pl-fit="text.dv-label"' : '') + ' data-pr="' + pr + '" data-h="' + (c.h || 260) + '" data-pt="14" data-pb="30" data-h-min="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 ' + (c.h || 260) + '" role="group" aria-label="' + esc(c.caption) + '"></svg>';
+    }
+    var head = t === 'spark' ? '' :
+      '<div class="dv-head"><h3 class="dv-title t-cm-section-label">' + esc(c.title) + '</h3>' + (c.note ? '<span class="t-cm-caption">' + esc(c.note) + '</span>' : '') + '<div class="dv-controls" role="group" aria-label="Chart tools">' + (c.controls || '') + CSVBTN +
+      '<details class="dv-tbl">' + SUMM.replace('%ID%', id) + '<div class="dv-tablepanel" id="' + id + '-tbl" role="region" aria-label="' + esc(c.caption) + ', data table" tabindex="-1"><table class="dv-table t-cm-legal"><caption>' + esc(c.caption) + '</caption></table></div></details></div></div>';
+    var leg = c.legend ? legend(id, c.legend, radial ? 'vert' : 'center') : '';
+    var stage = radial ? '<div class="dv-stage"><div class="dv-donut-row">' + svg + leg + '</div></div>' :
+      t === 'spark' ? '<div class="dv-stage">' + svg + '</div><div class="dv-tablepanel sr-only" role="region" aria-label="' + esc(c.caption) + ', data table"><table class="dv-table t-cm-legal"><caption>' + esc(c.caption) + '</caption></table></div>' :
+      '<div class="dv-stage"><div class="dv-chart-area">' + svg + '</div></div>' + leg;
+    var extra = '';
+    if (t === 'donut' || t === 'pie') { extra = ' data-total="0" data-labelling="spider"'; }
+    if (c.max != null) { extra += ' data-domain-max="' + c.max + '"'; }
+    var dmin = /candlestick|scatter|line|multiline|spark|combo/.test(t) ? '' : ' data-domain-min="0"';
+    return '<div class="' + SCOPE[t] + ' ceo-chart"><figure class="dv dv-fit-on' + (t === 'donut' ? '' : ' dv-animate') + '" id="' + id + '" data-dv-type="' + dvt + '"' + dmin + extra + ' data-surface="page" role="group" aria-labelledby="' + id + '-h"' +
+      (t === 'spark' ? '' : ' data-lockup-title="' + esc(c.title) + '" data-lockup-table="' + id + '-tbl"') + '><figcaption id="' + id + '-h" class="sr-only">' + esc(c.caption) + '</figcaption>' + head + stage + (c.after || '') + '</figure></div>';
+  }
+  var CHARTS = {};
+  function mountChart(host, c) { host.innerHTML = figure(c); CHARTS[c.id] = c; }
+  function drawChart(id, spec) {
+    var fig = document.getElementById(id); if (!fig || !window.dvRender) { return; }
+    try {
+      if (spec.type === 'donut' || spec.type === 'pie') { fig.setAttribute('data-total', String(Math.round(spec.series[0].values.reduce(function (a, b) { return a + b; }, 0) * 10) / 10)); }
+      window.dvRender(fig, spec);
+      if (fig.__dvLegendReset) { fig.__dvLegendReset(); }
+      var lg = fig.querySelector('.dv-leg'); if (lg && lg.__dv) { delete lg.__dv; }
+      var empty = fig.querySelector('.ceo-empty'); if (empty) { empty.remove(); }
+    } catch (err) { console.warn(err); }
+  }
+  function emptyChart(id, text) {
+    var fig = document.getElementById(id); if (!fig) { return; }
+    var svg = fig.querySelector('svg.dv-svg'); if (svg) { svg.innerHTML = ''; }
+    var t = fig.querySelector('table.dv-table'); if (t) { t.innerHTML = '<caption>No data in scope</caption>'; }
+    if (!fig.querySelector('.ceo-empty')) {
+      fig.insertAdjacentHTML('beforeend', '<div class="ceo-empty"><div class="cn-empty-state"><div class="empty"><h3 class="t-cm-caption">No data to display</h3><p class="t-cm-legal">' + esc(text || 'Nothing in the current entity, region and date filters.') + '</p></div></div></div>');
+    }
+  }
+
+  /* ---------- records grid (Data-grid markup; sort, search, page, open-a-record) */
+  var GRIDS = {};
+  function grid(host, g) {
+    GRIDS[g.id] = g;
+    g.state = { q: PS[g.id + '.q'] || '', sort: PS[g.id + '.sort'] || g.sort || '', dir: PS[g.id + '.dir'] || g.dir || 'descending', page: +(PS[g.id + '.page'] || 1), size: +(PS[g.id + '.size'] || g.size || 10) };
+    var cols = g.cols.map(function (c) {
+      var sortable = c.sort !== false;
+      return '<th scope="col" ' + (sortable ? 'aria-sort="none" ' : 'data-disabled="true" ') + 'data-key="' + c.k + '"' + (c.num ? ' class="num"' : '') + '><div class="th-in">' +
+        (sortable ? '<button class="sort full t-cm-button" type="button" data-grid="' + g.id + '" data-sort="' + c.k + '"><span class="lbl">' + esc(c.label) + '</span>' +
+          '<span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span><span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span><span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button>'
+          : '<span class="sort full t-cm-button"><span class="lbl">' + esc(c.label) + '</span></span>') + '</div></th>';
+    }).join('');
+    host.innerHTML = '<div class="cn-data-grid"><div class="dg" id="' + g.id + '" data-density="comfortable" data-groups="off">' +
+      '<div class="dg-head"><span class="t-cm-section-label" id="' + g.id + '-title">' + esc(g.title) + '</span><span class="dg-count t-cm-caption" id="' + g.id + '-count" aria-live="polite"></span></div>' +
+      '<div class="dg-toolbar"><div class="dgsearch"><span class="mag" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-search"/></svg></span>' +
+      '<input type="search" class="t-cm-input" data-grid-search="' + g.id + '" aria-label="' + esc(g.searchLabel || 'Search ' + g.title.toLowerCase()) + '" placeholder="' + esc(g.placeholder || 'Search') + '" value="' + esc(g.state.q) + '">' +
+      '<button class="dgs-clear" type="button" aria-label="Clear search" data-grid-clear="' + g.id + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-close"/></svg></button></div>' + (g.tools || '') + '</div>' +
+      '<div class="dg-scroll"><table id="' + g.id + '-tbl" aria-labelledby="' + g.id + '-title"><colgroup>' +
+      g.cols.map(function (c) { return '<col data-col="' + c.k + '" style="width:' + (c.w || (c.num ? 168 : c.k === 'status' || c.k === 'severity' || c.k === 'category' ? 184 : /date|raised|opened|expiry|maturity|valueDate/.test(c.k) ? 152 : 168)) + 'px">'; }).join('') + '</colgroup><thead><tr class="cols">' + cols + '</tr></thead><tbody id="' + g.id + '-body"></tbody></table></div>' +
+      '<div class="dg-foot"><span class="dg-range t-cm-caption" id="' + g.id + '-range"></span><div class="dg-pp"><label class="t-cm-caption" for="' + g.id + '-pp">Rows per page</label>' +
+      '<select id="' + g.id + '-pp" class="t-cm-caption" data-grid-size="' + g.id + '">' + [10, 25, 50].map(function (n) { return '<option value="' + n + '"' + (n === g.state.size ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></div>' +
+      '<nav class="dgpg" aria-label="' + esc(g.title) + ' pages"><ul id="' + g.id + '-pg"></ul></nav></div></div></div>';
+    renderGrid(g.id);
+  }
+  function gridRows(g) {
+    var rows = g.rows(), qv = g.state.q.trim().toLowerCase();
+    if (qv) { rows = rows.filter(function (r) { return g.text(r).toLowerCase().indexOf(qv) > -1; }); }
+    if (g.state.sort) {
+      var col = g.cols.filter(function (c) { return c.k === g.state.sort; })[0], d = g.state.dir === 'ascending' ? 1 : -1;
+      var val = col && col.val ? col.val : function (r) { return r[g.state.sort]; };
+      rows = rows.slice().sort(function (a, b) { var x = val(a), y = val(b); return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y))) * d; });
+    }
+    return rows;
+  }
+  function renderGrid(id) {
+    var g = GRIDS[id], rows = gridRows(g), total = rows.length, pages = Math.max(1, Math.ceil(total / g.state.size));
+    g.state.page = Math.min(Math.max(1, g.state.page), pages);
+    var start = (g.state.page - 1) * g.state.size, pr = rows.slice(start, start + g.state.size);
+    g.visible = rows;
+    $$('#' + id + ' th[data-key]').forEach(function (th) { if (th.hasAttribute('aria-sort')) { th.setAttribute('aria-sort', th.getAttribute('data-key') === g.state.sort ? g.state.dir : 'none'); } });
+    $('#' + id + '-count').textContent = total + ' result' + (total === 1 ? '' : 's');
+    $('#' + id + '-range').textContent = total ? (start + 1) + '–' + Math.min(start + g.state.size, total) + ' of ' + total : '0 of 0';
+    var body = $('#' + id + '-body');
+    if (!pr.length) {
+      body.innerHTML = '<tr><td colspan="' + g.cols.length + '" class="dg-empty"><span class="why t-cm-label">' + esc(g.empty || 'No records match these filters') + '</span><span class="try t-cm-caption">Widen the date range, change entity or region, or clear the search.</span>' +
+        '<button class="clearbtn t-cm-button" type="button" data-grid-clear="' + id + '">Clear search</button></td></tr>';
+    } else {
+      body.innerHTML = pr.map(function (r) {
+        return '<tr data-grid-row="' + id + '" data-id="' + esc(r.id) + '" tabindex="0" aria-label="' + esc(g.rowLabel ? g.rowLabel(r) : 'Open ' + r.id) + '">' + g.cols.map(function (c) {
+          return '<td' + (c.num ? ' class="num"' : '') + '>' + (c.html ? c.html(r) : '<span class="' + (c.num ? 't-cm-figure-5' : 't-cm-label') + '">' + esc(c.fmt ? c.fmt(r) : r[c.k]) + '</span>') + '</td>';
+        }).join('') + '</tr>';
+      }).join('');
+    }
+    var h = '<li><button class="pbtn" type="button" aria-label="Previous page" ' + (g.state.page === 1 ? 'disabled' : '') + ' data-grid-go="prev" data-grid="' + id + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cleft"/></svg></button></li>';
+    for (var p = 1; p <= pages; p++) {
+      var cur = p === g.state.page;
+      h += '<li><button class="pbtn ' + (cur ? 't-cm-button' : 't-cm-label') + '" type="button" data-grid-go="' + p + '" data-grid="' + id + '" ' + (cur ? 'aria-current="page" aria-label="Page ' + p + ', current page"' : 'aria-label="Page ' + p + '"') + '>' + p + '</button></li>';
+    }
+    h += '<li><button class="pbtn" type="button" aria-label="Next page" ' + (g.state.page === pages ? 'disabled' : '') + ' data-grid-go="next" data-grid="' + id + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#dg-cright"/></svg></button></li>';
+    $('#' + id + '-pg').innerHTML = h;
+    PS[id + '.q'] = g.state.q; PS[id + '.sort'] = g.state.sort; PS[id + '.dir'] = g.state.dir; PS[id + '.page'] = g.state.page; PS[id + '.size'] = g.state.size;
+    persist();
+  }
+  function exportGrid(id, name) {
+    var g = GRIDS[id];
+    csv(name, [g.cols.map(function (c) { return c.label; })].concat(g.visible.map(function (r) { return g.cols.map(function (c) { return c.csv ? c.csv(r) : c.fmt ? c.fmt(r) : r[c.k]; }); })));
+  }
+
+  /* ---------- filter toolbar (Filter-toolbar-bar: dd boxed menus, chips, clear all, status line) */
+  function ddOptions(which) {
+    if (which === 'entity') {
+      return [{ v: 'all', l: 'All entities' }].concat(D.ENTITIES.filter(function (e) { return S.region === 'all' || e.region === S.region; }).map(function (e) { return { v: e.id, l: e.name }; }));
+    }
+    if (which === 'region') { return [{ v: 'all', l: 'All regions' }].concat(D.REGIONS.map(function (r) { return { v: r.id, l: r.name }; })); }
+    return [{ v: '7', l: 'Last 7 days' }, { v: '14', l: 'Last 14 days' }, { v: '30', l: 'Last 30 days' }];
+  }
+  function ddValue(which) { return which === 'entity' ? S.entity : which === 'region' ? S.region : String(S.days); }
+  function renderMenu(which) {
+    var m = $('#dd-' + which + '-m'); if (!m) { return; }
+    var cur = ddValue(which), opts = ddOptions(which);
+    m.innerHTML = opts.map(function (o) {
+      return '<li class="opt t-cm-label" role="option" aria-selected="' + (o.v === cur) + '" tabindex="-1" data-dd="' + which + '" data-value="' + esc(o.v) + '">' + esc(o.l) + ' <svg data-bespoke="neutral selection checkmark (library only has teal status ticks)" class="tick" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5 L7.5 13.5 L14.5 5"/></svg></li>';
+    }).join('');
+    var sel = opts.filter(function (o) { return o.v === cur; })[0];
+    $('#dd-' + which + ' .ddval').textContent = sel ? sel.l : opts[0].l;
+  }
+  function renderFilterContext() {
+    ['entity', 'region', 'days'].forEach(renderMenu);
+    var chips = [];
+    if (S.region !== 'all') { chips.push({ k: 'region', l: 'Region: ' + regionName(S.region) }); }
+    if (S.entity !== 'all') { chips.push({ k: 'entity', l: 'Entity: ' + D.ENT[S.entity].short }); }
+    if (S.days !== 30) { chips.push({ k: 'days', l: 'Dates: last ' + S.days + ' days' }); }
+    $$('[data-scope-label]').forEach(function (el) { el.textContent = scopeLabel(); });
+    var outer = $('#ftb'); if (!outer) { return; }
+    outer.setAttribute('data-ftb-state', chips.length ? 'filtered' : 'no-filters');
+    $('#ftb-chips .row').innerHTML = chips.map(function (c) {
+      return '<span class="tag t-cm-caption"><span class="lbl">' + esc(c.l) + '</span><button class="x" type="button" aria-label="Remove filter: ' + esc(c.l) + '" data-chip="' + c.k + '"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-close"/></svg></button></span>';
+    }).join('');
+    var n = scopedEntities().length;
+    $('#ftb-count').textContent = n; $('#ftb-total').textContent = D.ENTITIES.length;
+    $$('[data-scope-label]').forEach(function (el) { el.textContent = scopeLabel(); });
+  }
+  function setFilter(k, v) {
+    if (k === 'entity') { S.entity = v; if (v !== 'all' && S.region !== 'all' && D.ENT[v].region !== S.region) { S.region = 'all'; } }
+    if (k === 'region') { S.region = v; if (S.entity !== 'all' && v !== 'all' && D.ENT[S.entity].region !== v) { S.entity = 'all'; } }
+    if (k === 'days') { S.days = +v; }
+    Object.keys(GRIDS).forEach(function (id) { GRIDS[id].state.page = 1; });
+    persist(); renderFilterContext(); rerender();
+  }
+  function closeMenus(except) {
+    $$('.ftb .menu[data-open="true"], .ceo-menu[data-open="true"]').forEach(function (m) { if (m !== except) { m.setAttribute('data-open', 'false'); var t = document.querySelector('[aria-controls="' + m.id + '"]'); if (t) { t.setAttribute('aria-expanded', 'false'); } } });
+  }
+
+  /* ---------- theme (data-theme on <html>; data-apollo-theme stays "common") */
+  function applyTheme(t) {
+    S.theme = t; document.documentElement.setAttribute('data-theme', t);
+    $$('[data-theme-btn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === t)); });
+    segAll(); persist();
+    setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 30);
+  }
+  /* Segmented-control's sliding indicator (the snippet's own moveInd, extended to run on any seg) */
+  function moveInd(seg) {
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px'; ind.style.width = br.width + 'px';
+  }
+  function segAll() { $$('.seg').forEach(moveInd); }
+
+  /* ---------- the one delegated listener set (rule 14: controls rendered from DATA do not exist
+     when a per-element listener would run) */
+  var rerender = function () {};
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var trig = t.closest('.ftb .trigger, [data-menu-trigger]');
+    if (trig) {
+      var m = document.getElementById(trig.getAttribute('aria-controls')), open = m.getAttribute('data-open') === 'true';
+      closeMenus(m); m.setAttribute('data-open', String(!open)); trig.setAttribute('aria-expanded', String(!open));
+      if (!open) { var s = m.querySelector('[aria-selected="true"]') || m.querySelector('.opt'); if (s) { s.focus(); } }
+      return;
+    }
+    var opt = t.closest('.opt[data-dd]');
+    if (opt) { var w = opt.getAttribute('data-dd'); closeMenus(); setFilter(w, opt.getAttribute('data-value')); var tr = $('#dd-' + w + ' .trigger'); if (tr) { tr.focus(); } toast('Showing ' + scopeLabel(), 'info'); return; }
+    if (!t.closest('.menu, .ceo-menu')) { closeMenus(); }
+    var chip = t.closest('[data-chip]'); if (chip) { setFilter(chip.getAttribute('data-chip'), chip.getAttribute('data-chip') === 'days' ? '30' : 'all'); var c1 = $('#dd-entity .trigger'); if (c1) { c1.focus(); } return; }
+    if (t.closest('[data-ftb-clear]')) { S.entity = 'all'; S.region = 'all'; S.days = 30; persist(); renderFilterContext(); rerender(); toast('Filters cleared', 'info'); return; }
+    var th = t.closest('[data-theme-btn]'); if (th) { applyTheme(th.getAttribute('data-theme-btn')); return; }
+    var sb = t.closest('button[data-sort]');
+    if (sb) { var g = GRIDS[sb.getAttribute('data-grid')], k = sb.getAttribute('data-sort'); g.state.dir = g.state.sort === k && g.state.dir === 'ascending' ? 'descending' : 'ascending'; g.state.sort = k; renderGrid(g.id); var again = $('#' + g.id + ' button[data-sort="' + k + '"]'); if (again) { again.focus(); } return; }
+    var go = t.closest('[data-grid-go]');
+    if (go) { var gg = GRIDS[go.getAttribute('data-grid')], v = go.getAttribute('data-grid-go'); gg.state.page = v === 'prev' ? gg.state.page - 1 : v === 'next' ? gg.state.page + 1 : +v; renderGrid(gg.id); var cp = $('#' + gg.id + '-pg [aria-current="page"]'); if (cp) { cp.focus(); } return; }
+    var gc = t.closest('[data-grid-clear]');
+    if (gc) { var g2 = GRIDS[gc.getAttribute('data-grid-clear')]; g2.state.q = ''; var inp = $('[data-grid-search="' + g2.id + '"]'); if (inp) { inp.value = ''; inp.focus(); } renderGrid(g2.id); return; }
+    var row = t.closest('tr[data-grid-row]');
+    if (row && !t.closest('button, a, input')) { var g3 = GRIDS[row.getAttribute('data-grid-row')]; if (g3.open) { g3.open(row.getAttribute('data-id')); } return; }
+    var ma = t.closest('[data-modal-act]'); if (ma) { var r = $('#modal').__on(ma.getAttribute('data-modal-act')); if (r !== false) { closeModal(); } return; }
+    if (t.closest('#modal .close')) { closeModal(); return; }
+    if (t.closest('#modal') && t.id === 'modal') { closeModal(); return; }
+    var da = t.closest('[data-drawer-act]'); if (da) { $('#drawer').__on(da.getAttribute('data-drawer-act')); return; }
+    if (t.closest('#drawer .close') || t.id === 'scrim') { closeDrawer(); return; }
+    var tc = t.closest('[data-action="toast-close"]'); if (tc) { var to = tc.closest('.toast'); if (to && to.__close) { to.__close(); } return; }
+    var kt = t.closest('[data-action="kpi-table"]'); if (kt) { kpiTable(kt.getAttribute('data-kpi')); return; }
+    var nt = t.closest('[data-navtoggle]');
+    if (nt) { var sn = $('#nav-main'), rail = !sn.classList.contains('is-rail'); sn.classList.toggle('is-rail', rail); nt.setAttribute('aria-expanded', String(!rail)); nt.setAttribute('aria-label', rail ? 'Expand navigation' : 'Collapse navigation'); S.nav = rail ? 'rail' : 'auto'; persist(); setTimeout(function () { window.dispatchEvent(new Event('resize')); segAll(); }, 250); return; }
+    if (t.closest('[data-menu="shell"]')) { $('#sheet').classList.add('open'); $('#shell-scrim').classList.add('open'); var b = $('[data-menu="shell"]'); b.setAttribute('aria-expanded', 'true'); $('#sheet').focus(); return; }
+    if (t.closest('[data-close="shell"]') || t.id === 'shell-scrim') { $('#sheet').classList.remove('open'); $('#shell-scrim').classList.remove('open'); var b2 = $('[data-menu="shell"]'); b2.setAttribute('aria-expanded', 'false'); b2.focus(); return; }
+    var ex = t.closest('[data-export]'); if (ex) { exportGrid(ex.getAttribute('data-export'), ex.getAttribute('data-file')); return; }
+    var sg = t.closest('.seg button'); if (sg && !sg.hasAttribute('data-theme-btn')) { var seg = sg.closest('.seg'); $$('button', seg).forEach(function (x) { x.setAttribute('aria-pressed', String(x === sg)); }); moveInd(seg); }
+    if (APP.onClick) { APP.onClick(e); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if (e.key === 'Escape') {
+      if ($('#modal.open')) { closeModal(); return; }
+      if ($('#drawer.open')) { closeDrawer(); return; }
+      var om = $('.menu[data-open="true"], .ceo-menu[data-open="true"]'); if (om) { closeMenus(); var tg = document.querySelector('[aria-controls="' + om.id + '"]'); if (tg) { tg.focus(); } return; }
+      if ($('#sheet.open')) { $('#sheet').classList.remove('open'); $('#shell-scrim').classList.remove('open'); return; }
+    }
+    if ($('#modal.open')) { trap(e, $('#modal .dialog')); }
+    else if ($('#drawer.open')) { trap(e, $('#drawer')); }
+    if (t.matches && t.matches('.opt')) {
+      var list = $$('.opt', t.closest('.menu, .ceo-menu')), i = list.indexOf(t);
+      if (e.key === 'ArrowDown') { e.preventDefault(); (list[i + 1] || list[0]).focus(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); (list[i - 1] || list[list.length - 1]).focus(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); }
+    }
+    if (t.matches && t.matches('tr[data-grid-row]') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); var g = GRIDS[t.getAttribute('data-grid-row')]; if (g.open) { g.open(t.getAttribute('data-id')); } }
+    if (APP.onKey) { APP.onKey(e); }
+  });
+  var searchT = null;
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.matches('[data-grid-search]')) { clearTimeout(searchT); searchT = setTimeout(function () { var g = GRIDS[t.getAttribute('data-grid-search')]; g.state.q = t.value; g.state.page = 1; renderGrid(g.id); }, 160); }
+    if (t.matches('textarea[maxlength]')) { var c = document.getElementById(t.id + '-count'); if (c) { c.textContent = t.value.length + '/' + t.getAttribute('maxlength'); } }
+    var f = t.closest('[data-field]'); if (f) { f.classList.remove('is-error'); var em = f.querySelector('.err-msg'); if (em) { em.hidden = true; } t.removeAttribute('aria-invalid'); }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.matches('[data-grid-size]')) { var g = GRIDS[t.getAttribute('data-grid-size')]; g.state.size = +t.value; g.state.page = 1; renderGrid(g.id); }
+    var f = t.closest('[data-field]'); if (f) { f.classList.remove('is-error'); var em = f.querySelector('.err-msg'); if (em) { em.hidden = true; } }
+    if (APP.onChange) { APP.onChange(e); }
+  });
+  window.addEventListener('resize', function () { segAll(); });
+
+  /* ---------- validation helpers (Input-fields / Textarea / Selection-controls error states) */
+  function fail(id, msg) {
+    var el = document.getElementById(id), f = el ? el.closest('[data-field]') : document.querySelector('[data-field="' + id + '"]');
+    if (!f) { return; }
+    f.classList.add('is-error'); if (el) { el.setAttribute('aria-invalid', 'true'); }
+    var em = f.querySelector('.err-msg') || f.parentNode.querySelector('.err-msg'); if (em) { em.hidden = false; var p = em.querySelector('p') || em; p.textContent = msg; if (el) { el.setAttribute('aria-describedby', ((el.getAttribute('aria-describedby') || '') + ' ' + p.id).trim()); } }
+  }
+  function val(id) { var el = document.getElementById(id); return el ? (el.type === 'checkbox' ? el.checked : el.value.trim()) : ''; }
+
+  /* ---------- boot */
+  function boot(pageRender) {
+    rerender = pageRender || function () {};
+    document.documentElement.setAttribute('data-theme', S.theme);
+    $$('[data-theme-btn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === S.theme)); });
+    if (S.nav === 'rail') { var sn = $('#nav-main'); sn.classList.add('is-rail'); var nt = $('[data-navtoggle]'); nt.setAttribute('aria-expanded', 'false'); nt.setAttribute('aria-label', 'Expand navigation'); }
+    var np = $('#nav-pay-count'); if (np) { var c = calc.payments().filter(function (p) { return p.status === 'Awaiting your approval'; }).length; np.textContent = c; np.setAttribute('aria-label', c + ' payments awaiting your approval'); np.hidden = !c; }
+    renderFilterContext(); decorateLinks(); rerender(); segAll();
+    requestAnimationFrame(function () { segAll(); window.dispatchEvent(new Event('resize')); });
+    if (APP.afterBoot) { APP.afterBoot(); }
+    persist();
+  }
+
+  return { D: D, S: S, PS: PS, W: W, F: F, H: H, esc: esc, $: $, $$: $$, calc: calc, inScope: inScope, scopedEntities: scopedEntities, days: days, dayIdx: dayIdx,
+    inWindow: inWindow, scopeLabel: scopeLabel, regionName: regionName, toast: toast, openModal: openModal, closeModal: closeModal, openDrawer: openDrawer,
+    closeDrawer: closeDrawer, openForm: openForm, renderKpis: renderKpis, mountChart: mountChart, drawChart: drawChart, emptyChart: emptyChart, grid: grid, renderGrid: renderGrid,
+    GRIDS: GRIDS, csv: csv, saveWork: saveWork, persist: persist, fail: fail, val: val, boot: boot, segAll: segAll, decorateLinks: decorateLinks, PAGE: PAGE };
+}());
+
+</script>
+<script>
+/* Liquidity and funding — can we fund our plans? Liquidity against utilisation (combo), facility
+   headroom (Limits-meter), utilisation against the policy ceiling (bullet), thirty-day shape
+   (sparklines), the facilities grid, and a validated drawdown request. */
+(function () {
+  'use strict';
+  var A = APP, D = A.D, F = A.F, H = A.H, esc = A.esc, $ = A.$;
+  A.mountChart($('#host-combo'), { id: 'ch-combo', type: 'combo', title: 'Liquidity held up as facility use edged higher', caption: 'Available liquidity, £ millions (columns), and committed facility utilisation, per cent (line)', legend: ['Available liquidity', 'Utilisation'] });
+  A.mountChart($('#host-bullet'), { id: 'ch-bullet', note: 'As at 25 Sep 2026', type: 'bullet', title: 'Drawn against limit, and the 75% ceiling', caption: 'Drawn as a share of limit by facility, per cent, against a 75% ceiling', max: 100 });
+  $('#sparks').innerHTML = '<div class="ceo-stack"><p class="t-cm-caption">Cash</p><div id="sp1"></div><p class="t-cm-caption">Undrawn committed facilities</p><div id="sp2"></div><p class="t-cm-caption">Funding headroom</p><div id="sp3"></div></div>';
+  A.mountChart($('#sp1'), { id: 'ch-sp1', type: 'spark', caption: 'Cash over the period' });
+  A.mountChart($('#sp2'), { id: 'ch-sp2', type: 'spark', caption: 'Undrawn committed facilities over the period' });
+  A.mountChart($('#sp3'), { id: 'ch-sp3', type: 'spark', caption: 'Funding headroom over the period' });
+  function facs() { return D.FACILITIES.filter(function (f) { return A.inScope(f.entity); }).map(function (f) { return Object.assign({}, f, { drawnG: D.toGBP(f.drawn, f.ccy), limitG: D.toGBP(f.limit, f.ccy), util: f.drawn / f.limit * 100 }); }); }
+  A.grid($('#host-gfac'), { id: 'g-fac', title: 'Facilities', placeholder: 'Search facility, type or entity', size: 10, sort: 'util', dir: 'descending',
+    tools: '<button type="button" class="clearbtn t-cm-button" data-export="g-fac" data-file="facilities.csv">Export CSV</button>',
+    rows: facs, text: function (r) { return [r.name, r.type, D.ENT[r.entity].name, r.ccy, r.margin].join(' '); }, rowLabel: function (r) { return 'Open facility ' + r.name; },
+    cols: [{ k: 'name', label: 'Facility' }, { k: 'type', label: 'Type' }, { k: 'committed', label: 'Basis', fmt: function (r) { return r.committed ? 'Committed' : 'Uncommitted'; } },
+      { k: 'entity', label: 'Borrower', fmt: function (r) { return D.ENT[r.entity].short; } }, { k: 'maturity', label: 'Maturity', fmt: function (r) { return F.date(r.maturity); } },
+      { k: 'limitG', label: 'Limit', num: true, fmt: function (r) { return F.gbpM(r.limitG); } }, { k: 'drawnG', label: 'Drawn', num: true, fmt: function (r) { return F.gbpM(r.drawnG); } },
+      { k: 'util', label: 'Utilisation', num: true, fmt: function (r) { return F.pct(r.util); } }],
+    open: openFac });
+  function openFac(id) {
+    var f = facs().filter(function (x) { return x.id === id; })[0] || D.FACILITIES.filter(function (x) { return x.id === id; })[0]; if (!f) { return; }
+    A.openDrawer({ id: id, title: f.name, body: H.summary([{ k: 'Borrower', v: D.ENT[f.entity].name }, { k: 'Type', v: f.type + (f.committed ? ', committed' : ', uncommitted') }, { k: 'Limit', v: F.moneyM(f.limit, f.ccy) },
+      { k: 'Drawn', v: F.moneyM(f.drawn, f.ccy) }, { k: 'Undrawn', v: F.moneyM(f.limit - f.drawn, f.ccy) }, { k: 'Pricing', v: f.margin }, { k: 'Final maturity', v: F.date(f.maturity) }]) +
+      H.limit({ id: f.id, label: 'Headroom on this facility', used: D.toGBP(f.drawn, f.ccy), limit: D.toGBP(f.limit, f.ccy) }),
+      actions: [{ id: 'draw', label: 'Request a drawdown', kind: 'primary' }, { id: 'close', label: 'Close' }],
+      onAction: function (a) { if (a === 'close') { A.closeDrawer(); } else { A.closeDrawer(); drawdown(f.id); } } });
+  }
+  function drawdown(fid) {
+    var list = D.FACILITIES.filter(function (f) { return A.inScope(f.entity) && f.limit > f.drawn; });
+    if (!list.length) { A.toast('No facility in this scope has undrawn headroom.', 'warn'); return; }
+    var sel = fid || list[0].id;
+    A.openForm({ title: 'Request a drawdown', body:
+      '<p class="t-ed-body">A drawdown request goes to HSBC as a service request. Nothing moves until HSBC confirms it.</p>' +
+      H.radios({ name: 'dd-fac', legend: 'Facility', value: sel, options: list.map(function (f) { return { v: f.id, label: f.name + ' — ' + F.moneyM(f.limit - f.drawn, f.ccy) + ' undrawn' }; }) }) +
+      H.field({ id: 'dd-amt', label: 'Amount', prefix: 'Local currency', help: 'In the facility currency, up to the undrawn amount.', inputmode: 'decimal' }) +
+      H.field({ id: 'dd-date', label: 'Value date', help: 'A business day on or after ' + F.date('2026-09-28') + ', written as YYYY-MM-DD.', value: '2026-09-30' }) +
+      H.textarea({ id: 'dd-note', label: 'Purpose', help: 'Required. Say what the funds are for.', max: 300, rows: 3 }),
+      actions: [{ id: 'send', label: 'Send request', kind: 'primary' }, { id: 'cancel', label: 'Cancel' }],
+      onAction: function (a) {
+        if (a === 'cancel') { return true; }
+        var fsel = (document.querySelector('input[name="dd-fac"]:checked') || {}).value, f = D.FACILITIES.filter(function (x) { return x.id === fsel; })[0];
+        var amt = parseFloat(String(A.val('dd-amt')).replace(/,/g, '')), date = A.val('dd-date'), note = A.val('dd-note'), ok = true;
+        if (!f) { A.fail('dd-fac', 'Choose a facility.'); ok = false; }
+        if (!(amt > 0)) { A.fail('dd-amt', 'Enter an amount greater than zero, in figures.'); ok = false; }
+        else if (f && amt > f.limit - f.drawn) { A.fail('dd-amt', 'That is more than the ' + F.money(f.limit - f.drawn, f.ccy) + ' undrawn on this facility.'); ok = false; }
+        var d = new Date(date + 'T12:00:00Z'), wd = d.getUTCDay();
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isNaN(d)) { A.fail('dd-date', 'Enter the date as YYYY-MM-DD.'); ok = false; }
+        else if (date < '2026-09-28') { A.fail('dd-date', 'The earliest value date is 28 Sep 2026.'); ok = false; }
+        else if (wd === 0 || wd === 6) { A.fail('dd-date', 'That is a weekend. Choose a business day.'); ok = false; }
+        if (note.length < 10) { A.fail('dd-note', 'Give a purpose of at least 10 characters.'); ok = false; }
+        if (!ok) { var first = document.querySelector('#drawer [aria-invalid="true"], #modal [aria-invalid="true"]'); if (first) { first.focus(); } return false; }
+        var id = 'SR-' + String(30000 + A.W.sr.length + 1);
+        A.W.sr.unshift({ id: id, type: 'Facility amendment', entity: f.entity, subject: 'Drawdown ' + F.money(amt, f.ccy) + ' on ' + f.name + ' for value ' + date, opened: D.AS_OF, updated: D.AS_OF, status: 'Submitted', sla: 2, priority: 'High',
+          events: [{ date: D.AS_OF, title: 'Drawdown request submitted: ' + note, tone: 'inf' }] });
+        A.W.audit.unshift({ at: new Date().toISOString(), what: 'Requested drawdown of ' + F.money(amt, f.ccy) + ' on ' + f.name }); A.saveWork();
+        A.toast('Drawdown request ' + id + ' sent to HSBC. Track it in Messages and service requests.', 'ok');
+        return true;
+      } });
+  }
+  A.onClick = function (e) {
+    if (e.target.closest('[data-action="drawdown"]')) { drawdown(); }
+    if (e.target.closest('[data-action="export-fac"]')) { A.$('[data-export="g-fac"]').click(); }
+  };
+  function r1(v) { return Math.round(v / 1e5) / 10; }
+  function render() {
+    var liq = A.calc.liquiditySeries(), cash = A.calc.cashSeries(), und = A.calc.undrawnSeries(), head = A.calc.headroomSeries(), idx = A.dayIdx(), ds = A.days();
+    A.renderKpis($('#kpis'), [{ id: 'liq', label: 'Available liquidity', series: liq, note: 'Cash plus undrawn committed facilities.' }, { id: 'cash', label: 'Cash', series: cash, note: 'Closing cash, GBP at illustrative rates.' },
+      { id: 'undrawn', label: 'Undrawn committed facilities', series: und, note: 'Committed limits less drawn.' }, { id: 'head', label: 'Funding headroom', series: head, note: 'Available liquidity less the allocated £400m policy buffer and planned commitments.' }]);
+    var cf = D.FACILITIES.filter(function (f) { return A.inScope(f.entity) && f.committed; });
+    if (!cf.length && !A.scopedEntities().length) { ['ch-combo', 'ch-bullet', 'ch-sp1', 'ch-sp2', 'ch-sp3'].forEach(function (c) { A.emptyChart(c); }); }
+    else {
+      var util = idx.map(function (i) { var lim = cf.reduce(function (a, f) { return a + D.toGBP(f.limit, f.ccy); }, 0), dr = cf.reduce(function (a, f) { return a + D.toGBP(f.drawnSeries[i], f.ccy); }, 0); return lim ? Math.round(dr / lim * 1000) / 10 : 0; });
+      A.drawChart('ch-combo', { type: 'combo', categories: ds.map(F.dshort), categoryLabel: 'Date', caption: 'Available liquidity, £ millions (columns), and committed facility utilisation, per cent (line)',
+        series: [{ name: 'Available liquidity', kind: 'column', unit: '£m', values: liq.map(r1) }, { name: 'Utilisation', kind: 'line', unit: '%', values: util }], target: 75, targetLabel: 'Ceiling 75%' });
+      var fl = facs().sort(function (a, b) { return b.util - a.util; });
+      if (fl.length) {
+        A.drawChart('ch-bullet', { type: 'bullet', categories: fl.map(function (f) { return f.name.replace(/ (facility|programme|line)$/, ''); }), unit: '%', categoryLabel: 'Facility', caption: 'Drawn as a share of limit by facility, per cent, against a 75% ceiling',
+          series: [{ name: 'Drawn', values: fl.map(function (f) { return Math.round(f.util * 10) / 10; }) }, { name: 'Policy ceiling', values: fl.map(function () { return 75; }) }] });
+      } else { A.emptyChart('ch-bullet'); }
+      A.drawChart('ch-sp1', { type: 'spark', categories: ds.map(F.dshort), series: [{ name: 'Cash', values: cash.map(r1) }], unit: '£m', caption: 'Cash over the period' });
+      A.drawChart('ch-sp2', { type: 'spark', categories: ds.map(F.dshort), series: [{ name: 'Undrawn', values: und.map(r1) }], unit: '£m', caption: 'Undrawn committed facilities over the period' });
+      A.drawChart('ch-sp3', { type: 'spark', categories: ds.map(F.dshort), series: [{ name: 'Headroom', values: head.map(r1) }], unit: '£m', caption: 'Funding headroom over the period' });
+    }
+    var fl2 = facs().sort(function (a, b) { return b.util - a.util; }).slice(0, 2);
+    $('#lim-list').innerHTML = fl2.length ? '<div class="ceo-stack">' + fl2.map(function (f) { return H.limit({ id: f.id, label: f.name, used: f.drawnG, limit: f.limitG }); }).join('') + '</div>' : '<p class="t-ed-body-small">No facilities in this scope.</p>';
+    var cm = D.COMMITMENTS.filter(function (c) { return A.inScope(c.entity); });
+    $('#commit-list').innerHTML = '<dl class="summary">' + cm.map(function (c) { return '<div class="summary__row"><dt class="summary__k t-cm-label">' + esc(c.name) + ' <span class="t-cm-legal">' + F.date(c.due) + '</span></dt><dd class="summary__v t-cm-figure-5">' + F.gbpM(D.toGBP(c.amount, c.ccy)) + '</dd></div>'; }).join('') +
+      '<div class="summary__row summary__row--total"><dt class="summary__k t-cm-label">Policy buffer (allocated)</dt><dd class="summary__v t-cm-figure-5">' + F.gbpM(A.calc.buffer()) + '</dd></div></dl>';
+    A.renderGrid('g-fac');
+  }
+  A.afterBoot = function () { if (A.PS.open) { openFac(A.PS.open); } };
+  A.boot(render);
+}());
+
+</script>
+</body>
+</html>
