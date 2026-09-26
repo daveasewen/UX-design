@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-24 #303
+
+> **COMMIT STATE #302:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-24-302-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **One commit before the wrap:** the conductor's `7f10b5b8` (the deck, lane A's work and two reports; declared not-a-wrap, `DOC_ROW_ACK` declared), pushed `ae4cb4cb..7f10b5b8`. Handoff `_HANDOFF-153-the-deck-grew-a-slide-and-the-ask-went-to-his-colleagues.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **290,671 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the working line, under the hard line.**
+
+> ## ★ PRIOR — 2026-09-23 (Wed **#301**, Opus 5.5 conductor in the CLOUD, **1 Opus sub**, DELEGATED wrap on Opus 5.5 — ★★ **THE WINDOW WAS RAISED, AND THE ASK IS STILL OPEN**)
+>
+> - ★★★ ① **THE WINDOW LINES MOVED ON HIS WORD — HIS ACTS, NOT INSCRIBED.** *"Lets try 300k and cross our fingers"* (19:45) · *"1. is right, might be a good experiment."* (19:47) · *"200k isnt enough make it 256"* (20:21): lane G set hard **300,000** and working **256,000**, PICKED Dave #301 (`notes/_subreports/2026-09-23-301-G-hard-line-300k.md`); amber and `BOOT_CEILING_TK` 72,768 unchanged. **`_rulings.json` STAYS 638.** Stop 180,000 and tolerance 220,000 now sit under the working line — put to him, unanswered.
+> - ★★ ② **HIS 19:26 ANSWERS CLOSED FOUR POLISH ITEMS** — the ask on 02's index, the 07/08 headlines, the −27 angles, and Judgment → **Judgement** on 12 (source edited, deck rebuilt, not rendered). The demo brief is *"tomorrow"*; the 26 suggestions surfaced, none picked. **FOUR STRUCK, TWO HEADLINES STRUCK.**
+> - ⚙ ③ **THE NEW OPENER, MEASURED (hand sum):** boot 126,767 · 163,380 at the first reply · **187,604 after his first message, NO memory re-send** (#300: 211,454) — but the conductor's own reasoning stays in the window. **244,884 at the wrap.** The wrap gate is RED on the boot ceiling, so the DECLARED not-a-wrap path again. **`_HANDOFF-152-the-window-was-raised-and-the-ask-is-still-open.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #302:** ⬛ **THE ASK ON SLIDE 15 AND THE DEMO BRIEF** [2, DAVE'S] — ask at the opener. `s225-D2`. **697 items, 6 new, 4 STRUCK AND 2 HEADLINES STRUCK**, `_CARRIES.md` § `residual → #302` `carries:residual-302`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#302:**' in l][0])))"` = 697. ⚠ **6 new INVISIBLE to it**; 692→697.
+> **residual (GENERATED #301):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #300) — _roll_state.py · 2026-09-23
+
+
+*Rolled at the #303 wrap (2c, ritual 2026-09-26). The #301 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #302` onward, now § `residual → #304`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-24 #302
 
 > **COMMIT STATE #301:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-23-301-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **No lane committed this session:** lane G's code and report and the judgement fix go out with this wrap's commit. Handoff `_HANDOFF-152-the-window-was-raised-and-the-ask-is-still-open.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **244,884 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; no band claimed.**
