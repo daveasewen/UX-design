@@ -77,7 +77,6 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import argparse
 import ast
 import hashlib
-import datetime
 import json
 import os
 import re
@@ -866,22 +865,9 @@ def resolve_commit(ref):
 
 
 def commit_date(sha):
-    """The COMMIT's own date, strict ISO in the committer's own offset. Used for the README stamp
-    and the zip mtimes so two bakes of the same commit are byte-identical
-    [[measure-dont-convert-units]].
-
-    ⛔ #305 D1 — FORMATTED HERE, NOT BY GIT. This read `--format=%cI`, and git 2.55 prints a zero
-    offset as `Z` where every earlier git printed `+00:00` (measured on commit 0ef307460dcf:
-    git 2.43 `2026-09-27T16:36:40+00:00`, git 2.55 `2026-09-27T16:36:40Z`). CI's runner has 2.55,
-    the seat 2.34, so the RATIFIED v1.0.14 manifest (generated at the seat) and CI's fresh
-    generation differed in this one field and the ship-list audit went red in CI only
-    (run 36345615782: [145], [146], release step 7). The raw date (`epoch ±hhmm`) is stable
-    across git versions; isoformat() over it reproduces the old `%cI` byte for byte (checked on
-    all 1,650 commits, +0000 and +0100 alike), so no released manifest moves."""
-    epoch, tz = git("show", "-s", "--format=%cd", "--date=raw", sha).split()
-    off = datetime.timedelta(hours=int(tz[1:3]), minutes=int(tz[3:5]))
-    off = -off if tz[0] == "-" else off
-    return datetime.datetime.fromtimestamp(int(epoch), datetime.timezone(off)).isoformat()
+    """The COMMIT's own date, ISO, UTC. Used for the README stamp and the zip mtimes so two
+    bakes of the same commit are byte-identical [[measure-dont-convert-units]]."""
+    return git("show", "-s", "--format=%cI", sha).strip()
 
 
 def commit_epoch(sha):

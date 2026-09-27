@@ -1,0 +1,12 @@
+305 D1: the CI-only ship-list red named and fixed - git 2.55 prints %cI's zero offset as Z, so commit_date() now formats the date itself
+
+DECLARED not-a-wrap (#74-D1): the #305 D1 seat's first commit. It rides on 7b544593 (C3's stamps commit, local until this push).
+
+- The field: commit_date. CI's runner has git 2.55.0, which formats %cI for a +0000 commit as 2026-09-27T16:36:40Z; git 2.34 (the seat) and 2.43 print 2026-09-27T16:36:40+00:00. Reproduced off the mount: a full clone of origin at e4ff4284 with git 2.55.0 built from source gives fresh sha256 d1c0a01837f33126, CI's exact hash (run 36345615782), and a unified diff against the committed manifest of that one line only. git 2.43 in the same clone PASSES at a5b00c14.
+- The fix: knowledge/_release/_gen_pack_manifest.py commit_date() reads --date=raw (epoch and offset) and formats with datetime.isoformat(), which equals the old %cI on all 1,650 commits (+0000 and +0100). The RATIFIED v1.0.14 manifest does not move: --check PASS a5b00c14 at the seat (git 2.34, py3.10) and in the clone under git 2.43 and 2.55 (py3.12); release-audit selftest 10/0, generator selftest 248/0; every later release-job step green under git 2.55 (--pack, ci-template --check/--selftest, build-script --selftest, cold-start projections), --drift advisory as before.
+- Not changed: apollo-spider/build-designer-pack.sh:258 reads %cI the same way for the baked README and PROVENANCE date. It is not in any CI red; it would only bite at the next bake on git >= 2.55. Named in the report, left for the conductor.
+- Doc row W-305d1 minted (925 items); regen serial run (_CHAIN.md, schematic moved), dashboard re-run; every --check FRESH.
+- Lane tail: notes/_lanes/305/D1/ (OWNS, backup, mint script, logs) and C3's stamps-commit transcripts (_gitcommit-C3b.log/.term, _msg-C3b.txt.t3-rendered, paths-c3b.txt).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01HPh5XdW9a12LKZuJceR9xa
