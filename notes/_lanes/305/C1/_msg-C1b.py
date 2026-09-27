@@ -1,0 +1,21 @@
+# #305 C1 commit seat - wave one stamps message file (python-written, no T3 prefix on line 1).
+msg = """305 wave one stamps: eighteen s305 rulings whose builds landed in 27efb7b6 marked enacted
+
+DECLARED not-a-wrap (#74-D1): the #305 C1 commit seat's second, small commit, not the wrap.
+
+Stamped through knowledge/_inscribe_ruling.py --set-status <id> enacted --evidence-sha 27efb7b6, each dry-run first, 18/18 rc 0, reconstruction proof PASSED on every write (status and one commit pointer only; says, ruled and governs untouched):
+- B1's builds: s305-D3 (call 2), D5 (4), D6 (5), D8 (7), D11 (10, Common only), D12 (11), D13 (12), D27 (26), D42 (41b).
+- B2's builds: s305-D15 (14), D16 (15), D21 (20), D22 (21), D23 (22), D25 (24; the wording is still Dave's, V1 F3), D26 (25), D44 (41e).
+- s305-D9 (call 8): both halves built - B1's tile hug and B2's donut/pie when-rule.
+
+Left ruled on purpose: s305-D10 (call 9) is PART-built - the template and the surface/section token are in 27efb7b6, the rails half is held (the rails regenerator drifts at this seat); s305-D24 (call 23) - the graph rule node is held, only the ruling-to-gate link exists; s305-D32 (call 32) - the scan page is built, the parking itself is not done; every "builds with the PoC" ruling (D17-D20, D45-D54) and every housekeeping ruling not yet run. Already enacted before this commit: D4, D7, D14, D43, D56, D57.
+
+Regenerated after the stamps: notes/_RULINGS.html, _CHAIN.md, the memento schematic (the serial tail; blast radius, memento index and mention map re-ran and did not move), and notes/_KG-EXPLORER.html (it bakes each ruling's status and evidence). Every --check FRESH. Carried: C1's first-commit transcripts and the stamp logs.
+
+Left out by name: the same set as 27efb7b6 (knowledge/_graph-mark-observations.jsonl, the dream-pass and other-seat paths declared in _HANDOFF-155, notes/_lanes/304/W/_gitcommit-W5b.log and .term, every lane backup/ and staging dir).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01HPh5XdW9a12LKZuJceR9xa
+"""
+open('notes/_lanes/305/C1/_msg-C1b.txt', 'w').write(msg)
+print(len(msg.splitlines()[0]), 'chars line 1')
