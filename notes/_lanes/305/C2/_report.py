@@ -1,4 +1,4 @@
-# #305 C2 - the commit seat, wave two: committed 1e107eea, stamps commit on top, nothing pushed
+r = r"""# #305 C2 - the commit seat, wave two: committed 1e107eea, stamps commit on top, nothing pushed
 
 provenance: 305 · 2026-09-27 · C2 (Opus 5.5 sub of the #305 conductor), the only git writer of wave two, at Dave's seat through `device_bash`; no `git status` in any form, no push, no CI read, no Project memory
 status: observed (FINAL copy - replaces the interim copy committed in 1e107eea; rides the stamps commit, whose own sha is in the conductor's hand-back, not here)
@@ -81,3 +81,6 @@ Its condition is "a cold verifier … has opened the real v1.0.14 zip and filed 
 - `knowledge/_state.json` (4 rows) and `knowledge/_rulings.json` (11 stamps)
 - the regen outputs: `_CHAIN.md`, `knowledge/_memento-index.json`, `knowledge/_graph-mention-map.json`, `notes/_RULINGS.html`, `reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html`, `dashboard/index.html`, `notes/_KG-EXPLORER.html`
 - `notes/_lanes/305/C2/**` and this report
+"""
+open('notes/_subreports/2026-09-27-305-C2-commit.md','w').write(r)
+print(len(r))
