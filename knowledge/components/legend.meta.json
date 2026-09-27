@@ -15,7 +15,8 @@
   "with": [
     {
       "slug": "chart-panel",
-      "when": "two or more charts in one view draw the SAME series set — one shared key, placed once"
+      "rel": "recommends",
+      "$when": "two or more charts in one view draw the SAME series set — one shared key, placed once"
     }
   ],
   "not-with": [
@@ -92,6 +93,11 @@
   },
   "interactive": true,
   "stateModel": {
+    "states": [
+      "rest",
+      "check",
+      "isolate"
+    ],
     "rest": "every series shown; Reset disabled",
     "check": "one or more swatches unchecked; the unchecked series ghost at 12% and the row's swatch is hollow",
     "isolate": "a label is pressed; only that series (plus any swatch-added ones) reads active. DV-D19: the mode is LATCHED — a swatch click while isolated moves the whole set to check mode and never returns; a re-click on the seed label releases.",
@@ -116,7 +122,7 @@
     "$note": "s245-D1 grammar (a) PATH: the behaviour begins at knowledge/canon/dv-legend.js, the ONE source of the legend interaction model, injected between this snippet's AUTO-BEHAVIOUR dv-legend markers by gen_component_partials.py. `partial` names the registered behaviour and matches the member's `consumes` in component-types.json. `events` is generated, never authored (s245-D4)."
   },
   "provenance": {
-    "source": "hand-authored",
+    "source": "code",
     "figma_node": "",
     "code_path": "knowledge/canon/dv-legend.js"
   },

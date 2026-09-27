@@ -113,6 +113,10 @@ THE TOLERANCES, AND WHY THOSE NUMBERS
                  marker proforma was authored at twelve points (dv-render-line.js: "the kit's Batch-8
                  EASED marker cadence, promoted verbatim from the proforma at twelve points"), and W3b
                  (#304 §3) proposes markers off above ~12. Declared here; Dave may move it.
+                 RULED #305 (the sitting, call 7, Dave 2026-09-27: "yes" to "above 12 points, the end
+                 marker only and one letter per band"): 12 is now the ruled line, and the engine
+                 (dv-render-line.js, dv-render-stacked-area.js) draws to it, so G11 and the engine
+                 share one number.
   35% (G12)      a ring that fits its box covers ~75% of it (its bounding square in a square box plus
                  a leader margin); a line or bar chart covers 80%+ (axes span the plot). Under 35% the
                  box is at least three times the chart. The v1013-r2 ring read 21%; the cand-r2 rings
@@ -204,7 +208,7 @@ NEAR_MIN, NEAR_MAX = 1.0, 16.0
 DEAD_MIN = 48.0
 BAR_TOL = 2.0
 STRETCH_TOL = 0.10
-MARK_MAX = 12          # G11: the kit's marker proforma was authored at twelve points (dv-render-line.js)
+MARK_MAX = 12          # G11: RULED #305 call 7 (the engine's dense line); first the proforma's authoring count
 LOST_MIN = 0.35        # G12: a chart's ink must cover at least 35% of its own box
 GRID = 4.0
 GRID_EXTRA = (0.0, 1.0, 2.0, 3.0)      # 0 touching · 2 half-step · 1/3 hairlines (_validate_grid.py)

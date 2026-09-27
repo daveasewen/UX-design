@@ -471,6 +471,8 @@
   --surface-action-primary-hover: #636363;
   --surface-action-primary-pressed: #000000;
   --surface-transparent: #FFFFFF00;
+  --surface-section: #F0F0F0;
+  --notification-contextual-border-alpha: 0;
 
   /* ---- Typography  (typography.json) ---- */
   --typography-font-family-default: "Univers Next for HSBC", "Helvetica Neue", Arial, Helvetica, sans-serif;
@@ -853,6 +855,7 @@
   --surface-action-primary-hover: #B2B2B2;
   --surface-action-primary-pressed: #FFFFFF;
   --surface-transparent: #FFFFFF00;
+  --surface-section: #1A1A1A;
 }
 /* ===== AUTO-GENERATED TOKENS END ===== */
 
@@ -1844,7 +1847,7 @@
 /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
-:where(.cn-navigations) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+:where(.cn-navigations) .nv-count{flex:none; min-width:24px; height:24px; padding:0 8px; border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
     background:var(--nav-count-bg); color:var(--nav-count-fg);}
 :where(.cn-navigations) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
@@ -1997,6 +2000,7 @@
   --info-t: #EBEFF4;
   --text: var(--text-default);
   --page: var(--background-default);
+  --border-alpha: var(--notification-contextual-border-alpha);
   --shadow: rgba(0,0,0,.18);
 }
 [data-theme="dark"] .cn-notifications{
@@ -2051,7 +2055,11 @@
 :where(.cn-notifications) .note .x:focus-visible{outline:2px solid currentColor; outline-offset:2px;}
 :where(.cn-notifications) .note.removing{max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0; padding-top:0; padding-bottom:0; border-width:0;}
 /* TINTED (contextual / multi-link / snackbar): accent shape, mark punches to tint */
-:where(.cn-notifications) .note.tint{background:var(--tint); border:1px solid var(--accent); color:var(--text); --mark:var(--tint);}
+/* s135-D1 border half, #305 call 26 (Dave, 2026-09-27: "yes" — one number token drawn with the
+     variant's own colour). The 1px SLOT is kept in every theme (geometry identical); the theme's
+     notification/contextual/border/alpha decides whether it is inked: 1 in legacy and supercharge,
+     0 (tint-only) in mono and console — "I only want legacy and supercharge to have borders". */
+:where(.cn-notifications) .note.tint{background:var(--tint); border:1px solid color-mix(in srgb, var(--accent) calc(var(--border-alpha) * 100%), transparent); color:var(--text); --mark:var(--tint);}
 :where(.cn-notifications) .note.tint .ic{color:var(--accent);}
 :where(.cn-notifications) .note.tint.warn{--mark:#333333;}
 /* amber needs a dark mark, not a near-white one */
@@ -2080,7 +2088,8 @@
 :where(.cn-notifications) .note.global:has(.actions) .main{padding-bottom:0;}
 /* actions variant ONLY: buttons flush to the bottom edge; message-only + close-only keep the balanced padding */
 /* SNACKBAR: tinted + elevation shadow */
-:where(.cn-notifications) .note.snack{box-shadow:0 2px 16px var(--shadow);}
+:where(.cn-notifications) .note.snack{box-shadow:0 2px 16px var(--shadow); border-color:var(--accent);}
+/* s135-D1: Snackbar untouched — it shares .note.tint, so it restates its own accent border */
 /* INLINE: bare icon + message */
 :where(.cn-notifications) .inline{display:flex; align-items:center; gap:8px; margin:8px 0; font:400 16px/1.5 var(--font); color:var(--text); --mark:var(--page);}
 :where(.cn-notifications) .inline .ic{flex:none; color:var(--accent);}
@@ -4710,6 +4719,11 @@
 /* ⚠ ONE source of truth: the sticky offset and scroll-margin both read it */
 :where(.cn-app-shell-doormat) .sh.is-narrow{width:392px;}
 /* a deliberately narrow CONTAINER, so the collapse is visible in one still */
+/* #305 call 11 (Dave, 2026-09-27: "yes") — THE FULL-HEIGHT FORM. 640px above is the SPECIMEN
+     frame: it shows the whole shell in one still on this page and on the showroom. A page that IS the
+     app puts `is-full` on `.sh` and the shell takes the viewport's height (dvh, vh as the fallback).
+     Choosing this form is not resizing the part (generate-from-canon rule 3a names it). */
+:where(.cn-app-shell-doormat) .sh.is-full{height:100vh; height:100dvh;}
 /* THE SCROLLPORT — Back-to-top's `.btt-stage`/`.btt-content` shape. `position:sticky` is
      relative to the nearest SCROLLING ancestor, so without this the masthead would stick to the
      page's own scroll and the specimen would prove nothing. */
@@ -5158,6 +5172,11 @@
       background:var(--page); color:var(--text);
       border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
 :where(.cn-app-shell-multi-column) .sh.is-narrow{width:392px;}
+/* #305 call 11 (Dave, 2026-09-27: "yes") — THE FULL-HEIGHT FORM. 640px above is the SPECIMEN
+     frame: it shows the whole shell in one still on this page and on the showroom. A page that IS the
+     app puts `is-full` on `.sh` and the shell takes the viewport's height (dvh, vh as the fallback).
+     Choosing this form is not resizing the part (generate-from-canon rule 3a names it). */
+:where(.cn-app-shell-multi-column) .sh.is-full{height:100vh; height:100dvh;}
 :where(.cn-app-shell-multi-column) .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
     min-height:var(--target-min); padding:0 16px; background:var(--panel); color:var(--text);
     border:1px solid var(--rule); border-radius:var(--border-radius-control);
@@ -5688,6 +5707,11 @@
       background:var(--page); color:var(--text);
       border:1px solid var(--rule); border-radius:var(--border-radius-surface); overflow:hidden;}
 :where(.cn-app-shell-side-nav) .sh.is-narrow{width:392px;}
+/* #305 call 11 (Dave, 2026-09-27: "yes") — THE FULL-HEIGHT FORM. 640px above is the SPECIMEN
+     frame: it shows the whole shell in one still on this page and on the showroom. A page that IS the
+     app puts `is-full` on `.sh` and the shell takes the viewport's height (dvh, vh as the fallback).
+     Choosing this form is not resizing the part (generate-from-canon rule 3a names it). */
+:where(.cn-app-shell-side-nav) .sh.is-full{height:100vh; height:100dvh;}
 :where(.cn-app-shell-side-nav) .sh-skip{position:absolute; top:8px; left:8px; z-index:8; display:inline-flex; align-items:center;
     min-height:var(--target-min); padding:0 16px; background:var(--panel); color:var(--text);
     border:1px solid var(--rule); border-radius:var(--border-radius-control);
@@ -13072,6 +13096,7 @@
   --surface: var(--tertiary-background-default);
   --border: var(--border-subtle);
   --text: var(--text-default);
+  --muted: var(--text-secondary);
   --page: var(--background-default);
   --focus: var(--focus-ring);
   --pos-ink: var(--rag-success-ink);
@@ -13117,8 +13142,17 @@
      had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
      concern and comes back, if it comes back, on the board's own grid rows — not by padding
      every row of every tile. */
-:where(.cn-kpi-tile) .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
-    text-overflow:ellipsis; text-box-edge:text text;}
+/* #305 call 5 (Dave, 2026-09-27: "as recommended") — THE CLIP-VISIBLE FORM. The old form cut every
+     descender flat: overflow:hidden clipped a line-height:1 14px box under an 18px glyph box, and
+     `text-box-edge:text text` did nothing because a <p> is never trimmed (R4s (f); G8 12 at 1440).
+     overflow-x:clip keeps the ellipsis; overflow-y:visible lets g/p/y hang whole; the box stays 14px,
+     so the #261 lock-up holds — label to value 22px, tile 155px (s261-D4 "as tight as the original";
+     measured V3 #304). _validate_descender_clip.py knows this form (its clip-visible leg).
+     #305 call 10 is COMMON ONLY ("The muted labels in Common"): the alpha stays here, as at HEAD, for
+     mono, console and supercharge; Common's solid text/secondary ink (the muted var) is a theme GUARD in
+     tokens/themes/apollo-legacy.overrides.json, emitted by gen_theme_cascade.py (the s158-D1 shape). */
+:where(.cn-kpi-tile) .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow-x:clip; overflow-y:visible; white-space:nowrap;
+    text-overflow:ellipsis;}
 /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
      the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
      unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
@@ -15508,7 +15542,7 @@
 /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
-:where(.cn-sidebar-nav) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+:where(.cn-sidebar-nav) .nv-count{flex:none; min-width:24px; height:24px; padding:0 8px; border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
     background:var(--nav-count-bg); color:var(--nav-count-fg);}
 :where(.cn-sidebar-nav) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
@@ -16595,7 +16629,7 @@
 /* the COUNT is the one rounded thing here — Badge and Avatar are the ruled exceptions to
      square corners, and a count is a Badge wearing a nav row. 24px tall = the dial-down
      floor, so it never reads as a control the finger cannot land on. */
-:where(.cn-tab-bar) .nv-count{flex:none; min-width:24px; height:24px; padding:0 7px; border-radius:999px;
+:where(.cn-tab-bar) .nv-count{flex:none; min-width:24px; height:24px; padding:0 8px; border-radius:999px;
     display:inline-flex; align-items:center; justify-content:center;
     background:var(--nav-count-bg); color:var(--nav-count-fg);}
 :where(.cn-tab-bar) .nv-chev{flex:none; display:inline-flex; align-items:center; justify-content:center;
@@ -17582,7 +17616,6 @@
 /* ============================================================
    Template-dashboard-bento  (from snippets/Template-dashboard-bento.reference.html)
    Aria: <nav, <main, role="contentinfo", aria-label, aria-labelledby, aria-current, <h1
-   Drift: s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling.
    Scope: .cn-template-dashboard-bento   ============================================================ */
 .cn-template-dashboard-bento{
   --alpha-04: 0.04;
@@ -17619,6 +17652,7 @@
   --page: var(--background-default);
   --surface: var(--tertiary-background-default);
   --text: var(--text-default);
+  --muted: var(--text-secondary);
   --icon: var(--icon-default);
   --border: var(--border-subtle);
   --divider: var(--divider-border-section);
@@ -17676,14 +17710,13 @@
   --rule: var(--divider-border-section);
   --pressed: var(--form-background-pressed);
   --indicator: var(--primary-border-default);
-  --wall-ground: #F0F0F0;
+  --wall-ground: var(--surface-section);
   --spark-base-alpha: .10;
   --layout-bento-columns: 6;
   --layout-bento-packing: row dense;
   --layout-bento-caption-space: 86px;
 }
 [data-theme="dark"] .cn-template-dashboard-bento{
-  --wall-ground: #1A1A1A;
   --spark-base-alpha: .16;
 }
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
@@ -17989,7 +18022,10 @@
 :where(.cn-template-dashboard-bento) .delta.down .arrow{color:var(--down);}
 :where(.cn-template-dashboard-bento) .delta .per{opacity:var(--alpha-60); margin-left:4px;}
 :where(.cn-template-dashboard-bento) .kpi-spark{margin-top:4px; width:100%;}
-:where(.cn-template-dashboard-bento) .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+/* #305 call 41b (Dave, 2026-09-27: "40px, the tile's own") — the 44px is THIS template's own demo
+     tiles. A real Kpi-tile placed in the wall keeps its own 40px spark: the rule stops at a Kpi-tile
+     scope (zero specificity, so nothing else in the cascade moves). Its other spark rules are untouched. */
+:where(.cn-template-dashboard-bento) .spark-inline:not(:where(.cn-kpi-tile *)){display:block; width:100%; height:44px; overflow:visible;}
 :where(.cn-template-dashboard-bento) .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--spark-base-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
 :where(.cn-template-dashboard-bento) .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
@@ -18072,6 +18108,13 @@
      writes them), so a donut or pie in a wide tile is a 300x260 drawing centred in the row, not a
      tile-wide svg holding a 200px ring (#304 W4a; W3b §2 item 1, 4 of 6 cold overviews). */
 :where(.cn-template-dashboard-bento) figure.dv-fit-on[data-dv-type="donut"] .dv-svg, :where(.cn-template-dashboard-bento) figure.dv-fit-on[data-dv-type="pie"] .dv-svg{width:auto; height:auto;}
+/* #305 call 8 (Dave, 2026-09-27: "yes") — the ring's TILE HUGS THE DRAWING: the leaf tile that holds a
+     donut or pie is as tall as its ring and legend, not stretched to the row (a box the fixed-diameter
+     ring cannot fill, ds-030). Leaf tiles only (a group tile holding a ring among other tiles keeps its
+     row); one rule per ring type, because the canon generator splits selector lists on every comma.
+     The narrow column for a ring is the when-rule half of the call, in the metas — not here. */
+:where(.cn-template-dashboard-bento) .c-bento__grid > .c-bento__tile:not(:has(.c-bento__tile)):has(figure.dv[data-dv-type="donut"]){align-self:start; height:auto;}
+:where(.cn-template-dashboard-bento) .c-bento__grid > .c-bento__tile:not(:has(.c-bento__tile)):has(figure.dv[data-dv-type="pie"]){align-self:start; height:auto;}
 :where(.cn-template-dashboard-bento) .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 :where(.cn-template-dashboard-bento) line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 :where(.cn-template-dashboard-bento) text.dv-axis, :where(.cn-template-dashboard-bento) text.dv-label{opacity:var(--axis-alpha);}
@@ -18165,11 +18208,17 @@
 /* 10 */
 :where(.cn-template-dashboard-bento) .tpl-link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* 11 */
-:where(.cn-template-dashboard-bento) .tpl-page{padding:0 0 48px;}
-/* 1 · the page frame */
+/* #305 call 9 (Dave, 2026-09-27: "Recommend yes and yes") — THE GROUND MOVES FROM THE PAGE TO THE
+     SECTION. His Thursday sentence (24 Sep): "bento sections must have the lightest grey background so
+     there is definition between the white tiles and the background. but this doesn't mean the full page
+     nor does it mean and top title section only the pages section on which the bento sits." So the page
+     and the title area take the page ground (white in light), and the section the bento sits on — this
+     main element, .tpl-page — takes --wall-ground. In dark the section is one step BELOW the tiles. */
+:where(.cn-template-dashboard-bento) .tpl-page{padding:0 0 48px; background:var(--wall-ground);}
+/* 1 · the page frame = the bento section */
 :where(.cn-template-dashboard-bento) .tpl-bento-stack{padding:0 32px;}
 /* 2 · the wall's margin */
-/* 3 · s219-D1 pageBg */
+/* 3 · the page ground (#305 call 9; was --wall-ground, s219-D1 pageBg) */
 /* 4 · MAIN SPACING — the OUTER (structural bento) gutter, THE SELECTED THEME'S OWN.
          s219-D3's generation arm, built at #288: canon/gen_bento_role_vars.py mints
          --bento-dashboard-main per theme from the s219-D3 (6) rails manifest
@@ -22095,7 +22144,7 @@
    edit the override sets and re-run. Theme attr goes on <html> or any
    ancestor of the [data-theme] element; Mono is the base (no block).
    Attrs: legacy=apollo-legacy, mono=apollo-mono, console=apollo-console, supercharge=apollo-supercharge */
-/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (43 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
+/* ---- Apollo Legacy  [data-apollo-theme="legacy"]  (44 override path(s), 4 mark(s), apollo-legacy.overrides) ---- */
 [data-apollo-theme="legacy"],
 [data-apollo-theme="common"]{
   --badge-background: #DB0011;
@@ -22119,6 +22168,7 @@
   --mark-warning: #000000;
   --motion-press-darken: 1;
   --motion-press-travel: 0;
+  --notification-contextual-border-alpha: 1;
   --progress-complete: #333333;
   --rag-error: #A8000B;
   --rag-error-background: #A8000B;
@@ -22378,6 +22428,12 @@
   --muted: #545454;
   --text: #333333;
 }
+/* #305 call 10 (Dave, 2026-09-27: "yes" to "The muted labels in Common: replace the transparency with a
+   solid ink that reads 4.5:1?") is COMMON ONLY. The side-nav group label read 3.75:1 in Common (an alpha on the
+   ink; #99 licenses alpha for state changes only); here it takes text/secondary SOLID. Mono, console and
+   supercharge keep the snippet alpha exactly as at HEAD (their text/secondary IS the text ink). */
+[data-apollo-theme="legacy"] .cn-app-shell-side-nav .sn-group-label,
+[data-apollo-theme="common"] .cn-app-shell-side-nav .sn-group-label{opacity:1;}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-app-shell-side-nav,
 [data-apollo-theme="common"][data-theme="dark"] .cn-app-shell-side-nav,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-app-shell-side-nav,
@@ -23255,14 +23311,25 @@
 [data-apollo-theme="common"] .cn-kpi-tile{
   --border: #D7D8D6;
   --flat-ink: #333333;
+  --muted: #545454;
   --text: #333333;
 }
+/* #305 call 10 (Dave, 2026-09-27: "yes" to "The muted labels in Common: replace the transparency with a
+   solid ink that reads 4.5:1?") is COMMON ONLY. The KPI label and period read 3.71:1 in Common (an alpha on the
+   ink; #99 licenses alpha for state changes only); here it takes text/secondary SOLID. Mono, console and
+   supercharge keep the snippet alpha exactly as at HEAD (their text/secondary IS the text ink). */
+[data-apollo-theme="legacy"] .cn-kpi-tile .kpi-lbl,
+[data-apollo-theme="common"] .cn-kpi-tile .kpi-lbl{color:var(--muted);opacity:1;}
+/* #305 call 10 (Common only) - the period, with the label above. */
+[data-apollo-theme="legacy"] .cn-kpi-tile .kpi-per,
+[data-apollo-theme="common"] .cn-kpi-tile .kpi-per{color:var(--muted);opacity:1;}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="common"][data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-kpi-tile,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-kpi-tile{
   --border: #404040;
   --flat-ink: #FFFFFF;
+  --muted: #9B9B9B;
   --text: #FFFFFF;
 }
 [data-apollo-theme="legacy"] .cn-layout-utilities,
@@ -23449,6 +23516,7 @@
 }
 [data-apollo-theme="legacy"] .cn-notifications,
 [data-apollo-theme="common"] .cn-notifications{
+  --border-alpha: 1;
   --err: #A8000B;
   --err-t: #F9F2F3;
   --info: #305A85;
@@ -23463,6 +23531,7 @@
 [data-apollo-theme="common"][data-theme="dark"] .cn-notifications,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-notifications,
 [data-apollo-theme="common"] [data-theme="dark"] .cn-notifications{
+  --border-alpha: 1;
   --err: #A8000B;
   --err-t: #260005;
   --info: #305A85;
@@ -23772,6 +23841,12 @@
   --nav-muted: #545454;
   --nav-text: #333333;
 }
+/* #305 call 10 (Dave, 2026-09-27: "yes" to "The muted labels in Common: replace the transparency with a
+   solid ink that reads 4.5:1?") is COMMON ONLY. The side-nav group label read 3.75:1 in Common (an alpha on the
+   ink; #99 licenses alpha for state changes only); here it takes text/secondary SOLID. Mono, console and
+   supercharge keep the snippet alpha exactly as at HEAD (their text/secondary IS the text ink). */
+[data-apollo-theme="legacy"] .cn-sidebar-nav .sn-group-label,
+[data-apollo-theme="common"] .cn-sidebar-nav .sn-group-label{opacity:1;}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="common"][data-theme="dark"] .cn-sidebar-nav,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-sidebar-nav,
@@ -24176,6 +24251,7 @@
   --ink: #333333;
   --layout-bento-gutter: 24px;
   --line: #D7D8D6;
+  --muted: #545454;
   --press-darken: 1;
   --press-travel: 0;
   --pri-default: #DB0011;
@@ -24191,6 +24267,15 @@
   --warning: #FFBB33;
   --warning-tint: #FFF8EA;
 }
+/* #305 call 10 (Dave, 2026-09-27: "yes" to "The muted labels in Common: replace the transparency with a
+   solid ink that reads 4.5:1?") is COMMON ONLY. The bento's own KPI label read 3.71:1 in Common (an alpha on the
+   ink; #99 licenses alpha for state changes only); here it takes text/secondary SOLID. Mono, console and
+   supercharge keep the snippet alpha exactly as at HEAD (their text/secondary IS the text ink). */
+[data-apollo-theme="legacy"] .cn-template-dashboard-bento .kpi-tile .lbl16,
+[data-apollo-theme="common"] .cn-template-dashboard-bento .kpi-tile .lbl16{color:var(--muted);opacity:1;}
+/* #305 call 10 (Common only) - the bento KPI period, with the label above. */
+[data-apollo-theme="legacy"] .cn-template-dashboard-bento .delta .per,
+[data-apollo-theme="common"] .cn-template-dashboard-bento .delta .per{color:var(--muted);opacity:1;}
 [data-apollo-theme="legacy"][data-theme="dark"] .cn-template-dashboard-bento,
 [data-apollo-theme="common"][data-theme="dark"] .cn-template-dashboard-bento,
 [data-apollo-theme="legacy"] [data-theme="dark"] .cn-template-dashboard-bento,
@@ -24204,6 +24289,7 @@
   --ink: #FFFFFF;
   --layout-bento-gutter: 24px;
   --line: #404040;
+  --muted: #9B9B9B;
   --press-darken: 1;
   --press-travel: 0;
   --pri-default: #DB0011;
@@ -26352,7 +26438,7 @@
   --seg-thumb-s: 4px;
 }
 
-/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (143 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
+/* ---- Apollo Supercharge  [data-apollo-theme="supercharge"]  (145 override path(s), 4 mark(s), apollo-supercharge.overrides) ---- */
 [data-apollo-theme="supercharge"]{
   --background-default: #F7F6F4;
   --badge-background: #B92F1E;
@@ -26427,6 +26513,7 @@
   --mark-warning: #000000;
   --motion-press-darken: 1;
   --motion-press-travel: 0;
+  --notification-contextual-border-alpha: 1;
   --primary-background-disabled: #CDC8C6;
   --primary-border-disabled: #CDC8C6;
   --primary-border-hover: #13110E;
@@ -26471,6 +26558,7 @@
   --surface-digital-black: #13110E;
   --surface-raised: #F7F6F4;
   --surface-raised-hover: #DFDEDC;
+  --surface-section: #DFDEDC;
   --surface-subtle: #DFDEDC;
   --table-border: #CDC8C6;
   --table-column-background: #DFDEDC;
@@ -26597,6 +26685,7 @@
   --surface-digital-black: #13110E;
   --surface-raised: #2A2621;
   --surface-raised-hover: #2E2A25;
+  --surface-section: #13110E;
   --surface-subtle: #2A2621;
   --table-border: #524842;
   --table-column-background: #2A2621;
@@ -28308,6 +28397,7 @@
 [data-apollo-theme="supercharge"] .cn-kpi-tile{
   --border: #CDC8C6;
   --flat-ink: #13110E;
+  --muted: #13110E;
   --page: #F7F6F4;
   --surface: #F7F6F4;
   --tbl-border: #CDC8C6;
@@ -28320,6 +28410,7 @@
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-kpi-tile{
   --border: #524842;
   --flat-ink: #F7F6F4;
+  --muted: #F7F6F4;
   --page: #1A1A1A;
   --surface: #2A2621;
   --tbl-border: #524842;
@@ -28594,6 +28685,7 @@
   --nav-text: #F7F6F4;
 }
 [data-apollo-theme="supercharge"] .cn-notifications{
+  --border-alpha: 1;
   --err: #B92F1E;
   --err-t: #F1E0DC;
   --info: #5A85C1;
@@ -28607,6 +28699,7 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-notifications,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-notifications{
+  --border-alpha: 1;
   --err: #B92F1E;
   --err-t: #2C120D;
   --info: #5A85C1;
@@ -29669,6 +29762,7 @@
   --info-tint: #D6E3EC;
   --ink: #13110E;
   --line: #CDC8C6;
+  --muted: #13110E;
   --onpressed: #F7F6F4;
   --page: #F7F6F4;
   --press-darken: 1;
@@ -29718,6 +29812,7 @@
   --info-tint: #092131;
   --ink: #F7F6F4;
   --line: #524842;
+  --muted: #F7F6F4;
   --onpressed: #F7F6F4;
   --page: #1A1A1A;
   --press-darken: 1;
@@ -29739,7 +29834,7 @@
   --ter-label: #F7F6F4;
   --text: #F7F6F4;
   --up: #5DAC7B;
-  --wall-ground: #2A2621;
+  --wall-ground: #13110E;
   --warning: #D5990B;
   --warning-tint: #3C2C13;
 }

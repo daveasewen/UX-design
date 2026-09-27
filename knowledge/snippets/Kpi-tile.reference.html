@@ -139,6 +139,7 @@
   :root{ --ease:140ms ease; }
   [data-theme="light"]{
     --surface:#FFFFFF; --border:#E1E1E1; --text:#1A1A1A; --page:#FFFFFF; --focus:#305A85;
+    --muted:#1A1A1A;        /* text/secondary — Common's solid label + period ink, read by its theme guard (#305 call 10) */
     /* DELTA GLYPH — the FILL seat is GONE from this file. #261 K3, Dave ruled verbatim: "We need
        to use the dark versions of the colours on the arrows." The arrow now wears the same INK
        seat as the spark stroke below, so it forks by MODE (and is theme-invariant, because
@@ -159,6 +160,7 @@
   }
   [data-theme="dark"]{
     --surface:#1F1F1F; --border:#808080; --text:#FFFFFF; --page:#1A1A1A; --focus:#4587A7;
+    --muted:#FFFFFF;        /* text/secondary, dark leg (#305 call 10) */
     /* s182-D3 — the NON-WHITE leg of the same fork. Glyph and stroke now converge in EVERY pane. */
     --pos-ink:#66CC8D;      /* rag/success-ink dark — s155-D1 / s144-D1 */
     --neg-ink:#F6604C;      /* rag/error-ink dark — s151-D1 "the light red everywhere else" */
@@ -198,8 +200,17 @@
      had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
      concern and comes back, if it comes back, on the board's own grid rows — not by padding
      every row of every tile. */
-  .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
-    text-overflow:ellipsis; text-box-edge:text text;}
+  /* #305 call 5 (Dave, 2026-09-27: "as recommended") — THE CLIP-VISIBLE FORM. The old form cut every
+     descender flat: overflow:hidden clipped a line-height:1 14px box under an 18px glyph box, and
+     `text-box-edge:text text` did nothing because a <p> is never trimmed (R4s (f); G8 12 at 1440).
+     overflow-x:clip keeps the ellipsis; overflow-y:visible lets g/p/y hang whole; the box stays 14px,
+     so the #261 lock-up holds — label to value 22px, tile 155px (s261-D4 "as tight as the original";
+     measured V3 #304). _validate_descender_clip.py knows this form (its clip-visible leg).
+     #305 call 10 is COMMON ONLY ("The muted labels in Common"): the alpha stays here, as at HEAD, for
+     mono, console and supercharge; Common's solid text/secondary ink (the muted var) is a theme GUARD in
+     tokens/themes/apollo-legacy.overrides.json, emitted by gen_theme_cascade.py (the s158-D1 shape). */
+  .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow-x:clip; overflow-y:visible; white-space:nowrap;
+    text-overflow:ellipsis;}
   /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
      the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
      unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
@@ -670,7 +681,7 @@
   {
     "component": "KPI tile",
     "$status": "PROPOSED #203, redesigned #261 on Dave's nomination, Dave's eye owed — the trend-card component is FLOATED, NOT RULED (s182-D2). This manifest is a proposal, not a proof-of-done.",
-    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default",
+    "vars": { "--surface": "tertiary/background/default", "--border": "border/subtle", "--text": "text/default", "--muted": "text/secondary",
               "--page": "background/default", "--focus": "focus/ring",
               "--pos-ink": "rag/success-ink", "--neg-ink": "rag/error-ink", "--flat-ink": "text/default",
               "--border-radius-surface": "border-radius/surface",
@@ -678,6 +689,7 @@
               "--tbl-cell": "background/default", "--tbl-border": "table/border" },
     "contrastPairs": [
       { "fg": "text/default",     "bg": "tertiary/background/default", "context": "text" },
+      { "fg": "text/secondary",   "bg": "tertiary/background/default", "context": "text" },
       { "fg": "rag/error-ink",    "bg": "tertiary/background/default", "context": "text" },
       { "fg": "rag/success-ink",  "bg": "tertiary/background/default", "context": "text" }
     ],

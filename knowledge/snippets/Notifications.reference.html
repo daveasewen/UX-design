@@ -47,7 +47,8 @@
     --err-t:#F9F2F3; --warn-t:#FFF8EA; --ok-t:#D4F1DF; --info-t:#EBEFF4;
     --text:#1A1A1A; --page:#FFFFFF; --shadow:rgba(0,0,0,.18);
     /* shape — semantic radius tier (ADR-0010): banner shell=surface. RADIUS ONLY — Legacy RAG colours untouched (§A-AUTH keep-legacy). */
-    --border-radius-surface:0; }
+    --border-radius-surface:0;
+    --border-alpha:0; }
   [data-theme="dark"]{
     /* INTERIM (Dave 2026-06-24): rag ACCENTS (stroke/surface) use LIGHT values in dark — the dark
        rag/information aliases a MISSING color/blue/400 (illustration-palette leak #4587A7, fails
@@ -55,7 +56,8 @@
     --err:#A8000B; --warn:#FFBB33; --ok:#66CC8D; --info:#305A85;
     --err-t:#260005; --warn-t:#221701; --ok-t:#32533F; --info-t:#000D1B;
     --text:#FFFFFF; --page:#1A1A1A; --shadow:rgba(0,0,0,.55);
-    --border-radius-surface:0; }
+    --border-radius-surface:0;
+    --border-alpha:0; }
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text); -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
   h2{/* sentence case — type26-019 sweep (Dave ruling 2026-07-02): no uppercase, caps tracking removed with it */ margin:1.9rem 0 .7rem;}
@@ -93,7 +95,11 @@
   .note.removing{ max-height:0 !important; opacity:0; margin-top:0; margin-bottom:0; padding-top:0; padding-bottom:0; border-width:0; }
 
   /* TINTED (contextual / multi-link / snackbar): accent shape, mark punches to tint */
-  .note.tint{ background:var(--tint); border:1px solid var(--accent); color:var(--text); --mark:var(--tint); }
+  /* s135-D1 border half, #305 call 26 (Dave, 2026-09-27: "yes" — one number token drawn with the
+     variant's own colour). The 1px SLOT is kept in every theme (geometry identical); the theme's
+     notification/contextual/border/alpha decides whether it is inked: 1 in legacy and supercharge,
+     0 (tint-only) in mono and console — "I only want legacy and supercharge to have borders". */
+  .note.tint{ background:var(--tint); border:1px solid color-mix(in srgb, var(--accent) calc(var(--border-alpha) * 100%), transparent); color:var(--text); --mark:var(--tint); }
   .note.tint .ic{ color:var(--accent); }
   .note.tint.warn{ --mark:#333333; }                 /* amber needs a dark mark, not a near-white one */
   .note.tint.ok{ --mark:#FFFFFF; }                   /* RAG ROUNDEL POLICY (Dave 2026-07-02): mark ≥4.5 vs shape — success tint-knockout was 3.98, white mark = 4.56 ✓ (error 7.13 / info 6.21 knockouts stay) */
@@ -118,7 +124,7 @@
   .note.global:has(.actions) .main{ padding-bottom:0; }   /* actions variant ONLY: buttons flush to the bottom edge; message-only + close-only keep the balanced padding */
 
   /* SNACKBAR: tinted + elevation shadow */
-  .note.snack{ box-shadow:0 2px 16px var(--shadow); }
+  .note.snack{ box-shadow:0 2px 16px var(--shadow); border-color:var(--accent); }   /* s135-D1: Snackbar untouched — it shares .note.tint, so it restates its own accent border */
 
   /* INLINE: bare icon + message */
   .inline{ display:flex; align-items:center; gap:8px; margin:8px 0; font:400 16px/1.5 var(--font); color:var(--text); --mark:var(--page); }
@@ -199,7 +205,8 @@
     "component": "Notifications",
     "vars": { "--err": "rag/error", "--warn": "rag/warning", "--ok": "rag/success", "--info": "rag/information",
               "--err-t": "rag/error-tint", "--warn-t": "rag/warning-tint", "--ok-t": "rag/success-tint", "--info-t": "rag/information-tint",
-              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface" },
+              "--text": "text/default", "--page": "background/default", "--border-radius-surface": "border-radius/surface",
+              "--border-alpha": "notification/contextual/border/alpha" },
     "contrastPairs": [
       { "fg": "text/default", "bg": "rag/error-tint",       "context": "text" },
       { "fg": "text/default", "bg": "rag/warning-tint",     "context": "text" },

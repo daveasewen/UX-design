@@ -22,14 +22,13 @@
   ],
   "stateModel": {
     "attribute": "data-ftb-state",
-    "states": [
-      { "name": "no-filters", "shows": "the total count and a `No filters applied` hint; no chip row, no clear-all." },
-      { "name": "filtered", "shows": "`N of M`, the chip row (with `+N more` past the overflow threshold), and clear-all." },
-      { "name": "loading", "shows": "a skeleton where the count sits — the count's POSITION is held so the row does not jump — plus the word `Updating results`, announced through `role=status`/`aria-live=polite`/`aria-busy`. Chips dim but stay interactive; the controls are never disabled, because a filter you cannot change while it is running is a trap." },
-      { "name": "empty", "shows": "`0 of M`, the chips that produced the zero (so the user can see what to remove), and a message block with a bell glyph, a title, a sentence and a `Clear all filters` action." },
-      { "name": "error", "shows": "an em-dash where the count would be — never a stale number presented as fresh — and a message block in rag/error-ink carrying an error triangle AND a text title AND a sentence saying nothing was changed, plus `Try again`. Colour is the third channel, never the only one (1.4.1)." }
-    ],
-    "chipStates": ["default", "hover (× grows 1.4×)", "focus-visible (2px focus/ring ring)", "removing (max-width collapse, then removed from the DOM and the tab order)"],
+    "states": ["no-filters", "filtered", "loading", "empty", "error"],
+    "no-filters": "the total count and a `No filters applied` hint; no chip row, no clear-all.",
+    "filtered": "`N of M`, the chip row (with `+N more` past the overflow threshold), and clear-all.",
+    "loading": "a skeleton where the count sits — the count's POSITION is held so the row does not jump — plus the word `Updating results`, announced through `role=status`/`aria-live=polite`/`aria-busy`. Chips dim but stay interactive; the controls are never disabled, because a filter you cannot change while it is running is a trap.",
+    "empty": "`0 of M`, the chips that produced the zero (so the user can see what to remove), and a message block with a bell glyph, a title, a sentence and a `Clear all filters` action.",
+    "error": "an em-dash where the count would be — never a stale number presented as fresh — and a message block in rag/error-ink carrying an error triangle AND a text title AND a sentence saying nothing was changed, plus `Try again`. Colour is the third channel, never the only one (1.4.1).",
+    "$chipStates": ["default", "hover (× grows 1.4×)", "focus-visible (2px focus/ring ring)", "removing (max-width collapse, then removed from the DOM and the tab order)"],
     "$note": "The five states are mutually exclusive and CSS-selected; nothing is toggled by script except the one attribute."
   },
   "tokens": {

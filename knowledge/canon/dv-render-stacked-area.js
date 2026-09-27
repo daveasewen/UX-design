@@ -60,6 +60,11 @@
                       the ruled separation above it stays the full ctx.GAP of clear ground. */
   var KEYMIN = 14; /* a letter needs this much band to sit in without touching the join */
   var MKR = 4.2;   /* the exemplar's vertex radius */
+  /* #305 call 7 (Dave, 2026-09-27: "yes") — ABOVE 12 POINTS: the end marker only, and ONE letter per
+     band (at the widest point of the band, so it has the most room), not one per point. 12 is the
+     geometry gate's G11 line (MARK_MAX). Every vertex keeps its focusable, tipped group; a hidden
+     vertex draws an unpainted hit circle instead of the glyph. */
+  var DENSE = 12;
 
   /* The mark's words. `sep` is the only difference between the popover text (· separated, the
      kit's) and the accessible name (comma separated, so a screen reader reads a sentence). */
@@ -104,9 +109,9 @@
       fx.push(f4(ctx.fx(px[ci])));
       cum.push(0);                                  /* the running total under the current band */
     }
-    var lines = [], mks = [], keys = [];
+    var lines = [], mks = [], keys = [], dense = nc > DENSE;
     for (si = 0; si < ns; si++) {
-      var top = [], foot = [], edge = [], tot = 0;
+      var top = [], foot = [], edge = [], tot = 0, best = 0, k0 = keys.length;
       var lifted = si < ns - 1;                     /* has a band above it ⇒ owns the ruled gap */
       for (ci = 0; ci < nc; ci++) {
         var v = ctx.series[si].values[ci];
@@ -121,10 +126,12 @@
 
         mks.push('<g class="dv-marker" tabindex="0" role="img" aria-label="' +
           esc(words(ctx, si, ci, v, ', ')) + '" data-tip="' + esc(words(ctx, si, ci, v, ' · ')) +
-          '" data-fx="' + fx[ci] + '" data-x0="' + n1(px[ci]) + '"><circle class="dv-mk" style="--sc:' +
-          ctx.fill(si) + '" cx="' + n1(px[ci]) + '" cy="' + n1(hi + (lifted ? EDGE / 2 : 0)) +
+          '" data-fx="' + fx[ci] + '" data-x0="' + n1(px[ci]) + '"><circle class="' +
+          (dense && ci < nc - 1 ? 'dv-hit" fill="none" pointer-events="all' : 'dv-mk" style="--sc:' + ctx.fill(si)) +
+          '" cx="' + n1(px[ci]) + '" cy="' + n1(hi + (lifted ? EDGE / 2 : 0)) +
           '" r="' + MKR + '"/></g>');
-        if (ns > 1 && lo - hi >= KEYMIN) {
+        if (ns > 1 && lo - hi >= KEYMIN && (!dense || lo - hi > best)) {
+          if (dense) { best = lo - hi; keys.length = k0; }
           keys.push('<text class="dv-barkey t-cm-chart-key" data-series-group="' + (si + 1) +
             '" fill="var(--data-text-on-series)" x="' + n1(px[ci]) + '" y="' + n1((hi + lo) / 2 + 4) +
             '" text-anchor="middle" data-fx="' + fx[ci] + '">' + KEYS[si % 26] + '</text>');

@@ -53,6 +53,33 @@ RULE = re.compile(r"([^{}]+)\{([^{}]*)\}", re.S)
 ELLIPSIS = re.compile(r"text-overflow\s*:\s*ellipsis", re.I)
 OVR_TEXTBOX = re.compile(r"text-box-edge\s*:\s*text\s+text", re.I)
 OVR_VISIBLE = re.compile(r"overflow\s*:\s*visible", re.I)
+# #305 call 5 (Dave, 2026-09-27: "as recommended") — THE CLIP-VISIBLE FORM, the third legal override:
+# `overflow-x:clip; overflow-y:visible`. The inline axis still clips (so the ellipsis draws) and the
+# block axis does not, so g/p/y hang whole below a box that stays its own height — the Kpi-tile label
+# keeps its 22px lock-up (s261-D4) where the trim form would grow it 14 -> 18px (V3 #304). Read as the
+# CASCADE-FINAL overflow of the declaration block, in order, so a later `overflow:hidden` in the same
+# block undoes it (the shorthand sets both axes). Like `overflow:visible` it removes the clipping box
+# rather than moving the trimmed edge, so leg 2 (specificity, text-text only) does not apply to it.
+_OVF = re.compile(r"(?<![-\w])(overflow(?:-x|-y)?)\s*:\s*([a-z-]+)(?:\s+([a-z-]+))?", re.I)
+
+
+def clip_visible(body: str) -> bool:
+    """True when a declaration block ENDS with overflow-x clip and overflow-y visible."""
+    ox = oy = None
+    for m in _OVF.finditer(body):
+        prop, a, b = m.group(1).lower(), m.group(2).lower(), (m.group(3) or "").lower()
+        if prop == "overflow":
+            ox, oy = a, (b or a)
+        elif prop == "overflow-x":
+            ox = a
+        else:
+            oy = a
+    return ox == "clip" and oy == "visible"
+
+
+def _override(body: str) -> bool:
+    """Any of the three descender-safe forms: text-text, overflow:visible, or clip-visible."""
+    return bool(OVR_TEXTBOX.search(body) or OVR_VISIBLE.search(body) or clip_visible(body))
 
 
 def _norm(sel: str) -> str:
@@ -83,7 +110,7 @@ def check(css: str, where: str):
     covered = set()
     for m in RULE.finditer(css):
         body = m.group(2)
-        if OVR_TEXTBOX.search(body) or OVR_VISIBLE.search(body):
+        if _override(body):
             for s in _selectors(m.group(1)):
                 covered.add(s)
     # Pass 2 — every truncating rule must have all its selectors covered.
@@ -93,7 +120,7 @@ def check(css: str, where: str):
         if not ELLIPSIS.search(body):
             continue
         # a rule that truncates AND carries its own override is fine
-        if OVR_TEXTBOX.search(body) or OVR_VISIBLE.search(body):
+        if _override(body):
             continue
         for s in _selectors(sel_group):
             if s not in covered:
@@ -458,8 +485,22 @@ def selftest():
     assert check(visible_ok, "t") == [], "overflow:visible is a valid override"
     assert check(container, "t") == [], "non-ellipsis container must be ignored"
     assert check(sronly, "t") == [], "sr-only (clip:rect, no ellipsis) must be ignored"
+    # #305 call 5 — the clip-visible leg: accepted same-rule and as a companion; refused when a
+    # later shorthand in the same block puts the block axis back to hidden, or when only one axis moves.
+    cv_inline = ".k{overflow-x:clip;overflow-y:visible;white-space:nowrap;text-overflow:ellipsis;}"
+    cv_companion = ".k{overflow:hidden;text-overflow:ellipsis;}\n.k{overflow-x:clip;overflow-y:visible;}"
+    cv_undone = ".k{overflow-x:clip;overflow-y:visible;text-overflow:ellipsis;overflow:hidden;}"
+    cv_half = ".k{overflow-x:clip;text-overflow:ellipsis;}"                 # y not DECLARED: another rule may hide it
+    cv_hidden_y = ".k{overflow-x:clip;overflow-y:hidden;text-overflow:ellipsis;}"
+    cv_short = ".k{overflow:clip visible;text-overflow:ellipsis;}"          # the two-value shorthand
+    assert check(cv_inline, "t") == [], "clip-visible form in the same rule should pass"
+    assert check(cv_companion, "t") == [], "clip-visible companion rule should cover the selector"
+    assert [s for s, _ in check(cv_undone, "t")] == [".k"], "a later overflow:hidden undoes the form"
+    assert [s for s, _ in check(cv_half, "t")] == [".k"], "overflow-x:clip alone is not the form"
+    assert [s for s, _ in check(cv_hidden_y, "t")] == [".k"], "overflow-y:hidden still cuts descenders"
+    assert check(cv_short, "t") == [], "the two-value shorthand `overflow:clip visible` is the same form"
     print("selftest OK — flags un-overridden ellipsis labels; accepts text-text / overflow-visible / "
-          "same-rule / comma-group overrides; ignores containers + sr-only.")
+          "clip-visible (#305) / same-rule / comma-group overrides; ignores containers + sr-only.")
 
     # ---- leg 2: specificity ----------------------------------------------------------------
     assert specificity(".a") == (0, 1, 0), specificity(".a")

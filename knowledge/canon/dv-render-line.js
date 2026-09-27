@@ -53,6 +53,12 @@
   var n1 = U.n1, f4 = U.f4, esc = U.esc;
   var KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var R = 5.5;    /* the kit's marker glyph radius — 11px across, receipted sub-24 by design */
+  /* #305 call 7 (Dave, 2026-09-27: "yes") — ABOVE 12 POINTS, THE END MARKER ONLY. dv-line-008 gives the
+     behaviour ("end-line markers + key when markers would obscure small intervals"); 12 is the count the
+     cadence below was authored at and the geometry gate's G11 line (MARK_MAX). A dense series keeps
+     every point's focusable, tipped hit group — only the painted glyph goes, so the table, the tips and
+     the keyboard still reach every value. The 12 is inline (not a named var) for the combo page's
+     byte budget (ADR-0015, 34,816 code-only bytes). */
   /* The kit's Batch-8 EASED marker cadence, promoted verbatim from the proforma at twelve points.
      Resampled by fraction so eight categories or twenty keep the same shape of entry rather than
      a linear stagger; the last marker always lands with the 2400ms draw. */
@@ -105,7 +111,7 @@
           esc(words(ctx, si, ci, v, ', ')) + '" data-tip="' + esc(words(ctx, si, ci, v, ' · ')) +
           '" data-fx="' + fx + '" data-x0="' + n1(x) + '" style="animation-delay:' +
           delay(ci, nc) + 'ms"><circle class="dv-hit" fill="none" pointer-events="all" cx="' +
-          n1(x) + '" cy="' + n1(y) + '" r="' + n1(hit) + '"/>' + glyph(si, x, y, fill) + '</g>');
+          n1(x) + '" cy="' + n1(y) + '" r="' + n1(hit) + '"/>' + (nc > 12 && ci < nc - 1 ? '' : glyph(si, x, y, fill)) + '</g>');
       }
       ctx.push('<polyline class="dv-series"' + sg + ' data-series-i="' + (si + 1) +
         '" pathLength="2400" fill="none" stroke="' + fill + '" stroke-width="2.5" ' +

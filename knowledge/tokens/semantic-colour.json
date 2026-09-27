@@ -2919,6 +2919,33 @@
         "dark": "color/grey/transparent/white-0"
       },
       "$description": "Semantic middle layer for outline/undecorated button interiors (tertiary, quaternary) — shows the ground beneath. 2026-07-20 three-tier insert."
+    },
+    "section": {
+      "light": {
+        "$value": "#F0F0F0",
+        "$type": "color"
+      },
+      "dark": {
+        "$value": "#1A1A1A",
+        "$type": "color"
+      },
+      "$alias": {
+        "light": "color/neutral/13",
+        "dark": "color/neutral/4"
+      },
+      "$description": "THE BENTO SECTION GROUND — #305 call 9 (Dave, 2026-09-27: \"Recommend yes and yes\"): in light the section the bento sits on takes the lightest grey while the page and the title area stay white (his 24 Sep sentence: \"bento sections must have the lightest grey background ... this doesn't mean the full page\"); in dark the section sits ONE STEP BELOW THE TILES on the neutral ladder. The tiles are tertiary/background/default = surface/raised (dark color/neutral/raise-1, #1F1F1F); one rung below is color/neutral/4 (#1A1A1A). surface/subtle could not carry it: its dark leg IS raise-1, so the section and the tiles were one colour and the tiles vanished (two of nine cold runs typed #1A1A1A by hand). MINTED FROM THE LADDER, NOT TYPED: both legs are $alias addresses, so ADR-0014 resolves them per theme (supercharge takes its warm/13 and warm/4). ⚠ THE NAME IS PROPOSED — token names are Dave's (s145-D1 precedent); the VALUES and the function are his call-9 yes. Consumer: Template-dashboard-bento's --wall-ground."
+    }
+  },
+  "notification": {
+    "$description": "Notification-shell theme dials. #305 call 26 (Dave, 2026-09-27: \"yes\" to the recommendation \"the one number token\") enacts the BORDER half of s135-D1 (#135, 2026-08-08: \"I only want legacy and supercharge to have borders\").",
+    "contextual": {
+      "border": {
+        "alpha": {
+          "$value": 0,
+          "$type": "number",
+          "$note": "s135-D1 border half — the contextual (tinted) notification keeps its 1px border SLOT in every theme, so geometry is identical; this number decides whether the slot is INKED. It is drawn with the variant's OWN accent colour (border-color: color-mix(in srgb, var(--accent) calc(alpha * 100%), transparent)), so one number carries all four RAG variants instead of four colour tokens per theme. 0 = tint-only (the Mono base, and Console, which inherits it); legacy and supercharge override it to 1. Unitless: the last segment `alpha` is the unitless namespace in all three generators (the DV-D07 data/*/alpha slot shape). SCOPE (s135-D1): contextual only — Global (solid) and Snackbar untouched; Snackbar shares .note.tint and restates its accent border. ⚠ THE NAME IS PROPOSED (R3 #304 offered notification/contextual/border; the unitless rule needs the alpha leaf) — token names are Dave's (s145-D1)."
+        }
+      }
     }
   }
 }

@@ -100,7 +100,9 @@ bento, logos, photography).
     `padding`, `width`, `zoom` or `transform` on a `.cn-*` scope or anything inside one, and no
     redefinition of a `.c-*` or `.cn-*` class. A component that renders smaller or larger on your
     page than on its showroom page has been restyled — undo it. (This is rule 2 made checkable: a
-    snippet copied whole renders at its own size.)
+    snippet copied whole renders at its own size.) The app shells are the one part with two ruled
+    heights: 640px is their specimen frame, and a page that is the app takes the full-height form by
+    adding `is-full` to `.sh` — choosing a form the part carries, not resizing it.
 4. **Type via composites.** Component text takes a class from `knowledge/canon/type.css` —
    `.t-cm-*` for component text (button, label, caption, input, figure-1…6, chart-label,
    ctl-12/14/16), `.t-ed-*` for editorial (display-1/2, heading-1…4, body, body-small, caption).

@@ -12,12 +12,12 @@ def run(label, patch, tid):
         g, _, p = m2[slug]["when"].partition("—")
         m2[slug]["when"] = g.rstrip() + " AND " + add + " —" + p
     W.PARSED.clear()
-    r = W.choose(T[tid]["ctx"], T[tid]["role"], metas=m2)
+    r = W.choose(T[tid]["ctx"], T[tid]["role"], metas=m2, implicit=False)
     # regression: every other test must keep its variant-A result
     regress = []
     for t in W.TESTS:
-        W.PARSED.clear(); a = W.choose(t["ctx"], t["role"], metas=M)["pick"]
-        W.PARSED.clear(); b = W.choose(t["ctx"], t["role"], metas=m2)["pick"]
+        W.PARSED.clear(); a = W.choose(t["ctx"], t["role"], metas=M, implicit=False)["pick"]
+        W.PARSED.clear(); b = W.choose(t["ctx"], t["role"], metas=m2, implicit=False)["pick"]
         if a != b and t["id"] != tid:
             regress.append((t["id"], a, b))
     print("%-4s %-55s pick %-18s expect %-18s %s | other tests changed: %s" % (tid, label, r["pick"], T[tid]["expect"], "OK" if r["pick"] == T[tid]["expect"] else "MISS", regress))

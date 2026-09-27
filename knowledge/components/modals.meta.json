@@ -3,6 +3,7 @@
   "category": "organism",
   "purpose": "Modals focus the user's attention on an important message or side-task without removing them from their journey. Family: Dialog (interrupts the view and requires an action/decision to continue), Video modal (responsive video overlay), and Partial modal / Drawer (app-only, anchored to the bottom of the screen, houses supplementary content/actions the user can view and interact with alongside the underlying UI).",
   "provides": "overlay",
+  "when": "interrupts = required — the person must stop: confirm a consequential action, or finish a task that cannot share the screen; yields to split-button when interrupts = none AND actions >= 2 (one main action with a few related ones beside it), and to dropdown when interrupts = none AND options >= 5 (one choice from a list, made in place, s270-D1).",
   "$family": "Covers the 'Modals' canvas across three sections: Modal - dialog, Modal - video, Modal - partial (app only).",
   "props": [
     {
@@ -181,6 +182,14 @@
     "providesRole": [
       {
         "ref": "role:overlay"
+      }
+    ],
+    "yieldsTo": [
+      {
+        "ref": "component:split-button"
+      },
+      {
+        "ref": "component:dropdown"
       }
     ]
   }

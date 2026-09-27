@@ -1,0 +1,194 @@
+{
+ "$what": "305 B2 — R5's gen_catalogue.py run twice at the seat on the same tree: BEFORE = this lane's backups of the changed metas + when-fields.json, AFTER = live. Entries whose content moved.",
+ "components_changed": {
+  "ChartDonut": [
+   "description"
+  ],
+  "ChartLine": [
+   "description"
+  ],
+  "ChartPie": [
+   "description"
+  ],
+  "DataGrid": [
+   "description"
+  ],
+  "Dropdown": [
+   "description"
+  ],
+  "ListItems": [
+   "description"
+  ],
+  "Modals": [
+   "description"
+  ],
+  "SplitButton": [
+   "description"
+  ]
+ },
+ "x_apollo_changed": {
+  "ChartDonut": {
+   "when": {
+    "before": {
+     "gate": "answers=composition AND parts sum to a whole AND total=printed as a centre figure",
+     "prose": "beats chart-pie (48, \"composition, no centre figure, ≤ 5 parts\") whenever the total is worth printing, and beats it on nothing else; yields to chart-stacked-area (64, \"composition over time\") when the split MOVES."
+    },
+    "after": {
+     "gate": "answers=composition AND parts sum to a whole AND total=printed as a centre figure AND span.cols ≤ 6",
+     "prose": "beats chart-pie (48, \"composition, no centre figure, ≤ 5 parts\") whenever the total is worth printing, and beats it on nothing else; yields to chart-stacked-area (64, \"composition over time\") when the split MOVES. A ring does not stretch with its tile (ds-030), so it takes a half-width column and never a full-width row (s305-D9)."
+    }
+   }
+  },
+  "ChartLine": {
+   "when": {
+    "before": {
+     "gate": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6",
+     "prose": "the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6."
+    },
+    "after": {
+     "gate": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 AND units = same AND shape = time-series × 1–5-series",
+     "prose": "the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6."
+    }
+   }
+  },
+  "ChartPie": {
+   "when": {
+    "before": {
+     "gate": "answers=composition AND parts ≤ 5 AND total=not printed",
+     "prose": "yields to chart-donut (80, \"composition, a centre total is meaningful\") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time."
+    },
+    "after": {
+     "gate": "answers=composition AND parts ≤ 5 AND total=not printed AND span.cols ≤ 6",
+     "prose": "yields to chart-donut (80, \"composition, a centre total is meaningful\") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time. A ring does not stretch with its tile (ds-030), so it takes a half-width column and never a full-width row (s305-D9)."
+    }
+   }
+  },
+  "DataGrid": {
+   "when": {
+    "before": null,
+    "after": {
+     "gate": "records >= 2 AND needs in (sort, filter, select, edit)",
+     "prose": "the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) whenever sorting, filtering, selecting or editing is required, and yields to list-items when needs = none."
+    }
+   }
+  },
+  "Dropdown": {
+   "when": {
+    "before": null,
+    "after": {
+     "gate": "options >= 5 AND interrupts = none",
+     "prose": "one choice from a list, made in place (s270-D1: \"we use dropdowns for 5 and above\"); beats modals whenever the choice does not need to stop the person."
+    }
+   }
+  },
+  "FilterToolbarBar": {
+   "states": {
+    "before": {
+     "attribute": "data-ftb-state",
+     "states": [
+      {
+       "name": "no-filters",
+       "shows": "the total count and a `No filters applied` hint; no chip row, no clear-all."
+      },
+      {
+       "name": "filtered",
+       "shows": "`N of M`, the chip row (with `+N more` past the overflow threshold), and clear-all."
+      },
+      {
+       "name": "loading",
+       "shows": "a skeleton where the count sits — the count's POSITION is held so the row does not jump — plus the word `Updating results`, announced through `role=status`/`aria-live=polite`/`aria-busy`. Chips dim but stay interactive; the controls are never disabled, because a filter you cannot change while it is running is a trap."
+      },
+      {
+       "name": "empty",
+       "shows": "`0 of M`, the chips that produced the zero (so the user can see what to remove), and a message block with a bell glyph, a title, a sentence and a `Clear all filters` action."
+      },
+      {
+       "name": "error",
+       "shows": "an em-dash where the count would be — never a stale number presented as fresh — and a message block in rag/error-ink carrying an error triangle AND a text title AND a sentence saying nothing was changed, plus `Try again`. Colour is the third channel, never the only one (1.4.1)."
+      }
+     ],
+     "chipStates": [
+      "default",
+      "hover (× grows 1.4×)",
+      "focus-visible (2px focus/ring ring)",
+      "removing (max-width collapse, then removed from the DOM and the tab order)"
+     ],
+     "$note": "The five states are mutually exclusive and CSS-selected; nothing is toggled by script except the one attribute."
+    },
+    "after": {
+     "attribute": "data-ftb-state",
+     "states": [
+      "no-filters",
+      "filtered",
+      "loading",
+      "empty",
+      "error"
+     ],
+     "no-filters": "the total count and a `No filters applied` hint; no chip row, no clear-all.",
+     "filtered": "`N of M`, the chip row (with `+N more` past the overflow threshold), and clear-all.",
+     "loading": "a skeleton where the count sits — the count's POSITION is held so the row does not jump — plus the word `Updating results`, announced through `role=status`/`aria-live=polite`/`aria-busy`. Chips dim but stay interactive; the controls are never disabled, because a filter you cannot change while it is running is a trap.",
+     "empty": "`0 of M`, the chips that produced the zero (so the user can see what to remove), and a message block with a bell glyph, a title, a sentence and a `Clear all filters` action.",
+     "error": "an em-dash where the count would be — never a stale number presented as fresh — and a message block in rag/error-ink carrying an error triangle AND a text title AND a sentence saying nothing was changed, plus `Try again`. Colour is the third channel, never the only one (1.4.1).",
+     "$chipStates": [
+      "default",
+      "hover (× grows 1.4×)",
+      "focus-visible (2px focus/ring ring)",
+      "removing (max-width collapse, then removed from the DOM and the tab order)"
+     ],
+     "$note": "The five states are mutually exclusive and CSS-selected; nothing is toggled by script except the one attribute."
+    }
+   }
+  },
+  "Legend": {
+   "states": {
+    "before": {
+     "rest": "every series shown; Reset disabled",
+     "check": "one or more swatches unchecked; the unchecked series ghost at 12% and the row's swatch is hollow",
+     "isolate": "a label is pressed; only that series (plus any swatch-added ones) reads active. DV-D19: the mode is LATCHED — a swatch click while isolated moves the whole set to check mode and never returns; a re-click on the seed label releases.",
+     "$note": "The three states and their transitions are OWNED by canon/dv-legend.js. This meta records them; it does not re-specify them."
+    },
+    "after": {
+     "states": [
+      "rest",
+      "check",
+      "isolate"
+     ],
+     "rest": "every series shown; Reset disabled",
+     "check": "one or more swatches unchecked; the unchecked series ghost at 12% and the row's swatch is hollow",
+     "isolate": "a label is pressed; only that series (plus any swatch-added ones) reads active. DV-D19: the mode is LATCHED — a swatch click while isolated moves the whole set to check mode and never returns; a re-click on the seed label releases.",
+     "$note": "The three states and their transitions are OWNED by canon/dv-legend.js. This meta records them; it does not re-specify them."
+    }
+   }
+  },
+  "ListItems": {
+   "when": {
+    "before": {
+     "gate": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record)",
+     "prose": "surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\")."
+    },
+    "after": {
+     "gate": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none",
+     "prose": "surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\")."
+    }
+   }
+  },
+  "Modals": {
+   "when": {
+    "before": null,
+    "after": {
+     "gate": "interrupts = required",
+     "prose": "the person must stop: confirm a consequential action, or finish a task that cannot share the screen; yields to split-button when interrupts = none AND actions >= 2 (one main action with a few related ones beside it), and to dropdown when interrupts = none AND options >= 5 (one choice from a list, made in place, s270-D1)."
+    }
+   }
+  },
+  "SplitButton": {
+   "when": {
+    "before": null,
+    "after": {
+     "gate": "actions >= 2 AND interrupts = none",
+     "prose": "one main action plus a menu of related ones, offered in place (button's own `when` already hands this case here); beats modals whenever the related actions can be offered without stopping the person."
+    }
+   }
+  }
+ }
+}

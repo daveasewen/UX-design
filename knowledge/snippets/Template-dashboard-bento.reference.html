@@ -168,6 +168,7 @@
   [data-theme="light"]{
     /* surfaces + ink — Kpi-tile / Stat-card / Data-grid / Document-row (identical in all four) */
     --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A;
+    --muted:#1A1A1A;   /* text/secondary — Common's solid KPI label + period ink, read by its theme guard (#305 call 10) */
     --border:#E1E1E1; --divider:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
     --header:#F0F0F0; --cell:#FFFFFF; --fborder:#808080; --bar:#000000; --selbg:#F0F0F0;
     --checked:#000000; --onchk:#FFFFFF; --disabled:#E1E1E1;
@@ -243,12 +244,14 @@
        theme block by line and MEASURED at #255 it read a name:value pair out of the prose. */
     --layout-bento-packing:row dense; --layout-bento-caption-space:86px;
     --border-radius-container:0;
-    /* the dashboard page ground — s219-D1's ruled `pageBg: grey`, bound to surface/subtle */
+    /* the bento SECTION ground (#305 call 9, was the s219-D1 page ground) — bound to surface/section,
+       the lightest grey in light */
     --wall-ground:#F0F0F0;
     /* the wall itself is transparent (s219-D1 `bentoBg: transparent`) — no declaration needed */
   }
   [data-theme="dark"]{
     --page:#1A1A1A; --surface:#1F1F1F; --text:#FFFFFF; --icon:#FFFFFF;
+    --muted:#FFFFFF;   /* text/secondary, dark leg (#305 call 10) */
     --border:#808080; --divider:#808080; --hover:#232323; --focus:#4587A7;
     --header:#1F1F1F; --cell:#1A1A1A; --fborder:#808080; --bar:#FFFFFF; --selbg:#232323;
     --checked:#FFFFFF; --onchk:#333333; --disabled:#808080;
@@ -296,7 +299,8 @@
        theme block by line and MEASURED at #255 it read a name:value pair out of the prose. */
     --layout-bento-packing:row dense; --layout-bento-caption-space:86px;
     --border-radius-container:0;
-    /* the dashboard page ground — s219-D1's ruled `pageBg: grey`, bound to surface/subtle */
+    /* the bento SECTION ground (#305 call 9) — surface/section's dark leg, one ladder step BELOW
+       the tiles (neutral 4 under the raise-1 tile), minted, no longer a typed drift-allowed hex */
     --wall-ground:#1A1A1A;
     /* the wall itself is transparent (s219-D1 `bentoBg: transparent`) — no declaration needed */
   }
@@ -625,7 +629,10 @@
   .delta.down .arrow{color:var(--down);}
   .delta .per{opacity:var(--alpha-60); margin-left:4px;}
   .kpi-spark{margin-top:4px; width:100%;}
-  .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
+  /* #305 call 41b (Dave, 2026-09-27: "40px, the tile's own") — the 44px is THIS template's own demo
+     tiles. A real Kpi-tile placed in the wall keeps its own 40px spark: the rule stops at a Kpi-tile
+     scope (zero specificity, so nothing else in the cascade moves). Its other spark rules are untouched. */
+  .spark-inline:not(:where(.cn-kpi-tile *)){display:block; width:100%; height:44px; overflow:visible;}
   .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--spark-base-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
   .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
@@ -707,6 +714,13 @@
      writes them), so a donut or pie in a wide tile is a 300x260 drawing centred in the row, not a
      tile-wide svg holding a 200px ring (#304 W4a; W3b §2 item 1, 4 of 6 cold overviews). */
   figure.dv-fit-on[data-dv-type="donut"] .dv-svg,figure.dv-fit-on[data-dv-type="pie"] .dv-svg{width:auto; height:auto;}
+  /* #305 call 8 (Dave, 2026-09-27: "yes") — the ring's TILE HUGS THE DRAWING: the leaf tile that holds a
+     donut or pie is as tall as its ring and legend, not stretched to the row (a box the fixed-diameter
+     ring cannot fill, ds-030). Leaf tiles only (a group tile holding a ring among other tiles keeps its
+     row); one rule per ring type, because the canon generator splits selector lists on every comma.
+     The narrow column for a ring is the when-rule half of the call, in the metas — not here. */
+  .c-bento__grid > .c-bento__tile:not(:has(.c-bento__tile)):has(figure.dv[data-dv-type="donut"]){align-self:start; height:auto;}
+  .c-bento__grid > .c-bento__tile:not(:has(.c-bento__tile)):has(figure.dv[data-dv-type="pie"]){align-self:start; height:auto;}
   .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
   line.dv-axis{stroke:var(--baseline); stroke-width:1;}
   text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
@@ -799,9 +813,15 @@
   .tpl-panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }  /* 5 */
   .tpl-link{ color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }  /* 10 */
   .tpl-link:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }                                        /* 11 */
-  .tpl-page{ padding:0 0 48px; }                                            /* 1 · the page frame */
+  /* #305 call 9 (Dave, 2026-09-27: "Recommend yes and yes") — THE GROUND MOVES FROM THE PAGE TO THE
+     SECTION. His Thursday sentence (24 Sep): "bento sections must have the lightest grey background so
+     there is definition between the white tiles and the background. but this doesn't mean the full page
+     nor does it mean and top title section only the pages section on which the bento sits." So the page
+     and the title area take the page ground (white in light), and the section the bento sits on — this
+     main element, .tpl-page — takes --wall-ground. In dark the section is one step BELOW the tiles. */
+  .tpl-page{ padding:0 0 48px; background:var(--wall-ground); }             /* 1 · the page frame = the bento section */
   .tpl-bento-stack{ padding:0 32px; }                                       /* 2 · the wall's margin */
-  body.tpl-bento-body{ background:var(--wall-ground); }                     /* 3 · s219-D1 pageBg */
+  body.tpl-bento-body{ background:var(--page); }                            /* 3 · the page ground (#305 call 9; was --wall-ground, s219-D1 pageBg) */
   /* 4 · MAIN SPACING — the OUTER (structural bento) gutter, THE SELECTED THEME'S OWN.
          s219-D3's generation arm, built at #288: canon/gen_bento_role_vars.py mints
          --bento-dashboard-main per theme from the s219-D3 (6) rails manifest
@@ -1243,6 +1263,7 @@
     "--page": "background/default",
     "--surface": "tertiary/background/default",
     "--text": "text/default",
+    "--muted": "text/secondary",
     "--icon": "icon/default",
     "--border": "border/subtle",
     "--divider": "divider/border/section",
@@ -1310,7 +1331,7 @@
     "--layout-bento-outer-padding": "layout/bento/outer-padding",
     "--layout-bento-row-unit": "layout/bento/row-unit",
     "--border-radius-container": "border-radius/container",
-    "--wall-ground": "surface/subtle"
+    "--wall-ground": "surface/section"
   },
   "contrastPairs": [
     {
@@ -1387,12 +1408,8 @@
     "aria-current",
     "<h1"
   ],
-  "driftAllow": {
-    "--wall-ground": [
-      "dark"
-    ],
-    "$reason": "s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling."
-  }
+  "$wallGroundHistory": "RETIRED driftAllow (#305 call 9): until #305 the dark leg of --wall-ground was a typed #1A1A1A allowed to drift from surface/subtle (whose dark leg is the tile colour). Dave ruled the section one step below the tiles and the step MINTED: --wall-ground now binds surface/section (light color/neutral/13, dark color/neutral/4, resolved per theme by ADR-0014), so no leg drifts and the driftAllow is gone. The retired reason, verbatim:",
+  "$wallGroundHistoryReason": "s219-D1 rules the dashboard page ground as `pageBg: grey`; surface/subtle carries that grey in LIGHT (#F0F0F0) and it is bound. Its DARK leg is #1F1F1F, which is byte-identical to tertiary/background/default (#1F1F1F) - the tile surface - so binding it in dark paints the wall and its modules the same colour at 1.00:1 and the bento stops reading as a bento with keylines off. s219-D3(4) leaves the dark page-ground derivation EXPRESSLY OPEN ('dark equivalents to be derived from tokens'), so the dark leg here is DECLARED-PROVISIONAL at background/default's #1A1A1A - the s220-D1 'alignment by lift' shape, one rung of lift between ground and module - and is rendered as three side-by-side readings for Dave on reviews/BENTO-SNIPPET-2026-08-31-v1.html. It is NOT a ruling."
 }
   </script>
   <script type="application/json" id="behaviour-manifest">

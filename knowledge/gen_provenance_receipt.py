@@ -192,6 +192,24 @@ def behaviour_address(snippet_html):
     return None
 
 
+def script_address(snippet_name, snippet_html):
+    """#305 call 4 (Dave, 2026-09-27: "yes as recommended") — THE MINT FOLLOWS THE META.
+    The meta is the ONE home of a component's facts (s234-D5) and `_validate_receipt` already reads
+    it as the home and the receipt as a copy; so a region's `script` is COPIED from the meta's typed
+    `behaviour.script` (all fourteen chart metas: knowledge/canon/dv-render.js, the core that draws,
+    priced once per page by s260-D1). Before this, the mint took the FIRST registered AUTO-BEHAVIOUR
+    name in the snippet's document order (dv-behaviour.js for every chart), so every chart region on
+    a pack-minted page read FAIL:BEHAVIOUR-ADDRESS-DISAGREES (R4s2; cand2-r3 10/10 pages).
+    Only a component whose meta carries NO typed behaviour falls back to the mechanical resolution
+    below, which is the pre-s234-D5 reading and names what the snippet actually inlines.
+    -> (address or None, "meta" | "snippet")"""
+    mp = VR.meta_path_for(snippet_name or "")
+    typed = VR.typed_behaviour(VR.load_meta(mp)) if mp else None
+    if typed is not None:
+        return typed.get("script"), "meta"
+    return behaviour_address(snippet_html), "snippet"
+
+
 def manifest_vars(html):
     m = re.search(r'<script[^>]*id="token-manifest"[^>]*>(.*?)</script>', html, re.S)
     if not m:
@@ -298,15 +316,16 @@ def mint(page, spec, out_path):
         source = ms.group(1) if ms else None
         kind = mk.group(1) if mk else None
         spec_r = props_by_region.get(rid, {})
-        script = None
+        script, script_from = None, None
+        snip_name = spec_r.get("snippet") or (
+            os.path.basename(source).replace(".reference.html", "") if source else None)
         if kind == "markup" and source:
             sp = os.path.join(REPO, source)
             if os.path.isfile(sp):
-                script = behaviour_address(open(sp, encoding="utf-8").read())
+                script, script_from = script_address(snip_name, open(sp, encoding="utf-8").read())
         entry = {
             "region": rid,
-            "snippet": spec_r.get("snippet") or (
-                os.path.basename(source).replace(".reference.html", "") if source else None),
+            "snippet": snip_name,
             "kind": kind,
             "source": source,
             # FOR THE READER, per s235-D1 ("filename/slug/pack may ride along … the gate
@@ -321,7 +340,10 @@ def mint(page, spec, out_path):
             "props": spec_r.get("props"),
             "script": script,
         }
-        if script is None:
+        if script is None and script_from == "meta":
+            entry["$scriptNote"] = ("the meta's typed `behaviour.script` is null: the component "
+                                    "declares it carries no script (s234-D5), and the receipt copies that.")
+        elif script is None:
             entry["$scriptNote"] = ("no ADDRESS exists to declare: the snippet carries no "
                                     "AUTO-BEHAVIOUR block, and meta `behaviour` is untyped "
                                     "prose (meta.schema.json:197). Typing it is s234-D5 (L2).")
@@ -425,6 +447,25 @@ def selftest():
     except SystemExit:
         e = True
     ok &= e; print(("  ✅ " if e else "  ❌ ") + "E  missing selector REFUSES, never guesses")
+
+    # F — #305 call 4: a chart region's minted `script` is the META's (dv-render.js), and the real
+    #     gate reads no BEHAVIOUR-ADDRESS-DISAGREES on it. The old reading (first AUTO-BEHAVIOUR name)
+    #     would have minted dv-behaviour.js here.
+    spec2 = {"title": "selftest-chart", "pack": "selftest", "regions": [
+        {"snippet": "Chart-line", "select": ".dv", "kind": "markup"}]}
+    sp2 = os.path.join(d, "spec2.json"); json.dump(spec2, open(sp2, "w"))
+    out2 = os.path.join(d, "chart.html")
+    try:
+        compose(sp2, out2)
+        rc2, _e = VR.parse_receipt(open(out2, encoding="utf-8").read())
+        got_s = [r.get("script") for r in (rc2 or {}).get("regions", []) if r.get("kind") == "markup"]
+        meta_s = VR.typed_behaviour(VR.load_meta(VR.meta_path_for("Chart-line")))["script"]
+        _l2, f2, _u2 = VR.check(out2)
+        f = got_s == [meta_s] and "BEHAVIOUR-ADDRESS-DISAGREES" not in f2
+        detail = "script %s (meta %s) · gate %s" % (got_s, meta_s, ",".join(f2) or "PASS")
+    except SystemExit as e:
+        f, detail = False, "compose refused: %s" % e
+    ok &= f; print(("  ✅ " if f else "  ❌ ") + "F  chart region's script is the meta's -> " + detail)
 
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1

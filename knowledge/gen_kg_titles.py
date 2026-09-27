@@ -16,6 +16,13 @@ scoped`). The code stays first, so it is still what you search and what you quot
                 whose `ruled` is `#n` or whose id starts `s<n>-`): `session of <date>, <k> rulings`. A
                 session has no text of its own in the tree, so its title states only what is counted.
 
+  #305 (s305-D44, Dave 2026-09-27: "yes" — "title the 49 still bare"), three more kinds, each from its own record:
+  polarity:<id>   from the polarity's `mediatingVariable` (knowledge/_ux_principle_nodes.json), the same derivation.
+  guideline:<n.n> WCAG 2.2's own name for the guideline (knowledge/_wcag-guideline-names.json, vendored from w3.org).
+  artefact:<id>   an artefact a ruling names by a bare id: a ruling id or a rule id takes that record's own title;
+                  an ADR id takes its decision record's own heading (docs/decisions/<id>-*.md).
+  Every entry also carries its `code`, and the builder stamps it on the node so the canvas can print the code alone.
+
 DERIVATION (deterministic, no model, no hand-typed title): the first meaningful clause of the text —
 cut at the first sentence end, `;`, a spaced dash or `: ` that leaves at least MIN_CLAUSE characters —
 with ruling and session ids and id-bearing parentheticals removed, SHOUTING caps lowered to the casing
@@ -42,6 +49,8 @@ LONG_SHOUT = 5          # a shouted word this long that the corpus never lowers 
 LONG_ASIDE = 28         # a parenthetical longer than this is an aside and is dropped from a title
 TRAIL_WEAK = {"a", "an", "the", "of", "to", "and", "or", "for", "with", "in", "on", "at", "by", "from", "into",
               "not", "but", "is", "are", "as", "that", "which", "its", "their", "than", "so", "be", "was"}
+WCAG_NAMES = "_wcag-guideline-names.json"      # #305 s305-D44: WCAG 2.2's own guideline names
+ADR_RX = re.compile(r"^ADR-\d{4}$")
 SESSION_REF = re.compile(r"^#(\d+)")          # the builder's own SESSION_RX: "#81-D1" → session 81
 
 # ids that are REFERENCES to the record system (rulings, sessions, proposals, open items), not the
@@ -265,6 +274,33 @@ def compute(root=HERE):
         d = _dates(rs)
         t = ("session of %s, " % d if d else "session, ") + ("%d ruling%s" % (len(rs), "" if len(rs) == 1 else "s"))
         titles["session:%d" % s] = {"code": "#%d" % s, "title": t, "from": "rulings"}
+    # ---- #305 s305-D44: the 49 still bare — polarities, WCAG guidelines, artefacts named by an id.
+    up = os.path.join(root, "_ux_principle_nodes.json")
+    if os.path.exists(up):
+        pol = [n for n in json.load(open(up, encoding="utf-8")).get("nodes", []) if n.get("type") == "polarity"]
+        for n in sorted(pol, key=lambda x: x["id"]):
+            t = title_of(n.get("mediatingVariable"), cmap)
+            if t: titles[n["id"]] = {"code": n["id"].split(":", 1)[1], "title": t, "from": "mediatingVariable"}
+            else: untitled.append(n["id"])
+    wp = os.path.join(root, WCAG_NAMES)
+    if os.path.exists(wp):
+        for num, name in json.load(open(wp, encoding="utf-8")).get("guidelines", {}).items():
+            titles["guideline:" + num] = {"code": num, "title": name, "from": "wcag"}
+    rids = {r["id"] for r in rul}
+    adr_dir = os.path.join(os.path.dirname(root), "docs", "decisions")
+    for g in sorted({str(x).strip() for r in rul for x in (r.get("governs") or []) if isinstance(x, str)}):
+        aid, t = "artefact:" + g, None
+        if g in rids and ("ruling:" + g) in titles:
+            t = {"code": g, "title": titles["ruling:" + g]["title"], "from": "ruling"}
+        elif ("rule:" + g) in titles:
+            t = {"code": g, "title": titles["rule:" + g]["title"], "from": "rule"}
+        elif ADR_RX.match(g) and os.path.isdir(adr_dir):
+            fs = sorted(f for f in os.listdir(adr_dir) if f.startswith(g + "-") and f.endswith(".md"))
+            head = next((ln for ln in open(os.path.join(adr_dir, fs[0]), encoding="utf-8") if ln.startswith("# ")), "") if fs else ""
+            h = re.sub(r"^#\s+" + re.escape(g) + r"\s*[—–:-]\s*", "", head.strip())
+            tt = title_of(h, cmap) if h and h != head.strip() else None
+            if tt: t = {"code": g, "title": tt, "from": "adr"}
+        if t: titles[aid] = t
     for v in titles.values():
         v["label"] = v["code"] + " " + v["title"]
     kinds = Counter(k.split(":", 1)[0] for k in titles)
@@ -294,16 +330,20 @@ def load_titles(root=HERE):
 
 def apply_titles(nodes, titles):
     """Give each bare-code node its derived label. A node whose label is NOT its bare code (someone
-    else already named it) is left alone. Returns the count applied. Writes `label` and `titleFrom`."""
+    else already named it) is left alone. Returns the count applied. Writes `label`, `code` and `titleFrom`."""
     n = 0
     for nd in nodes:
         t = titles.get(nd.get("id"))
         if not t: continue
         if (nd.get("label") or "").strip() != t["code"]: continue
         nd["label"] = t["label"]
+        nd["code"] = t["code"]          # #305 s305-D44: the canvas prints the code alone; search, panel and INSPECT read the label
         nd["titleFrom"] = "derived by gen_kg_titles.py from the record's %s — display only" % (
             {"ruled": "`ruled` headline", "says": "`says` text", "text": "rule text",
-             "rulings": "rulings (date and count)"}.get(t["from"], t["from"]))
+             "rulings": "rulings (date and count)", "mediatingVariable": "mediating variable",
+             "wcag": "WCAG 2.2 guideline name (knowledge/_wcag-guideline-names.json)",
+             "ruling": "named ruling's own title", "rule": "named rule's own title",
+             "adr": "decision record's own heading"}.get(t["from"], t["from"]))
         n += 1
     return n
 
@@ -400,6 +440,24 @@ def selftest():
                  "#n, #n-Dk, '#n (…)' — OR id s<n>-), dates as a range; #7 never counts #77's",
              len(sr[77]) == 2 and _dates(sr[77]) == "2026-08-01/02" and len(sr[78]) == 1
              and len(sr[79]) == 1 and len(sr[76]) == 2 and len(sr[7]) == 1 and min(len(v) for v in sr.values()) >= 1)
+        # #305 s305-D44 — the three new kinds, and the code the canvas prints
+        bite(13, "apply_titles stamps the bare `code` on a titled node (the canvas prints it alone)",
+             nodes[0].get("code") == victim["id"] and "code" not in nodes[1])
+        for f in ("_ux_principle_nodes.json", WCAG_NAMES):
+            if os.path.exists(os.path.join(HERE, f)): shutil.copy(os.path.join(HERE, f), k)
+        d2 = compute(k)
+        npol = sum(1 for n in json.load(open(os.path.join(k, "_ux_principle_nodes.json"))).get("nodes", []) if n.get("type") == "polarity")
+        bite(14, "every polarity is titled from its mediating variable and all 13 WCAG guidelines carry WCAG's own name",
+             sum(1 for x in d2["titles"] if x.startswith("polarity:")) == npol > 0
+             and sum(1 for x in d2["titles"] if x.startswith("guideline:")) == 13
+             and d2["titles"]["guideline:1.4"]["title"] == "Distinguishable")
+        g = next(r["id"] for r in rul if ("ruling:" + r["id"]) in d2["titles"])
+        dd = json.load(open(os.path.join(k, "_rulings.json"), encoding="utf-8"))
+        dd["rulings"][0].setdefault("governs", []).append(g)
+        json.dump(dd, open(os.path.join(k, "_rulings.json"), "w", encoding="utf-8"))
+        d3 = compute(k)
+        bite(15, "MUTATION: a ruling that names another ruling's bare id as an artefact titles artefact:%s with that ruling's own title" % g,
+             d3["titles"].get("artefact:" + g, {}).get("title") == d3["titles"]["ruling:" + g]["title"])
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print("gen_kg_titles selftest: %d bite(s), %d fail(s)" % (n, len(fails)))

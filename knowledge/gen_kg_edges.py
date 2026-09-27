@@ -473,6 +473,8 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
         out = []
         if isinstance(sc, dict):
             for part_name, spec in sc.items():
+                if part_name.startswith("$"):
+                    continue  # #305 call 15: a `$`-key is a note on the parts (data-grid's $composes), never a part itself
                 use = spec.get("use") if isinstance(spec, dict) else str(spec)
                 note = f"{part_name}: {use}" if use else part_name
                 out.append({"ref": None, "$note": note})

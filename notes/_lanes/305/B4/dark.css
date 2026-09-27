@@ -1,0 +1,20 @@
+/* #305 B4: light and dark. The house pages carry light only; dark swaps the same tokens. */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--accent:#FF6A55;--black:#F2F2F2;--white:#141414;--grey-1:#1E1E1E;--grey-2:#2A2A2A;--grey-3:#3C3C3C;--grey-5:#8C8C8C;--grey-6:#A6A6A6;--grey-7:#BDBDBD;--grey-8:#D6D6D6;color-scheme:dark}
+}
+:root[data-theme="dark"]{--accent:#FF6A55;--black:#F2F2F2;--white:#141414;--grey-1:#1E1E1E;--grey-2:#2A2A2A;--grey-3:#3C3C3C;--grey-5:#8C8C8C;--grey-6:#A6A6A6;--grey-7:#BDBDBD;--grey-8:#D6D6D6;color-scheme:dark}
+body{background:var(--white);color:var(--black)}
+/* the decisions bar stays a dark bar in both modes */
+.dd-bar{background:#000 !important;color:#fff !important}
+.dd-bar button{color:#fff !important}
+.dd-bar button.pri{background:#DA1A00 !important;border-color:#DA1A00 !important}
+.dd-chip.on{background:var(--black);color:var(--white)}
+/* renders are light screenshots: frame them so they sit on either ground */
+.shot{display:block;max-width:100%;height:auto;border:1px solid var(--grey-3);background:#fff}
+
+/* the published back link is black: give it an edge on a dark ground */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #rv-back{box-shadow:0 0 0 1px #6a6a6a !important}}
+:root[data-theme="dark"] #rv-back{box-shadow:0 0 0 1px #6a6a6a !important}
+
+/* phones: the decisions bar wraps to three rows; keep the page foot clear of it */
+@media(max-width:820px){html body{padding-bottom:150px}}

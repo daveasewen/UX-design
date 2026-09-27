@@ -10,8 +10,8 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dp08-anchor** — `knowledge/canon/dp08-anchor.js` · **1821 code-only bytes** (1.8 KB of 16 KB) · 3884 raw, 2063 comment/blank · 16 member(s)
 - **dataviz/dv-render** — `knowledge/canon/dv-render.js` · **9783 code-only bytes** (9.6 KB of 16 KB) · 21791 raw, 12008 comment/blank · 16 member(s)
 - **dataviz/dv-render-bar** — `knowledge/canon/dv-render-bar.js` · **4613 code-only bytes** (4.5 KB of 16 KB) · 9262 raw, 4649 comment/blank · 16 member(s)
-- **dataviz/dv-render-line** — `knowledge/canon/dv-render-line.js` · **3616 code-only bytes** (3.5 KB of 16 KB) · 9187 raw, 5571 comment/blank · 16 member(s)
-- **dataviz/dv-render-stacked-area** — `knowledge/canon/dv-render-stacked-area.js` · **4248 code-only bytes** (4.1 KB of 16 KB) · 10285 raw, 6037 comment/blank · 16 member(s)
+- **dataviz/dv-render-line** — `knowledge/canon/dv-render-line.js` · **3648 code-only bytes** (3.6 KB of 16 KB) · 9795 raw, 6147 comment/blank · 16 member(s)
+- **dataviz/dv-render-stacked-area** — `knowledge/canon/dv-render-stacked-area.js` · **4487 code-only bytes** (4.4 KB of 16 KB) · 10893 raw, 6406 comment/blank · 16 member(s)
 - **dataviz/dv-render-donut** — `knowledge/canon/dv-render-donut.js` · **4087 code-only bytes** (4.0 KB of 16 KB) · 11466 raw, 7379 comment/blank · 16 member(s)
 - **dataviz/dv-render-sparkline** — `knowledge/canon/dv-render-sparkline.js` · **3235 code-only bytes** (3.2 KB of 16 KB) · 9852 raw, 6617 comment/blank · 16 member(s)
 - **dataviz/dv-render-combo** — `knowledge/canon/dv-render-combo.js` · **5198 code-only bytes** (5.1 KB of 16 KB) · 11625 raw, 6427 comment/blank · 16 member(s)
@@ -22,17 +22,17 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-render-candlestick** — `knowledge/canon/dv-render-candlestick.js` · **4872 code-only bytes** (4.8 KB of 16 KB) · 10765 raw, 5893 comment/blank · 16 member(s)
 - **dataviz/dv-render-butterfly** — `knowledge/canon/dv-render-butterfly.js` · **4711 code-only bytes** (4.6 KB of 16 KB) · 10795 raw, 6084 comment/blank · 16 member(s)
 
-- **dataviz — page budget (worst member):** 34777 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
+- **dataviz — page budget (worst member):** 34809 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
     - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 9783 code-only bytes, NOT charged to member figures
-    - `Chart-combo` — 34777 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
+    - `Chart-combo` — 34809 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
     - `Chart-donut` — 29326 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
     - `Chart-butterfly-h` — 26061 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
     - `Chart-butterfly-v` — 26061 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
     - `Chart-bar` — 25963 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar
-    - `Chart-stacked-area` — 25598 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
+    - `Chart-stacked-area` — 25837 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
     - `Chart-scatter` — 25498 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-scatter
     - `Chart-pie` — 25437 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-donut
-    - `Chart-line` — 24966 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
+    - `Chart-line` — 24998 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
     - `Chart-candlestick` — 18462 bytes · consumes dv-behaviour, dv-render, dv-render-candlestick
     - `Chart-bullet` — 18033 bytes · consumes dv-behaviour, dv-render, dv-render-bullet
     - `Chart-boxplot` — 17926 bytes · consumes dv-behaviour, dv-render, dv-render-boxplot

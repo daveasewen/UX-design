@@ -174,7 +174,10 @@ def implicit_vals(m, ctx):
         out.append(("[meta.answers] " + "/".join(have), all(w in have for w in want)))
     return out
 
-def choose(ctx, role=None, metas=None, implicit=False):
+def choose(ctx, role=None, metas=None, implicit=True):
+    # #305 sitting call 21 (Dave 2026-09-27, "yes"): the chooser ALSO reads each part's own `answers` and
+    # `shape` (variant B) BY DEFAULT — the one home s254-D2 ruled for a part's question and shape, so no
+    # second source. implicit=False is the rules-only reading (variant A), kept for comparison.
     metas = metas or METAS
     pool = sorted(metas) if not role else sorted(s for s in providers(role, metas) if s in metas)
     rows = []
@@ -309,7 +312,7 @@ if __name__ == "__main__":
     results = []
     t0 = time.perf_counter()
     for t in TESTS:
-        a = time.perf_counter(); r = choose(t["ctx"], t["role"]); ms = (time.perf_counter() - a) * 1000
+        a = time.perf_counter(); r = choose(t["ctx"], t["role"], implicit=False); ms = (time.perf_counter() - a) * 1000
         rb = choose(t["ctx"], t["role"], implicit=True)
         a = time.perf_counter(); rp, rall = reader_pick(t); rms = (time.perf_counter() - a) * 1000
         row = {"id": t["id"], "why": t["why"], "role": t["role"], "ctx": t["ctx"], "expect": t["expect"],
@@ -331,5 +334,5 @@ if __name__ == "__main__":
     print("summary:", json.dumps(summ))
     json.dump({"$run_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "selftest": [(n, ok) for n, ok, *_ in bites],
                "coverage": cov, "per_meta": per, "summary": summ, "results": results,
-               "rows_W1": choose(TESTS[0]["ctx"], TESTS[0]["role"])["rows"], "rows_W1b": choose(TESTS[1]["ctx"], TESTS[1]["role"])["rows"]},
+               "rows_W1": choose(TESTS[0]["ctx"], TESTS[0]["role"], implicit=False)["rows"], "rows_W1b": choose(TESTS[1]["ctx"], TESTS[1]["role"], implicit=False)["rows"]},
               open(os.path.join(LANE, "when-eval-results.json"), "w"), indent=1, ensure_ascii=False)

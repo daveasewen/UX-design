@@ -457,6 +457,16 @@ PHOTOGRAPHY_ADDITIONS = (
 # counted in the roster, and have nothing to say — word for word the argument the block above
 # makes for `_gate_pack_imports.py`. ⬛ REVERSING THIS IS ONE LINE AND IT IS DAVE'S: delete the
 # name, regenerate, and the roster reads 59.
+# ✅ #305 — THE ROSTER MOVES BY DAVE'S WORD, NOT BY THE GLOB. The #304 geometry and own-size gates
+# (`_validate_geometry.py`, `_validate_own_size.py`, born #304 R4b) sit at `knowledge/_validate_*`,
+# so the glob below claimed both the first time a manifest was generated at a commit carrying them —
+# the exact move this block exists to refuse. It was ASKED, not assumed: the #305 sitting, call 2,
+# "Ship the two new gates in the pack, and name the gate roster 60?" — Dave, 2026-09-27 14:01: "yes".
+# So both SHIP (they are NOT added to RELEASE_SIDE_GATES) and the ruled roster for this lineage is 60
+# (58 + 2), the figure the v1.0.14 manifest names. They ship TOGETHER or not at all: own-size imports
+# geometry's browser harness (`from _validate_geometry import Harness`), which the import closure
+# carries. Declared with the yes (R4b §5): their selftests cannot run from the zip (the fixtures under
+# `knowledge/_tests/` do not ship); page mode works. Call 3 keeps both ADVISORY through the cut.
 RELEASE_SIDE_GATES = {"_gate_pack_imports.py", "_gate_scratch_hygiene.py"}
 
 _PHOTO_SPECIMEN = []
