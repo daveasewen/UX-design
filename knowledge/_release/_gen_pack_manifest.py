@@ -110,7 +110,18 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 # file in the selftest, and a file that quotes the dead name cannot police it.)
 PACK_NAME = "Apollo — Spider"          # display name, prose register
 PACK_SLUG = "Apollo-Spider"            # filename register: the zip and the pack root
-VERSION = "v1.0.13"                    # Spider's own lineage starts here; v1/v2 stay frozen
+VERSION = "v1.0.14"                    # Spider's own lineage starts here; v1/v2 stay frozen
+# ⛔ v1.0.14 (#305) — CANDIDATE 2, REBUILT FROM #305 WAVE ONE. Dave at #305 (sitting call 1, 14:01 BST
+# 2026-09-27), asked "Cut v1.0.14 from candidate 2 on Tuesday?": "yes" (s305-D2). The sitting page's
+# recipe for a yes: the next wave carries what the sitting allowed, the candidate is rebuilt from that
+# sha, the cut seat fixes the stamp that rewrote three historical rulings, then ratify, gate, zip.
+# What this cut carries that v1.0.13 did not: the reader and the Constitution (READER_SHIPS_FROM,
+# s279-D1), the composing skill (R4a, #304), the chart engine's dense-series thinning, the gate roster
+# 60 with geometry and own-size ADVISORY (s305-D3, s305-D4), and wave one's look (s305-D5..D13, D42,
+# D43: KPI clip-visible, 8px badge, Common solid label ink, 40px tile sparkline, full-height shell).
+# The stamp fix: build-designer-pack.sh's carried-cut stamp now leaves historical records alone —
+# knowledge/_rulings.json QUOTES old Gumdrop versions and ships from this cut, and the stamp rewrote
+# three of its rulings (s219-D8, s219-D10, s225-D3) to the new version inside the stage.
 # ⛔ v1.0.13 (#268) — THE DESCENDER CROP, CLOSED AT THE LEVEL IT ACTUALLY LIVES AT, AND THE FIRST
 # CUT DRIVEN AGAINST THE REAL DEMO PAGE BEFORE THE PIN. Dave at #268: "okay do 13".
 # ⛔ THIS IS THE DESIGNER-FACING PACK. Dave, same session: "the last release I gave to the
@@ -217,7 +228,7 @@ MEMENTO_CUT_NAME = "Memento — Gumdrop"
 # version literal in the tree and in the stage derives from this constant via the manifest's
 # `carries.version` (build-designer-pack.sh's stamp block). It moves at every cut, in step
 # with VERSION above; it is not an independent lineage.
-MEMENTO_CUT_VERSION = "v1.0.13"
+MEMENTO_CUT_VERSION = "v1.0.14"
 
 SCHEMA = "apollo-designer-pack-manifest/1"
 MANIFEST_PATH = os.path.join(HERE, "_pack_manifest.json")
@@ -1065,6 +1076,10 @@ RATIFY_IDS = {
                             # not a patch. Keyed at the bake, the #257 / #260 / #262 / #267 /
                             # #268 shape: key → regenerate the manifest RATIFIED at the SAME cut
                             # commit → --release → move the frozen literal → --seed.
+    "v1.0.14": "s305-D2",   # #305, Dave's word "yes" (2026-09-27 14:01 BST, sitting call 1, "Cut
+                            # v1.0.14 from candidate 2 on Tuesday?"). The call's recipe named the
+                            # rebuild from the next wave's sha, so the word covers this cut at
+                            # #305 wave one. Keyed with the version sweep, the #257 .. #268 shape.
     "v1.0.13": "s268-D3",   # #268, Dave's word "okay do 13" (2026-09-11), on the PROPOSED cut at
                             # 08e315dca376 — the descender crop closed at the level it actually
                             # lives at (108 absorbed component copies of the leading-trim default,

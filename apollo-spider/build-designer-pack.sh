@@ -302,11 +302,22 @@ stage, want = sys.argv[1], sys.argv[2]
 # The same spelling family arm 5 of _gate_pack_docs.py sweeps (GUMDROP_RE): em dash, en dash or
 # hyphen, so a stamp can never be narrower than the gate that grades it.
 RE = re.compile(r"(Memento\s*[—–\-]\s*Gumdrop\s+v)(\d+\.\d+\.\d+)")
+# ⛔ #305 (s305-D2's cut) — HISTORICAL RECORDS ARE NEVER STAMPED. From v1.0.14 the Constitution
+# ships (READER_SHIPS_FROM, s279-D1), and knowledge/_rulings.json QUOTES old Gumdrop versions as
+# history: s219-D8 and s219-D10 ("Memento cut = Memento - Gumdrop v1.0.0") and s225-D3 (the
+# v1.0.0 literals arm 5 caught). The presence sweep rewrote all three to the new version inside
+# the stage, so the pack shipped Dave's record falsified and `--check` went red on that file, its
+# DRIFT line advising a "sync" of the repo copy that would have falsified the repo too (R4a
+# finding 1, #304; measured by V2). A quotation is not a version line: these paths are read,
+# never stamped, and a literal in them is not counted as carried.
+HISTORICAL = {"knowledge/_rulings.json"}
 carry, moved = 0, []
 for root, dirs, files in os.walk(stage):
     dirs.sort()
     for name in sorted(files):
         p = os.path.join(root, name)
+        if os.path.relpath(p, stage) in HISTORICAL:
+            continue                       # a record of what was said, not a version line
         try:
             src = open(p, encoding="utf-8").read()
         except (UnicodeDecodeError, OSError):
@@ -412,6 +423,7 @@ rather than what moved in the repo.
 | \`v1.0.11\` | The sidebar nav and both toolbar dropdowns are styled and clickable again — the canon CSS in v1.0.10 was a stale generated file and shipped without their rules. |
 | \`v1.0.12\` | Every version line inside the pack agrees about which pack you are holding, and the first half of the nav label fix lands. |
 | \`v1.0.13\` | **Nav labels no longer lose their descenders** — "Payments" stopped reading "Pavments" — in all four themes, on a real generated page and not just a test fixture. |
+| \`v1.0.14\` | The generate skill composes a page from the knowledge graph instead of copying the template, and the pack carries the design rulings. Long charts mark only their last point; the KPI tile, nav badge and notification border are fixed; the app shell can fill the window. |
 
 The detail behind any line is in \`_MANIFEST.json\` and in the commit it names.
 
