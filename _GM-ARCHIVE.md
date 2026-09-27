@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-26 #304
+
+> **COMMIT STATE #303:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-26-303-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Two commits before the wrap, both Thu 2026-09-24:** the conductor's `6c881313` (the deck, the 17-slide copy, the explorer, `build_c.py`, the prompt, lane P's press and report; declared not-a-wrap, `DOC_ROW_ACK` declared for lane P's report) and `683f4cca` (slide 14's gap), pushed `5c132083..683f4cca`; CI `36035716214` and `36036092619` read back by the conductor. Handoff `_HANDOFF-154-the-deck-was-finished-for-friday-and-apollo-mcp-was-asked-for.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **402,607 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the hard line.**
+
+> ## ★ PRIOR — 2026-09-24 (Thu **#302**, Opus 5.5 conductor in the CLOUD, **1 Opus sub**, DELEGATED wrap on Opus 5.5 — ★★ **THE DECK GREW A SLIDE, AND THE ASK WENT TO HIS COLLEAGUES**)
+>
+> - ★★★ ① **THE ASK WENT TO HIS COLLEAGUES; THE DEMO PROMPT IS NEXT.** *"1. this will come from my colleagues"* · *"2. we'll do this after some more changes"* (07:43). At 12:42 *"okay lets have a look at this prompt if we have space"* — no room at 285,325, so it is #303's first beat. **Friday is 2026-09-25 — tomorrow.** The ask (now 16) stays DRAFT. **`_rulings.json` STAYS 638.**
+> - ★★ ② **THE DECK IS 17 SLIDES — HIS ACTS, `7f10b5b8`:** 11–13 copy on his words; **Scrutiny** 03 before Judgement 04 on 12; the callipers turned over and floating (*"this is perfect."*); **new 15, "Benefits beyond speed, quality and consistency"** — Customisation · Convergence · Cost-effectiveness, Light, **$3.2m bold red** (`notes/_subreports/2026-09-24-302-A-callipers-upright.md`, `notes/_subreports/2026-09-24-302-B-benefits-slide.md`).
+> - ⚠ ③ **THE SEAT RENDERS ON A FALLBACK FACE** — "Univers Next" does not resolve there; `HSBC_MtUnivers_Latin` does, and the font stack never names it. His to add. **FILL 285,325 at 12:42 (hand sum), over the 256K working line, under 300K.** The wrap gate is RED on the boot ceiling: DECLARED not-a-wrap path again. **`_HANDOFF-153-the-deck-grew-a-slide-and-the-ask-went-to-his-colleagues.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #303:** ⬛ **THE DEMO PROMPT, THE DAY BEFORE FRIDAY** [1, DAVE'S] — put it at the opener. `s225-D2`. **703 items, 6 new, 1 STRUCK IN PART (the ask, to his colleagues)**, `_CARRIES.md` § `residual → #303` `carries:residual-303`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#303:**' in l][0])))"` = 703. The 6 new are counted by it: 697→703.
+> **residual (GENERATED #302):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #301) — _roll_state.py · 2026-09-24
+
+
+*Rolled at the #304 wrap (2c, ritual 2026-09-27). The #302 ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite. Its durable content already lives in `_DECISION-HISTORY/`, `notes/_subreports/`, the ledgers and git, and every ⬛/⚠ item on it is carried in `_CARRIES.md` (§ `residual → #303` onward, now § `residual → #305`) at its true age; this archive is a convenience copy, never a tattoo.*
+
 ## Batch 2026-09-24 #303
 
 > **COMMIT STATE #302:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-24-302-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **One commit before the wrap:** the conductor's `7f10b5b8` (the deck, lane A's work and two reports; declared not-a-wrap, `DOC_ROW_ACK` declared), pushed `ae4cb4cb..7f10b5b8`. Handoff `_HANDOFF-153-the-deck-grew-a-slide-and-the-ask-went-to-his-colleagues.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **290,671 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the working line, under the hard line.**
