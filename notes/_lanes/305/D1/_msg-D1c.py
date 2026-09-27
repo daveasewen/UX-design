@@ -1,0 +1,15 @@
+# #305 D1 - close commit message (python-written, no T3 prefix on line 1).
+msg = """305 D1: W-305k closed - CI green on all three jobs for 9c3f4663 and fd607c74 after the git-2.55 commit_date fix; D1's final report
+
+DECLARED not-a-wrap (#74-D1): the #305 D1 seat's third and last commit.
+
+- W-305k closed through knowledge/_state.py (every limb of closes_when receipted in closed_by): V2 opened the real v1.0.14 zip and filed (its DO NOT SHIP verdict, s279-D1 against W-305n6, stays Dave's and is not closed by this row); X 0ef30746, Y1 02d679b3, Y2 d3b809a7 are on origin; CI read back green - run 36347602064 (9c3f4663) and run 36347858414 (fd607c74): release SUCCESS with step 7 PASS a5b00c14 on git 2.55.0, gates SUCCESS (survey 69 pass 0 FAIL; step 6 all 154 asked, 0 gate red; advisory [140] [141] [150]), render SUCCESS; s305-D2 reads enacted. W-305d1 (this seat's row) closed on the same runs.
+- Serial run (_CHAIN.md, the schematic moved) and dashboard re-run; every --check FRESH.
+- D1's FINAL report: notes/_subreports/2026-09-27-305-D1-ci-release-divergence.md. Named there for the conductor: apollo-spider/build-designer-pack.sh:258 reads %cI the same way (bites only at a bake on git >= 2.55); s305-D24 left enacted as a judgement; W-305f1's close condition is now met.
+- Lane tail: CI logs and parses for both runs, the second commit's transcripts, the second push log, the close script. Not committed: backup/_rulings.json.pre-D1.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01HPh5XdW9a12LKZuJceR9xa
+"""
+open('notes/_lanes/305/D1/_msg-D1c.txt', 'w').write(msg)
+print(len(msg.splitlines()[0]), 'chars line 1')
