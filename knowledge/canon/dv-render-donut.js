@@ -97,7 +97,23 @@
     }
     if (!total) { throw new Error('dv-render-donut: every value is zero — there is no whole to divide'); }
 
-    /* ds-030 — the diameter is a HEIGHT fact, the centre is a WIDTH fact. Nothing else. */
+    /* ds-030 — the diameter is a HEIGHT fact, the centre is a WIDTH fact. Nothing else.
+       #304 W4a — AND THE WIDTH IS THE CANVAS'S OWN, never the measured one. The core measures
+       the rendered box (right for a cartesian plot, whose constants must land 1:1), but a ring's
+       box is FIXED (ds-030 #103: "the circular SVG plot keeps its fixed diameter (no proportional
+       scaling)"). Measuring it read whatever the box was that frame: under reduced motion the
+       page's 0.01ms transitions left the canvas at the template's 580px start width when
+       .dv-fit-on released it to 100%, so the viewBox was authored 580 wide and then stretched to
+       the tile — a 350px ring on 6 of 8 loads and 200px on 2 (W4b probe_ring_bistable; W4a
+       probe_vw: the CSSTransition on `width` 580px -> 100% was running at the dvRender call).
+       The frame is now the authored `width` attribute (the snippets' 300 and 592, unchanged), or
+       VH + 40 when there is none — the snippet's own 20px of air each side of the leaders — and
+       it is written back as width/height so the box is the drawing, not the tile. Deterministic
+       by construction: no layout is read. The templates' fluid-canvas release skips rings (ds-030,
+       Template-dashboard-bento), so nothing stretches the box afterwards. */
+    var aw = ctx.svg.getAttribute('width');
+    ctx.VW = /^\d+(\.\d+)?$/.test(aw) ? +aw : ctx.VH + 40;
+    ctx.svg.setAttribute('width', ctx.VW); ctx.svg.setAttribute('height', ctx.VH);
     var cx = ctx.VW / 2, cy = ctx.VH / 2, ro = (ctx.VH - 60) / 2, ri = hole ? ro * 0.6 : 0;
     var gap = ctx.GAP / (ri || ro * 0.35) / RAD;   /* dv-004 — 2px at the narrow edge, in degrees */
     var a = -90, annos = [];                       /* -90 = twelve o'clock, sweeping clockwise */

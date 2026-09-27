@@ -18017,6 +18017,11 @@
 :where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-svg{width:100%;}
 :where(.cn-template-dashboard-bento) figure.dv-fit-on .dv-svg{height:auto;}
 /* s248-D2/s249-D4 — VFIT: the box follows the viewBox height (JS-on only) */
+/* ds-030 (#103) — a RING is the exception to the release above: "fluid container, fixed-diameter
+     centred plot". Its canvas keeps the box its own width/height attributes give it (dv-render-donut
+     writes them), so a donut or pie in a wide tile is a 300x260 drawing centred in the row, not a
+     tile-wide svg holding a 200px ring (#304 W4a; W3b §2 item 1, 4 of 6 cold overviews). */
+:where(.cn-template-dashboard-bento) figure.dv-fit-on[data-dv-type="donut"] .dv-svg, :where(.cn-template-dashboard-bento) figure.dv-fit-on[data-dv-type="pie"] .dv-svg{width:auto; height:auto;}
 :where(.cn-template-dashboard-bento) .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
 :where(.cn-template-dashboard-bento) line.dv-axis{stroke:var(--baseline); stroke-width:1;}
 :where(.cn-template-dashboard-bento) text.dv-axis, :where(.cn-template-dashboard-bento) text.dv-label{opacity:var(--axis-alpha);}

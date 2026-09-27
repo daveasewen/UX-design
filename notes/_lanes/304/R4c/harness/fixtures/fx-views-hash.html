@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Views fixture — #/ routes</title>
+<!-- W4b #304: a harness fixture. Three views reached by #/ routes; every view's text is written by
+     script (the KPI word is assembled at run time, so it is not in this source); a Light/Dark pair
+     sets data-theme on <html>. -->
+<style>
+  body{margin:0;font:16px/24px "Univers Next HSBC",Arial,sans-serif;background:#FFFFFF;color:#1A1A1A}
+  [data-theme="dark"] body{background:#1A1A1A;color:#FFFFFF}
+  nav{display:flex;gap:16px;padding:16px 24px}
+  nav a,nav button{font:inherit;color:inherit;background:none;border:0;padding:8px 0;cursor:pointer}
+  .modes{position:absolute;top:16px;right:24px;display:flex;gap:8px}
+  .modes button{font:inherit;padding:8px 12px}
+  main{padding:24px}
+</style></head>
+<body>
+<nav aria-label="Main"><a href="#/overview">Overview</a><a href="#/payments">Payments</a><a href="#/settings">Settings</a></nav>
+<div class="modes"><button type="button" id="m-light">Light</button><button type="button" id="m-dark">Dark</button></div>
+<main id="main"></main>
+<script>
+  const W = {overview: ['Overview', 'Funding ' + 'head' + 'room is £1.2bn; cash stands at £4.1bn.'],
+             payments: ['Payments', 'Twelve approvals wait for you today.'],
+             settings: ['Settings', 'Preferences for alerts and statements.']};
+  function show(v) { const w = W[v] || W.overview; document.getElementById('main').innerHTML = '<h1>' + w[0] + '</h1><p>' + w[1] + '</p>'; }
+  const go = () => show((location.hash.match(/^#\/(\w+)/) || [])[1]); window.addEventListener('hashchange', go); go();
+  document.getElementById('m-dark').onclick = () => document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('m-light').onclick = () => { document.documentElement.setAttribute('data-theme', 'light'); };
+</script>
+</body></html>

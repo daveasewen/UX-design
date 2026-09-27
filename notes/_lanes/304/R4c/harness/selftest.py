@@ -48,7 +48,7 @@ def main():
     out = {"verdict": "PASS" if ok else "FAIL", "asserts": A,
            "scores": {i: {"dims": dims(c), "total": c["total"], "trace": T(c), "theme": TH(c), "clipped": CL(c)}
                       for i, c in (("fx-good", g), ("fx-bad", b), ("fx-wrong-theme", wt), ("fx-clipped", cl), ("fx-no-persist", npz), ("fx-good-rerun", rr))}}
-    jdump(out, os.path.join(LANE, "runs", "selftest.json"))
+    jdump(out, os.path.join(RUNS, "selftest.json"))      # W4b: beside the runs it read (R4C_RUNS), never elsewhere
     for a in A: print("%s  %s — %s" % ("PASS" if a["ok"] else "FAIL", a["assert"], a["detail"]))
     print("SELFTEST", out["verdict"])
     return 0 if ok else 1

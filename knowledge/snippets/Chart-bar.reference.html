@@ -775,15 +775,22 @@
      _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
      never baked: the clipping was driven by label length and face looseness (the licensed
      HSBC cut is looser than Helvetica), neither a design property — a build-time constant
-     is (a) wearing (b)'s clothes. Opt-in per svg via data-pl-fit="<selector>"; data-pl is
-     the FLOOR, so no gutter ends up NARROWER than its reviewed geometry.
+     is (a) wearing (b)'s clothes. data-pl is the FLOOR, so no gutter ends up NARROWER than
+     its reviewed geometry.
+     #304 W4a — ON BY DEFAULT. Until #304 the fit was opt-in per svg (data-pl-fit="<selector>"),
+     and a cold page that copied a canvas without the attribute shipped "00 £m": 5 of 6 cold-run
+     overviews had y labels cut at the left (W3b §2 item 2). The RULING is the plot area computed
+     from the widest label; opt-in was only how it was first shipped. Absent the attribute, the
+     gutter now measures the labels that LIVE in it — every text pinned to the plot's left edge
+     and growing leftward (data-fx="0" + text-anchor="end": value ticks, h-bar categories, bullet
+     names). An authored selector still wins; data-pl-fit="none" is the opt-out (it matches no
+     element, so nothing is measured and the floor stands).
      PROVISIONAL-AWAITING-DAVE — the two constants below guard ds-012 point 3 ("do not let
      the plot area collapse"); the narrow-width trade is Dave's eye, not a formula. */
   var PL_MAX_FRAC = 0.42;   /* PROVISIONAL-AWAITING-DAVE — gutter ceiling as a share of width */
   var PL_EDGE_PAD = 2;      /* PROVISIONAL-AWAITING-DAVE — clearance left of the longest label */
   function gutterPL(svg, floorPL, W) {
-    var sel = svg.getAttribute('data-pl-fit');
-    if (!sel) { return floorPL; }
+    var sel = svg.getAttribute('data-pl-fit') || '[data-fx="0"][text-anchor=end]';
     var labs = svg.querySelectorAll(sel), maxW = 0, pad = 0, i, bb, dx;
     for (i = 0; i < labs.length; i++) {
       try { bb = labs[i].getBBox(); } catch (e) { continue; }
@@ -824,8 +831,9 @@
     var plot0 = parseFloat(svg.getAttribute('data-h') || '260') - PT - PB, plot = H - PT - PB;
     if (plot0 <= 0 || plot <= 0) { return null; }
     var Y = function (f) { return PT + parseFloat(f) * plot; };
+    Y.f = function (px) { return ((px - PT) / plot0).toFixed(4); };   /* px -> plot fraction (#304 W4a: shared with the polyline branch) */
     var frac = function (el, key, px) {                   /* cache the bake ONCE, as a plot fraction */
-      if (el.getAttribute(key) === null) { el.setAttribute(key, ((px - PT) / plot0).toFixed(4)); }
+      if (el.getAttribute(key) === null) { el.setAttribute(key, Y.f(px)); }
       return el.getAttribute(key);
     };
     var els = svg.querySelectorAll('rect[y],line[y1],text[y],circle[cy],polygon[points]');
@@ -899,15 +907,42 @@
         var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
         var ys = pl.getAttribute('data-ys').trim().split(/\s+/), fys = null;
         if (Y) {                                          /* VFIT: y from cached plot fractions */
-          var PT0 = parseFloat(svg.getAttribute('data-pt') || '14'), pl0 = parseFloat(svg.getAttribute('data-h') || '260') - PT0 - parseFloat(svg.getAttribute('data-pb') || '30');
-          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return ((parseFloat(y) - PT0) / pl0).toFixed(4); }).join(' ')); }
+          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return Y.f(parseFloat(y)); }).join(' ')); }
           fys = pl.getAttribute('data-fys').trim().split(/\s+/);
         }
         var pts = [];
         for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + (fys ? Y(fys[k]).toFixed(1) : ys[k])); }
         pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
       }
+      /* #304 W4a — after x is final */
+      thinLabels(svg);
     } catch (e) { /* leave the baked SVG intact */ }
+  }
+  /* ---------- CATEGORY LABELS NEVER COLLIDE (#304 W4a). The type partials label EVERY category,
+     so thirty daily labels collide at dashboard widths (W3b §2 item 3; four of six cold runs).
+     Candlestick (first + last past a dozen) and histogram (a stride from an estimated width)
+     already thin at DRAW time, which freezes the choice at first-render width (#260 A7). This
+     thins at FIT time, from the labels' MEASURED boxes, on every resize: the smallest stride
+     at which the visible labels clear each other, anchored on the LAST category (the latest
+     period) — every n-th label keeps its place and the rest are hidden, never moved or scaled
+     (DV-D02). The table and every mark's tip still carry every category (dv-005). The 8px
+     clearance is the kit's own label clearance (the data-dx="8" offset every partial rides),
+     borrowed, not ruled (the +8 in each box). Only a ROW of centred, fraction-placed labels is
+     touched (grouped by baseline); the gutter's end-anchored labels are never thinned, and a lone
+     caption has no neighbour to clear. A label in a hidden view measures 0 wide and is skipped. */
+  function thinLabels(svg) {
+    var R = {}, k, L, n, s, p, i, b;
+    svg.querySelectorAll('.dv-label[text-anchor=middle]').forEach(function (t) { (R[k = t.getAttribute('y')] = R[k] || []).push(t); });
+    for (k in R) {
+      for (L = R[k], n = L.length, s = 1; s < n; s++) {
+        for (p = 1e9, i = n - 1; i >= 0; i -= s) {
+          b = L[i].getBBox();
+          if (b.width) { if (b.x + b.width + 8 > p) { break; } p = b.x; }
+        }
+        if (i < 0) { break; }
+      }
+      L.forEach(function (t, j) { t.setAttribute('visibility', (n - 1 - j) % s ? 'hidden' : 'visible'); });
+    }
   }
   var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
   window.addEventListener('resize', function () {
@@ -1679,7 +1714,9 @@
     if (fu) { furniture(ctx, draw.axis === 'x' ? 'x' : 'y', fu === 'axis'); }
     draw(ctx);
 
-    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+    /* #304 W4a — ctx.VW, not VW: a FIXED-FRAME type (the ring, ds-030) sets its own frame width
+       inside draw() instead of taking the measured one. Every other type leaves ctx.VW alone. */
+    svg.setAttribute('viewBox', '0 0 ' + ctx.VW + ' ' + VH);
     svg.innerHTML = ctx.out.join('\n');
     /* #260 A6 — a type may name itself. `autoLabel` enumerates every series x category, which is
        48 phrases for a 40-session candlestick; the partial's workaround was to write ctx.spec.label

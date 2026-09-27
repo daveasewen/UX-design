@@ -319,7 +319,9 @@
     if (fu) { furniture(ctx, draw.axis === 'x' ? 'x' : 'y', fu === 'axis'); }
     draw(ctx);
 
-    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+    /* #304 W4a — ctx.VW, not VW: a FIXED-FRAME type (the ring, ds-030) sets its own frame width
+       inside draw() instead of taking the measured one. Every other type leaves ctx.VW alone. */
+    svg.setAttribute('viewBox', '0 0 ' + ctx.VW + ' ' + VH);
     svg.innerHTML = ctx.out.join('\n');
     /* #260 A6 — a type may name itself. `autoLabel` enumerates every series x category, which is
        48 phrases for a 40-session candlestick; the partial's workaround was to write ctx.spec.label

@@ -1,0 +1,602 @@
+{
+ "dimensions": {
+  "full": {
+   "fact": "views live 1/10; KPI words 0/3; question words 1/3; largest record set 0 rows; longest chart series 0 points \u2192 coverage 0.09",
+   "rule": "mean of the coverage parts: >=0.30 \u2192 1, >=0.60 \u2192 2, >=0.85 \u2192 3",
+   "score": 0
+  },
+  "interactive": {
+   "fact": "2/11 driven controls changed the page (18%); live families 2: approve, theme; dead: detail, export, link, other; page errors 0",
+   "rule": "1: >=30% live or >=2 families \u00b7 2: >=60% and >=5 families \u00b7 3: >=85%, >=8 families, 0 page errors",
+   "score": 1
+  },
+  "persistent": {
+   "fact": "survived reload: none (of changed: theme; storage keys 0; url after <entry>#)",
+   "rule": "count of families {nav/view, filter, theme, sort, search} whose changed state survived a reload, capped at 3",
+   "score": 0
+  },
+  "visually_rich": {
+   "fact": "3 distinct Apollo components; 1 charts rendered with marks (1 types: column); 1 clipped",
+   "rule": "LIBERAL-DATAVIZ prompt \u00b7 1: >=4 components or >=1 rendered chart \u00b7 2: >=8 comps, >=3 chart types, >=4 charts \u00b7 3: >=12 comps, >=5 types, >=8 charts, 0 clipped",
+   "score": 1
+  }
+ },
+ "floor": {
+  "failing": [
+   "visually_rich",
+   "full",
+   "persistent",
+   "interactive"
+  ],
+  "min": 2,
+  "parts": {
+   "full": 0,
+   "interactive": 1,
+   "persistent": 0,
+   "visually_rich": 1
+  },
+  "rule": "each rubric part must reach 2; the parts are never summed",
+  "verdict": "FAIL"
+ },
+ "geometry_score": 0,
+ "ink": null,
+ "judgment": [
+  "Taste: does the page look like Apollo at its best \u2014 hierarchy, rhythm, restraint (Dave's eye on the light/dark shots).",
+  "Alignment and spacing that the geometry signals cannot name (optical alignment, crowding, the 'sloppiness class' of #288).",
+  "Whether each chart is the RIGHT chart for its figure (form-to-question fit), not only present and rendered.",
+  "Data believability: realistic entities, currencies, FX and magnitudes for a CEO audience.",
+  "Whether the overview actually answers the three CEO questions, as read by a person, not by keyword.",
+  "Whether each workflow (approve, acknowledge, service request) is plausible end to end, beyond 'the DOM changed'.",
+  "Composed vs traced is MEASURED as similarity; whether the composition is GOOD composition is judgment."
+ ],
+ "judgment_rows": [
+  {
+   "answer": null,
+   "evidence": null,
+   "evidence_label": "the overview's headings, in order",
+   "id": "three_questions",
+   "row": "Does the overview answer the three CEO questions as three visible groups (resilience \u00b7 exposure \u00b7 decisions)?"
+  },
+  {
+   "answer": null,
+   "evidence": null,
+   "evidence_label": "every ring chart on every view, with its tile's share of the content width",
+   "id": "ring_in_wide_tile",
+   "row": "Is any ring chart (donut or pie) sitting in a tile wider than half the wall?"
+  }
+ ],
+ "meta": {
+  "entry": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-bad/out/bad-traced.html",
+  "harness": "r4c-1.0",
+  "kind": "fixture",
+  "label": "fixture bad-traced",
+  "pack": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/apollo-spider/dist/Apollo-Spider-v1.0.13.zip",
+  "pack_root_staged": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-bad/pack",
+  "pack_sha256": "5d4df132b1f57f1764736d6bf46d3260bb7b7d0393a8317ea11c8f6b8bb282c6",
+  "page_sha256": "ec98281ad18c7532960a139b12500d5345721ad4f445d84bf66cbf082940a31e",
+  "page_source": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/notes/_lanes/304/R4c/harness/fixtures/bad-traced.html",
+  "profile": "ceo-common",
+  "run_id": "fx-bad",
+  "stage": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-bad",
+  "staged_at": "2026-09-26T17:41:30"
+ },
+ "missing_phases": [
+  "views"
+ ],
+ "reproduce": [
+  "python3 notes/_lanes/304/R4c/harness/score.py static --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py gates --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py render --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py drive --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py views --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py ext --run-id fx-bad",
+  "python3 notes/_lanes/304/R4c/harness/score.py card --run-id fx-bad"
+ ],
+ "sections": {
+  "a11y": {
+   "pack_gate_line": "- a11y: \u2705  (warn: `button#themeBtn` \u2014 autox36 \u2014 the declared axis is under the 44 default (aid-009); the other axis is layout-determined; `a.status.tpl-strip-link.warn` \u2014 autox24 \u2014 the declared axis is under the 44 default (aid-009); the other axis is layout-determined)",
+   "rendered": {
+    "small_sample": [
+     "a.crumb 39x10",
+     "a.crumb 114x10",
+     "a.tpl-link.t-cm-caption 51x10"
+    ],
+    "summary": {
+     "controls": 17,
+     "duplicate_ids": 0,
+     "h1": 1,
+     "heading_skips": 1,
+     "img_no_alt": 0,
+     "landmarks": {
+      "main": 1,
+      "nav": 2
+     },
+     "lang": "en",
+     "small_targets": 3,
+     "unnamed_controls": 0
+    },
+    "unnamed_sample": []
+   }
+  },
+  "charts_vs_ask": {
+   "clipped": [
+    {
+     "clip_by": "div.c-bento__tile.stat-card",
+     "clip_px": 106,
+     "id": "",
+     "page": null,
+     "type": "column"
+    }
+   ],
+   "declared_static": 1,
+   "liberal_asked": true,
+   "min_overview_asked": 4,
+   "on_overview": 1,
+   "pack_types_available": 14,
+   "rendered": 1,
+   "subpages_with_charts": 0,
+   "tooltips": {
+    "charts_hovered": 1,
+    "tooltip_shown": 1
+   },
+   "types_rendered": [
+    "column"
+   ],
+   "types_used_frac": 0.07,
+   "with_legend": 0,
+   "with_table": 0
+  },
+  "components": {
+   "apollo_demo_markers": 6,
+   "chart_components": [],
+   "count": 3,
+   "list": [
+    "kpi-tile",
+    "stat-card",
+    "summary"
+   ],
+   "pages": 1,
+   "rendered_only": [],
+   "static_count": 4,
+   "templates_recognised": [
+    "template-dashboard-bento"
+   ]
+  },
+  "composed_vs_traced": {
+   "measured_on": "page source",
+   "rendered_dom": {
+    "top": {
+     "from": "staged pack",
+     "shingle_containment": 0.957,
+     "shingle_jaccard": 0.924,
+     "template": "Template-dashboard-bento",
+     "template_unique_classes_frac": 1.0,
+     "template_unique_hit": [
+      "c-bento",
+      "c-bento__grid",
+      "c-bento__tile",
+      "demo-bar",
+      "tpl-actions",
+      "tpl-bento-body",
+      "tpl-bento-stack",
+      "tpl-crumbs",
+      "tpl-display",
+      "tpl-group",
+      "tpl-group-context",
+      "tpl-group-evidence"
+     ],
+     "text_reuse": 1.0,
+     "text_reused_n": 21,
+     "text_reused_sample": [
+      "14 payments \u00b7 5 need you",
+      "30 days to 20 Aug",
+      "Accessibility statement",
+      "Account overview",
+      "All feeds up to date",
+      "Available overdraft \u00a325,000.00 \u00b7 None used \u00b7 Limit reviewed 4 Aug"
+     ],
+     "text_strings_n": 21,
+     "trace_index": 0.983
+    },
+    "verdict": "TRACED"
+   },
+   "thresholds": "trace_index = 0.4*DOM shingle containment + 0.3*template text reuse + 0.3*template-only classes present; >=0.30 TRACED, >=0.15 PARTLY TRACED, else COMPOSED \u2014 calibrated on pages whose provenance the record states (7 bento-first splices read 0.334-0.561; 2 template-closed compositions read 0.041)",
+   "top": {
+    "from": "staged pack",
+    "shingle_containment": 1.0,
+    "shingle_jaccard": 1.0,
+    "template": "Template-dashboard-bento",
+    "template_unique_classes_frac": 1.0,
+    "template_unique_hit": [
+     "c-bento",
+     "c-bento__grid",
+     "c-bento__tile",
+     "demo-bar",
+     "tpl-actions",
+     "tpl-bento-body",
+     "tpl-bento-stack",
+     "tpl-crumbs",
+     "tpl-display",
+     "tpl-group",
+     "tpl-group-context",
+     "tpl-group-evidence"
+    ],
+    "text_reuse": 1.0,
+    "text_reused_n": 21,
+    "text_reused_sample": [
+     "14 payments \u00b7 5 need you",
+     "30 days to 20 Aug",
+     "Accessibility statement",
+     "Account overview",
+     "All feeds up to date",
+     "Available overdraft \u00a325,000.00 \u00b7 None used \u00b7 Limit reviewed 4 Aug"
+    ],
+    "text_strings_n": 21,
+    "trace_index": 1.0
+   },
+   "verdict": "TRACED"
+  },
+  "geometry_4b": {
+   "geometry": {
+    "counts": {
+     "G1": 0,
+     "G10": 8,
+     "G1b": 0,
+     "G2": 0,
+     "G3": 0,
+     "G4": 1,
+     "G5": 0,
+     "G6": 0,
+     "G7": 17,
+     "G8": 1,
+     "G9": 1
+    },
+    "exit": 0,
+    "findings_n": 28,
+    "findings_sample": [
+     {
+      "clause": "G4",
+      "expected": "the last tile in each column reaches the wall's bottom edge",
+      "measured": "ends at y=667.4, 420.9px above the wall's bottom edge ('Needs attention' ends at y=1088.3)",
+      "severity": "minor",
+      "where": "'Where the money went' in div.c-bento__grid",
+      "width": 1440
+     },
+     {
+      "clause": "G10",
+      "expected": "parts keep their proportions (\u226410%% non-uniform)",
+      "measured": "scaled x1.545 by y0.917 (1.69x off), 1 text/circle and 0 raw-stroke mark(s) distorted",
+      "severity": "major",
+      "where": "svg.spark-inline in 'Closing balance \u00a3184,205.10 +4.8% up'",
+      "width": 1440
+     },
+     {
+      "clause": "G10",
+      "expected": "parts keep their proportions (\u226410%% non-uniform)",
+      "measured": "scaled x1.545 by y0.917 (1.69x off), 1 text/circle and 0 raw-stroke mark(s) distorted",
+      "severity": "major",
+      "where": "svg.spark-inline in 'Money in \u00a371,880.00 +6.2% upvs July'",
+      "width": 1440
+     },
+     {
+      "clause": "G10",
+      "expected": "parts keep their proportions (\u226410%% non-uniform)",
+      "measured": "scaled x1.545 by y0.917 (1.69x off), 1 text/circle and 0 raw-stroke mark(s) distorted",
+      "severity": "major",
+      "where": "svg.spark-inline in 'Money out \u00a362,410.00 \u22123.1% downvs Ju'",
+      "width": 1440
+     },
+     {
+      "clause": "G10",
+      "expected": "parts keep their proportions (\u226410%% non-uniform)",
+      "measured": "scaled x1.545 by y0.917 (1.69x off), 1 text/circle and 0 raw-stroke mark(s) distorted",
+      "severity": "major",
+      "where": "svg.spark-inline in 'Card spend \u00a33,204.80 \u22121.4% downvs Ju'",
+      "width": 1440
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 14x32px",
+      "severity": "major",
+      "where": "span \"184,205.10\" over span \"\u00a3\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 45x32px",
+      "severity": "major",
+      "where": "span \"184,205.10\" over span \"71,880.00\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 14x32px",
+      "severity": "major",
+      "where": "span \"71,880.00\" over span \"\u00a3\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 31x32px",
+      "severity": "major",
+      "where": "span \"71,880.00\" over span \"62,410.00\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 14x32px",
+      "severity": "major",
+      "where": "span \"62,410.00\" over span \"\u00a3\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 31x32px",
+      "severity": "major",
+      "where": "span \"62,410.00\" over span \"3,204.80\"",
+      "width": 390
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 7x16px",
+      "severity": "major",
+      "where": "h3.t-cm-section-label \"Needs attention\" over text.dv-axis.t-cm-chart-value \"0\"",
+      "width": 390
+     }
+    ],
+    "font_ok": true,
+    "gate": "knowledge/_validate_geometry.py",
+    "gate_sha256": "c7acf741704a8230e9b9503ca1ff9d2683837bb96209b41db4e46887997195a5",
+    "score": 0,
+    "status": "FINDINGS",
+    "stdout_tail": [
+     "         measured: document is 649px wide in a 390px viewport \u2014 it scrolls sideways; widest: nav.sh-nav 'Accounts Payments Cards Insigh' (x=164\u2013525); div.sh-actions  (x=553\u2013649)",
+     "         fix: Let the named box shrink (min-width:0, max-width:100%) or wrap its table in a scroll box.",
+     "  \u26a0 G4   @1440 unshared bottom edge \u2014 'Where the money went' in div.c-bento__grid",
+     "         measured: ends at y=667.4, 420.9px above the wall's bottom edge ('Needs attention' ends at y=1088.3)",
+     "         fix: Stretch this tile to the row (align-self: stretch) or rebalance the row so both end together.",
+     "",
+     "ADVISORY: 1 page(s), 28 finding(s); scores bad-traced.html=0",
+     "wrote /sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-bad/ext-geometry.out.json"
+    ]
+   },
+   "own_size": {
+    "counts": {
+     "S1": 0,
+     "S2": 0,
+     "S3": 0
+    },
+    "exit": 0,
+    "findings_n": 0,
+    "findings_sample": [],
+    "font_ok": true,
+    "gate": "knowledge/_validate_own_size.py",
+    "gate_sha256": "925befbdbafee83911ad13eb3411f3e3e4db73e1141fdd27ed524c5753320a89",
+    "score": null,
+    "status": "NO-PARTS",
+    "stdout_tail": [
+     "OWN-SIZE ../../r4c/stage/fx-bad/out/bad-traced.html \u2014 NO-PARTS \u00b7 0 part(s) matched \u00b7 0 finding(s) \u00b7 600 ms",
+     "",
+     "ADVISORY: 1 page(s), 0 finding(s)",
+     "wrote /sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-bad/ext-own_size.out.json"
+    ]
+   }
+  },
+  "geometry_native": {
+   "dead_tiles": [
+    {
+     "dead_px": 106,
+     "tile": "section.c-bento__tile.c-bento.tpl-group",
+     "tile_h": 150
+    },
+    {
+     "dead_px": 106,
+     "tile": "div.c-bento__tile.stat-card",
+     "tile_h": 150
+    }
+   ],
+   "filter_table_mismatch": [],
+   "grids": [
+    {
+     "grid": "div.c-bento__grid",
+     "gutters": [
+      40
+     ],
+     "row_gaps": [
+      40
+     ],
+     "tiles": 3,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 1
+    },
+    {
+     "grid": "div.c-bento__grid",
+     "gutters": [
+      4
+     ],
+     "row_gaps": [],
+     "tiles": 4,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 0
+    },
+    {
+     "grid": "div.c-bento__grid",
+     "gutters": [],
+     "row_gaps": [],
+     "tiles": 1,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 0
+    },
+    {
+     "grid": "div.c-bento__grid",
+     "gutters": [],
+     "row_gaps": [
+      4
+     ],
+     "tiles": 2,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 0
+    }
+   ],
+   "own_size_hint": {
+    "button_h_median": 44,
+    "button_h_min": 36,
+    "buttons": 6,
+    "th": 0,
+    "th_h_median": null,
+    "th_h_min": null
+   },
+   "summary": {
+    "dead_tiles": 2,
+    "filter_table_mismatch": 0,
+    "grids": 4,
+    "own_size_hint": {
+     "button_h_median": 44,
+     "button_h_min": 36,
+     "buttons": 6,
+     "th": 0,
+     "th_h_median": null,
+     "th_h_min": null
+    },
+    "unequal_gutter_grids": 0,
+    "unshared_bottom_rows": 1
+   },
+   "unequal_gutter_grids": 0,
+   "unshared_bottoms": 1
+  },
+  "pack_gates": {
+   "dataviz": {
+    "advisory_n": 11,
+    "blocking": [],
+    "blocking_n": 0,
+    "charts": 1,
+    "verdict": "PASS"
+   },
+   "screen": {
+    "exit": 1,
+    "lines": [
+     "- receipt: UNPROVEN:NO-RECEIPT \u2014 this page carries no #provenance-receipt, so nothing about its provenance was measured. Mint one with `python3 knowledge/gen_provenance_receipt.py --mint <path>`; run with --receipt-strict to make this block.",
+     "- compose: \u274c 147 hex colour(s) in <style>: ['#FFFFFF', '#FFFFFF', '#1A1A1A', '#1A1A1A', '#E1E1E1']; redefines canon class(es): ['c-bento', 'c-bento__caption', 'c-bento__grid', 'c-bento__tile']",
+     "- composition: \u2705 C9 span legality holds at every band",
+     "- icon-source: \u2705 all paths library-matched",
+     "- a11y: \u2705  (warn: `button#themeBtn` \u2014 autox36 \u2014 the declared axis is under the 44 default (aid-009); the other axis is layout-determined; `a.status.tpl-strip-link.warn` \u2014 autox24 \u2014 the declared axis is under the 44 default (aid-009); the other axis is layout-determined)"
+    ],
+    "verdict": "FAIL"
+   }
+  },
+  "render": {
+   "clipped_elements": {
+    "count": 2,
+    "ellipsis": 0,
+    "sample": [
+     {
+      "dx": 0,
+      "dy": 90,
+      "el": "section.c-bento__tile.c-bento.tpl-group",
+      "ellipsis": false
+     },
+     {
+      "dx": 0,
+      "dy": 134,
+      "el": "div.c-bento__tile.stat-card",
+      "ellipsis": false
+     }
+    ]
+   },
+   "console_errors_light": [],
+   "h_overflow_px": 0,
+   "hsbc_face": {
+    "families": [
+     "HSBC_MtUnivers_Latin",
+     "HSBC_MtUnivers_Latin Thin",
+     "Liberation Sans"
+    ],
+    "hsbc": true,
+    "nodes": {
+     "[class*='t-cm-']": [
+      "HSBC_MtUnivers_Latin"
+     ],
+     "body": [],
+     "button": [
+      "Liberation Sans"
+     ],
+     "h1": [
+      "HSBC_MtUnivers_Latin Thin"
+     ]
+    }
+   },
+   "pageerrors_light": [],
+   "shots": {
+    "dark-1440": "shots/dark-1440.png",
+    "light-1440": "shots/light-1440.png"
+   },
+   "subpages_not_reached": [],
+   "subpages_probed": 0
+  },
+  "theme": {
+   "asked": "common",
+   "checks": [
+    {
+     "check": "root carries data-apollo-theme=common",
+     "ok": false
+    },
+    {
+     "check": "root carries class canon",
+     "ok": true
+    },
+    {
+     "check": "theme attrs not on <body>",
+     "ok": false
+    },
+    {
+     "check": "Common tokens resolve (--button-primary-background-default=#DB0011, --border-radius-default=0)",
+     "ok": false
+    },
+    {
+     "check": "no hex owned by another theme",
+     "ok": true
+    },
+    {
+     "check": "light/dark switch flips the theme, on <html>",
+     "ok": false
+    }
+   ],
+   "data_apollo_theme": "supercharge",
+   "data_theme": null,
+   "leaked_hexes": [],
+   "raw_hex_in_authored_css": 110,
+   "rendered_tokens": {
+    "--border-radius-default": "",
+    "--button-primary-background-default": ""
+   },
+   "root_class_canon": true,
+   "switch": {
+    "after": "body:dark:rgb(26, 26, 26)",
+    "before": "body:light:rgb(240, 240, 240)",
+    "flips": true,
+    "found": "Dark mode",
+    "html_data_theme_after": null,
+    "on_html": false
+   },
+   "theme_attrs_on_body": [
+    "bad-traced.html"
+   ],
+   "vars_changed_by_theme_attr": {
+    "attr": "supercharge",
+    "changed": 0,
+    "of": 47
+   },
+   "verdict": "FAIL"
+  }
+ },
+ "total": 2,
+ "total_is_legacy": true,
+ "total_with_geometry": 2
+}

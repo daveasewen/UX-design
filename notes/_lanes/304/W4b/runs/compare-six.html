@@ -1,0 +1,54 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Cold runs side by side</title><style>
+:root{--ink:#1a1a1a;--mute:#5c5c5c;--rule:#d7d8d6;--bg:#fff;--soft:#f3f3f3;--ok:#0a7a44;--bad:#b3261e;--warn:#8a5a00}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#eee;--mute:#aaa;--rule:#444;--bg:#141414;--soft:#1f1f1f;--ok:#5fcf93;--bad:#ff8a80;--warn:#e0b050}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Univers Next for HSBC","Helvetica Neue",Arial,sans-serif}
+main{max-width:1240px;margin:0 auto;padding:40px 16px 80px}h1{font-size:34px;line-height:1.1;margin:0 0 8px;font-weight:500}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:40px 0 12px;border-top:2px solid var(--ink);padding-top:10px}
+.sub{color:var(--mute);margin:0 0 24px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.cell{background:var(--bg);padding:16px}.big{font-size:48px;line-height:1;font-weight:300}.lab{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.fact{font-size:13px;color:var(--mute);margin-top:8px}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:500;color:var(--mute)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.shots img{width:100%;border:1px solid var(--rule)}code{font-size:12px}ul{padding-left:18px}.tag{display:inline-block;padding:2px 8px;border:1px solid currentColor;font-size:12px}
+.scroll{overflow-x:auto}@media (max-width:720px){.grid4{grid-template-columns:1fr 1fr}.shots{grid-template-columns:1fr}}
+</style></head><body><main>
+<p class='lab'>Apollo eval harness w4b-2.0 · #304 R4c</p><h1>The six cold runs, re-scored on ink (W4b)</h1><p class='sub'>6 runs. Every number links back to its scorecard; every scorecard says how to reproduce it.</p>
+<div class='scroll'><table><tr><th></th><th><a href='cold-v1013-r1/scorecard.html'>v1013-r1</a></th><th><a href='cold-v1013-r2/scorecard.html'>v1013-r2</a></th><th><a href='cold-v1013-r3/scorecard.html'>v1013-r3</a></th><th><a href='cold-cand-r1/scorecard.html'>cand-r1</a></th><th><a href='cold-cand-r2/scorecard.html'>cand-r2</a></th><th><a href='cold-cand-r3/scorecard.html'>cand-r3</a></th></tr>
+<tr><td>kind</td><td>cold run</td><td>cold run</td><td>cold run</td><td>cold run</td><td>cold run</td><td>cold run</td></tr>
+<tr><td>profile</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td><td>ceo-common</td></tr>
+<tr><td>pack</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.13.zip</td><td>Apollo-Spider-v1.0.14-candidate.zip</td><td>Apollo-Spider-v1.0.14-candidate.zip</td><td>Apollo-Spider-v1.0.14-candidate.zip</td></tr>
+<tr><td>visually rich</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td></tr>
+<tr><td>full</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td></tr>
+<tr><td>persistent</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td></tr>
+<tr><td>interactive</td><td>2</td><td>3</td><td>2</td><td>3</td><td>2</td><td>3</td></tr>
+<tr><td>FLOOR (each part &gt;= 2)</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td></tr>
+<tr><td>INK defects per view (lower is better)</td><td>7.3</td><td>3.9</td><td>7.4</td><td>8.0</td><td>5.2</td><td>7.9</td></tr>
+<tr><td>ink defects per 10 leaf tiles</td><td>6.76</td><td>4.94</td><td>12.33</td><td>10.39</td><td>16.77</td><td>11.29</td></tr>
+<tr><td>views measured / clean</td><td>10 / 0</td><td>10 / 0</td><td>10 / 1</td><td>10 / 0</td><td>10 / 1</td><td>10 / 1</td></tr>
+<tr><td>tiles measured</td><td>108</td><td>79</td><td>60</td><td>77</td><td>31</td><td>70</td></tr>
+<tr><td>dead ink — tiles (worst band px)</td><td>15 (469.1)</td><td>6 (356.0)</td><td>24 (189.3)</td><td>16 (168.5)</td><td>11 (367.4)</td><td>7 (98.6)</td></tr>
+<tr><td>cut ink — tiles (worst px)</td><td>6 (12.9)</td><td>0 (0)</td><td>7 (13.0)</td><td>18 (13.0)</td><td>8 (13.0)</td><td>30 (13.0)</td></tr>
+<tr><td>collisions — tiles (worst overlap px)</td><td>19 (107.0)</td><td>0 (0)</td><td>9 (114.0)</td><td>9 (54.0)</td><td>7 (70.0)</td><td>12 (84.0)</td></tr>
+<tr><td>size drift — kinds (worst ratio)</td><td>28 (0.56)</td><td>27 (0.56)</td><td>29 (0.83)</td><td>31 (0.76)</td><td>22 (0.76)</td><td>26 (0.83)</td></tr>
+<tr><td>markers — tiles (most marks on a series)</td><td>5 (30.0)</td><td>6 (30.0)</td><td>5 (30.0)</td><td>6 (30.0)</td><td>4 (30.0)</td><td>4 (30.0)</td></tr>
+<tr><td>legacy sum /12 (not a score)</td><td>11</td><td>12</td><td>11</td><td>12</td><td>11</td><td>12</td></tr>
+<tr><td>geometry score (4b) /3</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>composed or traced</td><td>TRACED (0.37)</td><td>TRACED (0.369)</td><td>TRACED (0.398)</td><td>PARTLY TRACED (0.156)</td><td>PARTLY TRACED (0.185)</td><td>PARTLY TRACED (0.193)</td></tr>
+<tr><td>theme</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td><td>PASS</td></tr>
+<tr><td>components</td><td>28</td><td>25</td><td>26</td><td>33</td><td>34</td><td>29</td></tr>
+<tr><td>charts rendered</td><td>31</td><td>29</td><td>31</td><td>32</td><td>24</td><td>22</td></tr>
+<tr><td>chart types</td><td>18</td><td>18</td><td>18</td><td>17</td><td>16</td><td>16</td></tr>
+<tr><td>clipped charts</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>pack screen gate</td><td>PASS</td><td>PASS</td><td>PASS</td><td>FAIL</td><td>FAIL</td><td>FAIL</td></tr>
+<tr><td>dataviz gate blocking</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>a11y unnamed controls</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>a11y small targets</td><td>37</td><td>39</td><td>40</td><td>29</td><td>40</td><td>37</td></tr>
+<tr><td>geometry (4b)</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td></tr>
+<tr><td>own size (4b)</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td><td>FINDINGS</td></tr>
+</table></div><h2>Light renders</h2><div class='shots' style='grid-template-columns:repeat(4,1fr)'>
+<figure style='margin:0'><img alt='v1013-r1' src='cold-v1013-r1/shots/light-1440.png'><figcaption class='fact'>v1013-r1</figcaption></figure>
+<figure style='margin:0'><img alt='v1013-r2' src='cold-v1013-r2/shots/light-1440.png'><figcaption class='fact'>v1013-r2</figcaption></figure>
+<figure style='margin:0'><img alt='v1013-r3' src='cold-v1013-r3/shots/light-1440.png'><figcaption class='fact'>v1013-r3</figcaption></figure>
+<figure style='margin:0'><img alt='cand-r1' src='cold-cand-r1/shots/light-1440.png'><figcaption class='fact'>cand-r1</figcaption></figure>
+<figure style='margin:0'><img alt='cand-r2' src='cold-cand-r2/shots/light-1440.png'><figcaption class='fact'>cand-r2</figcaption></figure>
+<figure style='margin:0'><img alt='cand-r3' src='cold-cand-r3/shots/light-1440.png'><figcaption class='fact'>cand-r3</figcaption></figure>
+</div><h2>Left to judgment</h2><ul><li>Taste: does the page look like Apollo at its best — hierarchy, rhythm, restraint (Dave&#x27;s eye on the light/dark shots).</li><li>Alignment and spacing that the geometry signals cannot name (optical alignment, crowding, the &#x27;sloppiness class&#x27; of #288).</li><li>Whether each chart is the RIGHT chart for its figure (form-to-question fit), not only present and rendered.</li><li>Data believability: realistic entities, currencies, FX and magnitudes for a CEO audience.</li><li>Whether the overview actually answers the three CEO questions, as read by a person, not by keyword.</li><li>Whether each workflow (approve, acknowledge, service request) is plausible end to end, beyond &#x27;the DOM changed&#x27;.</li><li>Composed vs traced is MEASURED as similarity; whether the composition is GOOD composition is judgment.</li></ul></main></body></html>

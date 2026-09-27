@@ -14,7 +14,7 @@ or the page's DECLARED grammar (`_validate_composition.py`: orphan cells, gap la
 them looks at where the boxes actually LANDED. This one does: it loads the page in a real browser
 (Playwright, `goto('file://…')`, never `set_content`) at 1440 and 390 and measures rendered boxes.
 
-WHAT IT MEASURES — ten clauses, each named for a designer
+WHAT IT MEASURES — thirteen clauses, each named for a designer
 ---------------------------------------------------------
 A "tile" is a box the page arranges: a `.c-bento__tile`, or any painted card (its own ground,
 3+ borders or a shadow) of at least 120x60 that is a child of a grid or flex container. A "wall"
@@ -63,6 +63,31 @@ is a grid/flex container holding two or more tiles. A tile that holds a wall of 
   G10 stretched  an `<svg preserveAspectRatio="none">` scaled more than 10% differently in x and y
                  while it holds text, circles/ellipses or strokes without `non-scaling-stroke`; an
                  `<img>` drawn with `object-fit:fill` more than 10% off its natural ratio.
+  G11 marks      (W4b) one series of a chart carrying a mark of one kind on EVERY one of more than
+                 12 points: point glyphs (circle, ellipse, polygon, `.dv-mk`, 3–16px) grouped by
+                 `data-series-group` (or fill), counted only when a line or band in the same chart
+                 has exactly that many vertices (2x for a closed band) — so a scatter's points never
+                 count; or one letter key repeated more than 12 times on a series that long.
+  G12 lost chart (W4b) a chart (an outermost svg of at least 160x100, not `preserveAspectRatio=
+                 none`) whose marks' union covers less than 35% of its own box — a ring drawn at its
+                 fixed diameter in a box the tile stretched (W3b #304's first-ranked cost).
+
+W4b REPAIRS (#304, Sun 2026-09-27) — three blind spots found on the cold runs, fixed at their cause,
+each with a CAUSE LEVER (`--mutate X-…`) that restores the old reading so the selftest can prove it:
+  X-lone    G6 never measured the panel of a ONE-PANEL group (a `.c-bento` tile holding one card):
+            the wall walk only reaches tiles that sit two-or-more in a grid. v1013-r2's ring tile
+            (1,221px, a 260px hole under the ring) read G6 = 0. Lone panels are now leaves.
+  X-scroll  a scroll box was read two ways, both wrong. G7 clipped every run to the scroll box's
+            VIEWPORT, so on an app-shell page (the content box scrolls, not the window) nothing below
+            the inner fold could collide — thirty overlapping axis dates read 0. G8 stopped at any
+            scroll box as "reachable", but content past a scroll box's START edge (left of the origin)
+            is not: every "00 £m" y-label hung left of a chart's `overflow-x:auto` stage was missed.
+            Now: a scroll box clips to its scroll AREA (origin to scrollable overflow); runs unrolled
+            through it are compared only with runs in the same scroll frame; the page's inner scroll
+            boxes are walked before measuring so lazy parts draw.
+  X-own     a text run was clipped only by its ancestors, never its own element: an ellipsis title's
+            hidden tail "collided" with the tag beside it (8 false G7 on the snippets, 40 on the
+            showroom index once its inner scroll was read). The clean fixture carries a guard for it.
 
 THE TOLERANCES, AND WHY THOSE NUMBERS
 -------------------------------------
@@ -77,6 +102,14 @@ THE TOLERANCES, AND WHY THOSE NUMBERS
   32px (G5)      a bar further than 32px above a table is no longer read as the table's own bar.
   10% (G10)      a 10% non-uniform scale is where circles visibly become ellipses and 12px chart
                  text reads as a different weight; it also absorbs sub-pixel box rounding.
+  12 (G11)       no ruling sets a marker density (searched knowledge/_rulings.json, #304). The kit's
+                 marker proforma was authored at twelve points (dv-render-line.js: "the kit's Batch-8
+                 EASED marker cadence, promoted verbatim from the proforma at twelve points"), and W3b
+                 (#304 §3) proposes markers off above ~12. Declared here; Dave may move it.
+  35% (G12)      a ring that fits its box covers ~75% of it (its bounding square in a square box plus
+                 a leader margin); a line or bar chart covers 80%+ (axes span the plot). Under 35% the
+                 box is at least three times the chart. The v1013-r2 ring read 21%; the cand-r2 rings
+                 lower. 0 of 137 snippet references and 0 of 138 showroom pages cross it.
 
 VERDICT AND OUTPUT
 ------------------
@@ -88,7 +121,7 @@ at one width on one selector shape (quoted text and numbers stripped from `where
 four KPI labels clipped the same way count once, as a designer would say it. 3 = no kind; 2 = no
 MAJOR kind and ≤3 minor kinds; 1 = ≤2 MAJOR kinds (or more than 3 minor); 0 = 3+ MAJOR kinds.
 MAJOR = G7 overlap, G8 clipped, G9 overflow, G10 stretched (a reader loses content or sees
-distortion); every other clause is minor (the page reads, but looks unconsidered). `score` is the
+distortion); every other clause is minor (G11 and G12 included) (the page reads, but looks unconsidered). `score` is the
 score at 1440 (the CEO Common prompt asks for "wide desktop"; the widest width if 1440 was not
 measured); `score_by_width` carries every width's, and `kinds` the distinct patterns with counts.
 THE FACE: every render measures whether the HSBC face is really drawing (a string's width in
@@ -111,6 +144,8 @@ USAGE
   python3 knowledge/_validate_geometry.py --build        # selftest, then the tracked generated
                                                          # pages (what _build_all.py runs)
   python3 knowledge/_validate_geometry.py PAGE --mutate G6   # switch ONE clause off (mutation lever)
+  python3 knowledge/_validate_geometry.py PAGE --mutate X-scroll   # restore ONE repaired blind spot (W4b)
+Every finding carries `tile` ("T<n>" a tile, "L<n>" a lone panel) so a harness can count affected tiles.
 
 At the seat: `export TMPDIR=/dev/shm; bash knowledge/_render/ensure_env.sh;
 source knowledge/_render/seat_env.sh; python3 knowledge/_validate_geometry.py …` in ONE call.
@@ -139,13 +174,20 @@ BUILD_SWEEP = [
     "notes/_lanes/292/D/overview-dashboard-oneshot-v1.html",
     "dashboards/international-banking-dashboard.canon.html",
 ]
-CLAUSES = ["G1", "G1b", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10"]
+CLAUSES = ["G1", "G1b", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11", "G12"]
+# CAUSE LEVERS (W4b #304): not clauses — each restores one repaired blind spot, so the selftest can
+# prove the repair is load-bearing. X-scroll: scroll boxes read as R4b read them (inner-scroll
+# content dropped by G7, a scroll box's start edge never a clip for G8). X-lone: the panel of a
+# one-panel group is not measured by G6.
+LEVERS = {"X-scroll": "legacyScroll", "X-lone": "legacyLone", "X-own": "legacyOwn"}
+# X-own: a text run is clipped only by its ANCESTORS' overflow, not its own element's (R4b's reading;
+# an ellipsis title's hidden tail then "collides" with the tag beside it — 8 false G7 on the snippets).
 MAJOR = {"G7", "G8", "G9", "G10"}
 NAMES = {
     "G1": "unequal gutters", "G1b": "mixed wall levels", "G2": "off-scale spacing",
     "G3": "edges that nearly line up", "G4": "unshared bottom edge", "G5": "bar narrower than its table",
     "G6": "dead space in a tile", "G7": "overlap", "G8": "clipped text", "G9": "horizontal overflow",
-    "G10": "stretched part",
+    "G10": "stretched part", "G11": "marks on every point", "G12": "chart lost in its box",
 }
 # tolerances (justified in the docstring)
 TOL_GUTTER = 1.0
@@ -153,6 +195,8 @@ NEAR_MIN, NEAR_MAX = 1.0, 16.0
 DEAD_MIN = 48.0
 BAR_TOL = 2.0
 STRETCH_TOL = 0.10
+MARK_MAX = 12          # G11: the kit's marker proforma was authored at twelve points (dv-render-line.js)
+LOST_MIN = 0.35        # G12: a chart's ink must cover at least 35% of its own box
 GRID = 4.0
 GRID_EXTRA = (0.0, 1.0, 2.0, 3.0)      # 0 touching · 2 half-step · 1/3 hairlines (_validate_grid.py)
 
@@ -168,7 +212,11 @@ def spacing_stops():
 
 # ───────────────────────────── the in-page measurement ─────────────────────────────
 COLLECT_JS = r"""
-() => {
+(opts) => {
+  opts = opts || {};
+  // CAUSE LEVERS (W4b #304, the mutation test of each repaired cause): legacyScroll restores the
+  // R4b reading of scroll boxes, legacyLone skips the panels of one-panel groups.
+  const LEGACY_SCROLL = !!opts.legacyScroll, LEGACY_LONE = !!opts.legacyLone, LEGACY_OWN = !!opts.legacyOwn, MARK_MAX = opts.markMax || 12, LOST_MIN = opts.lostMin || 0.35;
   const vw = window.innerWidth;
   const sx = window.scrollX, sy = window.scrollY;
   const isT = s => !s || s === 'transparent' || /rgba\([^)]*,\s*0\)$/.test(s);
@@ -201,11 +249,37 @@ COLLECT_JS = r"""
     if (el.checkVisibility && !el.checkVisibility({contentVisibilityAuto: true, opacityProperty: true, visibilityProperty: true})) return false;
     const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0;
   };
+  const SCROLLS = v => /auto|scroll/.test(v);
+  // the box a scroll container's content can be brought into view from (doc coords): from the
+  // scroll ORIGIN (padding-box start minus the current scroll offset) out to its scrollable overflow
+  const scrollArea = e => { const q = box(e), c = CS(e);
+    const l = q.l + (parseFloat(c.borderLeftWidth) || 0) - e.scrollLeft, t = q.t + (parseFloat(c.borderTopWidth) || 0) - e.scrollTop;
+    return {l, t, r: l + e.scrollWidth, b: t + e.scrollHeight}; };
   // the part of a box that survives every clipping ancestor (overflow other than visible, any kind)
-  const visibleRect = (el, r) => {
-    let l = r.l, t = r.t, rr = r.r, b = r.b, e = el.parentElement;
+  // `own`: start at el itself — a text run is clipped by its OWN element's overflow too (a line-clamped
+  // paragraph hides its third line inside itself; W4b #304, found on the showroom index)
+  const visibleRect = (el, r, own) => {
+    let l = r.l, t = r.t, rr = r.r, b = r.b, e = (own && !LEGACY_OWN) ? el : el.parentElement;
     while (e && e !== document.documentElement) {
       const c = CS(e);
+      const sx_ = !LEGACY_SCROLL && SCROLLS(c.overflowX), sy_ = !LEGACY_SCROLL && SCROLLS(c.overflowY);
+      if (sx_ || sy_) {
+        // a SCROLL box: its content can be scrolled into view up to its scrollable overflow, never
+        // past its START edges. Clip to the scroll AREA on a scrolling axis; above this box the only
+        // question is whether the scroll box itself can be seen. (W4b #304: an app-shell page scrolls
+        // an inner box; clipping to that box's VIEWPORT dropped every run below its fold, and G7 read
+        // 0 on thirty colliding axis labels.)
+        const sa = scrollArea(e), q = box(e), kx = sx_ ? sa : q, ky = sy_ ? sa : q;
+        if (c.overflowX !== 'visible') { l = Math.max(l, kx.l); rr = Math.min(rr, kx.r); }
+        if (c.overflowY !== 'visible') { t = Math.max(t, ky.t); b = Math.min(b, ky.b); }
+        if (!(rr - l > 0.5 && b - t > 0.5)) return null;
+        const up = visibleRect(e, q); if (!up) return null;
+        // VIRT: the outermost scroll box this rect lies (partly) beyond the viewport of. Its doc
+        // coordinates are where it WOULD sit, unrolled; only runs unrolled through the same box share
+        // that frame (G7 compares within one frame only).
+        const outside = l < q.l - 0.5 || rr > q.r + 0.5 || t < q.t - 0.5 || b > q.b + 0.5;
+        return {l, t, r: rr, b, virt: up.virt || (outside ? e : null)};
+      }
       if (c.overflowX !== 'visible' || c.overflowY !== 'visible') {
         const q = box(e);
         if (c.overflowX !== 'visible') { l = Math.max(l, q.l); rr = Math.min(rr, q.r); }
@@ -214,7 +288,7 @@ COLLECT_JS = r"""
       if (c.position === 'fixed') break;
       e = e.parentElement;
     }
-    return (rr - l > 0.5 && b - t > 0.5) ? {l, t, r: rr, b} : null;
+    return (rr - l > 0.5 && b - t > 0.5) ? {l, t, r: rr, b, virt: null} : null;
   };
   const effBg = el => { let e = el; while (e && e.nodeType === 1) { const b = CS(e).backgroundColor; if (!isT(b)) return b; e = e.parentElement; } return 'rgb(255, 255, 255)'; };
   const paints = (el, under) => {
@@ -323,7 +397,34 @@ COLLECT_JS = r"""
     const merged = []; for (const bd of bands) { const m = merged[merged.length - 1]; if (m && bd[0] <= m[1] + 0.5) m[1] = Math.max(m[1], bd[1]); else merged.push([bd[0], bd[1]]); }
     return merged;
   };
-  for (const el of tileEls) { const t = tiles[tileIdx.get(el)]; if (!t.group) t.ink = inkOf(el); }
+  for (const el of tileEls) { const t = tiles[tileIdx.get(el)]; t.key = 'T' + t.id; if (!t.group) t.ink = inkOf(el); }
+  // ── the LONE LEAF of a one-panel group (G6, W4b #304) ──
+  // A tile wearing .c-bento with no wall inside is a GROUP of one: the reference bento wraps even a
+  // one-panel row as a group. Its panel is a leaf, but the wall walk only enumerates tiles that sit
+  // two-or-more in a grid, so the panel was never measured — the 351px hole under v1013-r2's ring
+  // read G6 = 0. Measure the panel (the first painted or .c-bento__tile box inside, ≤4 levels),
+  // or the group itself when it holds no such box.
+  const leaves = [], leafIdx = new Map();
+  const wallEls = [...wallIdx.keys()];
+  if (!LEGACY_LONE) for (const el of tileEls) {
+    const t = tiles[tileIdx.get(el)];
+    if (!t.group || t.innerWall !== null) continue;
+    if (wallEls.some(w => w !== el && el.contains(w))) continue;
+    let leaf = null; const q = [[el, 0]];
+    while (q.length && !leaf) { const [e, d] = q.shift(); if (d >= 4) continue;
+      for (const k of inFlowKids(e)) {
+        if (NOT_TILE.test(k.tagName) || k.namespaceURI !== 'http://www.w3.org/1999/xhtml') continue;
+        const kb = box(k);
+        if (kb.w >= 120 && kb.h >= 60 && (hasTok(k, 'c-bento__tile') || paints(k, effBg(e)))) { leaf = k; break; }
+        q.push([k, d + 1]); } }
+    const L = leaf || el;
+    const pads = []; for (const e of chain(L)) { const c = CS(e); pads.push([c.paddingTop, c.paddingRight, c.paddingBottom, c.paddingLeft].map(parseFloat)); }
+    const key = 'L' + leaves.length; leafIdx.set(L, key);
+    leaves.push({key, of: t.id, sel: say(L), name: heading(L), rect: box(L), pads, ink: inkOf(L), planted: planted(L), lone: true});
+  }
+  // the tile (or lone leaf) a finding sits in, so a harness can count AFFECTED TILES, not instances
+  const tileKey = el => { let e = el; while (e && e !== document.body) { if (leafIdx.has(e)) return leafIdx.get(e);
+    if (tileIdx.has(e)) return 'T' + tileIdx.get(e); e = e.parentElement; } return null; };
 
   // ── tables and the bar above each (G5) ──
   const tables = [];
@@ -385,7 +486,14 @@ COLLECT_JS = r"""
         const bl = parseFloat(c.borderLeftWidth) || 0, br = parseFloat(c.borderRightWidth) || 0, bt = parseFloat(c.borderTopWidth) || 0, bb = parseFloat(c.borderBottomWidth) || 0;
         clipper.push({el: e, x: /hidden|clip/.test(ox), y: /hidden|clip/.test(oy), l: b.l + bl, r: b.r - br, t: b.t + bt, b: b.b - bb});
       }
-      if (/auto|scroll/.test(c.overflowX) || /auto|scroll/.test(c.overflowY)) break;   // a scroll box: content is reachable
+      if (/auto|scroll/.test(c.overflowX) || /auto|scroll/.test(c.overflowY)) {
+        // a scroll box: content past its END edges is reachable by scrolling; content past its START
+        // edges is not. A y-axis label hung left of a chart's overflow-x:auto stage is cut for good
+        // ("00 £m", W3b #304) — so on a scrolling axis the scroll AREA is a clip box, start edges only.
+        if (!LEGACY_SCROLL) { const sa = scrollArea(e);
+          clipper.push({el: e, x: /auto|scroll/.test(c.overflowX), y: /auto|scroll/.test(c.overflowY), l: sa.l, r: sa.r, t: sa.t, b: sa.b, scroll: true}); }
+        break;
+      }
       e = e.parentElement;
     }
     if (hidden) continue;
@@ -398,8 +506,8 @@ COLLECT_JS = r"""
     const layer = layerOf(p);
     const hl = rects.length === 1 && ink[2] ? ink[3] : 0, hr = rects.length === 1 && ink[2] ? ink[4] : 0;   // side bearings: one-line runs only
     for (const r of rects) {
-      const v = visibleRect(p, {l: r.l + hl, t: r.t + ink[0], r: r.r - hr, b: r.b - ink[1]});
-      if (v) runs.push({id, p, l: v.l, t: v.t, r: v.r, b: v.b, fh: r.h - ink[0] - ink[1], layer});
+      const v = visibleRect(p, {l: r.l + hl, t: r.t + ink[0], r: r.r - hr, b: r.b - ink[1]}, true);
+      if (v) runs.push({id, p, l: v.l, t: v.t, r: v.r, b: v.b, fh: r.h - ink[0] - ink[1], layer, virt: v.virt || null});
     }
     // INK, not line box: a text rect spans the font's whole ascent+descent, so a cap-trimmed label
     // loses empty line-box space above its caps without losing a single pixel of glyph. Canvas
@@ -410,8 +518,8 @@ COLLECT_JS = r"""
     for (const cp of clipper) {
       let bot = 0, top = 0, side = 0;
       for (const r of rects) {
-        if (cp.y) { bot = Math.max(bot, (r.b - insBot) - cp.b); top = Math.max(top, cp.t - (r.t + insTop)); }
-        if (cp.x) { side = Math.max(side, r.r - cp.r, cp.l - r.l); }
+        if (cp.y) { if (!cp.scroll) bot = Math.max(bot, (r.b - insBot) - cp.b); top = Math.max(top, cp.t - (r.t + insTop)); }
+        if (cp.x) { side = cp.scroll ? Math.max(side, cp.l - r.l) : Math.max(side, r.r - cp.r, cp.l - r.l); }
       }
       // a line wholly outside the clip box is hidden overflow, not a glyph cut
       const wholly = rects.every(r => (cp.y && (r.t >= cp.b || r.b <= cp.t)) || (cp.x && (r.l >= cp.r || r.r <= cp.l)));
@@ -425,7 +533,7 @@ COLLECT_JS = r"""
         if (top >= 3 && /[A-Za-z0-9]/.test(s)) hit.push(['top', top]);
       }
       if (side >= 2 && !ellipsis) hit.push(['side', side]);
-      if (hit.length) { clips.push({text: s.slice(0, 40), sel: say(p), clipper: say(cp.el), same: cp.el === p, cuts: hit.map(h => [h[0], Math.round(h[1] * 10) / 10]), ink: metricOk, planted: planted(p)}); break; }
+      if (hit.length) { clips.push({text: s.slice(0, 40), sel: say(p), clipper: say(cp.el), same: cp.el === p, scroll: !!cp.scroll, cuts: hit.map(h => [h[0], Math.round(h[1] * 10) / 10]), ink: metricOk, planted: planted(p), tile: tileKey(p)}); break; }
     }
   }
   // overlap between text runs of different elements (neither contains the other)
@@ -437,12 +545,57 @@ COLLECT_JS = r"""
       const b = runs[j]; if (b.t >= a.b - 2) break;
       if (a.id === b.id || a.p === b.p || a.p.contains(b.p) || b.p.contains(a.p)) continue;
       if (a.layer !== b.layer) continue;
+      if (a.virt !== b.virt) continue;          // different scroll frames: unrolled coordinates are not comparable (W4b)
       const w = Math.min(a.r, b.r) - Math.max(a.l, b.l), h = Math.min(a.b, b.b) - Math.max(a.t, b.t);
       // the runs are INK bands already (a string's extreme ascender-to-descender band); two bands
       // grazing by a pixel or two need not put glyph on glyph, so a collision is more than 2px
       // and more than 15% of the shorter band, and more than 2px across.
-      if (w > 2 && h > Math.max(2, 0.15 * Math.min(a.fh, b.fh))) { overlaps.push({kind: 'text', a: say(a.p) + ' "' + (a.p.textContent || '').trim().slice(0, 24) + '"', b: say(b.p) + ' "' + (b.p.textContent || '').trim().slice(0, 24) + '"', w: Math.round(w), h: Math.round(h), planted: planted(a.p) || planted(b.p)}); if (overlaps.length >= 40) break; }
+      if (w > 2 && h > Math.max(2, 0.15 * Math.min(a.fh, b.fh))) { overlaps.push({kind: 'text', a: say(a.p) + ' "' + (a.p.textContent || '').trim().slice(0, 24) + '"', b: say(b.p) + ' "' + (b.p.textContent || '').trim().slice(0, 24) + '"', w: Math.round(w), h: Math.round(h), planted: planted(a.p) || planted(b.p), tile: tileKey(a.p) || tileKey(b.p)}); if (overlaps.length >= 40) break; }
     }
+  }
+
+  // ── charts: marks on every point (G11) and a chart lost in its own box (G12) — W4b #304 ──
+  const dense = [], lost = [];
+  const painted = d => { const c = CS(d); if (c.display === 'none' || c.visibility === 'hidden' || parseFloat(c.opacity) === 0) return false;
+    if (d.closest('defs,clipPath,mask,marker,pattern,symbol')) return false;
+    const fn = c.fill === 'none' || isT(c.fill), sn = c.stroke === 'none' || isT(c.stroke);
+    return !(fn && sn) || d.tagName === 'text' || d.tagName === 'image' || d.tagName === 'use'; };
+  const nverts = d => { const a = d.tagName === 'path' ? (d.getAttribute('d') || '') : (d.getAttribute('points') || '');
+    return Math.floor((a.match(/-?\d*\.?\d+(?:e-?\d+)?/gi) || []).length / 2); };
+  for (const s of document.querySelectorAll('svg')) {
+    if (!shown(s) || (s.parentElement && s.parentElement.closest('svg'))) continue;      // outermost svg only
+    const sb = box(s); if (sb.w < 160 || sb.h < 60) continue;
+    const nm = heading(s.closest('figure,section,article,.c-bento__tile') || s);
+    // G11: one series carrying a mark of one kind on every one of more than MARK_MAX points
+    const lines = [...s.querySelectorAll('polyline,polygon,path')].filter(painted).map(nverts);
+    const glyph = {}, letter = {};
+    for (const d of s.querySelectorAll('circle,ellipse,polygon,rect,path')) {
+      if (d.classList.contains('dv-hit') || !painted(d)) continue;
+      if ((d.tagName === 'rect' || d.tagName === 'path') && !d.classList.contains('dv-mk')) continue;
+      const r = d.getBoundingClientRect(); if (r.width < 3 || r.height < 3 || r.width > 16 || r.height > 16) continue;
+      const g = d.closest('[data-series-group]'); const k = g ? 'g' + g.getAttribute('data-series-group') : 'f' + CS(d).fill;
+      (glyph[k] = glyph[k] || []).push(d); }
+    for (const d of s.querySelectorAll('text')) {
+      const x = (d.textContent || '').trim(); if (!/^[A-Z]$/.test(x) || !painted(d)) continue;
+      const g = d.closest('[data-series-group]'); const k = (g ? 'g' + g.getAttribute('data-series-group') : '') + x;
+      (letter[k] = letter[k] || []).push(d); }
+    for (const [k, ds] of Object.entries(glyph)) { const n = ds.length;
+      // on EVERY point: a line or band in this chart has exactly n vertices (a line) or 2n (a closed band)
+      if (n > MARK_MAX && lines.some(v => Math.abs(v - n) <= 1 || Math.abs(v - 2 * n) <= 2))
+        dense.push({kind: 'marker', sel: say(s), name: nm, n, points: n, planted: planted(s), tile: tileKey(s)}); }
+    for (const [k, ds] of Object.entries(letter)) { const n = ds.length;
+      if (n > MARK_MAX && lines.some(v => v >= n))
+        dense.push({kind: 'letter', letter: k.slice(-1), sel: say(s), name: nm, n, points: Math.max(...lines.filter(v => v >= n)), planted: planted(s), tile: tileKey(s)}); }
+    // G12: the union of the chart's marks covers less than LOST_MIN of its own box
+    if (sb.h >= 100 && !/^none/.test((s.getAttribute('preserveAspectRatio') || '').trim())) {
+      let l = 1e9, t = 1e9, r = -1e9, b = -1e9, n = 0;
+      for (const d of s.querySelectorAll('path,line,polyline,polygon,circle,ellipse,rect,text,image,use')) {
+        if (d.classList.contains('dv-hit') || !painted(d)) continue;
+        const q = box(d); if (q.w <= 0 && q.h <= 0) continue;
+        l = Math.min(l, Math.max(q.l, sb.l)); t = Math.min(t, Math.max(q.t, sb.t)); r = Math.max(r, Math.min(q.r, sb.r)); b = Math.max(b, Math.min(q.b, sb.b)); n++; }
+      if (n && r > l && b > t) { const frac = ((r - l) * (b - t)) / (sb.w * sb.h);
+        if (frac < LOST_MIN) lost.push({sel: say(s), name: nm, frac: Math.round(frac * 1000) / 1000, iw: Math.round(r - l), ih: Math.round(b - t),
+                                        w: Math.round(sb.w), h: Math.round(sb.h), planted: planted(s), tile: tileKey(s)}); } }
   }
 
   // ── horizontal overflow (G9) ──
@@ -487,7 +640,7 @@ COLLECT_JS = r"""
     return ['Univers Next HSBC', 'HSBC_MtUnivers_Latin'].some(f => { c.font = '16px "' + f + '", monospace'; return Math.abs(c.measureText(s).width - mono) > 0.5; });
   } catch (e) { return null; } })();
   return {vw, docW, docH: document.documentElement.scrollHeight, walls: W, tiles: tiles.map(t => { const o = Object.assign({}, t); return o; }),
-          tables, clips, overlaps, overflow: off, stretched, fontOk};
+          tables, clips, overlaps, overflow: off, stretched, fontOk, leaves, dense, lost};
 }
 """
 
@@ -501,6 +654,30 @@ SETTLE_JS = r"""
 
 
 # ───────────────────────────── the verdict (pure Python over the model) ─────────────────────────────
+# Entry motion is CSS (DEF-003: markers fade in on staggered delays, rings sweep): a mark read mid-
+# animation has a smaller box, and a staggered delay can start AFTER two equal settle reads. Finish
+# every finite animation before measuring — the page's own end state, nothing restyled (W4b #304:
+# a v1013-r3 ring read 162px on one pass and full size on the next).
+FINISH_ANIMATIONS_JS = r"""
+() => { let n = 0; for (const a of (document.getAnimations ? document.getAnimations() : [])) { try { a.finish(); n++; } catch (e) {} } return n; }
+"""
+
+
+INNER_WALK_JS = r"""
+async () => { for (const e of document.querySelectorAll('body *')) {
+    const c = getComputedStyle(e); if (!/auto|scroll/.test(c.overflowY) || e.scrollHeight <= e.clientHeight + 50) continue;
+    for (let y = 0; y < e.scrollHeight; y += 700) { e.scrollTop = y; await new Promise(r => requestAnimationFrame(() => r())); }
+    e.scrollTop = 0; } }
+"""
+
+
+def collect_opts(levers=()):
+    o = {"markMax": MARK_MAX, "lostMin": LOST_MIN}
+    for lv in levers:
+        o[LEVERS[lv]] = True
+    return o
+
+
 def _r(v):
     return round(v, 1)
 
@@ -579,13 +756,13 @@ def judge(model, width, off=(), stops=None):
     walls = model["walls"]
     T = {t["id"]: t for t in tiles}
 
-    def add(clause, where, measured, expected, fix, planted=None):
+    def add(clause, where, measured, expected, fix, planted=None, tile=None):
         if clause in off:
             return
         F.append({"clause": clause, "name": NAMES[clause],
                   "severity": "major" if clause in MAJOR else "minor", "width": width,
                   "where": where, "measured": measured, "expected": expected, "fix": fix,
-                  "planted": planted})
+                  "planted": planted, "tile": tile})
 
     gut = {}
     for w in walls:
@@ -743,9 +920,9 @@ def judge(model, width, off=(), stops=None):
                 "the bar spans its table, both edges",
                 "Make the filter bar full width of the table it filters (width:100% in the same column).",
                 planted=bar.get("planted") or tb.get("planted"))
-    # G6 dead space in a leaf tile
-    for t in tiles:
-        if t["group"] or not t.get("ink"):
+    # G6 dead space in a leaf tile — and in the lone panel of a one-panel group (W4b #304)
+    for t in [t for t in tiles if not t["group"]] + list(model.get("leaves") or []):
+        if not t.get("ink"):
             continue
         r = t["rect"]
         pads = t["pads"]
@@ -761,7 +938,7 @@ def judge(model, width, off=(), stops=None):
                 "%gpx of empty band %s" % (_r(g), where),
                 "no empty band of %gpx or more inside a tile" % DEAD_MIN,
                 "Let the tile hug its content, fill it (a chart that fills its tile), or give the row a shorter tile.",
-                planted=t.get("planted"))
+                planted=t.get("planted"), tile=t.get("key"))
     # G7 overlap: tiles, then text
     for i, a in enumerate(tiles):
         for b in tiles[i + 1:]:
@@ -775,16 +952,23 @@ def judge(model, width, off=(), stops=None):
     for o in model["overlaps"]:
         add("G7", "%s over %s" % (o["a"], o["b"]), "text runs overlap by %dx%dpx" % (o["w"], o["h"]),
             "text never sits on other text", "Give the labels room (wrap, shorten, or move one).",
-            planted=o.get("planted"))
+            planted=o.get("planted"), tile=o.get("tile"))
     # G8 clipped text
     for c in model["clips"]:
         cuts = ", ".join("%s %gpx" % (s, v) for s, v in c["cuts"])
         trap = " — the leading-trim + overflow trap (ds-005)" if c["same"] and any(s == "bottom" for s, _ in c["cuts"]) else ""
+        if c.get("scroll"):
+            add("G8", "'%s' in %s (cut at the start edge of scroll box %s)" % (c["text"], c["sel"], c["clipper"]),
+                "glyph ink cut: %s — past the scroll origin, where no scrolling can reach it" % cuts,
+                "no glyph cut by an overflow box",
+                "Give the label room inside its box (a chart: fit the axis gutter to the widest label, data-pl-fit).",
+                planted=c.get("planted"), tile=c.get("tile"))
+            continue
         add("G8", "'%s' in %s (clipped by %s)" % (c["text"], c["sel"], c["clipper"]),
             "glyph ink cut: %s%s%s" % (cuts, trap, "" if c.get("ink") else " (line-box reading: no ink metric)"),
             "no glyph cut by an overflow box",
             "Add `text-box-edge: text text` to a truncating label, or drop `overflow:hidden` / the fixed height.",
-            planted=c.get("planted"))
+            planted=c.get("planted"), tile=c.get("tile"))
     # G9 overflow
     if model["docW"] > model["vw"] + 1:
         names = "; ".join("%s %s (x=%d–%d)" % (o["sel"], ("'%s'" % o["name"][:30]) if o["name"] else "", o["l"], o["r"])
@@ -806,6 +990,21 @@ def judge(model, width, off=(), stops=None):
             meas, "parts keep their proportions (≤10%% non-uniform)",
             "Let the chart re-derive its geometry for the box (the fit engine) instead of preserveAspectRatio=\"none\"; for images use object-fit:cover.",
             planted=s.get("planted"))
+    # G11 marks on every point of a dense series (W4b #304)
+    for d in model.get("dense") or []:
+        what = "point markers" if d["kind"] == "marker" else "copies of the letter key '%s'" % d.get("letter", "")
+        add("G11", "%s in '%s'" % (d["sel"], d["name"][:36]),
+            "%d %s on one series of %d points" % (d["n"], what, d["points"]),
+            "at most %d marks of one kind on one series (above that, one end key and no point markers)" % MARK_MAX,
+            "Drop the per-point markers above %d points; key each series once, at the line's end." % MARK_MAX,
+            planted=d.get("planted"), tile=d.get("tile"))
+    # G12 a chart lost in its own box (W4b #304)
+    for x in model.get("lost") or []:
+        add("G12", "%s in '%s'" % (x["sel"], x["name"][:36]),
+            "the chart's ink covers %d%% of its box (ink %gx%g in a %gx%g box)" % (round(100 * x["frac"]), x["iw"], x["ih"], x["w"], x["h"]),
+            "a chart's ink covers at least %d%% of its own box" % round(100 * LOST_MIN),
+            "Size the chart's box from the chart (a ring's box is its diameter), or put it in a tile of its own shape.",
+            planted=x.get("planted"), tile=x.get("tile"))
     return F
 
 
@@ -886,7 +1085,7 @@ class Harness:
         finally:
             self._pw.stop()
 
-    def model(self, path, width):
+    def model(self, path, width, levers=()):
         pg = self.b.new_page(viewport={"width": width, "height": 900})
         try:
             pg.emulate_media(reduced_motion="reduce")
@@ -897,7 +1096,11 @@ class Harness:
                         " for (let y = 0; y < h; y += 700) { window.scrollTo(0, y);"
                         " await new Promise(r => requestAnimationFrame(() => r())); }"
                         " window.scrollTo(0, 0); }")
+            # …and every INNER scroll box too (an app shell scrolls its content box, not the window),
+            # then return each to its origin (W4b #304)
+            pg.evaluate(INNER_WALK_JS)
             pg.wait_for_timeout(350)
+            pg.evaluate(FINISH_ANIMATIONS_JS)
             # SETTLE: charts fit themselves to their boxes after load (resize observers, the fit
             # engine), so one early read can catch a chart mid-fit — measured #304, one dashboard
             # read 8 then 10 findings on identical runs. Read a layout signature until two reads
@@ -909,21 +1112,25 @@ class Harness:
                     break
                 prev = sig
                 pg.wait_for_timeout(200)
-            return pg.evaluate(COLLECT_JS)
+            return pg.evaluate(COLLECT_JS, collect_opts(levers))
         finally:
             pg.close()
 
 
 def run_pages(h, paths, widths, off=(), stops=None, quiet=False):
+    levers = [x for x in off if x in LEVERS]
+    off = {x for x in off if x not in LEVERS}
     out = []
     for p in paths:
         t0 = time.time()
         rec = {"gate": "geometry", "page": os.path.relpath(p, ROOT), "widths": {}, "findings": []}
         for w in widths:
-            m = h.model(p, w)
+            m = h.model(p, w, levers)
             f = judge(m, w, off, stops)
             rec["widths"][str(w)] = {"docW": m["docW"], "docH": m["docH"], "walls": len(m["walls"]),
-                                     "tiles": len(m["tiles"]), "tables": len(m["tables"]),
+                                     "tiles": len(m["tiles"]), "leaves": len(m.get("leaves") or []),
+                                     "leaf_tiles": sum(1 for t in m["tiles"] if not t["group"]) + len(m.get("leaves") or []),
+                                     "tables": len(m["tables"]),
                                      "font_ok": m.get("fontOk"), "findings": len(f)}
             rec["findings"] += f
         rec["runtime_ms"] = int((time.time() - t0) * 1000)
@@ -971,7 +1178,12 @@ def render_md(recs):
 
 
 # ───────────────────────────── selftest: planted defects, clean pages, the real #288 page, mutations ──
-PLANTED_EXPECT = ["G1", "G1b", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10"]
+PLANTED_EXPECT = ["G1", "G1b", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11", "G12"]
+# W4b #304: planted SUB-CASES — each a blind spot found on the cold runs, planted under its own
+# marker so it is proven separately from its clause's original case. (clause, data-planted value,
+# the cause lever that must let it through — None when the clause switch is the only lever)
+PLANTED_SUB = [("G6", "G6-lone", "X-lone"), ("G7", "G7-shell", "X-scroll"), ("G8", "G8-scroll", "X-scroll"),
+               ("G11", "G11-letters", None)]
 # the #288 page is the ARTEFACT THE FINDING CAME FROM ([[conflated-fix-guarantees-recurrence]]):
 # four of the conductor's five observations must be named on it. (The fifth, "two bottom-row
 # cards not sharing a bottom edge", does not reproduce at today's canon: measured, both end at
@@ -984,6 +1196,34 @@ REAL_EXPECT = ["G1b", "G3", "G5", "G6"]
 # built for the width (the masthead scrolls sideways, KPI figures overlap and clip) — reported in
 # the sub-report, not asserted here. (clause, substring of `where`)
 REFERENCE_KNOWN_TRUE = [("G10", "svg.spark-inline")]
+# W3b's receipt (#304): v1013-r2's overview at 1440 holds a ring chart in a 1,221px full-width tile
+# with a hole under the ring that the R4b gate read as G6 = 0 (a one-panel group's panel was never
+# measured). The real page is the frozen cold run beside the v1.0.13 pack it links (../pack/…);
+# the selftest stages the two into $TMPDIR and asserts the gate now names the hole (G6) and the
+# ring lost in its box (G12) on that tile. Absent run or pack = the leg is SKIPPED and said so.
+REAL_W3B_RUN = os.path.join(ROOT, "notes", "_lanes", "304", "R4c", "cold", "v1013-r2", "out")
+REAL_W3B_PACK = os.path.join(ROOT, "apollo-spider", "dist", "Apollo-Spider-v1.0.13.zip")
+REAL_W3B_EXPECT = [("G6", "Cash by currency"), ("G12", "Cash by currency")]
+
+
+def _stage_w3b():
+    """Stage W3b's real page (frozen run + its pack) under $TMPDIR; None when either is absent."""
+    import hashlib, shutil, tempfile, zipfile
+    if not (os.path.isdir(REAL_W3B_RUN) and os.path.exists(REAL_W3B_PACK)):
+        return None
+    h = hashlib.sha256(open(REAL_W3B_PACK, "rb").read()).hexdigest()[:12]
+    root = os.path.join(tempfile.gettempdir(), "geometry-w3b-" + h)
+    if not os.path.exists(os.path.join(root, ".ok")):
+        shutil.rmtree(root, ignore_errors=True)
+        os.makedirs(os.path.join(root, "zip"))
+        zipfile.ZipFile(REAL_W3B_PACK).extractall(os.path.join(root, "zip"))
+        tops = [d for d in os.listdir(os.path.join(root, "zip")) if os.path.isdir(os.path.join(root, "zip", d))]
+        src = os.path.join(root, "zip", tops[0]) if len(tops) == 1 else os.path.join(root, "zip")
+        os.rename(src, os.path.join(root, "pack"))
+        open(os.path.join(root, ".ok"), "w").write(h)
+    shutil.rmtree(os.path.join(root, "out"), ignore_errors=True)
+    shutil.copytree(REAL_W3B_RUN, os.path.join(root, "out"), ignore=shutil.ignore_patterns("_to_delete"))
+    return os.path.join(root, "out", "index.html")
 
 
 def selftest(h, stops, verbose=True):
@@ -1008,6 +1248,12 @@ def selftest(h, stops, verbose=True):
             fails.append("PLANTED %s (%s) NOT CAUGHT on the planted element" % (c, NAMES[c]))
         elif verbose:
             print("  ✓ planted %-4s %-28s caught: %s" % (c, NAMES[c], hit[0]["measured"][:90]))
+    for c, sub, lever in PLANTED_SUB:
+        hit = [f for f in pf if f["clause"] == c and f["planted"] == sub]
+        if not hit:
+            fails.append("PLANTED %s (%s) NOT CAUGHT on the planted element" % (sub, NAMES[c]))
+        elif verbose:
+            print("  ✓ planted %-11s %-21s caught: %s" % (sub, NAMES[c], hit[0]["measured"][:84]))
     stray = [f for f in pf if not f["planted"]]
     if stray:
         fails.append("PLANTED page: %d finding(s) on UNPLANTED elements, e.g. %s %s"
@@ -1050,6 +1296,50 @@ def selftest(h, stops, verbose=True):
         if others != set(PLANTED_EXPECT) - {c}:
             fails.append("MUTATION %s: switching it off changed other clauses' catches: %s"
                          % (c, sorted(set(PLANTED_EXPECT) - {c} - others)))
+    # 5. the CAUSE levers (W4b): restoring each repaired blind spot lets exactly its sub-cases through
+    #    and moves nothing else on the planted page
+    base_keys = sorted((f["clause"], f["planted"], f["where"]) for f in pf)
+    for lever in sorted(LEVERS):
+        subs = {sub for c, sub, lv in PLANTED_SUB if lv == lever}
+        lm = [f for w in widths for f in judge(h.model(FIX_PLANTED, w, [lever]), w, (), stops)]
+        still = {f["planted"] for f in lm} & subs
+        if still:
+            fails.append("LEVER %s: the cause restored but %s still caught — the repair is not what catches it" % (lever, sorted(still)))
+        guard = {"X-own": {"guard-own"}}.get(lever, set())      # a guard lever re-opens its own guard, nothing else
+        rest = sorted((f["clause"], f["planted"], f["where"]) for f in lm if f["planted"] not in guard)
+        expect = [k for k in base_keys if k[1] not in subs]
+        if rest != expect:
+            fails.append("LEVER %s: other findings moved (%d → %d outside the sub-cases)" % (lever, len(expect), len(rest)))
+        elif verbose and not still:
+            print("  ✓ cause lever %-8s %s" % (lever, ("restores the blind spot: %s slip through, nothing else moves" % ", ".join(sorted(subs)))
+                                                if subs else "moves nothing on the planted page but its own false-positive guard"))
+    # 5b. the FALSE-POSITIVE guard (W4b): the clean page holds an ellipsis title beside a tag; with the
+    #     own-clip repair switched off (X-own) its hidden tail collides — the guard must then fire
+    gm = [f for w in widths for f in judge(h.model(FIX_CLEAN, w, ["X-own"]), w, (), stops)]
+    if not any(f["clause"] == "G7" and f["planted"] == "guard-own" for f in gm):
+        fails.append("GUARD X-own: switching the own-clip repair off did not bring back the ellipsis-tail G7 — the guard proves nothing")
+    elif verbose:
+        print("  ✓ false-positive guard: X-own switched on, the clean page's ellipsis title reads as a collision (the repair is what clears it)")
+    # 6. W3b's real page: the ring hole the R4b gate read as G6 = 0
+    real = _stage_w3b()
+    if real is None:
+        print("  ⊘ W3b real-page leg SKIPPED: %s or %s is absent" % (os.path.relpath(REAL_W3B_RUN, ROOT), os.path.relpath(REAL_W3B_PACK, ROOT)))
+    else:
+        mw = h.model(real, 1440)
+        wf = judge(mw, 1440, (), stops)
+        if not mw.get("fontOk"):
+            print("  ⊘ W3b real-page leg UNPROVEN-FONT (the HSBC face is not drawing)")
+        for c, name in REAL_W3B_EXPECT:
+            hit = [f for f in wf if f["clause"] == c and name in f["where"]]
+            if not hit and mw.get("fontOk"):
+                fails.append("REAL W3b page (v1013-r2): %s (%s) not named on '%s'" % (c, NAMES[c], name))
+            elif hit and verbose:
+                print("  ✓ real v1013-r2 %-4s named on '%s': %s" % (c, name, hit[0]["measured"][:70]))
+        lw = judge(h.model(real, 1440, ["X-lone"]), 1440, (), stops)
+        if any(f["clause"] == "G6" and "Cash by currency" in f["where"] for f in lw):
+            fails.append("REAL W3b page: with the lone-leaf repair switched off, G6 still names the ring tile — the repair is not the cause")
+        elif verbose:
+            print("  ✓ real v1013-r2: X-lone switched on, the ring tile's G6 disappears (R4b's reading reproduced)")
     if verbose:
         print("  ✓ %d mutations: each clause switched off lets exactly its own planted defect through"
               % len(PLANTED_EXPECT) if not any(x.startswith("MUTATION") for x in fails) else "  ✖ mutation leg failed")
@@ -1070,7 +1360,7 @@ def main():
     a = ap.parse_args()
     stops = spacing_stops()
     off = {x.strip() for x in a.mutate.split(",") if x.strip()}
-    bad = off - set(CLAUSES)
+    bad = off - set(CLAUSES) - set(LEVERS)
     if bad:
         print("✖ GEOMETRY: unknown clause(s) %s — known: %s" % (sorted(bad), ", ".join(CLAUSES)), file=sys.stderr)
         return 2
@@ -1084,8 +1374,9 @@ def main():
     with Harness() as h:
         rc = 0
         if a.selftest or a.build:
-            print("Geometry selftest — planted fixture, clean fixture, reference bento, the #288 page, %d mutations"
-                  % len(PLANTED_EXPECT))
+            print("Geometry selftest — planted fixture (%d clauses + %d sub-cases), clean fixture, reference bento, "
+                  "the #288 page, W3b's v1013-r2 page, %d clause mutations + %d cause levers"
+                  % (len(PLANTED_EXPECT), len(PLANTED_SUB), len(PLANTED_EXPECT), len(LEVERS)))
             fails, face = selftest(h, stops)
             for f in fails:
                 print("  ✖ " + f)

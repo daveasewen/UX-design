@@ -234,6 +234,11 @@ def drive(rid, budget):
         S0 = pg.evaluate(STATE)
         acts = {}
         th = [c for c in E["controls"] if c["family"] == "theme"]
+        # W4b (#304, R4s harness defect 1): the first theme control was "Light" on a page already light,
+        # so the switch "never flipped". Try first the control that names the OTHER mode.
+        cur = "dark" if ":dark:" in S0["theme"] else "light"
+        other = [c for c in th if re.search(r"\b%s\b" % ("light" if cur == "dark" else "dark"), c["text"], re.I)]
+        th = other + [c for c in th if c not in other]
         if th:
             try:
                 click('[data-r4c="%s"]' % th[0]["id"]); pg.wait_for_timeout(400)

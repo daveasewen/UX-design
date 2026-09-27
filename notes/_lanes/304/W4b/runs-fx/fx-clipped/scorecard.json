@@ -1,0 +1,583 @@
+{
+ "dimensions": {
+  "full": {
+   "fact": "views live 3/10; KPI words 1/3; question words 1/3; largest record set 30 rows; longest chart series 6 points \u2192 coverage 0.43",
+   "rule": "mean of the coverage parts: >=0.30 \u2192 1, >=0.60 \u2192 2, >=0.85 \u2192 3",
+   "score": 1
+  },
+  "interactive": {
+   "fact": "6/18 driven controls changed the page (33%); live families 4: filter, link, search, theme; dead: approve, detail, export, other; page errors 0",
+   "rule": "1: >=30% live or >=2 families \u00b7 2: >=60% and >=5 families \u00b7 3: >=85%, >=8 families, 0 page errors",
+   "score": 1
+  },
+  "persistent": {
+   "fact": "survived reload: filter, nav, search, theme (of changed: filter, nav, search, theme; storage keys 4; url after <entry>)",
+   "rule": "count of families {nav/view, filter, theme, sort, search} whose changed state survived a reload, capped at 3",
+   "score": 3
+  },
+  "visually_rich": {
+   "fact": "13 distinct Apollo components; 2 charts rendered with marks (2 types: grouped-column, line); 1 clipped",
+   "rule": "LIBERAL-DATAVIZ prompt \u00b7 1: >=4 components or >=1 rendered chart \u00b7 2: >=8 comps, >=3 chart types, >=4 charts \u00b7 3: >=12 comps, >=5 types, >=8 charts, 0 clipped",
+   "score": 1
+  }
+ },
+ "floor": {
+  "failing": [
+   "visually_rich",
+   "full",
+   "interactive"
+  ],
+  "min": 2,
+  "parts": {
+   "full": 1,
+   "interactive": 1,
+   "persistent": 3,
+   "visually_rich": 1
+  },
+  "rule": "each rubric part must reach 2; the parts are never summed",
+  "verdict": "FAIL"
+ },
+ "geometry_score": 0,
+ "ink": null,
+ "judgment": [
+  "Taste: does the page look like Apollo at its best \u2014 hierarchy, rhythm, restraint (Dave's eye on the light/dark shots).",
+  "Alignment and spacing that the geometry signals cannot name (optical alignment, crowding, the 'sloppiness class' of #288).",
+  "Whether each chart is the RIGHT chart for its figure (form-to-question fit), not only present and rendered.",
+  "Data believability: realistic entities, currencies, FX and magnitudes for a CEO audience.",
+  "Whether the overview actually answers the three CEO questions, as read by a person, not by keyword.",
+  "Whether each workflow (approve, acknowledge, service request) is plausible end to end, beyond 'the DOM changed'.",
+  "Composed vs traced is MEASURED as similarity; whether the composition is GOOD composition is judgment."
+ ],
+ "judgment_rows": [
+  {
+   "answer": null,
+   "evidence": null,
+   "evidence_label": "the overview's headings, in order",
+   "id": "three_questions",
+   "row": "Does the overview answer the three CEO questions as three visible groups (resilience \u00b7 exposure \u00b7 decisions)?"
+  },
+  {
+   "answer": null,
+   "evidence": null,
+   "evidence_label": "every ring chart on every view, with its tile's share of the content width",
+   "id": "ring_in_wide_tile",
+   "row": "Is any ring chart (donut or pie) sitting in a tile wider than half the wall?"
+  }
+ ],
+ "meta": {
+  "entry": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-clipped/out/good--clipped-chart.html",
+  "harness": "r4c-1.0",
+  "kind": "fixture",
+  "label": "fixture good--clipped-chart",
+  "pack": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/apollo-spider/dist/Apollo-Spider-v1.0.13.zip",
+  "pack_root_staged": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-clipped/pack",
+  "pack_sha256": "5d4df132b1f57f1764736d6bf46d3260bb7b7d0393a8317ea11c8f6b8bb282c6",
+  "page_sha256": "7527c67f68bce534f0057e8992f1bc2cc89d53a010dd77d92498870afb772f2e",
+  "page_source": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/mnt/Projects--UX-design/notes/_lanes/304/R4c/harness/fixtures/good--clipped-chart.html",
+  "profile": "ceo-common",
+  "run_id": "fx-clipped",
+  "stage": "/sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-clipped",
+  "staged_at": "2026-09-26T17:41:30"
+ },
+ "missing_phases": [
+  "views"
+ ],
+ "reproduce": [
+  "python3 notes/_lanes/304/R4c/harness/score.py static --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py gates --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py render --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py drive --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py views --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py ext --run-id fx-clipped",
+  "python3 notes/_lanes/304/R4c/harness/score.py card --run-id fx-clipped"
+ ],
+ "sections": {
+  "a11y": {
+   "pack_gate_line": "- a11y: \u2705",
+   "rendered": {
+    "small_sample": [
+     "button 72x15",
+     "button 163x15",
+     "button 64x15",
+     "button#r4c-theme 81x15",
+     "select#r4c-entity 83x19",
+     "input#r4c-search 185x21",
+     "a.stat.neu 216x12",
+     "button.x 22x22"
+    ],
+    "summary": {
+     "controls": 21,
+     "duplicate_ids": 0,
+     "h1": 1,
+     "heading_skips": 0,
+     "img_no_alt": 0,
+     "landmarks": {
+      "main": 0,
+      "nav": 1
+     },
+     "lang": "en",
+     "small_targets": 9,
+     "unnamed_controls": 0
+    },
+    "unnamed_sample": []
+   }
+  },
+  "charts_vs_ask": {
+   "clipped": [
+    {
+     "clip_by": "div.c-bento__tile.tile-chart.cn-chart-bar",
+     "clip_px": 99,
+     "id": "fig-spend",
+     "page": null,
+     "type": "grouped-column"
+    }
+   ],
+   "declared_static": 2,
+   "liberal_asked": true,
+   "min_overview_asked": 4,
+   "on_overview": 2,
+   "pack_types_available": 14,
+   "rendered": 2,
+   "subpages_with_charts": 0,
+   "tooltips": {
+    "charts_hovered": 2,
+    "tooltip_shown": 1
+   },
+   "types_rendered": [
+    "grouped-column",
+    "line"
+   ],
+   "types_used_frac": 0.14,
+   "with_legend": 1,
+   "with_table": 2
+  },
+  "components": {
+   "apollo_demo_markers": 0,
+   "chart_components": [
+    "chart-bar",
+    "chart-line"
+   ],
+   "count": 13,
+   "list": [
+    "button",
+    "card-header-lockup",
+    "cards",
+    "chart-bar",
+    "chart-line",
+    "eyebrow",
+    "kpi-tile",
+    "legend",
+    "list-items",
+    "page-header-lockup",
+    "status-indicator",
+    "table",
+    "tags"
+   ],
+   "pages": 1,
+   "rendered_only": [],
+   "static_count": 14,
+   "templates_recognised": [
+    "template-dashboard-bento"
+   ]
+  },
+  "composed_vs_traced": {
+   "measured_on": "page source",
+   "rendered_dom": {
+    "top": {
+     "from": "staged pack",
+     "shingle_containment": 0.0,
+     "shingle_jaccard": 0.0,
+     "template": "Template-dashboard-bento",
+     "template_unique_classes_frac": 0.136,
+     "template_unique_hit": [
+      "c-bento",
+      "c-bento__grid",
+      "c-bento__tile"
+     ],
+     "text_reuse": 0.0,
+     "text_reused_n": 0,
+     "text_reused_sample": [],
+     "text_strings_n": 21,
+     "trace_index": 0.041
+    },
+    "verdict": "COMPOSED"
+   },
+   "thresholds": "trace_index = 0.4*DOM shingle containment + 0.3*template text reuse + 0.3*template-only classes present; >=0.30 TRACED, >=0.15 PARTLY TRACED, else COMPOSED \u2014 calibrated on pages whose provenance the record states (7 bento-first splices read 0.334-0.561; 2 template-closed compositions read 0.041)",
+   "top": {
+    "from": "staged pack",
+    "shingle_containment": 0.0,
+    "shingle_jaccard": 0.0,
+    "template": "Template-dashboard-bento",
+    "template_unique_classes_frac": 0.136,
+    "template_unique_hit": [
+     "c-bento",
+     "c-bento__grid",
+     "c-bento__tile"
+    ],
+    "text_reuse": 0.0,
+    "text_reused_n": 0,
+    "text_reused_sample": [],
+    "text_strings_n": 21,
+    "trace_index": 0.041
+   },
+   "verdict": "COMPOSED"
+  },
+  "geometry_4b": {
+   "geometry": {
+    "counts": {
+     "G1": 2,
+     "G10": 0,
+     "G1b": 2,
+     "G2": 2,
+     "G3": 0,
+     "G4": 0,
+     "G5": 0,
+     "G6": 12,
+     "G7": 49,
+     "G8": 10,
+     "G9": 0
+    },
+    "exit": 0,
+    "findings_n": 77,
+    "findings_sample": [
+     {
+      "clause": "G1",
+      "expected": "one row gutter for every tile in this wall",
+      "measured": "row gutters range 40px\u2013210px: 40px between 'Programmes in flight 11 No changevs last week Sp' and 'Programme portfolio 11 in flight \u00b7 ranked by spe', 210px between 'Two programmes are spending ahead of their envel' and 'Realised gains have compounded every month since'",
+      "severity": "minor",
+      "where": "div.c-bento__grid ('Needs attention 6 of 11 programmes', 'Programme portfolio 11 in flight \u00b7 ranked by spe', 'Programmes in flight 11 No ch)",
+      "width": 1440
+     },
+     {
+      "clause": "G1b",
+      "expected": "every row of one wall at the same level: bare cards go inside an inner wall",
+      "measured": "this wall holds 1 nested wall(s) (inner gutter 4px) beside 5 bare card(s) ('Programme portfolio 11 in flight \u00b7 ranked by spe', 'Needs attention 6 of 11 programmes', 'Open exceptions 7 open \u00b7 olde) at the wall's own 40px gutter",
+      "severity": "minor",
+      "where": "div.c-bento__grid",
+      "width": 1440
+     },
+     {
+      "clause": "G2",
+      "expected": "a gutter on the ruled bento stops 1/2/4/16/24/40",
+      "measured": "gutter 210px",
+      "severity": "minor",
+      "where": "div.c-bento__grid, between 'Two programmes are spending ahead of their envel' and 'Realised gains have compounded every month since'",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "170px of empty band below the last content (y=1175.2)",
+      "severity": "minor",
+      "where": "'Needs attention 6 of 11 programmes' (426.7x680)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "147.3px of empty band below the last content (y=1917.9)",
+      "severity": "minor",
+      "where": "'Open exceptions 7 open \u00b7 oldest 21 days' (426.7x680)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "198.1px of empty band between content blocks at y=388.5 and y=586.6",
+      "severity": "minor",
+      "where": "'Programmes in flight 11 No changevs last week' (268.8x320)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "177.7px of empty band below the last content (y=431.5)",
+      "severity": "minor",
+      "where": "'Spend against budget \u00a314.2m On planto 20 Sep 72%' (268.8x320)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "184.7px of empty band between content blocks at y=388.5 and y=573.2",
+      "severity": "minor",
+      "where": "'Efficiency gains realised \u00a38.4m +\u00a31.1mvs last qu' (268.8x320)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "192.1px of empty band below the last content (y=417.2)",
+      "severity": "minor",
+      "where": "'Risk & compliance exceptions 7 +3 openworse than' (268.8x320)",
+      "width": 1440
+     },
+     {
+      "clause": "G6",
+      "expected": "no empty band of 48px or more inside a tile",
+      "measured": "204.1px of empty band below the last content (y=405.2)",
+      "severity": "minor",
+      "where": "'Decisions awaiting you 4 2 due Fridaythis week O' (268.8x320)",
+      "width": 1440
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 111x10px",
+      "severity": "major",
+      "where": "th \"Contact centre summarisa\" over h2.t-cm-ctl-16 \"Open exceptions\"",
+      "width": 1440
+     },
+     {
+      "clause": "G7",
+      "expected": "text never sits on other text",
+      "measured": "text runs overlap by 14x12px",
+      "severity": "major",
+      "where": "text.dv-label.t-cm-chart-label \"Payments\" over th \"KYC\"",
+      "width": 1440
+     }
+    ],
+    "font_ok": true,
+    "gate": "knowledge/_validate_geometry.py",
+    "gate_sha256": "c7acf741704a8230e9b9503ca1ff9d2683837bb96209b41db4e46887997195a5",
+    "score": 0,
+    "status": "FINDINGS",
+    "stdout_tail": [
+     "         measured: 192.1px of empty band below the last content (y=417.2)",
+     "         fix: Let the tile hug its content, fill it (a chart that fills its tile), or give the row a shorter tile.",
+     "  \u26a0 G6   @1440 dead space in a tile \u2014 'Decisions awaiting you 4 2 due Fridaythis week O' (268.8x320)",
+     "         measured: 204.1px of empty band below the last content (y=405.2)",
+     "         fix: Let the tile hug its content, fill it (a chart that fills its tile), or give the row a shorter tile.",
+     "",
+     "ADVISORY: 1 page(s), 77 finding(s); scores good--clipped-chart.html=0",
+     "wrote /sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-clipped/ext-geometry.out.json"
+    ]
+   },
+   "own_size": {
+    "counts": {
+     "S1": 0,
+     "S2": 1,
+     "S3": 0
+    },
+    "exit": 0,
+    "findings_n": 1,
+    "findings_sample": [
+     {
+      "clause": "S2",
+      "expected": null,
+      "measured": "84.3px wide",
+      "severity": null,
+      "where": null,
+      "width": 1440
+     }
+    ],
+    "font_ok": true,
+    "gate": "knowledge/_validate_own_size.py",
+    "gate_sha256": "925befbdbafee83911ad13eb3411f3e3e4db73e1141fdd27ed524c5753320a89",
+    "score": null,
+    "status": "FINDINGS",
+    "stdout_tail": [
+     "OWN-SIZE ../../r4c/stage/fx-clipped/out/good--clipped-chart.html \u2014 FINDINGS \u00b7 73 part(s) matched \u00b7 1 finding(s) \u00b7 2611 ms",
+     "  \u26a0 S2 @1440 narrower than its own minimum \u2014 button .qbtn.t-cm-button 'View all' in button: 84.3px wide (reference: min-width 96px in its reference)",
+     "       fix: Keep the component's own minimum width: drop the page class that resets min-width.",
+     "  \u00b7 4 part key(s) with no counterpart in a reference (not judged): cards td[].; cards th[]body.; cards th[]head.; status-indicator th[]body.",
+     "",
+     "ADVISORY: 1 page(s), 1 finding(s)",
+     "wrote /sessions/rcw-0115rtjy4mpbeejfbjiuhael/r4c/stage/fx-clipped/ext-own_size.out.json"
+    ]
+   }
+  },
+  "geometry_native": {
+   "dead_tiles": [
+    {
+     "dead_px": 196,
+     "tile": "div.c-bento__tile",
+     "tile_h": 320
+    },
+    {
+     "dead_px": 211,
+     "tile": "div.c-bento__tile",
+     "tile_h": 320
+    },
+    {
+     "dead_px": 223,
+     "tile": "div.c-bento__tile",
+     "tile_h": 320
+    }
+   ],
+   "filter_table_mismatch": [],
+   "grids": [
+    {
+     "grid": "div.c-bento__grid",
+     "gutters": [
+      40
+     ],
+     "row_gaps": [
+      40,
+      210
+     ],
+     "tiles": 6,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 1
+    },
+    {
+     "grid": "div.c-bento__grid.cn-kpi-tile",
+     "gutters": [
+      4
+     ],
+     "row_gaps": [],
+     "tiles": 5,
+     "unequal_gutters": false,
+     "unshared_bottom_rows": 0
+    }
+   ],
+   "own_size_hint": {
+    "button_h_median": 44,
+    "button_h_min": 15,
+    "buttons": 16,
+    "th": 34,
+    "th_h_median": 45,
+    "th_h_min": 18
+   },
+   "summary": {
+    "dead_tiles": 3,
+    "filter_table_mismatch": 0,
+    "grids": 2,
+    "own_size_hint": {
+     "button_h_median": 44,
+     "button_h_min": 15,
+     "buttons": 16,
+     "th": 34,
+     "th_h_median": 45,
+     "th_h_min": 18
+    },
+    "unequal_gutter_grids": 0,
+    "unshared_bottom_rows": 1
+   },
+   "unequal_gutter_grids": 0,
+   "unshared_bottoms": 1
+  },
+  "pack_gates": {
+   "dataviz": {
+    "advisory_n": 0,
+    "blocking": [],
+    "blocking_n": 0,
+    "charts": 2,
+    "verdict": "PASS"
+   },
+   "screen": {
+    "exit": 0,
+    "lines": [
+     "- receipt: \u2705 0 region(s) re-hashed and matched",
+     "- compose: \u2705",
+     "- composition: UNPROVEN: C9 bands",
+     "- icon-source: \u2705 all paths library-matched",
+     "- a11y: \u2705"
+    ],
+    "verdict": "PASS"
+   }
+  },
+  "render": {
+   "clipped_elements": {
+    "count": 1,
+    "ellipsis": 0,
+    "sample": [
+     {
+      "dx": 0,
+      "dy": 103,
+      "el": "div.c-bento__tile.tile-chart.cn-chart-bar",
+      "ellipsis": false
+     }
+    ]
+   },
+   "console_errors_light": [],
+   "h_overflow_px": 0,
+   "hsbc_face": {
+    "families": [
+     "HSBC_MtUnivers_Latin",
+     "Liberation Sans"
+    ],
+    "hsbc": true,
+    "nodes": {
+     "[class*='t-cm-']": [
+      "HSBC_MtUnivers_Latin"
+     ],
+     "body": [
+      "HSBC_MtUnivers_Latin"
+     ],
+     "button": [
+      "Liberation Sans"
+     ],
+     "h1": [
+      "HSBC_MtUnivers_Latin"
+     ],
+     "h2": [],
+     "td": []
+    }
+   },
+   "pageerrors_light": [],
+   "shots": {
+    "dark-1440": "shots/dark-1440.png",
+    "light-1440": "shots/light-1440.png"
+   },
+   "subpages_not_reached": [],
+   "subpages_probed": 0
+  },
+  "theme": {
+   "asked": "common",
+   "checks": [
+    {
+     "check": "root carries data-apollo-theme=common",
+     "ok": true
+    },
+    {
+     "check": "root carries class canon",
+     "ok": true
+    },
+    {
+     "check": "theme attrs not on <body>",
+     "ok": true
+    },
+    {
+     "check": "Common tokens resolve (--button-primary-background-default=#DB0011, --border-radius-default=0)",
+     "ok": true
+    },
+    {
+     "check": "no hex owned by another theme",
+     "ok": true
+    },
+    {
+     "check": "light/dark switch flips the theme, on <html>",
+     "ok": true
+    }
+   ],
+   "data_apollo_theme": "common",
+   "data_theme": "light",
+   "leaked_hexes": [],
+   "raw_hex_in_authored_css": 0,
+   "rendered_tokens": {
+    "--border-radius-default": "0",
+    "--button-primary-background-default": "#DB0011"
+   },
+   "root_class_canon": true,
+   "switch": {
+    "after": "html:dark:rgba(0, 0, 0, 0)",
+    "before": "html:light:rgba(0, 0, 0, 0)",
+    "flips": true,
+    "found": "Dark mode",
+    "html_data_theme_after": "dark",
+    "on_html": true
+   },
+   "theme_attrs_on_body": [],
+   "vars_changed_by_theme_attr": {
+    "attr": "common",
+    "changed": 42,
+    "of": 47
+   },
+   "verdict": "PASS"
+  }
+ },
+ "total": 6,
+ "total_is_legacy": true,
+ "total_with_geometry": 6
+}
