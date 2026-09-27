@@ -1,0 +1,24 @@
+PASS payments grid renders a page of rows — 12
+PASS grid header relabelled from DATA config
+PASS grid count reflects DATA — 48 results
+PASS sort by amount ascending — [-40949083.72, -37980334.47, -31959004.17]
+PASS paging to page 2 — 13–24 of 48
+PASS sort + page survive reload — 13–24 of 48
+PASS grid search filters and shows a chip — 12 rows
+PASS row click opens the payment in the drawer — Payment PAY-24007
+PASS reject without an audit note is refused, field marked invalid — Enter an audit note of at least 12 characters.
+PASS reject with note updates the record
+PASS toast confirms the decision — Rejected PAY-24007. The initiator has been told, with your note.
+PASS approve asks for confirmation first
+PASS confirmed approval changes status to Approved — Approved
+PASS bulk approve opens a confirmation modal (or explains why not) — (2, 'Approve 2 payments totalling £14,978,338.14?')
+PASS modal takes focus on its confirm button — mConfirm
+PASS bulk approval applied — iator has been told, with your note.
+
+Approved PAY-24021 — £2,563,225.29 to Stellar Plastics GmbH.
+
+Approved 2 payments.
+PASS decisions persist in storage and re-apply after reload — {'5001': 'Rejected', '5003': 'Approved', '5009': 'Approved', '5012': 'Approved'}
+PASS CSV export downloads the grid's rows — ('payments-payments-2026-09-25.csv', 49)
+PASS overview approvals card reflects the decisions — ('16 payments awaiting you\nOldest value date 25 Sep 2026', 16)
+PASS no console errors on payments journeys — []

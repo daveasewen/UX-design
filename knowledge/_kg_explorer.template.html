@@ -954,7 +954,7 @@ const COORDK=new Set(['x','y','y2','x3','y3','z3','xf','yf','zf','xo','yo','xs',
 const RUNK=new Set(['i','ox','oy','oy2','z','tx','ty','tz','a','ta','r','bd','_sx','_sy']); // the page's own runtime fields — not part of the stored record
 const HEADK=new Set(['id','type','label']);        // shown in the modal's head instead
 const KEYNAME={deg:'degree',fam:'family chip',born:'born',died:'gone',full:'full reference',docOf:'documents',
-  registered:'registered',$derived:'derived by',dead:'dead in the history'};
+  registered:'registered',$derived:'derived by',dead:'dead in the history',titleFrom:'title'};
 const modal=document.getElementById('insp');
 let inspNode=null,lastFocus=null;
 function fmtVal(v){if(Array.isArray(v))return v.map(x=>esc(String(x))).join(' · ')||'—';
@@ -1148,7 +1148,7 @@ function rulingTab(slug){return {key:'record',label:'The ruling',build(p){const 
 function sessionTab(label){return {key:'record',label:'What was ruled',build(p){const seq=inspSeq;
   const n=String(label).replace(/^#/,'');loading(p,'knowledge/_rulings.json');
   getText('knowledge/_rulings.json').then(txt=>{if(seq!==inspSeq)return;let rs=[];
-    try{rs=(JSON.parse(txt).rulings||[]).filter(r=>r&&(String(r.ruled)==='#'+n||new RegExp('^s'+n+'-').test(String(r.id))))}
+    try{rs=(JSON.parse(txt).rulings||[]).filter(r=>r&&(new RegExp('^#'+n+'(?!\\d)').test(String(r.ruled||''))||new RegExp('^s'+n+'-').test(String(r.id))))}
     catch(err){return paneErr(p,err)}
     if(!rs.length){p.innerHTML=`<p class="fnote">no ruling in <code>knowledge/_rulings.json</code> names session <code>#${esc(n)}</code>.</p>`;return}
     p.innerHTML=`<p class="fnote"><b>${rs.length}</b> ruling${rs.length===1?'':'s'} carry this session.</p>`
@@ -1171,7 +1171,7 @@ function artTabs(n,s,df){const t=n.type,slug=n.id.slice(n.id.indexOf(':')+1);
   if(t==='rule'&&df)return [fileTab(df,'In the guideline','{#'+slug+'}'),
     {key:'about',label:'Where',build(p){p.innerHTML=`<p class="fnote">the rule’s own row is highlighted in its guideline above — the guideline is the artefact, the rule is a line of it. Its record file is <code>${esc(s?s.path:'—')}</code>.</p>`}}];
   if(t==='ruling')return [rulingTab(slug)];
-  if(t==='session')return [sessionTab(n.label||slug)];
+  if(t==='session')return [sessionTab(slug)];   // #304 W5c v1.29 — the id, not the label: a session's label now carries its title. #304 F5: the tab reads `ruled` as the builder's SESSION_RX does (#n with no digit after: #79-D1, '#76 (dream pass 4)')
   if(t==='evidence'&&path)return [fileTab(path,'The document',(s&&s.anchor)||null)];
   if(path)return [fileTab(path,'The file')];
   return []}

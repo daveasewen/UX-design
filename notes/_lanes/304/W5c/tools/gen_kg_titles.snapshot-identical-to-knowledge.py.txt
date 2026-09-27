@@ -1,0 +1,414 @@
+#!/usr/bin/env python3
+"""gen_kg_titles.py — plain titles for the graph's bare-code nodes (#304 W5c).
+
+Seat J's probe (notes/_subreports/2026-09-27-304-J-jev-edge-node-probe.md) found every ruling, rule
+and session node in the KG explorer labelled with its bare code (`s133-D1`, `dv-line-008`, `#165`):
+a title that does not say what the node IS. J7 (#293): "Jev is literal, so node titles must say what
+nodes ARE". The text already sits in each record; this generator derives a short plain title from it,
+mechanically, and the explorer builder shows it in the form the page already uses for a WCAG
+criterion — THE CODE, A SPACE, THE TITLE (`1.4.8 Visual Presentation` → `s133-D1 Palette sharing is
+scoped`). The code stays first, so it is still what you search and what you quote.
+
+  ruling:<id>   from the ruling's `ruled` headline — or, where `ruled` is only a session reference
+                (`#167`), from its `says` text. Record fields are READ, never written.
+  rule:<id>     from the rule's `text` in knowledge/_rule_nodes.json (its internal `CA-7 —` code dropped).
+  session:<n>   from the rulings that carry it — the explorer's own "What was ruled" reading (a ruling
+                whose `ruled` is `#n` or whose id starts `s<n>-`): `session of <date>, <k> rulings`. A
+                session has no text of its own in the tree, so its title states only what is counted.
+
+DERIVATION (deterministic, no model, no hand-typed title): the first meaningful clause of the text —
+cut at the first sentence end, `;`, a spaced dash or `: ` that leaves at least MIN_CLAUSE characters —
+with ruling and session ids and id-bearing parentheticals removed, SHOUTING caps lowered to the casing
+the corpus itself uses for that word (a word the corpus never writes in lower case, like SC or WCAG,
+keeps its caps), capped at MAX_TITLE characters on a word boundary with `…`. A title is DISPLAY: the
+rulings store, the rule index and every record are untouched, and the builder only replaces a label
+that is still the bare code.
+
+MODES
+  (default)    compute and print counts + a sample; writes nothing
+  --write      write knowledge/_node_titles.json
+  --check      recompute and compare bytes with the written file; rc 1 on drift or absence
+  --selftest   bites, including mutations (see selftest())
+"""
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+import copy, json, os, re, shutil, sys, tempfile
+from collections import Counter, defaultdict
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT_NAME = "_node_titles.json"
+MAX_TITLE = 60
+MIN_CLAUSE = 20
+LONG_SHOUT = 5          # a shouted word this long that the corpus never lowers is emphasis, not an acronym
+LONG_ASIDE = 28         # a parenthetical longer than this is an aside and is dropped from a title
+TRAIL_WEAK = {"a", "an", "the", "of", "to", "and", "or", "for", "with", "in", "on", "at", "by", "from", "into",
+              "not", "but", "is", "are", "as", "that", "which", "its", "their", "than", "so", "be", "was"}
+SESSION_REF = re.compile(r"^#(\d+)")          # the builder's own SESSION_RX: "#81-D1" → session 81
+
+# ids that are REFERENCES to the record system (rulings, sessions, proposals, open items), not the
+# subject of a sentence — dropped from a title. A rule id such as TYPE-001 is a subject and is kept.
+REF_ID = (r"(?:s\d{2,3}-D\d+[a-z]?(?:-am)?|#\d+(?:-D\d+)?|ds-\d{3}(?:-[A-Z]\w*)?|DV-D\d+|ADR-\d{4}(?:-A\d)?"
+          r"|d0802-P\w+|[TBG]M?-D\d+(?:-am)?|P-\d{3}-\d+|W-\d+\w*|G\d+[a-z]?|DP-\d+|"
+          r"(?:RI|RP|RK|RD|RL|RO|RSQ|D|Q|R|C|A)-?\d+(?=\s+option)|audit\s+D-\d+)")
+REF_ID_RX = re.compile(REF_ID)
+PAREN_RX = re.compile(r"\s*\(([^()]*)\)")
+BRACKET_RX = re.compile(r"\s*\[([^\[\]]*)\]")
+OPTION_RX = re.compile(r"\boption\s+[a-z]\b|\bexport\b|\bno note\b|\bread-back\b", re.I)
+LEAD_LABEL_RX = re.compile(r"^(?:[A-Z][A-Za-z]{0,11}\s){0,2}[A-Z]{1,6}-?\d+[a-z]?\s*[:—–-]\s+")
+RULE_CODE_RX = re.compile(r"^[A-Z]{1,5}-\d+[a-z]?\s*[—–:-]\s*")
+WORD_RX = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
+ATTEST_RX = re.compile(r"(?<![\w/\-.:@#$`=])([A-Za-z]+)(?![\w/\-:`=])")
+BOUND_RX = re.compile(r"(?<=[.!?])(?<!e\.g\.)(?<!i\.e\.)(?<!\bvs\.)(?<!etc\.)\s+(?=\S)|;\s+|\s[—–]\s|\s-\s|:\s+")
+
+
+# ---------------------------------------------------------------- casing learnt from the corpus
+def casing_map(texts):
+    """word(lower) → the casing to use when the word is SHOUTED. Counts only standalone occurrences
+    (not inside a path, id, slug or code), so `rag/error-ink` does not teach that RAG is a word."""
+    low, tit = Counter(), Counter()
+    for t in texts:
+        for m in ATTEST_RX.finditer(t or ""):
+            w = m.group(1)
+            if w.islower(): low[w] += 1
+            elif w[0].isupper() and (len(w) == 1 or w[1:].islower()): tit[w.lower()] += 1
+    out = {}
+    for w in set(low) | set(tit):
+        # a proper noun (Dave, Figma) is written in title case far more often than in lower case;
+        # anything else the corpus writes in lower case at all is an ordinary word
+        if low[w] and tit[w] <= 5 * low[w]: out[w] = w
+        elif tit[w]: out[w] = w[0].upper() + w[1:]
+    return out
+
+
+def _is_shout(w):
+    return len(w) >= 2 and w.isalpha() and w.isupper()
+
+
+def deshout(s, cmap):
+    """Lower every SHOUTED word to the corpus's own casing; a word the corpus never writes in lower
+    or title case (an acronym: SC, WCAG, HSBC) keeps its caps. A lone `A` is lowered only inside a
+    shouted run (`A CONTINUOUS QUANTITY`), never on its own (`SC 1.3.3 A`)."""
+    toks = re.split(r"(\s+)", s)
+    words = [re.sub(r"[^A-Za-z'-]", "", t) for t in toks]
+    def shouted(i):
+        return 0 <= i < len(words) and any(_is_shout(p) for p in words[i].split("-")) and cmap_has(words[i])
+    def cmap_has(w):
+        return any(_is_shout(p) and p.lower() in cmap for p in w.split("-"))
+    out = []
+    for i, t in enumerate(toks):
+        if t.isspace() or not t:
+            out.append(t); continue
+        def fix(m):
+            w = m.group(0)
+            base = re.split(r"['’]", w)[0]
+            if _is_shout(base) and base.lower() in cmap:
+                return cmap[base.lower()] + w[len(base):].lower()
+            # a shouted word the corpus never writes otherwise: an acronym is short (SC, WCAG, HSBC,
+            # DTCG); a long one (SEVERITIES, REPRICED) is emphasis and is lowered
+            if _is_shout(base) and len(base) >= LONG_SHOUT:
+                return base.lower() + w[len(base):].lower()
+            if base == "A" and (shouted(i - 2) or shouted(i + 2)):
+                return "a"
+            return w
+        # only whole alphabetic runs inside the token; ids with digits (TYPE-001, v1.0.8) are left
+        slashed_words = re.fullmatch(r"\W*[A-Z]+(?:[/-][A-Z]+)+\W*", t)      # PLUS/MINUS is two words
+        if (re.search(r"\d", t) and re.search(r"[A-Z]+-?\d", t)) or re.search(r"_|\w\.\w", t) \
+                or ("/" in t and not slashed_words):
+            out.append(t); continue           # an id, a path or an identifier is never re-cased
+        out.append(WORD_RX.sub(fix, t))
+    return "".join(out)
+
+
+# ---------------------------------------------------------------- one title from one text
+def _strip_refs(s):
+    """Drop what references the record system rather than saying anything: an id-bearing or long
+    parenthetical/bracket, an id used as an adjective after `the` (`the s240-D2 ceiling`), a leading
+    id label (`s158-D2:`). An id that is the object of a sentence (`built at #231`) is KEPT — removing
+    it would leave a broken sentence, and a broken title is worse than a code."""
+    def paren(m):
+        inner = m.group(1)
+        if REF_ID_RX.search(inner) or OPTION_RX.search(inner) or len(inner) > LONG_ASIDE: return ""
+        return m.group(0)
+    s = PAREN_RX.sub(paren, s)
+    s = BRACKET_RX.sub(lambda m: "" if (REF_ID_RX.search(m.group(1)) or len(m.group(1)) > LONG_ASIDE) else m.group(0), s)
+    s = re.sub(r"\b(the|THE|The)\s+" + REF_ID + r"\s+", r"\1 ", s)
+    s = re.sub(r"^" + REF_ID + r"\s*[:—–-]\s+", "", s)
+    s = re.sub(r"\s+([,.;:?!])", r"\1", s)
+    s = re.sub(r"\s{2,}", " ", s).strip()
+    s = re.sub(r"^[,.;:—–\-\s]+", "", s)
+    return s
+
+
+def _clause(s):
+    for m in BOUND_RX.finditer(s):
+        head = s[:m.start()].rstrip()
+        if len(head) >= MIN_CLAUSE and " " in head:        # a lone slug is a name, not a clause
+            return head + ("?" if s[m.start() - 1:m.start()] == "?" and not head.endswith("?") else "")
+    return s
+
+
+def _trim_weak(s):
+    while True:
+        s = s.rstrip(" ,;:—–-(")
+        w = s.rsplit(" ", 1)
+        if len(w) == 2 and w[1].lower() in TRAIL_WEAK and len(w[0]) >= MIN_CLAUSE: s = w[0]; continue
+        return s
+
+
+def _cap(s):
+    s = s.strip().rstrip(",;:—–-").rstrip()
+    cut = False
+    if len(s) > MAX_TITLE:
+        c = s[:MAX_TITLE - 1]
+        sp = c.rfind(" ")
+        if sp >= MIN_CLAUSE: c = c[:sp]
+        s, cut = c, True
+    # an opening parenthesis, bracket or quote the cut left unclosed goes, with what follows it —
+    # or, too near the start to cut at, the stray mark alone goes
+    for o, c_ in (("(", ")"), ("[", "]"), ("“", "”")):
+        while s.count(o) > s.count(c_):
+            i = s.rfind(o)
+            if i >= MIN_CLAUSE // 2: s, cut = s[:i], True
+            else: s = s[:i] + s[i + 1:]
+    if s.count('"') % 2:
+        i = s.rfind('"')
+        if i >= max(MIN_CLAUSE // 2, len(s) - 15) and not s.startswith('"'): s, cut = s[:i], True
+        else: s = s.replace('"', "", 1)
+    if cut: s = _trim_weak(s).rstrip(" .") + "…"
+    else:
+        s = s.rstrip(" .")
+        if s.rsplit(" ", 1)[-1].lower() in TRAIL_WEAK: s = _trim_weak(s)
+    return s
+
+
+def title_of(text, cmap, rule=False):
+    """The derived title, or None when nothing meaningful is left (the node keeps its bare code)."""
+    s = re.sub(r"\s+", " ", str(text or "")).strip()
+    s = s.replace("**", "").replace("`", "")
+    s = s.strip("* ")
+    s = re.sub(r"^#{1,6}\s+", "", s)                        # a markdown heading mark
+    if rule: s = RULE_CODE_RX.sub("", s)
+    s = LEAD_LABEL_RX.sub("", s)
+    s = _strip_refs(s)
+    if len(s) > 2 and s[0] in "\"'“" and s[-1] in "\"'”": s = s[1:-1].strip()
+    s = _clause(s)
+    s = deshout(s, cmap)
+    s = _cap(s)
+    if s and s[0].islower() and re.match(r"^[a-z]+(?:/[a-z]+)*\b(?![-/_.]\w)", s):
+        s = s[0].upper() + s[1:]
+    s = s.strip()
+    return s if _words(s) >= 1 and len(re.sub(r"[^A-Za-z]", "", REF_ID_RX.sub("", s))) >= 3 else None
+
+
+# ---------------------------------------------------------------- the three node kinds
+def _load(root):
+    rul = json.load(open(os.path.join(root, "_rulings.json"), encoding="utf-8")).get("rulings", [])
+    rul = [r for r in rul if isinstance(r, dict) and r.get("id")]
+    rp = os.path.join(root, "_rule_nodes.json")
+    rn = json.load(open(rp, encoding="utf-8")).get("nodes", []) if os.path.exists(rp) else []
+    rn = [n for n in rn if isinstance(n, dict) and n.get("type") == "rule" and n.get("id")]
+    return rul, rn
+
+
+def ruling_source(r):
+    """(field, text): the `ruled` headline, unless it is only a session reference."""
+    ruled = r.get("ruled")
+    if isinstance(ruled, str) and not SESSION_REF.match(ruled.strip()) and _words(ruled) >= 2:
+        return "ruled", ruled
+    return "says", r.get("says") or ""
+
+
+def _words(s):
+    """Plain words left once every record reference is taken out (`GM-D7-am / #33` has none)."""
+    return len(re.findall(r"[A-Za-z]{2,}", REF_ID_RX.sub(" ", str(s or ""))))
+
+
+def session_rulings(rul):
+    """session number → the rulings the explorer's 'What was ruled' tab lists for it."""
+    minted = sorted({int(m.group(1)) for r in rul for m in [SESSION_REF.match(str(r.get("ruled") or ""))] if m})
+    out = {}
+    for n in minted:
+        out[n] = [r for r in rul if str(r.get("ruled")) == "#%d" % n or re.match(r"^s%d-" % n, str(r["id"]))]
+    return out
+
+
+def _dates(rs):
+    ds = sorted({str(r.get("date"))[:10] for r in rs if re.match(r"^\d{4}-\d{2}-\d{2}", str(r.get("date") or ""))})
+    if not ds: return None
+    if len(ds) == 1 or ds[0] == ds[-1]: return ds[0]
+    a, b = ds[0], ds[-1]
+    return a + "/" + (b[8:] if a[:7] == b[:7] else b[5:])
+
+
+def compute(root=HERE):
+    rul, rn = _load(root)
+    cmap = casing_map([str(r.get("ruled") or "") for r in rul] + [str(r.get("says") or "") for r in rul]
+                      + [str(n.get("text") or "") for n in rn])
+    titles, untitled = {}, []
+    for r in sorted(rul, key=lambda x: x["id"]):
+        f, txt = ruling_source(r)
+        t = title_of(txt, cmap)
+        nid = "ruling:" + r["id"]
+        if t: titles[nid] = {"code": r["id"], "title": t, "from": f}
+        else: untitled.append(nid)
+    for n in sorted(rn, key=lambda x: x["id"]):
+        code = n["id"].split(":", 1)[1]
+        t = title_of(n.get("text"), cmap, rule=True)
+        if t: titles[n["id"]] = {"code": code, "title": t, "from": "text"}
+        else: untitled.append(n["id"])
+    for s, rs in sorted(session_rulings(rul).items()):
+        d = _dates(rs)
+        t = ("session of %s, " % d if d else "session, ") + ("%d ruling%s" % (len(rs), "" if len(rs) == 1 else "s"))
+        titles["session:%d" % s] = {"code": "#%d" % s, "title": t, "from": "rulings"}
+    for v in titles.values():
+        v["label"] = v["code"] + " " + v["title"]
+    kinds = Counter(k.split(":", 1)[0] for k in titles)
+    return {
+        "$generated_by": "knowledge/gen_kg_titles.py --write — never hand-edit; --check is the drift test",
+        "$description": ("Derived DISPLAY titles for the explorer's bare-code nodes (#304 W5c). label = code + ' ' + title, "
+                         "the sc: node form. Read by knowledge/_build_kg_explorer.py, which replaces a node's label only "
+                         "while it is still the bare code. No record is changed: rulings, rules and sessions keep their text."),
+        "$form": "code + ' ' + title",
+        "$measured": {"titled": dict(sorted(kinds.items())), "untitled": sorted(untitled),
+                      "maxTitle": MAX_TITLE, "minClause": MIN_CLAUSE},
+        "titles": dict(sorted(titles.items())),
+    }
+
+
+def serial(doc):
+    return json.dumps(doc, indent=1, ensure_ascii=False, sort_keys=False) + "\n"
+
+
+# ---------------------------------------------------------------- the builder's side
+def load_titles(root=HERE):
+    p = os.path.join(root, OUT_NAME)
+    if not os.path.exists(p): return {}
+    try: return json.load(open(p, encoding="utf-8")).get("titles", {})
+    except Exception: return {}
+
+
+def apply_titles(nodes, titles):
+    """Give each bare-code node its derived label. A node whose label is NOT its bare code (someone
+    else already named it) is left alone. Returns the count applied. Writes `label` and `titleFrom`."""
+    n = 0
+    for nd in nodes:
+        t = titles.get(nd.get("id"))
+        if not t: continue
+        if (nd.get("label") or "").strip() != t["code"]: continue
+        nd["label"] = t["label"]
+        nd["titleFrom"] = "derived by gen_kg_titles.py from the record's %s — display only" % (
+            {"ruled": "`ruled` headline", "says": "`says` text", "text": "rule text",
+             "rulings": "rulings (date and count)"}.get(t["from"], t["from"]))
+        n += 1
+    return n
+
+
+# ---------------------------------------------------------------- modes
+def write(root=HERE):
+    doc = compute(root)
+    out = os.path.join(root, OUT_NAME)
+    open(out, "w", encoding="utf-8").write(serial(doc))
+    return out, doc
+
+
+def check(root=HERE):
+    out = os.path.join(root, OUT_NAME)
+    if not os.path.exists(out):
+        print("gen_kg_titles --check: %s ABSENT. Run: python3 knowledge/gen_kg_titles.py --write" % OUT_NAME); return 1
+    have = open(out, encoding="utf-8").read()
+    doc = compute(root)
+    if serial(doc) != have:
+        print("gen_kg_titles --check: STALE — %s differs from a fresh compute. Run: python3 knowledge/gen_kg_titles.py --write" % OUT_NAME)
+        return 1
+    m = doc["$measured"]
+    print("gen_kg_titles --check OK — %s titled · %d untitled · in sync" % (m["titled"], len(m["untitled"])))
+    return 0
+
+
+def selftest():
+    fails, n = [], 0
+    def bite(i, what, ok):
+        nonlocal n; n += 1
+        print("  %s bite %d — %s" % ("OK  " if ok else "FAIL", i, what))
+        if not ok: fails.append(i)
+    cm = casing_map(["the badge is fine and the Figma export", "a sc: node", "the ceiling has its value",
+                     "palette sharing is scoped, not per-theme", "Dave said it", "rag/error-ink", "only for a quantity"])
+    t1 = title_of("THE SC BADGE IS FINE", cm)
+    bite(1, "SHOUTING is lowered to corpus casing; an acronym the corpus never lowers (SC) keeps its caps: %r" % t1,
+         t1 == "The SC badge is fine")
+    t2 = title_of("THE s240-D2 CEILING HAS ITS VALUE (s214-D4 option a): 70,000 REAL TOKENS", cm)
+    bite(2, "ruling/session ids and id-bearing parentheticals are removed: %r" % t2,
+         t2 is not None and "s240" not in t2 and "s214" not in t2 and "option" not in t2 and t2.startswith("The ceiling has its value"))
+    long = "Palette sharing is scoped and " + "very " * 30 + "long"
+    t3 = title_of(long, cm)
+    bite(3, "a long clause is capped at %d characters on a word boundary with an ellipsis" % MAX_TITLE,
+         t3 is not None and len(t3) <= MAX_TITLE and t3.endswith("…") and not t3.endswith(" …"))
+    bite(4, "a text that is ONLY ids yields no title (the node keeps its code, never an empty label)",
+         title_of("s12-D1 #45 (s13-D2)", cm) is None)
+    bite(5, "a rule's internal code (`CA-7 —`) is dropped and the first clause kept",
+         title_of("CA-7 — no sensory-only instructions (SC 1.3.3 A): 'above' is fine", cm, rule=True)
+         == "No sensory-only instructions (SC 1.3.3 A)")
+    bite(6, "`ruled` that is only a session or record reference (`#167`, `GM-D7-am / #33`) falls back to `says`; a headline is used",
+         ruling_source({"ruled": "#167", "says": "X"}) == ("says", "X")
+         and ruling_source({"ruled": "GM-D7-am / #33", "says": "Z"}) == ("says", "Z")
+         and ruling_source({"ruled": "THE HEADLINE", "says": "Y"})[0] == "ruled")
+    tmp = tempfile.mkdtemp(prefix="kgtitle-")
+    try:
+        k = os.path.join(tmp, "k"); os.makedirs(k)
+        for f in ("_rulings.json", "_rule_nodes.json", "_helpgate.py"):
+            if os.path.exists(os.path.join(HERE, f)): shutil.copy(os.path.join(HERE, f), k)
+        before = open(os.path.join(k, "_rulings.json"), "rb").read()
+        a = serial(compute(k)); b = serial(compute(k))
+        bite(7, "deterministic: two computes are byte-identical, and the rulings store is not written",
+             a == b and open(os.path.join(k, "_rulings.json"), "rb").read() == before)
+        doc = json.loads(a)
+        rul, rn = _load(k)
+        bite(8, "every ruling, every rule with text and every minted session is titled or listed untitled",
+             all(("ruling:" + r["id"]) in doc["titles"] or ("ruling:" + r["id"]) in doc["$measured"]["untitled"] for r in rul)
+             and all(x["id"] in doc["titles"] or x["id"] in doc["$measured"]["untitled"] for x in rn)
+             and all(("session:%d" % s) in doc["titles"] for s in session_rulings(rul)))
+        bite(9, "every label starts with its own code and every title is at most %d characters" % MAX_TITLE,
+             all(v["label"] == v["code"] + " " + v["title"] and len(v["title"]) <= MAX_TITLE for v in doc["titles"].values()))
+        write(k)
+        rc_fresh = check(k)
+        d = json.load(open(os.path.join(k, "_rulings.json"), encoding="utf-8"))
+        victim = next(r for r in d["rulings"] if isinstance(r, dict) and r.get("id"))
+        victim["ruled"] = "A PLANTED HEADLINE THAT CHANGES THE TITLE"
+        json.dump(d, open(os.path.join(k, "_rulings.json"), "w", encoding="utf-8"))
+        rc_stale = check(k)
+        bite(10, "MUTATION: --check is 0 when fresh and 1 after a ruling's text moves under it", rc_fresh == 0 and rc_stale == 1)
+        nodes = [{"id": "ruling:" + victim["id"], "label": victim["id"]},
+                 {"id": "ruling:x-named", "label": "already a name"}]
+        tt = {"ruling:" + victim["id"]: {"code": victim["id"], "title": "T", "label": victim["id"] + " T", "from": "ruled"},
+              "ruling:x-named": {"code": "x-named", "title": "T", "label": "x-named T", "from": "ruled"}}
+        applied = apply_titles(nodes, tt)
+        bite(11, "apply_titles replaces a bare-code label only, never a label someone already wrote",
+             applied == 1 and nodes[0]["label"] == victim["id"] + " T" and nodes[1]["label"] == "already a name")
+        rs = [{"id": "s77-D1", "ruled": "#77", "date": "2026-08-01"}, {"id": "s77-D2", "ruled": "HEAD", "date": "2026-08-02"},
+              {"id": "s78-D1", "ruled": "#78", "date": "2026-08-03"}]
+        sr = session_rulings(rs)
+        bite(12, "a session counts the rulings the explorer lists for it (ruled #n OR id s<n>-), dates as a range",
+             len(sr[77]) == 2 and _dates(sr[77]) == "2026-08-01/02" and len(sr[78]) == 1)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("gen_kg_titles selftest: %d bite(s), %d fail(s)" % (n, len(fails)))
+    return 1 if fails else 0
+
+
+def main(argv):
+    if "--selftest" in argv: return selftest()
+    if "--check" in argv: return check()
+    if "--write" in argv:
+        out, doc = write()
+        print("WROTE %s — %s titled · %d untitled" % (os.path.relpath(out, os.path.dirname(HERE)),
+                                                      doc["$measured"]["titled"], len(doc["$measured"]["untitled"])))
+        return 0
+    doc = compute()
+    m = doc["$measured"]
+    print("DRY RUN (writes nothing) — %s titled · %d untitled %s" % (m["titled"], len(m["untitled"]), m["untitled"][:10]))
+    for k in list(doc["titles"])[::max(1, len(doc["titles"]) // 12)]:
+        print("  %-28s %s" % (k, doc["titles"][k]["label"]))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

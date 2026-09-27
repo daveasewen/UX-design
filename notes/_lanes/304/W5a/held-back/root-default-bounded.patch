@@ -1,0 +1,26 @@
+--- a/knowledge/canon/canon.css
++++ b/knowledge/canon/canon.css
+@@ -971,15 +971,14 @@
+    beatable by any one-class authored override, which is what a default is for. Driven #268 in
+    chromium, 4 themes: box 11.6px -> 21px, computed edge `cap alphabetic` -> `text`, g/y/p
+    fully visible. ⛔ Do not re-tighten it to `:is()`. */
+-/* #304 F5 — this root default is UNCHANGED from HEAD (ff382c0b): it still reaches every `.canon`
+-   element in the list, inside component scopes too. W5a's version bounded it at the first `cn-`
+-   scope; V5 measured that it moves 26 components with no trim copy of their own (Stat-card
+-   figures 11.6 -> 21px, Account-selector, Icon-button, File-upload, Popover …) on canon pages —
+-   Tuesday's call 23, not yet ruled — so it is held back for Dave at
+-   notes/_lanes/304/W5a/held-back/. The chart legend defect it was built for is fixed in the
+-   chart scopes only (gen_canon_components.chart_restore: each Chart-* scope puts the trim back
+-   over this same element set). ⛔ Do not bound this line without Dave's ruling on call 23. */
+-:where(.canon) :where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)),
++/* #304 W5a — the root default stops at the first component scope (`:not(:where(… [cn-] *))`,
++   ZERO specificity, so #215/#268 above still hold). Inside a `.cn-*` scope the component's OWN
++   leading-trim copy decides, or its absence does: the 14 charts, Alert, Banner, Drawer, Toast,
++   Popover, Stat-card … carry none and render untrimmed in their reviewed snippets. Without the
++   boundary this default trimmed every chart legend button on a `.canon` page to 16.7px against
++   its snippet's 20px. The generated per-component copies carry the same boundary
++   (gen_canon_components.trim_bounded). ⛔ Do not drop it: the own-size gate reads the shrink. */
++:where(.canon) :where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)):not(:where([class^="cn-"] *, [class*=" cn-"] *)),
+ :where(.canon) :is(.c-eyebrow,.c-summary__k,.c-summary__v,.c-stat-cell__label,.c-stat-cell__value,.c-choice-row__title,.c-choice-row__sub){
+   text-box-trim:trim-both; text-box-edge:cap alphabetic;
+ }

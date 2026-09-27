@@ -162,7 +162,7 @@ def ink_of(geo_findings, os_findings, tiles_n):
             "sample": {k: [{"where": (f.get("where") or f.get("part") or "")[:110], "measured": f["measured"][:90]} for f in v[:4]] for k, v in cls.items()}}
 
 
-def measure_here(pg, G, OS, refs, smap, prof):
+def measure_here(pg, G, OS, refs, smap, prof, levers=()):
     """Measure the page in the state it is in: the gate's own walk, settle and COLLECT; own-size's parts."""
     pg.evaluate("async () => { const h = document.documentElement.scrollHeight; for (let y = 0; y < h; y += 700) { window.scrollTo(0, y);"
                 " await new Promise(r => requestAnimationFrame(() => r())); } window.scrollTo(0, 0); }")
@@ -179,7 +179,7 @@ def measure_here(pg, G, OS, refs, smap, prof):
         same = same + 1 if s == prev else 0
         if same >= 2: break
         prev = s; pg.wait_for_timeout(250)
-    m = pg.evaluate(G.COLLECT_JS, G.collect_opts())
+    m = pg.evaluate(G.COLLECT_JS, G.collect_opts(levers))   # levers: selftest only (W5a #304)
     gf = G.judge(m, VW, (), G.spacing_stops())
     pm = pg.evaluate(OS.PARTS_JS, {"mode": "page", "slugs": sorted(smap), "only": None})
     of, matched, _un = OS.judge(pm["parts"], lambda c: refs.get(c, VW), VW)
@@ -316,10 +316,10 @@ def selftest():
     smap = OS.snippet_map()
     with G.Harness() as h:
         refs = OS.RefCache(h, smap)
-        def ink_page(path, frag=""):
+        def ink_page(path, frag="", levers=()):
             ctx = h.b.new_context(viewport={"width": VW, "height": VH}); pg = ctx.new_page(); pg.emulate_media(reduced_motion="reduce")
             pg.goto("file://" + path + frag); pg.wait_for_timeout(700)
-            _, gf, of, _, tiles_n, page = measure_here(pg, G, OS, refs, smap, prof)
+            _, gf, of, _, tiles_n, page = measure_here(pg, G, OS, refs, smap, prof, levers)
             ctx.close()
             return ink_of(gf, of, tiles_n), page
         pl, _ = ink_page(os.path.join(GEO, "geometry-planted.html"))
@@ -329,6 +329,14 @@ def selftest():
         sp, _ = ink_page(os.path.join(GEO, "own-size-planted.html"))
         sc, _ = ink_page(os.path.join(GEO, "own-size-clean.html"))
         check("ink size      planted > 0, clean = 0", sp["affected"]["size"] > 0 and sc["affected"]["size"] == 0, "%d vs %d" % (sp["affected"]["size"], sc["affected"]["size"]))
+        # W5a #304: a data grid's rows hidden in the grid's OWN scroll box are not collisions. The clean
+        # fixture's guard-nest section (a grid box inside an app shell, both below their folds, a hint under
+        # the box) reads 0 above; with the gate's X-nest lever (the W4b outer-frame reading) the SAME page
+        # must read a collision through this harness, or the clean 0 proves nothing about nesting.
+        nl, _ = ink_page(os.path.join(GEO, "geometry-clean.html"), levers=("X-nest",))
+        check("ink collision: grid rows hidden in their own scroll box are not collisions (X-nest lever re-opens them)",
+              cl["affected"]["collision"] == 0 and nl["affected"]["collision"] > 0,
+              "clean %d, X-nest %d" % (cl["affected"]["collision"], nl["affected"]["collision"]))
         pl2, _ = ink_page(os.path.join(GEO, "geometry-planted.html"))
         check("ink deterministic (planted measured twice)", json.dumps(pl, sort_keys=True) == json.dumps(pl2, sort_keys=True), "identical" if pl == pl2 else "DIFFER")
     # discovery, text and theme on the three routing shapes — through the real phase, on throwaway runs

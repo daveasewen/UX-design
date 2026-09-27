@@ -1,0 +1,34 @@
+/* HELD BACK — #304 W5a's ROOT leading-trim default, saved by F5 (#304, 2026-09-27) for Dave's choice.
+
+   What it is: the one hand-written rule at the top of canon.css that trims flush UI labels
+   (buttons, spans, table cells …) on every `.canon` page. W5a bounded it so it stops at the first
+   component scope (`:not(:where([class^="cn-"] *, [class*=" cn-"] *))`). Inside a component the
+   component's OWN trim copy then decides — or its absence does.
+
+   What it would change (measured by V5, K3 test, notes/_lanes/304/V5/measure/k3b.txt): 26
+   components carry no trim copy and render untrimmed in their reviewed snippets. With this rule
+   they render at that snippet size on canon pages too — Stat-card figures and periods 11.6 -> 21px,
+   Account-selector labels 11.6 -> 21 / 10.1 -> 14, its masked number 9.2 -> 15, Icon-button captions
+   11.6 -> 21, File-upload size 11.6 -> 21, Popover trigger 15.2 -> 21, plus Alert, Banner, Toast,
+   Drawer, Modal-lightbox, Empty-state, Skeleton-loader. It is Tuesday's call 23 ("a part is always
+   drawn at its own reference size") enacted at the root.
+
+   What ships instead (today): the root default as it was at HEAD ff382c0b, and a chart-only
+   restore generated into each of the 14 Chart-* scopes (gen_canon_components.chart_restore) — so
+   the chart legends, Reset and chart tables are at their own size and nothing else moves.
+
+   To take this version: `git apply notes/_lanes/304/W5a/held-back/root-default-bounded.patch`
+   from the repo root (one hunk, canon.css outside the generated block; the chart restores stay and
+   become redundant but harmless), then re-drive the 13 chart-engine receipts that hash canon.css.
+   The rule as W5a wrote it follows. */
+/* #304 W5a — the root default stops at the first component scope (`:not(:where(… [cn-] *))`,
+   ZERO specificity, so #215/#268 above still hold). Inside a `.cn-*` scope the component's OWN
+   leading-trim copy decides, or its absence does: the 14 charts, Alert, Banner, Drawer, Toast,
+   Popover, Stat-card … carry none and render untrimmed in their reviewed snippets. Without the
+   boundary this default trimmed every chart legend button on a `.canon` page to 16.7px against
+   its snippet's 20px. The generated per-component copies carry the same boundary
+   (gen_canon_components.trim_bounded). ⛔ Do not drop it: the own-size gate reads the shrink. */
+:where(.canon) :where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)):not(:where([class^="cn-"] *, [class*=" cn-"] *)),
+:where(.canon) :is(.c-eyebrow,.c-summary__k,.c-summary__v,.c-stat-cell__label,.c-stat-cell__value,.c-choice-row__title,.c-choice-row__sub){
+  text-box-trim:trim-both; text-box-edge:cap alphabetic;
+}

@@ -358,6 +358,17 @@ STEPS = [
     # does not run cannot fail; the #133 fifth-medium gate had been an orphan since built).
     ("KG edge parse-gate + s135-D4 resolutions-consumed check", "_validate_kg.py"),
     ("KG edge gate selftest (6 bites)", "_validate_kg.py", ["--selftest"]),
+    # #304 W5c — the KG generators' drift checks, wired beside the KG edge gate. V2 (#304) named
+    # gen_kg_tokens.py UNWIRED (the [[unwired-validators-are-a-class]] shape: its only reader was
+    # the explorer build); gen_kg_titles.py is born #304 W5c. Each --check recomputes from the
+    # tree and compares bytes, so a ruling inscribed or a meta's tokens moved without the regen
+    # serial's `--write` / `--land` goes red here instead of going stale silently.
+    ("KG token-group generator drift check — _token_nodes.json vs the metas (s277-D12, wired #304 W5c)",
+     "gen_kg_tokens.py", ["--check"]),
+    ("KG token-group generator selftest — 8 bites (s277-D12)", "gen_kg_tokens.py", ["--selftest"]),
+    ("KG node-title generator drift check — _node_titles.json vs the records (#304 W5c)",
+     "gen_kg_titles.py", ["--check"]),
+    ("KG node-title generator selftest — 12 bites (#304 W5c)", "gen_kg_titles.py", ["--selftest"]),
     ("Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #139)", "_validate_token_forks.py"),
     ("Token fork-ban selftest (2-direction)", "_validate_token_forks.py", ["--selftest"]),
     # #146: THREE gates wired in one pass, all the same class (instrument-without-a-consumer,
@@ -980,6 +991,14 @@ ROUTE_ROWS = [
      "\n❌ KG edge gate failed (exit {code}) — an edge fails parse in the consumer's grammar, or a s135-D4 resolution is unconsumed. Run: python3 knowledge/_validate_kg.py"),
     ("KG edge gate selftest (6 bites)", GATE,
      "\n❌ KG edge gate selftest failed (exit {code}) — python3 knowledge/_validate_kg.py --selftest"),
+    ("KG token-group generator drift check — _token_nodes.json vs the metas (s277-D12, wired #304 W5c)", GATE,
+     "\n❌ KG token-group generator is STALE (exit {code}) — a meta's tokens block or the tier map moved under _token_nodes.json. Run: python3 knowledge/gen_kg_tokens.py --land --ratified s277-D12"),
+    ("KG token-group generator selftest — 8 bites (s277-D12)", GATE,
+     "\n❌ KG token-group generator selftest failed (exit {code}) — python3 knowledge/gen_kg_tokens.py --selftest"),
+    ("KG node-title generator drift check — _node_titles.json vs the records (#304 W5c)", GATE,
+     "\n❌ KG node titles are STALE (exit {code}) — a ruling or rule text moved under _node_titles.json (an inscription adds one). Run: python3 knowledge/gen_kg_titles.py --write"),
+    ("KG node-title generator selftest — 12 bites (#304 W5c)", GATE,
+     "\n❌ KG node-title generator selftest failed (exit {code}) — python3 knowledge/gen_kg_titles.py --selftest"),
     ("Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #139)", GATE,
      "\n❌ token fork-ban gate failed (exit {code}) — an undeclared same-scope fork of a spine token. Declare it or unify. Run: python3 knowledge/_validate_token_forks.py"),
     ("Token fork-ban selftest (2-direction)", GATE,

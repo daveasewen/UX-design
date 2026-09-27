@@ -103,7 +103,11 @@ remedy: one parse, in the consumer's grammar, shared.
                                                          of that stem, or <script src> of that basename
                `knowledge/snippets/<Slug>.reference.html#script`
                                                          the snippet's own inline executable <script>
-                                                         element(s), outside AUTO-BEHAVIOUR markers;
+                                                         element(s), outside AUTO-BEHAVIOUR markers
+                                                         and outside APOLLO-DEMO fences (#304 W5a: a
+                                                         fenced script is showroom harness the SKILL
+                                                         forbids copying — s258-D3 — never 'the
+                                                         component's script');
                                                          loaded = the page carries EVERY one of them
                                                          BYTE-IDENTICAL (sha256, no normalisation —
                                                          the s235-D1 posture; a whitespace-shifted
@@ -198,6 +202,31 @@ SPLICE_END_RE_TMPL = r'<!--\s*=====\s*APOLLO-SPLICE\s+%s\s+END\s*=====\s*-->'
 # the raw bytes (never the comment-masked text: the marker IS a comment) and needs no parse.
 DEMO_FENCE_RE = re.compile(r'APOLLO-DEMO[^\n]*(START|END)')
 DEMO_FENCE_NAME_RE = re.compile(r'APOLLO-DEMO\s+(?P<what>\S+)\s+(?:START|END)')
+HTML_COMMENT_RE = re.compile(r'<!--.*?-->', re.S)
+
+
+def demo_fenced_spans(html):
+    """#304 W5a — the OUTERMOST spans the snippets fence as showroom harness in the HTML-comment
+    form (`<!-- ===== APOLLO-DEMO <what> START … ===== -->` … `<!-- ===== APOLLO-DEMO <what> END
+    ===== -->`), START comment to END comment inclusive, in document order. The marker family is
+    the one 3b reads (DEMO_FENCE_RE, marker string, no parse). Nesting is depth-counted, as
+    `_validate_own_size.py` walks the same fence; an END with no open START is ignored and a
+    START never closed fences nothing (an unclosed fence must not swallow the rest of the file —
+    3b still names it). Never raises."""
+    spans, depth, start = [], 0, None
+    for c in HTML_COMMENT_RE.finditer(html):
+        m = DEMO_FENCE_RE.search(c.group(0))
+        if not m:
+            continue
+        if m.group(1) == "START":
+            if depth == 0:
+                start = c.start()
+            depth += 1
+        elif depth > 0:
+            depth -= 1
+            if depth == 0:
+                spans.append((start, c.end()))
+    return spans
 
 SCHEMA = "apollo/provenance-receipt/1"
 
@@ -298,17 +327,22 @@ AUTO_BEHAVIOUR_PAIR_RE = re.compile(
 EXECUTABLE_TYPES = (None, "text/javascript", "module")
 
 
-def inline_scripts(html, exclude_auto=True):
+def inline_scripts(html, exclude_auto=True, exclude_demo=True):
     """The document's inline EXECUTABLE <script> bodies, in order: no `src`, `type` absent or
     text/javascript or module (so #token-manifest / #behaviour-manifest / a receipt, all
     application/json, are never scripts). With `exclude_auto`, bodies inside an AUTO-BEHAVIOUR
     marker pair are skipped — those carry their own registry address and are not what
-    `#script` denotes.
+    `#script` denotes. With `exclude_demo` (#304 W5a), a <script> element inside an APOLLO-DEMO
+    fence (`demo_fenced_spans`) is skipped too — it is showroom harness (s258-D3), deleting it
+    still renders the component, and a page may not copy it; counting it made every page that
+    carries Data-grid's real script fail BEHAVIOUR-NOT-LOADED on the fenced state switcher.
 
     ⛔ LOCATED in the comment-masked copy, SLICED from the original bytes (#211 lanes R6/R7,
     the `gen_component_partials.py` discipline): a <script> inside an HTML comment is dead and
     is never 'the snippet's script'; the AUTO-BEHAVIOUR markers ARE comments and are read RAW."""
     auto = [m.span() for m in AUTO_BEHAVIOUR_PAIR_RE.finditer(html)] if exclude_auto else []
+    if exclude_demo:
+        auto += demo_fenced_spans(html)
     out = []
     for m in SCRIPT_EL_RE.finditer(mask_comments(html)):
         attrs = html[m.start(1):m.end(1)]
@@ -424,7 +458,7 @@ def resolve_address(addr):
     bodies = inline_scripts(html)
     if not bodies:
         return "inline", [], ("names a snippet that carries NO inline executable <script> outside "
-                              "AUTO-BEHAVIOUR markers — #script resolves to nothing")
+                              "AUTO-BEHAVIOUR markers and APOLLO-DEMO fences — #script resolves to nothing")
     stem = os.path.basename(sp)[:-len(".reference.html")]
     return "inline", [("%s#script[%d]" % (stem, i), body) for i, (body, _s) in enumerate(bodies)], None
 
@@ -1056,6 +1090,46 @@ def selftest():
     arm("AE the words 'demo' and a splice fence alone do NOT trip it (no false positive)",
         page(body, gh, extra_body='\n<div class="demo-note">a demo of the component</div>'),
         "PASS")
+    # ---- AF–AI (#304 W5a): #script resolves OUTSIDE the APOLLO-DEMO fence. A snippet carrying the
+    # component's real script AND a fenced harness script (the Data-grid shape) denotes the real
+    # one only, so a page carrying the real bytes and NOT the harness is loaded.
+    harness_js = "(function(){ /* demo state switcher */ document.body.dataset.demo = 1; })();"
+    open(os.path.join(ROOT, "snippets", "Fenced.reference.html"), "w", encoding="utf-8").write(
+        '<html><body>%s\n<script>\n%s\n</script>\n'
+        '<!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->\n'
+        '<script>\n%s\n</script>\n<!-- ===== APOLLO-DEMO script END ===== -->\n</body></html>'
+        % (body, demo_js, harness_js))
+    meta({"script": "knowledge/snippets/Fenced.reference.html#script", "partial": None, "fallback": None},
+         slug="fenced")
+    _k, _parts, _e = resolve_address("knowledge/snippets/Fenced.reference.html#script")
+    if [b for _l, b in _parts] != ["\n%s\n" % demo_js]:
+        ok = False
+        print("  ❌ AF #script on a snippet with a fenced harness script resolved to %d part(s): %r"
+              % (len(_parts), [l for l, _b in _parts]))
+    else:
+        print("  ✅ AF #script resolves to the real script only — the APOLLO-DEMO-fenced one is harness")
+    arm("AG page carries the real script and NOT the fenced harness — LOADED (the Data-grid false red)",
+        page(body, gh, extra_body="\n<script>\n%s\n</script>" % demo_js, snippet="Fenced"), "PASS")
+    arm("AH page carries NEITHER — still NOT-LOADED (the fence exemption is scoped to the harness)",
+        page(body, gh, snippet="Fenced"), "BEHAVIOUR-NOT-LOADED")
+    open(os.path.join(ROOT, "snippets", "OnlyHarness.reference.html"), "w", encoding="utf-8").write(
+        '<html><body><!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->\n'
+        '<script>%s</script>\n<!-- ===== APOLLO-DEMO script END ===== --></body></html>' % harness_js)
+    meta({"script": "knowledge/snippets/OnlyHarness.reference.html#script", "partial": None, "fallback": None},
+         slug="onlyharness")
+    arm("AI #script on a snippet whose only script is fenced harness resolves to nothing",
+        page(body, gh, extra_body="\n<script>%s</script>" % harness_js, snippet="OnlyHarness"),
+        "BEHAVIOUR-ADDRESS-UNRESOLVABLE")
+    # AJ: nesting and an unclosed START — the helper fences only what is closed, outermost span
+    _nd = ("<!-- ===== APOLLO-DEMO a START ===== --><!-- ===== APOLLO-DEMO b START ===== -->"
+           "<script>x()</script><!-- ===== APOLLO-DEMO b END ===== --><script>y()</script>"
+           "<!-- ===== APOLLO-DEMO a END ===== --><script>z()</script>"
+           "<!-- ===== APOLLO-DEMO c START ===== --><script>w()</script>")
+    if [b for b, _s in inline_scripts(_nd)] != ["z()", "w()"]:
+        ok = False
+        print("  ❌ AJ nested/unclosed APOLLO-DEMO fences mis-read: %r" % inline_scripts(_nd))
+    else:
+        print("  ✅ AJ nested fences skip both inner scripts; an unclosed START fences nothing")
     ROOT = saved_root
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1

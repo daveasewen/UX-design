@@ -88,6 +88,13 @@ each with a CAUSE LEVER (`--mutate X-…`) that restores the old reading so the 
   X-own     a text run was clipped only by its ancestors, never its own element: an ellipsis title's
             hidden tail "collided" with the tag beside it (8 false G7 on the snippets, 40 on the
             showroom index once its inner scroll was read). The clean fixture carries a guard for it.
+  X-nest    (W5a #304) a run unrolled through TWO nested scroll boxes took the OUTER box as its only
+            frame. A data grid's rows scrolled out of the grid's own box sit, unrolled, exactly where
+            the pager and the "Showing …" hint sit below the box; on an app-shell page both frames
+            were "the shell", so every hidden row collided with the pager (10 of 12 of candidate 2's
+            collisions, none on screen). A frame is now the whole CHAIN of scroll boxes a run is
+            unrolled through; runs are compared only within one chain. The clean fixture carries a
+            guard for it (a grid box inside a shell, both below their folds, a hint under the box).
 
 THE TOLERANCES, AND WHY THOSE NUMBERS
 -------------------------------------
@@ -179,7 +186,9 @@ CLAUSES = ["G1", "G1b", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "
 # prove the repair is load-bearing. X-scroll: scroll boxes read as R4b read them (inner-scroll
 # content dropped by G7, a scroll box's start edge never a clip for G8). X-lone: the panel of a
 # one-panel group is not measured by G6.
-LEVERS = {"X-scroll": "legacyScroll", "X-lone": "legacyLone", "X-own": "legacyOwn"}
+LEVERS = {"X-scroll": "legacyScroll", "X-lone": "legacyLone", "X-own": "legacyOwn", "X-nest": "legacyNest"}
+# X-nest (W5a #304): a run unrolled through nested scroll boxes is framed by the OUTER box alone (W4b's
+# reading) — a data grid's hidden rows then "collide" with the pager under the grid's own box.
 # X-own: a text run is clipped only by its ANCESTORS' overflow, not its own element's (R4b's reading;
 # an ellipsis title's hidden tail then "collides" with the tag beside it — 8 false G7 on the snippets).
 MAJOR = {"G7", "G8", "G9", "G10"}
@@ -216,7 +225,7 @@ COLLECT_JS = r"""
   opts = opts || {};
   // CAUSE LEVERS (W4b #304, the mutation test of each repaired cause): legacyScroll restores the
   // R4b reading of scroll boxes, legacyLone skips the panels of one-panel groups.
-  const LEGACY_SCROLL = !!opts.legacyScroll, LEGACY_LONE = !!opts.legacyLone, LEGACY_OWN = !!opts.legacyOwn, MARK_MAX = opts.markMax || 12, LOST_MIN = opts.lostMin || 0.35;
+  const LEGACY_SCROLL = !!opts.legacyScroll, LEGACY_LONE = !!opts.legacyLone, LEGACY_OWN = !!opts.legacyOwn, LEGACY_NEST = !!opts.legacyNest, MARK_MAX = opts.markMax || 12, LOST_MIN = opts.lostMin || 0.35;
   const vw = window.innerWidth;
   const sx = window.scrollX, sy = window.scrollY;
   const isT = s => !s || s === 'transparent' || /rgba\([^)]*,\s*0\)$/.test(s);
@@ -250,6 +259,9 @@ COLLECT_JS = r"""
     const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0;
   };
   const SCROLLS = v => /auto|scroll/.test(v);
+  // W5a #304: a stable id per scroll box, so a FRAME can be the chain of boxes a run is unrolled through
+  const VID = new WeakMap(); let vidN = 0;
+  const vid = e => { if (!VID.has(e)) VID.set(e, 'v' + (++vidN)); return VID.get(e); };
   // the box a scroll container's content can be brought into view from (doc coords): from the
   // scroll ORIGIN (padding-box start minus the current scroll offset) out to its scrollable overflow
   const scrollArea = e => { const q = box(e), c = CS(e);
@@ -278,7 +290,12 @@ COLLECT_JS = r"""
         // coordinates are where it WOULD sit, unrolled; only runs unrolled through the same box share
         // that frame (G7 compares within one frame only).
         const outside = l < q.l - 0.5 || rr > q.r + 0.5 || t < q.t - 0.5 || b > q.b + 0.5;
-        return {l, t, r: rr, b, virt: up.virt || (outside ? e : null)};
+        if (LEGACY_NEST) return {l, t, r: rr, b, virt: up.virt || (outside ? e : null)};
+        // W5a #304: the frame is the CHAIN — this box (when the rect lies beyond its viewport) and
+        // every frame the box itself is unrolled through. A grid row hidden in the grid's own box is
+        // in [grid > shell]; the pager under the box is in [shell]; they never meet on screen.
+        const own = outside ? vid(e) : '';
+        return {l, t, r: rr, b, virt: up.virt ? (own ? own + '>' + up.virt : up.virt) : (own || null)};
       }
       if (c.overflowX !== 'visible' || c.overflowY !== 'visible') {
         const q = box(e);
@@ -1305,7 +1322,7 @@ def selftest(h, stops, verbose=True):
         still = {f["planted"] for f in lm} & subs
         if still:
             fails.append("LEVER %s: the cause restored but %s still caught — the repair is not what catches it" % (lever, sorted(still)))
-        guard = {"X-own": {"guard-own"}}.get(lever, set())      # a guard lever re-opens its own guard, nothing else
+        guard = {"X-own": {"guard-own"}, "X-nest": {"guard-nest"}}.get(lever, set())   # a guard lever re-opens its own guard, nothing else
         rest = sorted((f["clause"], f["planted"], f["where"]) for f in lm if f["planted"] not in guard)
         expect = [k for k in base_keys if k[1] not in subs]
         if rest != expect:
@@ -1320,6 +1337,13 @@ def selftest(h, stops, verbose=True):
         fails.append("GUARD X-own: switching the own-clip repair off did not bring back the ellipsis-tail G7 — the guard proves nothing")
     elif verbose:
         print("  ✓ false-positive guard: X-own switched on, the clean page's ellipsis title reads as a collision (the repair is what clears it)")
+    # 5c. the NESTED-FRAME guard (W5a #304): a grid's own scroll box inside an app shell's, both below
+    #     their folds, a hint under the grid box; with X-nest the hidden rows collide with the hint
+    gn = [f for w in widths for f in judge(h.model(FIX_CLEAN, w, ["X-nest"]), w, (), stops)]
+    if not any(f["clause"] == "G7" and f["planted"] == "guard-nest" for f in gn):
+        fails.append("GUARD X-nest: framing by the outer box alone did not bring back the hidden-row G7 — the guard proves nothing")
+    elif verbose:
+        print("  ✓ false-positive guard: X-nest switched on, the clean page's grid rows hidden in their own box collide with the hint (the repair is what clears it)")
     # 6. W3b's real page: the ring hole the R4b gate read as G6 = 0
     real = _stage_w3b()
     if real is None:

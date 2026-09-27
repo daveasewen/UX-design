@@ -159,6 +159,82 @@ def prefix_selector(sel, scope):
             out.append(f":where(.{scope}) {p}")
     return ", ".join(out)
 
+# #304 W5a — THE LEADING-TRIM SCAFFOLD STOPS AT THE NEXT COMPONENT SCOPE.
+#
+# 111 snippets carry a private copy of the leading-trim default
+# (`:where(button,a,label,span,…):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}`),
+# 26 carry none (the 14 charts, Alert, Banner, Drawer, Toast, Popover, Stat-card, …). In its own
+# reviewed snippet a component with no copy renders UNTRIMMED. Projected into canon, every copy is
+# a descendant rule of its scope with no lower edge, so a CONTAINER's copy (app shell, bento
+# template) trims the parts of every component nested inside it: the cold runs' chart legend
+# buttons rendered 16.7px against their snippet's 20px (82-146 own-size findings a run). That is
+# the reach the scope class exists to stop (see the #215 note below: "it exists to stop one
+# component's rules reaching another component's markup"), so the scaffold — and only the
+# scaffold — gets a lower boundary: it stops at any nested `cn-` scope, and the nested
+# component's OWN copy (or its absence) decides, exactly as in its snippet. The boundary is
+# `:not(:where(…))`: ZERO specificity, so the #215/#268 cascade (every ds-005 descender
+# override beats the default) is untouched. canon.css's root default (`:where(.canon) …`)
+# carries the same boundary by hand, since it lives outside the AUTO-COMPONENTS block.
+# Measured #304 W5a: removing the shell and bento copies alone left the legend at 16.7px (the
+# root default also reached it); bounding all three restores 20px.
+TRIM_SCAFFOLD_BODY = "text-box-trim:trim-both;text-box-edge:cap alphabetic;"
+
+def is_trim_scaffold(sel, body):
+    """The leading-trim default copy: an element-list `:where(button,…)` selector whose whole body
+    is the default trim. Authored per-class trims (`.nv-label{…text-box-trim…}`) are never it."""
+    return (re.sub(r"\s", "", sel).startswith(":where(button,")
+            and re.sub(r"\s", "", body) == TRIM_SCAFFOLD_BODY.replace(" ", ""))
+
+def trim_bounded(scoped, scope):
+    """Append the zero-specificity lower boundary to EVERY top-level selector of the scoped rule
+    (paren-aware split — prefix_selector's own split is not, and the scaffold's list lives inside
+    `:where(…)`)."""
+    parts, depth, cur = [], 0, ""
+    for ch in scoped:
+        if ch == "(": depth += 1
+        elif ch == ")": depth -= 1
+        if ch == "," and depth == 0:
+            parts.append(cur); cur = ""
+        else:
+            cur += ch
+    parts.append(cur)
+    edge = (f':not(:where(.{scope} [class^="cn-"] *, .{scope} [class*=" cn-"] *))')
+    return ", ".join(p.strip() + edge for p in parts)
+
+# #304 F5 — THE CHART-ONLY RESTORE (the conservative route; V5 "chart-only narrowing").
+#
+# W5a first bounded canon.css's ROOT default too (`:where(.canon) …:not(:where([cn-] *))`). V5
+# measured that it reaches 26 components that carry no copy of their own — on canon pages
+# Stat-card figures 11.6 -> 21px, Account-selector, Icon-button, File-upload, Popover … all move
+# to their untrimmed snippet size. That is Tuesday's call 23 enacted at the root ahead of the
+# call, so it is HELD BACK (notes/_lanes/304/W5a/held-back/) and the root default stays as it
+# was at HEAD. The defect that started this — every chart legend on a `.canon` page trimmed to
+# 16.7px against its snippet's 20px — is fixed here instead, in the chart scopes only: each
+# `Chart-*` snippet carries NO leading-trim copy and renders untrimmed in its reviewed snippet,
+# so its scope gets one rule that puts the trim back to the initial values over the root
+# default's exact element set. Same element list, same `:not(:has(svg))` (so (0,0,1), equal to
+# the root default and later in the file, so it wins; any one-class authored rule still beats
+# it), same zero-specificity lower boundary (a component nested INSIDE a chart keeps whatever
+# the root gives it). The 111 bounded copies above are unchanged. Nothing outside a
+# `.cn-chart-*` scope moves (measured #304 F5, K3 sample, HEAD v this).
+TRIM_ELEMENTS = ("button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,"
+                 "summary,output,time,input[type=text],input[type=search],input[type=email],"
+                 "input[type=tel],input[type=url],input[type=password],input[type=number],"
+                 "input:not([type]),textarea")
+TRIM_RESTORE_BODY = "text-box-trim:none;text-box-edge:auto;"
+
+def wants_chart_restore(name, style):
+    """A Chart-* snippet with no leading-trim copy of its own (all 14 today)."""
+    if not name.startswith("Chart-"):
+        return False
+    return not any(is_trim_scaffold(it[1], it[2]) for it in walk(style) if it[0] == "rule")
+
+def chart_restore(scope):
+    sel = f":where(.{scope}) :where({TRIM_ELEMENTS}):not(:has(svg))"
+    return ("/* #304 F5 — chart-only leading-trim restore: this chart carries no trim copy and renders\n"
+            "   untrimmed in its snippet; the canon root default must not shrink it (see gen_canon_components). */\n"
+            + trim_bounded(sel, scope) + "{" + TRIM_RESTORE_BODY + "}")
+
 def process(css, scope, kf_names):
     """Return component CSS (verbatim, comments kept) with selectors scoped."""
     lines = []
@@ -184,7 +260,10 @@ def process(css, scope, kf_names):
         # rule
         sel, body = item[1], item[2]
         if is_harness(sel): continue
-        lines.append(f"{prefix_selector(sel, scope)}{{{body.strip()}}}")
+        scoped = prefix_selector(sel, scope)
+        if is_trim_scaffold(sel, body):
+            scoped = trim_bounded(scoped, scope)
+        lines.append(f"{scoped}{{{body.strip()}}}")
     return "\n".join(lines)
 
 def theme_blocks(style):
@@ -286,6 +365,8 @@ def gen_one(path):
     # ---- component rules ----
     kf = {}
     body_css = process(style, sc, kf)
+    if wants_chart_restore(name, style):
+        body_css = body_css + "\n" + chart_restore(sc)
     for old, new in kf.items():  # rewrite animation name references
         body_css = re.sub(r"(animation(?:-name)?\s*:\s*[^;]*?)\b%s\b" % re.escape(old), r"\1%s" % new, body_css)
 

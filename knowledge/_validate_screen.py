@@ -20,7 +20,9 @@ Runs, on each composed screen:
                     a page whose bento never declares its column count is UNPROVEN, said so,
                     and does not block (the same ADR-0016 posture as NO-RECEIPT below).
   2. icon-source  — _validate_icons logic: every inline <svg> path must byte-match the
-                    assets/icons library (or be marked data-bespoke); shape-only icons flagged
+                    assets/icons library (or be marked data-bespoke); shape-only icons flagged.
+                    MARKUP only (#304 W5a): inline <script> bodies are blanked first, so engine
+                    source that mentions `<svg` is never read as an icon
   3. a11y         — _validate_a11y.check: reduced-motion present if it animates; target-size
   4. state-contrast (optional, --render) — _validate_state_contrast.audit_page driven over
                     every screen × light/dark with real hover/pressed states
@@ -80,10 +82,31 @@ def gate_receipt(path, strict):
     out += ["  " + u for u in unproven]
     return out, fails
 
+def markup_only(html):
+    """#304 W5a — the page's MARKUP, index-aligned with the input: every live inline <script>
+    element's BODY is blanked (tags kept, newlines kept). A script body is program text, not
+    markup: the chart engine inlined by a generated page carries the string `<svg` in its own
+    comments (dv-render.js "everything inside the <svg> …"), and the icon regex ran from there to
+    the next `</svg>` and read engine source as an icon path (cand2-r2, every page). Located on
+    the comment-masked copy (the receipt gate's SCRIPT_EL_RE over the one `mask_comments`), so a
+    commented-out <script> never blanks markup after it. HTML comments themselves are NOT
+    blanked — the icon step's reach over them is unchanged."""
+    out, i = [], 0
+    for m in receipt.SCRIPT_EL_RE.finditer(receipt.mask_comments(html)):
+        out.append(html[i:m.start(2)])
+        out.append(re.sub(r"[^\n]", " ", html[m.start(2):m.end(2)]))
+        i = m.end(2)
+    out.append(html[i:])
+    return "".join(out)
+
+
 def gate_icons(html):
+    """Step 2 — every inline <svg> in the MARKUP (script bodies excluded, #304 W5a) must use
+    library paths or be marked data-bespoke. An svg a script builds at runtime is not read
+    here (it never was, except by accident of the regex spanning a script body)."""
     lib = icons.build_library()
     fails = []
-    for blk in icons.SVGRE.findall(html):
+    for blk in icons.SVGRE.findall(markup_only(html)):
         paths = icons.DRE.findall(blk)
         if "data-bespoke" in blk[:blk.find(">") + 1]:
             continue
