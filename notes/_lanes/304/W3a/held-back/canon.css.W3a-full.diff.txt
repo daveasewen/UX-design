@@ -1,0 +1,29 @@
+diff --git a/knowledge/canon/canon.css b/knowledge/canon/canon.css
+index cc8225a9..605b97bd 100644
+--- a/knowledge/canon/canon.css
++++ b/knowledge/canon/canon.css
+@@ -13067,8 +13067,13 @@
+      had 18.5px. Dave ruled the lock-up back to the original; alignment across tiles is a BOARD
+      concern and comes back, if it comes back, on the board's own grid rows — not by padding
+      every row of every tile. */
++/* #304 W3a — ds-005's truncating-label form, WHOLE: `text-box-edge:text text` only acts on a box
++     that is trimmed, and the scaffold's element list does not hold <p>, so the label computed
++     text-box-trim:none, a 14px line-height:1 box under an 18px text box, and overflow:hidden cut
++     2px of every descender (R4s (f); R4b G8, 12 labels at 1440). trim-both makes the edge bite:
++     the box becomes the full text box and the ellipsis survives (#261 N4, the same repair). */
+ :where(.cn-kpi-tile) .kpi-lbl{margin:0; opacity:var(--alpha-60); min-width:0; overflow:hidden; white-space:nowrap;
+-    text-overflow:ellipsis; text-box-edge:text text;}
++    text-overflow:ellipsis; text-box-trim:trim-both; text-box-edge:text text;}
+ /* ORIGINAL typography restored #261 K2 (Dave: "I prefer the text layout in the original") —
+      the value is the Amount-display atom verbatim: inline-flex, no inter-part gap, no dimmed
+      unit, tabular numerals, -.01em. The slot reservation stays; the TYPE is the original's. */
+@@ -22019,7 +22024,8 @@
+   --bento-dashboard-main:40px;   /* OUTER — the structural bento's gutter (s219-D1 (5) mainSpacing) */
+   --bento-dashboard-sub:4px;   /* INNER — the embedded bento / tile-group gutter (s219-D1 (5) subSpacing) */
+ }
+-[data-apollo-theme="legacy"]{
++[data-apollo-theme="legacy"],
++[data-apollo-theme="common"]{
+   --bento-dashboard-main:24px;   /* OUTER — the structural bento's gutter (s219-D1 (5) mainSpacing) */
+   --bento-dashboard-sub:4px;   /* INNER — the embedded bento / tile-group gutter (s219-D1 (5) subSpacing) */
+ }

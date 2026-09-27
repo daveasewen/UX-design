@@ -94,7 +94,8 @@
     st.ids.forEach(function (id) { if (m[id]) { sum += st.vals[id]; } });
     var v = st.fig.querySelector('[data-dv-view="value"] .dv-val');
     var p = st.fig.querySelector('[data-dv-view="percent"] .dv-val');
-    if (v) { v.textContent = String(sum); }
+    /* raw, rounded as dvRender's raw fmt branch — a float re-sum is not a figure (#304 W3a) */
+    if (v) { v.textContent = String(Math.round(sum * 1000) / 1000); }
     if (p) { p.textContent = Math.round(sum / st.total * 100) + '%'; }
   }
 

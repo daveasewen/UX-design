@@ -95,6 +95,8 @@ END   = "/* ===== AUTO-BENTO-ROLE-VARS END ===== */"
 # AUTO-THEMES START onwards; anything after it would be silently destroyed on the next run.
 THEMES_ANCHOR = "/* ===== AUTO-THEMES START ===== */"
 
+REGISTRY = os.path.join(KNOW, "tokens", "themes", "_themes.json")
+
 BASE_THEME = "mono"          # ADR-0011: mono is the baseline library; the others are overrides.
 ROLE       = "dashboard"     # the only role whose grammar carries mainSpacing/subSpacing (s219-D1 (5))
 DIALS      = (("mainSpacing", "--bento-dashboard-main", "OUTER — the structural bento's gutter"),
@@ -153,6 +155,35 @@ def pairs():
     return out
 
 
+# ------------------------------------------------------------------ the theme-key aliases
+def attr_aliases():
+    """{canonical attr: [alias, ...]} from the theme registry's `attrAliases` (s227-D8(a)).
+
+    WHY (#304 W3a, found by R4a and the R4s cold runs). s227-D8 (1): "data-apollo-theme
+    accepts legacy AND common, common is what new work emits". gen_theme_cascade.py honours
+    that with `theme_attrs()`/`sel_group()`; this block keyed legacy only, so a page saying
+    `data-apollo-theme="common"` fell through to :root and got MONO's 40/4 dashboard pair
+    instead of legacy's 24/4 — the one uncovered legacy selector in canon.css. The alias is
+    READ from the registry, never typed here, so a future alias reaches this block too."""
+    if not os.path.exists(REGISTRY):
+        raise RoleVarError("the theme registry is missing at %s — refusing to guess the "
+                           "theme-key aliases (s227-D8(a))." % REGISTRY)
+    reg = json.load(open(REGISTRY, encoding="utf-8"))
+    out = {}
+    for key, t in (reg.get("themes") or {}).items():
+        attr = t.get("attr") or key.replace("apollo-", "")
+        out[attr] = list(t.get("attrAliases") or [])
+    return out
+
+
+def theme_selector(th, aliases=None):
+    """The canonical key FIRST, then every registry alias — additive, as gen_theme_cascade's
+    sel_group() does, so an existing page and a page using the new name both resolve."""
+    aliases = attr_aliases() if aliases is None else aliases
+    keys = [th] + [a for a in aliases.get(th, []) if a != th]
+    return ",\n".join('[data-apollo-theme="%s"]' % k for k in keys)
+
+
 # ------------------------------------------------------------------------------- the block
 def block():
     P = pairs()
@@ -176,9 +207,10 @@ def block():
          "",
          "   :root carries %s because %s is the BASE theme (ADR-0011) — a page that names no" % (BASE_THEME, BASE_THEME),
          "   theme gets the baseline library, exactly as every other token does. */"]
+    AL = attr_aliases()
     for th in order:
-        sel = (":root,\n[data-apollo-theme=\"%s\"]{" % th) if th == BASE_THEME \
-              else ("[data-apollo-theme=\"%s\"]{" % th)
+        sel = (":root,\n%s{" % theme_selector(th, AL)) if th == BASE_THEME \
+              else ("%s{" % theme_selector(th, AL))
         L.append(sel)
         for dial, var, what in DIALS:
             L.append("  %s:%s;   /* %s (s219-D1 (5) %s) */" % (var, P[th][dial], what, dial))
@@ -210,7 +242,7 @@ def main():
             print("gen_bento_role_vars SELFTEST FAIL:")
             [print("  X " + f) for f in fails]
             return 1
-        print("gen_bento_role_vars selftest OK — 6 bites")
+        print("gen_bento_role_vars selftest OK — 7 bites")
         return 0
     if "--table" in sys.argv:
         P = pairs()
@@ -243,8 +275,8 @@ def main():
 
 
 def selftest():
-    """6 bites: the source chain · the four themes · the two dials · the stop rail ·
-    the base-theme seat · the placement invariant."""
+    """7 bites: the source chain · the four themes · the two dials · the stop rail ·
+    the base-theme seat · the placement invariant · the s227-D8(a) theme-key alias."""
     fails = []
     try:
         P = pairs()
@@ -282,6 +314,30 @@ def selftest():
     # and it must be idempotent
     if render() != out:
         fails.append("bite 6c FAIL: render() is not idempotent")
+
+    # bite 7: s227-D8(a) — every registry alias of a theme reaches that theme's rule, in the
+    # SAME rule as its canonical key (so it carries the canonical pair), canonical key first.
+    # The #304 defect: `common` was absent and fell through to :root (mono 40/4).
+    try:
+        AL = attr_aliases()
+    except RoleVarError as e:
+        fails.append("bite 7 FAIL: %s" % e)
+        AL = {}
+    b = block()
+    if not any(AL.get(t) for t in T):
+        fails.append("bite 7a FAIL: the registry declares no theme-key alias for any rails "
+                     "theme — s227-D8(a)'s `common` has vanished from _themes.json")
+    for t in T:
+        for al in AL.get(t, []):
+            want = '[data-apollo-theme="%s"],\n[data-apollo-theme="%s"]{' % (t, al)
+            if want not in b:
+                fails.append("bite 7b FAIL: alias %r of %r does not share %r's rule in the "
+                             "block — a page saying data-apollo-theme=%r gets the base pair"
+                             % (al, t, t, al))
+    # and the planted form of the defect must be caught: drop the alias, the check must bite
+    planted = block().replace(',\n[data-apollo-theme="common"]', "")
+    if AL.get("legacy") and '[data-apollo-theme="legacy"],\n[data-apollo-theme="common"]{' in planted:
+        fails.append("bite 7c FAIL: the planted alias-drop was not detectable")
     return fails
 
 
