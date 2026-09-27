@@ -1,0 +1,41 @@
+# receipt checks in the clone
+
+✅ all 27 receipt(s) FRESH (driven 2026-09-27T09:14:07Z, Chromium 153.0.8010.12).
+✖ REFUSED (write-gate): _gate_artefact_fresh.py WRITES FILES and was invoked with NO ARGUMENTS. It would overwrite: (transiently) knowledge/_A11Y-GATE.md, _ADVISORY-SIGNALS.md, _THEME-PROVENANCE-GAT
+  A bare run is not a stated intention (#158 write-by-default class, no-args leg).
+  Pass --write to confirm the write, or pass the script's real arguments (_gate_artefact_fresh.py --help for the contract).
+  [PASS] dataviz page budget — worst member 34777 code-only bytes (34.0 KB of 34) across 17 source(s)
+         Chart-combo                   34777  consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
+Behaviour-contract gate OK — see knowledge/_BEHAVIOUR-GATE.md
+gen_component_partials --check OK — all AUTO-PARTIAL blocks in sync, contracts hold.
+gen_showroom --check OK — 137 page(s) + index in sync (index owned by knowledge/_render/gen_library_214.py).
+_CHAIN.md
+knowledge/_ADVISORY-SIGNALS.md
+knowledge/_DARK-MODE-AUDIT.json
+knowledge/_DARK-MODE-AUDIT.md
+knowledge/_ICON-CONTRAST-DELTA.md
+knowledge/_REVIEW-QUEUE.json
+knowledge/_REVIEW-QUEUE.md
+knowledge/_SCREEN-GATE.md
+knowledge/_consult-index.json
+knowledge/_screen-gate/nio-dash-console-v1.canon.md
+    REGENERATION and therefore obeys the ordered-serial rule (#210).
+      · _build_instrument_fit.py -> _INSTRUMENT-FIT.md, _instrument-fit.json   [L1: L1: adds the missing _validate_hidden_display.py row]
+  ⬛ ADVISORY: exit 0 regardless of drift. Promotion to blocking is DAVE'S (#220-L1 ruling-shaped Q3).
+# HEAD ledger figure:
+- **dataviz — page budget (worst member):** 34768 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
+    - `Chart-combo` — 34768 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
+  ✅ _validate_radius.py                FRESH          byte-identical (1 artefact(s))
+  ✅ _validate_no_hardcode.py           FRESH          byte-identical (1 artefact(s))
+  tally: 5 FRESH · 2 STALE · 0 COULD-NOT-ASK
+  ⚠ A STALE ROW IS A PUBLISHED REPORT THAT NO LONGER DESCRIBES THE TREE. It is not
+  ⚠ _validate_advisory.py              STALE          _ADVISORY-SIGNALS.md: 255 line(s) -> 263 | - **143 file(s) scanned · 131 signal(s).** | - ## Footer.reference.html — 1 signal(s) | - ## Kpi-t
+  ⚠ _build_integrity.py                STALE          _INTEGRITY-REPORT.md: 85 line(s) -> 85 | - - schema: relationships: Additional properties are not allowed ('composes', '$composes-ver | + - sche
+  ⚠ _build_instrument_fit.py           STALE          _INSTRUMENT-FIT.md: 149 line(s) -> 157 | - | **UNDER-INSTRUMENTED** | 12 | a gate names it but sits BELOW the rung its property needs | - | **UN
+  tally: 4 FRESH · 3 STALE · 0 COULD-NOT-ASK
+  ⚠ A STALE ROW IS A PUBLISHED REPORT THAT NO LONGER DESCRIBES THE TREE. It is not
+# same, clean 52049781:
+  ⚠ _validate_advisory.py              STALE          _ADVISORY-SIGNALS.md: 255 line(s) 
+  ⚠ _build_instrument_fit.py           STALE          _INSTRUMENT-FIT.md: 149 line(s) ->
+  tally: 5 FRESH · 2 STALE · 0 COULD-NOT-ASK
+# re-run at 35c7a865 (overlay+serial), twice, after the 52049781 read: _build_integrity FRESH both times; tally 5 FRESH · 2 STALE — the same two STALE rows as clean 52049781 (_validate_advisory, _build_instrument_fit, both pre-existing, advisory exit 0). The earlier 3-STALE read followed the survey chunks' dirt (checkout -- . restores tracked files only; an ignored survey product is the likeliest cause) and did not reproduce.

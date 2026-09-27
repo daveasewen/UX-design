@@ -4,7 +4,7 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 
 **Unit: CODE-ONLY bytes** — `//` and `/* */` comments and blank lines are stripped at measure time (ADR-0015 Amendment 3, Dave #250 2026-09-06, option (e)). Source files are never modified. The caps did not move. Page figures sum each member's `consumes` declaration (Amendment 2), so the group's number is the WORST member page. A behaviour the registry marks `shared: true` (the engine core `dv-render`) is priced ONCE PER PAGE and excluded from member figures (Amendment 4, Dave #260 2026-09-08, `s260-D1`).
 
-- **dataviz/dv-behaviour** — `knowledge/canon/dv-behaviour.js` · **13581 code-only bytes** (13.3 KB of 16 KB) · 23433 raw, 9852 comment/blank · 16 member(s)
+- **dataviz/dv-behaviour** — `knowledge/canon/dv-behaviour.js` · **13590 code-only bytes** (13.3 KB of 16 KB) · 24505 raw, 10915 comment/blank · 16 member(s)
 - **dataviz/dv-legend** — `knowledge/canon/dv-legend.js` · **7760 code-only bytes** (7.6 KB of 16 KB) · 15255 raw, 7495 comment/blank · 16 member(s)
 - **dataviz/dv-donut-sweep** — `knowledge/canon/dv-donut-sweep.js` · **3889 code-only bytes** (3.8 KB of 16 KB) · 5511 raw, 1622 comment/blank · 16 member(s)
 - **dataviz/dp08-anchor** — `knowledge/canon/dp08-anchor.js` · **1821 code-only bytes** (1.8 KB of 16 KB) · 3884 raw, 2063 comment/blank · 16 member(s)
@@ -22,23 +22,23 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-render-candlestick** — `knowledge/canon/dv-render-candlestick.js` · **4872 code-only bytes** (4.8 KB of 16 KB) · 10765 raw, 5893 comment/blank · 16 member(s)
 - **dataviz/dv-render-butterfly** — `knowledge/canon/dv-render-butterfly.js` · **4711 code-only bytes** (4.6 KB of 16 KB) · 10795 raw, 6084 comment/blank · 16 member(s)
 
-- **dataviz — page budget (worst member):** 34768 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
+- **dataviz — page budget (worst member):** 34777 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
     - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 9783 code-only bytes, NOT charged to member figures
-    - `Chart-combo` — 34768 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
-    - `Chart-donut` — 29317 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
-    - `Chart-butterfly-h` — 26052 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
-    - `Chart-butterfly-v` — 26052 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
-    - `Chart-bar` — 25954 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar
-    - `Chart-stacked-area` — 25589 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
-    - `Chart-scatter` — 25489 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-scatter
-    - `Chart-pie` — 25428 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-donut
-    - `Chart-line` — 24957 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
-    - `Chart-candlestick` — 18453 bytes · consumes dv-behaviour, dv-render, dv-render-candlestick
-    - `Chart-bullet` — 18024 bytes · consumes dv-behaviour, dv-render, dv-render-bullet
-    - `Chart-boxplot` — 17917 bytes · consumes dv-behaviour, dv-render, dv-render-boxplot
-    - `Chart-sparkline` — 16816 bytes · consumes dv-behaviour, dv-render, dv-render-sparkline
-    - `Chart-histogram` — 15799 bytes · consumes dv-behaviour, dv-render, dv-render-histogram
-    - `Template-dashboard-bento` — 15402 bytes · consumes dv-behaviour, dp08-anchor
+    - `Chart-combo` — 34777 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo
+    - `Chart-donut` — 29326 bytes · consumes dv-behaviour, dv-legend, dv-donut-sweep, dv-render, dv-render-donut
+    - `Chart-butterfly-h` — 26061 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
+    - `Chart-butterfly-v` — 26061 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-butterfly
+    - `Chart-bar` — 25963 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar
+    - `Chart-stacked-area` — 25598 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-stacked-area
+    - `Chart-scatter` — 25498 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-scatter
+    - `Chart-pie` — 25437 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-donut
+    - `Chart-line` — 24966 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-line
+    - `Chart-candlestick` — 18462 bytes · consumes dv-behaviour, dv-render, dv-render-candlestick
+    - `Chart-bullet` — 18033 bytes · consumes dv-behaviour, dv-render, dv-render-bullet
+    - `Chart-boxplot` — 17926 bytes · consumes dv-behaviour, dv-render, dv-render-boxplot
+    - `Chart-sparkline` — 16825 bytes · consumes dv-behaviour, dv-render, dv-render-sparkline
+    - `Chart-histogram` — 15808 bytes · consumes dv-behaviour, dv-render, dv-render-histogram
+    - `Template-dashboard-bento` — 15411 bytes · consumes dv-behaviour, dp08-anchor
     - `Legend` — 7760 bytes · consumes dv-legend
 
 ## ✓ PASS — every behaviour source honours the contract.

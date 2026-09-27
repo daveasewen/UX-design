@@ -1,0 +1,86 @@
+— 152 steps read from _build_all.STEPS by ast (never imported) · per-step timeout 60s · ALL steps (mutating included)
+
+⚠ --resume: proceeding over a dirty tree. The dirt below must be the PRIOR
+  chunk's regeneration — if you cannot name why every path is dirty, STOP.
+  (#61's 'gutted' state IS this state: stripped-not-yet-re-enriched, healed
+  only by a COMPLETE pass over the remaining steps.)
+    M _CHAIN.md
+     M knowledge/_SCREEN-GATE.md
+     M knowledge/_consult-index.json
+     M knowledge/_screen-gate/nio-dash-console-v1.canon.md
+     M knowledge/_screen-gate/nio-dash-console-v2.canon.md
+     M knowledge/_screen-gate/payments-journey.canon.md
+     M knowledge/_screen-gate/sme-payments-desktop.canon.md
+     M knowledge/_screen-gate/sme-payments-swiss.canon.md
+     M knowledge/_screen-gate/sme-payments.canon.md
+     M knowledge/_type_ratchet.json
+     M knowledge/compliance/graph-index.json
+     M knowledge/compliance/rules/wcag-1.4.11-non-text-contrast.json
+     M knowledge/compliance/rules/wcag-1.4.3-contrast-minimum.json
+     M knowledge/compliance/rules/wcag-2.3.3-animation-from-interactions.json
+     M knowledge/compliance/rules/wcag-2.5.8-target-size-minimum.json
+     M notes/_BUILD-VERDICT-LOG.jsonl
+  ✅ [31] advisory signals — prose rules (advisory)
+  ✅ [32] review queue
+  ✅ [33] dark-mode coverage audit
+  ✅ [34] text/icon contrast audit
+  ✅ [35] indicator/accent contrast audit
+  ✅ [36] icon contrast delta — brand 4.5 vs 3 (advisory)
+  ✅ [37] dark-surface flatness gate
+  ✅ [38] component-partials sync — AUTO-PARTIAL injection + contracts (
+  ✅ [39] component-partials selftest (ADR-0013)
+  ✅ [40] token-set distribution sync — AUTO-TOKENS injection (s121-D1)
+  ✅ [41] token-set distribution selftest (s121-D1)
+  ✅ [42] Behaviour contract gate — dv-behaviour size + banned patterns 
+  ✅ [43] Behaviour contract selftest (ADR-0015)
+  ✅ [44] canon components — regenerate from snippets (ADR-0013 ruling 4
+  ✅ [45] canon components determinism check (ADR-0013 ruling 4)
+  ✅ [46] partial re-implementation ratchet (ADR-0013)
+  ✅ [47] partial-ratchet selftest (ADR-0013)
+  ✅ [48] token projection sync — snippets/tranches/canon literals (gen_
+  ✅ [49] snippet gate
+  ✅ [50] theme cascade sync — [data-apollo-theme] layer (ADR-0011)
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [52] state-snap gate — opacity states snap to the active theme's ra
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [54] stale-queue gate — §C·1 qprobe claims re-measured vs disk + gi
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [56] palette-tier gate — every theme names a palette per family, no
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [58] radius gate — no hardcoded border-radius; shape is a theme fle
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ⊘ [61] dashboard sync — generated progress dashboard (RULED #164, bui  COULD-NOT-ASK
+  ✅ [62] Legacy-colour leakage gate (Mono) — no Legacy-only colour in a
+  ✅ [63] theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex 
+  ✅ [64] token-tier gate (_STANDARDS.md §1)
+  ✅ [65] icon-source gate
+  ✅ [66] a11y gate
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ⊘ [68] hit-area gate — 44px minimum, rendered geometry (ADVISORY, bui  COULD-NOT-ASK
+  ✅ [69] wiring gate — no orphaned validators (#118 seam)
+  ✅ [70] wiring gate selftest — 4 bites
+
+==============================================================================
+SURVEY: 38 pass · 0 FAIL · 2 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 0 not asked (mutating) · 112 outside --range 31:70 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (2) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 77)
+      COULD-NOT-ASK: dashboard/index.html — the page differs, but a live gate baked into it is reading INPUTS OUTSIDE THE COMMITTED TREE, so its verdict — and therefore this page — cannot be reproduced here: provenance names `knowledge/_tmp/l3-245/rename-plan.json`; provenance names `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`; provenance names `outputs/_PARTITION-button-primary-2026-08-06-v1.md`. Every one of those paths is untracked, so an environment that has them and one that does not will render different prose from the SAME commit. This is a REFUSAL, not a staleness verdict in either direction: the page's agreement with the stores is UNKNOWN here and is reported as unknown. Ask it where those inputs are present (a working tree that holds them), or commit them.
+
+  [68] hit-area gate — 44px minimum, rendered geometry (ADVISORY, built #203, wired #209)
+      python3 knowledge/_validate_hit_area.py --all   (exit 77)
+      COULD-NOT-ASK: HIT-AREA: HARNESS UNAVAILABLE — no chromium headless_shell found under PLAYWRIGHT_BROWSERS_PATH / /var/tmp/pw-browsers* / ~/.cache/ms-playwright. See _RUNBOOK-render-verify.md step 3; this is NOT a pass.
+
+— recorded → /sessions/rcw-0115rtjy4mpbeejfbjiuhael/c6s/notes/_BUILD-VERDICT-LOG.jsonl

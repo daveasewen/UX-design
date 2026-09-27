@@ -552,10 +552,10 @@
      num() is parseFloat(attr || default), NaN when absent with no default; up() guards .closest. */
   function num(el, k, d) { return parseFloat(el.getAttribute(k) || d); }
   function up(e, s) { return e.target.closest && e.target.closest(s); }
-  function fitCharts() {
-    var svgs = document.querySelectorAll('svg.dv-fit');
-    for (var i = 0; i < svgs.length; i++) { fitOne(svgs[i]); }
-  }
+  /* #304 W6 — fitCharts and placeSegs walk their NodeList with forEach (as thinLabels already
+     does): the same static list, the same order, one call per element; the extra (index, list)
+     arguments are ignored by fitOne/moveSeg. Pays for the transitionend re-fit below. */
+  function fitCharts() { document.querySelectorAll('svg.dv-fit').forEach(fitOne); }
   /* ---------- ds-012(b) GUTTER-RELATIVE PLOT AREA — RULED by Dave 2026-07-27 (ds-012 in
      _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
      never baked: the clipping was driven by label length and face looseness (the licensed
@@ -748,9 +748,17 @@
     }
   }
   var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
-  window.addEventListener('resize', function () {
-    cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); });
-  });
+  function refit() { cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); }); }
+  window.addEventListener('resize', refit);
+  /* #304 W6 — RE-FIT WHEN A CHART'S BOX FINISHES MOVING. The fit reads the svg's width once per
+     pass; a CSS width transition in flight at that moment hands it the START width, and nothing
+     re-fits when the box lands. The JS-on release itself is such a change (.dv-fit-on: the baked
+     580px -> 100%), and under reduced motion canon.css's own reset (.canon * {transition-duration:
+     .01ms}) turns it into a transition: the fit pinned 580 in a 990px box and every glyph drew
+     x1.7 (cand2-r1 7/8 loads, W5a Q3). Same family as W4a's ring race. transitionend on the canvas
+     or on anything holding one = the box is final: one more rAF-debounced pass through the same
+     path. Marks inside the svg never match, so a fit's own attribute writes do not loop. */
+  document.addEventListener('transitionend', function (e) { if (e.target.matches('svg.dv-fit,:has(svg.dv-fit)')) { refit(); } });
 
   /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
      Replaces native <title> tooltips (values stay in sync with the table — one source).
@@ -856,10 +864,7 @@
     ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
     ind.style.width = br.width + 'px';
   }
-  function placeSegs() {
-    var segs = document.querySelectorAll('.seg');
-    for (var i = 0; i < segs.length; i++) { moveSeg(segs[i]); }
-  }
+  function placeSegs() { document.querySelectorAll('.seg').forEach(moveSeg); }
   /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
      to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
      each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
