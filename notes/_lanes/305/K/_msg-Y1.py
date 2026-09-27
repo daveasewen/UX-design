@@ -1,0 +1,20 @@
+# #305 K - the cut commit Y1 message file (python-written, no T3 prefix on line 1).
+msg = """305 cut Y1: v1.0.14 RELEASED at 0ef30746 - the RATIFIED manifest, the gate probe, the release review page and the zip
+
+DECLARED not-a-wrap (#74-D1): the second of the v1.0.14 cut's three commits, the #268 be16e5f3 + 117b33cb shape in one commit (the manifest was generated RATIFIED at the cut commit, because s305-D2 was keyed in X).
+
+- knowledge/_release/_pack_manifest.json regenerated at 0ef307460dcf: 1,781 files, sha256 a5b00c1450dc83c8, status "RATIFIED - s305-D2 names v1.0.14 in the store". Probe 57/57 gates (43 RUNNABLE, 10 REPO-BOUND, 4 NEEDS-DEP), differential arm ARMED; the gates group 82 -> 84 files, the +2 of s305-D3.
+- apollo-spider/dist/Apollo-Spider-v1.0.14.zip, sha256 35ae981b701164cd8c31779fbd8dce982fd5f1433512a08917943d47749bb545, 21,967,581 B, 1,786 entries. Baked by build-designer-pack.sh --release in a clean clone at 0ef30746 (receipts FRESH, ratified); the --dry-run twin at the same commit is byte-identical. v1.0.13 and every older zip untouched.
+- The stamp: "3 staged file(s) carry the literal, 0 rewritten"; --check GREEN (the three rulings ship as Dave said them, Gumdrop v1.0.0).
+- reviews/RELEASE-SPIDER-2026-08-26-v1.html rewritten by the bake; its REVIEW copy re-injected by knowledge/_review/_make_review.py.
+- Gates on the mount after landing: release-audit --manifest-check PASS, --pack PASS; _validate_demo_page.py on the real zip PASS 7/7, 4 themes, 0.00px clip.
+
+Expected until Y2: the frozen-release gate reads the v1.0.14 zip as an ADDED path on apollo-spider/dist/ (the literal moves and the ledger re-seeds in Y2, as at #268). Regen serial before this commit: only _CHAIN.md moved; every --check FRESH. Carried: K's X transcripts (three refused attempts kept: a duplicated path, then no-op re-adds leaving index.lock husks, until the runbook's delete grant) and the real-chain logs. Locks moved to notes/_lanes/_orphan-locks/ as index.lock.305-K-1..5.
+
+Not pushed: a cold verifier opens the real zip first.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01HPh5XdW9a12LKZuJceR9xa
+"""
+open('notes/_lanes/305/K/_msg-Y1.txt', 'w').write(msg)
+print(len(msg.splitlines()[0]), 'chars line 1')
