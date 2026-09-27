@@ -341,6 +341,28 @@ def build_steps_at(sha, repo=ROOT):
         return None, None, str(e)
 
 
+# ★ s294-D1 (DAVE, RULED #294 2026-09-21) — THE GREEN COUNT IS GENERATED TOO, AND FROM A RUN.
+#
+# `s125-D1` made the DENOMINATOR generated and left the numerator pinned to `VERDICT_SHA`: the
+# sentence read "75 of 144 steps green" because 75 was `len(STEPS)` AT `18c7789`, i.e. how many
+# steps EXISTED when #62 went green — a number that cannot move, beside one that moves on its
+# own. ⛔ So the sentence got quietly wronger every time the build grew, and #294 ruled the same
+# shape the same way a second time, explicitly over the hand-correction `s125-D1`'s `watch`
+# field forbids by name.
+#
+# ★ WHERE THE NUMERATOR COMES FROM NOW: `_build_survey.verdict_from_ledger()` — the VERDICT
+# LEDGER, `notes/_BUILD-VERDICT-LOG.jsonl`, written by the instrument that actually asks the
+# steps. ⛔ MEASURED AT #294: no such source existed anywhere in the repo — the survey printed
+# and wrote nothing, there is no CI run record on disk, and no build-verdict ledger. It was built
+# at the survey (the reading), not here (the rendering), for `s125-D1`'s own reason: one slicer.
+#
+# ⚠ THE #62 FIGURE IS NOT DELETED. It is still generated from the AST at `VERDICT_SHA`, and it
+# still answers a question the ledger cannot: how much of today's build has NEVER been in a green
+# verdict. Two facts, reported separately, never summed — the same discipline `s125-D1`'s own
+# enactment decision (1) took when it refused to publish one number for two things.
+#
+# ⛔ AND IT NEVER DEFAULTS. No ledger, no readable record, no sha: the line SAYS SO, in the
+# chain, where the reader is. `s294-D1`'s own instruction for this seat, taken literally.
 def build_verdict_line(repo=ROOT):
     """The GENERATED build-verdict sentence for the chain banner. NEVER a typed count.
 
@@ -354,17 +376,140 @@ def build_verdict_line(repo=ROOT):
                 f"GENERATED, and a generator that guesses is the defect it replaced.")
     dup = "" if now == now_lab else f" ⚠ **{now - now_lab} DUPLICATE label(s)**"
     then, _then_lab, why_then = build_steps_at(VERDICT_SHA, repo)
+    # The #62 clause — generated at its own end, or a named gap. Never a typed 75.
     if then is None:
-        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup} — GENERATED from "
-                f"`_build_all.py`'s AST (`s125-D1`). The #62 green verdict's COVERAGE is "
-                f"UNMEASURED ({why_then}) — a declared gap, not a pass.**")
-    gap = now - then
-    if gap <= 0:
-        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup}; #62's green verdict covered "
-                f"{then} (`{VERDICT_SHA}`) — GENERATED at both ends (`s125-D1`).**")
-    return (f"⛔ **BUILD VERDICT: {then} of {now} steps green (#62, `{VERDICT_SHA}`) — "
-            f"{gap} steps have NEVER been in a green verdict.**{dup} Both counts GENERATED "
-            f"from `_build_all.py`'s AST at each end; the shortfall is computed (`s125-D1`).")
+        sixty2 = (f" ⚠ #62's green verdict's COVERAGE is UNMEASURED ({why_then}) — a declared "
+                  f"gap, not a pass.")
+    elif now - then > 0:
+        sixty2 = (f" ⚠ **{now - then} have never been in the #62 verdict** ({then} existed at "
+                  f"`{VERDICT_SHA}`, from its AST — `s125-D1`).")
+    else:
+        sixty2 = f" #62's verdict covered {then} steps (`{VERDICT_SHA}`, from its AST)."
+
+    v, why = _verdict_from_ledger(repo)
+    if v is None:
+        return (f"⛔ **BUILD VERDICT: {now} steps on disk{dup}; THE GREEN COUNT IS NOT DERIVABLE "
+                f"AT THIS SEAT — {why}.** NOT defaulted to a number and NOT re-stamped from an "
+                f"older one (`s294-D1`, and `s125-D1`'s `watch` forbids the hand-fix by name): "
+                f"run `python3 knowledge/_build_survey.py` and the figure becomes readable."
+                f"{sixty2}")
+    stale = "" if v["sha"] == _head_short(repo) else (
+        f" ⚠ **that run is at `{v['sha']}`, HEAD is `{_head_short(repo) or 'UNREADABLE'}` — the "
+        f"verdict is that tree's, not this one's.**")
+    dirty = " ⚠ **measured on a DIRTY tree.**" if v.get("dirty") else ""
+    part = " (assembled from consecutive chunks)" if v.get("partial") else ""
+    # ★★ #304 W3c — THE DENOMINATOR IS `now`, THE AST'S, BECAUSE THE SENTENCE SAYS SO. Until
+    # #304 it printed `v['total']` — the step count the RUN saw — beside the words "total from
+    # `_build_all.py`'s AST". The two agree only until the build grows: R4b took STEPS 146 → 148,
+    # the newest record still said 146, and the chain published "of 146 steps" while claiming the
+    # AST as its source. A provenance the number does not have is a SILENT gap, and this module's
+    # rule is that a declared gap passes and a silent one fails. ⇒ The total is the AST's, the
+    # green/fail/refused counts stay the RUN's, and when the two builds differ in size the
+    # difference is SAID, with the steps the run never saw counted into "in NO record".
+    # ⛔ Measured cost of the old shape (CI `36275037261`): `[121]` red in the survey step, and
+    # `[13]` red with it — `_capture_gate.py --selftest` calls `_gen_chain.selftest()` — and both
+    # went green again the moment ANY survey appended a record at the new size, which is why
+    # `[13]` read as a flake (V2: exit 1 once, 77 on three re-asks). It was an ORDERING
+    # dependence on the ledger, not chance.
+    run_n = v["total"]
+    unseen_ix = list(v["unseen"]) + (list(range(run_n + 1, now + 1)) if now > run_n else [])
+    if now == run_n:
+        grown = ""
+    elif now > run_n:
+        _new = f"{run_n + 1}" if now == run_n + 1 else f"{run_n + 1}–{now}"
+        grown = (f" ⚠ **that run surveyed {run_n} steps; {now} are on disk now — step(s) {_new} "
+                 f"are newer than the run.**")
+    else:
+        grown = (f" ⚠ **that run surveyed {run_n} steps; {now} are on disk now — {run_n - now} "
+                 f"step(s) have gone since, so the run's step numbers need not name today's "
+                 f"steps.**")
+    unseen = (f" ⛔ **{len(unseen_ix)} step(s) are in NO record — never asked, never green.**"
+              if unseen_ix else "")
+    conf = (f" ⚠ **{v['conflicts']} step(s) changed verdict inside one sha.**"
+            if v.get("conflicts") else "")
+    return (f"⛔ **BUILD VERDICT: {v['green']} of {now} steps GREEN — {v['fail']} FAIL · "
+            f"{v['refused']} COULD-NOT-ASK · {v['errored']} unaskable · "
+            f"{run_n - v['asked']} NOT ASKED (mutating).**{dup} Green GENERATED from the run "
+            f"ledger (`_build_survey.py` @ `{v['sha']}` {v['at'][:10]}{part}, `s294-D1`); total "
+            f"from `_build_all.py`'s AST (`s125-D1`)."
+            f"{grown}{stale}{dirty}{unseen}{conf}{sixty2}")
+
+
+# ★ #304 W3c — THE STEP FIGURE THE VERDICT LINE PUBLISHES, READ BACK OUT OF IT. The step-count
+# bite used to ask whether `" 148 steps"` occurred ANYWHERE in the chain, so any other sentence
+# carrying the number could satisfy it while the verdict line said something else. Like with
+# like: this returns the denominator of every BUILD VERDICT sentence, and nothing else.
+VERDICT_FIGURE_RE = re.compile(r"BUILD VERDICT: (?:\d+ of )?(\d+) steps")
+
+
+def verdict_step_figures(text):
+    """Every step figure published in a BUILD VERDICT sentence of `text`, as ints."""
+    return [int(x) for x in VERDICT_FIGURE_RE.findall(text or "")]
+
+
+# ★★ #295 — THE HEAD PIN, AND IT IS FOR **ONE** CALLER: `check()`'s re-ask at the sha the
+# committed chain was generated at (see § THE HEAD-ONLY ADVANCE in `check()`). ⛔ IT IS NEVER SET
+# WHILE WRITING: `build()`/`write()` always see the true HEAD, so the chain a cold session reads
+# always carries the honest live comparison.
+#
+# ⛔ WHY AN ENVIRONMENT VARIABLE AND NOT A MODULE GLOBAL — MEASURED, after a module global was
+# written first and DID NOT WORK when the file is run as a script. `_capture_gate.py:1794` does
+# `import _gen_chain; _gen_chain.build_verdict_line(repo)` while assembling the banner. Run as
+# `__main__`, this file is TWO module objects — `__main__` and the freshly imported `_gen_chain` —
+# and the verdict line is rendered by the OTHER one, whose global was still None. The in-process
+# test passed and the CLI stayed red on the same tree, which is exactly the class of divergence
+# #58/#59 taught this module to distrust. An env var is the one channel both copies share.
+# ⚠ AND IT IS GUARDED: a var already set when this process STARTED is not honoured silently —
+# `check()` refuses, below, rather than letting an environment pin its verdict green.
+HEAD_PIN_ENV = "APOLLO_CHAIN_HEAD_PIN"
+_PREEXISTING_HEAD_PIN = os.environ.get(HEAD_PIN_ENV)
+
+
+def _head_short(repo=ROOT):
+    """The short HEAD sha, or None. Used ONLY to declare staleness, never to derive a count."""
+    pin = os.environ.get(HEAD_PIN_ENV)
+    if pin:
+        return pin
+    import subprocess
+    try:
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=repo,
+                           capture_output=True, text=True, timeout=20)
+        return r.stdout.strip() if r.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+# The HEAD sha the committed chain was GENERATED at, read out of its own build-verdict line.
+# ⚠ Pinned to the exact sentence `build_verdict_line()` writes — if that sentence is reworded this
+# returns None and `check()` falls straight back to the plain byte comparison, i.e. the old
+# behaviour. A normaliser that silently stops matching must DEGRADE to the strict check, never to
+# a pass [[a-crash-is-not-a-fail]].
+CHAIN_HEAD_RE = re.compile(r"HEAD is `([0-9a-f]{4,40})`")
+
+
+def _chain_head_sha(text):
+    """The short HEAD sha stamped into `text`'s build-verdict line, or None."""
+    m = CHAIN_HEAD_RE.search(text or "")
+    return m.group(1) if m else None
+
+
+def _verdict_from_ledger(repo=ROOT):
+    """The ledger reader, borrowed from the instrument that WRITES it — never re-implemented.
+
+    ⚠ `import _build_survey` is safe and that is not an accident: it reads `_build_all.STEPS`
+    with `ast` and is forbidden by its own docstring from importing it (importing `_build_all`
+    RUNS THE BUILD — it has zero main guards, and that mistake gutted 33 files twice in one
+    session). A second reader of the ledger format here would be the same second-source-of-truth
+    defect this module's `chain_parts` comment argues against.
+    """
+    try:
+        import _build_survey
+    except Exception as e:                       # noqa: BLE001 - reported, never swallowed
+        return None, f"the verdict ledger's reader could not be imported ({e})"
+    try:
+        return _build_survey.verdict_from_ledger(repo)
+    except Exception as e:                       # noqa: BLE001
+        return None, f"the verdict ledger could not be read ({e})"
 
 
 # ⚠ #47 — THE COST ASYMMETRY, AND IT DECIDES WHERE PROSE GOES IN THIS MODULE.
@@ -712,6 +857,51 @@ def check(repo=ROOT):
               f"measurer, or re-ask where it is reachable. The freshness of {OUT_NAME} is "
               f"UNKNOWN and is reported as unknown rather than guessed.")
 
+    # ---- ★★ #295 — THE HEAD-ONLY ADVANCE, AND WHY THIS CHECK WAS RED BY CONSTRUCTION.
+    # `build_verdict_line()` (lane A, `s294-D1`) renders the LIVE HEAD sha — *"that run is at X,
+    # HEAD is Y"* — so the instant ANY commit lands, the committed `_CHAIN.md` names the previous
+    # HEAD and a fresh render names the new one. Lane P proved it at `280e4e82`: the chain was
+    # FRESH in the tree that was committed and STALE in the tree that commit produced, in the same
+    # second, with no edit between. ⇒ EVERY pushed tree was red in CI's survey step, permanently,
+    # and the repair was structurally unfinishable at a committing seat (regenerating the chain
+    # needs a commit, and that commit re-stales it).
+    # ⛔ MEASURED, because "it's just the sha" would have been the wrong fix: the two texts differ
+    # in TWO places, not one — the verdict line AND the footer's fixed-point tape figure (10,480
+    # vs 10,481 at #295). The shas are the same BYTE LENGTH and a different TOKEN count, so
+    # normalising the sha clause out of both strings would leave the size figure mismatched and
+    # the check still red. That is why this re-ASKS instead of normalising.
+    # ⛔ WHAT IS NOT WEAKENED: the honest comparison stays VISIBLE. `build()` is untouched and
+    # never sees the override, so the chain a cold session reads still carries *"that run is at X,
+    # HEAD is Y"* against the TRUE HEAD. And the re-ask only ever runs when the committed file
+    # names a DIFFERENT sha than live: any real drift in GOOD-MORNING.md / _LIVE-STATE.md survives
+    # it and is still reported STALE, because the re-render differs for that reason too.
+    if have != text and _PREEXISTING_HEAD_PIN:
+        return cna.refuse(OUT_NAME, f"{HEAD_PIN_ENV} was already set in the environment "
+                          f"({_PREEXISTING_HEAD_PIN!r}) when this process started. That variable "
+                          f"is `check()`'s OWN scratch channel for re-asking at the chain's "
+                          f"generating commit; an environment that sets it is pinning the verdict "
+                          f"from outside. No freshness verdict is offered in either direction.")
+    if have != text:
+        # ⚠ BOTH SHAS ARE READ OFF THE TWO TEXTS, not off git. The committed file's sha and the
+        # FRESH RENDER's sha are exactly the two things the byte comparison is disagreeing about,
+        # and reading them here keeps this clause honest in a tree where `git rev-parse` is
+        # unreadable (a bare export, a fixture) — where `_head_short` returns None and a
+        # git-based condition would silently never fire.
+        pinned, live = _chain_head_sha(have), _chain_head_sha(text)
+        if pinned and pinned != live:
+            os.environ[HEAD_PIN_ENV] = pinned
+            try:
+                at_pin, pin_detail = build(repo)
+            finally:
+                os.environ.pop(HEAD_PIN_ENV, None)
+            if at_pin is not None and have == at_pin:
+                print(f"  ✅ {OUT_NAME} is FRESH at the commit it was generated at "
+                      f"(`{pinned}`) — HEAD has since advanced to `{live or 'UNREADABLE'}`, "
+                      f"and the ONLY "
+                      f"difference is the build-verdict line's live-HEAD clause and the tape "
+                      f"figure it shifts. Content matches GOOD-MORNING.md / _LIVE-STATE.md as "
+                      f"they now stand · {pin_detail}")
+                return 0
     if have != text:
         print(f"  ✗ {OUT_NAME} is STALE — it does not match GOOD-MORNING.md / _LIVE-STATE.md as "
               f"they now stand, so a cold session would read a PREVIOUS session's record as if it "
@@ -820,10 +1010,81 @@ def selftest():
         elif _n is None:
             bite(f"build-step count is readable from _build_all.py's AST ({_why})", False)
         else:
+            _figs = verdict_step_figures(text)
             bite(f"BUILD-STEP FIGURE IS RE-DERIVED AND MATCHES DISK ({_n} steps, measured now)",
-                 f" {_n} steps" in text or f"of {_n} steps" in text)
+                 bool(_figs) and all(x == _n for x in _figs))
+            # ★ #304 W3c — the bite above, MUTATED: the verdict sentence's own figure is moved
+            # off disk while the true number stays elsewhere in the file. The old substring
+            # check would still have found it; the like-with-like read must not.
+            _bad = VERDICT_FIGURE_RE.sub(
+                lambda m: m.group(0).replace(m.group(1), str(_n + 100)), text, count=1)
+            bite("the plant planted — a verdict figure was moved off disk (else the next bite is "
+                 "vacuous)", _bad != text and (_n + 100) in verdict_step_figures(_bad))
+            bite("a WRONG verdict figure is CAUGHT even with the true count elsewhere in the file",
+                 not all(x == _n for x in verdict_step_figures(_bad + f" {_n} steps ")))
             bite("no DUPLICATE step labels are being counted as growth", _n == _lab,
                  ) if _n != _lab else bite("step labels are 1:1 with rows (no duplicates)", True)
+        # ---- s294-D1 (#294): THE GREEN COUNT IS GENERATED FROM A RUN, AND THIS RE-CHECKS IT.
+        # ★ The load-bearing arm is the REFUSAL one. The defect `s294-D1` names is a number that
+        # keeps being published after it stopped being true, so the bite that matters is: with no
+        # source of truth reachable, does the sentence SAY SO — or does it fall back to a figure?
+        # ⚠ The ledger reader is stubbed rather than a temp tree being built, on purpose: the
+        # reader's own paths (absent file, malformed line, chunk union, an older sha's records)
+        # are bitten where the format LIVES, in `_build_survey.selftest` — one format, one place,
+        # one set of bites. What is asserted HERE is what the SENTENCE does with each answer.
+        _real_reader = globals()["_verdict_from_ledger"]
+        try:
+            globals()["_verdict_from_ledger"] = lambda repo=ROOT: (None, "no ledger (planted)")
+            _no = build_verdict_line(ROOT)
+            bite("with NO run record the line says the green count is NOT DERIVABLE",
+                 "NOT DERIVABLE" in _no)
+            bite("…and it names the remedy instead of a number (`_build_survey.py`)",
+                 "_build_survey.py" in _no and "no ledger (planted)" in _no)
+            bite("…and it re-stamps NOTHING — the old pinned 75-of-N form cannot reappear",
+                 " of 75 " not in _no and "75 of" not in _no)
+            bite("…and it names BOTH rulings, so the next session cannot 'helpfully' type it",
+                 "`s294-D1`" in _no and "`s125-D1`" in _no)
+            # ★ #304 W3c — the stub is sized to the build ON DISK. Before #304 it said 13
+            # against a 146-step build and asserted "7 of 13", i.e. that the denominator is the
+            # RUN's — while the step-count bite above asserted it is DISK's. The two bites could
+            # only both pass while run and disk agreed, which is how a build that grew went red.
+            _sn = _n if _n else 13
+            def _stub(total, unseen):
+                return lambda repo=ROOT: ({
+                    "green": 7, "fail": 2, "refused": 1, "errored": 0, "skipped": 3, "asked": 10,
+                    "total": total, "sha": "dead123", "at": "2026-01-02T03:04:05",
+                    "dirty": False, "records": 1, "conflicts": 0, "malformed": 0,
+                    "unseen": unseen, "partial": False}, None)
+            globals()["_verdict_from_ledger"] = _stub(_sn, [_sn - 2, _sn - 1, _sn])
+            _yes = build_verdict_line(ROOT)
+            bite("with a record the GREEN COUNT IS THE RUN'S, not len(STEPS) at a pinned sha",
+                 f"7 of {_sn} steps GREEN" in _yes)
+            bite("a run of the SAME-sized build declares no size difference (no false alarm)",
+                 "that run surveyed" not in _yes)
+            globals()["_verdict_from_ledger"] = _stub(_sn - 2, [])
+            _grew = build_verdict_line(ROOT)
+            bite("a run of a SMALLER build: the total is STILL disk's, never the run's",
+                 f"7 of {_sn} steps GREEN" in _grew and verdict_step_figures(_grew) == [_sn])
+            bite("…and the size difference is DECLARED, naming both counts",
+                 f"that run surveyed {_sn - 2} steps; {_sn} are on disk now" in _grew)
+            bite("…and the steps the run never saw are counted in NO record, never green",
+                 "2 step(s) are in NO record" in _grew)
+            globals()["_verdict_from_ledger"] = _stub(_sn + 3, [])
+            _shrank = build_verdict_line(ROOT)
+            bite("a run of a LARGER build: total is disk's and the vanished steps are DECLARED",
+                 verdict_step_figures(_shrank) == [_sn]
+                 and "3 step(s) have gone since" in _shrank)
+            globals()["_verdict_from_ledger"] = _stub(_sn, [_sn - 2, _sn - 1, _sn])
+            bite("the run's sha and date are published beside it (an unattributed verdict is "
+                 "not a verdict)", "`dead123`" in _yes and "2026-01-02" in _yes)
+            bite("a stale record DECLARES itself against HEAD rather than passing as current",
+                 "HEAD is" in _yes)
+            bite("steps in NO record are called out — never asked is never green",
+                 "3 step(s) are in NO record" in _yes)
+            bite("the #62 clause SURVIVES as its own fact, generated from its own AST",
+                 "#62" in _yes and f"`{VERDICT_SHA}`" in _yes)
+        finally:
+            globals()["_verdict_from_ledger"] = _real_reader
         # ⛔ REFUSAL BITE — the figure must go UNMEASURED, by name, rather than default to a
         # number. A measuring tool that guesses is the defect this replaced.
         try:
@@ -856,6 +1117,90 @@ def selftest():
                 shutil.copy(src, os.path.join(tmp, n))
         write(tmp)
         bite("--check PASSES on a freshly generated file", check(tmp) == 0)
+
+        # ---- ★★ #295 — THE HEAD-ONLY ADVANCE vs REAL CONTENT STALENESS, DRIVEN IN BOTH
+        # DIRECTIONS. Lane P proved `--check` was red on every PUSHED tree by construction: the
+        # build-verdict line renders the LIVE HEAD, so the commit that carries a fresh chain is
+        # the commit that stales it. The fixture is the real situation, not a mimic of it — the
+        # chain is GENERATED with the head pin set to another sha, so the file is internally
+        # consistent AT THAT SHA (including the footer's fixed-point tape figure, which shifts by
+        # a token when the sha's characters change), and then asked with the pin gone.
+        # ⛔ THE LEDGER MUST BE IN THE FIXTURE OR THESE ARMS ARE VACUOUS — measured, after the
+        # first version of them passed while proving nothing. Without `_BUILD-VERDICT-LOG.jsonl`
+        # the verdict line takes its NOT-DERIVABLE branch, which carries no HEAD clause at all,
+        # so the pin had nothing to change and `check()` was reaching the ordinary FRESH path.
+        # The plant assertions two lines below exist to make that failure mode LOUD next time.
+        import io as _io295
+        import contextlib as _cx295
+        for _src295, _dst295 in ((os.path.join(ROOT, "notes", "_BUILD-VERDICT-LOG.jsonl"),
+                                  os.path.join(tmp, "notes", "_BUILD-VERDICT-LOG.jsonl")),
+                                 (os.path.join(ROOT, "knowledge", "_build_all.py"),
+                                  os.path.join(tmp, "knowledge", "_build_all.py"))):
+            if os.path.exists(_src295):
+                os.makedirs(os.path.dirname(_dst295), exist_ok=True)
+                shutil.copy(_src295, _dst295)
+        _pin_sha = "dead1234"
+        os.environ[HEAD_PIN_ENV] = _pin_sha
+        try:
+            write(tmp)
+        finally:
+            os.environ.pop(HEAD_PIN_ENV, None)
+        _adv = open(os.path.join(tmp, OUT_NAME), encoding="utf-8").read()
+        bite("the fixture really was generated at another sha (a plant that did not plant would "
+             "make every bite below vacuous)", _chain_head_sha(_adv) == _pin_sha)
+        bite("the fixture DIFFERS from a fresh render — i.e. the old byte comparison WOULD have "
+             "called this stale, which is the defect being fixed", build(tmp)[0] != _adv)
+        _b295 = _io295.StringIO()
+        with _cx295.redirect_stdout(_b295):
+            _adv_rc = check(tmp)
+        _adv_out = _b295.getvalue()
+        bite("--check is GREEN on a HEAD-ONLY advance — the chain's own content still matches "
+             "GOOD-MORNING.md / _LIVE-STATE.md", _adv_rc == 0)
+        bite("and it SAYS SO, naming BOTH shas — the honest comparison stays visible rather than "
+             "being normalised into silence",
+             _pin_sha in _adv_out and "HEAD has since advanced" in _adv_out)
+        bite("a HEAD-only advance is NEVER called FRESH without the qualifier (a bare FRESH would "
+             "claim the file matches a fresh render, which it does not)",
+             "FRESH at the commit it was generated at" in _adv_out)
+
+        # ⛔ THE HALF THAT MATTERS: REAL DRIFT ON TOP OF A HEAD ADVANCE MUST STILL BE STALE.
+        # If the re-ask laundered content staleness it would be worse than the red it replaced —
+        # a cold session would read a PREVIOUS session's record with a green check beside it.
+        with open(os.path.join(tmp, "GOOD-MORNING.md"), "a", encoding="utf-8") as _f295:
+            _f295.write("\n> a line that did not exist when the chain was generated\n")
+        _b295 = _io295.StringIO()
+        with _cx295.redirect_stdout(_b295):
+            _drift_rc = check(tmp)
+        _drift_out = _b295.getvalue()
+        bite("REAL content staleness is STILL RED even when HEAD has also advanced — the re-ask "
+             "does not launder drift", _drift_rc == 1 and "STALE" in _drift_out)
+        bite("and it is called STALE, not could-not-ask — real drift is a content verdict",
+             not cna.is_refusal(_drift_rc))
+
+        # ⛔ THE ENVIRONMENT MAY NOT PIN THE VERDICT. A var already set when the process started
+        # is this check's own scratch channel being driven from outside, and it REFUSES.
+        _real_pre = globals()["_PREEXISTING_HEAD_PIN"]
+        try:
+            globals()["_PREEXISTING_HEAD_PIN"] = _pin_sha
+            _b295 = _io295.StringIO()
+            with _cx295.redirect_stdout(_b295):
+                _env_rc = check(tmp)
+            _env_out = _b295.getvalue()
+            bite("a PRE-SET head pin makes --check REFUSE (could-not-ask), never pass",
+                 cna.is_refusal(_env_rc) and HEAD_PIN_ENV in _env_out)
+            bite("the environment refusal does NOT call it STALE either — it is a measurement "
+                 "refusal, not a content verdict", "STALE" not in _env_out.upper())
+        finally:
+            globals()["_PREEXISTING_HEAD_PIN"] = _real_pre
+
+        # restore the tree for the arms below: GM is re-copied and the chain regenerated at the
+        # TRUE head, so nothing above leaks into the #59 / tier arms that follow.
+        _gm295 = os.path.join(ROOT, "GOOD-MORNING.md")
+        if os.path.exists(_gm295):
+            shutil.copy(_gm295, os.path.join(tmp, "GOOD-MORNING.md"))
+        write(tmp)
+        bite("tree restored — the SAME fresh tree reports FRESH again, unharmed by the arms above",
+             check(tmp) == 0)
 
         # ---- #59: a DEGRADED instrument must REFUSE, and must NEVER be reported as staleness.
         # This is the reproduction of the #58 flicker: same bytes on disk, same GM/LS content,

@@ -1,0 +1,71 @@
+ 
+ The CI calls 
+ Apollo · decision page · session 304
+ The CI calls
+ The reds that only you can clear. Run 1 fixed everything a lane could fix. What is left needs four answers from you.
+ Decision page v1 · Saturday 26 September 2026 
+For your sitting on Tuesday 29 September
+Session 304, Run 6, seat 6b
+Status: recommendations. Nothing here is decided.
+Counts are computed by script from Run 1's logs.
+ watch the externalities, dependancies and test it hard :) Dave · Saturday 26 September 2026, 15:33 
+ The answer first
+ Four answers from you turn the build green. Move the nav badge to 8px, declare the chart forks, port the package copies now, and settle the schema on its own page.
+ After Run 1 the whole build ran to the end for the first time since 9 September. Six steps still block it. All six are yours, and they come down to those four answers. The three advisory reds never stop the build, and one of them closes when you cut v1.0.14.
+ 130 pass of 146 steps, up from 127 before Run 1. No step that was green went red. 
+ 6 block the build: the badge, the forks, the two package checks, the schema and its partner check. 
+ 3 advisory red but never fail the build: the probe registry, the claim linter and the pack's drift. 
+ 7 unreached could not ask: each named what it could not reach in a throwaway copy, so it neither passes nor fails. 
+ These are the throwaway copy's verdicts on your Mac's processor. CI runs on a different one and its verdict, on the next push, is the one of record.
+ What each red guards
+ Nine steps are red. Here is what each one protects, and what fixing it means.
+ The check What it guards Why it is red Who clears it 
+ The 4px grid Every spacing value sits on a 4px rhythm, so parts line up when they are composed. The nav count badge pads 7px either side, in canon and in three nav snippets, six places in all. It arrived with the nav redesign on 9 September. You. Decision 1. 
+ One token, one value A token means one thing inside a theme, unless the difference is written down as meant. Four undeclared differences in mono: bar and sparkline read three status colours differently, and the plain table and the compact data grid read cell padding differently. You. Decision 2. 
+ The package copies (two checks) The Memento package inside the pack carries exact copies of the repo's scripts, never a stale one. Both copies of the chain script are the version from before 2 September, 295 lines behind. It has been red through three releases. You. Decision 3. 
+ The schema and the partner check Every component description obeys one schema, and every named partner points at a real part. Thirteen errors on the dashboard parts from 8 and 9 September, and six partners written as bare words instead of links. You, on the schema page . 
+ Probe registry · advisory Every kind of defect ever found is re-driven, so an old fault cannot come back quietly. One probe fails. Advisory: it never fails the build. Claude, in a later run. No word needed. 
+ Claim linter · advisory Claim tables carry evidence in the legal form, and the observation matches what was run. Six format faults and four mismatched observations. Advisory. Claude, in a later run. No word needed. 
+ Pack drift · advisory It tells you how far the pack your audience holds has fallen behind the repo. The pack is 322 commits behind. Advisory by design. Closes when you cut v1.0.14 ( housekeeping page ). 
+ One correction to the plan: it spoke of "four chart forks". Measured again today, three are chart colours and the fourth is table cell padding. Decision 2 covers all four.
+ What you decide
+ Four calls. Each is the smaller change.
+ The schema is the fifth call, and it lives on its own page because it is the schema a catalogue would publish.
+ The nav count badge: 8px, or an exemption from the grid? 
+ The badge is a pill, at least 24px wide. With 7px of padding a single digit already fills that width, so it does not move at 8px. Two digits grow by 2px, from 27.9px to 29.9px. Three digits grow from 34.9px to 36.9px. In the top nav the item grows by those 2px; in the sidebar the label gives them up. Photographed from the real snippets in the HSBC face, not redrawn:
+ 7px · as shipped · top nav 
+ the badge at four times size 
+ 8px · on the grid · top nav 
+ the badge at four times size 
+ 7px · as shipped · sidebar 
+ 8px · on the grid · sidebar 
+ Recommend 8px , because the change is two pixels on two-digit counts and none on one, and an exemption would be the grid check's first spacing exception.
+ The forks: declare them as meant, or make them one value? 
+ In mono, a filled bar and a thin sparkline line take different tones for the same status. The bar takes the lighter graphic tone, the line takes the darker ink tone. Contrast against white, computed from the values the check itself resolved:
+ Positive
+ Bar fill #57A369 · 3.07 to 1
+ Sparkline line #137F3C · 5.09 to 1
+ Negative
+ Bar fill #F3543E · 3.42 to 1
+ Sparkline line #DA1A00 · 5.09 to 1
+ Neutral
+ Bar fill #6893D3 · 3.13 to 1
+ Sparkline line #1A1A1A · 17.4 to 1
+ Unifying on the graphic tone would leave the thin line at 3.1 to 3.4 against white, just over the 3 to 1 floor for graphics. Unifying on the ink tone would darken every bar. Neutral is the odd one: blue on the bar means "information", default ink on the line means "no change". Declaring says that out loud. The fourth fork is the compact data grid using 4px cell padding against the plain table's 10px, which is what compact means.
+ Recommend declare all four , because each difference does a job: fills take the lighter tone, thin lines need the darker ink to be seen, and compact rows are meant to be tighter.
+ The package copies: port the chain script now, or at the cut? 
+ The pack carries the Memento package, and its two copies of the chain script date from before 2 September. Porting is a copy of one file into two places. The v1.0.14 cut is planned for Tuesday either way. Porting now means the candidate is tested with the file it will ship, and CI stops carrying a red nobody reads.
+ Recommend port now , because it is the same copy either way and doing it first lets the candidate be tested with it.
+ Seven one-off slide checkers from the deck work: retire them, or keep them? 
+ They checked deck v7's slides between 11 and 13 September. Run 1 guarded them so they no longer turn the build red. Nothing else in the repo calls them. Retiring means moving them to the retired folder, not deleting them.
+ Recommend retire , because they are done, nothing calls them, and every live script is one more thing each check has to scan.
+ Technical
+ Sources. notes/_subreports/2026-09-26-304-R1-ci-sees-to-146.md (Run 1; the clone survey before and after, by step name) · notes/_lanes/304/R1/verdicts-before-after.json · notes/_subreports/2026-09-26-304-A4-health-and-dependencies.md (the four calls) · the plan notes/_PLAN-304-roadmap-and-weekend-runs-2026-09-26-v1.html , decision 8. This seat's report: notes/_subreports/2026-09-26-304-R6b-decision-pages.md .
+ The survey. Clone of 571d458c with Run 1's changes, final run on 231c7ed0 : before 127 pass · 15 FAIL · 4 could-not-ask; after 130 pass · 9 FAIL · 7 could-not-ask. Still red: [81] [86] [94] [127] [128] [132] [134] [135] [144] . Blocking: [81] 4px-grid gate, [86] token fork-ban gate, [127] / [128] memento-package delta-audit and its selftest, [132] integrity lint, [94] roles/answers resolve (data-grid with strings, s251-D6 ). Advisory: [134] probe registry ( _probe_registry/_registry.py --run ), [135] claim-table evidence linter ("6 lint · 0 unparsed · 4 rc/observation mismatch"), [144] pack ship-list drift (re-cut is Dave's, s219-D4(2) ). Arm64 seat vs x64 CI: the clone predicts, CI decides.
+ Decision 1, the badge. padding:0 7px on .nv-count : knowledge/canon/canon.css:1839 , :15461 , :16548 ; knowledge/snippets/Navigations.reference.html:132 , Sidebar-nav.reference.html:108 , Tab-bar.reference.html:107 ; introduced c0225a0e (#261 N). _validate_grid.py exempts font-size, letter-spacing, radius, 1/3px hairlines and 2px half-steps only. Photographs: notes/_lanes/304/R6b/render_badge.py opens each snippet by file:// , forces HSBC_MtUnivers_Latin (asserted loaded), and sets 8px inline only on chips whose computed padding is 7px (2 in Navigations, 8 in Sidebar-nav; the glyph-parked counts use their own 4px and are untouched; Tab-bar's reference shows no 7px chip at 1440, so it is not photographed). Widths in CSS px (1, 2, 3 digits): 7px 24px / 27.9px / 34.9px; 8px 24px / 29.9px / 36.9px. Data: badge_measure.json , shots notes/_lanes/304/R6b/shots/badge-*.png (3× device scale).
+ Decision 2, the forks. python3 knowledge/_validate_token_forks.py at the seat today: "GATE RED: 4 fork(s) not in the ledger". --status-positive , --status-negative , --status-neutral : .cn-chart-bar at canon.css:7432-7435 ( --rag-*-graphic , --rag-information-graphic ) against .cn-chart-sparkline at :9804-9806 ( --rag-*-ink , --text-default ); --cell-py : .cn-table :2879 10px against .cn-data-grid .dg[data-density="compact"] :10646 4px; all theme=mono. A4 and the plan named two of the four tokens. Contrast ratios are WCAG relative luminance against #FFFFFF, computed in counts.py . Chart engine f6f762ab (#259).
+ Decision 3, the port. knowledge/_gen_chain.py into memento-package/machinery/ and memento-package/claude-plugin/memento/machinery/ ( _validate_package_delta.py VERBATIM SET arm); stale since 7f8801f3 (#241); open to you since the #245 R report. The pack ships memento-package/machinery/ ( _gen_pack_manifest.py:726 ). CI's "got 4" against the clone's 2 is still unread (truncated line, UNPROVEN).
+ Decision 4, the drivers. knowledge/_render/verify_demo_slides_268.py , _v3 , _v5 , _v6 , _v7 , _v74_gearbox , _v75_gearbox (seven, not six: Run 1's count). git grep finds no caller outside the seven files. Target: _retired/ , by move.
+ Not done by this seat. No fix applied, no git write, no git status , no Project memory. The page and its shots are built by notes/_lanes/304/R6b/build.py and render.py ; house CSS and the decisions overlay are copied from notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html , not redrawn.
+ Apollo · decision page · the CI calls · v1 · 2026-09-26 · session 304 · Run 6 seat 6b 
+ Nothing here is decided. Every call takes a decision below it. 

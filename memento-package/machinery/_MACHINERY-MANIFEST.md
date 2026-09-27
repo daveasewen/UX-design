@@ -11,7 +11,7 @@ build step, not a copy step; a half-renamed copy would be neither auditable nor 
 
 | file | source | src commit | bytes / lines | verbatim? |
 |---|---|---|---|---|
-| `_gen_chain.py` | `knowledge/_gen_chain.py` | `d44f023` 2026-08-17 | 53,274 / 874 | yes — **RE-SYNCED #193** (COULD-NOT-ASK wiring) |
+| `_gen_chain.py` | `knowledge/_gen_chain.py` | `86249459` 2026-09-27 | 86,299 / 1,368 | yes — **RE-SYNCED #305** (`s305-D41`, Dave: "port now"; was `d44f023` 2026-08-17, 53,274 / 874, re-synced #193) |
 | `_memento_search.py` | `knowledge/_memento_search.py` | `2bc83b4` 2026-08-12 | 11,926 / 265 | yes — **RE-SYNCED #193** |
 | `_graph_edges.py` | `knowledge/_graph_edges.py` | `2bc83b4` 2026-08-12 | 12,529 / 278 | yes — **RE-SYNCED #193** |
 | `_search_core.py` | `knowledge/_search_core.py` | `2bc83b4` 2026-08-12 | 13,266 / 273 | yes — **RE-SYNCED #193** |

@@ -4985,7 +4985,7 @@ def boot_constant_drift_check(repo):
     notes.append(
         "boot-drift: DERIVED band %s ±%s (`s240-D1`, n=%d sessions #%d–#%d: %s) · newest "
         "#%d %s · delta %+d · red beyond ±%s (%g× the spread) · ceiling %s "
-        "(`s241-D1`, shrink-only)"
+        "(`s305-D29` until the Mac seat; `s241-D1` shrink-only resumes from that reading)"
         % (f"{mean:,.0f}", f"{spread:,.0f}", len(reads), sessions[0], sessions[-1],
            " · ".join(f"{s:,}" for s in reads), newest_sess, f"{newest:,}", delta,
            f"{red_line:,.0f}", sigma, f"{ceiling:,}"))
@@ -7128,6 +7128,15 @@ def selftest_preflight_tokens():
             f"(1M + auto-compaction — Dave's #284 correction, worded #286); "
             f"AMBER is derived at 80% of working. Re-dialling WORKING is his "
             f"word — updating this pin is part of doing it.")
+    # ⬛ `s305-D28` (Dave, 2026-09-27, "yes to both") INSCRIBES the two window lines above and moves
+    # the stop and tolerance lines under them. Until #305 those two had no pin at all, so a silent
+    # edit of either read green everywhere; they are pinned here beside the triple, same authority.
+    if (gauge.STOP_LINE_TK, gauge.TOLERATED_TK) != (236_000, 276_000):
+        failures.append(
+            f"stop/tolerance = {(gauge.STOP_LINE_TK, gauge.TOLERATED_TK)}, ruled (236,000, "
+            f"276,000) by `s305-D28` (was 180,000 `s271-D1` / 220,000 `s272-D93`). Both are "
+            f"ADVISORY lines under working 256,000 / hard 300,000 and both are Dave's to move — "
+            f"updating this pin is part of doing it.")
     # ⛔ THE #53 GUARD, asserted rather than trusted: a budget under its own floor is unobeyable.
     # ⚠ PAIRED HALF OF #79-D1 (Dave: *"make it refuse"*). This reaches the gauge by
     # assert_budget_clears_floor() -> measure_boot() -> count(), and count() now RAISES

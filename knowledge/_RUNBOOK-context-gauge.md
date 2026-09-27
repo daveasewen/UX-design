@@ -58,6 +58,9 @@ These are NEW thresholds with their own provenance [[measure-dont-convert-units]
 
 ⛔ **2026-09-23 · #301 (later the same session) — WORKING MOVED 200,000 → 256,000, PICKED BY DAVE** (added by addition; the WORKING row above is the pre-#301 record). Asked whether the 200K–256K mechanical-only band should stretch to 300K, Dave, verbatim: *"200k isnt enough make it 256"*. `BUDGET_WORKING = 256_000`; the gate's pin is now `(160_000, 256_000, 300_000)`, and a priced pre-flight stamp must read `= N of 256,000`. AMBER 160,000 and the 72,768 boot ceiling did **not** move; the 180,000 stop line and 220,000 tolerance now sit UNDER the working line.
 
+⬛ **2026-09-27 · #305 — `s305-D28` INSCRIBES THE WINDOW LINES AND MOVES THE TWO LINES UNDER THEM** (added by addition; every row and line above is kept as the record it is). Dave took the sitting's call 28 — *"Inscribe your window lines (working 256,000, hard 300,000) and move the stop and tolerance lines under them (236,000 and 276,000)?"* — and answered, verbatim: *"yes to both"*. **The bands in force from #305:** AMBER **160,000** (unchanged) · STOP **236,000** (`STOP_LINE_TK`, was 180,000 — `s260-D2`/`s271-D1`) · WORKING **256,000** (`BUDGET_WORKING`, now a ruling) · TOLERANCE **276,000** (`TOLERATED_TK`, was 220,000 — `s272-D93`) · HARD **300,000** (`BUDGET_HARD`, now a ruling). Stop and tolerance stay ADVISORY; the blocking tier is still the hard line. The pin that holds them is `_capture_gate.py` `selftest_preflight_tokens()` — the triple as before, and now the stop/tolerance pair beside it.
+⬛ **Same sitting, call 29 — `s305-D29`: THE BOOT CEILING IS 130,000 UNTIL THE MAC SEAT, THEN MEASURED THERE AND SHRUNK.** Dave, verbatim: *"yes"*, with the comment *"I really find this frustrating, we need to make this more efficient somehow, and I want to return to impoving the wrap too at some point"* (thread W-305n3). `BOOT_CEILING_TK = 130_000` supersedes `s295-D3`'s 72,768 for the period until the Mac seat; shrink-only (`s240-D2`/`s241-D1`) resumes from the Mac-seat reading. The ceiling text further down this runbook (70,000 / 72,768) is the record of the earlier values, not the live one.
+
 ⚠ **PROVENANCE OF THE TWO ROWS ABOVE WAS ITSELF CORRECTED TWICE AFTER THIS TABLE WAS FIRST WRITTEN
 (#58b, #59) — folded in above; here is why, so a later re-read does not silently drift back.**
 WORKING read "DAVE'S, ruled #56" for three sessions until Dave corrected it himself: *"BTW the 200K
@@ -400,6 +403,8 @@ line of 180,000 real, whatever the session type**, and it now lives where a scri
 keeping `CHAIN_STOP_RE` only as a declared fallback that WARNS when the chain's scraped figure disagrees.
 ⛔ The outer lines are STILL untouched: **200,000 working · 256,000 quality-max**, exactly as `s214-D1`/`s214-D2`
 left them. The DECLARED-gap rule in the bullet above survives unchanged and now applies to the constant.
+⬛ **#305 — `s305-D28` crosses this number out:** the one advisory stop line is now **236,000**, with tolerance at
+**276,000**, under working 256,000 and hard 300,000 (see the ⬛ #305 line under the band table). Nothing above is edited.
 
 ### ★ MEASURED, NOT RULED — A LANE IS PRICED AT ITS RETURN, NOT ITS LAUNCH (#237 · #238 datapoints; homed here by ADDITION at the #238 wrap's 2f EXIT CHECK)
 

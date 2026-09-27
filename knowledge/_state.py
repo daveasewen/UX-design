@@ -375,6 +375,66 @@ def check_homes(items, root=None):
 # has opened a row (N < max(opened)). No git, no clock — the same answer in a clone, a pack or a seat.
 # ⚠ Same dial shape as HOME_ROT_BLOCKING: False = one NOTE line; True = one FAILURE per named row.
 REGROWTH_BLOCKING = False   # Dave's dial (#304). Promotion to blocking is his word, not a lane's.
+# ⬛ `s305-D40` (Dave, 2026-09-27, the sitting, call 40 — "yes"): "THE STORE STOPS REGROWING: DOCUMENT
+# ROWS ARE CLOSED AT BIRTH FROM NOW, AND THE REGROWTH CHECK IS TURNED ON ONCE THE 75 STANDING DOCUMENT
+# ROWS ARE CLOSED OR PARKED." The dial above is NOT flipped by hand: the ruling's own condition flips it.
+# `REGROWTH_ARMING_IDS` pins THE 75 — the rows this arm named at #304 (rows opened up to #303), derived
+# from the committed store at the #304 wrap (9f9ff879) and again at HEAD 0ef30746, the same 75 both
+# times. `regrowth_arming()` answers the ruling's question from the store every time `check()` runs;
+# the moment every one of the 75 is closed or parked the arm is BLOCKING, with no seat's hand on it.
+# ⚠ A pinned id missing from the store counts as STILL OWED: rows close by addition, never by deletion.
+# ⚠ Armed means armed for EVERY row the arm names then, not only the 75 — that is "the check is on".
+REGROWTH_ARMING_IDS = (
+    "W-100bl", "W-107", "W-164", "W-165", "W-171", "W-177", "W-182", "W-185", "W-186",
+    "W-187", "W-201", "W-227", "W-264", "W-265", "W-286w", "W-289ww", "W-293w", "W-295k",
+    "W-296h", "W-297h", "W-297k", "W-298a", "W-298h", "W-299h", "W-300h", "W-301h", "W-324",
+    "W-330", "W-337", "W-338", "W-378", "W-384", "W-388", "W-393", "W-395", "W-396",
+    "W-401", "W-41", "W-413", "W-414", "W-416", "W-417", "W-418", "W-428", "W-433",
+    "W-447", "W-451", "W-453", "W-461", "W-464", "W-468", "W-471", "W-472", "W-473",
+    "W-477", "W-484", "W-49", "W-490", "W-491", "W-493", "W-494", "W-495", "W-497",
+    "W-498", "W-500", "W-501", "W-502", "W-503", "W-504", "W-505", "W-507", "W-56",
+    "W-99f", "W-99w", "W-99zh",
+)
+
+
+def regrowth_arming(items):
+    """`s305-D40` — (armed: bool, owed: [id]). Armed once every pinned id is present and closed or
+    parked (any state outside LIVE_STATES); `owed` lists the pinned ids still live or missing."""
+    by = {i.get("id"): i.get("state") for i in items}
+    owed = [i for i in REGROWTH_ARMING_IDS if i not in by or by[i] in LIVE_STATES]
+    return (not owed), owed
+
+
+# ⬛ `s305-D40`, first half — DOCUMENT ROWS ARE CLOSED AT BIRTH. A document row is a row whose `home` is
+# one document of the doc-row gate's population (`_gate_doc_rows.in_population`: a flat
+# notes/_subreports/*.md, a notes/_briefs/ file, a _BRIEF-* file) — ONE membership test, imported, never
+# re-typed here. From `DOC_BIRTH_FROM_SESSION` such a row may not be born LIVE: it enters `done` with a
+# `closed_by` receipt (the file is the record), and open work the document names goes in rows of its own.
+# ⚠ Why 306 and not 305: #305's lanes minted their own report rows live before this line existed; grading
+# them now would turn this session's wave red for a rule it could not have read. They are the regrowth
+# arm's to name, like every other row, and the #306 opener is the first seat that can obey this.
+DOC_BIRTH_FROM_SESSION = 306
+DOC_BIRTH_LEGAL_FORM = ("state='done', closed_by='born closed (s305-D40): <path> filed at #<N> — the "
+                        "file is the record'")
+
+
+def born_live_doc_rows(items):
+    """`s305-D40` — (named: [(id, home)], note_or_None). LIVE rows opened at or after
+    DOC_BIRTH_FROM_SESSION whose home (anchor stripped) is one document of the doc-row population."""
+    try:
+        from _gate_doc_rows import in_population
+    except Exception as e:                                           # noqa: BLE001 - declared, never a pass
+        return [], (f"DOC BIRTH (s305-D40) NOT RUN — the doc-row population test did not import "
+                    f"({type(e).__name__}: {e}); born-live document rows are UNCHECKED here, not clean.")
+    out = []
+    for it in items:
+        o = it.get("opened")
+        if it.get("state") not in LIVE_STATES or isinstance(o, bool) or not isinstance(o, int):
+            continue
+        home = str(it.get("home", "")).split("#", 1)[0].strip()
+        if o >= DOC_BIRTH_FROM_SESSION and home and in_population(home):
+            out.append((it.get("id", "<no id>"), home))
+    return out, None
 PAST_SESSION_RE = re.compile(
     r"#(\d{2,3})(?:'s)?\s+(?:opener|wrap|post-wrap|capture|record|commit|ran)\b", re.I)
 
@@ -575,9 +635,18 @@ def check(doc=None, path=STORE):
     if h_fails:
         (fails if HOME_ROT_BLOCKING else notes).extend(h_fails)
 
-    # ---- the REGROWTH arm (#304) — see past_session_closes(). ADVISORY: a NOTE unless Dave's dial.
+    # ---- the REGROWTH arm (#304) — see past_session_closes(). ADVISORY: a NOTE unless Dave's dial,
+    # or unless `s305-D40`'s own condition has armed it (every one of the 75 closed or parked).
     rg = past_session_closes(items)
-    if rg and REGROWTH_BLOCKING:
+    armed, owed = regrowth_arming(items)
+    if items and armed:
+        notes.append(f"Regrowth armed (s305-D40): all {len(REGROWTH_ARMING_IDS)} pinned document rows are "
+                     f"closed or parked, so the regrowth arm is BLOCKING.")
+    elif items:
+        notes.append(f"Regrowth arming (s305-D40): {len(owed)} of {len(REGROWTH_ARMING_IDS)} pinned "
+                     f"document rows still live — the arm turns BLOCKING by itself when this reaches 0: "
+                     + ", ".join(owed[:15]) + (f" …(+{len(owed) - 15} more)" if len(owed) > 15 else ""))
+    if rg and (REGROWTH_BLOCKING or armed):
         fails.extend(f"{i}: REGROWTH — closes on an event at #{n}, and #{n} has wrapped (the store "
                      f"has rows opened up to #{last}); close it by addition with its receipt, or "
                      f"restate the condition" for i, n, last in rg)
@@ -588,6 +657,15 @@ def check(doc=None, path=STORE):
                      f"(restate it): " + ", ".join(f"{i} (#{n})" for i, n, _ in rg[:15])
                      + (f" …(+{len(rg) - 15} more)" if len(rg) > 15 else "")
                      + ". REGROWTH_BLOCKING is Dave's dial.")
+
+    # ---- `s305-D40` — DOCUMENT ROWS ARE CLOSED AT BIRTH (from DOC_BIRTH_FROM_SESSION). BLOCKING.
+    born, why = born_live_doc_rows(items)
+    if why:
+        notes.append(why)
+    fails.extend(f"{i}: BORN LIVE — a document row (home {h}) opened at or after "
+                 f"#{DOC_BIRTH_FROM_SESSION} is closed at birth under s305-D40. Legal form: "
+                 f"{DOC_BIRTH_LEGAL_FORM}; open work the document names goes in rows of its own."
+                 for i, h in born)
 
     return (not fails), fails, notes
 
@@ -1020,6 +1098,88 @@ def selftest():
                          f"— something else is naming it: {hit}")
     finally:
         REGROWTH_BLOCKING, PAST_SESSION_RE = _rg_was, _re_was
+
+    # 17. `s305-D40` — THE ARMING SWITCH. The regrowth arm must turn BLOCKING by itself exactly when every
+    # pinned row is closed or parked, and not one row sooner. Planted store: the 75 pinned ids (conditions
+    # that are NOT event-shaped, so only the planted W-100 is ever named) + the #304 fixture pair.
+    def _arm_doc(state_of):
+        d = _rg_doc("the #200 opener has read this report and carried its questions")
+        base = d["items"][1]
+        for pid in REGROWTH_ARMING_IDS:
+            st = state_of(pid)
+            if st is None:
+                continue                                   # the id is MISSING from the store
+            r = dict(base, id=pid, opened=150, state=st,
+                     closes_when="Dave rules the fixture question in his own words")
+            if st in ("done", "dropped"):
+                r["closed_by"] = "fixture receipt"
+            d["items"].append(r)
+        return d
+    _last = REGROWTH_ARMING_IDS[-1]
+    REGROWTH_BLOCKING = False
+    for name, fn, want_armed in (
+            ("all 75 live", lambda i: "open", False),
+            ("all 75 done", lambda i: "done", True),
+            ("74 done + 1 parked", lambda i: "parked" if i == _last else "done", True),
+            ("74 done + 1 still open", lambda i: "open" if i == _last else "done", False),
+            ("74 done + 1 MISSING", lambda i: None if i == _last else "done", False)):
+        n_bites[0] += 1
+        ok, fs, ns = check(_arm_doc(fn))
+        failed = any(x.startswith("W-100: REGROWTH") for x in fs)
+        if failed != want_armed or ok == want_armed:
+            fails.append(f"[s305-D40 arming: {name}] wanted armed={want_armed}, got ok={ok} "
+                         f"named-as-failure={failed}")
+    if len(REGROWTH_ARMING_IDS) != 75 or len(set(REGROWTH_ARMING_IDS)) != 75:
+        fails.append(f"[s305-D40 pin] REGROWTH_ARMING_IDS holds {len(set(REGROWTH_ARMING_IDS))} distinct "
+                     f"ids, not the 75 the ruling names — an emptied pin would ARM AT ONCE")
+    n_bites[0] += 1
+
+    # 18. `s305-D40` — DOCUMENT ROWS CLOSED AT BIRTH. Home-rot is set non-blocking for these bites only:
+    # the planted document paths need not exist (the same fixture must run in a shipped cut).
+    try:
+        import _gate_doc_rows as _gdr
+    except Exception:                                                    # noqa: BLE001
+        _gdr = None
+    _hr_was = HOME_ROT_BLOCKING      # declared global at arm 15, same function scope
+    try:
+        HOME_ROT_BLOCKING = False
+        if _gdr is None:
+            n_bites[0] += 1
+            ok, fs, ns = check(healthy())
+            if not any("DOC BIRTH (s305-D40) NOT RUN" in x for x in ns):
+                fails.append("[s305-D40 birth] the population test did not import AND the arm said nothing")
+        else:
+            def _born(opened, home, state="open"):
+                d = healthy()
+                r = dict(d["items"][0], id="W-306a", opened=opened, home=home, state=state,
+                         closes_when="the #307 opener has read this report")
+                if state == "done":
+                    r["closed_by"] = "born closed (s305-D40): fixture"
+                d["items"].append(r)
+                return d
+            rep = "notes/_subreports/2026-09-28-306-X-fixture.md"
+            bite("s305-D40 birth: a live document row born at #306 is REFUSED",
+                 _born(DOC_BIRTH_FROM_SESSION, rep), False, "BORN LIVE")
+            bite("s305-D40 birth: the anchor is stripped before the test",
+                 _born(DOC_BIRTH_FROM_SESSION, rep + "#section"), False, "BORN LIVE")
+            bite("s305-D40 birth control: born done, with its receipt, passes",
+                 _born(DOC_BIRTH_FROM_SESSION, rep, state="done"), True)
+            bite("s305-D40 birth control: a #305 row is not graded",
+                 _born(DOC_BIRTH_FROM_SESSION - 1, rep), True)
+            bite("s305-D40 birth control: a home outside the population passes",
+                 _born(DOC_BIRTH_FROM_SESSION, "notes/_lanes/306/X/notes.md"), True)
+            _pop_was = _gdr.in_population
+            try:
+                _gdr.in_population = lambda _p: False      # the mutation: nothing is a document
+                n_bites[0] += 1
+                ok, fs, _ = check(_born(DOC_BIRTH_FROM_SESSION, rep))
+                if any("BORN LIVE" in x for x in fs):
+                    fails.append(f"[s305-D40 birth mutation] with the population test gutted the row "
+                                 f"was STILL refused — something else is naming it: {fs}")
+            finally:
+                _gdr.in_population = _pop_was
+    finally:
+        HOME_ROT_BLOCKING = _hr_was
 
     # +4 non-`bite()` arms: the malformed-store raise, the duplicate-rank NOTE, the
     # coverage NOTE, and the counts-move arm. `_hn` counts the home-resolver arms, which are

@@ -456,7 +456,7 @@ def derive_block_fields(src: dict) -> dict:
     chain_n = int(ms.group(1).replace(",", "")) if ms else None
     stop_n = getattr(gauge, "STOP_LINE_TK", None)
     if stop_n is not None:
-        stop = (f"FILL {stop_n:,} real — the RULED stop line (`s260-D2` + `s271-D1`, "
+        stop = (f"FILL {stop_n:,} real — the RULED stop line (`s305-D28`, was `s260-D2` + `s271-D1`; "
                 f"gauge.STOP_LINE_TK); job room = stop line − current FILL, on the BUDGET line")
         if chain_n is None:
             stop += (" · ⚠ _CHAIN.md states NO `stop line <N>` figure (probe: CHAIN_STOP_RE) — "
@@ -495,11 +495,11 @@ def derive_budget(path: str, fill: dict, stop_n: int | None) -> str:
                 head += f" · room to stop line {room:,}"
             elif tol_n is not None and fill["now"] <= tol_n:
                 head += (f" · ⚠ PAST the stop line by {abs(room):,} — TOLERATED "
-                         f"(`s272-D93`, ≤ {tol_n:,}; {tol_n - fill['now']:,} to tolerance)")
+                         f"(`s305-D28`, ≤ {tol_n:,}; {tol_n - fill['now']:,} to tolerance)")
             else:
                 head += f" · ⛔ PAST the stop line by {abs(room):,}"
                 if tol_n is not None:
-                    head += f" — PAST TOLERANCE (`s272-D93`, {tol_n:,}) by {fill['now'] - tol_n:,}"
+                    head += f" — PAST TOLERANCE (`s305-D28`, {tol_n:,}) by {fill['now'] - tol_n:,}"
     try:
         n, method = measure_real(_conversation_blob(path))
         head += f" · throughput {n:,} {method} (gauge.count, ONE call — NOT comparable to FILL)"

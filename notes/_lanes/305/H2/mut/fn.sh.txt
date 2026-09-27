@@ -1,0 +1,6 @@
+push_credential_present() {
+  git config remote.origin.url | grep -q "@github.com" && return 0
+  printf 'protocol=https\nhost=github.com\n\n' \
+    | GIT_TERMINAL_PROMPT=0 GIT_ASKPASS= SSH_ASKPASS= git credential fill 2>/dev/null \
+    | grep -q '^password=.'
+}

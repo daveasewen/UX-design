@@ -1,0 +1,1091 @@
+#!/usr/bin/env bash
+# _git_commit.sh — the sandbox commit dance, mechanised.
+# provenance: lane session 2026-07-26 (dream-pass P2, Dave ruled accept-enact-now) · status: ruled
+#
+# WHY: 5 of 7 commit-running sessions (3 of 5 at ruling; #36 + #41 since) reconstructed the clear·stage·clear·commit·clear sequence
+# from memory under wrap-time heat and hit the lock failure first (dream-pass P2 evidence).
+# Per feedback-gate-dont-patch: make the condition mechanical, not another prose reminder.
+# The sandbox delete-guard means locks can only be MOVED (mv), never rm'd — see the runbook.
+#
+# USAGE:  bash knowledge/_git_commit.sh --reconciled <msgfile> <path> [<path> ...]
+#   <msgfile>      commit message file — UNIQUE name, in a session-owned dir (outputs/), never /tmp
+#   <path>...      THE PATHS TO STAGE, named explicitly. Required.
+#   --reconciled   you have run `git status --short` and can name WHY every dirty path exists
+#                  (runbook step 0.5 — the script cannot do this judgment for you)
+#   --all-dirty    escape hatch: stage every dirty path, each one ECHOED first. Use only when the
+#                  reconciliation genuinely covered all of them; it is never the default.
+#   --quiet        VERDICT LINES ONLY on the terminal (#286, #285's move 3): the full transcript
+#                  is written to a file and its path is printed. Gate chatter is filtered; a
+#                  refusal, a gate fail and a non-zero exit are NEVER filtered — on any non-zero
+#                  exit the WHOLE transcript is replayed to stderr. `--quiet=<path>` picks the
+#                  transcript file. Works on every mode (--push / --selftest / --declare-dirt too).
+# The script REFUSES to stage while any .git/*.lock exists, and never runs rm inside .git.
+#
+# ⚠ `git add -A` RETIRED — ruled Dave 2026-08-02 (dream pass 4, P5 "ACCEPTED, option (a)"), enacted
+# #128. `--reconciled` asserted a judgment the staging call then ignored: `add -A` swept whatever
+# happened to be dirty, including another worker's uncorrected draft (#70). The flag now means what
+# it says — you name the paths, and anything you did not name cannot ride along. The escape hatch
+# exists because refusing a legal intention with no legal form is how a gate gets worked around
+# rather than obeyed; it stages nothing silently.
+
+set -u
+cd "$(dirname "$0")/.." || exit 1
+
+RECONCILED=0
+
+# ── `--quiet` — VERDICT LINES ONLY, TRANSCRIPT TO A FILE (#286 lane T; #285 move 3) ───────────
+# MEASURED, #284: the conductor ran this script SIX times IN SEAT for one commit (a showroom
+# refusal, a doc-row refusal, a chain-stale refusal, then a stranded index.lock twice) at roughly
+# 30K tokens of output — the gates this script consumes are each verbose by design, and the
+# conductor pays for all of it in a window that is the session's scarcest surface. #285's move 3
+# names the remedy in four words: "`--quiet` ON `_git_commit.sh` (verdict lines only)".
+#
+# ⛔ THE ONE PROPERTY THAT MATTERS: QUIET NEVER HIDES A REFUSAL. Three mechanisms, not one:
+#   (1) the keep-filter passes every ✗ / ⛔ / ⚠ / ✅ / ✓ line and every line naming a REFUSAL,
+#       a FAIL or a gate, so verdicts stream live exactly as they always did;
+#   (2) on ANY non-zero exit the FULL transcript is replayed to stderr, unfiltered — quiet only
+#       ever pays off on a clean run, which is the run nobody needs to read;
+#   (3) the transcript file is written unconditionally and its path is printed FIRST, so the
+#       filtered lines are never the only copy [[refusal-names-the-first-obstacle]].
+# ⚠ HOW IT IS IMPLEMENTED, and why this shape: the script RE-EXECS ITSELF with `--quiet` stripped
+# and pipes the child through `tee | grep`. A `exec > >(…)` process-substitution filter on the
+# parent would have raced the exit and could TRUNCATE the tail — the sha line is the tail. The
+# child's exit status is taken from PIPESTATUS[0], never from grep (which exits 1 on no match).
+# ⛔ DEFAULT BEHAVIOUR IS UNTOUCHED: with no `--quiet` this block sets QUIET=0 and falls through;
+# nothing else in the script reads QUIET. Verified at #286 by diffing --selftest, --declare-dirt
+# and the no---reconciled refusal path before and after (notes/_lanes/286/T/).
+QUIET=0
+QUIET_LOG=""
+QUIET_ARGS=()
+for _a in "$@"; do
+  case "$_a" in
+    --quiet)   QUIET=1 ;;
+    --quiet=*) QUIET=1; QUIET_LOG="${_a#*=}" ;;
+    *)         QUIET_ARGS+=("$_a") ;;
+  esac
+done
+# the keep-filter. Verdicts, refusals, gate names, the T3 headline and the committed sha line.
+QUIET_KEEP_RE='^(✗|⛔|⚠|✅|✓|— )|REFUS|FAIL|not clean|✗'
+if [ "$QUIET" -eq 1 ] && [ -z "${GIT_COMMIT_QUIET_CHILD:-}" ]; then
+  [ -n "$QUIET_LOG" ] || QUIET_LOG="outputs/_gitcommit-transcript-$(date +%s%N).log"
+  mkdir -p "$(dirname "$QUIET_LOG")" 2>/dev/null || true
+  echo "— --quiet: verdict lines only; FULL transcript → $QUIET_LOG"
+  set -o pipefail
+  GIT_COMMIT_QUIET_CHILD=1 bash "$0" ${QUIET_ARGS[@]+"${QUIET_ARGS[@]}"} 2>&1 |
+    tee "$QUIET_LOG" | grep --line-buffered -E "$QUIET_KEEP_RE"
+  QRC=${PIPESTATUS[0]}
+  if [ "$QRC" -ne 0 ]; then
+    echo "" >&2
+    echo "⛔ --quiet: the run exited $QRC — REPLAYING THE FULL TRANSCRIPT (quiet never hides a refusal):" >&2
+    cat "$QUIET_LOG" >&2
+  fi
+  echo "— --quiet: $(wc -l < "$QUIET_LOG" | tr -d ' ') transcript lines at $QUIET_LOG · exit $QRC"
+  exit "$QRC"
+fi
+
+# ── W-22(dream pass 6 P2, pass-8 datapoint ee4): THE INSTRUMENTATION APPENDS ARE DECLARED ────
+# The three tracked files our own verification instruments APPEND to while they verify. They are
+# dirty-at-baseline for a reason that is not a worker's uncommitted draft, and until #188 the only
+# machinery that knew this was the ONE s137-D1 exclusion — the other two arrived at a push refusal
+# as anonymous dirt, indistinguishable from someone's half-finished edit.
+#
+# ⛔ THIS IS A DECLARATION, NOT AN EXCLUSION. `PUSH_DIRT`'s exclude list is UNCHANGED and still
+# names exactly one path in full: s137-D1 says "do NOT generalise this to a pattern or a second
+# file", and widening it here would be a sub ruling Dave's open policy question. Whether the other
+# two should also be excluded, committed on the spot, or moved out of the tree is ⬛ DAVE'S — pass
+# 6 P2 is FLOATED, not ruled. What machinery can honestly do without his word is say WHICH dirt is
+# instrument-written and WHICH instrument wrote it, so the refusal is diagnostic
+# [[refusal-names-the-first-obstacle]] instead of a heap of paths.
+INSTRUMENTATION_PATHS=(
+  "notes/_REHEARSAL-LOG.jsonl|_capture_gate.py --wrap / --rehearse, _checkin.py (rehearsal rows)|EXCLUDED from the push gate by s137-D1"
+  "knowledge/_graph-mark-observations.jsonl|the graph mark observers|NOT excluded — its POLICY is ⬛ DAVE'S, unruled (dream pass 6 P2)"
+  "notes/_dream/_GRADE-DECISIONS.jsonl|_checkin.py B3 grade alerts / _gardener.py --grade-decision|NOT excluded — its POLICY is ⬛ DAVE'S, unruled (dream pass 6 P2)"
+)
+
+# ── #261 M2: THE SANCTIONED COMMIT PATH COULD NEVER LEAVE A CLEAN TREE ────────────────────────
+# MEASURED at #261 (commit 68daf1f): `notes/_REHEARSAL-LOG.jsonl` md5 d17ca683 → 16c70ab4 across
+# ONE ruled commit that staged a single unrelated file. The gates this script runs BEFORE staging
+# (`_capture_gate.py --wrap` at the wrap-gate consumer) append to the tracked instrumentation
+# logs, nothing stages them, and the tree is dirty the instant the commit lands. `require_clean`
+# in `apollo-spider/build-designer-pack.sh` takes a bare `git status --porcelain`, so `--release`
+# and the ruled commit path were mutually exclusive by construction (#260 lane R3 worked around
+# it rather than editing either).
+#
+# THE FIX IS THE NARROWEST OF THE THREE THE CARRY NAMED: the script COMMITS THE DIRT THE SCRIPT
+# MADE. Only a declared instrumentation path whose bytes changed BETWEEN this script's start and
+# the staging call is auto-staged — measured, never a pattern. `s137-D1`'s push-gate exclusion is
+# UNTOUCHED (this stages, it does not exclude), `require_clean` is UNTOUCHED, and the ⬛ POLICY
+# question for the other two logs is still Dave's — this only stops the tool dirtying its own
+# result. Opt out with `INSTRUMENT_AUTOSTAGE=0` (then the old behaviour, and the old impossibility).
+INSTRUMENT_AUTOSTAGE="${INSTRUMENT_AUTOSTAGE:-1}"
+_instr_hash() { [ -f "$1" ] && { md5sum "$1" 2>/dev/null || shasum "$1" 2>/dev/null; } | cut -d' ' -f1; }
+INSTR_SNAP=()
+for _rec in "${INSTRUMENTATION_PATHS[@]}"; do
+  INSTR_SNAP+=("$(_instr_hash "${_rec%%|*}")")
+done
+
+declare_instrumentation_dirt() {
+  # $1 = a `git status --short` blob (may be empty). Prints a DECLARED block naming any of the
+  # three instrumentation appends inside it. Emits nothing when none of them are dirty.
+  local blob="${1-}" hit=0 rec p writer note
+  for rec in "${INSTRUMENTATION_PATHS[@]}"; do
+    p="${rec%%|*}"; writer="${rec#*|}"; note="${writer#*|}"; writer="${writer%%|*}"
+    case "$blob" in
+      *"$p"*)
+        [ "$hit" -eq 0 ] && echo "— DECLARED: instrumentation appends among the dirty paths (W-22; dream pass 6 P2 is FLOATED, not ruled):"
+        hit=1
+        echo "    $p"
+        echo "      written by: $writer"
+        echo "      status:     $note"
+        ;;
+    esac
+  done
+  [ "$hit" -eq 1 ] && echo "  ⇒ this dirt is machine-written, not an uncommitted draft. ⛔ The POLICY (exclude / commit / relocate) is DAVE'S; this line only DECLARES it."
+  return 0
+}
+
+# `bash knowledge/_git_commit.sh --declare-dirt` — the declaration's OWN consumer, read-only:
+# no staging, no commit, no push, no writes [[instrument-without-a-consumer]]. Exit 0 always;
+# it reports, it does not gate.
+if [ "${1-}" = "--declare-dirt" ]; then
+  DIRT=$(git status --short -- .)
+  if [ -z "$DIRT" ]; then
+    echo "— tree clean: no instrumentation dirt to declare."
+  else
+    echo "— dirty paths:"; echo "$DIRT"
+    declare_instrumentation_dirt "$DIRT"
+  fi
+  exit 0
+fi
+
+# ── ⬛ s294-D5 — THE PUSH CREDENTIAL'S EXPIRY IS CHECKED, NOT REMEMBERED ─────────────────────
+# `s294-D5` (Dave, 2026-09-21, chat #294): "THE PUSH CREDENTIAL IS NARROWED TO THE SHAPE THE
+# RECORD ALREADY CLAIMS: THIS REPO, CONTENTS READ/WRITE ONLY, NINETY DAYS — RE-ISSUED BEFORE
+# 2026-11-06, WITH THE EXPIRY CHECKED BY THE SCRIPT RATHER THAN REMEMBERED." And its ground, in
+# his own page's words: "a ninety-day scope that nobody re-checks is a ninety-day scope exactly
+# once."
+# ⛔ THE RE-ISSUE ITSELF IS DAVE'S HANDS, AT GITHUB. Nothing here can mint, read or replace a
+# token, and nothing here ever will: this gate reads ONE DATE out of the ledger and compares it
+# to today. It never touches `remote.origin.url`, never echoes it, never logs it. The credential
+# does not appear in this function's inputs or its outputs.
+# ★ THE DATE HAS ONE HOME IN THE REPO and this reads it from there rather than restating it —
+# `notes/_MEMENTO-DECISIONS.md`, the W-24 stamp added at #188 under `s133-D2`. A second copy of a
+# date is a second thing to drift [[premise-ages-faster-than-rule]], which is the whole defect
+# dream pass 6 P4 found: the expiry was written in prose and nothing re-read it.
+PAT_EXPIRY_LEDGER="notes/_MEMENTO-DECISIONS.md"
+PAT_EXPIRY_ANCHOR="EXPIRY STAMPED (W-24"
+PAT_EXPIRY_WARN_DAYS=14
+
+# The ONE date, read from the ONE place. Prints it or prints nothing (never a guess).
+pat_expiry_read() {
+  [ -f "$PAT_EXPIRY_LEDGER" ] || return 0
+  grep -A3 -F "$PAT_EXPIRY_ANCHOR" "$PAT_EXPIRY_LEDGER" 2>/dev/null \
+    | sed -n 's/.*expires \*\*~\{0,1\}\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\)\*\*.*/\1/p' \
+    | head -1
+}
+
+# GNU `date -d` and BSD `date -j -f` both exist in this project's seats (Linux sandbox, his Mac),
+# so neither is assumed. Prints an epoch or nothing.
+pat_epoch_of() {
+  date -d "$1" +%s 2>/dev/null || date -j -f "%Y-%m-%d" "$1" +%s 2>/dev/null
+}
+
+# `APOLLO_FAKE_TODAY=YYYY-MM-DD` — the SELFTEST's clock, and it is declared out loud rather than
+# hidden: a gate that can only be exercised by waiting six weeks is a gate nobody has tested.
+# ⚠ It is read ONLY here, and the real clock is the default.
+pat_today() { echo "${APOLLO_FAKE_TODAY:-$(date +%Y-%m-%d)}"; }
+
+# verdict: prints "OK <days>" / "WARN <days>" / "EXPIRED <days>" / "UNREADABLE", exit 0 always.
+pat_expiry_verdict() {
+  local exp today e t days
+  exp=$(pat_expiry_read); today=$(pat_today)
+  [ -n "$exp" ] || { echo "UNREADABLE"; return 0; }
+  e=$(pat_epoch_of "$exp"); t=$(pat_epoch_of "$today")
+  { [ -n "$e" ] && [ -n "$t" ]; } || { echo "UNREADABLE"; return 0; }
+  days=$(( (e - t) / 86400 ))
+  if   [ "$days" -lt 0 ];                       then echo "EXPIRED $days"
+  elif [ "$days" -le "$PAT_EXPIRY_WARN_DAYS" ]; then echo "WARN $days"
+  else                                               echo "OK $days"; fi
+}
+
+# ── ⬛ s305-D30 — THE PUSH TOKEN LIVES BEHIND THE REPO-LOCAL CREDENTIAL HELPER, NOT IN THE URL ────
+# Dave, the sitting of 2026-09-27, call 30: "yes". #305 C1 moved it (notes/_subreports/2026-09-27-305-C1-
+# commit.md): the token is in `.git/apollo-credentials` and a GET-ONLY helper in the repo's own config
+# answers `git credential fill` for github.com; the remote URL is clean. A credential is PRESENT when
+# either form answers — the pre-#305 URL form or the helper. ⛔ BOTH ARE ONLY TESTED: the URL is piped
+# into `grep -q` and the helper's answer is piped into `grep -q`; nothing is echoed, logged or kept in
+# a variable. Prompts are switched off so a seat with no credential refuses rather than hangs.
+push_credential_present() {
+  git config remote.origin.url | grep -q "@github.com"   # MUTANT: helper arm removed
+}
+
+# ── PUSH MODE (s133-D2, Dave: "I dont mind if its reasonable gated" → "okay do it") ──────────
+# `bash knowledge/_git_commit.sh --push` — the ONLY push path. Fires ONLY on Dave's explicit
+# in-session word (the caller's attestation, same contract as --reconciled). Gates, each a refusal:
+# master only · fast-forward only (no force flag EXISTS here) · clean tree · credential present ·
+# remote head == local head verified AFTER. Supersedes git-push-method BY ADDITION: Desktop remains.
+if [ "$1" = "--push" ]; then
+  BR=$(git rev-parse --abbrev-ref HEAD)
+  [ "$BR" = "master" ] || { echo "✗ push refused: branch is '$BR', not master (s133-D2)"; exit 1; }
+  # s137-D1 (Dave, #137): ONE named exclusion — `notes/_REHEARSAL-LOG.jsonl` is the one tracked file the
+  # verification instruments themselves write (`_capture_gate.py --wrap`, `_checkin.py`), so verifying a
+  # commit AFTER making it dirtied the tree and refused the very push s133-D2 exists to allow (dream pass 6
+  # P2; 9 sessions of declared instances, priced at #125, homed nowhere until #137). The path is named in
+  # full so the exclusion CANNOT silently widen — do NOT generalise this to a pattern or a second file.
+  PUSH_DIRT=$(git status --short -- . ':(exclude)notes/_REHEARSAL-LOG.jsonl')
+  if [ -n "$PUSH_DIRT" ]; then
+    echo "✗ push refused: tree not clean — commit first (s133-D2; rehearsal log excluded per s137-D1). Dirty paths:"
+    echo "$PUSH_DIRT"
+    declare_instrumentation_dirt "$PUSH_DIRT"
+    exit 1
+  fi
+  push_credential_present || { echo "✗ push refused: no push credential — neither the repo's credential helper (s305-D30: .git/apollo-credentials, read through git credential fill) nor the remote URL answers for github.com. Dave: fine-grained PAT (this repo, Contents r/w, 90d) — ⛔ do NOT paste it into chat; store it yourself in a terminal, at the repo root: git credential-store --file=\"$(git rev-parse --absolute-git-dir)/apollo-credentials\" store   then type protocol=https, host=github.com, username=x-access-token, password=<TOKEN>, one per line, and an empty line (the helper C1 set at #305 reads that file; the URL stays clean). (W-24 / dream pass 6 P4: the credential never transits the chat; the gate behaves identically. Expiry ~2026-11-06 for the token minted 2026-08-08 — if that date has passed, re-issue rather than re-read this line. ⛔ the token's SCOPE is Dave's security call, unproposed.)"; exit 1; }
+  # ── ⬛ s294-D5 — THE EXPIRY GATE, BEFORE THE PUSH AND AFTER THE CREDENTIAL CHECK ────────────
+  # WARNS inside 14 days, REFUSES past the date, and quotes the date and the ruling either way.
+  # ⛔ Nothing below reads, prints or logs the credential — the date comes from the ledger.
+  PAT_V=$(pat_expiry_verdict); PAT_STATE=${PAT_V%% *}; PAT_DAYS=${PAT_V##* }
+  PAT_EXP=$(pat_expiry_read); PAT_NOW=$(pat_today)
+  case "$PAT_STATE" in
+    EXPIRED)
+      echo "✗ push refused: THE PUSH CREDENTIAL'S STAMPED EXPIRY HAS PASSED — $PAT_EXP, and today is $PAT_NOW ($((0 - PAT_DAYS)) day(s) past it)."
+      echo "  s294-D5 (Dave, 2026-09-21): the credential is this repo, Contents read/write only, ninety days, RE-ISSUED BEFORE 2026-11-06, with the expiry CHECKED BY THE SCRIPT rather than remembered. This is that check, and it is refusing."
+      echo "  REMEDY — DAVE'S HANDS, AT GITHUB, NOT THIS SCRIPT'S AND NOT A SESSION'S: mint a fresh fine-grained PAT (this repo only · Contents read/write only · 90 days), store it yourself in a terminal in the repo's credential helper file (.git/apollo-credentials, s305-D30 — the credential-refusal line above spells the command), and update the stamped date at $PAT_EXPIRY_LEDGER (the W-24 stamp) so this gate reads the new one."
+      echo "  ⛔ The credential NEVER transits the chat and nothing in this repo may ask for it. Nothing has been pushed."
+      exit 1 ;;
+    WARN)
+      echo "⚠ PUSH CREDENTIAL EXPIRES IN $PAT_DAYS DAY(S) — $PAT_EXP (today $PAT_NOW), inside the ${PAT_EXPIRY_WARN_DAYS}-day window."
+      echo "  s294-D5: re-issue before that date — Dave's hands, at GitHub, 90 days, this repo, Contents r/w only. The push PROCEEDS; this is a warning, not a refusal." ;;
+    UNREADABLE)
+      echo "✗ push refused: THE STAMPED EXPIRY COULD NOT BE READ, so s294-D5's check cannot run and this script will not push on a remembered date."
+      echo "  looked for : the line after \"$PAT_EXPIRY_ANCHOR\" in $PAT_EXPIRY_LEDGER, in the form: expires **~YYYY-MM-DD**"
+      echo "  s294-D5 put the expiry IN THE SCRIPT'S HANDS precisely so nobody has to remember it; an unreadable stamp is therefore a refusal, not a pass [[measuring-tool-must-not-guess]]."
+      echo "  DECLARED-GAP HATCH, spelled like its neighbours (DOC_ROW_ACK / SHOWROOM_ACK / SESSION_ACK): PAT_EXPIRY_ACK=\"<real reason, e.g. the stamp moved to <path> at #N>\" bash knowledge/_git_commit.sh --push"
+      if [ -n "${PAT_EXPIRY_ACK:-}" ]; then
+        echo "  — expiry gate: DECLARED GAP — $PAT_EXPIRY_ACK"
+      else
+        echo "  Nothing has been pushed."; exit 1
+      fi ;;
+    OK)
+      echo "— push credential expiry: $PAT_EXP, $PAT_DAYS day(s) out (s294-D5, checked not remembered)" ;;
+  esac
+  LOCAL=$(git rev-parse HEAD)
+  git push origin master 2>&1 | grep -v "^remote:" || true
+  REMOTE=$(git ls-remote origin refs/heads/master | cut -f1)
+  [ "$LOCAL" = "$REMOTE" ] || { echo "✗ push VERIFY FAILED: local $LOCAL != remote $REMOTE — investigate, do not retry blind"; exit 1; }
+  echo "✅ pushed and VERIFIED: remote master == local $LOCAL"
+  for L in $(find .git -name '*.lock' 2>/dev/null); do mv "$L" _to_delete/_stale_locks/$(basename $L).$(date +%s%N) 2>/dev/null || rm -f "$L"; done
+  exit 0
+fi
+
+WRAP=0
+ALLDIRTY=0
+MSGFILE=""
+PATHS=()
+for a in "$@"; do
+  case "$a" in
+    --reconciled) RECONCILED=1 ;;
+    --wrap) WRAP=1 ;;
+    --all-dirty) ALLDIRTY=1 ;;
+    --session=*) ;;
+    # stripped by the --quiet block above before the re-exec; matched here so that a stray
+    # `--quiet` (e.g. GIT_COMMIT_QUIET_CHILD already set in the environment) can never be
+    # mistaken for the msgfile or a path to stage.
+    --quiet|--quiet=*) ;;
+    *) if [ -z "$MSGFILE" ]; then MSGFILE="$a"; else PATHS+=("$a"); fi ;;
+  esac
+done
+
+clear_locks() {
+  mkdir -p _to_delete/_stale_locks
+  for L in $(find .git -name '*.lock' 2>/dev/null); do
+    mv "$L" "_to_delete/_stale_locks/$(basename "$L").$(date +%s%N)" || true
+  done
+}
+
+fail() { echo "✗ $1" >&2; exit 1; }
+
+# ── T3 PREFIX COUNTER — ONE IMPLEMENTATION, THREE CONSUMERS (#208) ───────────────────────────
+# The prefix T3 generates has TWO legal shapes: `after #<n> <date> — ` (non-wrap) and
+# `#<n> <date> — ` (wrap). Counting them is the primitive under the msgfile-reuse gate below,
+# the post-commit subject assert, and `--selftest`. It exists ONCE because the #170 gate matched
+# only the `after ` shape: feeding a WRAP msgfile (line 1 = `#207 2026-08-18 — …`) into a
+# NON-WRAP run walked straight past it and produced `after #208 2026-08-19 — #207 2026-08-18 — …`.
+# That is 1 of the 8 documented doubled/tripled subjects, and it is why this counts BOTH shapes.
+# ⚠ `— ` here is U+2014 + space, the same literal T3 emits; a hyphen is not this prefix.
+# ⛔ #208 NEW-2, FIXED THE SAME SESSION IT WAS FOUND — this counter was `re.findall`, i.e.
+# UNANCHORED, and it refused an HONEST subject that QUOTED a prior one mid-line ("restores the
+# `after #207 … — x` subject"). The #170 gate this widens has always been ANCHORED (`re.match`,
+# :487 in the T3 block below). An unanchored counter is not a wider gate, it is a DIFFERENT one:
+# it counts MENTIONS, and a mention is not a prefix. It now counts the STACK — how many prefixes
+# sit consecutively AT THE START, which is the only place stacking can happen, because T3 always
+# prepends. `after #208 … — after #207 … — x` still counts 2; the honest quote counts 1.
+# ⚠ `— ` here is U+2014 + space, the same literal T3 emits; a hyphen is not this prefix.
+prefix_count() {
+  python3 - "$1" <<'PY'
+import re, sys
+s = sys.argv[1]
+pat = re.compile(r"^(?:after )?#\d+ \d{4}-\d{2}-\d{2} — ")
+n = 0
+while True:
+    m = pat.match(s)
+    if not m:
+        break
+    n += 1
+    s = s[m.end():]
+print(n)
+PY
+}
+
+# ── #208 SELFTEST — the msgfile-prefix gate, BOTH DIRECTIONS, no repo state touched ──────────
+# `bash knowledge/_git_commit.sh --selftest`. Read-only: no staging, no commit, no push, no
+# writes [[instrument-without-a-consumer]]. Every arm names the class it bites.
+if [ "${1-}" = "--selftest" ]; then
+  SF_FAILS=0
+  bite() { # bite <name> <expected> <actual>
+    if [ "$2" = "$3" ]; then echo "  [OK]   $1 (expected $2)"; else
+      echo "  [FAIL] $1 — expected $2, got $3"; SF_FAILS=$((SF_FAILS + 1)); fi
+  }
+  echo "— #208 msgfile-prefix gate selftest"
+  # FIRES: every shape a reused msgfile actually arrives in
+  bite "non-wrap prefix (the #170 shape) is seen"       1 "$(prefix_count 'after #207 2026-08-18 — wave1 receipts')"
+  bite "WRAP prefix (the shape #170 MISSED) is seen"    1 "$(prefix_count '#207 2026-08-18 — wrap: session close')"
+  bite "doubled non-wrap prefix counts 2"               2 "$(prefix_count 'after #208 2026-08-19 — after #207 2026-08-18 — x')"
+  bite "wrap-into-non-wrap stack counts 2 (the hole)"   2 "$(prefix_count 'after #208 2026-08-19 — #207 2026-08-18 — x')"
+  bite "tripled counts 3"                               3 "$(prefix_count 'after #1 2026-01-01 — after #1 2026-01-01 — after #1 2026-01-01 — x')"
+  # STAYS SILENT: near misses that a looser matcher would eat
+  bite "a fresh subject carries no prefix"              0 "$(prefix_count 'wave1: make CI legible')"
+  bite "session ref with no date is not a prefix"       0 "$(prefix_count '#208 — fix the gates')"
+  bite "date with no session ref is not a prefix"       0 "$(prefix_count '2026-08-19 — fix the gates')"
+  bite "hyphen is not the em-dash separator"            0 "$(prefix_count 'after #207 2026-08-18 - wave1 receipts')"
+  bite "prose mentioning a session mid-line"            0 "$(prefix_count 'fixes the class #205 found')"
+  # ⛔ NEW-2 (#208 verifier): the arms above never carried a DATE mid-line, so the false positive
+  # they were meant to fence never got exercised. These two are that case, both directions.
+  bite "honest subject QUOTING a prior prefix mid-line" 1 "$(prefix_count 'after #208 2026-08-19 — restores the after #207 2026-08-18 — x subject')"
+  bite "a quoted prefix with no prefix of its own"      0 "$(prefix_count 'restores the after #207 2026-08-18 — x subject')"
+  bite "a prefix after a leading word is not a stack"   0 "$(prefix_count 'see after #207 2026-08-18 — x')"
+  # the ACK hatch exists and is spelled the same way as its two neighbours (declared passes,
+  # silent fails). A hatch nothing asserts is a hatch that can be deleted by accident.
+  if grep -q 'PREFIX_ACK' "$0"; then echo "  [OK]   PREFIX_ACK hatch present (declared passes, silent fails)";
+  else echo "  [FAIL] PREFIX_ACK hatch absent — the door gate has no legal form for a declared exception"; SF_FAILS=$((SF_FAILS + 1)); fi
+  # ── ⬛ s294-D5 — THE EXPIRY GATE, EXERCISED BY A FAKE CLOCK AND NEVER BY THE REAL ONE ───────
+  # PLANT, THEN DETECT. The real clock can only ever say one thing today, so a gate tested
+  # against it is a green that cannot fail. `APOLLO_FAKE_TODAY` moves the clock across the
+  # stamped date; the CONTROL run with the fake clock unset proves the default is the real date.
+  echo "— s294-D5 push-credential expiry gate selftest (fake clock: APOLLO_FAKE_TODAY)"
+  SF_EXP=$(pat_expiry_read)
+  bite "the stamped expiry is READ from the ledger, one place, one date" "2026-11-06" "$SF_EXP"
+  bite "far out (2026-01-01) ⇒ OK"        "OK"      "$(APOLLO_FAKE_TODAY=2026-01-01 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "15 days out (2026-10-22) ⇒ OK — the boundary is NOT off by one" "OK" "$(APOLLO_FAKE_TODAY=2026-10-22 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "14 days out (2026-10-23) ⇒ WARN"  "WARN"    "$(APOLLO_FAKE_TODAY=2026-10-23 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "1 day out (2026-11-05) ⇒ WARN"    "WARN"    "$(APOLLO_FAKE_TODAY=2026-11-05 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "the day itself (2026-11-06) ⇒ WARN, not yet expired" "WARN" "$(APOLLO_FAKE_TODAY=2026-11-06 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "one day past (2026-11-07) ⇒ EXPIRED" "EXPIRED" "$(APOLLO_FAKE_TODAY=2026-11-07 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "long past (2027-03-01) ⇒ EXPIRED" "EXPIRED" "$(APOLLO_FAKE_TODAY=2027-03-01 pat_expiry_verdict | cut -d' ' -f1)"
+  bite "days-remaining is COMPUTED, not narrated (2026-10-30 ⇒ 7)" "7" "$(APOLLO_FAKE_TODAY=2026-10-30 pat_expiry_verdict | cut -d' ' -f2)"
+  # an UNREADABLE stamp refuses rather than passes — the ledger path moved out from under it
+  bite "an unreadable stamp ⇒ UNREADABLE (a refusal, never a pass)" "UNREADABLE" \
+       "$(PAT_EXPIRY_LEDGER=/nonexistent/_no-ledger.md pat_expiry_verdict)"
+  # CONTROL: unset, the gate uses the REAL date — asserted as a shape, never as today's value
+  bite "with no fake clock the gate reads the REAL date (YYYY-MM-DD shape)" "1" \
+       "$(pat_today | grep -c '^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}$')"
+  # ⛔ s294-D5's second clause: NO refusal message may tell the reader to put a credential into
+  # the chat. Asserted as a COUNT OF UNNEGATED 'paste' INSTRUCTIONS, so it bites a new one too.
+  bite "no refusal instructs pasting a credential into chat (s294-D5)" "0" \
+       "$(grep -o 'echo "[^"]*paste[^"]*"' "$0" | grep -vc 'do NOT paste' || true)"
+  # ⛔ AND THE CREDENTIAL IS ONLY EVER *TESTED*, NEVER PRINTED. The remote URL carries the token,
+  # so `git config remote.origin.url` must always be piped into a quiet test — never left to
+  # reach stdout, a log or a message. Asserted as the count of lines that read it WITHOUT one.
+  bite "the credential is only TESTED, never printed (no unpiped git config remote.origin.url)" "0" \
+       "$(grep -vn '^[[:space:]]*#' "$0" | grep 'git config remote\.origin\.url' | grep -v 'grep -q' | grep -vc 'bite ' || true)"
+  # ⚠ THE ONE THING THESE BITES CANNOT REACH, DECLARED RATHER THAN IMPLIED: `--push` end to end.
+  # At a sandbox seat there is no credential in the remote URL, so `--push` refuses at the
+  # credential gate and never reaches the expiry gate — and a seat that COULD reach it would
+  # push. So the gate's LOGIC is bitten above through `pat_expiry_verdict` (the exact function
+  # the push path branches on), and its POSITION is bitten here: after the credential check,
+  # before `git push`. Order is the part a unit test of the verdict cannot see.
+  # ⬛ s305-D30: the credential check is now ONE call site (`push_credential_present ||`); the
+  # order bite reads THAT line, not the function's definition above the push mode.
+  SF_CRED_LN=$(grep -n '^  push_credential_present ||' "$0" | head -1 | cut -d: -f1)
+  SF_GATE_LN=$(grep -n '^  PAT_V=\$(pat_expiry_verdict)' "$0" | head -1 | cut -d: -f1)
+  SF_PUSH_LN=$(grep -n '^  git push origin master' "$0" | head -1 | cut -d: -f1)
+  bite "the expiry gate sits AFTER the credential check and BEFORE the push" "1" \
+       "$([ -n "$SF_CRED_LN" ] && [ -n "$SF_GATE_LN" ] && [ "$SF_CRED_LN" -lt "$SF_GATE_LN" ] && [ "$SF_GATE_LN" -lt "$SF_PUSH_LN" ] && echo 1 || echo 0)"
+  # ── ⬛ s305-D30 — THE CREDENTIAL CHECK LEARNS THE HELPER. Fixture repos, isolated from every global
+  # and system helper (GIT_CONFIG_GLOBAL=/dev/null, GIT_CONFIG_NOSYSTEM=1), so the real token is never
+  # in play and a seat's own keychain cannot answer for the fixture. PLANT, THEN DETECT, both ways.
+  echo "— s305-D30 push-credential check selftest (fixture repos, no real credential)"
+  SF_FX=$(mktemp -d "${TMPDIR:-/tmp}/gitcommit-cred-XXXXXX")
+  sf_cred() { ( cd "$1" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 push_credential_present ) && echo 1 || echo 0; }
+  for SF_N in clean helper url; do git init -q "$SF_FX/$SF_N"; done
+  git -C "$SF_FX/clean"  remote add origin https://github.com/example/fixture.git
+  git -C "$SF_FX/helper" remote add origin https://github.com/example/fixture.git
+  printf 'https://x-access-token:FIXTURE-NOT-A-TOKEN@github.com\n' > "$SF_FX/helper/.git/apollo-credentials"
+  git -C "$SF_FX/helper" config 'credential.https://github.com.helper' \
+    '!f() { test "$1" = get && git credential-store --file="$(git rev-parse --absolute-git-dir)/apollo-credentials" get; }; f'
+  git -C "$SF_FX/url" remote add origin https://x-access-token:FIXTURE-NOT-A-TOKEN@github.com/example/fixture.git
+  bite "clean URL, no helper ⇒ NO credential (the refusal's condition)" "0" "$(sf_cred "$SF_FX/clean")"
+  bite "clean URL + the repo-local helper ⇒ credential PRESENT (s305-D30)" "1" "$(sf_cred "$SF_FX/helper")"
+  bite "token-in-URL form still accepted (a pre-#305 seat)" "1" "$(sf_cred "$SF_FX/url")"
+  bite "the helper's answer is only TESTED, never printed" "0" \
+       "$( (cd "$SF_FX/helper" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 push_credential_present) 2>&1 | grep -c FIXTURE-NOT-A-TOKEN || true)"
+  rm -rf "$SF_FX" 2>/dev/null || true
+  if [ "$SF_FAILS" -ne 0 ]; then
+    echo "✗ selftest FAILED — $SF_FAILS bite(s)"; exit 1
+  fi
+  echo "✓ selftest OK — 32 bites: 6 fire, 7 stay silent, 1 hatch present, 14 on the s294-D5 expiry gate, 4 on the s305-D30 credential check"
+  exit 0
+fi
+
+[ -n "$MSGFILE" ] || fail "no msgfile given. Usage: _git_commit.sh --reconciled <msgfile>"
+[ -s "$MSGFILE" ] || fail "msgfile '$MSGFILE' missing or empty (stale-msgfile trap — see runbook gotchas)"
+echo "— msgfile head: $(head -1 "$MSGFILE")"
+
+# ── REUSED-MSGFILE GATE, AT THE DOOR (#208; widens the #170 gate) ────────────────────────────
+# The #170 gate lives INSIDE T3's non-wrap branch and matches only `after #N <date> — `. Two
+# holes, both documented in the 8-instance count: (1) a WRAP msgfile's line 1 is `#N <date> — `,
+# which that regex does not see, so reusing a wrap msgfile on a non-wrap run stacked a second
+# prefix; (2) the wrap branch never asked the question at all, and silently DROPS line 1 into
+# the void (it takes the body from line 2 onward), so a reused wrap msgfile lost its first line
+# with no word said. Asking HERE — before any gate that can refuse, and long before T3 writes
+# anything — makes the answer independent of which branch T3 will take.
+# ⛔ The #170 in-branch check is LEFT IN PLACE, unchanged. Two gates on one class is not
+# duplication when the inner one is the one that has been proven to bite.
+# ⛔ #208 NEW-2: the counter is ANCHORED (see prefix_count above) — it asks "does line 1 START
+# with a stacked prefix", not "does the word appear somewhere". An honest subject that QUOTES a
+# prior one is no longer refused. Declared-gap hatch: PREFIX_ACK="<real reason>" passes it
+# DECLARED, spelled exactly like its neighbours DOC_ROW_ACK / SHOWROOM_ACK / SESSION_ACK
+# (declared passes, silent fails) — a gate with no legal exception invites the workaround.
+MSG_L1=$(head -1 "$MSGFILE")
+if [ -n "${PREFIX_ACK:-}" ]; then
+  echo "— reused-msgfile gate: DECLARED GAP — $PREFIX_ACK"
+elif [ "$(prefix_count "$MSG_L1")" -gt 0 ]; then
+  fail "REUSED-MSGFILE GATE (#208, widening #170): line 1 of '$MSGFILE' already carries a T3 prefix — \"$(printf '%s' "$MSG_L1" | cut -c1-80)\". This file has been through a commit run before, so this run would stack a second prefix (the doubled-subject class, 8 documented instances). REMEDY: write a FRESH msgfile with a FRESH name — one printf per invocation, never a reused path:
+    printf '%s\\n' '<your one-line summary>' '' '<body…>' > outputs/_msg-<session>-<slug>-\$(date +%s).txt
+  Nothing has been staged, and this msgfile has not been modified."
+fi
+echo "— msgfile line 1 carries no T3 prefix (#208 reuse gate passed)"
+
+if [ "$RECONCILED" -ne 1 ]; then
+  echo "✗ refusing to stage: run 'git status --short', account for EVERY dirty path (step 0.5),"
+  echo "  then re-run with --reconciled. Dirty paths now:"
+  git status --short
+  exit 1
+fi
+
+# tiktoken self-heal — enacted #73 (Dave: "lets get the memento stuff fixed"; proposed #72).
+# The sandbox is fresh every session, pip state does not survive, and the measurement seam (#59)
+# rightly REFUSES when degraded — so every session's first commit was blocking on the same known
+# cause with the fix arriving too late. Heal that ONE cause BEFORE the check runs. If healing
+# fails, the check below still owns the diagnosis and refuses honestly — this layer removes only
+# the cause it can prove and fix, and never masks the check (★ a wrapper must not restate a cause
+# it did not determine; it may remove one it verified).
+if ! python3 -c "import tiktoken; tiktoken.get_encoding('cl100k_base')" >/dev/null 2>&1; then
+  echo "— tiktoken degraded (fresh sandbox) — self-healing: pip install tiktoken --break-system-packages"
+  pip install tiktoken --break-system-packages -q >/dev/null 2>&1 || true
+  if python3 -c "import tiktoken; tiktoken.get_encoding('cl100k_base')" >/dev/null 2>&1; then
+    echo "— tiktoken restored: the measurement below is real, not estimated"
+  else
+    echo "⚠ self-heal FAILED — proceeding; the chain check below will refuse with the honest cause"
+  fi
+fi
+
+# chain-staleness gate — this is the seam that actually reads disk state. _gen_chain.py --check's
+# OTHER caller (_build_all.py) runs it immediately AFTER regenerating the file, so it can only ever
+# catch nondeterminism in build(), never a chain left stale by a hand-edit to GOOD-MORNING.md /
+# _LIVE-STATE.md that was never regenerated — the #32 defect, which is what actually landed at the
+# #56 wrap (stale chain, clean tree, committed). Refuse loudly; do NOT auto-regenerate here — that
+# would stage a file this session never showed you.
+# ⛔ CORRECTED #58b, found by the probe worker: this line used to re-assert "_CHAIN.md is STALE" and
+# name "regenerate it" as the remedy, on ANY non-zero exit — so when --check refused because its
+# TOKEN MEASURER was degraded (tiktoken absent / encoding file unreachable), the honest message it
+# had just printed was immediately overridden here by a WRONG CAUSE and a WRONG REMEDY, at the one
+# seam that blocks. ★ A WRAPPER MUST NOT RESTATE A CAUSE IT DID NOT DETERMINE. The check owns the
+# diagnosis and has already printed it; this layer owns only the consequence — nothing was staged.
+python3 knowledge/_gen_chain.py --check ||
+  fail "_gen_chain.py --check REFUSED (exit non-zero) — its message is printed directly above and it is the authority on the cause; this script does not second-guess it. Nothing has been staged. If it named STALENESS, run: python3 knowledge/_gen_chain.py — then re-run this script. If it named a DEGRADED MEASUREMENT, regenerating will NOT help: fix tiktoken first (pip install tiktoken --break-system-packages) and re-run."
+echo "— chain fresh (_gen_chain.py --check passed)"
+
+# doc-row gate — W-20 (#188), the forgotten-document class (#185): a brief-class document with no
+# store row is invisible to every carry. The commit is the seam where the defect turns DURABLE,
+# so the gate runs here [check-after-its-own-remedy]. Fix = one _state.add() row through the
+# store's own writer. Declared-gap hatch: DOC_ROW_ACK="<real reason>" passes it DECLARED
+# (declared passes, silent fails). Wired by the conductor at #188; Dave may veto the blocking.
+if [ -z "${DOC_ROW_ACK:-}" ]; then
+  python3 knowledge/_gate_doc_rows.py ||
+    fail "doc-row gate REFUSED — an in-scope document has no store row (list printed above). Add the row via _state.add(), or re-run with DOC_ROW_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— doc rows present (_gate_doc_rows.py passed)"
+else
+  echo "— doc-row gate: DECLARED GAP — $DOC_ROW_ACK"
+fi
+
+# showroom sync gate — s191-D1 (#191, Dave: "yes"). A ruling's deletion (s182-D2) survived four
+# sessions on the generated showroom — Dave's review surface — because nothing at the commit seam
+# checked generated-vs-canon sync. The commit is where staleness turns durable, so the check runs
+# here BLOCKING. Declared-gap hatch mirrors the doc-row gate (declared passes, silent fails).
+if [ -z "${SHOWROOM_ACK:-}" ]; then
+  python3 knowledge/gen_showroom.py --check ||
+    fail "showroom sync gate REFUSED (s191-D1) — generated showroom out of sync with canon (list printed above). Run: python3 knowledge/gen_showroom.py — or re-run with SHOWROOM_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  echo "— showroom in sync (gen_showroom --check passed, s191-D1)"
+else
+  echo "— showroom sync gate: DECLARED GAP — $SHOWROOM_ACK"
+fi
+
+# ── POLARITY GATE — s238-D7 (#238 lane P): the five refusals, AT THE COMMIT SEAM ─────────────
+# "A gate that is not a consumer of every commit is not a gate" (s238-D7's last sentence). The
+# same `--check` runs as a _build_all.py STEPS entry; it runs HERE because the commit is where a
+# dangling party, an untyped link, a judgement field, a typed status or an authored edge file in
+# knowledge/brain/ turns DURABLE — and where a stale derived file (knowledge/brain/_generated/,
+# status with a clock per s238-D3) would be committed against a moved home. Refusals are NAMED by
+# the gate itself (R1..R5 / STALE-GENERATED / MISSING-GENERATED); this line owns only the
+# consequence — nothing staged. It regenerates NOTHING (a stale derived file is the author's to
+# re-derive with `--write` and NAME in the reconciliation, P5). Declared-gap hatch POLARITY_ACK,
+# spelled like its neighbours (declared passes, silent fails). Harness: _test_git_commit.py stubs
+# `_validate_polarities.py` (STUB_POLARITY_EXIT) and drives it non-zero + through the hatch.
+# ⛔ #239 lane F (V finding 10 D2): `POLARITY_BRAIN_DIR` was a SILENT second hatch — the gate
+# honours it, so the seam read a clean copy elsewhere while the tree's own knowledge/brain/ was
+# dirty, and the only trace was the gate's `home …` line. Now the redirect is DECLARED on the
+# record AND the tree's own home is gated in the same breath (the commit carries THAT one).
+# Since #239 an absent home in the source repo is rc 1 from the gate itself (never 77), so the
+# `|| fail` below stops on it at every door, not only here.
+if [ -z "${POLARITY_ACK:-}" ]; then
+  if [ -n "${POLARITY_BRAIN_DIR:-}" ]; then
+    echo "— polarity gate: REDIRECTED to $POLARITY_BRAIN_DIR (DECLARED via POLARITY_BRAIN_DIR — a probe target; the tree's own knowledge/brain/ is gated next and is what the commit carries)"
+    python3 knowledge/_validate_polarities.py --check ||
+      fail "polarity gate REFUSED (s238-D7) on the REDIRECTED home $POLARITY_BRAIN_DIR — the refusal is NAMED directly above. Nothing has been staged."
+    ( unset POLARITY_BRAIN_DIR; python3 knowledge/_validate_polarities.py --check ) ||
+      fail "polarity gate REFUSED (s238-D7) on the TREE'S OWN knowledge/brain/ (the redirect above passed, the commit's home does not) — the refusal is NAMED directly above. Nothing has been staged."
+  else
+    python3 knowledge/_validate_polarities.py --check ||
+      fail "polarity gate REFUSED (s238-D7) — the refusal is NAMED directly above and the gate owns the diagnosis (a node in knowledge/brain/polarities.json fails one of the five refusals, or knowledge/brain/_generated/ is stale — for staleness run: python3 knowledge/_validate_polarities.py --write, then NAME the regenerated files in your --reconciled list). Or re-run with POLARITY_ACK=\"<real reason>\" to pass it as a DECLARED gap. Nothing has been staged."
+  fi
+  echo "— polarity gate green (_validate_polarities.py --check passed, s238-D7)"
+else
+  echo "— polarity gate: DECLARED GAP — $POLARITY_ACK"
+fi
+
+# ── MENTION-MAP FRESHNESS GATE — the [110] re-stale CLASS, 3rd recurrence (#208) ──────────────
+# ⛔ THE CLASS, NOT THE INSTANCE. `knowledge/_graph-mention-map.json` is derived from
+# `_decision-graph.json` + `_memento-index.json`, which are themselves derived from the corpus.
+# So ANY doc/generator change re-stales it, and CI step [110] (`_build_graph_mention_map.py
+# --check`) goes red — in the SURVEY step, which asks the committed tree BEFORE any rebuild, so
+# the later "Knowledge build" step regenerating it cannot rescue the read. It was repaired
+# targeted three times (#205 pitfall (d); d07e85c / 49ba965 → 5a716a6) because nothing at the
+# COMMIT SEAM — the one place staleness turns durable — ever asked the question.
+#
+# OWNED REGIONS, WRITTEN DOWN BEFORE RUNNING THE GENERATOR [[do-not-rule-list-cannot-fence-a-generator]]:
+#   `_build_graph_mention_map.py` writes EXACTLY ONE path — `knowledge/_graph-mention-map.json`,
+#   whole-file overwrite (`OUT_PATH`, the file's only `open(..., "w")` outside its selftest
+#   tempfile). It READS `_decision-graph.json` and `_memento-index.json` and writes neither.
+#   Probe: `grep -n '"w"' knowledge/_build_graph_mention_map.py` → the selftest tempfile and
+#   OUT_PATH, nothing else. That single-owner, single-file property is why regenerating here is
+#   safe; it is NOT a licence to run any other generator at this seam.
+#
+# ⛔ AND IT DOES NOT STAGE WHAT YOU DID NOT NAME. Regenerating is safe; staging silently is not
+# (P5, ruled Dave 2026-08-02 — `git add -A` retired). So a stale map is REGENERATED (announced,
+# one path named) and then REFUSED, with the path to add to your `--reconciled` list. One
+# re-run, and the class cannot reach a commit. Declared-gap hatch mirrors its two neighbours.
+if [ -z "${MENTION_MAP_ACK:-}" ]; then
+  if python3 knowledge/_build_graph_mention_map.py --check >/dev/null 2>&1; then
+    echo "— mention map fresh (_build_graph_mention_map.py --check passed, #208 [110] class gate)"
+  else
+    echo "— mention map STALE — regenerating the ONE file this generator owns:"
+    python3 knowledge/_build_graph_mention_map.py ||
+      fail "the mention-map generator itself REFUSED (its named cause is printed above; it is the authority on it — this script does not second-guess it). Nothing has been staged."
+    python3 knowledge/_build_graph_mention_map.py --check ||
+      fail "mention map STILL stale after a targeted regeneration — that is nondeterminism in the generator or a mid-flight input, NOT the ordinary re-stale class. Do not re-run blind; read _build_graph_mention_map.py. Nothing has been staged."
+    fail "MENTION-MAP GATE (#208, the [110] re-stale class, 3rd recurrence): the map was stale and has been REGENERATED just now — knowledge/_graph-mention-map.json. It is NOT staged, because this script never stages a path you did not name (P5, ruled 2026-08-02). Re-run this exact command with that path appended to your list. Nothing has been staged by this run."
+  fi
+else
+  echo "— mention-map gate: DECLARED GAP — $MENTION_MAP_ACK"
+fi
+
+# ── MEMENTO-SCHEMATIC FRESHNESS GATE — CI survey step [125]'s re-stale class (#304 R1, lane 1c) ──
+# ⛔ THE PREMISE THE BRIEF CARRIED, AND WHY IT WAS WRONG. The #304 plan asked for "the same
+# head-only advance the chain got at c896bcaf". Probed at #304 R1 in a full-history clone of
+# 571d458c: regenerate the schematic, COMMIT, re-ask `--check` → FRESH. A HEAD-only advance does
+# NOT stale this file (it renders no sha). What staled it is CONTENT: every figure is read off
+# disk at generation time (`_state.json` rows, `_rulings.json`, `_CHAIN.md` / GOOD-MORNING size,
+# dossiers, the memento index, `_graph-mark-observations.jsonl`, the mention map), those move on
+# nearly every commit, and NOTHING at the commit seam ever regenerated it — last regenerated at
+# f81bbdd4 (2026-09-21), red in CI's survey on every push since. Softening `--check` to forgive
+# figure drift would launder exactly the staleness the schematic exists to refuse (c896bcaf's own
+# M1 bite: "REAL content staleness is STILL RED"). So the fix is the #208 mention-map precedent,
+# at the one seam where staleness turns durable: regenerate, and never stage what was not named.
+#
+# OWNED REGION, WRITTEN DOWN BEFORE RUNNING THE GENERATOR [[do-not-rule-list-cannot-fence-a-generator]]:
+#   `_gen_schematic.py` (no args) writes EXACTLY ONE path — OUT_REL,
+#   reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html (`write()`, :1033); its other three
+#   `open(..., "w")` sit inside `selftest()`'s TemporaryDirectory. It READS the mention map, so
+#   this gate sits AFTER the mention-map gate: a stale map refuses first, and this asks next run.
+# ONE DIFFERENCE FROM #208, BY DESIGN: a caller who ALREADY NAMED the schematic path (or passed
+#   --all-dirty) has consented to staging it, so a regeneration rides with the commit instead of
+#   costing a second full run of this script. Unnamed ⇒ REFUSED, exactly as #208 (P5 holds).
+# EXIT 77 is the generator's own tier refusal (#193: this environment cannot reproduce the
+#   committed page's token unit). It is NOT regenerated here — that would publish a weaker
+#   instrument's figures under the committed tier's name — and it does not block: visible, named.
+SCHEMATIC_PATH="reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html"
+if [ -z "${SCHEMATIC_ACK:-}" ]; then
+  python3 knowledge/_gen_schematic.py --check >/dev/null 2>&1
+  _sch_rc=$?
+  if [ "$_sch_rc" -eq 0 ]; then
+    echo "— memento schematic fresh (_gen_schematic.py --check passed, #304 R1 [125] class gate)"
+  elif [ "$_sch_rc" -eq 77 ]; then
+    echo "— memento schematic COULD-NOT-ASK here (_gen_schematic.py --check exit 77, its tier refusal) — NOT regenerated, NOT blocking: a weaker instrument's figures are never published under the committed tier's name (#193)"
+  else
+    echo "— memento schematic STALE — regenerating the ONE file this generator writes:"
+    python3 knowledge/_gen_schematic.py ||
+      fail "the memento-schematic generator itself REFUSED (its named cause is printed above; it is the authority on it — this script does not second-guess it). Nothing has been staged."
+    python3 knowledge/_gen_schematic.py --check >/dev/null 2>&1 ||
+      fail "memento schematic STILL stale after a targeted regeneration — nondeterminism in the generator or a mid-flight input (another seat appending to an input it reads), NOT the ordinary re-stale class. Do not re-run blind; run python3 knowledge/_gen_schematic.py --check and read its diff. Nothing has been staged."
+    _sch_named="$ALLDIRTY"
+    for _q in "${PATHS[@]}"; do [ "$_q" = "$SCHEMATIC_PATH" ] && _sch_named=1; done
+    if [ "$_sch_named" -eq 1 ]; then
+      echo "— memento schematic REGENERATED just now and already among your named paths ($SCHEMATIC_PATH) — it rides with this commit"
+    else
+      fail "MEMENTO-SCHEMATIC GATE (#304 R1, CI survey step [125]'s re-stale class): the schematic was stale and has been REGENERATED just now — $SCHEMATIC_PATH. It is NOT staged, because this script never stages a path you did not name (P5, ruled 2026-08-02). Re-run this exact command with that path appended to your list. Nothing has been staged by this run."
+    fi
+  fi
+else
+  echo "— memento-schematic gate: DECLARED GAP — $SCHEMATIC_ACK"
+fi
+
+# session-witness consumer — BUILT #89, the honest-certification leg of the #87-D1 drill.
+# ⛔ WHY THIS CANNOT BE FOLDED INTO THE CHECK ABOVE: `_gen_chain.py --check` compares _CHAIN.md
+# against GOOD-MORNING.md. If GM is a session stale (a skipped wrap), the chain regenerates
+# CONSISTENTLY stale and --check goes GREEN — the two mechanisms agree with each other and are
+# both wrong. That is the seam that certified #84 at #86's first commit, and _gen_chain's own
+# #73 comment already said it "canNOT catch a skipped wrap". _session.py answers from a witness
+# written at BOOT (knowledge/_SESSIONS.jsonl), which is outside the set of files the corpus
+# generates about itself, so it is the only thing here that can disagree with GM.
+# WARN/--wrap split, matching #74-D1 and #78-D2: an absent --session is visible mid-session and
+# BLOCKING on the final commit, so existing mid-session call sites keep working unchanged.
+# ── W-355 DECLARED FORM (1/2) — SESSION_N + SESSION_ACK TOGETHER (#238 lane M; store row W-355) ──
+# THE DEADLOCK (reproduced #236 ×2 and at the #237 opener; fixture-proven #238, harness arms
+# `w355_*` in _test_git_commit.py): a post-wrap `_HANDOFF-<n+1>-*.md` could be committed through
+# this script from NEITHER seat. With SESSION_N, `_session.py --declare` fires R3 CHAIN OVERTAKEN
+# on the very file being committed (handoff_max ≥ gm_title is BY DESIGN at boot — it makes the
+# next seat READ the handoff). Without SESSION_N the chain below reaches its SESSION_ACK branch —
+# but T3 then REFUSES a non-wrap commit with no SESSION_N (s130-D3), and a --wrap commit is refused
+# at this very seam. The two hatches were mutually exclusive, so the only exit was a raw
+# `git commit` — the workaround a gate with no legal form invites (P5's lesson, again).
+# THE FIX ADDS A DECLARED FORM; IT REMOVES NO CHECK. `_session.py` has ALWAYS accepted
+# `--declare N --acknowledge "<why>"` together (its selftest arm "a declared gap is MARKED, not
+# silently clean" drives exactly that); only this shell never passed both. When BOTH are set: the
+# witness is checked WITH the declared session, the refusal (R3, or any other) passes DECLARED and
+# is printed on the record — never silently — and SESSION_N stays in hand for T3, so every s130-D3
+# assertion still stands (a --wrap banner naming another session is refused AFTER this passes —
+# harness arm w355_declared_form_does_not_bypass_T3_wrap). SESSION_N ALONE still refuses a real
+# overtake (arm w355_r3_still_refuses_without_ack): the silent path stays closed.
+# ⚠ MECHANICS, BY ADDITION: the chain below is UNCHANGED. This block hands it its SESSION_ACK-only
+# branch by parking SESSION_N in SESSION_N_HELD; block (2/2) directly after the chain restores it
+# before T3. The chain's own `--acknowledge` re-run is `|| true` and prints the matching DECLARED
+# line. ⚠ The record is this run's stdout — the same standing as DOC_ROW_ACK / SHOWROOM_ACK /
+# SESSION_ACK alone — so put the reason in the msgfile BODY too; the commit then carries it.
+if [ -n "${SESSION_N:-}" ] && [ -n "${SESSION_ACK:-}" ]; then
+  python3 knowledge/_session.py --declare "$SESSION_N" --acknowledge "$SESSION_ACK" ||
+    fail "_session.py REFUSED even with SESSION_N=#$SESSION_N AND SESSION_ACK declared — its witnesses are printed directly above and it owns the diagnosis (a corrupt knowledge/_SESSIONS.jsonl is the one cause an acknowledgement cannot cover). Nothing has been staged."
+  echo "⚠ session witness: gap DECLARED for #$SESSION_N (W-355 declared form; the refusal it covers is printed above) — $SESSION_ACK"
+  SESSION_N_HELD="$SESSION_N"
+  unset SESSION_N
+fi
+if [ -n "${SESSION_N:-}" ]; then
+  python3 knowledge/_session.py --declare "$SESSION_N" ||
+    fail "_session.py REFUSED for declared session #$SESSION_N — its named witnesses are printed directly above and it owns the diagnosis. This is the #86 defect class: the boot path and the running session disagree about who you are, and a commit made now certifies the WRONG session. Fix the cause, or re-run with SESSION_ACK=\"<real reason>\" to pass it as a DECLARED gap (declared passes, silent fails). Nothing has been staged."
+  echo "— session witness agrees (#$SESSION_N)"
+elif [ -n "${SESSION_ACK:-}" ]; then
+  python3 knowledge/_session.py --acknowledge "$SESSION_ACK" || true
+  echo "⚠ session witness gap DECLARED, not clean: $SESSION_ACK"
+elif [ "$WRAP" -eq 1 ]; then
+  fail "the FINAL commit must declare its session: SESSION_N=<n> bash knowledge/_git_commit.sh --wrap --reconciled <msgfile>. Without it the commit subject is derived from GOOD-MORNING.md's own banner, which is the artefact a skipped wrap leaves stale — that is exactly how #84 got certified at #86's first commit. Declare it, or pass SESSION_ACK=\"<real reason>\". Nothing has been staged."
+else
+  echo "⚠ no SESSION_N declared — visible, not blocking on a mid-session commit (#89)."
+  echo "  The session's FINAL commit must declare it, where absence BLOCKS."
+fi
+# ── W-355 DECLARED FORM (2/2) — restore the declared session for T3 (#238 lane M) ─────────────
+# SESSION_N was parked by block (1/2) only so the unchanged chain above would take its
+# SESSION_ACK branch. T3 (s130-D3) needs it back: a non-wrap subject is GENERATED from it and a
+# --wrap subject is VERIFIED against it. `export`, not a bare assignment — `unset` drops the
+# export attribute the caller's `SESSION_N=<n> bash …` gave it (no Python consumer reads it from
+# the environment today — measured #238 — but the restore must not be the thing that changes that).
+if [ -n "${SESSION_N_HELD:-}" ]; then
+  export SESSION_N="$SESSION_N_HELD"
+  unset SESSION_N_HELD
+fi
+
+# wrap-gate consumer — RULED #74-D1 (the WARN/--wrap split; the wiring was #73's deliberate
+# not-done because the tradeoff was Dave's). The gate was honest with no consumer: #71 and #72
+# committed through red ([[instrument-without-a-consumer]]). The commit seam is where a red wrap
+# becomes DURABLE, so it is consumed HERE — but a mid-session commit is a CORRECT state (three of
+# #73's four commits), and a gate that blocked it would make that state unreachable (the ds-022
+# lesson). The split: default = the gate runs and reports, red is a VISIBLE WARN and a DECLARED
+# not-a-wrap; --wrap = the session's final commit, red BLOCKS.
+# ⚠ DECLARED residual, scope honest: nothing at this seam can see a session that never wraps at
+# all (the #70 class) — every commit it made was legitimately mid-session. The chain title check
+# catches that NEXT session. This consumer kills only the committed-through-red class.
+# ⚠ Mutation scope: the shim tests force the gate's EXIT CODE and prove this CONSUMER both ways;
+# the gate's own verdict honesty is proven by its own selftest, not here.
+if [ "$WRAP" -eq 1 ]; then
+  python3 knowledge/_capture_gate.py --wrap ||
+    fail "wrap gate RED on a --wrap commit — this is the FINAL commit and the gate now has its consumer (#74-D1). Its findings are printed directly above and it owns the diagnosis; fix them, or declare a real gap in the legal form (⛔ NOT CAPTURED — UNMEASURED. + reason). Nothing has been staged."
+  echo "— wrap gate GREEN on the wrap commit (#74-D1 consumer)"
+else
+  if python3 knowledge/_capture_gate.py --wrap; then
+    echo "— wrap gate green (mid-session commit, DECLARED not-a-wrap)"
+  else
+    echo "⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)."
+    echo "  The session's FINAL commit must run with --wrap, where red BLOCKS."
+  fi
+fi
+
+# spine-writer selftest consumer — RULED #78-D2 (same WARN/--wrap split as the wrap gate above,
+# #74-D1's shape). The #77 periphery inventory found `_build_live_state.py` splices _LIVE-STATE.md
+# — the spine, the token-store of truth — IN PLACE with no selftest and no gate: an ungated writer
+# on the one file every cold session trusts. The selftest now exists (5 arms: happy-path splice,
+# idempotency, named refusal on a marker-less spine, no-half-writes on every failure path, and
+# mutation controls proving each green can fail; it runs only on tempdir copies and hashes the
+# real spine before/after). The commit seam is where a broken splicer's output becomes DURABLE,
+# so it is consumed HERE — and as above, a mid-session commit is a CORRECT state, so red only
+# WARNS there and BLOCKS on --wrap.
+# ⚠ Mutation scope: mutant runs (suffix-eating splice, volatile block, refusal-bypass) proved the
+# arms red on doctored COPIES; this consumer trusts the selftest's exit code, as with the wrap gate.
+if [ "$WRAP" -eq 1 ]; then
+  python3 knowledge/_build_live_state.py --selftest ||
+    fail "spine-writer selftest RED on a --wrap commit — _build_live_state.py's splice of _LIVE-STATE.md is not trustworthy and this is the FINAL commit (#78-D2 consumer). Its failed arms are printed directly above and it owns the diagnosis; fix the writer, do not hand-patch the spine around it. Nothing has been staged."
+  echo "— spine-writer selftest GREEN on the wrap commit (#78-D2 consumer)"
+else
+  if python3 knowledge/_build_live_state.py --selftest; then
+    echo "— spine-writer selftest green (mid-session commit, DECLARED not-a-wrap)"
+  else
+    echo "⚠ spine-writer selftest RED — visible, not blocking: this commit is DECLARED not-a-wrap (#78-D2)."
+    echo "  The session's FINAL commit must run with --wrap, where red BLOCKS."
+  fi
+fi
+
+# scratch-hygiene probe — WIRED #228 (Dave: "wire both"), on the recommendation the #228 repair
+# lane filed as its ruling-shaped item 2 (notes/_subreports/2026-08-31-228-repair-lane.md).
+#
+# WHY HERE AND NOWHERE ELSE. `_gate_scratch_hygiene.py` was a WIRING ORPHAN — built #227, run by
+# nothing, so `_validate_wiring.py` was red on it by name [[instrument-without-a-consumer]]. Its
+# own docstring names the one moment it can act: *"THE ONLY MOMENT SCRATCH CAN BE CLEANED IS
+# WHILE ITS OWNER STILL EXISTS"* — the sandbox VM disk persists across sessions but each session
+# is a throwaway Linux user, so a scratch file that outlives its session becomes a PERMANENT
+# squatter (#227 boot: 100% full, 3.2G of dead-session orphans, five `useradd: No space left on
+# device` failures before a host restart). `_build_all.STEPS` is the wrong home — a build step
+# asks a question about the TREE, and this asks one about the RUNNER, at the last moment anyone
+# can answer it. The wrap commit IS that moment.
+#
+# ⛔ WRAP ONLY, AND ADVISORY, DELIBERATELY. The gate is advisory at birth and returns 0 always
+# (promotion to blocking is Dave's — derivation governance, on the #220 pack-imports precedent;
+# ⚠ that gate is NOT NAMED IN FULL here, deliberately — `_validate_wiring.py` reads this file as
+# a bare substring search, so writing its filename in a comment would mark an UNWIRED gate as
+# wired and turn its standing exemption into a STALE EXEMPTION failure. Measured, not guessed:
+# naming it here did exactly that on the first draft of this block.)
+# A mid-session commit is a CORRECT state to hold scratch in: the session is still
+# using it. So this runs on `--wrap` and prints; it never blocks, and `|| true` says so out loud
+# rather than relying on the gate's exit code staying 0 forever. It does NOT pass `--clean`:
+# deleting a worker's live scratch out from under it at wrap time is a bigger risk than the
+# litter, and the list is the deliverable — the wrap can act on it.
+if [ "$WRAP" -eq 1 ]; then
+  echo "— scratch hygiene (ADVISORY, #228 wiring — the list is for the wrap to act on):"
+  python3 knowledge/_gate_scratch_hygiene.py || true
+fi
+
+# T3 #77-D2 — single-source the commit headline from the GM ★ LATEST banner (handoff-testing-
+# regime plan, RULED #77). Kills the "found only in the commit message" class (#72/#76): the
+# banner becomes the one source and a finding that exists only in the msgfile is unwritable.
+# Body lines 2+ stay freehand. Minimal edit — does not touch the --wrap split or the chain check.
+# ⚠ #77 refinement: the FIRST cut of this block took "everything after the heading's own first
+# em-dash", which lands on the DATE-to-paren dash and so keeps the role clause ("Sun **#N**,
+# MODEL, Dave live") as noise ahead of the actual summary. Primary parse now reaches INTO the
+# parenthetical and skips past ITS OWN first " — " (the role clause's own separator from the
+# summary glyphs) to get the summary alone. Cosmetics must never block a commit, so a heading
+# shaped unusually (no " — " inside the parenthetical) is not a hard failure — it falls back to
+# the original first-em-dash reading and prints a one-line note naming the fallback. Only a
+# WHOLLY MISSING ★ LATEST heading still fails loud (nothing to derive a headline from at all).
+# ⛔ s130-D3 (Dave, #130) — GENERATE, NEVER INHERIT. The #128 defect: a NON-wrap commit read
+# whatever banner was ON DISK, so a session that wrote no banner inherited the PRIOR session's
+# subject ("after #127 …" on #128's commits), and the subject assert compared the REWRITTEN
+# file, so it was true and useless. Remedy, per Dave's ruling:
+#   - NON-wrap: the banner is NEVER read. The subject is generated from current-session
+#     sources only: the SESSION_N witness (verified by _session.py at the seam above), today's
+#     `date`, and the msgfile's OWN first line, written this session by its author. If
+#     SESSION_N is absent there is no current-session source and T3 REFUSES loudly —
+#     inheriting a stale banner is no longer a reachable behaviour.
+#   - --wrap: banner derivation stands (the wrap writes its banner first), but T3 now ASSERTS
+#     the banner's #N equals the declared SESSION_N and REFUSES on mismatch — the banner is a
+#     VERIFIED current-session source, not an assumed one.
+# ⛔ #171 — T3's generated headline is CAPTURED INTO A SHELL VARIABLE here and the post-commit
+# subject assert compares the COMMITTED subject against THAT variable. It used to compare the
+# committed subject against the msgfile's first line — the very line T3 rewrites four lines
+# below — so it compared a value to itself and could not fail. DRIVEN #171: with a simulated
+# prefix-stacking write-back, a doubled subject landed and the assert still printed
+# "— subject asserted identical to msgfile line 1" and exited 0. The msgfile is now a
+# DIAGNOSTIC in that failure text, never the authority.
+# ⛔ #208 — T3 NO LONGER WRITES TO THE CALLER'S MSGFILE. It renders to a SEPARATE file and the
+# commit is made from that. Before this, T3 rewrote `$MSGFILE` in place and then five more
+# refusals could still fire (lock survived · no paths named · nothing staged · empty commit ·
+# a git error) — every one of which left the caller holding a msgfile that had already grown a
+# prefix. The caller then fixed the named problem, re-ran the SAME file, and stacked a second
+# prefix: that is the mechanism behind the 8 doubled/tripled subjects, and no gate could undo
+# it because the mutation happened before the refusal. A render file makes the msgfile
+# READ-ONLY input for the whole run, so a refusal costs nothing and a retry is safe.
+# ⚠ The render file is DERIVED and disposable: it sits beside the msgfile (session-owned dir,
+# gitignored `outputs/`), is overwritten every run, and is never staged.
+RENDERED="${MSGFILE}.t3-rendered"
+T3_OUT=$(python3 - "$MSGFILE" "$WRAP" "${SESSION_N:-}" "$(date +%F)" "$RENDERED" 2>&1 <<'PYEOF'
+import re, sys
+msgfile = sys.argv[1]
+wrap = sys.argv[2]  # "1" on --wrap commits, "0" otherwise (#78-D3)
+session_n = sys.argv[3].strip()  # boot-witness-verified by _session.py above (s130-D3)
+today = sys.argv[4].strip()      # from `date`, never from belief (T-D12)
+fallback_note = None
+if wrap == "1":
+    # --wrap: the banner was written THIS session by the wrap itself; derive from it as before,
+    # but VERIFY that claim against the session witness (s130-D3) instead of assuming it.
+    with open("GOOD-MORNING.md", encoding="utf-8") as f:
+        gm = f.read()
+    m = re.search(r"^\s*>?\s*#{1,6}\s*★\s*LATEST\s*—\s*(\d{4}-\d{2}-\d{2}).*?\*\*#(\d+)\*\*.*$",
+                  gm, re.M)
+    if not m:
+        sys.exit("T3: no `> ## ★ LATEST — <date> (... **#N** ...)` banner heading found in "
+                 "GOOD-MORNING.md — cannot derive the commit headline.")
+    date, n, line = m.group(1), m.group(2), m.group(0)
+    # s130-D3 REFUSAL: a wrap subject certifies the declared session or nobody. SESSION_N is
+    # mandatory on --wrap (enforced at the seam above), so a mismatch here means the banner on
+    # disk is NOT this session's — committing would certify the wrong session (#128's defect).
+    if not session_n:
+        sys.exit("T3 REFUSES (s130-D3): --wrap with no SESSION_N reached T3 — the session seam "
+                 "above should have blocked this; nothing to verify the banner against.")
+    if n != session_n:
+        sys.exit(f"T3 REFUSES (s130-D3): GOOD-MORNING.md's ★ LATEST banner says #{n} but the "
+                 f"declared session is #{session_n} — the on-disk banner is another session's "
+                 "and a subject derived from it certifies the WRONG session (the #128 defect). "
+                 "Write this session's banner (ritual step 2), then re-run.")
+    # Primary parse: the parenthetical's content AFTER ITS OWN first " — ", skipping the role
+    # clause to reach the summary glyphs. The parenthetical is the outermost "(...)" on the
+    # line — first "(" to the LAST ")" at line-end — so nested parens inside the summary
+    # (e.g. "(banners 2/2)") are swallowed whole, not mistaken for the close.
+    after = None
+    paren_m = re.search(r"\((.*)\)\s*$", line)
+    if paren_m:
+        parts = paren_m.group(1).split(" — ", 1)
+        if len(parts) == 2 and parts[1].strip():
+            after = parts[1].strip()
+    if after is None:
+        # FALLBACK — cosmetics must never block a commit. The primary parse found no " — " of
+        # its own inside the parenthetical; fall back to the pre-#77 first-em-dash reading.
+        after = line.split("—", 1)[1].strip()
+        fallback_note = ("— T3 NOTE: primary headline parse (role-clause skip) found no ' — ' "
+                         "of its own inside the ★ LATEST parenthetical — fell back to the "
+                         "first-em-dash reading. Heading: " + line.strip()[:200])
+    headline = f"#{n} {date} — {after}"
+else:
+    # NON-wrap (s130-D3): the banner is NEVER read. Generate from current-session sources —
+    # the verified SESSION_N witness, today's `date`, and the msgfile's own first line. This
+    # replaces #78-D3's "after <banner>" inheritance, whose 'after ' prefix survives with a
+    # meaning that is now true by construction: after #<THIS session>, not after whatever
+    # session last wrote a banner.
+    if not session_n:
+        sys.exit("T3 REFUSES (s130-D3): non-wrap commit with no SESSION_N — there is no "
+                 "current-session source to generate a subject from, and inheriting the "
+                 "on-disk ★ LATEST banner is the #128 wrong-subject defect. Re-run as "
+                 "SESSION_N=<n> bash knowledge/_git_commit.sh --reconciled <msgfile>.")
+    with open(msgfile, encoding="utf-8") as f:
+        first = f.readline().strip()
+    if not first:
+        sys.exit("T3 REFUSES (s130-D3): the msgfile's first line is empty — a non-wrap "
+                 "subject is generated from the msgfile's own first line, written this "
+                 "session; there is nothing to generate from.")
+    # #170 — REUSED-MSGFILE GATE (the x12 prefix-stacking class, mechanism identified #170):
+    # T3 WRITES the generated headline back into the msgfile below, so feeding the same file
+    # through a second invocation stacks a second prefix ("after #N date — after #N date — …").
+    # Every doubled/tripled subject since #157 was THIS, not the generator misfiring. Gate the
+    # PRESENCE at the seam where it turns durable: a msgfile whose first line already carries
+    # the prefix has been through T3 once and is stale by definition — fresh printf per
+    # invocation (memory git-push-method, tripled #157, amended; recurred #164, #169, #170).
+    if re.match(r"after #\d+ \d{4}-\d{2}-\d{2} — ", first):
+        sys.exit("T3 REFUSES (#170 reused-msgfile gate): the msgfile's first line already "
+                 "carries an 'after #N <date> — ' prefix, so this file has been through T3 "
+                 "before — invoking again would stack the prefix (the doubled-subject class, "
+                 "x12 instances). Write a FRESH msgfile (fresh printf per invocation) and re-run. "
+                 "Nothing has been staged.")
+    headline = f"after #{session_n} {today} — {first}"
+if len(headline) > 120:
+    headline = headline[:117] + "…"
+with open(msgfile, encoding="utf-8") as f:
+    body_lines = f.read().splitlines()
+body = body_lines[1:]
+# #124 — SUBJECT-FOLD GATE. git's %s folds ALL consecutive non-blank lines into the subject:
+# commit 0eacf2d (a JSONL body with no separator) shipped an ~83,000-char subject that broke
+# every git-log consumer at the next boot. A blank line after the headline is therefore
+# STRUCTURAL, not cosmetic — insert it whenever the body doesn't already start blank.
+if body and body[0].strip():
+    body = [""] + body
+# #208: the RENDER file, never `msgfile` — see the shell comment above this heredoc.
+with open(sys.argv[5], "w", encoding="utf-8") as f:
+    f.write("\n".join([headline] + body) + "\n")
+if fallback_note:
+    print(fallback_note)
+print(f"— T3 headline: {headline[:100]}{'…' if len(headline) > 100 else ''}")
+# #171 — the machine line the shell captures. This, not the rewritten msgfile, is what the
+# post-commit subject assert compares git's %s against.
+print("T3-SUBJECT\t" + headline)
+PYEOF
+) || { printf '%s\n' "$T3_OUT" >&2; fail "T3 headline generation REFUSED (reason printed above) — s130-D3: a subject is generated from a current-session source or not at all; a stale on-disk banner is never inherited. Non-wrap commits require SESSION_N=<n>. Nothing has been staged."; }
+# replay T3's human output (notes + headline), then lift the machine line into memory
+printf '%s\n' "$T3_OUT" | grep -v '^T3-SUBJECT' || true
+GEN_SUBJ=$(printf '%s\n' "$T3_OUT" | sed -n 's/^T3-SUBJECT\t//p')
+[ -n "$GEN_SUBJ" ] || fail "T3 exited 0 but emitted no T3-SUBJECT line — the generated headline was not captured, so the post-commit subject assert would have nothing to compare against (#171). Nothing has been staged."
+
+# clear · stage · clear · commit · clear
+clear_locks
+find .git -name '*.lock' | grep -q . && fail "lock survived the mv-aside — do NOT stage; investigate"
+
+# EXPLICIT-PATH STAGING — P5 option (a), enacted #128. `git add -A` is gone; the paths come from
+# the reconciliation, not from whatever the tree happens to be carrying.
+if [ "$ALLDIRTY" -eq 1 ]; then
+  echo "— --all-dirty: staging every dirty path, named:"
+  git status --porcelain | sed 's/^/  dirty: /'
+  while IFS= read -r _p; do [ -n "$_p" ] && PATHS+=("$_p"); done < <(git status --porcelain | cut -c4-)
+fi
+if [ "${#PATHS[@]}" -eq 0 ]; then
+  echo '✗ refusing to stage: no paths given. --reconciled means you can name WHY every dirty path'
+  echo '  exists — so name the ones this commit is for (P5, ruled 2026-08-02: git add -A retired).'
+  echo "  Re-run as: bash knowledge/_git_commit.sh --reconciled <msgfile> <path> [<path> ...]"
+  echo "  or, if the reconciliation really covered all of them, add --all-dirty. Dirty paths now:"
+  git status --short
+  exit 1
+fi
+# #261 M2 — the instrumentation the gates above just wrote, staged with the work it dirtied.
+if [ "$INSTRUMENT_AUTOSTAGE" -eq 1 ]; then
+  _i=0
+  for _rec in "${INSTRUMENTATION_PATHS[@]}"; do
+    _p="${_rec%%|*}"
+    if [ "$(_instr_hash "$_p")" != "${INSTR_SNAP[$_i]}" ]; then
+      _already=0
+      for _q in "${PATHS[@]}"; do [ "$_q" = "$_p" ] && _already=1; done
+      if [ "$_already" -eq 0 ]; then
+        PATHS+=("$_p")
+        echo "— AUTO-STAGED (#261 M2): $_p — THIS RUN's own gates appended to it (bytes changed"
+        echo "  between script start and staging). Committing it is what leaves a clean tree;"
+        echo "  ⚠ any append another process made to the same file rides along in the blob."
+      fi
+    fi
+    _i=$((_i + 1))
+  done
+fi
+for _p in "${PATHS[@]}"; do
+  git add -- "$_p" 2>/dev/null || fail "could not stage '$_p' — named in the reconciliation but git refused it"
+done
+git diff --cached --name-only | sed 's/^/  staged: /'
+UNSTAGED_DIRTY=$(git status --porcelain | grep -c '^.[MD?]' || true)
+[ "$UNSTAGED_DIRTY" -eq 0 ] ||
+  echo "⚠ $UNSTAGED_DIRTY dirty path(s) NOT staged — deliberate under explicit-path staging; they stay for the next commit"
+git diff --cached --quiet && fail "nothing staged — empty commit refused"
+
+# ── MENTION-MAP GATE, SECOND HALF: REGENERATED-BUT-NOT-STAGED (#208) ──────────────────────────
+# The freshness gate above proves the map on DISK is current. This proves the map going into the
+# COMMIT is. Under explicit-path staging those are different claims, and the difference is the
+# hole the three targeted repairs kept falling through: regenerate the map, commit without
+# naming it, and CI's survey reads the OLD blob against the NEW corpus — red again, with a clean
+# local `--check`. Asked after staging because that is when the answer exists.
+MAP_PATH="knowledge/_graph-mention-map.json"
+if ! git diff --quiet -- "$MAP_PATH" 2>/dev/null; then
+  fail "MENTION-MAP GATE (#208, second half): '$MAP_PATH' differs from HEAD and is NOT staged — the commit would carry the OLD map against a NEW corpus, which is exactly what CI's survey step [110] reads (it asks the committed tree BEFORE any rebuild). Append '$MAP_PATH' to your named paths and re-run. Nothing has been committed."
+fi
+echo "— mention map is either unchanged or staged (#208 [110] second-half assert)"
+
+# ── MEMENTO-SCHEMATIC GATE, SECOND HALF: REGENERATED-BUT-NOT-STAGED (#304 R1) ─────────────────
+# Same argument as the mention map's second half above: fresh on DISK is not fresh in the COMMIT
+# under explicit-path staging. A schematic that differs from HEAD and is not staged means CI's
+# survey reads the OLD blob against the NEW corpus. ⚠ Residual, declared: an INPUT the schematic
+# counts (e.g. knowledge/_graph-mark-observations.jsonl, appended by every memento search) left
+# dirty and unnamed is rendered into the staged schematic but not committed — name it too.
+# Unconditional, as #208's second half is: SCHEMATIC_ACK passes a STALE schematic, never an
+# unstaged regenerated one.
+if ! git diff --quiet -- "$SCHEMATIC_PATH" 2>/dev/null; then
+  fail "MEMENTO-SCHEMATIC GATE (#304 R1, second half): '$SCHEMATIC_PATH' differs from HEAD and is NOT staged — the commit would carry the OLD schematic against a NEW corpus, which is exactly what CI's survey step [125] reads. Append '$SCHEMATIC_PATH' to your named paths and re-run. Nothing has been committed."
+fi
+echo "— memento schematic is either unchanged or staged (#304 R1 [125] second-half assert)"
+
+# ── DOC-ROW GATE, SECOND HALF: THE DOCS OF *THIS* COMMIT (#208) ─────────────────────────────
+# The pre-staging run above can only see docs that are ALREADY COMMITTED (its population comes
+# from `git log`), so a single-commit session that adds a brief ships it unrowed and the gate
+# reports PASS while doing it (#207 postscript). `_gate_doc_rows.py` now ALSO reads
+# `git diff --cached --diff-filter=A` — but that set is EMPTY until the staging loop above has
+# run, so the answer only exists here. Same DOC_ROW_ACK hatch: declared passes, silent fails.
+if [ -z "${DOC_ROW_ACK:-}" ]; then
+  python3 knowledge/_gate_doc_rows.py ||
+    fail "doc-row gate REFUSED (post-staging) — a document STAGED IN THIS COMMIT has no store row (list printed above). Add the row via _state.add(), or re-run with DOC_ROW_ACK=\"<real reason>\" to pass it DECLARED."
+  echo "— doc rows present for this commit's staged adds (_gate_doc_rows.py, post-staging)"
+fi
+
+clear_locks
+
+BEFORE=$(git rev-parse HEAD)
+# --cleanup=verbatim — enacted #128, ruled the same session it was found. git's `strip` cleanup
+# (the default whenever `commit.cleanup=strip` is configured, and the default for editor-supplied
+# messages) DELETES every line beginning with '#'. The T3 headline this script generates BEGINS
+# WITH '#<session>' on a wrap commit — so the subject line was silently removed and git promoted
+# the first body line to %s. MEASURED #128 in a scratch repo, git 2.34.1: with `commit.cleanup=strip`
+# the subject of a `#128 … / <blank> / body` msgfile came back as literally `body`; with
+# `--cleanup=verbatim`, `#128 …`. Nothing warned. `verbatim` also means the msgfile is committed
+# exactly as written — which is the property the assert below relies on.
+# #208: `-F "$RENDERED"`, not `-F "$MSGFILE"` — the msgfile is READ-ONLY input for this run.
+[ -s "$RENDERED" ] || fail "T3 exited 0 but wrote no render file at '$RENDERED' — the commit message the assert compares against would not exist. Nothing has been committed."
+git -c user.name="Claude" -c user.email="claude@anthropic.com" commit --cleanup=verbatim -F "$RENDERED" 2>&1 |
+  grep -v 'unable to unlink' || true
+AFTER=$(git rev-parse HEAD)
+[ "$BEFORE" != "$AFTER" ] || fail "HEAD did not advance — commit did not land"
+echo "— committed: $(git log -1 --format='%h %s' | cut -c1-120)"
+# #124 subject-fold consumer — the T3 blank-line insert is the remedy; this check sits at the
+# seam where a folded subject becomes DURABLE (the commit), so it cannot be blinded by its own
+# remedy. 0eacf2d shipped ~83,000 chars as %s and broke every git-log consumer at the next boot.
+SUBJ_LEN=$(git log -1 --format=%s | wc -c)
+[ "$SUBJ_LEN" -le 200 ] || fail "commit subject is ${SUBJ_LEN} chars (cap 200) — the 0eacf2d subject-fold class: no blank line after the headline, so git folded the body into %s. The commit LANDED; fix the msgfile and amend BEFORE Dave pushes."
+# SUBJECT-IDENTITY ASSERT — enacted #128, and it FAILS LOUD. What stood here was a substring
+# `grep -qF` on the first 40 chars that only ever printed a warning, so the two ways this seam
+# actually breaks both passed it: git's cleanup silently deleting a '#'-leading subject, and the
+# stale-msgfile trap. The commit HAS landed by the time this runs — that is the point, this is the
+# seam where a wrong subject becomes DURABLE — so the failure text says so and names the remedy.
+# ⛔ #171 — THE SUBJECT NOW ASSERTS AGAINST THE GENERATED HEADLINE HELD IN MEMORY ($GEN_SUBJ),
+# NEVER against the msgfile T3 rewrote. The old comparison read back the same line T3 had
+# written seconds earlier: a value compared to itself, structurally unable to fail. Driven #171
+# with a simulated prefix-stacking write-back — the doubled subject landed and this seam
+# printed green. $GEN_SUBJ is captured BEFORE staging and is not touched by anything after.
+MSG_HEAD=$(head -1 "$MSGFILE")
+GIT_SUBJ=$(git log -1 --format=%s)
+if [ "$GIT_SUBJ" != "$GEN_SUBJ" ]; then
+  echo "✗ SUBJECT MISMATCH — the commit LANDED but git's subject is not the headline T3 generated." >&2
+  echo "    T3 generated: $(printf '%s' "$GEN_SUBJ" | cut -c1-160)" >&2
+  echo "    git    %s  : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
+  echo "    msgfile[1]  : $(printf '%s' "$MSG_HEAD" | cut -c1-160)   (diagnostic only — T3 rewrote this file)" >&2
+  echo "  Known causes: (a) message cleanup ate a '#'-leading subject — check --cleanup=verbatim" >&2
+  echo "  survived, (b) the stale-msgfile trap, (c) something rewrote the msgfile between T3 and" >&2
+  echo "  the commit. Fix the msgfile and amend BEFORE Dave pushes." >&2
+  clear_locks
+  exit 1
+fi
+echo "— subject asserted identical to the headline T3 generated (in memory, not re-read from the msgfile — #171)"
+# ── #208 — EXACTLY-ONE-PREFIX ASSERT, on the COMMITTED subject ────────────────────────────────
+# The identity assert above compares the subject to the headline T3 generated. It cannot see a
+# prefix that was ALREADY in the generated headline, which is precisely what a reused msgfile
+# produces (`after #208 … — after #207 … — x` is a faithful copy of what T3 built). So the
+# CLASS gets its own check, on `git log -1 --format=%s` — the artefact a reader actually meets.
+# Both refusals are post-commit BY DESIGN: this is the seam where a doubled subject turns
+# DURABLE, and the remedy (amend before the push) is only available here.
+SUBJ_PREFIXES=$(prefix_count "$GIT_SUBJ")
+if [ "$SUBJ_PREFIXES" -ne 1 ]; then
+  echo "✗ SUBJECT PREFIX COUNT = $SUBJ_PREFIXES (must be exactly 1) — the doubled-subject class (#208, 8 documented instances)." >&2
+  echo "    git %s : $(printf '%s' "$GIT_SUBJ" | cut -c1-160)" >&2
+  echo "  0 means T3's prefix never reached the subject (check --cleanup=verbatim survived);" >&2
+  echo "  2+ means a msgfile was reused and the prefix stacked. The commit LANDED: fix the" >&2
+  echo "  msgfile (FRESH file, fresh printf) and 'git commit --amend -F <fresh>' BEFORE Dave pushes." >&2
+  clear_locks
+  exit 1
+fi
+echo "— subject carries exactly ONE T3 prefix (#208 doubled-subject assert)"
+
+# last action: clear the lock git just respawned; no git command after this
+clear_locks
+echo "✓ done — locks clear, safe for Dave to push via GitHub Desktop"

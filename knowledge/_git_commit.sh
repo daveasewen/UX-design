@@ -208,6 +208,20 @@ pat_expiry_verdict() {
   else                                               echo "OK $days"; fi
 }
 
+# ── ⬛ s305-D30 — THE PUSH TOKEN LIVES BEHIND THE REPO-LOCAL CREDENTIAL HELPER, NOT IN THE URL ────
+# Dave, the sitting of 2026-09-27, call 30: "yes". #305 C1 moved it (notes/_subreports/2026-09-27-305-C1-
+# commit.md): the token is in `.git/apollo-credentials` and a GET-ONLY helper in the repo's own config
+# answers `git credential fill` for github.com; the remote URL is clean. A credential is PRESENT when
+# either form answers — the pre-#305 URL form or the helper. ⛔ BOTH ARE ONLY TESTED: the URL is piped
+# into `grep -q` and the helper's answer is piped into `grep -q`; nothing is echoed, logged or kept in
+# a variable. Prompts are switched off so a seat with no credential refuses rather than hangs.
+push_credential_present() {
+  git config remote.origin.url | grep -q "@github.com" && return 0
+  printf 'protocol=https\nhost=github.com\n\n' \
+    | GIT_TERMINAL_PROMPT=0 GIT_ASKPASS= SSH_ASKPASS= git credential fill 2>/dev/null \
+    | grep -q '^password=.'
+}
+
 # ── PUSH MODE (s133-D2, Dave: "I dont mind if its reasonable gated" → "okay do it") ──────────
 # `bash knowledge/_git_commit.sh --push` — the ONLY push path. Fires ONLY on Dave's explicit
 # in-session word (the caller's attestation, same contract as --reconciled). Gates, each a refusal:
@@ -228,7 +242,7 @@ if [ "$1" = "--push" ]; then
     declare_instrumentation_dirt "$PUSH_DIRT"
     exit 1
   fi
-  git config remote.origin.url | grep -q "@github.com" || { echo "✗ push refused: no credential in remote URL. Dave: fine-grained PAT (this repo, Contents r/w, 90d) — ⛔ do NOT paste it into chat; run this yourself in a terminal: git config remote.origin.url https://<TOKEN>@github.com/daveasewen/UX-design.git   (W-24 / dream pass 6 P4: the credential never transits the chat; the gate behaves identically. Expiry ~2026-11-06 for the token minted 2026-08-08 — if that date has passed, re-issue rather than re-read this line. ⛔ the token's SCOPE is Dave's security call, unproposed.)"; exit 1; }
+  push_credential_present || { echo "✗ push refused: no push credential — neither the repo's credential helper (s305-D30: .git/apollo-credentials, read through git credential fill) nor the remote URL answers for github.com. Dave: fine-grained PAT (this repo, Contents r/w, 90d) — ⛔ do NOT paste it into chat; store it yourself in a terminal, at the repo root: git credential-store --file=\"$(git rev-parse --absolute-git-dir)/apollo-credentials\" store   then type protocol=https, host=github.com, username=x-access-token, password=<TOKEN>, one per line, and an empty line (the helper C1 set at #305 reads that file; the URL stays clean). (W-24 / dream pass 6 P4: the credential never transits the chat; the gate behaves identically. Expiry ~2026-11-06 for the token minted 2026-08-08 — if that date has passed, re-issue rather than re-read this line. ⛔ the token's SCOPE is Dave's security call, unproposed.)"; exit 1; }
   # ── ⬛ s294-D5 — THE EXPIRY GATE, BEFORE THE PUSH AND AFTER THE CREDENTIAL CHECK ────────────
   # WARNS inside 14 days, REFUSES past the date, and quotes the date and the ruling either way.
   # ⛔ Nothing below reads, prints or logs the credential — the date comes from the ledger.
@@ -238,7 +252,7 @@ if [ "$1" = "--push" ]; then
     EXPIRED)
       echo "✗ push refused: THE PUSH CREDENTIAL'S STAMPED EXPIRY HAS PASSED — $PAT_EXP, and today is $PAT_NOW ($((0 - PAT_DAYS)) day(s) past it)."
       echo "  s294-D5 (Dave, 2026-09-21): the credential is this repo, Contents read/write only, ninety days, RE-ISSUED BEFORE 2026-11-06, with the expiry CHECKED BY THE SCRIPT rather than remembered. This is that check, and it is refusing."
-      echo "  REMEDY — DAVE'S HANDS, AT GITHUB, NOT THIS SCRIPT'S AND NOT A SESSION'S: mint a fresh fine-grained PAT (this repo only · Contents read/write only · 90 days), install it in the remote URL yourself in a terminal, and update the stamped date at $PAT_EXPIRY_LEDGER (the W-24 stamp) so this gate reads the new one."
+      echo "  REMEDY — DAVE'S HANDS, AT GITHUB, NOT THIS SCRIPT'S AND NOT A SESSION'S: mint a fresh fine-grained PAT (this repo only · Contents read/write only · 90 days), store it yourself in a terminal in the repo's credential helper file (.git/apollo-credentials, s305-D30 — the credential-refusal line above spells the command), and update the stamped date at $PAT_EXPIRY_LEDGER (the W-24 stamp) so this gate reads the new one."
       echo "  ⛔ The credential NEVER transits the chat and nothing in this repo may ask for it. Nothing has been pushed."
       exit 1 ;;
     WARN)
@@ -392,15 +406,36 @@ if [ "${1-}" = "--selftest" ]; then
   # push. So the gate's LOGIC is bitten above through `pat_expiry_verdict` (the exact function
   # the push path branches on), and its POSITION is bitten here: after the credential check,
   # before `git push`. Order is the part a unit test of the verdict cannot see.
-  SF_CRED_LN=$(grep -n 'git config remote\.origin\.url | grep -q' "$0" | head -1 | cut -d: -f1)
+  # ⬛ s305-D30: the credential check is now ONE call site (`push_credential_present ||`); the
+  # order bite reads THAT line, not the function's definition above the push mode.
+  SF_CRED_LN=$(grep -n '^  push_credential_present ||' "$0" | head -1 | cut -d: -f1)
   SF_GATE_LN=$(grep -n '^  PAT_V=\$(pat_expiry_verdict)' "$0" | head -1 | cut -d: -f1)
   SF_PUSH_LN=$(grep -n '^  git push origin master' "$0" | head -1 | cut -d: -f1)
   bite "the expiry gate sits AFTER the credential check and BEFORE the push" "1" \
-       "$([ -n "$SF_GATE_LN" ] && [ "$SF_CRED_LN" -lt "$SF_GATE_LN" ] && [ "$SF_GATE_LN" -lt "$SF_PUSH_LN" ] && echo 1 || echo 0)"
+       "$([ -n "$SF_CRED_LN" ] && [ -n "$SF_GATE_LN" ] && [ "$SF_CRED_LN" -lt "$SF_GATE_LN" ] && [ "$SF_GATE_LN" -lt "$SF_PUSH_LN" ] && echo 1 || echo 0)"
+  # ── ⬛ s305-D30 — THE CREDENTIAL CHECK LEARNS THE HELPER. Fixture repos, isolated from every global
+  # and system helper (GIT_CONFIG_GLOBAL=/dev/null, GIT_CONFIG_NOSYSTEM=1), so the real token is never
+  # in play and a seat's own keychain cannot answer for the fixture. PLANT, THEN DETECT, both ways.
+  echo "— s305-D30 push-credential check selftest (fixture repos, no real credential)"
+  SF_FX=$(mktemp -d "${TMPDIR:-/tmp}/gitcommit-cred-XXXXXX")
+  sf_cred() { ( cd "$1" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 push_credential_present ) && echo 1 || echo 0; }
+  for SF_N in clean helper url; do git init -q "$SF_FX/$SF_N"; done
+  git -C "$SF_FX/clean"  remote add origin https://github.com/example/fixture.git
+  git -C "$SF_FX/helper" remote add origin https://github.com/example/fixture.git
+  printf 'https://x-access-token:FIXTURE-NOT-A-TOKEN@github.com\n' > "$SF_FX/helper/.git/apollo-credentials"
+  git -C "$SF_FX/helper" config 'credential.https://github.com.helper' \
+    '!f() { test "$1" = get && git credential-store --file="$(git rev-parse --absolute-git-dir)/apollo-credentials" get; }; f'
+  git -C "$SF_FX/url" remote add origin https://x-access-token:FIXTURE-NOT-A-TOKEN@github.com/example/fixture.git
+  bite "clean URL, no helper ⇒ NO credential (the refusal's condition)" "0" "$(sf_cred "$SF_FX/clean")"
+  bite "clean URL + the repo-local helper ⇒ credential PRESENT (s305-D30)" "1" "$(sf_cred "$SF_FX/helper")"
+  bite "token-in-URL form still accepted (a pre-#305 seat)" "1" "$(sf_cred "$SF_FX/url")"
+  bite "the helper's answer is only TESTED, never printed" "0" \
+       "$( (cd "$SF_FX/helper" && GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 push_credential_present) 2>&1 | grep -c FIXTURE-NOT-A-TOKEN || true)"
+  rm -rf "$SF_FX" 2>/dev/null || true
   if [ "$SF_FAILS" -ne 0 ]; then
     echo "✗ selftest FAILED — $SF_FAILS bite(s)"; exit 1
   fi
-  echo "✓ selftest OK — 28 bites: 6 fire, 7 stay silent, 1 hatch present, 14 on the s294-D5 expiry gate"
+  echo "✓ selftest OK — 32 bites: 6 fire, 7 stay silent, 1 hatch present, 14 on the s294-D5 expiry gate, 4 on the s305-D30 credential check"
   exit 0
 fi
 

@@ -97,6 +97,8 @@ BUDGET_HARD = 300_000        # PICKED by Dave #301 (2026-09-23) — an EXPERIMEN
                              # did NOT move. Reverting is his word.
                              # WAS (pre-#301): 256_000, SOURCED — last publicly measured-good
                              # recall point (93% MRCR v2).
+                             # ⬛ INSCRIBED `s305-D28` (Dave, 2026-09-27, "yes to both"): the
+                             # hard line 300,000 is now a RULING, not an act in a handoff.
                              # ⚠ NAME IS HISTORICAL: a QUALITY/TOLERANCE line sourced when the
                              # window was 200K-class — NOT a context wall for Fable 5.1 / Opus 5
                              # in Cowork (1M + auto-compaction), per Dave's #284 correction.
@@ -107,6 +109,8 @@ BUDGET_WORKING = 256_000     # PICKED by Dave #301 (2026-09-23, 20:21 BST), answ
                              # ⇒ the mechanical-only band is now 256,000–300,000. AMBER 160,000
                              # and BOOT_CEILING_TK did NOT move. Reverting is his word.
                              # WAS (pre-#301): 200_000, SOURCED — the line jobs are priced against.
+                             # ⬛ INSCRIBED `s305-D28` (Dave, 2026-09-27, "yes to both"): the
+                             # working line 256,000 is now a RULING, not an act in a handoff.
 # ⛔ PROVENANCE CORRECTED #58b, BY DAVE, AND THE CORRECTION IS THE POINT. This line read "DAVE'S,
 # ruled #56" for three sessions. He: *"BTW the 200K and 256K come from established research, its
 # been worked out already."* ⇒ BOTH are SOURCED; neither is a preference he can be talked out of,
@@ -147,14 +151,23 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # ⚠ `_checkin.py` PREFERS this constant and keeps its `_CHAIN.md` regex only as a DECLARED
 # fallback that WARNS when the scraped figure disagrees — a number scraped out of last session's
 # prose is a Polaroid of a ruling, never the ruling [[instrument-without-a-consumer]].
-STOP_LINE_TK = 180_000       # `s260-D2` + `s271-D1` — the ONE advisory stop line, Dave's to move
+# ⬛ `s305-D28` (Dave, 2026-09-27, the sitting, call 28 — "yes to both"): THE WINDOW LINES ARE
+# INSCRIBED (working 256,000 · hard 300,000, his #301 words, until now acts in the handoffs and not
+# rulings) AND THE STOP AND TOLERANCE LINES MOVE UNDER THEM: 180,000 → 236,000 and 220,000 →
+# 276,000. It SUPERSEDES the figures of `s271-D1`, `s272-D93` and `s260-D2`; none of the three is
+# edited — the ruling crosses their numbers out, and the text above is kept as their record.
+# Each line keeps its gap: stop sits 20,000 under working (as 180,000 sat under 200,000), tolerance
+# 24,000 under hard. Both stay ADVISORY — the blocking tier is BUDGET_HARD, as before.
+STOP_LINE_TK = 236_000       # `s305-D28` (was 180_000 — `s260-D2` + `s271-D1`); the ONE advisory
+                             # stop line, Dave's to move
 
 # ★★★ `s272-D93` (Dave, #272), in his words: *"we work until around 180, thats the safest but I
 # wont loose any sleep over hitting 220 for example"*. Enacted at #273 on his one word ("advisory
 # arm"): a NAMED ADVISORY band above the stop line. STOP_LINE_TK is UNCHANGED. Between the stop
 # line and this figure the check-in says TOLERATED, not breach; above it, PAST TOLERANCE. It is
 # NOT a wall — BUDGET_WORKING / BUDGET_HARD are untouched; the blocking tier remains his.
-TOLERATED_TK = 220_000       # `s272-D93` — advisory tolerance band, Dave's to move
+TOLERATED_TK = 276_000       # `s305-D28` (was 220_000 — `s272-D93`); advisory tolerance band,
+                             # Dave's to move
 
 # --------------------------------------------------------------------------- THE BOOT
 # The floor every session pays before it does anything. TWO HALVES, and they are known to
@@ -373,8 +386,20 @@ BOOT_BAND_SIGMA = 2.0          # red beyond this many spreads — derived above,
 # ⛔ `BOOT_CEILING_FROM_SESSION` (in `_capture_gate.py`) IS NOT TOUCHED here: whether the
 # post-switch-off boots are a THIRD regime needing their own boundary is a ruling-shaped
 # question, and inventing one at a seat is exactly what `s240-D2` forbids.
-BOOT_CEILING_TK = 72_768       # `s295-D3`, SHRINK-ONLY from here. Dave's word, n=1, #295 turn 1.
-                               # (was 70_000 — `s241-D1`, first post-diet boot 69,092 at #241.)
+# ⬛ `s305-D29` (Dave, 2026-09-27, the sitting, call 29 — "yes"): THE BOOT CEILING IS 130,000 UNTIL
+# THE MAC SEAT; THEN IT IS MEASURED THERE AND SHRUNK. It SUPERSEDES `s295-D3` for the period until
+# the Mac seat — his word over his own word twice (#295's "possibly the new ceiling", and 19:47 on
+# #301 when he chose the window over the ceiling). The case the page put: the cloud seat boots at
+# about 128,000 (126,767 measured 23 September), so every wrap since #297 went the declared
+# not-a-wrap path and this ceiling read nothing — a line nobody can meet stops being a line.
+# ⛔ Everything above is KEPT as the record of 70,000 and 72,768; the breach readings over them stay
+# in the append-only log. ⛔ SHRINK-ONLY RESUMES FROM THE MAC-SEAT READING (`s240-D2`/`s241-D1` are
+# not repealed): the next move of this literal is DOWN, on that measurement, and never up again
+# without Dave's word. His comment on the call, verbatim, opens thread W-305n3: *"I really find
+# this frustrating, we need to make this more efficient somehow, and I want to return to impoving
+# the wrap too at some point"*.
+BOOT_CEILING_TK = 130_000      # `s305-D29`, until the Mac seat, then measured there and shrunk.
+                               # (was 72_768 — `s295-D3`, #295 turn 1; before it 70_000 — `s241-D1`.)
 
 
 def derived_boot_band(samples: list | None = None,
@@ -898,18 +923,23 @@ def selftest() -> int:
             # that moves the ceiling again WITHOUT his word trips it exactly as before. ⛔ And
             # the direction is asserted separately below, because shrink-only is the half a bare
             # equality check cannot see.
-            for name, want in (("BOOT_CEILING_TK", 72_768), ("STOP_LINE_TK", STOP_LINE_TK),
+            # ★★ #305 — MOVED A SECOND TIME, BY DAVE'S WORD (`s305-D29`), AND IT STILL BITES: the pin
+            # is the NEW literal 130,000, so a seat that moves the ceiling again without his word
+            # trips it exactly as before; the direction check below now guards 130,000.
+            for name, want in (("BOOT_CEILING_TK", 130_000), ("STOP_LINE_TK", STOP_LINE_TK),
                                ("BUDGET_HARD", BUDGET_HARD)):
                 got = globals().get(name)
                 if name == "BOOT_CEILING_TK" and got != want:
-                    failures.append(f"[E s294-D7/s295-D3] {name} = {got:,}, not {want:,} — "
-                                    f"`s294-D7` moves NO constant; `s295-D3` moved it ONCE to "
-                                    f"72,768 on Dave's word and `s241-D1`/`s295-D3` keep it "
-                                    f"shrink-only and DAVE'S from there.")
-                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 72_768:
-                    failures.append(f"[E s295-D3] {name} = {got:,} is ABOVE the re-based "
-                                    f"72,768 — SHRINK-ONLY means it may go DOWN and NEVER UP. "
-                                    f"A breach is REPORTED, not absorbed by raising this line.")
+                    failures.append(f"[E s294-D7/s305-D29] {name} = {got:,}, not {want:,} — "
+                                    f"`s294-D7` moves NO constant; `s295-D3` moved it to 72,768 "
+                                    f"and `s305-D29` to 130,000, each on Dave's word, and it "
+                                    f"stays DAVE'S from there (shrink-only again from the Mac-seat "
+                                    f"reading).")
+                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 130_000:
+                    failures.append(f"[E s305-D29] {name} = {got:,} is ABOVE the 130,000 "
+                                    f"`s305-D29` set until the Mac seat — the next move is DOWN, "
+                                    f"on the Mac-seat measurement. A breach is REPORTED, not "
+                                    f"absorbed by raising this line.")
             if "BOOT_FIRSTTURN_TK" in globals():
                 failures.append("[E s294-D7] BOOT_FIRSTTURN_TK is back — it was DELETED at "
                                 "#241, not superseded in place, and a re-measure does not "

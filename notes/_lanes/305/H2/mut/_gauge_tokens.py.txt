@@ -1,0 +1,969 @@
+#!/usr/bin/env python3
+"""The context gauge's UNIT and its BUDGET — real Claude tokens against an absolute line.
+
+RULED BY DAVE #56, and it retires the percentage band inside the gauge.
+
+★ WHAT WAS WRONG, and it deadlocked the stamp for THIRTEEN CONSECUTIVE SESSIONS. Every term in
+the old pre-flight stamp was a *percentage of the window*. A percentage needs a denominator; the
+window's harness half is unreachable from inside any mount (`ds-025` item 1); so the denominator
+had no value and `check_preflight` — which failed on any missing term — voided the whole stamp.
+One unobservable quantity suppressed every observable one. That is precisely the failure
+**D10 (c)** exists to prevent (*"publish the measured / estimated split on every reading"* —
+half a measurement, LABELLED, beats a whole guess), committed inside the instrument that rules it.
+
+★★ THE FIX IS A CHANGE OF UNIT, NOT A BETTER ESTIMATE. Priced in absolute tokens, the stamp
+never needs the window size at all. `boot + job + wrap` is a sum of absolute quantities checked
+against an absolute line. Nothing in it divides by anything.
+
+⚠ THE BAND WAS NOT CONVERTED, IT WAS REPLACED — and the distinction is load-bearing.
+`45 / 60 / 63` were percentages *of the window*; turning them into tokens would mean multiplying
+by the exact quantity nobody can observe. So these are NEW thresholds with their own provenance,
+below. [[measure-dont-convert-units]] — a conversion wearing a measurement's clothes is the
+thing that class warns about.
+
+THE UNIT: real Claude tokens, from `client.messages.count_tokens()`. `cl100k` (tiktoken) stays
+as the OFFLINE FALLBACK ONLY and every figure derived from it is LABELLED as an estimate.
+⚠ Do NOT convert cl100k figures with a fixed ratio and call the result real: the per-register
+spread measured at #53 was **1.486–1.664**, so one ratio cannot re-denominate a mixed corpus.
+Measured here for reference, never as a converter: `_CHAIN.md` = 4,384 tape / **6,897 real**.
+"""
+from __future__ import annotations
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+
+import hashlib
+import json
+import os
+import shutil
+import statistics
+import sys
+import tempfile
+import urllib.error
+import urllib.request
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL = "claude-opus-5"
+ENDPOINT = "https://api.anthropic.com/v1/messages/count_tokens"
+CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.json")
+
+# --------------------------------------------------------------------------- THE BUDGET
+# ⛔ TWO NUMBERS, TWO DIFFERENT KINDS OF AUTHORITY. Do not blur them.
+#
+# ⛔ #301 (2026-09-23): BUDGET_WORKING MOVED 200,000 → 256,000 as well (*"200k isnt enough make it
+# 256"*), PICKED; its SOURCED account below is likewise the pre-#301 record.
+# ⛔ #301 (2026-09-23): BUDGET_HARD MOVED 256,000 → 300,000, PICKED by Dave as an experiment until
+# the Mac seat fix (his words quoted at the constant). The SOURCED account below is the pre-#301
+# record of the 256,000 figure and is kept as written; it no longer describes the live number.
+# BUDGET_HARD is SOURCED, not picked: 256,000 is the largest context at which Claude's recall
+# has been PUBLICLY MEASURED and still holds — 93% on MRCR v2 at 256K, falling to 76% at 1M
+# (verified #56 against Anthropic's context-engineering guidance and the published benchmarks).
+# ⚠ Anthropic's own framing is "a performance gradient rather than a hard cliff", so this is the
+# last measured-good point, NOT an edge where something breaks. Above it we are extrapolating.
+#
+# ⛔★ WORDING CORRECTED #286, ON DAVE'S #284 CORRECTION — THE NUMBER DID NOT MOVE, THE WORD DID.
+# 256,000 has been called the "hard wall" / "hard line" across this repo's prose and stamps. It is
+# NOT a context wall for THIS model: Anthropic's help centre ("How large is the context window on
+# paid Claude plans?") gives Fable 5.1 / Opus 5 in Cowork on a paid plan a **1M token context
+# window with auto-compaction** near the limit. 256,000 was sourced when the window was 200K-class,
+# so what it names is a QUALITY / TOLERANCE line — the last publicly measured-good recall point —
+# and never a crash edge. ★ THE QUALITY LINE THAT BINDS IS 180,000 (`STOP_LINE_TK` below): Dave's
+# #284 correction is that 180,000 was gauged against the MESSY MIDDLE (lost-in-the-middle recall),
+# which is a quality problem and not a window problem, so it STANDS unchanged by the 1M finding.
+# ⇒ #277's, #281's and #282's recorded "hard-line breaches" of 256,000 were QUALITY breaches, not
+# crash risks. ⛔ NO CONSTANT MOVED AT #286 and no band changed — this is a LABEL fix only, and
+# re-basing any of these figures remains DAVE'S. [[measure-dont-convert-units]]
+#
+# BUDGET_WORKING is DAVE'S, ruled #56 in this session. It is the line jobs are priced against;
+# the gap to HARD is the room a job needs when it turns out bigger than its estimate.
+#
+# ★★ THE #53 LESSON, MECHANISED RATHER THAN DOCUMENTED. `assert_budget_clears_floor()` below
+# refuses to let a budget ship that sits at or under its own floor. #53 found the M8 banner cap
+# set to 5,000 against a floor of 4,998 — compliance was arithmetically impossible, and three
+# sessions shaved ratified record trying to obey it. A cap must be DERIVED, and a derivation
+# that lands under its own floor is not a strict cap, it is a broken one. [[translate-prose-into-machinery]]
+BUDGET_HARD = 300_000        # PICKED by Dave #301 (2026-09-23) — an EXPERIMENT until the Mac
+                             # seat fix. His words, verbatim: *"okay what we'll do is just raise
+                             # the ceiling until we do the Mac seat fix, hopefully there wont be
+                             # too many consequences. let just use subs to stretch the window as
+                             # much as possible. Lets try 300k and cross our fingers"* — then,
+                             # choosing the window line over the boot ceiling: *"1. is right,
+                             # might be a good experiment."* ⚠ 256,000 → 300,000 is PAST the last
+                             # measured-good point: 256,000–300,000 has NO published recall
+                             # measurement. BUDGET_WORKING / BUDGET_AMBER / BOOT_CEILING_TK
+                             # did NOT move. Reverting is his word.
+                             # WAS (pre-#301): 256_000, SOURCED — last publicly measured-good
+                             # recall point (93% MRCR v2).
+                             # ⬛ INSCRIBED `s305-D28` (Dave, 2026-09-27, "yes to both"): the
+                             # hard line 300,000 is now a RULING, not an act in a handoff.
+                             # ⚠ NAME IS HISTORICAL: a QUALITY/TOLERANCE line sourced when the
+                             # window was 200K-class — NOT a context wall for Fable 5.1 / Opus 5
+                             # in Cowork (1M + auto-compaction), per Dave's #284 correction.
+BUDGET_WORKING = 256_000     # PICKED by Dave #301 (2026-09-23, 20:21 BST), answering whether the
+                             # 200K–256K "mechanical work only" band should stretch to 300K:
+                             # *"200k isnt enough make it 256"*. Same experiment as BUDGET_HARD
+                             # (300,000, his words at that constant) — until the Mac seat fix.
+                             # ⇒ the mechanical-only band is now 256,000–300,000. AMBER 160,000
+                             # and BOOT_CEILING_TK did NOT move. Reverting is his word.
+                             # WAS (pre-#301): 200_000, SOURCED — the line jobs are priced against.
+                             # ⬛ INSCRIBED `s305-D28` (Dave, 2026-09-27, "yes to both"): the
+                             # working line 256,000 is now a RULING, not an act in a handoff.
+# ⛔ PROVENANCE CORRECTED #58b, BY DAVE, AND THE CORRECTION IS THE POINT. This line read "DAVE'S,
+# ruled #56" for three sessions. He: *"BTW the 200K and 256K come from established research, its
+# been worked out already."* ⇒ BOTH are SOURCED; neither is a preference he can be talked out of,
+# and 200,000 was never his to re-dial by fiat. ★ A number attributed to the wrong authority is
+# argued with differently — a preference invites negotiation, a measurement does not. His shape
+# for the two, same message: **do not reach 200,000 · 200,000–256,000 is DANGEROUS · past 256,000
+# everything goes badly.**
+# ⛔ AMBER IS **PICKED**, NOT DERIVED — RULED BY DAVE, #59. 80% of working is a round fraction, not a
+# derivation; labelling it DERIVED made it immune to the very rule that should have caught it
+# ("derive a cap, never pick it" — RULED #53 · gate-asserted #56 · second remedy #58; three dates
+# that had collapsed into one citation). ★ THE FORMULA IS THE RULING, THE NUMBER IS NOT:
+#     stop = wall − wrap − step        # each term tagged MEASURED or ESTIMATED
+# and the HIGH end of BOTH terms is reserved, or neither (a stop line reserved at the MEDIAN step is
+# under water half the time by construction). ⚠ DO NOT stack a step reserve on top of an amber that
+# already contains one — that is a RESERVE ON A RESERVE, ~10K/window, invisible because each layer is
+# individually defensible. ★★ `wrap` IS NOW MEASURABLE AND WAS FIRST MEASURED AT #59: 42,434+ real
+# tokens against the inherited ~25,000 folklore ⇒ low by ≥1.7×. n=1; needs 2–3 more before the line
+# moves. NO BEHAVIOUR CHANGE HERE — the value is untouched by ruling; only the label was a lie.
+BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop taking on more
+
+# --------------------------------------------------------------------------- THE STOP LINE
+# ★★★ ONE NUMBER, AND IT LIVES HERE BECAUSE UNTIL #271 IT LIVED NOWHERE A SCRIPT COULD SEE.
+# `s260-D2` (Dave, #260) repriced the advisory start-wrap-by line for the DELEGATED-WRAP ritual:
+# the wrap runs in a SUB, so the window does not have to reserve the wrap's own cost — 180,000
+# real, with 20,000 left against a max measured hand-over of 10,434. `s271-D1` (Dave, #271)
+# collapses the pair to ONE figure and RETIRES 150,929, in his words:
+#   *"180 was decided because we use a sub for the wrap the 150 number was chosen before we
+#    started this strategy"*
+# ⇒ 150,929 was derived (200,000 − 49,071 inline wrap) BEFORE the delegated-wrap strategy
+# existed; it describes a ritual we no longer run, and a retired figure that stays reachable is
+# a second answer to a question that has one [[retrieval-default-hides-the-ruling]].
+# ⚠ #301 addendum: BUDGET_HARD is now 300,000 (Dave's picked experiment); the 256,000 below is the
+# figure as it stood when this entry was written. STOP_LINE_TK itself did not move at #301.
+# ⛔ WHAT THIS IS NOT: it is NOT a wall. 200,000 (`BUDGET_WORKING`) and 256,000 (`BUDGET_HARD`)
+# are SOURCED and are NOT moved, widened or re-based by this constant — dream-12 P1 proposed
+# nothing about them and `s271-D1` says so in terms. This line is the ADVISORY that says start
+# wrapping; crossing it is a breach to be DECLARED, not an error to be swallowed.
+# ⚠ `_checkin.py` PREFERS this constant and keeps its `_CHAIN.md` regex only as a DECLARED
+# fallback that WARNS when the scraped figure disagrees — a number scraped out of last session's
+# prose is a Polaroid of a ruling, never the ruling [[instrument-without-a-consumer]].
+# ⬛ `s305-D28` (Dave, 2026-09-27, the sitting, call 28 — "yes to both"): THE WINDOW LINES ARE
+# INSCRIBED (working 256,000 · hard 300,000, his #301 words, until now acts in the handoffs and not
+# rulings) AND THE STOP AND TOLERANCE LINES MOVE UNDER THEM: 180,000 → 236,000 and 220,000 →
+# 276,000. It SUPERSEDES the figures of `s271-D1`, `s272-D93` and `s260-D2`; none of the three is
+# edited — the ruling crosses their numbers out, and the text above is kept as their record.
+# Each line keeps its gap: stop sits 20,000 under working (as 180,000 sat under 200,000), tolerance
+# 24,000 under hard. Both stay ADVISORY — the blocking tier is BUDGET_HARD, as before.
+STOP_LINE_TK = 236_000       # `s305-D28` (was 180_000 — `s260-D2` + `s271-D1`); the ONE advisory
+                             # stop line, Dave's to move
+
+# ★★★ `s272-D93` (Dave, #272), in his words: *"we work until around 180, thats the safest but I
+# wont loose any sleep over hitting 220 for example"*. Enacted at #273 on his one word ("advisory
+# arm"): a NAMED ADVISORY band above the stop line. STOP_LINE_TK is UNCHANGED. Between the stop
+# line and this figure the check-in says TOLERATED, not breach; above it, PAST TOLERANCE. It is
+# NOT a wall — BUDGET_WORKING / BUDGET_HARD are untouched; the blocking tier remains his.
+TOLERATED_TK = 276_000       # `s305-D28` (was 220_000 — `s272-D93`); advisory tolerance band,
+                             # Dave's to move
+
+# --------------------------------------------------------------------------- THE BOOT
+# The floor every session pays before it does anything. TWO HALVES, and they are known to
+# DIFFERENT standards — which is the whole point of publishing the split (D10 (c)).
+#
+# DISK half: MEASURED, exactly, every run — `_CHAIN.md` plus whatever else the session read.
+#
+# HARNESS half: system prompt, tool schemas, deferred-tool list, MCP server instructions.
+# UNREACHABLE from every mount (`ds-025` item 1) and it has been treated as a blocker since #37.
+# ★ IT IS NOT A BLOCKER, AND THIS IS THE ARGUMENT THAT UNSTUCK IT: an error of ±8,000 tokens on
+# a 200,000 budget is ±4%, and there is no job whose go/no-go flips on 4%. We were holding a
+# PLANNING ESTIMATE to a standard built for a PUBLISHED MEASUREMENT. "A measuring tool must not
+# guess" governs what we assert as fact; it was never a ban on estimating, and reading it as one
+# is what produced thirteen blank stamps. So: estimate it, LABEL it, carry the error bar, move on.
+# ⚠ RE-MEASURE WHEN THE SESSION SHAPE CHANGES — a new MCP server or plugin moves this figure.
+# ⛔ #109 — THE NUMBER ABOVE WAS WRONG BY 3.3x AND THE MODEL UNDER IT WAS WRONG TOO.
+# The ARGUMENT survives untouched: estimate it, label it, carry the error bar, move on. What
+# failed was (a) the value and (b) the SHAPE. Measured first-turn boot is ~65,400 real, not
+# 20,000 — 5.6x outside the +/-8,000 bar. And "boot = disk + harness" added a file read at
+# turn TWO (`_CHAIN.md`) to a constant standing for turn ONE: two different moments summed as
+# if they were halves of one thing. The +/-4% defence was sound arithmetic on a wrong premise;
+# 45,400 against the 150,929 stop line is 30%, and that DOES flip a go/no-go.
+#
+# WHAT IS NOW MEASURED (real tokens, `message.usage` first turn, n=5 — #103 65,023 ·
+# #104 64,765 · #105 67,370 · #107 65,046 · #109 64,778; err = half-range, and that spread
+# IS the session-shape variation the old warning below was worried about):
+#     first turn      ~65,400  MEASURED whole
+#       MEMORY.md       8,470  MEASURED (#109, tokenised off the mounted auto-memory)
+#                              ⛔ THE STORE MOVED AT #278 — this term is UNRE-MEASURED since;
+#                              the figure is a pre-#278 measurement, not a current one.
+#                              (#293 lane E1, dream pass 13 P2, ANNOTATION BY ADDITION —
+#                              the constant is NOT edited: it is a measurement and `s241-D1`
+#                              is shrink-only, so moving it is Dave's. The promised re-measure
+#                              is minted as parked item P-293-1, due at the next cold boot
+#                              after a ruling to re-measure.)
+# ── ⬛ s294-D7 — THE RE-MEASURE, PUBLISHED BESIDE THE OLD TERM AND NOT IN PLACE OF IT ────────
+# `s294-D7` (Dave, 2026-09-21, chat #294): "THE 8,470 BOOT TERM IS RE-MEASURED, AND THE READING
+# IS PUBLISHED BESIDE THE TERM RATHER THAN REPLACING IT." Its own ground, in the recommendation
+# he took: "a shrink-only rule should constrain what we SPEND, not what we are allowed to KNOW."
+# With this reading, parked item `P-293-1` is UNPARKED by the ruling itself.
+# ⛔ NOTHING ABOVE OR BELOW IS EDITED. The 8,470 line stands. `BOOT_CEILING_TK`,
+# `STOP_LINE_TK`, `BUDGET_HARD` and the derived band are BYTE-UNCHANGED by this entry: a
+# re-measure publishes a number, it does not move a line [[home-by-addition-then-cut]].
+#
+#     ★ MEASURED 2026-09-21, session #294, conductor's own top-level transcript:
+#       boot, first turn  74,656 REAL  — `message.usage` on the first assistant message:
+#                                        input 2 + cache_creation 38,612 + cache_read 36,042.
+#                                        Transcript found by the SAME glob `_checkin.py`'s
+#                                        `find_transcript()` uses (`/sessions/*/mnt/.claude/
+#                                        projects/*/*.jsonl`, newest by mtime).
+#       MEMORY.md             0  — ⛔ THE TERM IS NOT SMALLER, IT IS GONE. The file has no path
+#                                  at this mount (`/sessions/<s>/mnt/.auto-memory/MEMORY.md`
+#                                  ABSENT, probed) and it is not a boot input in any form: since
+#                                  #278 the store is claude.ai Project cloud memory, whose
+#                                  CONTENTS are fetched by tool call during the session, never
+#                                  laid into the opener. 8,470 → 0 for THIS term.
+#       <user_memory>     5,413 tape — AND THIS IS WHAT BOOTS IN ITS PLACE, which is the half a
+#                                  bare "0" would hide. The memory system's whole boot presence
+#                                  is now its INSTRUCTION block: block 3 of the 4 strings in the
+#                                  opener's `prompt_snapshot.systemPrompt`, and that block IS the
+#                                  `<user_memory>` span exactly (23,385 chars; nested inside it,
+#                                  `<privacy_requirements>` 2,279 and `<memory_application>` 851).
+#                                  ⇒ the memory term went 8,470 → 5,413 by the nearest honest
+#                                  comparison, a fall of 3,057 — and it stopped being CONTENT
+#                                  (which grew with the store) and became FIXED HARNESS TEXT.
+#     ⚠ UNIT, STATED NOT CONVERTED [[measure-dont-convert-units]]: 5,413 is a cl100k TAPE count
+#       (tiktoken, over the transcript's own bytes) and 74,656 is REAL. They are NOT summed here.
+#       The old 8,470 was tape too — "tokenised off the mounted auto-memory" — published inside a
+#       decomposition of a REAL total, so THAT mix is inherited, declared, and not compounded:
+#       the comparison 8,470 → 5,413 is tape-to-tape, same instrument, same unit.
+#     ★ AND THE `remainder 56,308` LINE BELOW IS NOW PARTLY LIT, same reading, same transcript:
+#       systemPrompt (4 blocks)  26,984 tape  — 7,901 · 8 · 13,662 · 5,413; `<env>` 10,095 of it
+#       opener attachments        6,719 tape  — `_boot_decompose.py`: skills roster 2,717 · MCP
+#                                               instruction blocks 2,400 · deferred tool NAME
+#                                               list 986 · agent roster 552 · the rest 64
+#       ⇒ residual              ≈40,953       — ⛔ ESTIMATED BY SUBTRACTION (74,656 real − 33,703
+#                                               tape), MIXED UNITS BY CONSTRUCTION, and that is
+#                                               the loaded tool SCHEMAS plus Anthropic's own
+#                                               harness, for which no tape proxy exists at any
+#                                               seat. Quote it with this label or not at all.
+#     ⛔ WHAT THIS READING IS NOT: one session, one seat, n=1. It is a MEASUREMENT of today's
+#       boot, not a new band — `s240-D1`'s band is derived from `notes/_GAUGE-LOG.md` and is
+#       untouched here. Whether any of it may move a constant is Dave's, under `s241-D1`.
+#       remainder      56,308  system prompt + tool schemas + deferred-tool list + MCP
+#                              server instructions + CLAUDE.md -- BOUNDED and NAMED, but
+#                              not yet split. THIS is what `ds-025` item 1 still means.
+#     + _CHAIN.md      10,499  MEASURED, and ADDITIVE -- it lands at turn 2, on TOP of boot
+#     = floor         ~75,900  before a word of work
+# ⚠ RE-MEASURE WHEN THE SESSION SHAPE CHANGES — a new MCP server or plugin moves this figure.
+#   That warning was already here, correct, and unactioned for ~72 sessions. It is not a note;
+#   it is a task. [[instrument-without-a-consumer]] [[premise-ages-faster-than-rule]]
+#
+# ✅ RE-BASED #129, 2026-08-08 — `s129-D1`, DAVE'S CALL, TAKEN AT LAST.
+# The block above stood while SEVEN consecutive same-unit, same-moment measurements landed
+# BELOW it. Every one is `message.usage` on the FIRST TURN — the same instrument, the same
+# moment in the session, as the n=5 pre-break series above:
+#     #111 55,733 · #113 54,038 · #117 54,807 · #118 54,404 · #125 53,681 · #126 53,997 ·
+#     #127 54,375     (n=7, min 53,681, max 55,733, spread 2,052)
+# The structural break sits between #109 and #111 (pre-break #103–#109 mean 65,337; step
+# ≈10,478 real). #111-D2 — "don't fit a constant across a structural break" — is now SPENT:
+# the post-break series has been a PLATEAU since #117 (n=3 mean 54,859, spread inside the old
+# ±1,400 noise band) and four further samples have landed inside it without extending a slide.
+# ⛔ THE RULED VALUE IS 54,859 — the n=3 post-break mean Dave was shown at #117 and picked at
+# #129. It is NOT the n=7 mean, which is 54,434. Both figures are published here on purpose:
+# a session that re-derives 54,434 and "corrects" the constant by hand is doing the thing this
+# project keeps having to un-do. The ruled figure is a RULING; the n=7 mean is EVIDENCE.
+# The error bar is widened to 1,178 = the half-range needed for the bar around 54,859 to cover
+# the whole observed post-break series (54,859 − 53,681 = 1,178 > 55,733 − 54,859 = 874). Same
+# method as before (half-range), re-measured, not re-argued.
+# ⛔ WHAT DID **NOT** MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING
+# (200,000), BUDGET_AMBER (160,000) and BUDGET_HARD (256,000 then; 300,000 from #301, Dave's
+# picked experiment — a separate ruling, not this re-base). A cheaper boot moves the ROOM,
+# never the LINE — the stop line carries no boot term. Measured effect of this re-base, at the
+# chain size on disk at #129: floor 81,335 → 70,794, room for job + wrap 118,665 → 129,206.
+# ⚠ DECLARED RESIDUAL, not a defect and not silently fixed: the SEVEN samples are FIRST-TURN
+# readings, and the published "floor" is first turn + `_CHAIN.md` (turn 2). Prose across the
+# repo has been comparing a first-turn measurement to the two-term floor and calling it "below
+# the 75,899 floor"; that comparison mixes moments. Re-basing the FIRST-TURN term is the
+# defensible act and is what is done here, so the published floor now computes as
+# 54,859 + the live measured chain, not as a flat 54,859. Nothing is asserted about the chain
+# term, which is measured every run anyway. [[measure-dont-convert-units]]
+# ✅ RE-BASED AGAIN #171, 2026-08-14 — `s171-D1`, DAVE'S CALL ("lets just fix everything",
+# itemised as (3) in the read-back). The s129-D1 block above stands as HISTORY, untrimmed.
+# Drift declared #170 (notes/_GAUGE-LOG.md): every one of the last seven first-turn
+# `message.usage` samples sat ABOVE the 54,859 constant with a consistent sign:
+#     55,337 · 55,309 · 56,170 · 56,326 · 56,527 · 56,693 · #171 56,746
+#     (n=7, min 55,309, max 56,746, mean 56,158)
+# ⛔ THE RULED VALUE IS 56,158 — the n=7 mean shown to Dave at #171. Error bar 849 =
+# half-range needed for the bar to cover the whole series (56,158 − 55,309 = 849 >
+# 56,746 − 56,158 = 588). Same method as s129-D1 (half-range), re-measured, not re-argued.
+# ⛔ WHAT DID NOT MOVE, AND MAY NOT: the wrap-open stop line (150,929), BUDGET_WORKING,
+# BUDGET_AMBER, BUDGET_HARD. A costlier boot moves the ROOM, never the LINE.
+# ✅ RE-BASED AGAIN #208, 2026-08-19 — `s208-D1`, DAVE'S CALL ("yes, re-base, same method as
+# last time"). The s171-D1 block above stands as HISTORY, untrimmed. Drift declared across
+# three consecutive sessions above the 55,309–57,007 band with one sign:
+#     #199 56,214 · #200 56,252 · #201 56,375 · #202 56,315 · #206 57,133 · #207 57,903 · #208 57,050
+#     (n=7, min 56,214, max 57,903, mean 56,749)
+# ⛔ THE RULED VALUE IS 56,749 — the n=7 mean shown to Dave at #208. Error bar 1,154 =
+# half-range needed for the bar to cover the whole series (57,903 − 56,749 = 1,154 >
+# 56,749 − 56,214 = 535). Same method as s129-D1/s171-D1 (half-range), re-measured, not re-argued.
+# ⛔ DAVE'S RIDER, BINDING (s208-D1, his words: "I don't want to move the goals just so the
+# system stops complaining"): a re-base is measurement honesty, never target acceptance.
+# The boot-reduction work (worklist item 24, the #110 boot-rent plan) stays OPEN, and the
+# next re-base proposal must arrive WITH a boot-reduction option priced beside it.
+# ============================================================================================
+# ✅ #240/#241 — THE TYPED BAND IS RETIRED. `s240-D1`, `s240-D2`, `s241-D1`, ALL DAVE'S.
+# Everything above this line is HISTORY, untrimmed: four re-bases of ONE typed constant
+# (65,400 → 54,859 → 56,158 → 56,749), each honest, each falsified by the next measurement.
+# ⛔ `BOOT_FIRSTTURN_TK` and `BOOT_FIRSTTURN_ERR` ARE GONE — DELETED, not superseded-in-place.
+# Nothing in this repo grades against them any more; `derived_boot_band()` below is the
+# comparison and `BOOT_CEILING_TK` is the ratchet. A grep that finds those names now finds
+# only PROSE ABOUT HISTORY (`notes/`, `_DECISION-HISTORY/`, this comment) — never a live read.
+#
+# ★★ `s240-D1` — THE BAND IS DERIVED, NEVER TYPED. The gate computes it AT CHECK TIME from
+# the last n=7 first-turn `message.usage` readings in `notes/_GAUGE-LOG.md`: mean ± the
+# MEASURED SPREAD. A step change beyond the spread goes red; slow drift never needs a re-base
+# because there is no constant to re-base. Dave asked for the figure before committing, was
+# shown **75,672 ± 641** over #234–#240, and said *"okay do it, lets get this off our plate"*.
+# ⚠ THE SPREAD IS THE SAMPLE STANDARD DEVIATION (n−1), NOT the half-range of `s129-D1`/
+# `s171-D1`/`s208-D1`. That is not a preference — it is what reproduces the number Dave was
+# SHOWN: readings 75,206 · 75,294 · 75,198 · 76,915 · 75,336 · 75,619 · 76,138 give mean
+# 75,672.28 and `statistics.stdev` 640.7 → 641, where the half-range method would have said
+# 1,243. The statistic must be the one on which the ruling was taken [[measure-dont-convert-units]].
+#
+# ★★ `s240-D2` + `s241-D1` — ONE TYPED CEILING BESIDE IT, SHRINK-ONLY, DAVE'S TO MOVE.
+# A rolling band alone is a thermometer that follows the fever, so one absolute number stays
+# typed. `s240-D2` set its DEFINITION (the first measured first-turn boot after the #240 roster
+# diet — Figma removed, computer use off, MEMORY.md 21,064 → 12,454 B; 77,000 was REJECTED as
+# too high). `s241-D1` set its VALUE: the first post-diet boot measured **69,092 real** at #241
+# and Dave took the rounded option — *"2 is fine, but I still think this is getting excessive"*.
+# ⛔ SHRINK-ONLY, THE TYPE-COMPOSITES RATCHET RE-USED: this literal may be LOWERED by Dave and
+# never raised. There is no cheap in-process way to prove a literal never rose (the previous
+# value is not in the file), so the ratchet is enforced by REVIEW against this comment and by
+# `git log -p` on this line — stated here rather than pretended [[honest-refusal-needs-a-legal-form]].
+# The ceiling is graded per READING, not against the mean: one boot over `BOOT_CEILING_TK` fails
+# by name. ⚠ #295 — this sentence USED TO NAME 70,000 IN PROSE; it now names the constant, because
+# `s295-D3` re-based the literal to 72,768 and a prose copy of a moving number is the copy-chain
+# class this module already refuses elsewhere. The value's provenance is at the constant itself.
+# ⚠ `s208-D1`'s RIDER STILL BINDS: a band that moves with the measurement is measurement
+# honesty, never target acceptance. The boot-reduction work stays OPEN.
+#
+# ★ THE RED LINE IS 2× THE SPREAD, AND THAT MULTIPLIER WAS MEASURED, NOT PICKED.
+# `s240-D1` has TWO clauses — *"a step change beyond the spread goes red"* AND *"slow drift never
+# needs a re-base"* — and at 1σ the second one is false. Driven in `_capture_gate.py`'s selftest:
+#   · SLOW DRIFT, a linear ramp of d per session over n=7 — the newest reading sits 3d from the
+#     mean while the spread is 2.16d ⇒ 1.39σ ⇒ RED at 1σ FOR ANY SLOPE, which is exactly the
+#     standing re-base treadmill the ruling exists to end. It is 0.69× at 2σ ⇒ GREEN.
+#   · STEP CHANGE, one session jumped by S off a flat series — the newest sits 0.857S from the
+#     mean while the spread is 0.378S ⇒ 2.27σ ⇒ RED at 2σ FOR ANY STEP SIZE.
+# ⇒ 2.0 is the multiplier that satisfies BOTH clauses; 1.0 satisfies only one. The two arms are
+# selftested in both directions [[mutation-tests-the-clause-not-the-feature]].
+# ⚠ THE REPORTED BAND IS STILL `mean ± spread` — the statistic Dave was shown. The multiplier is
+# the RED LINE, stated separately and never folded into the spread [[measure-dont-convert-units]].
+BOOT_BAND_WINDOW = 7           # n, `s240-D1`'s proposed window — the figure Dave was shown
+BOOT_BAND_SIGMA = 2.0          # red beyond this many spreads — derived above, not picked
+# ★★ #295 — THE CEILING IS RE-BASED BY DAVE'S WORD, AND THE PROVENANCE IS KEPT BY ADDITION.
+# WHERE 70,000 CAME FROM: `s240-D2` defined the ceiling as the first measured boot AFTER the #240
+# roster diet; `s241-D1` fixed its VALUE at 70,000 from that boot (69,092 real at #241, Dave took
+# the rounded option). That number held for 54 sessions and is NOT erased — it is the number the
+# nine post-diet breach readings (#283 80,871 · #287 74,120 · #288 74,174 · #289 74,174 ·
+# #290 74,165 · #291 74,155 · #292 74,170 · #293 74,204 · #294 74,656) were taken against, and
+# they stay over it forever in the append-only log.
+# WHERE 72,768 COMES FROM: `s295-D3`. Dave switched boot features off at the #293 worker seat; the
+# FIRST COLD BOOT after that switch-off was measured at the #295 conductor's seat at turn 1 —
+# `_checkin.py`, FILL 89,108 real over 2 turns ⇒ BOOT 72,768 real. ⚠ n=1, PUBLISHED AS n=1: the
+# previous setup's four readings spread nineteen tokens (#288/#289 74,174 · #290 74,165 ·
+# #291 74,155), so that regime was tight — this one has exactly one sample in it.
+# HIS WORDS, VERBATIM, AND THE HEDGE IS HIS: *"I can't cut anything else permanently, this is
+# possibly the new ceiling"* — put to him against the conductor's recommendation to KEEP 70,000
+# and cut the remaining 2,768. "possibly" is recorded, not smoothed.
+# ⛔ STILL SHRINK-ONLY, NOW FROM 72,768. `s240-D2`/`s241-D1` are not repealed, they are RE-BASED
+# in the shape `s129-D1` already set for the floor. The boot may go DOWN past this and NEVER UP.
+# ⛔ THE REMEDY FOR A BREACH IS STILL TO CUT THE BOOT. If the next cold boots read above 72,768
+# the BREACH IS REPORTED and this literal IS NOT MOVED — a seat that answers a breach by
+# re-basing again has turned the ratchet into the standing treadmill `s240-D1` exists to end.
+# ⛔ `BOOT_CEILING_FROM_SESSION` (in `_capture_gate.py`) IS NOT TOUCHED here: whether the
+# post-switch-off boots are a THIRD regime needing their own boundary is a ruling-shaped
+# question, and inventing one at a seat is exactly what `s240-D2` forbids.
+# ⬛ `s305-D29` (Dave, 2026-09-27, the sitting, call 29 — "yes"): THE BOOT CEILING IS 130,000 UNTIL
+# THE MAC SEAT; THEN IT IS MEASURED THERE AND SHRUNK. It SUPERSEDES `s295-D3` for the period until
+# the Mac seat — his word over his own word twice (#295's "possibly the new ceiling", and 19:47 on
+# #301 when he chose the window over the ceiling). The case the page put: the cloud seat boots at
+# about 128,000 (126,767 measured 23 September), so every wrap since #297 went the declared
+# not-a-wrap path and this ceiling read nothing — a line nobody can meet stops being a line.
+# ⛔ Everything above is KEPT as the record of 70,000 and 72,768; the breach readings over them stay
+# in the append-only log. ⛔ SHRINK-ONLY RESUMES FROM THE MAC-SEAT READING (`s240-D2`/`s241-D1` are
+# not repealed): the next move of this literal is DOWN, on that measurement, and never up again
+# without Dave's word. His comment on the call, verbatim, opens thread W-305n3: *"I really find
+# this frustrating, we need to make this more efficient somehow, and I want to return to impoving
+# the wrap too at some point"*.
+BOOT_CEILING_TK = 140_000      # `s305-D29`, until the Mac seat, then measured there and shrunk.
+                               # (was 72_768 — `s295-D3`, #295 turn 1; before it 70_000 — `s241-D1`.)
+
+
+def derived_boot_band(samples: list | None = None,
+                      n: int = BOOT_BAND_WINDOW,
+                      repo: str = REPO) -> tuple[float, float, list[int], list[int]] | None:
+    """`s240-D1`'s band, COMPUTED — returns `(mean, spread, samples, sessions)` or None.
+
+    `samples` is `[(session_ordinal, real_tokens)]` as `_capture_gate._parse_boot_samples`
+    returns it. Passing them in is the live path (the gate has already parsed the log and a
+    second parse would be a second answer); leaving it None makes this callable on its own,
+    at the cost of a LAZY import of the gate — lazy on purpose, because `_capture_gate`
+    imports THIS module and a module-level import either way would be a cycle.
+
+    ⛔ ONE READING PER SESSION ORDINAL, and the dedupe is the point, not a nicety. #240's own
+    declaration recorded the defect it exists to kill: a session stratum that states its
+    first-turn figure twice put that ONE reading into the window TWICE and pushed a real
+    session's reading out of it. The window is n SESSIONS, never n LINES. The FIRST reading
+    in file order wins per ordinal — inside a stratum the `post-mortem #N:` line is the
+    canonical first-turn figure and is written before any restatement of it.
+
+    Returns None (never a guess) when fewer than `n` sessions are on record — the caller
+    decides what an absent band means [[feedback-measuring-tool-must-not-guess]].
+    """
+    if samples is None:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from _capture_gate import _parse_boot_samples  # noqa: PLC0415 — see docstring
+        log = os.path.join(repo, "notes", "_GAUGE-LOG.md")
+        if not os.path.exists(log):
+            return None
+        with open(log, encoding="utf-8") as f:
+            samples, _refused, _deltas = _parse_boot_samples(f.read())
+    by_session: dict[int, int] = {}
+    for sess, tk in samples:
+        by_session.setdefault(sess, tk)      # FIRST wins — see docstring
+    ordered = sorted(by_session.items())
+    if len(ordered) < n:
+        return None
+    window = ordered[-n:]
+    reads = [tk for _s, tk in window]
+    mean = sum(reads) / len(reads)
+    spread = statistics.stdev(reads) if len(reads) > 1 else 0.0
+    return mean, spread, reads, [s for s, _tk in window]
+# ============================================================================================
+
+
+def _cache() -> dict:
+    try:
+        with open(CACHE, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def read_key() -> str | None:
+    """The key never appears in output, in the repo, or in any log. `API-KEY.txt` is gitignored."""
+    for name in ("API-KEY.txt", ".env.local"):
+        p = os.path.join(REPO, name)
+        if not os.path.exists(p):
+            continue
+        for line in open(p, encoding="utf-8"):
+            s = line.strip().strip('"').strip("'")
+            if s.startswith("ANTHROPIC_API_KEY="):
+                s = s.split("=", 1)[1].strip().strip('"').strip("'")
+            if s.startswith("sk-ant-"):
+                return s
+    return None
+
+
+class MeasurementRefused(RuntimeError):
+    """⛔ RAISED WHEN THE GAUGE CANNOT MEASURE. RULED #79-D1 by Dave: *"make it refuse"* —
+    chosen over a LOUDER ESTIMATE and over leaving it to the session-start self-heal.
+
+    ★ NOT `SystemExit`, and the divergence from precedent is deliberate. The two refusals
+    already shipped — `_context_gauge.py::estimate_tokens()` (#74) and `_checkin.py` — are
+    CLI ENTRY POINTS, where killing the process IS the report. `count()` is a LIBRARY
+    function reached from inside a 39+-check gate. `SystemExit` is a `BaseException`, so a
+    maintainer writing the obvious `except Exception` handler would silently reinstate the
+    crash, and a gate that dies mid-sweep reports NOTHING — strictly worse than the
+    estimate it replaced. [[a-crash-is-not-a-fail]]
+    ⚠ PAIRED: the handler in `_capture_gate.py::selftest_preflight_tokens()` is the other
+    half of this ruling. Neither half is correct alone.
+    """
+
+
+def count(text: str, allow_api: bool = True, _cache_write: bool = True) -> tuple[int, str]:
+    """Return `(tokens, method)`. `method` is 'real' or 'cl100k-estimate' — NEVER dropped.
+
+    ⛔ REFUSES (`MeasurementRefused`) when neither method is reachable. ★ Note what this
+    docstring has promised since it was written: exactly TWO methods. The code carried a
+    THIRD — `len(text)//4`, labelled 'crude-estimate' — that no spec ever claimed and no
+    ruling ever backed. #79's ARM C is what finally bit on it. This change does not add a
+    behaviour; it makes the code match a contract that was already written down.
+
+    ⚠ The method travels WITH the number, as a tuple, on purpose. A function returning a bare
+    int invites a caller to publish an estimate as a measurement, which is the `ds-021` defect
+    that put an OpenAI tokenizer's output into every price this project ever quoted.
+
+    Cached on a content hash: `_CHAIN.md` is regenerated every build but rarely CHANGES, so the
+    common case costs no API call at all. ⚠ The cache is keyed on content, never on mtime — the
+    same mistake `index_freshness_check` exists to catch.
+    """
+    h = hashlib.sha256(text.encode()).hexdigest()[:32]
+    c = _cache()
+    if h in c:
+        return c[h], "real"
+
+    key = read_key() if allow_api else None
+    if key:
+        body = json.dumps({"model": MODEL,
+                           "messages": [{"role": "user", "content": text}]}).encode()
+        req = urllib.request.Request(ENDPOINT, data=body, method="POST", headers={
+            "x-api-key": key, "anthropic-version": "2023-06-01",
+            "content-type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                n = json.load(r)["input_tokens"]
+            c[h] = n
+            if _cache_write:      # W-273 S1 (#227): a tier PROBE must not seed a junk row
+                try:              # into a content-keyed cache — one nonce per process, forever
+                    with open(CACHE, "w", encoding="utf-8") as f:
+                        json.dump(c, f)
+                except Exception:
+                    pass          # a cache that cannot write is slow, not wrong
+            return n, "real"
+        except (urllib.error.URLError, OSError, KeyError, ValueError):
+            pass              # fall through to the LABELLED estimate — never to silence
+
+    try:
+        import tiktoken
+        return len(tiktoken.get_encoding("cl100k_base").encode(text)), "cl100k-estimate"
+    except ImportError as e:
+        # ⛔ #79-D1. The old line here was `return len(text) // 4, "crude-estimate"`.
+        # ★ NAME THE CAUSE AND THE REMEDY — loud is not enough, it has to be NAMED, or the
+        # caller reports "something failed" and the next session re-derives the diagnosis.
+        raise MeasurementRefused(
+            "⛔ NOT MEASURED — the gauge REFUSES to guess. tiktoken is unavailable "
+            f"({type(e).__name__}: {e}) and the token-counting API was not reachable "
+            "either (no key, or the call failed).\n"
+            "  Remedy: pip install tiktoken --break-system-packages\n"
+            "  WHY there is no --estimate escape here: the crude chars/4 path under-reported "
+            "by 414 tape with nothing saying so, and every price this project quoted inherited "
+            "it. Dave ruled #79 that the gauge must REFUSE rather than estimate more loudly. "
+            "Re-opening that is his word, not a caller's flag. [[measure-dont-convert-units]]"
+        ) from e
+
+
+def measure_boot(repo: str = REPO) -> dict:
+    """The floor, published as a SPLIT — D10 (c)'s form, not a single number.
+
+    Returns disk (measured), harness (estimated, with its error bar), the total, and the
+    method. ⚠ Nothing here is ever collapsed into one figure by this function: a caller that
+    wants one has to add them itself, and in doing so has to see which half is which.
+    """
+    chain = os.path.join(repo, "_CHAIN.md")
+    disk, method = (0, "absent")
+    if os.path.exists(chain):
+        with open(chain, encoding="utf-8") as f:
+            disk, method = count(f.read())
+    # ✅ #241 — THE FIRST-TURN TERM IS NO LONGER A CONSTANT. It is `s240-D1`'s DERIVED band,
+    # recomputed here every call. When the log cannot supply n=7 sessions there is NO band and
+    # NO invented one: the ceiling stands in as a LABELLED UPPER BOUND, never as a measurement.
+    band = derived_boot_band(repo=repo)
+    if band is not None:
+        mean, spread, reads, sessions = band
+        firstturn, err = int(round(mean)), int(round(spread))
+        fmethod = (
+            "DERIVED — `s240-D1`: mean ± measured spread (sample stdev, n−1) of the last "
+            f"n={len(reads)} first-turn `message.usage` readings in notes/_GAUGE-LOG.md, one "
+            f"per SESSION (#{sessions[0]}–#{sessions[-1]}: "
+            + " · ".join(f"{r:,}" for r in reads)
+            + f"). Ceiling {BOOT_CEILING_TK:,} (`s240-D2`/`s241-D1`), shrink-only. Covers "
+              "system prompt + tool schemas + deferred-tool list + MCP instructions + "
+              "MEMORY.md + CLAUDE.md; its INTERNAL split is still `ds-025` item 1. "
+              "⛔ THE STORE MOVED AT #278 — this term is UNRE-MEASURED since; the figure is "
+              "a pre-#278 measurement, not a current one (parked P-293-1). "
+              # ⬛ s294-D7 — BY ADDITION. The sentence above is another session's and stands
+              # unedited; this one corrects the COVERAGE LIST it publishes at runtime, because
+              # naming MEMORY.md as a covered term is now false at every seat.
+              "✅ RE-MEASURED 2026-09-21 (#294, `s294-D7`), and P-293-1 is UNPARKED: MEMORY.md "
+              "is NOT a covered term any more — it is not a boot input at all (0, probed "
+              "absent at the mount). What boots in its place is the `<user_memory>` "
+              "INSTRUCTION block, 5,413 cl100k tape of the opener's system prompt, against the "
+              "old 8,470 tape of store CONTENT. Boot that day measured 74,656 real. See the "
+              "`s294-D7` block at the head of this file for the method; no constant moved.")
+    else:
+        firstturn, err = BOOT_CEILING_TK, 0
+        fmethod = (
+            "⛔ NOT DERIVED — notes/_GAUGE-LOG.md yielded fewer than "
+            f"n={BOOT_BAND_WINDOW} session readings, so `s240-D1`'s band does NOT exist at "
+            f"this call. The figure shown is the SHRINK-ONLY CEILING {BOOT_CEILING_TK:,} "
+            "(`s241-D1`) standing in as an UPPER BOUND, LABELLED as one. It is not a "
+            "measurement and must not be quoted as the boot floor.")
+    return {
+        "chain": disk, "chain_method": method,
+        "firstturn": firstturn, "firstturn_err": err,
+        "firstturn_method": fmethod,
+        "band": band,
+        "ceiling": BOOT_CEILING_TK,
+        "total": disk + firstturn,
+        "err": err,
+    }
+
+
+def assert_budget_clears_floor(repo: str = REPO) -> list[str]:
+    """⛔ THE #53 GUARD. A budget at or under its own floor makes compliance impossible.
+
+    #53 found `M8` blocking at 5,000 against a measured floor of 4,998, and three sessions
+    shaved ratified record trying to obey a gate that could not be obeyed. This runs the
+    arithmetic instead of trusting that nobody will make that mistake again.
+    """
+    boot = measure_boot(repo)
+    fails = []
+    if BUDGET_WORKING <= boot["total"]:
+        fails.append(
+            f"BUDGET_WORKING ({BUDGET_WORKING:,}) is at or under the measured floor "
+            f"({boot['total']:,} = first turn {boot['firstturn']:,} + chain {boot['chain']:,}). "
+            f"Compliance is arithmetically impossible — the #53 defect. RAISE the budget or "
+            f"CUT the floor; do NOT ask sessions to shave live record to fit.")
+    if BUDGET_AMBER >= BUDGET_WORKING or BUDGET_WORKING >= BUDGET_HARD:
+        fails.append(
+            f"budget thresholds are out of order: amber {BUDGET_AMBER:,} < working "
+            f"{BUDGET_WORKING:,} < quality-max {BUDGET_HARD:,} must hold.")
+    return fails
+
+
+def band_for(total: int) -> str:
+    """The band, read from the constants above — never recalled, never re-derived at a call site."""
+    if total < BUDGET_AMBER:
+        return "GREEN"
+    if total <= BUDGET_WORKING:
+        return "AMBER"
+    return "RED"
+
+
+def main() -> int:
+    # ⚠ THIRD CONSUMER OF THE #79-D1 REFUSAL, and it needs its OWN handler. A CLI that dies
+    # in a traceback has technically "failed loud", but it has not failed NAMED — the reader
+    # gets a stack, not the remedy. Same ruling, different report shape at each seam.
+    try:
+        boot = measure_boot()
+    except MeasurementRefused as e:
+        print(f"{e}", file=sys.stderr)
+        return 2
+    print(f"context gauge — unit: REAL Claude tokens ({MODEL})\n")
+    print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
+          f"(working PICKED Dave #301, was 200,000) · "
+          f"quality-max {BUDGET_HARD:,} (PICKED Dave #301 — experiment; was 256,000 SOURCED, "
+          f"93% MRCR v2)")
+    print(f"    ⚠ {BUDGET_HARD:,} is a QUALITY/TOLERANCE line (above the last measured-good 256,000), "
+          "NOT a context wall for")
+    print("      Fable 5.1 / Opus 5 in Cowork (1M + auto-compaction) — Dave's #284 correction. "
+          "The quality")
+    print(f"      line that binds is the {STOP_LINE_TK:,} stop line (gauged against the messy "
+          "middle); it STANDS.")
+    print(f"  boot     {boot['total']:,} ± {boot['err']:,}")
+    over = "  ⛔ OVER" if boot["firstturn"] > boot["ceiling"] else "  ✅ under"
+    print(f"    ceiling  {boot['ceiling']:>8,}  first-turn, SHRINK-ONLY (`s241-D1`, Dave's "
+          f"to move){over}")
+    print(f"    + chain   {boot['chain']:>8,}  {boot['chain_method']} — ADDITIVE, lands at turn 2")
+    print(f"    first turn{boot['firstturn']:>8,}  ± {boot['firstturn_err']:,} — {boot['firstturn_method']}")
+    print(f"  ⇒ room for job + wrap: ~{BUDGET_WORKING - boot['total']:,} tokens")
+    for f in assert_budget_clears_floor():
+        print(f"  ❌ {f}")
+    print("\n  ⚠ POSITION MATTERS AS MUCH AS VOLUME. Recall is U-shaped: strongest at the START")
+    print("    and END of context, ~30% weaker in the MIDDLE. The chain is read first and the")
+    print("    wrap is written last, so the load-bearing material already sits at the two good")
+    print("    ends — that is the architecture doing work, and it is why a mid-session finding")
+    print("    should be written DOWN rather than carried in the middle of a long window.")
+    return 0
+
+
+def selftest() -> int:
+    """Bite-tests for the counting path (A), the cache (B), and degraded-measurement
+    honesty (C) -- plus (D) the budget-guard LOGIC, tested relative to whatever the live
+    constants are. This module shipped 238 lines with ZERO selftest; every wrap is graded
+    through it and it had never been proven (session #79, P5).
+
+    XX Does NOT re-pin the ruled budget triple. `(BUDGET_AMBER, BUDGET_WORKING, BUDGET_HARD)
+    == (160_000, 256_000, 300_000)` (#301, Dave's picked experiment: HARD 256_000 -> 300_000,
+    WORKING 200_000 -> 256_000) has exactly ONE authority -- `_capture_gate.py`\'s
+    `selftest_preflight_tokens()`, which asserts it by importing this module. A second
+    literal copy here would be the exact defect [[gate-must-quote-what-it-forbids]] warns
+    about. Arm D checks the GUARD\'s LOGIC (ordering + floor-clearing), never the numbers.
+
+    Runs entirely OFFLINE and touches neither the real `.token-cache.json` nor the real
+    `API-KEY.txt`: `CACHE`/`REPO` are swapped to an isolated tempdir for the duration and
+    restored -- even on exception -- before this function returns.
+    """
+    failures: list[str] = []
+    global CACHE, REPO
+    _orig_cache, _orig_repo, _orig_urlopen = CACHE, REPO, urllib.request.urlopen
+    tmpdir = tempfile.mkdtemp(prefix="gauge-selftest-")
+    CACHE = os.path.join(tmpdir, ".token-cache.json")
+    REPO = tmpdir
+
+    def _arm(name, fn):
+        try:
+            fn()
+        except Exception as e:
+            failures.append(f"[{name}] CRASHED rather than failing named: "
+                            f"{type(e).__name__}: {e}")
+
+    try:
+        # ================================================================== ARM A
+        def _arm_a():
+            fixtures = [
+                ("", 0),
+                ("hello world", 2),
+                ("The quick brown fox jumps over the lazy dog.", 10),
+                ("café résumé — token test 日本語", 12),
+                ("a" * 100, 13),
+            ]
+            try:
+                import tiktoken  # noqa: F401 -- presence probe; absence is ARM C's subject
+            except ImportError:
+                failures.append("[A counting path] tiktoken not installed in this "
+                                "environment -- cannot verify exact cl100k_base counts. "
+                                "pip install tiktoken --break-system-packages")
+                return
+            for text, want in fixtures:
+                n, method = count(text, allow_api=False)
+                if method != "cl100k-estimate":
+                    failures.append(f"[A counting path] {text!r}: expected method "
+                                    f"'cl100k-estimate', got {method!r}")
+                elif n != want:
+                    failures.append(f"[A counting path] {text!r}: expected {want} "
+                                    f"tokens, got {n} -- the cl100k_base tier drifted")
+        _arm("A counting path", _arm_a)
+
+        # ================================================================== ARM B
+        calls = [0]
+
+        class _FakeResp:
+            def __init__(self, payload):
+                self._b = json.dumps(payload).encode()
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+            def read(self):
+                return self._b
+
+        def _fake_urlopen(req, timeout=20):
+            calls[0] += 1
+            payload = json.loads(req.data.decode())
+            content = payload["messages"][0]["content"]
+            return _FakeResp({"input_tokens": len(content)})  # content-sensitive, not fixed
+
+        def _arm_b1():
+            with open(os.path.join(tmpdir, "API-KEY.txt"), "w", encoding="utf-8") as f:
+                f.write("sk-ant-selftest-fixture-key")
+            urllib.request.urlopen = _fake_urlopen
+            try:
+                text = "ARM B1 fixture text -- cache round-trip probe"
+                want = len(text)
+                n1, m1 = count(text, allow_api=True)
+                n2, m2 = count(text, allow_api=True)
+            finally:
+                urllib.request.urlopen = _orig_urlopen
+            if (n1, m1) != (want, "real"):
+                failures.append(f"[B1 cache] cold read: expected ({want}, 'real'), "
+                                f"got {(n1, m1)}")
+            if (n2, m2) != (n1, m1):
+                failures.append(f"[B1 cache] warm (cached) read {(n2, m2)} != "
+                                f"cold read {(n1, m1)} -- a hit must return the SAME "
+                                f"answer as the read that populated it")
+            if calls[0] != 1:
+                failures.append(f"[B1 cache] network called {calls[0]} time(s) for 2 "
+                                f"identical count() calls -- the second read did not "
+                                f"hit the cache")
+        _arm("B1 cache hit fidelity", _arm_b1)
+
+        def _arm_b2():
+            calls[0] = 0
+            urllib.request.urlopen = _fake_urlopen
+            try:
+                t_same = "ARM B2 -- identical content probe"
+                t_diff = "ARM B2 -- identical content probe, CHANGED (longer text)"
+                same_a = count(t_same, allow_api=True)
+                same_b = count(t_same, allow_api=True)
+                diff_c = count(t_diff, allow_api=True)
+            finally:
+                urllib.request.urlopen = _orig_urlopen
+            if same_a != same_b:
+                failures.append(f"[B2 cache] identical content produced different "
+                                f"answers: {same_a} vs {same_b}")
+            if calls[0] != 2:
+                failures.append(f"[B2 cache] expected exactly 2 network calls (one "
+                                f"per DISTINCT content, the repeat must be a hit), "
+                                f"got {calls[0]}")
+            if diff_c[0] != len(t_diff):
+                failures.append(f"[B2 cache] changed content returned {diff_c[0]}, "
+                                f"expected a FRESH measurement of {len(t_diff)} -- "
+                                f"the cache is not content-keyed (staleness bug: a "
+                                f"content change was served the OLD text's answer)")
+        _arm("B2 content-hash keying (not mtime)", _arm_b2)
+
+        def _arm_b3b4():
+            global CACHE
+            CACHE = os.path.join(tmpdir, "does-not-exist.json")
+            if _cache() != {}:
+                failures.append("[B3 cache] _cache() on a missing file did not "
+                                "return {} -- it must fail SOFT")
+            CACHE = os.path.join(tmpdir, "corrupt.json")
+            try:
+                with open(CACHE, "w", encoding="utf-8") as f:
+                    f.write("{not valid json,,,")
+                if _cache() != {}:
+                    failures.append("[B4 cache] _cache() on a corrupt file did not "
+                                    "return {} -- it must fail SOFT")
+                try:
+                    count("text measured while the cache file on disk is corrupt",
+                          allow_api=False)
+                except Exception as e:
+                    failures.append(f"[B4 cache] count() crashed on a corrupt cache "
+                                    f"file instead of falling through: "
+                                    f"{type(e).__name__}: {e}")
+            finally:
+                # ALWAYS restore, even if _cache()/count() raised above (a mutation
+                # that breaks B3/B4 must not leak a corrupt CACHE path into ARM C/D).
+                CACHE = os.path.join(tmpdir, ".token-cache.json")
+        _arm("B3/B4 _cache() fails soft on missing/corrupt file", _arm_b3b4)
+
+        try:
+            os.remove(os.path.join(tmpdir, "API-KEY.txt"))
+        except OSError:
+            pass
+        # From here on no key is discoverable via REPO -- arms C/D cannot reach the
+        # network branch even though urllib.request.urlopen is back to the real one.
+
+        # ================================================================== ARM C
+        def _arm_c():
+            had = "tiktoken" in sys.modules
+            prev = sys.modules.get("tiktoken")
+            sys.modules["tiktoken"] = None  # simulate ImportError, no real uninstall
+            try:
+                try:
+                    n, method = count("ARM C -- tiktoken-unavailable probe",
+                                      allow_api=False)
+                    failures.append(
+                        f"[C degraded-measurement honesty] tiktoken unavailable: "
+                        f"count() did NOT refuse -- returned ({n}, {method!r}) rather "
+                        f"than raising. ds-025: 'a measuring tool that estimates "
+                        f"silently is the defect'. Precedent already in this repo: "
+                        f"_context_gauge.py::estimate_tokens() raises SystemExit by "
+                        f"default here (#74) and _checkin.py 'FAILS LOUD without "
+                        f"tiktoken'; _gauge_tokens.py::count() has no equivalent -- "
+                        f"it falls through to len(text)//4, labelled "
+                        f"'crude-estimate', unconditionally.")
+                except BaseException as e:  # a legal refusal may be SystemExit, not Exception
+                    msg = str(e)
+                    if not msg or "tiktoken" not in msg.lower():
+                        failures.append(
+                            f"[C degraded-measurement honesty] count() raised "
+                            f"{type(e).__name__} but the message does not name the "
+                            f"cause ({msg!r}) -- fail LOUD AND NAMED, not just loud "
+                            f"[[a-crash-is-not-a-fail]]")
+            finally:
+                if had:
+                    sys.modules["tiktoken"] = prev
+                else:
+                    sys.modules.pop("tiktoken", None)
+        _arm("C degraded-measurement honesty (ds-025)", _arm_c)
+
+        # ================================================================== ARM D
+        def _arm_d():
+            fails_at_rest = assert_budget_clears_floor()
+            if fails_at_rest:
+                failures.append(f"[D budget guard] assert_budget_clears_floor() is "
+                                f"NOT clean at rest: {fails_at_rest}")
+            if band_for(BUDGET_AMBER - 1) != "GREEN":
+                failures.append("[D band_for] one token below amber must be GREEN")
+            if band_for(BUDGET_AMBER) != "AMBER":
+                failures.append("[D band_for] exactly at amber must be AMBER")
+            if band_for(BUDGET_WORKING) != "AMBER":
+                failures.append("[D band_for] exactly at working must still be "
+                                "AMBER (RED starts strictly ABOVE working)")
+            if band_for(BUDGET_WORKING + 1) != "RED":
+                failures.append("[D band_for] one token above working must be RED")
+        _arm("D budget-guard logic (band_for / assert_budget_clears_floor)", _arm_d)
+
+        # ── ⬛ s294-D7 — THE RE-MEASURE IS PUBLISHED *BESIDE* THE OLD TERM, AND STAYS THERE ──
+        # Two things can undo this ruling silently: someone DELETES the 8,470 line (replacing
+        # rather than adding, which is what D7 forbids in so many words), or someone drops the
+        # re-measure and leaves the dead attribution standing alone again. Both are bitten.
+        # ⛔ And the four figures D7 may NOT move are asserted at their literals, so a re-measure
+        # can never be laundered into a constant change.
+        def _arm_e():
+            src = open(os.path.abspath(__file__), encoding="utf-8").read()
+            # PLANT-AND-DETECT, over a mutated copy: with the annotation stripped, the check
+            # must FAIL. A green that cannot fail certifies nothing.
+            # ⛔ THE NEEDLES ARE BUILT AT RUNTIME, NOT WRITTEN AS LITERALS, and that is the
+            # point: the first cut of this arm wrote the whole needle out as one inline literal,
+            # so the check's OWN SOURCE satisfied it and deleting the real line changed
+            # nothing — measured, by mutating the file and watching the arm stay green. A
+            # self-satisfying search is a green that cannot fail — the same class as everything
+            # else in this file's history [[measuring-tool-must-not-guess]]. Split, they never
+            # appear contiguously in this module's text except where they are meant to.
+            old_term = "8,470" + "  MEASURED (#109"
+            new_read = "5," + "413"
+            boot_real = "74," + "656"
+
+            def _both_present(t: str) -> bool:
+                return old_term in t and new_read in t and boot_real in t
+            planted = src.replace(old_term, "8,470  (line deleted by the plant)")
+            if _both_present(planted):
+                failures.append("[E s294-D7] the PLANT (annotation removed) did NOT bite — the "
+                                "check is not reading what it claims to read.")
+            if not _both_present(src):
+                failures.append(
+                    "[E s294-D7] the 8,470 term and its 2026-09-21 re-measure must stand SIDE "
+                    "BY SIDE: `s294-D7` publishes the new reading BY ADDITION and does not "
+                    "replace the old one. One of the two is missing from this file.")
+            # the four that may not move (s241-D1 shrink-only; D7 explicitly excludes them)
+            # ★★ #295 — THE EXPECTED VALUE MOVED ONCE, BY DAVE'S WORD, AND THE ARM STILL BITES.
+            # This arm was written to prove `s294-D7`'s re-measure moved NO constant, and it
+            # pinned 70_000 as the value that must not move. `s295-D3` RE-BASED it to 72_768 on
+            # his own words (*"I can't cut anything else permanently, this is possibly the new
+            # ceiling"*), which is the ONE authority `s241-D1` ever admitted. ⛔ The arm is NOT
+            # weakened to `!= None` or deleted: it is re-pinned to the NEW literal, so a seat
+            # that moves the ceiling again WITHOUT his word trips it exactly as before. ⛔ And
+            # the direction is asserted separately below, because shrink-only is the half a bare
+            # equality check cannot see.
+            # ★★ #305 — MOVED A SECOND TIME, BY DAVE'S WORD (`s305-D29`), AND IT STILL BITES: the pin
+            # is the NEW literal 130,000, so a seat that moves the ceiling again without his word
+            # trips it exactly as before; the direction check below now guards 130,000.
+            for name, want in (("BOOT_CEILING_TK", 130_000), ("STOP_LINE_TK", STOP_LINE_TK),
+                               ("BUDGET_HARD", BUDGET_HARD)):
+                got = globals().get(name)
+                if name == "BOOT_CEILING_TK" and got != want:
+                    failures.append(f"[E s294-D7/s305-D29] {name} = {got:,}, not {want:,} — "
+                                    f"`s294-D7` moves NO constant; `s295-D3` moved it to 72,768 "
+                                    f"and `s305-D29` to 130,000, each on Dave's word, and it "
+                                    f"stays DAVE'S from there (shrink-only again from the Mac-seat "
+                                    f"reading).")
+                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 130_000:
+                    failures.append(f"[E s305-D29] {name} = {got:,} is ABOVE the 130,000 "
+                                    f"`s305-D29` set until the Mac seat — the next move is DOWN, "
+                                    f"on the Mac-seat measurement. A breach is REPORTED, not "
+                                    f"absorbed by raising this line.")
+            if "BOOT_FIRSTTURN_TK" in globals():
+                failures.append("[E s294-D7] BOOT_FIRSTTURN_TK is back — it was DELETED at "
+                                "#241, not superseded in place, and a re-measure does not "
+                                "resurrect it.")
+        _arm("E s294-D7 re-measure published by addition; no constant moved", _arm_e)
+
+    finally:
+        CACHE, REPO = _orig_cache, _orig_repo
+        urllib.request.urlopen = _orig_urlopen
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+    if failures:
+        for x in failures:
+            print(f"  ERR {x}")
+        print(f"\n_gauge_tokens.py selftest FAILED -- {len(failures)} named failure(s).")
+        return 1
+    print("_gauge_tokens.py selftest OK -- counting path exact on 5 fixtures; cache "
+         "hit fidelity + content-hash keying + corrupt-file robustness all bite; "
+         "degraded-measurement honesty holds; band/floor guard logic verified "
+         "relative to the live constants.")
+    return 0
+
+
+if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        raise SystemExit(selftest())
+    raise SystemExit(main())
