@@ -57,3 +57,5 @@ provenance: 304 · 2026-09-26 · status: observed · repo record: `_HANDOFF-155-
 ## THE `s271-D4` RE-READ
 
 *Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json` — its result is appended below by addition.*
+
+**Result: 638 records, newest `s295-D4` (`json.load`, 11:58 UTC); #304 inscribed nothing, so NO item above is closed by a #304 ruling and nothing is struck.** The advisory arm `_capture_gate.hook_open_items_recheck('.', <this file>)` read 0 open items and 0 same-day rulings — its parser does not match this file's heading form, as at #297–#303. Recorded in `notes/_subreports/2026-09-27-304-W-wrap.md` § POST-WRAP. The wrap commit is `9f9ff879` (pushed `8a5fa863..9f9ff879`, CI `36316555256`, `render` closed 11:55:55 UTC); the payloads above wait for the conductor.
