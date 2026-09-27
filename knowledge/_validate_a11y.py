@@ -8,6 +8,13 @@ regresses on a deterministic, statically-checkable WCAG criterion:
   FAIL (gating):
     * 2.3.3 / motion sensitivity — any snippet that animates (transition/animation/
       @keyframes) MUST carry a `prefers-reduced-motion: reduce` block.
+      PER PART on a composed page (s305-D54, Dave 2026-09-27, the sitting's call 51:
+      "yes"): a page that marks its spliced parts (APOLLO-SPLICE, the receipt grammar
+      of `_validate_receipt.py`) is judged part by part — every part that animates must
+      carry its OWN block, and the page's bytes outside the parts are one more part.
+      Before this, one reduced-motion block anywhere on a page silenced the clause for
+      every part on it (#304 R5, known miss K1). A file with no splice markers — every
+      snippet, every unmarked fixture — is ONE part, so its verdict is unchanged.
     * CTRL vocabulary — an ARIA role this gate has never classified fails loud
       rather than defaulting to "not a control" (dv-vocab shape, ds-014/ds-015).
     * 2.5.8 Target Size (Minimum, AA) — any CONTROL whose measured target is under
@@ -59,6 +66,52 @@ from _a11y_target import (                                    # noqa: E402
 )
 
 MOTION = re.compile(r'transition\s*:|animation\s*:|@keyframes', re.I)
+REDUCED = 'prefers-reduced-motion'
+
+
+def motion_parts(s):
+    """-> [(part name | None, bytes)] — the units the 2.3.3 clause judges (s305-D54).
+
+    A page with no APOLLO-SPLICE markers is ONE unit, named None: the clause reads it
+    exactly as it always has. A page that marks its parts is split by the RECEIPT'S OWN
+    grammar (`_validate_receipt.SPLICE_START_RE` / `region_bytes`, imported, never
+    re-typed): regions are grouped by the snippet they were cut from (the marker's
+    `source=`), so a snippet's style region and its markup region are one part, and
+    whatever is left of the page outside every region is the part `page`. A region
+    whose END marker is missing is left in the page's own bytes; the receipt step
+    names that defect."""
+    import _validate_receipt as VR                            # noqa: E402 - one marker grammar
+    starts = list(VR.SPLICE_START_RE.finditer(s))
+    if not starts:
+        return [(None, s)]
+    parts, spans = {}, []
+    for m in starts:
+        text, span = VR.region_bytes(s, m.group("region"))
+        if text is None or span[0] != m.end():
+            continue
+        src = re.search(r"source=(\S+)", m.group("attrs") or "")
+        name = (os.path.basename(src.group(1)).split(".")[0] if src
+                else m.group("region").split("#")[0])
+        parts.setdefault(name, []).append(text)
+        spans.append((m.start(), span[1]))
+    rest, i = [], 0
+    for a, b in sorted(spans):
+        rest.append(s[i:a]); i = max(i, b)
+    rest.append(s[i:])
+    return [(n, "\n".join(v)) for n, v in parts.items()] + [("page", "".join(rest))]
+
+
+def motion_fails(s):
+    """-> the 2.3.3 failure lines for one file, one per part that animates with no block
+    of its own. The single-part wording is the gate's historical line, byte for byte."""
+    out = []
+    for name, body in motion_parts(s):
+        if MOTION.search(body) and REDUCED not in body:
+            out.append("animates but has no `prefers-reduced-motion: reduce` block (2.3.3)"
+                       if name is None else
+                       "part `%s` animates but has no `prefers-reduced-motion: reduce` block of "
+                       "its own (2.3.3, per part — s305-D54)" % name)
+    return out
 
 # ---- gate tiers. Each is a RULED sequence point, not a knob to turn to pass. --
 CONTROL_TIER_44 = "warn"   # -> "fail" enacts s114-D6 (ordered AFTER s114-D5)
@@ -72,8 +125,7 @@ def check(fp):
     name = os.path.basename(fp).replace('.reference.html', '')
     fails, warns, notes = [], [], []
 
-    if MOTION.search(s) and 'prefers-reduced-motion' not in s:
-        fails.append("animates but has no `prefers-reduced-motion: reduce` block (2.3.3)")
+    fails.extend(motion_fails(s))
 
     root, _sheet, controls, marks = analyse(s)
 
@@ -387,6 +439,37 @@ def selftest():
                 '<div class="b" role="slider" tabindex="0"></div>')
     expect("H2 one known axis under the floor still fails",
            [r.verdict for r in c], ["fail"])
+
+    # ---- MOTION clause, per part (s305-D54) ------------------------------
+    import _validate_receipt as VR
+
+    def page(*parts):
+        return "<style>\n" + "\n".join(
+            "%s\n%s\n%s" % (VR.splice_marker_start("%s#%d" % (n, i), "knowledge/snippets/%s.reference.html" % n, "style"),
+                            css, VR.splice_marker_end("%s#%d" % (n, i)))
+            for i, (n, css) in enumerate(parts, 1)) + "\n</style>"
+    ANIM = ".x{transition: opacity .2s}"
+    RM = "@media (prefers-reduced-motion: reduce){.x{transition:none}}"
+
+    # M1 — an unmarked file is ONE part and keeps the historical line, byte for byte.
+    expect("M1 unmarked file: one part, historical wording",
+           motion_fails(ANIM), ["animates but has no `prefers-reduced-motion: reduce` block (2.3.3)"])
+    expect("M1b unmarked file with a block passes", motion_fails(ANIM + RM), [])
+    # M2 — the K1 miss: one part's block no longer covers another part.
+    expect("M2 a block in part A does not cover part B",
+           [f.split("`")[1] for f in motion_fails(page(("Aaa", ANIM + RM), ("Bbb", ANIM)))], ["Bbb"])
+    # M3 — the control: every animating part carries its own block.
+    expect("M3 each part with its own block passes",
+           motion_fails(page(("Aaa", ANIM + RM), ("Bbb", ANIM + RM))), [])
+    # M4 — the page's own bytes are a part too: page chrome that animates needs its own block.
+    expect("M4 the page outside the parts is judged as `page`",
+           [f.split("`")[1] for f in motion_fails(page(("Aaa", ANIM + RM)) + "<style>" + ANIM + "</style>")],
+           ["page"])
+    # M5 — MUTATION: the whole-string reading (the pre-s305-D54 clause) is GREEN on M2's page,
+    #      so M2 is what bites.
+    m2 = page(("Aaa", ANIM + RM), ("Bbb", ANIM))
+    expect("M5 the old whole-page reading misses M2",
+           bool(MOTION.search(m2) and REDUCED not in m2), False)
 
     print("a11y target selftest: %d clause(s) green, %d failing" % (ok, len(bad)))
     for b in bad:

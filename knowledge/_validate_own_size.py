@@ -10,6 +10,10 @@ any page. The page arranges parts; it never shrinks them." — and a check that 
 measured size before this one: `_validate_grid.py` reads declared CSS, `_validate_hit_area.py` holds
 controls to 44px but not to THEIR OWN size, and a page that shrinks a 44px button to 36px passes both.
 
+THE RULE IT MEASURES: `webf-036` (knowledge/guidelines/web-foundations.md, "Apollo rules"), ruled by
+Dave at the #305 sitting, call 23, "yes" (s305-D24) — the graph draws `rule:webf-036 —enforcedBy→` this
+file. It stays ADVISORY through the v1.0.14 cut (s305-D4).
+
 WHAT IT COMPARES
 ----------------
 The reference snippet is the reviewed artefact (`knowledge/snippets/<Name>.reference.html`), the same

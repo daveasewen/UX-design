@@ -1,0 +1,24 @@
+# CLEAN CLONE 21c9b7f4 + F1; Python 3.12.14 — [146] and release job steps 8–13
+== python3 knowledge/_release/_gate_release_audit.py --selftest
+❌ the manifest reads version 'v1.0.14' and NO zip in dist/ carries it (zips present: Apollo-Spider-v1.0.0.zip, Apollo-Spider-v1.0.1.zip, Apollo-Spider-v1.0.10.zip, Apollo-Spider-v1.0.11.zip, Apollo-
+ADVISORY — the manifest was generated at 0ef307460dcf; HEAD is 21c9b7f43076, 4 commit(s) later.
+selftest: 10 bites, 0 fail(s)
+rc=0  (16s)
+== python3 knowledge/_release/_gate_release_audit.py --pack
+PASS — apollo-spider/dist/Apollo-Spider-v1.0.14.zip matches the manifest at 0ef307460dcf
+rc=0  (6s)
+== python3 knowledge/_release/_gate_ci_template.py --check
+PASS — the template parses, ships what it calls, and hides nothing.
+rc=0  (0s)
+== python3 knowledge/_release/_gate_ci_template.py --selftest
+selftest: 10 bites, 0 fail(s)
+rc=0  (0s)
+== bash apollo-spider/build-designer-pack.sh --selftest
+selftest: 248 bites, 0 fail(s)
+rc=0  (0s)
+== python3 apollo-spider/cold-start/gen_projections.py --check
+gen_projections --check OK — 3 projection(s) and 3 PLACED host file(s) in sync with cold-start/DESIGN-CONTRACT.md.
+rc=0  (0s)
+== python3 knowledge/_release/_gate_release_audit.py --drift
+ADVISORY — the manifest was generated at 0ef307460dcf; HEAD is 21c9b7f43076, 4 commit(s) later.
+rc=1  (0s)

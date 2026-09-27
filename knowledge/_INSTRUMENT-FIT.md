@@ -15,24 +15,24 @@
 
 | verdict | count | meaning |
 |---|---:|---|
-| **UNDER-INSTRUMENTED** | 12 | a gate names it but sits BELOW the rung its property needs — passes without observing |
-| **UNGATED** | 164 | no gate names it; the rung shown is the COST of gating it |
-| **UNTAGGED** | 282 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
+| **UNDER-INSTRUMENTED** | 17 | a gate names it but sits BELOW the rung its property needs — passes without observing |
+| **UNGATED** | 163 | no gate names it; the rung shown is the COST of gating it |
+| **UNTAGGED** | 283 | the pattern table could not classify the rule — a finding about THIS TOOL, never filed as I0 |
 | **EYE-ONLY** | 5 | needs judgment; correctly ungateable |
 | **FIT** | 7 | the gate's instrument reaches the property |
-| **TOTAL** | 470 | |
+| **TOTAL** | 475 | |
 
-**12 rules carry a gate that cannot observe them; 2 of those are BLOCKING.** A BLOCKING rule with an under-powered gate is the `aid-009` shape: green, and blind.
+**17 rules carry a gate that cannot observe them; 3 of those are BLOCKING.** A BLOCKING rule with an under-powered gate is the `aid-009` shape: green, and blind.
 
 ⚠ **UNDER-INSTRUMENTED means UNMEASURED, not non-compliant.** The components may be perfectly correct; a static parse cannot tell you either way. Do not 'fix' these by failing them.
 
 ## ⚠ Dangling citations — gates enforcing rules the INDEX cannot see
 
-*`guidelines/*.md` declares **698** rule anchors. `_rules-index.json` holds the **470** that carry an enforcement-destiny tag. The other **260** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
+*`guidelines/*.md` declares **703** rule anchors. `_rules-index.json` holds the **475** that carry an enforcement-destiny tag. The other **260** are invisible to the index, to `_consult.py`, and to this register — and the following are cited by a LIVE GATE as its authority.*
 
 | cited rule | not in index | cited by |
 |---|---|---|
-| `axs-003` | ✗ | `knowledge/_validate_a11y.py` |
+| `axs-003` | ✗ | `knowledge/_build_kg_explorer.py`, `knowledge/_validate_a11y.py` |
 
 ⚠ **This is ds-015 inverted.** There, the gate could not see the component; here the INDEX cannot see the rule. Same signature: the markup is correct, the lookup fails, and nothing reports it. `aid-009` — Dave's 2026-07-03 hit-area ruling and the founding case of ds-015 — is on this list: its anchor line carries no destiny tag, so the rule the a11y gate enforces cannot be retrieved by any tool that reads the index.
 
@@ -42,6 +42,7 @@
 |---|---|---|---|---|---|
 | `dv-016` | BLOCKING | **I2-RENDER** | I0-STATIC | `knowledge/_build_decision_graph.py`, `knowledge/_validate_dataviz.py` | contrast ratio (I2-RENDER: '3:1') |
 | `icon-011` | BLOCKING | **I2-RENDER** | I0-STATIC | `knowledge/_build_decision_graph.py` | contrast ratio (I2-RENDER: '4.5:1') |
+| `col26-016` | BLOCKING | **I1-DOM** | I0-STATIC | `knowledge/_validate_snippets.py` | markup relationship (I1-DOM: 'semantics') |
 | `aca-007` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_validate_advisory.py` | layout outcome (I2-RENDER: 'reflow'); viewport-dependent (I2-RENDER: 'reflow') |
 | `acd-007` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_validate_advisory.py` | contrast ratio (I2-RENDER: 'AA') |
 | `acd-025` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_validate_advisory.py` | contrast ratio (I2-RENDER: 'AA') |
@@ -49,8 +50,12 @@
 | `col26-007` | REVIEW | **I2-RENDER** | I0-STATIC | `knowledge/_build_icon_contrast_delta.py` | contrast ratio (I2-RENDER: '4.5:1') |
 | `col26-020` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_build_all.py`, `knowledge/_validate_edge_extremity.py` | contrast ratio (I2-RENDER: 'contrast') |
 | `dv-019` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_validate_edge_extremity.py` | contrast ratio (I2-RENDER: 'contrast') |
-| `icon-015` | REVIEW | **I2-RENDER** | I0-STATIC | `knowledge/_build_icon_contrast_delta.py`, `knowledge/_validate_snippets.py` | contrast ratio (I2-RENDER: 'contrast'); resolved value (I2-RENDER: 'computed') |
+| `dv-line-008` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_build_kg_explorer.py`, `knowledge/gen_kg_titles.py` | layout outcome (I2-RENDER: 'obscure') |
+| `icon-015` | REVIEW | **I2-RENDER** | I0-STATIC | `knowledge/_build_icon_contrast_delta.py`, `knowledge/_validate_snippets.py`, `knowledge/gen_kg_rules.py` | contrast ratio (I2-RENDER: 'contrast'); resolved value (I2-RENDER: 'computed') |
+| `logo26-010` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/_build_kg_explorer.py` | viewport-dependent (I2-RENDER: 'responsive') |
 | `type26-015` | REVIEW | **I2-RENDER** | I0-STATIC | `knowledge/_build_decision_graph.py` | contrast ratio (I2-RENDER: 'contrast'); layout outcome (I2-RENDER: 'wrap') |
+| `va25-013` | ADVISORY | **I2-RENDER** | I0-STATIC | `knowledge/gen_kg_rules.py` | contrast ratio (I2-RENDER: '1:1'); motion (I2-RENDER: 'animation') |
+| `aca-001` | ADVISORY | **I1-DOM** | I0-STATIC | `knowledge/gen_kg_rules.py` | structural relationship (I1-DOM: 'programmatically determinable') |
 | `acd-024` | ADVISORY | **I1-DOM** | I0-STATIC | `knowledge/_validate_advisory.py` | structural relationship (I1-DOM: 'aria-'); markup relationship (I1-DOM: 'ASSOCIATED with') |
 
 ## Gate instruments — OBSERVED from imports and API calls
@@ -69,12 +74,14 @@
 | `knowledge/_validate_css_governed.py` | I0-STATIC |
 | `knowledge/_validate_dark_surfaces.py` | I0-STATIC |
 | `knowledge/_validate_dataviz.py` | I0-STATIC |
+| `knowledge/_validate_demo_page.py` | I2-RENDER |
 | `knowledge/_validate_descender_clip.py` | I0-STATIC |
 | `knowledge/_validate_descender_computed.py` | I2-RENDER |
 | `knowledge/_validate_dtcg.py` | I0-STATIC |
 | `knowledge/_validate_edge_extremity.py` | I0-STATIC |
 | `knowledge/_validate_evidence.py` | I0-STATIC |
 | `knowledge/_validate_fit_physics.py` | I2-RENDER |
+| `knowledge/_validate_geometry.py` | I2-RENDER |
 | `knowledge/_validate_grid.py` | I0-STATIC |
 | `knowledge/_validate_help_gate.py` | I0-STATIC |
 | `knowledge/_validate_hidden_display.py` | I0-STATIC |
@@ -84,6 +91,7 @@
 | `knowledge/_validate_kg.py` | I0-STATIC |
 | `knowledge/_validate_legacy_leak.py` | I0-STATIC |
 | `knowledge/_validate_no_hardcode.py` | I0-STATIC |
+| `knowledge/_validate_own_size.py` | I0-STATIC |
 | `knowledge/_validate_package_delta.py` | I0-STATIC |
 | `knowledge/_validate_palette_tier.py` | I0-STATIC |
 | `knowledge/_validate_partials.py` | I0-STATIC |
@@ -113,12 +121,12 @@
 | rung needed | rules | note |
 |---|---:|---|
 | I0-STATIC | 31 | cheapest wins — a regex reaches these |
-| I1-DOM | 17 | needs a parsed tree |
+| I1-DOM | 16 | needs a parsed tree |
 | I2-RENDER | 77 | needs the render harness (`_RUNBOOK-render-verify.md`) |
 
 ## Untagged — what the pattern table cannot classify
 
-*282 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
+*283 rules. This count is a finding about the tool, not the corpus. They are NOT filed as I0: an unclassified rule recorded as 'static is adequate' is the exact lie this register exists to expose.*
 
 - `aca-003` (BLOCKING) — CA-3 — unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears
 - `aca-005` (ADVISORY) — CA-5 — repeated links to one target are ONE link (SC 1.1.1 + 2.4.4 A): adjacent image + text with the same tar
@@ -145,5 +153,5 @@
 - `avd-006` (BLOCKING) — VD-7 — every non-text element gets a purpose-alt (SC 1.1.1 A): alt describes PURPOSE; actionable images descri
 - `avd-008` (ADVISORY) — VD-8 — never prompt the same information twice in a journey (SC 3.3.7, 2022/ framework-2024): auto-populate or
 - `axf-002` (ADVISORY) — Two-element standard — (1) international legal compliance (the WCAG 2.2 bar above); (2) assured experience: th
-- *… 257 more in `_instrument-fit.json`*
+- *… 258 more in `_instrument-fit.json`*
 

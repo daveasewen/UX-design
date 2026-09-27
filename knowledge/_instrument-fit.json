@@ -1,10 +1,10 @@
 {
- "total": 470,
+ "total": 475,
  "tally": {
-  "UNGATED": 164,
-  "UNTAGGED": 282,
+  "UNDER-INSTRUMENTED": 17,
+  "UNGATED": 163,
+  "UNTAGGED": 283,
   "FIT": 7,
-  "UNDER-INSTRUMENTED": 12,
   "EYE-ONLY": 5
  },
  "rows": [
@@ -18,9 +18,11 @@
    "evidence": [
     "structural relationship (I1-DOM: 'programmatically determinable')"
    ],
-   "gates": [],
-   "gate_instrument": null,
-   "verdict": "UNGATED"
+   "gates": [
+    "knowledge/gen_kg_rules.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNDER-INSTRUMENTED"
   },
   {
    "id": "aca-002",
@@ -40,7 +42,7 @@
    "id": "aca-003",
    "file": "accessibility-content-authoring.md",
    "destiny": "BLOCKING",
-   "rule": "CA-3 \u2014 unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears.",
+   "rule": "CA-3 \u2014 unique, concise page/frame/iframe titles (SC 2.4.2 A + 4.1.2 A): first thing a speech-output user hears. The first heading need not repeat the page title \u2014 an active navigation state or a salutation may lead; the title, not the H1, is what orientation rests on. (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -479,7 +481,7 @@
    "id": "aid-009",
    "file": "accessibility-interaction-design.md",
    "destiny": "BLOCKING",
-   "rule": "ID-26 [introduced 2024] \u2014 target size, the formal 2.2 rule: HSBC DEFAULT 44\u00d744, minimum exception 24\u00d724 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance\u2026 44\u00d744 is therefore considered the default requirement.\"",
+   "rule": "ID-26 [introduced 2024] \u2014 target size, the formal 2.2 rule: HSBC DEFAULT 44\u00d744, minimum exception 24\u00d724 (SC 2.5.8 + 2.5.5): 24 only with the spacing/equivalent/ inline/UA/essential outs; \"HSBC already has formal design guidance\u2026 44\u00d744 is therefore considered the default requirement.\" The 44 default and the 24 floor are measured on the HIT AREA, not on the visible target. (s282-D1, Dave 2026-09-17) Beside that floor, a graded heuristic the designer weighs: the size of the visible target, the clear space around it \u2014 spacing is also emphasis \u2014 and compact views, which are a user choice. (s282-D1, Dave 2026-09-17)",
    "needs": "I3-EYE",
    "confidence": "low",
    "evidence": [
@@ -1070,13 +1072,15 @@
    "id": "col26-009",
    "file": "colour-standards-2026.md",
    "destiny": "BLOCKING",
-   "rule": "Don't use the supporting palette as text.",
-   "needs": "UNKNOWN",
-   "confidence": "none",
-   "evidence": [],
+   "rule": "Don't use the supporting palette as text. Two reasons, not one: the contrast floor and brand consistency \u2014 \"if designers were allowed to use the supporting palette we would get dramatically varied designs\". (s282-D1, Dave 2026-09-17)",
+   "needs": "I2-RENDER",
+   "confidence": "high",
+   "evidence": [
+    "contrast ratio (I2-RENDER: 'contrast')"
+   ],
    "gates": [],
    "gate_instrument": null,
-   "verdict": "UNTAGGED"
+   "verdict": "UNGATED"
   },
   {
    "id": "col26-010",
@@ -1158,15 +1162,17 @@
    "id": "col26-016",
    "file": "colour-standards-2026.md",
    "destiny": "BLOCKING",
-   "rule": "Don't use red typography \u2014 red text is reserved for call to actions.",
-   "needs": "UNKNOWN",
-   "confidence": "none",
-   "evidence": [],
+   "rule": "Don't use red typography \u2014 red text is reserved for call to actions. The ban is on the PRIMARY HSBC Red as text. One exception, and it is never the primary red: a SECONDARY red \u2014 usually the RAG/delta red (`data/delta/loss`) \u2014 for downward, and RAG green for upward position movement, stat-card style; the delta clause under `data-visualisation.md` {#dv-017} ({#dv-019} (a)) carries the semantics and is not restated here. Dave: \"I think we have RAG red and a readable secondary red for 1 or two of the themes\" \u2014 no such theme token is in the live token set today; recorded as his word, not as a token. (s282-D1 \u00b7 s282-D2, Dave 2026-09-17)",
+   "needs": "I1-DOM",
+   "confidence": "low",
+   "evidence": [
+    "markup relationship (I1-DOM: 'semantics')"
+   ],
    "gates": [
     "knowledge/_validate_snippets.py"
    ],
    "gate_instrument": "I0-STATIC",
-   "verdict": "UNTAGGED"
+   "verdict": "UNDER-INSTRUMENTED"
   },
   {
    "id": "col26-017",
@@ -3230,7 +3236,7 @@
    "id": "dv-bar-007",
    "file": "data-visualisation-bar-charts.md",
    "destiny": "BLOCKING",
-   "rule": "Positive + negative values: vertical bars only. Don't put negative values on a horizontal bar chart.",
+   "rule": "Positive + negative values: vertical bars only. Don't put negative values on a horizontal bar chart. Scope: positive-scale bar charts. Negative values use the vertical below-zero form, which is the sanctioned way to show them. (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -3380,9 +3386,12 @@
    "evidence": [
     "layout outcome (I2-RENDER: 'obscure')"
    ],
-   "gates": [],
-   "gate_instrument": null,
-   "verdict": "UNGATED"
+   "gates": [
+    "knowledge/_build_kg_explorer.py",
+    "knowledge/gen_kg_titles.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNDER-INSTRUMENTED"
   },
   {
    "id": "dv-line-009",
@@ -3732,7 +3741,7 @@
    "id": "icon-006",
    "file": "icons.md",
    "destiny": "BLOCKING",
-   "rule": "Minimum 16px, maximum 48px; scale proportionately in 2px increments.",
+   "rule": "Minimum 16px, maximum 48px; scale proportionately in 2px increments. The floor is legibility; the ceiling is the icon/illustration boundary \u2014 at the ceiling an icon is close to illustration dimensions; and the fixed set holds consistency. (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -3855,7 +3864,8 @@
    ],
    "gates": [
     "knowledge/_build_icon_contrast_delta.py",
-    "knowledge/_validate_snippets.py"
+    "knowledge/_validate_snippets.py",
+    "knowledge/gen_kg_rules.py"
    ],
    "gate_instrument": "I0-STATIC",
    "verdict": "UNDER-INSTRUMENTED"
@@ -4016,15 +4026,73 @@
   },
   {
    "id": "logo26-001",
-   "file": "brand-refresh-assets.md",
+   "file": "logos.md",
    "destiny": "BLOCKING",
-   "rule": "An HSBC logo appears at least once on every piece of communication or customer journey.",
+   "rule": "An HSBC logo appears at least once on every piece of communication or customer journey. In a native app the journey's logon or splash screen satisfies the rule \u2014 \"the user summoned an HSBC app, they know where the destination is\". (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
    "gates": [],
    "gate_instrument": null,
    "verdict": "UNTAGGED"
+  },
+  {
+   "id": "logo26-008",
+   "file": "logos.md",
+   "destiny": "BLOCKING",
+   "rule": "The masthead logo is the FULL-COLOUR Masterbrand on BOTH grounds, in ALL FOUR THEMES \u2014 `masterbrand-light-colour` on light, `masterbrand-dark-colour` on dark, in Apollo Legacy, Apollo Mono, Apollo Console and Apollo Supercharge alike. A monochrome theme does not make a monochrome masthead: mono is not the masthead lockup in any theme. `va25-015` says a Masterbrand appears in ALL digital mastheads; this names WHICH VARIANT. Dave answered \"Full colour both grounds \u2014 masterbrand-light-colour on light, masterbrand-dark-colour on dark\" on all four theme rows of his own export. (s282-D5, Dave 2026-09-18)",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
+  },
+  {
+   "id": "logo26-009",
+   "file": "logos.md",
+   "destiny": "BLOCKING",
+   "rule": "Digital clear space is a FLOOR, not the print rule: vertical clear space \u2265 0.25 \u00d7 logo height, snapped UP to the 4px grid. At the five `s282-D3` steps that is 24 \u2192 8 \u00b7 28 \u2192 8 \u00b7 32 \u2192 8 \u00b7 36 \u2192 12 \u00b7 40 \u2192 12 px. It is a floor, not a value: anything at or above it that itself sits on the 4px grid is legal. Dave's words: \"The logo dimension based clear space is really for print, we have a rule of thumb for digital is half of this dimension, but it isn't a rule, maybe we have it set as a floor of 0.25 snap-up to the 4px grid, so at 24 height we have 8px as the floor fer the vertical clearspace, as long as it snaps to 4px above that I'm comfortable\". \u26a0 HIS NOTE SAYS VERTICAL. HORIZONTAL clear space is NOT STATED AND IS NOT RULED \u2014 it is carried open (W-282ll), never completed by symmetry. The logo-dimension clear space (`va25-014`, 1\u00d7 hexagon height on all sides, `visual-assets.md`) remains the PRINT rule and is untouched. (s282-D5, Dave 2026-09-18)",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
+  },
+  {
+   "id": "logo26-010",
+   "file": "logos.md",
+   "destiny": "ADVISORY",
+   "rule": "The hexagon alone may be used on the nav-rail head, the app tile and the favicon \u2014 each conditional on Create Direct approval AND \"HSBC\" in view (`va25-016`'s two conditions stand, unrelaxed) \u2014 and in responsive layouts at the smaller sizes, tablet-portrait and mobile, where the Masterbrand does not fit. Dave's words: \"The pure logomark can also be used in responsive layouts when we get to smaller sizes, tablet-portrait and mobile\". This answers `s230-D2`'s declared residue \u2014 \"App-shell-nav-rail deliberately NOT rebound (56px rail head, no lockup fits)\": a lockup now fits, and it is the hexagon. (s282-D5, Dave 2026-09-18)",
+   "needs": "I2-RENDER",
+   "confidence": "high",
+   "evidence": [
+    "viewport-dependent (I2-RENDER: 'responsive')"
+   ],
+   "gates": [
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNDER-INSTRUMENTED"
+  },
+  {
+   "id": "logo26-011",
+   "file": "logos.md",
+   "destiny": "BLOCKING",
+   "rule": "Horizontal digital clear space is a floor of 0.25 \u00d7 the LOGOMARK's width \u2014 the hexagon alone, never the hexagon-plus-wordmark \u2014 snapped UP to the 4px grid, and it is applied on the OPEN side only, by alignment: centred \u2192 the same floor on both sides; right-aligned \u2192 the floor on the LEFT only, zero on the right (the flush edge); left-aligned \u2192 the floor on the RIGHT only, zero on the left. Dave: \"lets do horizontal clearspace at quarter width snapped up to the 4px. but this is zero on the left or right depending on alignment, centre - same both sides. right - only on the left. left - only on the right\". Dave, correcting the first cut the same morning: \"so the clearspace is defined by the logomark dimensions only, so it would be the same for both, the wordmark and logomark dimensions combined aren't applicable here\". The hexagon is 2 \u00d7 its height wide (170:85), so at the five steps it is 48 \u00b7 56 \u00b7 64 \u00b7 72 \u00b7 80 px wide \u21d2 horizontal floors 12 \u00b7 16 \u00b7 16 \u00b7 20 \u00b7 20 px \u2014 THE SAME for the hexagon and the masterbrand at a given height. (The vertical floor of `logo26-009` is on height, which the logomark and the lockup share.) This completes `logo26-009`'s vertical floor; `W-282ll`'s horizontal half closes here. (s282-D6, Dave 2026-09-18)",
+   "needs": "I2-RENDER",
+   "confidence": "low",
+   "evidence": [
+    "measured spatial relation (I2-RENDER: 'alignment')"
+   ],
+   "gates": [],
+   "gate_instrument": null,
+   "verdict": "UNGATED"
   },
   {
    "id": "mot-001",
@@ -4150,7 +4218,8 @@
     "literal text form (I0-STATIC: 'lowercase')"
    ],
    "gates": [
-    "knowledge/_validate_advisory.py"
+    "knowledge/_validate_advisory.py",
+    "knowledge/gen_kg_rules.py"
    ],
    "gate_instrument": "I0-STATIC",
    "verdict": "FIT"
@@ -4416,7 +4485,7 @@
    "id": "neuro-026",
    "file": "neurodiversity.md",
    "destiny": "BLOCKING",
-   "rule": "Icons/visuals support text, never replace it \u2014 content must remain comprehensible with all images and icons removed.",
+   "rule": "Icons/visuals support text, never replace it \u2014 content must remain comprehensible with all images and icons removed. Carve-out by reference: unpaired icons are allowed only for the universal set named in `icons.md` ({#icon-004}); pictograms stay no-exception ({#pict-001}). (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -4540,7 +4609,7 @@
    "id": "photo26-002",
    "file": "brand-refresh-assets.md",
    "destiny": "BLOCKING",
-   "rule": "HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clich\u00e9d shots; no text as a mask. \u26a0 The gen-AI ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic imagery \u2014 photography comes from the Global Image Library/approved sources only. Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story = retrieval from licensed libraries, full stop.",
+   "rule": "HARD bans: no Generative AI, mixed media or CGI-rendered elements in imagery; no montages/composites; no staged/posed/clich\u00e9d shots; no text as a mask. \u26a0 The gen-AI ban is PIPELINE-CRITICAL: a generation engine must never fabricate photographic imagery \u2014 photography comes from the Global Image Library/approved sources only. Direct kin of the gen-AI governance regime (gai-*); Apollo's imagery story = retrieval from licensed libraries, full stop. The gen-AI clause carries a review date \u2014 review by 2027-03 \u2014 which changes nothing about the ban until then. (s282-D1, Dave 2026-09-17)",
    "needs": "I2-RENDER",
    "confidence": "high",
    "evidence": [
@@ -4568,7 +4637,7 @@
    "id": "pict-001",
    "file": "pictograms.md",
    "destiny": "BLOCKING",
-   "rule": "Every pictogram carries a label or copy that underpins its meaning \u2014 no exceptions (unlike icons' universal-meaning carve-out).",
+   "rule": "Every pictogram carries a label or copy that underpins its meaning \u2014 no exceptions (unlike icons' universal-meaning carve-out). The usage boundary: a pictogram supports a concept; an icon signals an action. (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -4680,7 +4749,7 @@
    "id": "pict-010",
    "file": "pictograms.md",
    "destiny": "BLOCKING",
-   "rule": "Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead.",
+   "rule": "Digital: minimum 60px, maximum 192px, proportional scaling at 2px intervals. Below 60px, use an icon instead. The figures are consistency and enforcement against misuse by designers, not a perceptual threshold. (s282-D1, Dave 2026-09-17)",
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
@@ -5336,8 +5405,10 @@
    "needs": "UNKNOWN",
    "confidence": "none",
    "evidence": [],
-   "gates": [],
-   "gate_instrument": null,
+   "gates": [
+    "knowledge/_build_kg_explorer.py"
+   ],
+   "gate_instrument": "I0-STATIC",
    "verdict": "UNTAGGED"
   },
   {
@@ -5811,9 +5882,11 @@
     "contrast ratio (I2-RENDER: '1:1')",
     "motion (I2-RENDER: 'animation')"
    ],
-   "gates": [],
-   "gate_instrument": null,
-   "verdict": "UNGATED"
+   "gates": [
+    "knowledge/gen_kg_rules.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNDER-INSTRUMENTED"
   },
   {
    "id": "va25-014",
@@ -5829,7 +5902,7 @@
   },
   {
    "id": "va25-015",
-   "file": "visual-assets.md",
+   "file": "logos.md",
    "destiny": "ADVISORY",
    "rule": "Masthead contract: the Masterbrand logo appears in ALL digital mastheads; clicking it always returns to the root of the CURRENT business line \u2014 never cross-line, orientation over surprise. ENGINE-CRITICAL \u2192 the Header/masthead component (deferred but queued) inherits this behaviour contract.",
    "needs": "I2-RENDER",
@@ -5843,7 +5916,7 @@
   },
   {
    "id": "va25-016",
-   "file": "visual-assets.md",
+   "file": "logos.md",
    "destiny": "ADVISORY",
    "rule": "Never-rules: no new lock-ups from text for departments/programmes/products; never distort, recolour, reorient or recreate; hexagon-only use needs Create Direct approval AND 'HSBC' context nearby (app tile, profile avatar, favicon); never the legacy Times New Roman logo; third-party use follows the TMLA process; Brand Promise lock-up never wraps lines.",
    "needs": "I2-RENDER",
@@ -5857,7 +5930,7 @@
   },
   {
    "id": "va25-017",
-   "file": "visual-assets.md",
+   "file": "logos.md",
    "destiny": "ADVISORY",
    "rule": "Variant selection on photographic backgrounds: primary (red hexagon/white infill/black type) on light; white-wordmark version on dark-where-red-reads; mono black on light print, mono-reversed white on dark or HSBC-red; white infill never on mono versions. Expands logo26's dark = full-colour-negative rule with the legibility ladder.",
    "needs": "UNKNOWN",
@@ -6153,6 +6226,20 @@
    "gates": [],
    "gate_instrument": null,
    "verdict": "UNGATED"
+  },
+  {
+   "id": "webf-036",
+   "file": "web-foundations.md",
+   "destiny": "ADVISORY",
+   "rule": "A part keeps its own size on any page. The page arranges parts; it never shrinks them. Every part is drawn at its own reference size: a composed page places a component, it does not resize it, so a button, a column header or a table cell renders at the height, minimum width and type size its reference snippet renders. The wording is the #304 when-rules page's proposed sentence (question 5); Dave answered the sitting's call 23 \"yes\" on Sunday 2026-09-27. Its first consequence at the root, whether canon's default label trim reaches the twelve components that carry none of their own, is NOT taken by this rule: that is call 41c, keep today's through the cut (`s305-D43`). (s305-D24, Dave 2026-09-27)",
+   "needs": "UNKNOWN",
+   "confidence": "none",
+   "evidence": [],
+   "gates": [
+    "knowledge/_validate_own_size.py"
+   ],
+   "gate_instrument": "I0-STATIC",
+   "verdict": "UNTAGGED"
   }
  ],
  "gate_instruments": {
@@ -6164,6 +6251,7 @@
   "knowledge/_build_icon_contrast_delta.py": "I0-STATIC",
   "knowledge/_build_indicator_contrast_audit.py": "I0-STATIC",
   "knowledge/_build_integrity.py": "I0-STATIC",
+  "knowledge/_build_kg_explorer.py": "I0-STATIC",
   "knowledge/_build_live_state.py": "I0-STATIC",
   "knowledge/_build_memento_index.py": "I0-STATIC",
   "knowledge/_build_photo_manifest.py": "I0-STATIC",
@@ -6189,12 +6277,14 @@
   "knowledge/_validate_css_governed.py": "I0-STATIC",
   "knowledge/_validate_dark_surfaces.py": "I0-STATIC",
   "knowledge/_validate_dataviz.py": "I0-STATIC",
+  "knowledge/_validate_demo_page.py": "I2-RENDER",
   "knowledge/_validate_descender_clip.py": "I0-STATIC",
   "knowledge/_validate_descender_computed.py": "I2-RENDER",
   "knowledge/_validate_dtcg.py": "I0-STATIC",
   "knowledge/_validate_edge_extremity.py": "I0-STATIC",
   "knowledge/_validate_evidence.py": "I0-STATIC",
   "knowledge/_validate_fit_physics.py": "I2-RENDER",
+  "knowledge/_validate_geometry.py": "I2-RENDER",
   "knowledge/_validate_grid.py": "I0-STATIC",
   "knowledge/_validate_help_gate.py": "I0-STATIC",
   "knowledge/_validate_hidden_display.py": "I0-STATIC",
@@ -6204,6 +6294,7 @@
   "knowledge/_validate_kg.py": "I0-STATIC",
   "knowledge/_validate_legacy_leak.py": "I0-STATIC",
   "knowledge/_validate_no_hardcode.py": "I0-STATIC",
+  "knowledge/_validate_own_size.py": "I0-STATIC",
   "knowledge/_validate_package_delta.py": "I0-STATIC",
   "knowledge/_validate_palette_tier.py": "I0-STATIC",
   "knowledge/_validate_partials.py": "I0-STATIC",
@@ -6235,6 +6326,12 @@
   "knowledge/gen_gardener_controller.py": "I0-STATIC",
   "knowledge/gen_itinerary_status.py": "I0-STATIC",
   "knowledge/gen_kg_edges.py": "I0-STATIC",
+  "knowledge/gen_kg_principles.py": "I0-STATIC",
+  "knowledge/gen_kg_roles_desk.py": "I0-STATIC",
+  "knowledge/gen_kg_rules.py": "I0-STATIC",
+  "knowledge/gen_kg_sources.py": "I0-STATIC",
+  "knowledge/gen_kg_titles.py": "I0-STATIC",
+  "knowledge/gen_kg_tokens.py": "I0-STATIC",
   "knowledge/gen_provenance_receipt.py": "I0-STATIC",
   "knowledge/gen_radius_derive.py": "I0-STATIC",
   "knowledge/gen_runbook_index.py": "I0-STATIC",
@@ -6247,9 +6344,10 @@
  },
  "dangling_citations": {
   "axs-003": [
+   "knowledge/_build_kg_explorer.py",
    "knowledge/_validate_a11y.py"
   ]
  },
- "declared_anchors": 698,
+ "declared_anchors": 703,
  "untagged_anchors": 260
 }

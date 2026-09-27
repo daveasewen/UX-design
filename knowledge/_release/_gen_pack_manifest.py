@@ -1115,6 +1115,9 @@ def ratify_id(version=None):
     return RATIFY_IDS.get(VERSION if version is None else version)
 
 
+_RATIFYING_STATUS = re.compile(r"(ruled|enacted)(\s|$)", re.IGNORECASE)
+
+
 def ratification_status(store_path=None, version=None):
     v = VERSION if version is None else version
     p = RULINGS_PATH if store_path is None else store_path
@@ -1127,12 +1130,19 @@ def ratification_status(store_path=None, version=None):
     if want is None:
         return ("PROPOSED — no ruling is keyed to %s yet (s223-D3: the ratify check is re-keyed "
                 "PER CUT). s219-D4(2): release = his word, and this cut has not had it." % v)
+    # ⛔ #305 F1 — ENACTED IS STILL HIS WORD. This read `status == "ruled"` exactly, so the
+    # moment the commit seat stamped the keyed ruling `enacted …` (21c9b7f4 stamped s305-D2
+    # after the v1.0.14 cut was built), a fresh generation derived PROPOSED against the committed
+    # RATIFIED manifest and the ship-list audit went red (CI 36341948728, [145]/[146], release
+    # step 7). An enacted ruling is the same word further along, so its FIRST WORD counts — for
+    # v1.0.14 and for any earlier release whose ruling is stamped the same way. Anything else
+    # (superseded, standing, proposed, …) is not ratification and still derives PROPOSED.
     for r in rl:
-        if r.get("id") == want and r.get("status") == "ruled":
+        if r.get("id") == want and _RATIFYING_STATUS.match(r.get("status") or ""):
             return ("RATIFIED — %s names %s in the store; "
                     "s219-D4(2) satisfied by the store, not by prose" % (want, v))
-    return ("PROPOSED — %s is keyed to ruling %s, which is not 'ruled' in the store "
-            "(s219-D4(2): release = his word)" % (v, want))
+    return ("PROPOSED — %s is keyed to ruling %s, which is not 'ruled' or 'enacted' in the "
+            "store (s219-D4(2): release = his word)" % (v, want))
 
 
 def status_word():

@@ -1,0 +1,829 @@
+#!/usr/bin/env python3
+"""memento-package delta-audit gate — enforces Dave's #64 boundary ruling (#79 build).
+
+WHY THIS EXISTS. `memento-package/_PACKAGE-SPEC.md:13-14`, Dave's #64 ruling: "Nothing in
+Apollo reads it; no Apollo gate globs it; no Apollo file MOVES into it — copies only, and
+every copy is delta-audited." The rule existed with nothing built to enforce it, and
+`_gen_chain.py` silently regressed 54 lines behind `knowledge/_gen_chain.py` (the #73
+title-block + stale-title refusal) in BOTH in-package copies, undetected, until #79 measured
+it. This gate is the enforcement the ruling always implied.
+
+FOUR ARMS.
+  1. VERBATIM SET — `_gen_chain.py` / `_memento_search.py` / `_search_core.py` / `_graph_edges.py` must be
+     byte-identical to their `knowledge/` originals, in BOTH package copies.
+  2. THE SHIM — `_capture_gate.py` in the package is NOT a copy, by design (its own
+     docstring: a purpose-written standalone shim reproducing four functions' behaviour).
+     It is exempt from wholesale comparison. Instead this honours its DECLARED PROVENANCE:
+     the shim's docstring names the exact functions/constants it says it ported and the
+     commit each chain was ported from. Two chains, both declared in the shim's own
+     docstring:
+       (a) `knowledge/_capture_gate.py` @ commit c853b0a (re-ported #114; was 91d7528) — chain_parts, read_chain_tk,
+           measure_tokens, measurement_degraded, dofirst_index, _heal_tiktoken, plus the
+           six named constants (BYTES_PER_TOKEN, DOFIRST_ITEM_RE, DOFIRST_HOOK_MAX,
+           DOFIRST_INDEX_TK_MAX, LS_DELTA_RE, _TIKTOKEN_HEAL_TRIED).
+       (b) `knowledge/_gm_usage.py` @ commit ace3ed3 — GM_VOCAB, LS_VOCAB (the shim's own
+           docstring flags this as "A DEPENDENCY THE MANIFEST DID NOT NAME").
+     ★ 2b — PACKED SHIM BODY FIDELITY (#223, Dave's `s223-D4`). The two chains above compare
+       the SOURCE to ITSELF at two points in time; until #223 that was ALL this arm did, while
+       its prose claimed to prove the packed bodies had not drifted. Measured: editing BOTH
+       packed copies identically left the gate GREEN. `check_shim_bodies` is the repair — it
+       OPENS both packed copies and compares every name declared ported to that name's source
+       AT THE PORT COMMIT, tolerating only the exactly-quoted, per-difference allowances in
+       DECLARED_SHIM_DIFFS (three of them, all already declared in the shim's own docstrings:
+       the dropped `_gm_usage` import in `chain_parts`/`dofirst_index`, and `measure_tokens`'s
+       one optional `_real_gauge()` import). ⬛ DECLARED SCOPE: it compares CODE, not prose —
+       see the note above DECLARED_SHIM_DIFFS.
+  3. CROSS-COPY IDENTITY — every file in `machinery/` must be byte-identical to its
+     namesake in `claude-plugin/memento/machinery/`, in both directions, PLUS both copies
+     must together carry every file on the known-files list (catches the case where a file
+     vanishes from BOTH copies at once, which the pairwise check alone would miss).
+  4. UNKNOWN FILES — any file in either machinery folder not on the known-files list FAILS
+     LOUD, named. `__pycache__/` is the one deliberate, NAMED exclusion (gitignored
+     Python bytecode cache, not shipped content — see .gitignore:8-9). Project rule: a gate
+     that enumerates rather than failing loud on the unknown is the scope-blindness defect;
+     this is the allowlist-with-loud-unknown shape, not a silent ignore-list.
+
+METHOD PROOF FOR ARM 2 — why AST source-segment hashing, not `git log -L` or line ranges.
+Measured at #79: `knowledge/_capture_gate.py` grew from ~2,500 lines (port time) to 4,321
+lines across FOUR commits after the port (514f4bd, f8ff234, 9cde313, 4661333) — so the
+docstring's own line numbers (e.g. "measure_tokens lines 1350-1374") no longer address the
+right text; a line-range diff would silently compare the WRONG code. AST extraction finds
+each function/assignment BY NAME in both the historical git blob and the current file and
+hashes only ITS OWN source text (`ast.get_source_segment`, Python's own span-getter) — immune
+to unrelated edits moving the function up or down the file. Proven, this session: the same
+extraction run against the real repo found chain (a)'s 12 names and chain (b)'s 2 names all
+byte-identical between their port commits and HEAD, despite the surrounding files changing
+substantially — i.e. the method correctly stayed GREEN on real, heavy, UNRELATED drift, which
+a whole-file hash could never have distinguished from a real break.
+
+GATE-GLOB-SCOPE: this gate globs `memento-package/` explicitly and ONLY (plus reads, never
+writes, `knowledge/_gen_chain.py` / `_memento_search.py` / `_search_core.py` / `_graph_edges.py`
+/ `_capture_gate.py` / `_gm_usage.py` as comparison SOURCES). It does not touch, read the content of for grading, or
+widen any other gate's glob (gate-glob-scope-rule).
+
+USAGE
+    python3 knowledge/_validate_package_delta.py              # run the gate
+    python3 knowledge/_validate_package_delta.py --selftest   # the bites, mutation-tested
+"""
+import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
+_hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
+while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
+    _hg_d = _hg_os.path.dirname(_hg_d)
+_hg_sys.path.insert(0, _hg_d)
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+import ast
+import copy
+import difflib
+import hashlib
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+
+COPY_A = "memento-package/machinery"
+COPY_B = "memento-package/claude-plugin/memento/machinery"
+SHIM_NAME = "_capture_gate.py"
+
+# s124: _graph_edges.py joined the set — the #115 sync made _memento_search.py import it, and a
+# green audit over a copy with a dead import is the no-gate-parses-the-artefact class (#122).
+# Its data files (_decision-graph.json etc.) deliberately do NOT ship: _graph_edges degrades
+# loud-and-named via available()/unavailable_notice() when they're absent.
+VERBATIM_SET = ("_gen_chain.py", "_memento_search.py", "_search_core.py", "_graph_edges.py")
+KNOWN_FILES = set(VERBATIM_SET) | {SHIM_NAME, "_consult-lexicon.json", "_MACHINERY-MANIFEST.md"}
+# ⚠ NAMED, deliberate, narrow exclusion — NOT a blanket ignore-list. __pycache__ is Python's
+# own bytecode cache, gitignored (.gitignore:8 `__pycache__/`, :9 `*.pyc`), regenerates on
+# every run, and carries no shipped content. Excluding it by name is the allowlist doing its
+# job; a gate that silently widened this pattern would be the scope-blindness defect instead.
+IGNORE_DIRS = {"__pycache__"}
+
+# ---- Provenance chain (a): knowledge/_capture_gate.py @ c853b0a -------------------------
+PORT_COMMIT_A = "ba2c9f5"   # ★ #222 RE-PORT: s222-D2/D3 encoder dispatch, route (a); was 9dcf62d (#149)
+# (the s125-D1 {{BUILD_VERDICT}} splice). Re-reviewed and re-ported into the shim, the shim's
+# docstring now declares this commit, and this constant follows it.
+# ★ #114 RE-PORT: measure_tokens / measurement_degraded /
+# DOFIRST_INDEX_TK_MAX had drifted since 91d7528 (the #82-D1 three-tier cascade, and the
+# constant's 700). All three were re-reviewed and re-ported into the shim, the shim's docstring
+# now declares this commit, and this constant follows it — the gate's own remedy path ("the shim
+# was re-ported and the gate was not updated to match"). ⚠ No VALUE was changed by the sync:
+# DOFIRST_INDEX_TK_MAX is 700 on BOTH sides (Dave's, #111-D4).
+SHIM_SOURCE_FILE_A = "knowledge/_capture_gate.py"
+PORTED_FUNCS_A = ("chain_parts", "read_chain_tk", "measure_tokens", "measurement_degraded",
+                  "dofirst_index", "_heal_tiktoken")
+PORTED_CONSTS_A = ("BYTES_PER_TOKEN", "DOFIRST_ITEM_RE", "DOFIRST_HOOK_MAX",
+                   "DOFIRST_INDEX_TK_MAX", "LS_DELTA_RE", "_TIKTOKEN_HEAL_TRIED")
+
+# ---- ARM 2b: the DECLARED DIFFERENCES between the packed shim and its source -------------
+# ⚠ THIS IS NOT A DIFF-COUNT THRESHOLD. Each allowance below is a NAMED, EXACTLY QUOTED
+# rewrite of the SOURCE's code into the SHIM's code, and each declares HOW MANY TIMES it must
+# apply. A rule that stops matching FAILS LOUD (the allowance has rotted) instead of quietly
+# widening — a tolerance with a number on it is just a blind spot that has learnt to count.
+# Everything left over after the declared rewrites is DRIFT, and is named as such.
+# Every rule here is a difference the SHIM'S OWN DOCSTRING already declares in prose; this
+# table is that prose made machine-checkable.
+#
+# ⬛ DECLARED SCOPE — CODE, NOT PROSE. Bodies are normalised through `ast.unparse` with
+# docstrings stripped, so comments and docstrings are OUT of this comparison BY DESIGN: the
+# shim deliberately rewrites every ported docstring to drop Apollo-internal narration, and
+# says so per name ("Ported verbatim … with the source's X replaced by Y"). A prose-only edit
+# to a ported body is therefore NOT caught here. That is a DECLARED limit, not a silent one.
+_GM_GUARD_CHAIN = """    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:
+        return (None, None, f'_gm_usage unavailable ({e}) — chain UNMEASURED, not assumed clean')
+"""
+_GM_GUARD_INDEX = """    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import _gm_usage
+    except Exception as e:
+        return (None, f'_gm_usage unavailable ({e}) — presence index NOT built, not assumed empty')
+"""
+_REAL_TIER_SOURCE = """        try:
+            (n, how) = gauge.count(text)
+            if how == 'real':
+                _TIERS_SEEN.add('real')
+                return (n, 'real')
+        except Exception:
+            pass
+"""
+_REAL_TIER_SHIM = """        gauge = _real_gauge()
+        if gauge is not None:
+            try:
+                (n, how) = gauge.count(text)
+                if how == 'real':
+                    _TIERS_SEEN.add('real')
+                    return (n, 'real')
+            except Exception:
+                pass
+"""
+# {ported name: ((label, exact source text, exact shim text, times it must apply), ...)}
+DECLARED_SHIM_DIFFS = {
+    "chain_parts": (
+        ("the `_gm_usage` import guard is DROPPED — GM_VOCAB/LS_VOCAB are ported INTO the "
+         "shim instead (chain (b)), so there is no module to import",
+         _GM_GUARD_CHAIN, "", 1),
+        ("`_gm_usage.GM_VOCAB` reads the shim's own ported `GM_VOCAB`",
+         "_gm_usage.GM_VOCAB", "GM_VOCAB", 1),
+        ("`_gm_usage.LS_VOCAB` reads the shim's own ported `LS_VOCAB`",
+         "_gm_usage.LS_VOCAB", "LS_VOCAB", 1),
+    ),
+    "dofirst_index": (
+        ("the `_gm_usage` import guard is DROPPED — GM_VOCAB is ported INTO the shim instead "
+         "(chain (b)), so there is no module to import",
+         _GM_GUARD_INDEX, "", 1),
+        ("`_gm_usage.GM_VOCAB` reads the shim's own ported `GM_VOCAB`",
+         "_gm_usage.GM_VOCAB", "GM_VOCAB", 2),
+    ),
+    "measure_tokens": (
+        ("THE ONE DECLARED OPTIONAL IMPORT (the shim's `measure_tokens` docstring: \"the real "
+         "tier is reached through `_real_gauge()` (optional import) rather than a hard "
+         "module-level `import _gauge_tokens`, because that module is deliberately not "
+         "shipped here\")",
+         _REAL_TIER_SOURCE, _REAL_TIER_SHIM, 1),
+    ),
+}
+
+# ---- Provenance chain (b): knowledge/_gm_usage.py @ ace3ed3 ------------------------------
+PORT_COMMIT_B = "ace3ed3"
+SHIM_SOURCE_FILE_B = "knowledge/_gm_usage.py"
+PORTED_CONSTS_B = ("GM_VOCAB", "LS_VOCAB")
+
+DOCSTRING_COMMIT_RE_A = re.compile(r"Ported from `knowledge/_capture_gate\.py` @ HEAD `([0-9a-f]{7,40})`")
+DOCSTRING_COMMIT_RE_B = re.compile(r"`knowledge/_gm_usage\.py` @ HEAD `([0-9a-f]{7,40})`")
+
+
+# ------------------------------------------------------------------------------ helpers
+def _diff_line_count(a_text, b_text):
+    """Count of changed lines (added + removed, unified-diff style) between two texts."""
+    a_lines = a_text.splitlines(keepends=True)
+    b_lines = b_text.splitlines(keepends=True)
+    diff = list(difflib.unified_diff(a_lines, b_lines, n=0))
+    return sum(1 for ln in diff
+               if (ln.startswith("+") or ln.startswith("-"))
+               and not ln.startswith("+++") and not ln.startswith("---"))
+
+
+def _walk_files(dirpath):
+    """Relative file paths inside dirpath, recursive, excluding IGNORE_DIRS BY NAME."""
+    out = set()
+    for root, dirs, files in os.walk(dirpath):
+        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+        for f in files:
+            out.add(os.path.relpath(os.path.join(root, f), dirpath))
+    return out
+
+
+def _find_node(tree, name):
+    """The module-level FunctionDef/AsyncFunctionDef or Assign(-target) node named `name`."""
+    for n in tree.body:
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name:
+            return n
+        if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == name
+                                              for t in n.targets):
+            return n
+    return None
+
+
+def extract_named(source_text, names):
+    """{name: source_segment_text} for every name in `names` found at module level.
+    Missing names are simply absent from the returned dict — callers must check."""
+    tree = ast.parse(source_text)
+    out = {}
+    for name in names:
+        node = _find_node(tree, name)
+        if node is not None:
+            out[name] = ast.get_source_segment(source_text, node)
+    return out
+
+
+def _strip_docstrings(node):
+    """A deep copy of `node` with the docstring removed from it and from every def/class
+    nested inside it, so a comparison sees CODE only (comments never survive `ast.unparse`
+    in the first place). See DECLARED SCOPE above DECLARED_SHIM_DIFFS."""
+    n = copy.deepcopy(node)
+    for sub in ast.walk(n):
+        if isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and sub.body:
+            first = sub.body[0]
+            if (isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant)
+                    and isinstance(first.value.value, str)):
+                sub.body.pop(0)
+                if not sub.body:
+                    sub.body = [ast.Pass()]
+    return n
+
+
+def extract_named_code(source_text, names):
+    """{name: normalised CODE text} for every name found at module level — `ast.unparse` of
+    the node with docstrings stripped. Both sides of every comparison are normalised by the
+    SAME interpreter, so this is a like-for-like code comparison, insensitive to layout and
+    to the shim's deliberately rewritten prose. Missing names are absent from the dict."""
+    tree = ast.parse(source_text)
+    out = {}
+    for name in names:
+        node = _find_node(tree, name)
+        if node is not None:
+            out[name] = ast.unparse(_strip_docstrings(node))
+    return out
+
+
+def _first_divergence(expected, got):
+    """The first differing line pair, quoted — so a drift finding names the actual text."""
+    e_lines, g_lines = expected.splitlines(), got.splitlines()
+    for i in range(max(len(e_lines), len(g_lines))):
+        e = e_lines[i] if i < len(e_lines) else "<end of expected>"
+        g = g_lines[i] if i < len(g_lines) else "<end of shim>"
+        if e != g:
+            return f"line {i + 1}: expected {e.strip()!r}, shim has {g.strip()!r}"
+    return "<no line-level divergence — trailing whitespace only>"
+
+
+def _apply_declared_diffs(name, src_code):
+    """Rewrite the SOURCE's code into what the shim is DECLARED to hold. Returns
+    (rewritten_text, [rule_failures]). A rule that does not apply exactly its declared number
+    of times fails LOUD: an allowance the gate cannot perform must never widen into a silent
+    pass, which is the very defect this sub-check was built to end."""
+    problems = []
+    for label, frm, to, count in DECLARED_SHIM_DIFFS.get(name, ()):
+        seen = src_code.count(frm)
+        if seen != count:
+            problems.append(
+                f"SHIM BODIES: a DECLARED-DIFFERENCE rule no longer applies for {name!r} — "
+                f"{label} — its source text was expected {count}x, found {seen}x. The allowance "
+                f"is stale, so this gate refuses to compare on a rewrite it cannot perform "
+                f"(quoted source text: {frm.strip()[:100]!r}).")
+            continue
+        src_code = src_code.replace(frm, to)
+    return src_code, problems
+
+
+# ------------------------------------------------------- arm 2b: PACKED SHIM BODY FIDELITY
+def check_shim_bodies(repo, git_root):
+    """Open the PACKED SHIM — both copies — and compare each body it declares as ported to
+    that name's source AT THE PORT COMMIT, tolerating only the quoted DECLARED_SHIM_DIFFS.
+
+    ⚠ WHY THE PORT COMMIT AND NOT HEAD. This asks "does the pack carry what it says it
+    ported?"; `check_shim_provenance`'s chain check separately asks "has the source moved
+    since?". Two questions, two checks, composed — and this one stays stable while the source
+    legitimately evolves, so it never needs re-porting or a PORT_COMMIT_A bump to stay honest.
+
+    ⛔ BORN #223 (Dave's `s223-D4`). The arm above claimed in prose to prove the packed bodies
+    had not drifted, but BOTH halves of its comparison read `knowledge/_capture_gate.py` — it
+    never opened a packed copy at all. Measured at #222 and re-measured at #223: editing BOTH
+    packed copies identically left the gate GREEN (editing one fires arm 3, which is a
+    different question). A gate that cannot see the artefact it names is the
+    [[no-gate-parses-the-artefact]] class."""
+    fails = []
+    old_text, err = _git_show(git_root, PORT_COMMIT_A, SHIM_SOURCE_FILE_A)
+    if err:
+        return [f"SHIM BODIES: could not read {SHIM_SOURCE_FILE_A} @ {PORT_COMMIT_A} — {err}"]
+    names = PORTED_FUNCS_A + PORTED_CONSTS_A
+    src_code = extract_named_code(old_text, names)
+    for copy_label, copy_rel in (("machinery/", COPY_A), ("claude-plugin copy", COPY_B)):
+        shim_path = os.path.join(repo, copy_rel, SHIM_NAME)
+        if not os.path.isfile(shim_path):
+            fails.append(f"SHIM BODIES: {copy_rel}/{SHIM_NAME} does not exist — cannot open the "
+                         f"packed shim's ported bodies ({copy_label})")
+            continue
+        try:
+            shim_code = extract_named_code(open(shim_path, encoding="utf-8").read(), names)
+        except SyntaxError as e:
+            fails.append(f"SHIM BODIES: {copy_rel}/{SHIM_NAME} does not parse as Python ({e}) — "
+                         f"the packed bodies cannot be read, so this arm REFUSES rather than "
+                         f"passing blind")
+            continue
+        for n in names:
+            s = src_code.get(n)
+            if s is None:
+                fails.append(f"SHIM BODIES: {n!r} is not in {SHIM_SOURCE_FILE_A} @ "
+                             f"{PORT_COMMIT_A} — the packed body cannot be audited against the "
+                             f"source the shim names")
+                continue
+            expected, problems = _apply_declared_diffs(n, s)
+            if problems:
+                fails.extend(problems)
+                continue
+            got = shim_code.get(n)
+            if got is None:
+                fails.append(f"SHIM BODIES: {n!r} is DECLARED ported but is MISSING from "
+                             f"{copy_rel}/{SHIM_NAME} ({copy_label}) — the pack ships a shim "
+                             f"that does not carry what its own docstring claims")
+                continue
+            if got != expected:
+                allowed = [lbl for lbl, _f, _t, _c in DECLARED_SHIM_DIFFS.get(n, ())]
+                fails.append(
+                    f"SHIM BODIES: {n!r} in {copy_rel}/{SHIM_NAME} ({copy_label}) has DRIFTED "
+                    f"from {SHIM_SOURCE_FILE_A} @ {PORT_COMMIT_A} — {_diff_line_count(expected, got)} "
+                    f"line(s) differ BEYOND the declared allowance(s) "
+                    f"{allowed if allowed else '(none declared for this name)'}. "
+                    f"{_first_divergence(expected, got)}")
+    return fails
+
+
+def _git_show(git_root, commit, relpath):
+    """(text, None) or (None, error). Pure read of the object database — touches no
+    working-tree file and no index, so this is safe to point at the REAL repo even
+    during a mutation test (nothing in the real repo is written or mutated by this call)."""
+    r = subprocess.run(["git", "show", f"{commit}:{relpath}"], cwd=git_root,
+                        capture_output=True, text=True)
+    if r.returncode != 0:
+        err = (r.stderr or "").strip() or f"git show {commit}:{relpath} failed (exit {r.returncode})"
+        return None, err
+    return r.stdout, None
+
+
+# ------------------------------------------------------------------------- arm 1: VERBATIM SET
+def check_verbatim_set(repo):
+    fails = []
+    for fname in VERBATIM_SET:
+        src = os.path.join(repo, "knowledge", fname)
+        if not os.path.isfile(src):
+            fails.append(f"VERBATIM SET: source knowledge/{fname} does not exist — cannot audit")
+            continue
+        src_bytes = open(src, "rb").read()
+        for copy_label, copy_rel in (("machinery/", COPY_A), ("claude-plugin copy", COPY_B)):
+            dst = os.path.join(repo, copy_rel, fname)
+            if not os.path.isfile(dst):
+                fails.append(f"VERBATIM SET: {fname} is MISSING from {copy_label} "
+                             f"({copy_rel}/{fname})")
+                continue
+            dst_bytes = open(dst, "rb").read()
+            if dst_bytes != src_bytes:
+                dl = _diff_line_count(src_bytes.decode("utf-8", "replace"),
+                                       dst_bytes.decode("utf-8", "replace"))
+                fails.append(
+                    f"VERBATIM SET: {copy_rel}/{fname} DIFFERS from knowledge/{fname} "
+                    f"(copy={copy_label} file={fname}) — {dl} line(s) differ "
+                    f"(sha256 {hashlib.sha256(dst_bytes).hexdigest()[:12]} vs source "
+                    f"{hashlib.sha256(src_bytes).hexdigest()[:12]})")
+    return fails
+
+
+# --------------------------------------------------------------------- arm 3: CROSS-COPY
+def check_cross_copy_identity(repo):
+    fails = []
+    dir_a = os.path.join(repo, COPY_A)
+    dir_b = os.path.join(repo, COPY_B)
+    files_a = _walk_files(dir_a) if os.path.isdir(dir_a) else set()
+    files_b = _walk_files(dir_b) if os.path.isdir(dir_b) else set()
+    for f in sorted(files_a - files_b):
+        fails.append(f"CROSS-COPY: {f} exists in {COPY_A}/ but is MISSING from {COPY_B}/")
+    for f in sorted(files_b - files_a):
+        fails.append(f"CROSS-COPY: {f} exists in {COPY_B}/ but is MISSING from {COPY_A}/")
+    for f in sorted(files_a & files_b):
+        ba = open(os.path.join(dir_a, f), "rb").read()
+        bb = open(os.path.join(dir_b, f), "rb").read()
+        if ba != bb:
+            dl = _diff_line_count(ba.decode("utf-8", "replace"), bb.decode("utf-8", "replace"))
+            fails.append(f"CROSS-COPY: {f} DIFFERS between {COPY_A}/ and {COPY_B}/ — "
+                         f"{dl} line(s) differ")
+    # Completeness: a file missing from BOTH copies passes the pairwise check above (same
+    # on both sides) but is still a delta-audit gap — catch it here.
+    if files_a == files_b:
+        missing_known = KNOWN_FILES - files_a
+        if missing_known:
+            fails.append(f"CROSS-COPY: both copies are missing known file(s): "
+                         f"{sorted(missing_known)}")
+    return fails
+
+
+# -------------------------------------------------------------------- arm 4: UNKNOWN FILES
+def check_unknown_files(repo):
+    fails = []
+    for label, rel in (("machinery/", COPY_A), ("claude-plugin copy", COPY_B)):
+        d = os.path.join(repo, rel)
+        if not os.path.isdir(d):
+            continue
+        for f in sorted(_walk_files(d)):
+            if f not in KNOWN_FILES:
+                fails.append(f"UNKNOWN FILE: {rel}/{f} ({label}) is not on the known-files "
+                             f"list {sorted(KNOWN_FILES)} — fail loud rather than silently "
+                             f"ignored (scope-blindness rule)")
+    return fails
+
+
+# ------------------------------------------------------------------- arm 2: SHIM PROVENANCE
+def check_shim_provenance(repo, git_root):
+    fails = []
+    shim_path = os.path.join(repo, COPY_A, SHIM_NAME)
+    if not os.path.isfile(shim_path):
+        fails.append(f"SHIM PROVENANCE: {COPY_A}/{SHIM_NAME} does not exist — cannot read "
+                     f"its docstring")
+        return fails
+    shim_text = open(shim_path, encoding="utf-8").read()
+
+    m_a = DOCSTRING_COMMIT_RE_A.search(shim_text)
+    if not m_a:
+        fails.append(
+            f"SHIM PROVENANCE: could not find the '{SHIM_SOURCE_FILE_A} @ HEAD `<hash>`' "
+            f"provenance line in {COPY_A}/{SHIM_NAME}'s docstring — the docstring format "
+            f"changed; this gate reads that line and cannot check silently blind.")
+    elif m_a.group(1) != PORT_COMMIT_A:
+        fails.append(
+            f"SHIM PROVENANCE: {COPY_A}/{SHIM_NAME}'s docstring now claims it was ported "
+            f"from {SHIM_SOURCE_FILE_A} @ {m_a.group(1)}, but this gate is built against "
+            f"{PORT_COMMIT_A} — the shim was re-ported and the gate was not updated to match.")
+
+    m_b = DOCSTRING_COMMIT_RE_B.search(shim_text)
+    if not m_b:
+        fails.append(
+            f"SHIM PROVENANCE: could not find the '{SHIM_SOURCE_FILE_B} @ HEAD `<hash>`' "
+            f"dependency line in {COPY_A}/{SHIM_NAME}'s docstring — the docstring format "
+            f"changed; this gate reads that line to know which commit to audit "
+            f"GM_VOCAB/LS_VOCAB against.")
+    elif m_b.group(1) != PORT_COMMIT_B:
+        fails.append(
+            f"SHIM PROVENANCE: {COPY_A}/{SHIM_NAME}'s docstring now claims GM_VOCAB/LS_VOCAB "
+            f"were ported from {SHIM_SOURCE_FILE_B} @ {m_b.group(1)}, but this gate is built "
+            f"against {PORT_COMMIT_B} — update PORT_COMMIT_B.")
+
+    def _chain(cur_relpath, source_file, commit, names, chain_label):
+        cur_path = os.path.join(repo, cur_relpath)
+        if not os.path.isfile(cur_path):
+            fails.append(f"SHIM PROVENANCE {chain_label}: {cur_relpath} does not exist — "
+                         f"cannot audit")
+            return
+        cur_text = open(cur_path, encoding="utf-8").read()
+        old_text, err = _git_show(git_root, commit, source_file)
+        if err:
+            fails.append(f"SHIM PROVENANCE {chain_label}: could not read {source_file} @ "
+                         f"{commit} — {err}")
+            return
+        cur_seg = extract_named(cur_text, names)
+        old_seg = extract_named(old_text, names)
+        for n in names:
+            o = old_seg.get(n)
+            if o is None:
+                fails.append(f"SHIM PROVENANCE {chain_label}: {n!r} not found in "
+                             f"{source_file} @ {commit} itself — the shim's own claim "
+                             f"cannot be verified against its declared source")
+                continue
+            c = cur_seg.get(n)
+            if c is None:
+                fails.append(f"SHIM PROVENANCE {chain_label}: {n!r} is GONE from current "
+                             f"{cur_relpath} (present at the port commit {commit}) — the "
+                             f"shim's ported source no longer exists to compare against")
+                continue
+            if c != o:
+                dl = _diff_line_count(o, c)
+                fails.append(f"SHIM PROVENANCE {chain_label}: {n!r} in {cur_relpath} has "
+                             f"CHANGED since the port commit {commit} — {dl} line(s) differ. "
+                             f"{COPY_A}/{SHIM_NAME} may now be stale against its declared "
+                             f"source; re-review and re-port, or update the docstring.")
+
+    _chain("knowledge/_capture_gate.py", SHIM_SOURCE_FILE_A, PORT_COMMIT_A,
+           PORTED_FUNCS_A + PORTED_CONSTS_A, "chain(a)")
+    _chain("knowledge/_gm_usage.py", SHIM_SOURCE_FILE_B, PORT_COMMIT_B,
+           PORTED_CONSTS_B, "chain(b)")
+    # ARM 2b (#223, s223-D4) — the half that actually OPENS the packed copies. Everything
+    # above this line compares the SOURCE to itself at two points in time; without this call
+    # the arm's docstring claim about the packed bodies was unbacked.
+    fails += check_shim_bodies(repo, git_root)
+    return fails
+
+
+# --------------------------------------------------------------------------------- run
+def run(repo=None, git_root=None):
+    repo = ROOT if repo is None else repo
+    git_root = ROOT if git_root is None else git_root
+    fails = []
+    fails += check_verbatim_set(repo)
+    fails += check_cross_copy_identity(repo)
+    fails += check_unknown_files(repo)
+    fails += check_shim_provenance(repo, git_root)
+    return fails
+
+
+def main():
+    try:  # #269 PARKED-WITH-A-TRIPWIRE hook: advisory print, never touches the verdict
+        import _parked; _parked.notice("memento-cut")
+    except BaseException:
+        pass
+    fails = run()
+    print(f"memento-package delta-audit: {len(fails)} failure(s)")
+    for f in fails:
+        print(f"  ✗ {f}")
+    if not fails:
+        print("  ✅ VERBATIM SET byte-identical (both copies) · shim provenance clean "
+              "(both chains) · copies identical to each other · no unknown files")
+        return 0
+    print(f"\n❌ memento-package delta-audit FAILED — {len(fails)} finding(s) above. "
+          f"See memento-package/_PACKAGE-SPEC.md:13-14 (Dave's #64 boundary ruling: "
+          f"copies only, every copy delta-audited).")
+    return 1
+
+
+# --------------------------------------------------------------------------- selftest
+def _make_fixture():
+    """A /tmp copy of exactly the files this gate reads: the 5 knowledge/ sources and the
+    whole memento-package/ subtree (__pycache__ excluded at copy time). Mutations in the
+    selftest below land ONLY inside this directory — the real repo's files are never
+    opened for writing anywhere in this module. `git_root` for provenance lookups stays
+    pointed at the REAL repo (ROOT) even when `repo` points here, because `git show` reads
+    the object database only — it touches no working-tree file and no index, so pointing
+    it at ROOT during a mutation test does not run any mutation against the real repo."""
+    d = tempfile.mkdtemp(prefix="pkgdelta_fixture_")
+    os.makedirs(os.path.join(d, "knowledge"))
+    for f in ("_gen_chain.py", "_memento_search.py", "_search_core.py", "_capture_gate.py",
+              "_gm_usage.py"):
+        shutil.copy(os.path.join(ROOT, "knowledge", f), os.path.join(d, "knowledge", f))
+    shutil.copytree(os.path.join(ROOT, "memento-package"),
+                     os.path.join(d, "memento-package"),
+                     ignore=shutil.ignore_patterns("__pycache__"))
+    return d
+
+
+def _mutate_insert_marker(path, name):
+    """Insert a comment-only line inside `name`'s (function or Assign) span in the file at
+    `path` — always syntactically valid Python, changes the AST source-segment hash without
+    needing to know the function's current body text."""
+    text = open(path, encoding="utf-8").read()
+    tree = ast.parse(text)
+    node = _find_node(tree, name)
+    assert node is not None, f"fixture setup: {name!r} not found in {path}"
+    lines = text.splitlines(keepends=True)
+    lines.insert(node.lineno, "    # MUTATION-TEST MARKER — do not ship\n")
+    open(path, "w", encoding="utf-8").write("".join(lines))
+
+
+def _mutate_delete_node(path, name):
+    """Delete `name`'s (function or Assign) lines entirely from the file at `path`."""
+    text = open(path, encoding="utf-8").read()
+    tree = ast.parse(text)
+    node = _find_node(tree, name)
+    assert node is not None, f"fixture setup: {name!r} not found in {path}"
+    lines = text.splitlines(keepends=True)
+    del lines[node.lineno - 1: node.end_lineno]
+    open(path, "w", encoding="utf-8").write("".join(lines))
+
+
+def selftest():
+    fails = []
+
+    def bite(what, ok):
+        print(f"    {'✓' if ok else '✗'} {what}")
+        if not ok:
+            fails.append(what)
+
+    # ---- (0) POSITIVE — the real, now-repaired repo passes clean, all four arms.
+    real_fails = run()
+    bite(f"real repo: clean (0 findings; got {len(real_fails)}: {real_fails[:2]})",
+         real_fails == [])
+
+    # ---- ARM 1 — VERBATIM SET -----------------------------------------------------
+    d = _make_fixture()
+    try:
+        target = os.path.join(d, COPY_A, "_gen_chain.py")
+        with open(target, "a", encoding="utf-8") as f:
+            f.write("\n# mutation: one extra line\n")
+        found = check_verbatim_set(d)
+        bite("ARM1 mutation: doctored machinery/_gen_chain.py is caught, names the file "
+             "+ copy + a line count",
+             any("_gen_chain.py" in x and "machinery/" in x and "line(s) differ" in x
+                 for x in found))
+        if found:
+            print(f"      quoted: {found[0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    d = _make_fixture()
+    try:
+        os.remove(os.path.join(d, COPY_B, "_search_core.py"))
+        found = check_verbatim_set(d)
+        bite("ARM1 mutation: a MISSING verbatim file (not just a diff) is caught and named",
+             any("_search_core.py" in x and "MISSING" in x for x in found))
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # ---- ARM 3 — CROSS-COPY IDENTITY ------------------------------------------------
+    d = _make_fixture()
+    try:
+        target = os.path.join(d, COPY_B, "_MACHINERY-MANIFEST.md")
+        with open(target, "a", encoding="utf-8") as f:
+            f.write("\nmutation: copy B only\n")
+        found = check_cross_copy_identity(d)
+        bite("ARM3 mutation: copies diverge on a non-verbatim-set file (the manifest) — "
+             "caught, names the file and 'DIFFERS between'",
+             any("_MACHINERY-MANIFEST.md" in x and "DIFFERS between" in x for x in found))
+        if found:
+            print(f"      quoted: {found[0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    d = _make_fixture()
+    try:
+        os.remove(os.path.join(d, COPY_A, "_consult-lexicon.json"))
+        os.remove(os.path.join(d, COPY_B, "_consult-lexicon.json"))
+        found = check_cross_copy_identity(d)
+        bite("ARM3 mutation: a known file missing from BOTH copies (pairwise-invisible) "
+             "is still caught by the completeness sub-check",
+             any("both copies are missing known file" in x and "_consult-lexicon.json" in x
+                 for x in found))
+        if found:
+            print(f"      quoted: {found[0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # ---- ARM 4 — UNKNOWN FILES -------------------------------------------------------
+    d = _make_fixture()
+    try:
+        rogue = os.path.join(d, COPY_A, "_ROGUE.py")
+        open(rogue, "w", encoding="utf-8").write("# should never be here\n")
+        pycache = os.path.join(d, COPY_A, "__pycache__")
+        os.makedirs(pycache, exist_ok=True)
+        open(os.path.join(pycache, "junk.pyc"), "wb").write(b"\x00\x01")
+        found = check_unknown_files(d)
+        bite("ARM4 mutation: a rogue file is caught, named with its exact path",
+             any("_ROGUE.py" in x and "UNKNOWN FILE" in x for x in found))
+        bite("ARM4 control: __pycache__ present in the SAME fixture is excluded BY NAME "
+             "and never itself reported (proves the exclusion is narrow, not a silent "
+             "blanket ignore)",
+             not any("__pycache__" in x or "pycache" in x for x in found)
+             and len(found) == 1)
+        if found:
+            print(f"      quoted: {found[0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # ---- ARM 2 — SHIM PROVENANCE ------------------------------------------------------
+    # (a) a ported FUNCTION's body changes in knowledge/_capture_gate.py since the port.
+    d = _make_fixture()
+    try:
+        _mutate_insert_marker(os.path.join(d, "knowledge", "_capture_gate.py"),
+                              "measure_tokens")
+        found = check_shim_provenance(d, ROOT)
+        bite("ARM2(a) mutation: measure_tokens body changed since port commit 91d7528 — "
+             "caught, names the function and 'CHANGED since the port'",
+             any("measure_tokens" in x and "CHANGED since the port" in x for x in found))
+        if found:
+            print(f"      quoted: {[x for x in found if 'measure_tokens' in x][0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (b) a ported function is deleted outright from knowledge/_capture_gate.py.
+    d = _make_fixture()
+    try:
+        _mutate_delete_node(os.path.join(d, "knowledge", "_capture_gate.py"),
+                            "measurement_degraded")
+        found = check_shim_provenance(d, ROOT)
+        bite("ARM2(b) mutation: measurement_degraded deleted from current source — "
+             "caught, names the function and 'GONE from current'",
+             any("measurement_degraded" in x and "GONE from current" in x for x in found))
+        if found:
+            print(f"      quoted: {[x for x in found if 'measurement_degraded' in x][0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (c) a ported CONSTANT changes in knowledge/_gm_usage.py (chain b) since the port.
+    d = _make_fixture()
+    try:
+        _mutate_insert_marker(os.path.join(d, "knowledge", "_gm_usage.py"), "GM_VOCAB")
+        found = check_shim_provenance(d, ROOT)
+        bite("ARM2(c) mutation: GM_VOCAB changed since port commit ace3ed3 — caught, "
+             "names GM_VOCAB and 'CHANGED since the port'",
+             any("GM_VOCAB" in x and "CHANGED since the port" in x for x in found))
+        if found:
+            print(f"      quoted: {[x for x in found if 'GM_VOCAB' in x][0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (d) the shim's OWN docstring claims a different source commit than the gate expects.
+    d = _make_fixture()
+    try:
+        shim_path = os.path.join(d, COPY_A, SHIM_NAME)
+        text = open(shim_path, encoding="utf-8").read()
+        # ⚠ #114: parametrised on PORT_COMMIT_A, never a hard-coded hash. The old literal
+        # ("91d7528") rotted the moment the shim was legitimately re-ported, and it mutated
+        # every OTHER mention of that hash in the docstring too — so the bite silently stopped
+        # exercising the DECLARED-provenance line it exists to test.
+        m = DOCSTRING_COMMIT_RE_A.search(text)
+        assert m and m.group(1) == PORT_COMMIT_A
+        text = text[:m.start(1)] + "deadbee" + text[m.end(1):]
+        open(shim_path, "w", encoding="utf-8").write(text)
+        found = check_shim_provenance(d, ROOT)
+        bite("ARM2(d) mutation: shim docstring's claimed commit no longer matches the "
+             "gate's expectation — caught, names both hashes",
+             any("deadbee" in x and PORT_COMMIT_A in x for x in found))
+        if found:
+            print(f"      quoted: {[x for x in found if 'deadbee' in x][0]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # ---- ARM 2b — PACKED SHIM BODY FIDELITY (#223, s223-D4) ---------------------------
+    # ⛔ THE BITE THAT DID NOT EXIST. Every bite above mutates a SOURCE; none had ever mutated
+    # a PACKED copy, which is why the arm could claim the packed bodies in prose and never
+    # open one. (e) is the exact mutation measured GREEN before the repair.
+    d = _make_fixture()
+    try:
+        marker = "    _DRIFT_MARKER = 999\n"
+        anchor = "    if not os.environ.get(_REAL_TIER_ENV):"
+        for rel in (COPY_A, COPY_B):                      # BOTH copies, identically
+            p = os.path.join(d, rel, SHIM_NAME)
+            t = open(p, encoding="utf-8").read()
+            assert t.count(anchor) == 1, "fixture setup: measure_tokens anchor not found"
+            open(p, "w", encoding="utf-8").write(t.replace(anchor, marker + anchor))
+        found = check_shim_bodies(d, ROOT)
+        bite("ARM2(e) mutation: BOTH packed shim copies edited IDENTICALLY (invisible to the "
+             "cross-copy arm) — caught, names the drifted body and both copies",
+             sum(1 for x in found if "measure_tokens" in x and "DRIFTED" in x) == 2
+             and any(COPY_B in x for x in found))
+        bite("ARM2(e) control: the same fixture's CROSS-COPY arm stays silent, proving arm 2b "
+             "is what saw it (the copies really are still identical to each other)",
+             not check_cross_copy_identity(d))
+        if found:
+            print(f"      quoted: {found[0][:180]}")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (f) NARROWNESS — an edit INSIDE the tolerated region is not tolerated. Proves the
+    #     allowance is an exactly-quoted rewrite, not a fuzzy "anything near the gauge" pass.
+    d = _make_fixture()
+    try:
+        p = os.path.join(d, COPY_A, SHIM_NAME)
+        t = open(p, encoding="utf-8").read()
+        old = "        gauge = _real_gauge()\n"
+        assert t.count(old) == 1, "fixture setup: the declared optional-import line moved"
+        open(p, "w", encoding="utf-8").write(t.replace(old, "        gauge = _real_gauge_X()\n"))
+        found = check_shim_bodies(d, ROOT)
+        bite("ARM2(f) mutation: an edit INSIDE the one declared-difference region still FAILS "
+             "— the allowance tolerates its exact quoted text and nothing adjacent to it",
+             any("measure_tokens" in x and "DRIFTED" in x for x in found))
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+    # (g) A ROTTED ALLOWANCE FAILS LOUD. If a declared rule's source text ever stops existing
+    #     (a re-port, a formatting change, a different `ast.unparse`), the gate must refuse —
+    #     never silently compare on a rewrite it could not perform.
+    saved = dict(DECLARED_SHIM_DIFFS)
+    try:
+        DECLARED_SHIM_DIFFS["read_chain_tk"] = (
+            ("selftest: a rule whose source text does not exist", "NO_SUCH_TEXT_XYZ", "", 1),)
+        found = check_shim_bodies(ROOT, ROOT)
+        bite("ARM2(g) mutation: a DECLARED-DIFFERENCE rule that no longer matches fails LOUD "
+             "and named, rather than widening into a silent pass",
+             any("no longer applies" in x and "read_chain_tk" in x for x in found))
+        if found:
+            print(f"      quoted: {found[0][:180]}")
+    finally:
+        DECLARED_SHIM_DIFFS.clear()
+        DECLARED_SHIM_DIFFS.update(saved)
+
+    bite("ARM2(h) control: with the real table restored, the real pack is GREEN — the three "
+         "declared allowances are load-bearing, and a correct pack is not red",
+         check_shim_bodies(ROOT, ROOT) == [])
+
+    if fails:
+        print(f"  ✗ _validate_package_delta selftest: {len(fails)} bite(s) failed")
+        return 1
+    print("  ✅ _validate_package_delta selftest: all bites pass")
+    return 0
+
+
+if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
+    sys.exit(main())

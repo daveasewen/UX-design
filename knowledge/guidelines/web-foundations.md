@@ -199,6 +199,20 @@ tokens, breakpoint/scale modes); the value here is (a) receipts for what we alre
    12 columns ✓; S5–S7 = font-5..7 ✓ (all nine numbers). The store and the standard are
    the same system where they overlap. [structure note] {#webf-035}
 
+## Apollo rules (s305-D24, 2026-09-27)
+
+- **A part keeps its own size on any page. The page arranges parts; it never shrinks them.**
+  Every part is drawn at its own reference size: a composed page places a component, it
+  does not resize it, so a button, a column header or a table cell renders at the height,
+  minimum width and type size its reference snippet renders. The wording is the #304
+  when-rules page's proposed sentence (question 5); Dave answered the sitting's call 23
+  "yes" on Sunday 2026-09-27. Its first consequence at the root, whether canon's default
+  label trim reaches the twelve components that carry none of their own, is NOT taken by
+  this rule: that is call 41c, keep today's through the cut (`s305-D43`).
+  (s305-D24, Dave 2026-09-27) [ADVISORY — own-size check, `knowledge/_validate_own_size.py`
+  (S1 height, S2 width, S3 type against the reference render); advisory through the v1.0.14
+  cut by `s305-D4`] {#webf-036}
+
 ## Cross-references
 
 `_DARK-MODE-AUDIT.md` + `_validate_dark_surfaces.py` (webf-001/005 enforced) ·

@@ -161,6 +161,15 @@ _REAL_TIER_SHIM = """        gauge = _real_gauge()
             except Exception:
                 pass
 """
+# ⛔ #305 F1 — THE QUOTED TEXT IS `ast.unparse` OUTPUT, AND THAT OUTPUT MOVES WITH THE
+# INTERPRETER. Python 3.10 unparses a tuple assignment target WITH parentheses
+# (`(n, how) = …`); 3.11+ drops them (`n, how = …`). The two quotes above were typed at the
+# 3.10 seat, so CI (3.12) found the source text 0x and [133]/[134] stayed red there while the
+# seat read green (CI 36341948728). That one line is re-rendered by THIS interpreter's own
+# unparser; every rule still applies exactly its declared count, and real drift still fails.
+_TUPLE_UNPACK = ast.unparse(ast.parse("(n, how) = gauge.count(text)"))
+_REAL_TIER_SOURCE = _REAL_TIER_SOURCE.replace("(n, how) = gauge.count(text)", _TUPLE_UNPACK)
+_REAL_TIER_SHIM = _REAL_TIER_SHIM.replace("(n, how) = gauge.count(text)", _TUPLE_UNPACK)
 # {ported name: ((label, exact source text, exact shim text, times it must apply), ...)}
 DECLARED_SHIM_DIFFS = {
     "chain_parts": (
