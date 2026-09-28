@@ -412,8 +412,15 @@ BOOT_BAND_SIGMA = 2.0          # red beyond this many spreads — derived above,
 # without Dave's word. His comment on the call, verbatim, opens thread W-305n3: *"I really find
 # this frustrating, we need to make this more efficient somehow, and I want to return to impoving
 # the wrap too at some point"*.
-BOOT_CEILING_TK = 130_000      # `s305-D29`, until the Mac seat, then measured there and shrunk.
-                               # (was 72_768 — `s295-D3`, #295 turn 1; before it 70_000 — `s241-D1`.)
+# ⬛ `s305-D64` (Dave, Mon 2026-09-28 12:21 BST, chat #305 — "yes both", to "yes to both, the boot
+# ceiling at 135,000 and the wrap redesign as #306's second job, after your 102 ticks?"): THE BOOT
+# CEILING IS 135,000. It SUPERSEDES `s305-D29`, which is not edited (its text above is kept). The
+# reason: the cloud seat boots at about 131,000 (#304 131,130 · #305 131,040), mostly tools and the
+# system prompt, which he cannot control — his 11:41 line: *"it doesnt seem like there is much we can
+# do about the boot, its just tinkering around the edges"*. The ceiling stays a TRIPWIRE FOR A REAL
+# JUMP, not a target. ⛔ SHRINK-ONLY RESUMES FROM 135,000: the next move is DOWN, on a measurement.
+BOOT_CEILING_TK = 135_000      # `s305-D64` (was 130_000 — `s305-D29`, until the Mac seat).
+                               # (before it 72_768 — `s295-D3`, #295 turn 1; 70_000 — `s241-D1`.)
 
 
 def derived_boot_band(samples: list | None = None,
@@ -940,19 +947,21 @@ def selftest() -> int:
             # ★★ #305 — MOVED A SECOND TIME, BY DAVE'S WORD (`s305-D29`), AND IT STILL BITES: the pin
             # is the NEW literal 130,000, so a seat that moves the ceiling again without his word
             # trips it exactly as before; the direction check below now guards 130,000.
-            for name, want in (("BOOT_CEILING_TK", 130_000), ("STOP_LINE_TK", STOP_LINE_TK),
+            # ★★ #305 post-wrap — MOVED A THIRD TIME, BY DAVE'S WORD (`s305-D64`, "yes both"): the pin is
+            # the NEW literal 135,000, and the direction check guards 135,000. Re-pinned, not weakened.
+            for name, want in (("BOOT_CEILING_TK", 135_000), ("STOP_LINE_TK", STOP_LINE_TK),
                                ("BUDGET_HARD", BUDGET_HARD)):
                 got = globals().get(name)
                 if name == "BOOT_CEILING_TK" and got != want:
-                    failures.append(f"[E s294-D7/s305-D29] {name} = {got:,}, not {want:,} — "
-                                    f"`s294-D7` moves NO constant; `s295-D3` moved it to 72,768 "
-                                    f"and `s305-D29` to 130,000, each on Dave's word, and it "
-                                    f"stays DAVE'S from there (shrink-only again from the Mac-seat "
-                                    f"reading).")
-                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 130_000:
-                    failures.append(f"[E s305-D29] {name} = {got:,} is ABOVE the 130,000 "
-                                    f"`s305-D29` set until the Mac seat — the next move is DOWN, "
-                                    f"on the Mac-seat measurement. A breach is REPORTED, not "
+                    failures.append(f"[E s294-D7/s305-D64] {name} = {got:,}, not {want:,} — "
+                                    f"`s294-D7` moves NO constant; `s295-D3` moved it to 72,768, "
+                                    f"`s305-D29` to 130,000 and `s305-D64` to 135,000, each on Dave's word, and it "
+                                    f"stays DAVE'S from there (shrink-only again from 135,000, "
+                                    f"downward on a measurement).")
+                if name == "BOOT_CEILING_TK" and isinstance(got, int) and got > 135_000:
+                    failures.append(f"[E s305-D64] {name} = {got:,} is ABOVE the 135,000 "
+                                    f"`s305-D64` set — the next move is DOWN, "
+                                    f"on a measurement. A breach is REPORTED, not "
                                     f"absorbed by raising this line.")
             if "BOOT_FIRSTTURN_TK" in globals():
                 failures.append("[E s294-D7] BOOT_FIRSTTURN_TK is back — it was DELETED at "

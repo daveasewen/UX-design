@@ -4992,7 +4992,7 @@ def boot_constant_drift_check(repo):
     notes.append(
         "boot-drift: DERIVED band %s ±%s (`s240-D1`, n=%d sessions #%d–#%d: %s) · newest "
         "#%d %s · delta %+d · red beyond ±%s (%g× the spread) · ceiling %s "
-        "(`s305-D29` until the Mac seat; `s241-D1` shrink-only resumes from that reading)"
+        "(`s305-D64`, 2026-09-28, superseding `s305-D29`'s 130,000; `s241-D1` shrink-only resumes from it)"
         % (f"{mean:,.0f}", f"{spread:,.0f}", len(reads), sessions[0], sessions[-1],
            " · ".join(f"{s:,}" for s in reads), newest_sess, f"{newest:,}", delta,
            f"{red_line:,.0f}", sigma, f"{ceiling:,}"))

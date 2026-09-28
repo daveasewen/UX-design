@@ -96,3 +96,44 @@ His third line states a view, not a decision, so it was not inscribed. **The row
 Commit 1 (`5058d963`): `knowledge/_rulings.json` · `knowledge/_state.json` · `knowledge/_gauge_tokens.py` · `knowledge/_capture_gate.py` · `knowledge/_checkin.py` · `knowledge/_seam.py` · `knowledge/_RUNBOOK-context-gauge.md` · `knowledge/_RUNBOOK-capture-ritual.md` · `_CHAIN.md` · `dashboard/index.html` · `knowledge/_memento-index.json` · `knowledge/_node_titles.json` · `notes/_RULINGS.html` · `reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html` · this report (interim) · `notes/_lanes/305/W/SUMMARY-BULLETS.md` · W's seven tail files · `notes/_lanes/305/L/**` (no `backup/`) · auto-staged `notes/_REHEARSAL-LOG.jsonl`.
 
 Commit 2: `knowledge/_rulings.json` (the two stamps) · the serial outputs that moved · `notes/_KG-EXPLORER.html` · `knowledge/_node_titles.json` / `dashboard/index.html` if moved · this report · `notes/_lanes/305/L/**` tail.
+
+## Addendum, by addition (after the push; this addendum itself is NOT committed — it is the next commit seat's tail, with `_push-L-plain.log`, `_gitcommit-L2.{log,term}`, `_msg-L2.txt.t3-rendered`, `_ci-runs-db708760.txt`, `_ci-gates-L.log`, `_ci-gates-L-summary.txt`, `step6-parse.txt`)
+
+- **The stamp commit is `db708760e8e782ab33cdaed8018d508c1a757f63`**: 18 files (17 named + the auto-staged `notes/_REHEARSAL-LOG.jsonl`), +2,974 / −27; declared not-a-wrap, exit 0 in 81 s, `✓ done — locks clear`; the wrap gate read the same one fail (`243 in scope · 1 fail · 324 warn`, the boot ceiling). Transcripts `_gitcommit-L2.{log,term}`.
+- **The push: `eb2630bb..db708760`** (both commits), plain `git push origin master`, rc 0, through the credential helper. Branch `master` checked; the live remote read `eb2630bb` by `ls-remote`, an ancestor of HEAD, so a fast-forward. **`git ls-remote origin refs/heads/master` = `db708760e8e782ab33cdaed8018d508c1a757f63` = local HEAD.** `_push-L-plain.log` (URL without credentials). No lock stranded by either commit or the push.
+- **CI, read to completion, verdict taken after `render` closed:** run **`36413311980`** on `db708760` (the head; `5058d963` rode the same push and has no run of its own) — `release` ✅ 11:03:57Z · `gates` ✅ 11:12:54Z · `render` ✅ 11:17:27Z. **ALL GREEN.**
+  - Step 5: `SURVEY: 69 pass · 0 FAIL · 6 COULD-NOT-ASK · 0 unaskable · 79 not asked (mutating)`.
+  - Step 6: 0 gate red; advisory `[140] [141] [150]`; could-not-ask `[10] [13] [61] [68] [73] [74] [142] [147] [148] [153] [154]` — **identical by name to W's runs `36404496114` and `36406448995`.**
+  - The evidence step red-and-continued at `6 lint · 0 unparsed · 4 rc/observation mismatch` (W1-5, WIRE-14, WIRE-20, WIRE-21) — identical to W's 5b run `36406448995`. ⛔ Nothing was repaired.
+- **`W-305l` stays open:** its close condition is this final copy committed; this addendum is the next commit seat's tail.
+
+---
+
+# ROUND TWO — the boot ceiling (s305-D64) and the wrap redesign scheduled (by addition; nothing above is rewritten)
+
+status: observed (this section rides the round-two commits; its push and CI read-back are added below it by addition after the push)
+
+## His words (verbatim; appended by addition to `notes/_lanes/305/L/DAVE-WORDS-2026-09-28-1141.md` § The wrap and § Yes both)
+
+The conductor, 12:21 BST: *"yes to both, the boot ceiling at 135,000 and the wrap redesign as #306's second job, after your 102 ticks?"* — Dave: *"yes both"*. His 11:41 line on the wrap: *"can we parallelise the wrap at all to make it quicker, don't we have a plan to make the wrap better too, we had duplicate- -writes all over the place."*
+
+## 1 · `s305-D64` — the boot ceiling is 135,000
+
+Inscribed through `_inscribe_ruling.py` (dry run clean, then write; 701 → 702), quoting the question and his answer verbatim. `ruled` names `s305-D29` as superseded (not edited) and gives the conductor's reason: the cloud seat boots at about 131,000, mostly tools and the system prompt, which he cannot control; his 11:41 boot line quoted; the ceiling stays a tripwire for a real jump; shrink-only resumes from 135,000.
+
+**Constant moved:** `BOOT_CEILING_TK` **130,000 → 135,000** (`knowledge/_gauge_tokens.py`; the D29 comment above it kept). **Every home:** arm E of `_gauge_tokens.py --selftest` (the equality pin 130,000 → 135,000 and the direction check "ABOVE 135,000", both citing D64); `_capture_gate.py` reads the constant at check time, so only its boot-drift note's citation moved (`s305-D29 until the Mac seat` → `s305-D64`); a ⬛ `s305-D64` line added under the band table of `knowledge/_RUNBOOK-context-gauge.md`. No other literal 130,000 pins the ceiling (searched `knowledge/**/*.py|md|sh`).
+
+**The pin driven to a named refusal** (a copy of the module in `/dev/shm`, the constant sed-edited, run with `PYTHONPATH=knowledge`; `pin-d64-driven.log`): at 130,000 → `[E s294-D7/s305-D64] BOOT_CEILING_TK = 130,000, not 135,000 …`, 1 named failure; at 140,000 → the same plus `[E s305-D64] BOOT_CEILING_TK = 140,000 is ABOVE the 135,000 s305-D64 set …`, 2 named failures; the live file green.
+
+**The wrap gate's boot-ceiling arm** (`boot_constant_drift_check`, in-process against the live `notes/_GAUGE-LOG.md`; `boot-arm-D64.log`): **0 fails** at 135,000 — derived band 127,826 ±1,742 over #298–#304, newest #304 **131,130**, under the ceiling. Control at 130,000: 1 fail, `CEILING BREACH … #304 131,130`. #305's **131,040** is not in the gauge log yet (it joins at the next 2f roll); it is 3,960 under 135,000. The gate's reading inside the committer is in the commit section below.
+
+**Selftests:** `_gauge_tokens.py --selftest` OK · `_seam.py --selftest` 15 arms · `_governs.py --selftest` green · `_capture_gate.py --selftest` rc 0 (130 s). ⚠ **Declared:** the first capture-gate selftest run FAILED on my own evidence anchor — `DAVE-WORDS…#The boot` matched two lines once I had appended "The boot-ceiling half…" to the file. I reworded my own uncommitted line ("Its first half, the ceiling at 135,000, …"); the anchor is unique again and every selftest is green. Nothing inscribed was amended.
+
+## 2 · The wrap redesign — #306's second job (scheduling, not a ruling)
+
+- **`_HANDOFF-156` OWED item 2, inserted by addition** after the 102 (the items below keep their written numbers; the new item says to read them as 3–11). It quotes the question, "yes both" and his 11:41 wrap line, and sets out the plan from `notes/_lanes/293/IDEA-wrap-is-slow-five-levers.md`: lever 1 one story written once as the handoff with the banner, delta, dossier, wrap report and memory hook generated from it (the duplicate writes he named); lever 5 three seats in parallel (story / mechanics / commit-push-CI); lever 3 mostly done (the boot-ceiling fail ended with D64). A post-wrap addendum at the handoff's foot records D62–D64, marks the cold-seat window bullet stale, and strikes OWED item 9 by his words.
+- **Store row `W-305wr` minted** through `_state.py` (`add` + `check()` ok, 941 → 942): home the five-levers file, owner claude, closes when a wrap has run on the redesign (handoff written once, the other views generated, the three seats in parallel) with its receipt filed, or Dave re-schedules or parks it with a tripwire.
+
+## 3 · `W-305w` — NOT closed, and why
+
+Its `closes_when` asks for FIVE things: the 102, `s212-D1`/`s256-D1`, the ring and the threads, the `s279-D1`/`W-305n6` collision, and whether `--wrap` is the wrap path again. `s305-D64` answers only the fifth. The other four are still his, so closing it would strike four open questions without a receipt. Recorded instead, by addition in its body: the fifth is answered by `s305-D64`, with the gate reading. (`W-305n3`, his boot-efficiency and wrap thread, is still not touched; `W-305wr` links it.)
