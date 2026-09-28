@@ -2,12 +2,25 @@
 """_wrap_regen.py — the regen serial, run ONCE, in its fixed order, then every `--check`.
 
 Built #306 lane W1 for `s306-D4` phase 1 (Dave, 2026-09-28 16:58 BST, "go on both"; the design
-page's proof for this phase is "rebuilds from 5 to 1"). It replaces the per-lane `regen.sh`
+page's proof for this phase is "rebuilds from 5 to 1"; ★ #307, by addition: the target is 1 PER COMMIT,
+because the 5b follow-up's line lands in the ⏱ delta `_CHAIN.md` slices, so its own rebuild is intended). It replaces the per-lane `regen.sh`
 (#306 T, U, V) and the #303–#305 wrap seats' hand-typed serials (`_regen.log`, `_regen-2.log`,
 `_regen-3.log`, `_regen-5b.log`, `_regen-checks.log` at #305: five rebuilds in one wrap).
 
+★ #307 (2026-09-28, by addition — Dave's 19:58 "fix the two phase-1 gaps the #306 wrap did by hand"):
+step 0 below, `_gen_titles.py --session N` (runbook step 4b), was listed under this tool in the
+runbook's PHASE 1 table but was NOT in the serial, so the #306 wrap ran it by hand after the gate
+failed TITLE GENERATION. It is now step 0, and `--session N` is REQUIRED for `--run` and
+`--checks-only` (a run without it is refused before anything writes). Its own `--check` only proves
+the two titles still derive; the verdict also reads `knowledge/_gen_titles_receipt.json` and calls
+it STALE unless the receipt was written for session N.
+
 THE ORDER, and why each position (the record: `_HANDOFF-156` § THINGS A COLD SEAT SHOULD KNOW,
 `notes/_lanes/306/U/regen.sh`, `notes/_subreports/2026-09-27-304-W5c-node-titles.md` § 2):
+  0. knowledge/_gen_titles.py --session N — the two titles + knowledge/_gen_titles_receipt.json
+                                             (step 4b); reads only GOOD-MORNING.md's banner and
+                                             residual line, so it runs after the banner is placed
+                                             (this tool runs after the last edit) and nothing reads it
   1. knowledge/_render_rulings.py          — notes/_RULINGS.html from _rulings.json (step 4d)
   2. knowledge/tokens/_build_blast_radius.py — knowledge/tokens/_blast-radius.json, knowledge/_GRAPH-REPORT.md
   3. knowledge/_build_memento_index.py     — the retrieval index (step 2g: after every GM/LS edit)
@@ -19,7 +32,7 @@ THE ORDER, and why each position (the record: `_HANDOFF-156` § THINGS A COLD SE
   8. knowledge/gen_dashboard.py            — reads the session number out of _CHAIN.md (its own
                                              docstring), so it runs AFTER 6. T and U ran it first,
                                              which is safe mid-session and stale at a wrap.
-Then the `--check` of every one of the eight. A write step that fails STOPS the serial (the later
+Then the `--check` of every one of the nine. A write step that fails STOPS the serial (the later
 steps read its output); every check runs and each verdict is printed.
 
 ⚠ `_memento_search.py` APPENDS to `knowledge/_graph-mark-observations.jsonl`, and the schematic
@@ -28,8 +41,8 @@ reads it, so the two must be committed together or CI's schematic determinism st
 so the commit's paths file can take them (`--paths-out FILE` appends them, one per line).
 
 Usage (a BARE run prints the plan and runs nothing — the serial writes, so it is asked for by name):
-  python3 knowledge/_wrap_regen.py --run [--log FILE] [--paths-out FILE]   # the serial, then the checks
-  python3 knowledge/_wrap_regen.py --checks-only                            # the eight --checks alone
+  python3 knowledge/_wrap_regen.py --run --session N [--log FILE] [--paths-out FILE]   # the serial, then the checks
+  python3 knowledge/_wrap_regen.py --checks-only --session N                            # the nine --checks alone
   python3 knowledge/_wrap_regen.py [--dry-run]                              # print the plan, run nothing
   python3 knowledge/_wrap_regen.py --selftest                         # fake steps in a temp dir
 """
@@ -45,6 +58,7 @@ REPO = os.path.dirname(HERE)
 
 # (script, write-args, check-args, outputs it writes)
 SERIAL = [
+    ("knowledge/_gen_titles.py", ["--session", "{N}"], ["--session", "{N}", "--check"], ["knowledge/_gen_titles_receipt.json"]),
     ("knowledge/_render_rulings.py", [], ["--check"], ["notes/_RULINGS.html"]),
     ("knowledge/tokens/_build_blast_radius.py", [], ["--check"], ["knowledge/tokens/_blast-radius.json", "knowledge/_GRAPH-REPORT.md"]),
     ("knowledge/_build_memento_index.py", [], ["--check"], ["knowledge/_memento-index.json"]),
@@ -55,13 +69,34 @@ SERIAL = [
     ("knowledge/gen_dashboard.py", [], ["--check"], ["dashboard/index.html"]),
 ]
 OBSERVATIONS = "knowledge/_graph-mark-observations.jsonl"
+TITLES_RECEIPT = "knowledge/_gen_titles_receipt.json"
+SESSION_TOKEN = "{N}"
+
+
+def _needs_session(serial):
+    return any(SESSION_TOKEN in a for s in serial for a in list(s[1]) + list(s[2]))
+
+
+def _bind(args, session):
+    return [str(session) if a == SESSION_TOKEN else a for a in args]
+
+
+def _receipt_stale(repo, session):
+    """None when the titles receipt was written for `session`; otherwise the named reason."""
+    import json
+    path = os.path.join(repo, TITLES_RECEIPT)
+    try:
+        got = json.load(open(path, encoding="utf-8"))["meta"]["declared_session"]
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        return f"{TITLES_RECEIPT} unreadable ({type(e).__name__})"
+    return None if got == session else f"{TITLES_RECEIPT} is #{got}, not #{session}"
 
 
 def _order_ok(serial):
     """The positions the record fixes. Returns a list of named violations (empty = fine)."""
     names = [s[0].rsplit("/", 1)[-1] for s in serial]
     bad = []
-    need = ["_render_rulings.py", "_build_blast_radius.py", "_build_memento_index.py",
+    need = ["_gen_titles.py", "_render_rulings.py", "_build_blast_radius.py", "_build_memento_index.py",
             "_build_graph_mention_map.py", "gen_kg_titles.py", "_gen_chain.py", "_gen_schematic.py"]
     pos = [names.index(n) if n in names else -1 for n in need]
     if -1 in pos:
@@ -73,6 +108,9 @@ def _order_ok(serial):
     kg = [s for s in serial if s[0].endswith("gen_kg_titles.py")]
     if kg and kg[0][1] != ["--write"]:
         bad.append("gen_kg_titles.py must run with --write (its bare form is a dry run)")
+    gt = [s for s in serial if s[0].endswith("_gen_titles.py")]
+    if gt and (gt[0][1] != ["--session", SESSION_TOKEN] or "--check" in gt[0][1]):
+        bad.append("_gen_titles.py must run with --session N and without --check (--check writes no receipt)")
     return bad
 
 
@@ -99,23 +137,30 @@ def _run(repo, argv, log):
     return p.returncode
 
 
-def run(repo=REPO, serial=SERIAL, log=None, checks_only=False, paths_out=None):
+def run(repo=REPO, serial=SERIAL, log=None, checks_only=False, paths_out=None, session=None):
     bad = _order_ok(serial)
     if bad and serial is SERIAL:
-        print("⛔ REFUSED — the serial's order is broken:", "; ".join(bad)); return 2
+        print("⛔ REFUSED — the serial's order is broken:", "; ".join(bad), flush=True); return 2
+    if _needs_session(serial) and session is None:
+        print("⛔ REFUSED — --session N is required (step 0, _gen_titles.py, titles session N); nothing ran",
+              flush=True); return 2
     if log:
         open(log, "w").close()
     rc_all = 0
     if not checks_only:
         print("--- serial (writes)")
         for script, wargs, _, _ in serial:
-            if _run(repo, [script] + wargs, log) != 0:
+            if _run(repo, [script] + _bind(wargs, session), log) != 0:
                 print(f"⛔ the serial STOPPED at {script} — the later steps read its output"); return 1
     print("--- checks")
     stale = []
     for script, _, cargs, _ in serial:
-        if _run(repo, [script] + cargs, log) != 0:
+        if _run(repo, [script] + _bind(cargs, session), log) != 0:
             stale.append(script); rc_all = 1
+    if any(s[0].endswith("_gen_titles.py") for s in serial) and session is not None:
+        why = _receipt_stale(repo, session)
+        if why:
+            stale.append(f"_gen_titles.py ({why})"); rc_all = 1
     outs = [o for s in serial for o in s[3]] + [OBSERVATIONS]
     moved = [o for o in outs if _changed(repo, o)]
     obs = _changed(repo, OBSERVATIONS)
@@ -139,9 +184,16 @@ def selftest():
         print(("  ✓ " if cond else "  ✗ ") + name)
         ok = ok and bool(cond)
 
-    bite("the real serial's order holds (7 fixed positions, titles --write, dashboard after the chain)",
+    bite("the real serial's order holds (8 fixed positions, titles --write, dashboard after the chain)",
          _order_ok(SERIAL) == [])
     bite("gen_kg_titles.py is in the serial (the #306 CI red)", any(s[0].endswith("gen_kg_titles.py") for s in SERIAL))
+    bite("_gen_titles.py --session N is in the serial (the #306 wrap ran it by hand)",
+         any(s[0].endswith("_gen_titles.py") and s[1] == ["--session", SESSION_TOKEN] for s in SERIAL))
+    notitles = [s for s in SERIAL if not s[0].endswith("_gen_titles.py")]
+    bite("a serial without _gen_titles.py is named missing", any("missing: _gen_titles.py" in b for b in _order_ok(notitles)))
+    nosess = [(s[0], [] if s[0].endswith("_gen_titles.py") else s[1], s[2], s[3]) for s in SERIAL]
+    bite("_gen_titles.py without --session is named", any("_gen_titles.py must run" in b for b in _order_ok(nosess)))
+    bite("the real serial REFUSES without --session, before anything writes", run(serial=SERIAL, session=None) == 2)
     swapped = list(SERIAL); swapped[5], swapped[6] = swapped[6], swapped[5]
     bite("a swapped pair is named as an order break", any("order broken" in b for b in _order_ok(swapped)))
     dropped = [s for s in SERIAL if not s[0].endswith("gen_kg_titles.py")]
@@ -165,6 +217,16 @@ def selftest():
         bite("the log has one line per run (2 writes + 2 checks)", len(open(log).read().splitlines()) == 4)
         rc = run(td, [("c.py", [], ["--check"], []), ("d.py", [], ["--check"], ["D"])])
         bite("a failing write STOPS the serial (d never ran)", rc == 1 and not os.path.exists(os.path.join(td, "D")))
+        mk("e.py", "import sys\nopen('E','w').write(' '.join(sys.argv[1:]))\n")
+        tok = [("e.py", ["--session", SESSION_TOKEN], ["--session", SESSION_TOKEN], ["E"])]
+        bite("a {N} serial without a session is REFUSED and runs nothing",
+             run(td, tok) == 2 and not os.path.exists(os.path.join(td, "E")))
+        run(td, tok, session=307)
+        bite("{N} is bound to the session number", open(os.path.join(td, "E")).read() == "--session 307")
+        os.makedirs(os.path.join(td, "knowledge"))
+        mk(TITLES_RECEIPT, '{"meta": {"declared_session": 306}}')
+        bite("a titles receipt for another session is named STALE", "#306, not #307" in (_receipt_stale(td, 307) or ""))
+        bite("a titles receipt for this session passes", _receipt_stale(td, 306) is None)
     print("wrap-regen selftest:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
@@ -176,16 +238,17 @@ def main(argv=None):
     ap.add_argument("--run", action="store_true", help="run the serial (writes), then every --check")
     ap.add_argument("--checks-only", action="store_true")
     ap.add_argument("--log"); ap.add_argument("--paths-out")
+    ap.add_argument("--session", type=int, help="the session being wrapped; REQUIRED with --run / --checks-only (step 0 titles it)")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
     if a.dry_run or not (a.run or a.checks_only):
         bad = _order_ok(SERIAL)
-        for i, (s, w, c, o) in enumerate(SERIAL, 1):
+        for i, (s, w, c, o) in enumerate(SERIAL):
             print(f"{i}. python3 {s} {' '.join(w)}".rstrip() + f"   → {', '.join(o)}   check: {' '.join(c)}")
         print("order:", "OK" if not bad else "; ".join(bad))
         return 0 if not bad else 2
-    return run(log=a.log, checks_only=a.checks_only, paths_out=a.paths_out)
+    return run(log=a.log, checks_only=a.checks_only, paths_out=a.paths_out, session=a.session)
 
 
 if __name__ == "__main__":

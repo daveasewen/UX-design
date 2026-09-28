@@ -135,19 +135,19 @@ def commit(repo, session, msg, paths_file, log, wrap=False, dry_run=False, commi
         raise DoorError("REFUSED before the committer ran — named path(s) neither changed nor untracked "
                         "(the committer strands the lock on these): " + ", ".join(bad[:8]))
     argv = ["bash", committer, "--reconciled"] + (["--wrap"] if wrap else []) + [f"--quiet={log}", msg] + P
-    print(f"paths checked: {len(P)} of {len(P)} changed-or-untracked")
-    print("SESSION_N=%s %s" % (session, " ".join(argv[:5 + wrap]) + f" <{len(P)} paths>"))
+    print(f"paths checked: {len(P)} of {len(P)} changed-or-untracked", flush=True)
+    print("SESSION_N=%s %s" % (session, " ".join(argv[:5 + wrap]) + f" <{len(P)} paths>"), flush=True)
     if dry_run:
-        print("DRY-RUN — the committer was not run"); return 0
+        print("DRY-RUN — the committer was not run", flush=True); return 0
     r = subprocess.run(argv, cwd=repo, env={**ENV, "SESSION_N": str(session)})
     held = locks(repo)
     head = _git(repo, "log", "-1", "--format=%h %s").stdout.strip()
-    print(f"EXIT={r.returncode} · HEAD {head[:160]}")
+    print(f"EXIT={r.returncode} · HEAD {head[:160]}", flush=True)
     if held:
         print("⛔ LOCK STRANDED after the run: " + ", ".join(os.path.relpath(l, repo) for l in held) +
-              " — run `_wrap_commit.py unlock --tag <tag>`")
+              " — run `_wrap_commit.py unlock --tag <tag>`", flush=True)
         return r.returncode or 4
-    print("locks: none held")
+    print("locks: none held", flush=True)
     return r.returncode
 
 
@@ -168,7 +168,7 @@ def unlock(repo, tag, dry_run=False, orphans=ORPHANS, reset=True):
             rel = os.path.relpath(lk, os.path.join(repo, ".git")).replace("/", "-")
             dst = os.path.join(dst_dir, f"{rel}-{tag}-{datetime.datetime.now():%H%M%S}-{attempt}")
             if dry_run:
-                print("DRY-RUN would move", os.path.relpath(lk, repo), "→", os.path.relpath(dst, repo)); continue
+                print("DRY-RUN would move", os.path.relpath(lk, repo), "→", os.path.relpath(dst, repo), flush=True); continue
             os.makedirs(dst_dir, exist_ok=True)
             shutil.move(lk, dst); moved.append(os.path.relpath(dst, repo))
         if dry_run:
@@ -176,7 +176,7 @@ def unlock(repo, tag, dry_run=False, orphans=ORPHANS, reset=True):
         if attempt == 1 and reset:
             subprocess.run(["git", "reset", "-q"], cwd=repo, env=ENV, capture_output=True)
     left = locks(repo)
-    print("moved:", moved or "nothing — no lock held", "· locks left:", [os.path.relpath(l, repo) for l in left] or "none")
+    print("moved:", moved or "nothing — no lock held", "· locks left:", [os.path.relpath(l, repo) for l in left] or "none", flush=True)
     return moved
 
 
@@ -186,7 +186,7 @@ def selftest():
 
     def bite(name, cond):
         nonlocal ok
-        print(("  ✓ " if cond else "  ✗ ") + name)
+        print(("  ✓ " if cond else "  ✗ ") + name, flush=True)
         ok = ok and bool(cond)
 
     src = open(COMMITTER, encoding="utf-8").read()
@@ -254,7 +254,14 @@ def selftest():
              len(mv) == 3 and all(os.path.exists(os.path.join(td, m)) for m in mv) and locks(td) == []
              and len(set(mv)) == 3)
         bite("unlock with no lock moves nothing", unlock(td, "selftest", orphans="orphans") == [])
-    print("wrap-commit selftest:", "PASS" if ok else "FAIL")
+    # #307: every print carries flush=True, so its lines stay in order with the committer's when
+    # stdout goes to a file (Dave, #307, 2026-09-28)
+    import ast as _ast
+    _t = _ast.parse(open(os.path.abspath(__file__), encoding="utf-8").read())
+    _bare = [n.lineno for n in _ast.walk(_t) if isinstance(n, _ast.Call) and isinstance(n.func, _ast.Name)
+             and n.func.id == "print" and not any(k.arg == "flush" for k in n.keywords)]
+    bite("every print in this tool flushes (none without flush=True: %s)" % (_bare or "none"), not _bare)
+    print("wrap-commit selftest:", "PASS" if ok else "FAIL", flush=True)
     return 0 if ok else 1
 
 
@@ -279,20 +286,20 @@ def main(argv=None):
             keep, skip = build_paths(REPO, a.path + extra, a.dir)
             with open(a.out, "w", encoding="utf-8") as f:
                 f.write("".join(k + "\n" for k in keep))
-            print(f"{len(keep)} path(s) named → {a.out}")
+            print(f"{len(keep)} path(s) named → {a.out}", flush=True)
             for s in skip:
-                print("  skip", *s)
+                print("  skip", *s, flush=True)
             return 0
         if a.verb == "msg":
             body = a.body if a.body is not None else (open(a.body_file, encoding="utf-8").read() if a.body_file else "")
-            print("msgfile", a.out, write_msg(a.out, a.line1, body, a.trailer))
+            print("msgfile", a.out, write_msg(a.out, a.line1, body, a.trailer), flush=True)
             return 0
         if a.verb == "commit":
             return commit(REPO, a.session, a.msg, a.paths, a.log, a.wrap, a.dry_run)
         if a.verb == "unlock":
             unlock(REPO, a.tag, a.dry_run); return 0
     except DoorError as e:
-        print("⛔ REFUSED:", e); return 3
+        print("⛔ REFUSED:", e, flush=True); return 3
     ap.print_help(); return 2
 
 

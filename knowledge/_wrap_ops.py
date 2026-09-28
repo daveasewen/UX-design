@@ -26,6 +26,10 @@ PLACEHOLDERS, so no second move file is needed: a line `{{SECTION_SIZES}}` in an
 on a PROJECTED copy of the five files with the ops applied (by `_gm_move.py --repo <tmp>`, the
 real mover), exactly as the wrap seats measured them after the main move. The projection is
 re-run with the filled ops, so the file written is one the mover has already accepted.
+⚠ BOTH GENERATED LINES ALREADY START `> ` — write the placeholder BARE on its own line. Since #307
+(2026-09-28, by addition; the #306 wrap wrote `> {{…}}` and hand-fixed the `> >` it produced), a
+placeholder at the start of a line or list item that is written after `>` or `> ` is folded:
+the `>` is dropped so the line comes out with ONE `> `, never `> >`.
 Not done here, and declared: 2d's `Previous:` chain trim (none is left in `_LIVE-STATE.md`),
 2e (DO-FIRST carries no session-keyed stratum), and the `size:` stamp (`_gen_size_stamp.py`).
 
@@ -183,9 +187,16 @@ def _has(ops, ph):
 
 
 def fill(ops, subs):
+    """Replace each placeholder with its line. A placeholder written after a leading `>` / `> `
+    (at the start of a JSON string or just after an escaped newline, i.e. at the start of a line)
+    takes that quote marker with it when the filled line already starts `> ` — so `> {{ROLL_STATE}}`
+    and a bare `{{ROLL_STATE}}` both come out as ONE `> ` line (#307; the #306 wrap's `> >`)."""
     s = json.dumps(ops, ensure_ascii=False)
     for k, v in subs.items():
-        s = s.replace(json.dumps(k, ensure_ascii=False)[1:-1], json.dumps(v, ensure_ascii=False)[1:-1])
+        ek, ev = json.dumps(k, ensure_ascii=False)[1:-1], json.dumps(v, ensure_ascii=False)[1:-1]
+        if v.startswith(">"):
+            s = re.sub(r'(?:(?<=")|(?<=\\n))> ?' + re.escape(ek), lambda m: ev, s)
+        s = s.replace(ek, ev)
     return json.loads(s)
 
 
@@ -304,6 +315,14 @@ def selftest():
             fill_op(td, LS, "fixture", "x"); bite("--fill refuses a token on more than one line", False)
         except OpsError:
             bite("--fill refuses a token on more than one line", True)
+        # #307: a placeholder written as `> {{…}}` must not come out `> >` (the #306 wrap's hand fix)
+        ln = "> **residual (GENERATED #79):** fixture"
+        qf = fill([{"lines": ["> " + PH_ROLL, ">" + PH_ROLL, PH_ROLL], "text": "a\n> " + PH_SIZES + "\nb"}],
+                  {PH_ROLL: ln, PH_SIZES: "> **section-sizes #79:** fixture"})
+        bite("`> {{ROLL_STATE}}`, `>{{ROLL_STATE}}` and a bare one all fill to ONE `> ` line, never `> >`",
+             qf[0]["lines"] == [ln, ln, ln] and "> >" not in json.dumps(qf, ensure_ascii=False))
+        bite("`> {{SECTION_SIZES}}` inside a multi-line text fills to ONE `> ` line",
+             qf[0]["text"] == "a\n> **section-sizes #79:** fixture\nb")
     finally:
         shutil.rmtree(td, ignore_errors=True)
     print("wrap-ops selftest:", "PASS" if ok else "FAIL")

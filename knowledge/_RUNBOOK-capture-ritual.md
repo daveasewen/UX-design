@@ -46,6 +46,11 @@ Dave, 16:58 BST, *"go on both"*, to *"Build phases 1 and 2 now: turn the wrap's 
 Each step below still says WHAT to write; this says HOW. **Write no script in `_work/`: every command takes files and arguments.**
 Each tool: `--help`, `--selftest`, dry run unless `--write` / `--run`. `s306-D4` stays `ruled` until one real wrap proves
 scripts 11 → 0, move files 9 → 1, rebuilds 5 → 1 (#305's counts).
+> ★ **#307 ADDITIONS (Dave, Mon 2026-09-28 19:58 BST, `notes/_lanes/307/DAVE-WORDS-2026-09-28-1958.md`; nothing in this block is rewritten):**
+> 1. **The rebuild target is 1 PER COMMIT, not 1.** The 5b follow-up commit needs its own rebuild, because its line lands in the ⏱ delta that `_CHAIN.md` slices. That is intended. #306 met it: 1 for the wrap commit, 1 for the 5b.
+> 2. **`_wrap_regen.py` now runs 4b itself** (`_gen_titles.py --session N`, its step 0) **and REQUIRES `--session N`**: `_wrap_regen.py --run --session N --log … --paths-out …`. Without it, the tool refuses before anything writes. Do not run `_gen_titles.py` by hand. The verdict calls the titles receipt STALE unless it was written for session N.
+> 3. **Placeholders: write `{{SECTION_SIZES}}` / `{{ROLL_STATE}}` bare on their line.** Both generated lines already start `> `. `_wrap_ops.py` now folds a `> {{…}}` at the start of a line into ONE `> `, so it can no longer come out `> >`, but bare is the form.
+> 4. `_wrap_commit.py` flushes every print, so its lines stay in order when its output goes to a file.
 
 | step | command |
 |---|---|
