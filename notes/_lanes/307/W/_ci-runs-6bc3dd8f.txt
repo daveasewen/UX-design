@@ -1,0 +1,18 @@
+RUN 36488351735 gates in_progress/None 2026-09-28T21:46:53Z sha 6bc3dd8f
+   job render in_progress/None None
+   job gates completed/failure 2026-09-28T21:59:24Z | failing steps: ['Survey the COMMITTED tree — every check/selftest before any regeneration', 'Knowledge build — all derived views + blocking gates']
+      ✗ python3 knowledge/_build_survey.py --timeout 60
+          ❌ [134] memento-package delta-audit selftest — mutation-tested, all 4   exit 1
+          ❌ [163] itinerary register in sync — the frozen snapshot vs a fresh de  exit 1
+          SURVEY: 76 pass · 2 FAIL · 6 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 79 not asked (mutating)
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_build_all.py
+          [133/163] memento-package delta-audit — #64 boundary enforcement (#79) → ❌ memento-package delta-audit failed (exit 1) — a package copy has drifted from its knowledge/ source, the two in-package copies disagree, an unkn…
+          [134/163] memento-package delta-audit selftest — mutation-tested, all 4 arms (#79) → ❌ memento-package delta-audit failed (exit 1) — a package copy has drifted from its knowledge/ source, the two in-package copies disag…
+          ❌ build gate failed — see the reports above.
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_validate_evidence.py notes/_claims
+          ⛔ EVIDENCE GATE FAIL — 6 lint · 0 unparsed · 3 rc/observation mismatch
+          ##[error]Process completed with exit code 1.
+   job release completed/success 2026-09-28T21:47:46Z
+VERDICT 6bc3dd8f: RED — see the failing steps above

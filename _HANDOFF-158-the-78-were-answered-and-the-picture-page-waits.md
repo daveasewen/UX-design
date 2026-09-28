@@ -91,3 +91,24 @@ status: observed
 *Filed report: `notes/_subreports/2026-09-28-307-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-28-307-the-78-were-answered-and-the-picture-page-waits.md`. Memory hook: `notes/_lanes/307/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/307/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #308: what he saw, and the build the 78 ordered`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **790, newest `s307-D78`**.
+
+1. ⛔★ **THE WRAP COMMIT IS `6bc3dd8f`, ON THE `--wrap` PATH.** Gate before it: `245 in scope · 0 fail · 47 warn`. 44 paths, every one checked changed or untracked first; `✓ done — locks clear`, exit 0. It carries `notes/_lanes/307/DAVE-RULINGS-2026-09-28-reopened-78.md`.
+2. **THE PUSH: `6cbaaeeb..6bc3dd8f`**, plain `git push origin master` through the credential helper; fast-forward checked first; `git ls-remote` = local HEAD. 21:46:50 UTC, **19.5 minutes from the launch** (21:27:21 UTC). It also carried lane D's and lanes C/E's `fb42e3c4`, `6a06340d`, `6ed2657a`.
+3. ⛔★★ **CI IS RED — THE FIRST BEAT OF #308, BEFORE THE PICTURE PAGE.** Read by `_ci_readback.py`. `6cbaaeeb` run `36481312303` RED: survey [13], [126], [142], [159] and the build at [13], all from the uncommitted export; **those four are gone at `6bc3dd8f`.** `6bc3dd8f` run `36488351735` RED (gates job; release green) on two NEW causes, both reproduced at the seat and both from lane D's `fb42e3c4`:
+   - **`knowledge/_memento_search.py` changed; its two copies `memento-package/machinery/_memento_search.py` and `memento-package/claude-plugin/memento/machinery/_memento_search.py` did not** (15 lines differ). `_validate_package_delta.py` fails, so the build aborts at [133]/[134]. The boundary rule (#64: copies only, every copy delta-audited) says copy the source over both; a commit, not a ruling.
+   - **`gen_itinerary_status.py --check` exits 1 (OUT OF SYNC)** and was wired as step 163 ADVISORY. The build honours ADVISORY; `_build_survey.py` does not (exit 1 = FAIL), so the survey is red at [163]. Lane D's report says it "never turns the build red"; it turns the survey red. Either the check exits 0 when advising, or it comes out of the survey. **Which is his or the conductor's; this seat changed nothing.**
+   Summaries `notes/_lanes/307/W/_ci-runs-6cbaaeeb.txt`, `_ci-runs-6bc3dd8f.txt`. The summary went to the conductor at 22:01 UTC, **34 minutes from the launch** (32 at #306).
+4. **THE PHASE-1 PROOF, AGAINST THE TARGETS:** scripts written **0** (target 0) · move files **1 + the 5b** (target 1 + the 5b) · rebuilds **1 for the wrap commit, 1 for this 5b** (target 1 per commit) · hand steps **0** (#306: 2). The two #306 hand steps did not recur: the regen ran the titles as its step 0, and the bare placeholders produced no `> >`. The committer's lines came out in order in `_gitcommit-W.term`. **New defect: `--fill-token` replaces the token, not the line** (#306's 5b line reads doubled; recorded in the W report). Whether this counts as proven is his (OWED item 3).
+5. **Locks:** the gate stranded `index.lock` twice, the reset `HEAD.lock`, `ORIG_HEAD.lock` and `refs/heads/master.lock`: 7 lock files moved in two `unlock` runs before the commit, all in `notes/_lanes/_orphan-locks/` with `307-W` in their names. The committer and the push held none.
+6. **`_CHAIN.md` after the wrap's regen: 7,615 cl100k (slice 6,761 + 854), under the 7,700 warn by 85.** ⚠ **After this 5b's regen: 7,990 (slice 7,136 + 854), OVER the 7,700 advisory warn by 290** — the 5b line itself (1,595 tk for the delta, up from 1,221). A phase-3 limit (`s306-D10`); the 5b text should be shorter.
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the brief's `Apollo - #308: what he saw, and the build the 78 ordered`; `_gen_titles.py` derived `Apollo - #308: his answers on the picture page, 16 calls` from the banner's first residual item. No gate compares them. Declared, not reconciled.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads in `notes/_lanes/307/W/_work/`; the note `notes/_lanes/307/WRAP-MEMORY-HOOK.md`.
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
