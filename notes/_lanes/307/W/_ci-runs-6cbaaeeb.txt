@@ -1,0 +1,18 @@
+RUN 36481312303 gates completed/failure 2026-09-28T20:44:21Z sha 6cbaaeeb
+   job gates completed/failure 2026-09-28T20:52:20Z | failing steps: ['Survey the COMMITTED tree — every check/selftest before any regeneration', 'Knowledge build — all derived views + blocking gates']
+      ✗ python3 knowledge/_build_survey.py --timeout 60
+          ❌ [13] capture/provenance selftest (Memento §4.1)  exit 1
+          ❌ [126] read chain determinism check — stale _CHAIN.md serves a PREVIO  exit 1
+          ❌ [142] governs matcher selftest — the [12]/[13] trigger-index arm, na  exit 1
+          ❌ [159] wrap state-row writer selftest — mint born closed, close / reo  exit 1
+          SURVEY: 74 pass · 4 FAIL · 4 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 79 not asked (mutating)
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_build_all.py
+          [13/161] capture/provenance selftest (Memento §4.1) → ❌ step 'capture/provenance selftest (Memento §4.1)' failed (exit 1) — aborting
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_validate_evidence.py notes/_claims
+          ⛔ EVIDENCE GATE FAIL — 6 lint · 0 unparsed · 4 rc/observation mismatch
+          ##[error]Process completed with exit code 1.
+   job release completed/success 2026-09-28T20:45:07Z
+   job render completed/success 2026-09-28T20:58:41Z
+VERDICT 6cbaaeeb: RED — see the failing steps above

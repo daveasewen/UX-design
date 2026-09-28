@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-28 #307
+
+> **COMMIT STATE #306:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-306-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Six commits before the wrap, all declared not-a-wrap, pushed `80d4198d..079740c5`:** `138d45fe` · `dcb76d81` · `fe243c6c` · `3b4cae5d` · `0afaca91` · `079740c5`; CI runs `36437656013` (RED, stale KG titles) · `36439579304` · `36443037064` (green) · `36453625640` (in the 5b line). Handoff `_HANDOFF-157-his-ticks-came-back-and-the-wrap-runs-tools.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **321,077 real at the launch of this seat — a hand sum; over the 320,000 limit by 1,077.**
+
+> ## ★ PRIOR — 2026-09-28 (Mon **#305**, DATE SPLIT from Sun 09-27, Opus 5.5 conductor in the CLOUD, **21 subs**, DELEGATED wrap on Opus 5.5 — ★★ **HE TOOK THE SITTING, v1.0.14 WAS CUT, AND CI WENT GREEN**)
+>
+> - ★★★ ① **HE TOOK THE SITTING — 53 CALLS AND FRIDAY — AND THE LOOSE ENDS ON MONDAY; `_rulings.json` 638 → 699.** `s305-D1`: a yes is inscribe AND build (*"set in ink"*). 40 of the 61 built and stamped with receipts; the rest wait on October (Launchpad) or on his eye. Friday: *"nothing of substance came out of it aopart from people wanting to know more."*
+> - ★★ ② **v1.0.14 CUT (`0ef30746` · `02d679b3` · `d3b809a7`) AND CI ALL GREEN, TWICE (`36349147952`, `36393419907`), 154 OF 154 ASKED.** Fourteen commits pushed `7cae0189..cd16f7ec` to a PUBLIC repo on his 19:45 yes. The token is behind a credential helper; boot ceiling 130,000, already breached by #304's 131,130 (so the declared not-a-wrap path again); window lines 256K / 300K.
+> - ⚠ ③ **REVIEW PAGES: PICTURES INLINE, OPENED IN THE PAGE — never `target=_blank` to a file (his 07:11 and 07:15 words).** FILL 450,794 at the wrap (hand sum), over 300K since Sun 18:31. **`_HANDOFF-156-he-took-the-sitting-v1014-was-cut-and-ci-went-green.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #306:** ⬛ **THE 102 PARKED QUESTIONS, HIS KEEP-OPEN TICKS** [1, DAVE'S] — put it first. `s225-D2`. **401 items, 15 new, 12 STRUCK (by his acts and rulings, with receipts)**, `_CARRIES.md` § `residual → #306` `carries:residual-306`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#306:**' in l][0])))"` = 401. #304's 10 new are counted by it now: 391→401.
+> **residual (GENERATED #305):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #304) — _roll_state.py · 2026-09-28
+
+
+*Rolled at the #307 wrap (2c, ritual 2026-09-28). The old ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite.*
+
 ## Batch 2026-09-28 #306
 
 > **COMMIT STATE #305:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-305-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Fourteen commits before the wrap, all declared not-a-wrap, pushed `7cae0189..cd16f7ec` by C1, P1, C3, D1 and C4:** `27efb7b6` · `568e2534` · `0ef30746` · `02d679b3` · `d3b809a7` · `1e107eea` · `21c9b7f4` · `e4ff4284` · `7b544593` · `9c3f4663` · `fd607c74` · `01fb005a` · `f6aeb264` · `cd16f7ec`; CI runs `36330780485` · `36341948728` · `36345615782` · `36347602064` · `36347858414` · `36349147952` · `36393419907` — the last three all green on every job. Handoff `_HANDOFF-156-he-took-the-sitting-v1014-was-cut-and-ci-went-green.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **450,794 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the hard line.**

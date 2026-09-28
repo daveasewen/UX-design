@@ -114,3 +114,11 @@ Pushed `80d4198d..dcb76d81`, then `..fe243c6c`, `..3b4cae5d`, `..079740c5`, each
 8. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ STRUCK AT THE #307 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+- ~~OWED item 1, the 78 reopened questions~~ ⛔ **STRUCK #307 2026-09-28 BY THE WRAP SEAT** — his 20:38 "okay the 78" put them on lane A's sitting page; his 21:18 export (`notes/_lanes/307/DAVE-RULINGS-2026-09-28-reopened-78.md`) answered all 78 by hand; lane B inscribed `s307-D1`..`D78` (`1822ac15`, `6cbaaeeb`).
+- ~~OWED item 2's question, "Did tonight's wrap prove phases 1 and 2?"~~ ⛔ **STRUCK #307 2026-09-28 BY THE WRAP SEAT** — on his 19:58 words the opener's owed-CI read proved phase 2, the two hand steps were fixed in the tools (`cb29648a`), and `s306-D7` was stamped enacted and `s306-D4` phase 1 proven (`4d647958`). The redesign itself (phase 3 on, `W-305wr`) is NOT struck; it carries on `_HANDOFF-158` OWED item 3.
+- Items 3, 4 and 5 stand, carried on `_HANDOFF-158` OWED items 4 and 5.
