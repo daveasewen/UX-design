@@ -700,6 +700,22 @@ STEPS = [
     # LAST on purpose: no existing step number moves.
     ("CI read-back selftest — canned API JSON, no network; the token never printed (s306-D7, built #306)",
      "_ci_readback.py", ["--selftest"]),
+    # #306 lane W1 (`s306-D4`, phase 1 of the wrap redesign): the six permanent wrap tools that replaced
+    # the scripts each wrap seat re-authored (`build_ops_30N.py`, `carries_30N.py`, `mint_30N.py`, the
+    # regen serials, `commit_w*.sh`, the figure one-liners). Only their selftests run here — each over
+    # fixtures, no network, no write to a real file. Appended LAST on purpose: no existing step number moves.
+    ("wrap facts selftest — fixture transcript and git, the fill hand sum cross-checked with _checkin.read_fill; a reader (s306-D4 phase 1, built #306)",
+     "_wrap_facts.py", ["--selftest"]),
+    ("wrap move-file builder selftest — the real mover on a fixture tree, placeholders filled on a projection (s306-D4 phase 1, built #306)",
+     "_wrap_ops.py", ["--selftest"]),
+    ("wrap carries selftest — count via _carry_items, the s183-D1 strike by addition, the ages +1 roll (s306-D4 phase 1, built #306)",
+     "_wrap_carries.py", ["--selftest"]),
+    ("wrap state-row writer selftest — mint born closed, close / reopen by addition, on a copy of the store (s306-D4 phase 1, built #306)",
+     "_wrap_rows.py", ["--selftest"]),
+    ("wrap regen runner selftest — the serial's fixed order and stop-on-fail, fake steps in a temp dir (s306-D4 phase 1, built #306)",
+     "_wrap_regen.py", ["--selftest"]),
+    ("wrap commit door selftest — unchanged paths refused, T3 prefix pinned, locks moved never rm'd, temp repo (s306-D4 phase 1, built #306)",
+     "_wrap_commit.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1126,6 +1142,14 @@ ROUTE_ROWS = [
     # ── #306 lane V · the CI read-back's selftest row, in the SAME edit as its STEPS entry. ABORT, the
     # tier every tool selftest carries (the `_gm_move.py` / `_roll_state.py` precedent).
     ("CI read-back selftest — canned API JSON, no network; the token never printed (s306-D7, built #306)", ABORT, None),
+    # ── #306 lane W1 · the six wrap tools' selftest rows, in the SAME edit as their STEPS entries. ABORT,
+    # the tier every tool selftest carries (the `_gm_move.py` / `_roll_state.py` / `_ci_readback.py` precedent).
+    ("wrap facts selftest — fixture transcript and git, the fill hand sum cross-checked with _checkin.read_fill; a reader (s306-D4 phase 1, built #306)", ABORT, None),
+    ("wrap move-file builder selftest — the real mover on a fixture tree, placeholders filled on a projection (s306-D4 phase 1, built #306)", ABORT, None),
+    ("wrap carries selftest — count via _carry_items, the s183-D1 strike by addition, the ages +1 roll (s306-D4 phase 1, built #306)", ABORT, None),
+    ("wrap state-row writer selftest — mint born closed, close / reopen by addition, on a copy of the store (s306-D4 phase 1, built #306)", ABORT, None),
+    ("wrap regen runner selftest — the serial's fixed order and stop-on-fail, fake steps in a temp dir (s306-D4 phase 1, built #306)", ABORT, None),
+    ("wrap commit door selftest — unchanged paths refused, T3 prefix pinned, locks moved never rm'd, temp repo (s306-D4 phase 1, built #306)", ABORT, None),
 ]
 
 

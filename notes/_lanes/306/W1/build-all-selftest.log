@@ -1,0 +1,23 @@
+  selftest (a): 161 registered step ID(s), each resolves to exactly one route ✓
+  selftest (b): unknown step ID refuses, loud and named ✓
+  selftest (c): mutation control — dropping the route for 'compliance knowledge graph' turns (a) red ✓
+  selftest (d): state-contrast caveat is GENERATED — moves with the artefact, refuses to read a missing artefact as zero, and the live remedy carries it ✓
+  selftest (e): chunk coverage contract — carries rc, refuses gap/HEAD-move/code-move, loud and named ✓
+========================================================================
+❌ _build_all.py REFUSED — ARGV CONTRACT (#208 guard; the #204 accidental build)
+========================================================================
+  argv seen: ['--definitely-not-a-flag']
+  reason:    UNKNOWN ARGUMENT '--definitely-not-a-flag' — known flags are --range, --resume, --selftest
+  ⛔ NOTHING WAS BUILT — no generator ran, no report was rewritten, no gate verdict
+     was produced. This is a REFUSAL, not a build result: do not read it as green
+     and do not read it as a gate failure.
+REMEDY — the whole contract, and nothing else is accepted:
+    python3 knowledge/_build_all.py                # FULL build (deliberate, no argv)
+    python3 knowledge/_build_all.py --selftest     # no step runs, nothing is written
+    python3 knowledge/_build_all.py --range A-B    # chunked pass, steps A..B
+    python3 knowledge/_build_all.py --resume [N]   # continue a chunked pass
+  If you meant the full build, run it with NO arguments at all — this script will not
+  infer it from an argument it does not understand (#204: that is how a wrap ran the
+  build by accident).
+  selftest (f): #208 argv contract — 5 illegal forms refused NAMED, 6 legal forms accepted, mutation control bites, main() returns rc=2 before step 1 ✓
+selftest PASS — exact-ID failure routing over 161 steps; unknown never defaulted (#77)
