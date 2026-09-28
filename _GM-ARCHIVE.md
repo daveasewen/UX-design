@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-28 #306
+
+> **COMMIT STATE #305:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-305-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Fourteen commits before the wrap, all declared not-a-wrap, pushed `7cae0189..cd16f7ec` by C1, P1, C3, D1 and C4:** `27efb7b6` · `568e2534` · `0ef30746` · `02d679b3` · `d3b809a7` · `1e107eea` · `21c9b7f4` · `e4ff4284` · `7b544593` · `9c3f4663` · `fd607c74` · `01fb005a` · `f6aeb264` · `cd16f7ec`; CI runs `36330780485` · `36341948728` · `36345615782` · `36347602064` · `36347858414` · `36349147952` · `36393419907` — the last three all green on every job. Handoff `_HANDOFF-156-he-took-the-sitting-v1014-was-cut-and-ci-went-green.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **450,794 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the hard line.**
+
+> ## ★ PRIOR — 2026-09-27 (Sun **#304**, DATE SPLIT from Sat 09-26, Opus 5.5 conductor in the CLOUD, **49 subs**, DELEGATED wrap on Opus 5.5 — ★★ **THE WEEKEND RUNS LANDED, AND THE REVIEW MOVED TO AN ARTIFACT**)
+>
+> - ★★★ ① **THE TUESDAY SITTING IS #305'S FIRST BEAT — 53 CALLS, `notes/_SITTING-304-tuesday-2026-09-29-v1.html`**, opened through the artifact. Call 1: cut v1.0.14 from candidate 2. Three behaviours shipped without a ruling (tick thinning, right gutter, console card padding 20 → 8) and two are held back (the Kpi-tile descender, the root trim) — his. **`_rulings.json` STAYS 638.**
+> - ★★ ② **SEVEN COMMITS, SIX CI READS, ALL PUSHED, `571d458c..8a5fa863`:** the Apollo-MCP page v1 and v2 (the PoC first; Jev not ruled out for GenUI), CI asks every step again, 184 statuses stamped with receipts, `s245-D10` and `s277-D12` built, the v1.0.14 candidate and nine cold runs scored. The scheduled dream pass (`ff382c0b`) ran `git status` on the mount and its row took CI step 117 red once.
+> - ⚠ ③ **HIS LINKS DID NOT WORK: `computer://` cannot be previewed in the app, so review pages go as ONE artifact, republished to the same URL; answers come back by "Copy as text". The hub's links lack the `notes/` prefix — UNPROVEN that they open.** FILL 453,905 at the wrap (hand sum), over 300K since Sat 22:08. **`_HANDOFF-155-the-weekend-runs-landed-and-the-review-moved-to-an-artifact.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #305:** ⬛ **THE TUESDAY SITTING, 53 CALLS** [1, DAVE'S] — put it first. `s225-D2`. **715 items, 10 new, 4 STRUCK (1 by the act, 3 by receipt)**, `_CARRIES.md` § `residual → #305` `carries:residual-305`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#305:**' in l][0])))"` = 715. #304's 6 new are counted by it now: 709→715.
+> **residual (GENERATED #304):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #303) — _roll_state.py · 2026-09-27
+
+
+*Rolled at the #306 wrap (2c, ritual 2026-09-28). The old ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite.*
+
 ## Batch 2026-09-27 #305
 
 > **COMMIT STATE #304:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push verdict and its CI read are in the returned stub, in `notes/_subreports/2026-09-27-304-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Seven commits before the wrap, all declared not-a-wrap, all pushed and read back in CI after `render` by commit seats C1–C6:** `6af293df` · `4be130e5` + `aaf3bb7e` · `86249459` · `3100da99` · `52049781` · `8a5fa863`, runs `36257551837` · `36275037261` · `36281589292` · `36291750194` · `36306939769` · `36311157795`; and the scheduled dream pass's `ff382c0b`, pushed inside `3100da99..52049781`. Handoff `_HANDOFF-155-the-weekend-runs-landed-and-the-review-moved-to-an-artifact.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **453,905 real at the launch of this seat — a hand sum, read first-hand; the wrap was his word; over the hard line.**

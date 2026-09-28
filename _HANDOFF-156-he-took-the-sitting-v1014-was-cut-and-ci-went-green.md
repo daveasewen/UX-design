@@ -164,3 +164,10 @@ As `_HANDOFF-155` says, unchanged: pass `https://claude.ai/artifact/1PpLec2QecFE
 - ⛔ **The "window lines" bullet under THINGS A COLD SEAT SHOULD KNOW is stale by `s305-D62` and `s305-D64`:** working 320,000 · hard 350,000 · stop 300,000 · tolerance 320,000 · `BOOT_CEILING_TK` 135,000.
 - **OWED item 9 — ANSWERED IN HIS WORDS, STRUCK BY ADDITION:** *"yes both"* (12:21 BST) → `s305-D64`, the ceiling moved to 135,000. The wrap gate's boot-ceiling arm reads **0 fails** against `notes/_GAUGE-LOG.md` (#304 131,130 under it; #305's 131,040 joins at the next roll, also under it).
 - **OWED item 2 is NEW (inserted above): the wrap redesign, #306's second job.** Row `W-305wr`.
+
+---
+
+## ⬛ STRIKE ADDENDUM (#306 wrap, Mon 2026-09-28) — BY ADDITION; NOTHING ABOVE IS REWRITTEN (`s183-D1` / `s188-D2`)
+
+- ~~**OWED item 1, the 102 parked questions — which does he want kept open?**~~ ⛔ **STRUCK BY HIS ACT.** His ticks came back on the #306 check page (export `notes/_lanes/306/DAVE-RULINGS-2026-09-28-parked-check.md`, 15:20 BST): 24 closed as answered (`s306-D1`, `s306-D2`), 78 kept open (`s306-D3`), enacted by lane T at `138d45fe` and `dcb76d81`. The 78 carry to #307 as a new question (`_HANDOFF-157` OWED item 1).
+- **OWED item 2 (lane L's insert), the wrap redesign — UNDER WAY, NOT STRUCK.** Ruled `s306-D4`..`s306-D10`; phases 1 and 2 built (`079740c5`, `0afaca91`) and first run by the #306 wrap. Row `W-305wr` stays open.
