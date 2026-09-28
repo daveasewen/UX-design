@@ -137,3 +137,10 @@ Inscribed through `_inscribe_ruling.py` (dry run clean, then write; 701 → 702)
 ## 3 · `W-305w` — NOT closed, and why
 
 Its `closes_when` asks for FIVE things: the 102, `s212-D1`/`s256-D1`, the ring and the threads, the `s279-D1`/`W-305n6` collision, and whether `--wrap` is the wrap path again. `s305-D64` answers only the fifth. The other four are still his, so closing it would strike four open questions without a receipt. Recorded instead, by addition in its body: the fifth is answered by `s305-D64`, with the gate reading. (`W-305n3`, his boot-efficiency and wrap thread, is still not touched; `W-305wr` links it.)
+
+## Round two — the commits
+
+- **Commit 3 `fe78092433c62f009a79d1692e716f530c9325c0`** — 37 files (36 named + the auto-staged rehearsal log), +18,193 / −895; declared not-a-wrap, exit 0 in 81 s, `✓ done — locks clear`. ★ **The wrap gate inside the committer: `capture gate [wrap]: 243 in scope · 0 fail · 324 warn` → "wrap gate green"** — the first green wrap-gate reading at this seat since the boot-ceiling arm began failing at #298. Transcripts `_gitcommit-L3.{log,term}`. It carried round one's uncommitted tail (the post-push addendum and its seven logs).
+- **Why not `--wrap`:** `_git_commit.sh` and the runbook reserve `--wrap` for "the session's FINAL commit" at the ritual's close, and on `--wrap` T3 derives and verifies the subject from the ★ LATEST banner as the wrap headline. The #305 wrap was `81bce363` (5b `eb2630bb`); step 5b's post-wrap beat re-runs the gate and commits, and does not name `--wrap`. So this stayed on the declared path, now with a green gate. Whether the next WRAP takes `--wrap` is the next wrap seat's, and the arm no longer stands in its way.
+- **The stamp:** `s305-D64` `ruled` → `enacted` at `fe780924` (`--set-status`, dry run first; `stamp-D64.log`).
+- **Commit 4 (the stamp commit)** carries the stamp, the serial re-run, the explorer rebuilt after it, and this section. Its sha, the push and CI are in the round-two addendum below.
