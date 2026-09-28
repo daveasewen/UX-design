@@ -797,6 +797,19 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    ruling id** — the rule, its evidence and its advisory gate arm are at step 3.
    ⚠ Do NOT promote a spec/ledger to Polaroid duty in compensation (A-D3: the spec stays the single
    source); the beat only makes the record SAY the source changed.
+5c. **The summary for Dave — short bullets: decisions, outputs, problems (`s305-D63`, 2026-09-28; added
+   by addition after 5b — the step list in the heading above is left as written).** Dave, verbatim: *"lt's turn
+   the summary into shorter bullets just outlining decisions, outputs and problems, less verbose."*
+   ~~After every wrap, give Dave a plain-prose narrative of the session, five to seven paragraphs, no bullets,
+   no landmarks (his ask at #250, 2026-09-06).~~ *(Struck by `s305-D63`. The #250 practice lived in Project
+   memory and the conductor's wrap briefs, never in this runbook; it is written here only so the strike has a
+   home. Older `NARRATIVE.md` files stay as the record they are.)*
+   **The form:** a file `notes/_lanes/<n>/W/SUMMARY-BULLETS.md` (provenance and status lines as any lane note),
+   then three headings in this order — **Decisions** · **Outputs** · **Problems** — one short line per bullet,
+   about 20 bullets in all at most, no narrative paragraphs. A decision carries its ruling id where one exists;
+   an output its path, sha or run; a problem what is open and whose it is. Figures are copied off the handoff
+   and the wrap report, never retyped from memory. The conductor gives it to Dave after the wrap; the
+   narrative dossier of step 1b is unchanged (it is the WHY and HOW for the record, not the summary for him).
 
 ## ★ FILED SUB-REPORTS — what every sub brief must now say (`s218-D7`, 2026-08-25)
 

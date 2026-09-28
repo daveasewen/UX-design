@@ -85,7 +85,13 @@ CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".token-cache.j
 # set to 5,000 against a floor of 4,998 — compliance was arithmetically impossible, and three
 # sessions shaved ratified record trying to obey it. A cap must be DERIVED, and a derivation
 # that lands under its own floor is not a strict cap, it is a broken one. [[translate-prose-into-machinery]]
-BUDGET_HARD = 300_000        # PICKED by Dave #301 (2026-09-23) — an EXPERIMENT until the Mac
+# ⬛ `s305-D62` (Dave, Mon 2026-09-28 11:41 BST, chat #305, verbatim: *"Lets make the window 320
+# including a wrap, 320 is a bright amber and 350 as the limit."*): BUDGET_HARD 300,000 → 350,000 and
+# BUDGET_WORKING 256,000 → 320,000, and the working window INCLUDES the wrap. It SUPERSEDES `s305-D28`'s
+# figures; `s305-D28` is not edited, and the comments at both constants below are kept as its record.
+BUDGET_HARD = 350_000        # `s305-D62` (was 300_000 — `s305-D28` / #301). Everything below this
+                             # line is the record of the 300,000 figure, kept as written.
+                             # PICKED by Dave #301 (2026-09-23) — an EXPERIMENT until the Mac
                              # seat fix. His words, verbatim: *"okay what we'll do is just raise
                              # the ceiling until we do the Mac seat fix, hopefully there wont be
                              # too many consequences. let just use subs to stretch the window as
@@ -102,7 +108,10 @@ BUDGET_HARD = 300_000        # PICKED by Dave #301 (2026-09-23) — an EXPERIMEN
                              # ⚠ NAME IS HISTORICAL: a QUALITY/TOLERANCE line sourced when the
                              # window was 200K-class — NOT a context wall for Fable 5.1 / Opus 5
                              # in Cowork (1M + auto-compaction), per Dave's #284 correction.
-BUDGET_WORKING = 256_000     # PICKED by Dave #301 (2026-09-23, 20:21 BST), answering whether the
+BUDGET_WORKING = 320_000     # `s305-D62` (was 256_000 — `s305-D28` / #301): the working window,
+                             # INCLUDING the wrap; 320,000 is his bright-amber line. The lines
+                             # below are the record of the 256,000 figure, kept as written.
+                             # PICKED by Dave #301 (2026-09-23, 20:21 BST), answering whether the
                              # 200K–256K "mechanical work only" band should stretch to 300K:
                              # *"200k isnt enough make it 256"*. Same experiment as BUDGET_HARD
                              # (300,000, his words at that constant) — until the Mac seat fix.
@@ -158,16 +167,21 @@ BUDGET_AMBER = 160_000       # PICKED (see above) — where a job should stop ta
 # edited — the ruling crosses their numbers out, and the text above is kept as their record.
 # Each line keeps its gap: stop sits 20,000 under working (as 180,000 sat under 200,000), tolerance
 # 24,000 under hard. Both stay ADVISORY — the blocking tier is BUDGET_HARD, as before.
-STOP_LINE_TK = 236_000       # `s305-D28` (was 180_000 — `s260-D2` + `s271-D1`); the ONE advisory
-                             # stop line, Dave's to move
+# ⬛ `s305-D62` (Dave, 2026-09-28): the working window is 320,000 INCLUDING the wrap, 320,000 is the
+# bright-amber line, 350,000 the limit. The conductor's reading, stated in the ruling: the stop line,
+# where the wrap STARTS, moves 236,000 → 300,000 so that a wrap lands inside 320,000; the tolerance
+# line becomes the amber line, 276,000 → 320,000. `s305-D28` is not edited; its text above stands.
+# Both stay ADVISORY — the blocking tier is BUDGET_HARD, as before.
+STOP_LINE_TK = 300_000       # `s305-D62` (was 236_000 — `s305-D28`; before it 180_000 — `s260-D2`
+                             # + `s271-D1`); the ONE advisory stop line, Dave's to move
 
 # ★★★ `s272-D93` (Dave, #272), in his words: *"we work until around 180, thats the safest but I
 # wont loose any sleep over hitting 220 for example"*. Enacted at #273 on his one word ("advisory
 # arm"): a NAMED ADVISORY band above the stop line. STOP_LINE_TK is UNCHANGED. Between the stop
 # line and this figure the check-in says TOLERATED, not breach; above it, PAST TOLERANCE. It is
 # NOT a wall — BUDGET_WORKING / BUDGET_HARD are untouched; the blocking tier remains his.
-TOLERATED_TK = 276_000       # `s305-D28` (was 220_000 — `s272-D93`); advisory tolerance band,
-                             # Dave's to move
+TOLERATED_TK = 320_000       # `s305-D62` — the bright-amber line (was 276_000 — `s305-D28`; before
+                             # it 220_000 — `s272-D93`); advisory tolerance band, Dave's to move
 
 # --------------------------------------------------------------------------- THE BOOT
 # The floor every session pays before it does anything. TWO HALVES, and they are known to
@@ -644,9 +658,9 @@ def main() -> int:
         print(f"{e}", file=sys.stderr)
         return 2
     print(f"context gauge — unit: REAL Claude tokens ({MODEL})\n")
-    print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} (Dave #56) · "
-          f"(working PICKED Dave #301, was 200,000) · "
-          f"quality-max {BUDGET_HARD:,} (PICKED Dave #301 — experiment; was 256,000 SOURCED, "
+    print(f"  budget   amber {BUDGET_AMBER:,} · working {BUDGET_WORKING:,} incl. the wrap (Dave #56) · "
+          f"(working `s305-D62`, was 256,000 `s305-D28`, 200,000 before #301) · "
+          f"quality-max {BUDGET_HARD:,} (`s305-D62`, was 300,000 PICKED #301; 256,000 SOURCED, "
           f"93% MRCR v2)")
     print(f"    ⚠ {BUDGET_HARD:,} is a QUALITY/TOLERANCE line (above the last measured-good 256,000), "
           "NOT a context wall for")
@@ -679,7 +693,7 @@ def selftest() -> int:
 
     XX Does NOT re-pin the ruled budget triple. `(BUDGET_AMBER, BUDGET_WORKING, BUDGET_HARD)
     == (160_000, 256_000, 300_000)` (#301, Dave's picked experiment: HARD 256_000 -> 300_000,
-    WORKING 200_000 -> 256_000) has exactly ONE authority -- `_capture_gate.py`\'s
+    WORKING 200_000 -> 256_000; `s305-D62` then moved it to (160_000, 320_000, 350_000)) has exactly ONE authority -- `_capture_gate.py`\'s
     `selftest_preflight_tokens()`, which asserts it by importing this module. A second
     literal copy here would be the exact defect [[gate-must-quote-what-it-forbids]] warns
     about. Arm D checks the GUARD\'s LOGIC (ordering + floor-clearing), never the numbers.

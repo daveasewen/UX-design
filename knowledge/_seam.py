@@ -46,9 +46,10 @@ prints LAST for exactly that reason and must not be moved above SCRATCH.
 Missing file → `STANDING — knowledge/_standing.md ABSENT`, and the run still exits 0.
 
 VERDICTS are the ruled lines, imported from `_gauge_tokens.py`, never restated here:
-  STOP_LINE_TK 236,000 (s305-D28; was 180,000 s260-D2/s271-D1) → past it: "STOP LINE PASSED — wrap before the next lane"
-  TOLERATED_TK 276,000 (s305-D28; was 220,000 s272-D93)       → past it: "OUTSIDE TOLERANCE — no more lanes"
-  BUDGET_HARD  300,000 (#301, was 256,000) → past it: "HARD LINE BREACHED"
+  STOP_LINE_TK 300,000 (s305-D62; was 236,000 s305-D28, 180,000 s260-D2/s271-D1) → past it: "STOP LINE PASSED — wrap before the next lane"
+  TOLERATED_TK 320,000 (s305-D62, the bright-amber line; was 276,000 s305-D28, 220,000 s272-D93) → past it: "OUTSIDE TOLERANCE — no more lanes"
+  BUDGET_HARD  350,000 (s305-D62; was 300,000 #301/s305-D28, 256,000 before) → past it: "HARD LINE BREACHED"
+  (the working window BUDGET_WORKING is 320,000 and INCLUDES the wrap — s305-D62, 2026-09-28)
 
 SCRATCH is cleaned MECHANICALLY (the current user's own top-level entries under /tmp and
 /var/tmp — the only litter anyone can ever remove, see `_gate_scratch_hygiene.py`), with ONE
