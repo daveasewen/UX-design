@@ -97,3 +97,20 @@ Pushed `80d4198d..dcb76d81`, then `..fe243c6c`, `..3b4cae5d`, `..079740c5`, each
 *Filed report: `notes/_subreports/2026-09-28-306-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-28-306-his-ticks-came-back-and-the-wrap-runs-tools.md`. Memory hook: `notes/_lanes/306/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/306/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #307: the 78 reopened questions, how he wants them worked`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **712, newest `s306-D10`**.
+
+1. ⛔★ **THE WRAP COMMIT IS `5234ce41`, ON THE `--wrap` PATH.** Gate before it: `244 in scope · 0 fail · 341 warn`. 43 paths, every one checked changed or untracked first; `✓ done — locks clear`, exit 0. Log `notes/_lanes/306/W/_gitcommit-W.log`.
+2. **THE PUSH: `079740c5..5234ce41`**, plain `git push origin master` through the credential helper; fast-forward checked first; `git ls-remote` = local HEAD. 17:11:58 UTC, **17.6 minutes from the launch** (16:54:23 UTC).
+3. ⬛★ **CI, READ BACK BY `_ci_readback.py` — THE ONE WAIT.** `079740c5` run `36453625640` **ALL GREEN** (release, gates, render). The wrap commit `5234ce41` run `36456434157` **ALL GREEN** (release 17:12:48 · gates 17:19:40 · render 17:26:30 UTC). Summaries `notes/_lanes/306/W/_ci-runs-079740c5.txt`, `_ci-runs-5234ce41.txt`. The summary went to Dave at 17:26 UTC, **32 minutes from the launch** (about 59 at #305).
+4. **THE PHASE 1 AND 2 PROOF, AGAINST THE TARGETS:** scripts written **0** (target 0; three inline one-off edits, no file) · move files **1 + the 5b** (target 1 + the 5b) · rebuilds **1 for the wrap** (target 1), **plus 1 for this 5b**, because the 5b line lands in the ⏱ delta that `_CHAIN.md` slices · hand steps **2** (`_gen_titles.py` missing from the serial; a doubled `> ` from the placeholder). Detail in `notes/_subreports/2026-09-28-306-W-wrap.md` § POST-COMMIT. Whether this counts as proven is his (OWED item 2).
+5. **Locks: 14 lock files moved in four `unlock` runs (the fourth after the 5b gate)** (the gate's `index.lock` each time, plus `HEAD.lock`, `ORIG_HEAD.lock` and `refs/heads/master.lock` from the reset), all in `notes/_lanes/_orphan-locks/` with `306-W` in their names. The committer held none.
+6. **`_CHAIN.md` after the wrap's regen: 7,371 cl100k (slice 6,519 + 852), UNDER the 7,700 warn; after this 5b's regen 7,670 (slice 6,818 + 852), still under by 30** — OWED item 4's first half is not true at this wrap, only close; the handoff-not-counted half stands.
+7. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads in `notes/_lanes/306/W/_work/`; the note `notes/_lanes/306/WRAP-MEMORY-HOOK.md`.
+8. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
