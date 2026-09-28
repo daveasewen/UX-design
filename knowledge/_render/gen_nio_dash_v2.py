@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Mint the Nio dashboard composed screen — knowledge/_fitness-test/nio-dash-console-v1.canon.html
+Mint the Nio dashboard composed screen, VERSION 2 — knowledge/_fitness-test/nio-dash-console-v2.canon.html
 
 WHY A GENERATOR (s200-D1, mint-time derivation): the canon chart components carry BAKED SVG
 geometry (rect x/y/width/height, polyline points, donut arc `d`, data-fx/data-fw/data-fxs
@@ -17,7 +17,7 @@ same arithmetic canon's own snippets encode:
 Nothing here authors a colour, a font-size or a font-weight. Every fill is var(--data-series-N)
 or a canon semantic token; every text element carries a .t-cm-* / .t-ed-* composite.
 
-Run:  python3 knowledge/_render/gen_nio_dash.py
+Run:  python3 knowledge/_render/gen_nio_dash_v2.py   (v1: gen_nio_dash.py; the dataset is v1's, imported)
 Gate: python3 knowledge/_validate_screen.py --render
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -240,33 +240,24 @@ def leg(rows, shapes=False, ident="", label="Series"):
 # verbatim. Where it only DRAWS a bar or a line (the four chart panels), the series are read
 # off the drawn heights against the printed 0–100 axis — declared, not invented.
 
-MONTHS12 = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"]
+# #307 lane D (W-307q2, s307-D7; #220 audit-L2 finding 11 / question 5): v1 and v2 are BOTH live
+# (each artefact has its own _screen-gate record), so the dataset is ONE home — v1's — and v2 imports it.
+# The eight constants were byte-identical copies; the v2 artefact byte-reproduces after this change.
+from gen_nio_dash import (MONTHS12, BAL_SERIES, SPEND, SPEND_LINE, YS_SERIES, YS_LINES,  # noqa: E402
+                          YS_MONTHS, YS_BARS)
 
 # Balances overview — grouped column, money in vs money out
-BAL_SERIES = [("A", "Money in"), ("B", "Money out")]
 BAL = [[45, 30], [62, 100], [18, 22], [55, 60], [85, 40], [42, 30],
        [58, 46], [50, 60], [95, 72], [40, 65], [30, 22], [20, 25]]
 
 # Spending breakdown — the printed legend, verbatim
-SPEND = [("A", "Payroll", 8500), ("B", "Rent", 2400), ("C", "Software", 1050),
-         ("D", "Travel", 890), ("E", "Utilities", 314), ("F", "Other", 580)]
 SPEND_TOTAL = sum(r[2] for r in SPEND)          # 13,734 — see the divergence note in the page
 
-# Spending overview — single-series line
-SPEND_LINE = [30, 100, 42, 8, 30, 28, 55, 62, 58, 65, 68, 88]
+# Spending overview — single-series line: SPEND_LINE (v1's, imported above)
 
-# Your spending — four-series line
-YS_SERIES = [("A", "Payroll"), ("B", "Suppliers"), ("C", "Overheads"), ("D", "Travel")]
-YS_LINES = {
-    1: [30, 34, 40, 22, 62, 30, 42, 50, 40, 52, 60, 92],
-    2: [22, 28, 45, 55, 44, 70, 38, 30, 34, 44, 62, 88],
-    3: [10, 16, 30, 44, 30, 34, 44, 32, 38, 50, 74, 86],
-    4: [12, 90, 46, 40, 58, 38, 30, 40, 36, 42, 52, 80],
-}
+# Your spending — four-series line: YS_SERIES / YS_LINES (v1's, imported above)
 
-# Your spending — grouped column, six months, three series
-YS_MONTHS = ["May", "Jun", "Jul", "Aug", "Sep", "Oct"]
-YS_BARS = [[30, 55, 44], [50, 68, 82], [18, 24, 14], [40, 52, 46], [92, 70, 60], [22, 46, 38]]
+# Your spending — grouped column, six months, three series: YS_MONTHS / YS_BARS (v1's, imported above)
 
 # KPI sparklines (12 points each), read off the reference tiles
 SPK = {

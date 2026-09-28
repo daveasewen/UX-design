@@ -2227,6 +2227,15 @@ the ruled text says "catches a real defect twice", no definition of catch). **If
 does not count, the ruled answer is already "wait".** That vocabulary call, and promotion itself,
 are Dave's. Home of the full critique: `notes/_briefs/2026-08-19-207-addendum-206-report-critique.md`.
 
+**RULED #307 (2026-09-28), `s307-D21` — added by addition, nothing above edited.** Dave, by click at
+20:59 BST on the #307 sitting page, verbatim: *"No, only live catches count; park the three until they
+catch something live"* (the recommendation). So the vocabulary call above is settled: **only a LIVE
+catch counts toward `s204-D1`'s twice-caught bar; a mined historical occasion does not.** Each of the
+three candidates (P-2, P-4, P-5) has one live catch, so none meets the bar, and all three are
+**PARKED as `P-307-3`** in `knowledge/_parked.json` until each catches something live a second time.
+The seat that records a second live catch logs it HERE (this file is `P-307-3`'s tripwire) and puts
+the promotion to Dave. Written by #307 lane D for store row W-307q4.
+
 ---
 
 ## ds-040 — a boxed control that never consumes `--border-radius-control` (Search-field, and six siblings)

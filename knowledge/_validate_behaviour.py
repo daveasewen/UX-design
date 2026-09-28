@@ -259,6 +259,29 @@ def check_member(html, label):
         if EXT_SRC_RE.search(html) else []
 
 
+# #307 lane D (W-307q9, s307-D26; the #250 verifier's V-MUT-5): the page sum TRUSTED `consumes` and
+# never checked it — a member that under-declared (Chart-donut dropping dv-legend) was charged 16,937
+# instead of 24,671 with no failure. The guard cross-checks the declaration against what the snippet
+# actually CARRIES: the set of non-empty AUTO-BEHAVIOUR blocks must EQUAL the member's `consumes`
+# (or every group behaviour when `consumes` is absent, ADR-0015 A2). Under-declaring is the silent
+# under-charge; over-declaring is a claim the snippet does not back. Both fail, named.
+_AUTO_BLOCK_RE = re.compile(r"<!-- ===== AUTO-BEHAVIOUR (\S+) START[^\n]*?===== -->(.*?)"
+                            r"<!-- ===== AUTO-BEHAVIOUR \1 END ===== -->", re.S)
+
+
+def check_consumes(html, want, label):
+    carried = {n for n, body in _AUTO_BLOCK_RE.findall(html) if body.strip()}
+    want = set(want)
+    fails = []
+    if carried - want:
+        fails.append(f"{label}: carries AUTO-BEHAVIOUR {sorted(carried - want)} its `consumes` does not "
+                     f"declare — the page sum under-charges it (V-MUT-5)")
+    if want - carried:
+        fails.append(f"{label}: `consumes` declares {sorted(want - carried)} but the snippet carries no "
+                     f"such AUTO-BEHAVIOUR block (V-MUT-5)")
+    return fails
+
+
 def run():
     reg = json.load(open(REG))
     fails, rows, totals = [], [], {}
@@ -295,7 +318,9 @@ def run():
         for m in members:
             mp = os.path.join(HERE, "snippets", m + ".reference.html")
             if os.path.exists(mp):
-                fails += check_member(open(mp).read(), f"{gname}: {m}")
+                _html = open(mp).read()
+                fails += check_member(_html, f"{gname}: {m}")
+                fails += check_consumes(_html, consumes.get(m) or list(behs), f"{gname}: {m}")
     return fails, rows, totals
 
 
@@ -460,6 +485,19 @@ def selftest():
         fails.append("external script src not caught")
     if check_member('<script>var a=1;</script>', "T"):
         fails.append("inline script wrongly flagged")
+    # --- the consumes cross-check (#307 W-307q9, V-MUT-5) ---
+    def _blk(n, body="x();"):
+        return (f"<!-- ===== AUTO-BEHAVIOUR {n} START (g) ===== -->{body}"
+                f"<!-- ===== AUTO-BEHAVIOUR {n} END ===== -->")
+    two = _blk("a") + _blk("b")
+    if check_consumes(two, ["a", "b"], "T"):
+        fails.append("consumes cross-check: a member carrying exactly what it declares was failed")
+    if not any("under-charges" in x for x in check_consumes(two, ["a"], "T")):
+        fails.append("consumes cross-check: an UNDER-declaring member (V-MUT-5) was not caught")
+    if not any("carries no such" in x for x in check_consumes(_blk("a"), ["a", "b"], "T")):
+        fails.append("consumes cross-check: an OVER-declaring member was not caught")
+    if check_consumes(_blk("a") + _blk("b", body="  "), ["a"], "T"):
+        fails.append("consumes cross-check: an EMPTY pre-landed marker pair was counted as carried")
     live, _, _ = run()
     if live:
         fails.append("LIVE registry failing: %s" % "; ".join(live))

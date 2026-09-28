@@ -44,7 +44,14 @@ INDEX_PATH = os.path.join(HERE, "_memento-index.json")
 LEXICON_PATH = os.path.join(HERE, "_consult-lexicon.json")
 
 KIND_ORDER = ["lane", "gm-section", "ls-section", "ledger-section", "runbook-section",
-              "gauge-block", "gm-archive-section", "ls-archive-section", "brief", "dream"]
+              "gauge-block", "gm-archive-section", "ls-archive-section", "brief", "dream",
+              "carries-section"]
+# #307 lane D (W-307q1, s307-D6 — Dave, by click, "Hand it to Claude: fix the search gap, close
+# the rest"): `carries-section` (the _CARRIES.md hand-off list, indexed since s225-D2) was indexed
+# but UNSEARCHABLE — bucket_for() returned None for it (#226 replay sweep §2.2). It joins LAST, so
+# no ruled sibling's order moves, at cap 3, the value most siblings carry (lane, gm, ls, gauge,
+# brief, dream). pattern-node / context-node / component-meta stay outside: they feed the graph
+# decorate, and nothing ruled asks for them here.
 KIND_LABEL = {
     "lane": "lane records",
     "gm-section": "GOOD-MORNING sections",
@@ -56,11 +63,12 @@ KIND_LABEL = {
     "ls-archive-section": "LS-archive sections",
     "brief": "briefs",
     "dream": "dream proposals",
+    "carries-section": "carried-items sections",
 }
 DEFAULT_CAP = {
     "lane": 3, "gm-section": 3, "ls-section": 3, "ledger-section": 4,
     "runbook-section": 5, "gauge-block": 3, "gm-archive-section": 4,
-    "ls-archive-section": 4, "brief": 3, "dream": 3,
+    "ls-archive-section": 4, "brief": 3, "dream": 3, "carries-section": 3,
 }
 
 
@@ -152,6 +160,9 @@ SELFTEST_CASES = [
      {"ledger:23-section-usage-instrumentation-enacted-lane-1-step-2-2026"}),
     ("dream pass weekly sunday unattended fire",
      {"lane:lane-dream-pass"}),
+    # #307 W-307q1: the carried-items list must be reachable by SEARCH, not only by --fetch id
+    ("residual carries hand-off",
+     {"carries:HDR"}),
 ]
 
 

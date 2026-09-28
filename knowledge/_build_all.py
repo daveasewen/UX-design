@@ -716,6 +716,16 @@ STEPS = [
      "_wrap_regen.py", ["--selftest"]),
     ("wrap commit door selftest — unchanged paths refused, T3 prefix pinned, locks moved never rm'd, temp repo (s306-D4 phase 1, built #306)",
      "_wrap_commit.py", ["--selftest"]),
+    # #307 lane D — two steps APPENDED LAST, no existing step number moves; route rows in the SAME
+    # edit. (1) W-307q7 (s307-D24, #219 lane-2 Q3): the ds-039 guard in gen_canon_components.py was
+    # load-bearing since #122 with no bite; its selftest is ABORT like every sibling selftest here.
+    # (2) W-307q6 (s307-D23, #218 cA Q3, the report's recommendation (b)): the itinerary register's
+    # `--check` wired ADVISORY — a snapshot that ages is now said on every build, never a red,
+    # because emitted snapshots are write-once and a new STAMP is a deliberate act.
+    ("canon components ds-039 harvest-guard selftest — four bites on temp snippets, canon.css never opened (W-307q7, built #307)",
+     "canon/gen_canon_components.py", ["--selftest"]),
+    ("itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)",
+     "gen_itinerary_status.py", ["--check"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1150,6 +1160,8 @@ ROUTE_ROWS = [
     ("wrap state-row writer selftest — mint born closed, close / reopen by addition, on a copy of the store (s306-D4 phase 1, built #306)", ABORT, None),
     ("wrap regen runner selftest — the serial's fixed order and stop-on-fail, fake steps in a temp dir (s306-D4 phase 1, built #306)", ABORT, None),
     ("wrap commit door selftest — unchanged paths refused, T3 prefix pinned, locks moved never rm'd, temp repo (s306-D4 phase 1, built #306)", ABORT, None),
+    ("canon components ds-039 harvest-guard selftest — four bites on temp snippets, canon.css never opened (W-307q7, built #307)", ABORT, None),
+    ("itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)", ADVISORY, None),
 ]
 
 

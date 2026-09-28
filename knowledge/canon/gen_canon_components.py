@@ -411,12 +411,58 @@ def build(css):
         new = css.rstrip() + "\n\n\n" + comp_css + "\n"
     return new, made
 
+def selftest():
+    """#307 lane D (W-307q7, s307-D24; #219 lane-2 report question 3): the ds-039 harvest guard in
+    `gen_one()` had been load-bearing since #122 and had never been proven to bite in a test (it
+    failed FALSELY for seven days at #218-#219). Four bites on throwaway snippets in a temp dir —
+    two that must be ACCEPTED (the #219 species: '<' inside a CSS string or comment is CSS, not
+    markup) and two that must be REFUSED or harvested correctly (the #122 species). Reads and writes
+    nothing in the repo: `gen_one()` only returns text, and canon.css is never opened."""
+    import tempfile
+    fails = []
+
+    def run(body, pre=""):
+        d = tempfile.mkdtemp(prefix="gcc-selftest-")
+        path = os.path.join(d, "Selftest-part.reference.html")
+        with open(path, "w") as f:
+            f.write(pre + "<style>" + body + "</style>\n<div class=\"x\"></div>\n")
+        try:
+            return gen_one(path), None
+        except SystemExit as exc:
+            return None, str(exc)
+
+    def bite(name, ok):
+        print(("  OK   " if ok else "  FAIL ") + name)
+        if not ok:
+            fails.append(name)
+
+    out, err = run('@property --dvf1{syntax:"<number>"; inherits:true; initial-value:1;}\n.x{color:red}')
+    bite("a '<' inside a CSS STRING (@property syntax) is CSS, not markup — accepted (#219 species)",
+         err is None)
+    out, err = run("/* a <link> mentioned in a CSS comment */ .x{color:red}")
+    bite("a '<' inside a CSS COMMENT is not markup — accepted", err is None)
+    out, err = run(".x{color:red}\n<link rel=\"stylesheet\" href=\"y.css\">\n.y{color:blue}")
+    bite("literal markup inside the harvested <style> is REFUSED, named ds-039 (#122 species)",
+         err is not None and "HARVEST NOT CSS" in err and "ds-039" in err)
+    out, err = run(".x{color:red}", pre="<!-- documentation that mentions a <style> tag -->\n")
+    bite("a <style> mentioned in an HTML comment is not harvested — the real block is, no refusal",
+         err is None)
+    if fails:
+        print(f"gen_canon_components --selftest: {len(fails)} BITE(S) FAILED")
+        return 1
+    print("gen_canon_components --selftest OK — 4 bites: the ds-039 guard accepts CSS strings and "
+          "comments, refuses leaked markup, and ignores a <style> named in an HTML comment.")
+    return 0
+
+
 def main():
     # ADR-0013 ruling 4: this projector joins _build_all — regenerate-always (snippet
     # RULE-text changes self-heal into canon) + --check (determinism guard: a write step
     # followed by --check catches non-idempotent generator bugs, the project_canon
     # stomp class caught live 2026-07-21).
     import sys
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     css = open(CANON).read()
     new, made = build(css)
     if "--check" in sys.argv:

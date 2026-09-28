@@ -96,6 +96,27 @@ require_receipts_fresh() {
          then cut: python3 knowledge/_drive_chart_engine.py"
 }
 
+# ---- #307 lane D — STRIKES OWED AT THE CUT (frozen files change only at a cut) ----------------
+# s307-D32 (Dave, by click 21:01 BST 2026-09-28, verbatim "Yes: strike it at the next release cut"):
+# the Gumdrop index builder is BUILT (apollo-spider/gumdrop/machinery/_build_memento_index.py, #220),
+# so the carried cut's generalisation-debt list must stop naming "Index bootstrap for a fresh
+# project" as owed. The list ships verbatim and is changed only at a cut — so the cut itself
+# refuses until the COMMIT being released carries the strike. Store row W-307qe closes when a
+# release passes this check. Checked against the commit (git show), never the working tree.
+OWED_STRIKE_TEXT="Index bootstrap for a fresh project"
+OWED_STRIKE_PATHS="memento-package/machinery/_MACHINERY-MANIFEST.md memento-package/claude-plugin/memento/machinery/_MACHINERY-MANIFEST.md"
+require_owed_strikes() {
+  local p
+  for p in $OWED_STRIKE_PATHS; do
+    if git -C "$ROOT" show "$COMMIT:$p" 2>/dev/null | grep -qF "$OWED_STRIKE_TEXT"; then
+      die "a strike is OWED at this cut (s307-D32, store row W-307qe): $p still lists
+         '$OWED_STRIKE_TEXT' as owed, and the builder is built. Rewrite item 3 as done, without
+         that phrase (e.g. '3. BUILT #220: the fresh-project index builder,
+         apollo-spider/gumdrop/machinery/_build_memento_index.py'), commit, re-run --manifest, cut."
+    fi
+  done
+}
+
 ratified() {
   python3 - "$MANIFEST" <<'PY'
 import json, sys
@@ -205,6 +226,7 @@ dryrun|release)
   if [ "$MODE" = release ]; then
     require_clean
     require_receipts_fresh
+    require_owed_strikes
     ratified || die "the manifest's status is not RATIFIED. s219-D4(2): the exact cut is a
          proposed manifest for Dave's eye BEFORE the bake — release is his word, not the
          script's. Show him reviews/RELEASE-SPIDER-*.html, then set the status."
