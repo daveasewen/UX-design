@@ -60,3 +60,5 @@ provenance: 305 · 2026-09-27 · status: observed · repo record: `_HANDOFF-156-
 ## THE `s271-D4` RE-READ
 
 *Run as the ritual's final beat, after 5 and 5b, against `knowledge/_rulings.json` — its result is appended below by addition.*
+
+**Result: 699 records, newest `s305-D61` (`json.load`, 09:51 UTC); no ruling landed after the hook was written, so NO item above is closed by a later #305 ruling and nothing is struck.** Item 3 (the ring) is FED by `s305-D59` but not closed by it — the ruling says so in its own words (`W-305n2`). The advisory arm `_capture_gate.hook_open_items_recheck('.', <this file>)` read 0 open items and 57 same-day rulings — its parser does not match this file's heading form, as at #297–#304. The wrap commit is `81bce363` (pushed `cd16f7ec..81bce363`, CI `36404496114` all green); recorded in `notes/_subreports/2026-09-28-305-W-wrap.md` § POST-WRAP.

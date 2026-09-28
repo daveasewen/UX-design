@@ -133,3 +133,24 @@ As `_HANDOFF-155` says, unchanged: pass `https://claude.ai/artifact/1PpLec2QecFE
 *Filed report: `notes/_subreports/2026-09-28-305-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-27-305-he-took-the-sitting-v1014-was-cut-and-ci-went-green.md`. Memory hook: `notes/_lanes/305/WRAP-MEMORY-HOOK.md`. His words and the facts: `notes/_lanes/305/WRAP-BRIEF.md`. Narrative: `notes/_lanes/305/W/NARRATIVE.md`.*
 
 *Title the next chat:* `Apollo - #306: the 102 parked questions, his keep-open ticks`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no ★ LATEST banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **699, newest `s305-D61`** (`json.load`, 09:51 UTC).
+
+1. ⛔★★ **THE WRAP COMMIT IS `81bce363` AND IT WENT ON THE DECLARED NOT-A-WRAP PATH, NOT `--wrap`.** The wrap gate, run inside the committer: **`capture gate [wrap]: 243 in scope · 1 fail · 321 warn`** → **`⚠ wrap gate RED — visible, not blocking: this commit is DECLARED not-a-wrap (#74-D1)`**. The one fail is the raised boot ceiling: *"`_gauge_tokens.BOOT_CEILING_TK` = 130,000 and 1 post-diet reading(s) EXCEED it — #304 131,130"* — his call (OWED item 9). **The doc-row gate passed, no `DOC_ROW_ACK`: `W-305v`, `h`, `wk`, `w`, `dh` were minted and `W-305r1` born closed, and `_CHAIN.md` regenerated, BEFORE the first attempt.** 84 files changed, 22,331 insertions, 3,788 deletions; `✓ done — locks clear`, exit 0, **one door run** — every named path was checked changed or untracked first. Transcript `notes/_lanes/305/W/_gitcommit-W1.log` (+ `.term`).
+2. **Locks: none stranded** — not by the gate at open, not by the gate before the commit, not by the committer or the push. The first wrap since #297 with no lock to move.
+3. **THE ★ LATEST BANNER, by `_gm_usage.py`: LATEST 672 tape** against `s241-D2`'s **1,200 / 10**.
+4. ⬛ **THE PUSH: `cd16f7ec..81bce363`** by **plain `git push origin master`, DECLARED**, through the credential helper. Branch `master` and fast-forward checked first (`origin/master` `cd16f7ec`, an ancestor). **`git ls-remote origin refs/heads/master` = `81bce3635637433487a7ff972fc8584c7d8128e8` = local HEAD.** Transcript `notes/_lanes/305/W/_push-W1-plain.log` (URL without credentials).
+5. ⬛★ **CI, READ BACK TO COMPLETION, verdict taken AFTER `render` closed:** run `36404496114` — `release` ✅ 09:36:25 UTC · `gates` ✅ **09:48:14** · `render` ✅ **09:49:56**. **ALL GREEN, the third fully green run in a row.**
+
+   ```
+   SURVEY: 69 pass · 0 FAIL · 6 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 79 not asked (mutating)
+   ```
+
+   Step 6, 154 of 154 asked: **0 gate red**; advisory `[140] [141] [150]`; could-not-ask `[10] [13] [61] [68] [73] [74] [142] [147] [148] [153] [154]` — **identical by name to C4's run `36393419907`.** Evidence step red-and-continued at `6 lint · 0 unparsed · 3 rc/observation mismatch`, as before. ⛔ **Nothing was repaired.** Log `notes/_lanes/305/W/_ci-gates-W.log`; parse `notes/_lanes/305/W/step6-parse.txt`; run summary `notes/_lanes/305/W/_ci-runs-81bce363.txt`.
+6. ⛔★ **MEMORY — NOT WRITTEN BY THIS SEAT, BY THE BRIEF'S INSTRUCTION (not even read).** Every payload is ready for the conductor in `notes/_lanes/305/W/_work/`: `memory_file_305.md` (the wrap file) · `memory_indexline_305.txt` (the line for the top of `index.md`) · `memory_archive_line302.txt` (the #302 line, the oldest of three if #304's note was placed — verify against the store's text before moving) · `memory_area_review-pages-as-artifact_addition.txt` · `memory_area_roadmap-weekend-runs-304_addition.txt` · `memory_area_apollo-mcp-genui_addition.txt` + `…_description.txt` · `memory_area_jev-integration_addition.txt`. **If it is not placed, leave it: the note is `notes/_lanes/305/WRAP-MEMORY-HOOK.md`.** ⚠ #306's opener must NOT read or write the store.
+7. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **7,561 tape (slice 6,710 + 851 wrapper), ratio 22%**. After this addendum's ⏱ delta line: **7,906 (slice 7,055 + 851), ratio 23%** of a `GOOD-MORNING.md` of 34,656 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
+8. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.
