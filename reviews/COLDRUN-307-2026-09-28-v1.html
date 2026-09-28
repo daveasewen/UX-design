@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold run #307 — the frozen prompt against the v1.0.14 pack</title>
+<style>
+  :root{
+    --accent:#DB0011; --accent-3:#730014;
+    --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--white); color:var(--black);
+    font:400 16px/1.75 "Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4);}
+  nav.top{position:sticky; top:0; z-index:10; background:var(--white); border-bottom:1px solid var(--grey-2);}
+  nav.top .wrap{display:flex; align-items:center; justify-content:space-between; height:56px; gap:var(--s4);}
+  nav.top a{font-size:14px; letter-spacing:.05em; color:var(--grey-6); text-decoration:none;}
+  nav.top a:hover{color:var(--black);}
+  nav.top .back{color:var(--black); font-weight:500;}
+  section{padding:var(--s7) 0; border-bottom:1px solid var(--grey-2);}
+  section.tight{padding:var(--s5) 0;}
+  section.band{background:var(--grey-1);}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent);}
+  h1{font-size:57px; line-height:1.04; font-weight:400; letter-spacing:0; margin:0 0 var(--s3);}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3);}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:0 0 var(--s2);}
+  p{margin:0 0 var(--s2); max-width:68ch;}
+  .meta{font-size:14px; color:var(--grey-7);}
+  code, .mono{font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size:13px;}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+  .idx{font-size:84px; line-height:1; font-weight:200; color:var(--grey-3); margin:0 0 var(--s2);}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin:var(--s4) 0 0;}
+  .stat .n{font-size:43px; line-height:1.05; font-weight:200;}
+  .stat .k{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6);}
+  table{border-collapse:collapse; width:100%; margin:var(--s3) 0 0; font-size:14px;}
+  th,td{border-bottom:1px solid var(--grey-2); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-7);}
+  td.num{text-align:right; font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace;}
+  .scroll{overflow-x:auto;}
+  .ok{color:var(--grey-8); font-weight:500;}
+  .bad{color:var(--accent); font-weight:500;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3);}
+  .grid2 > div{background:var(--white); padding:var(--s3);}
+  .renders{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4);}
+  .renders figure{margin:0;}
+  .renders img{width:100%; border:1px solid var(--grey-2); display:block;}
+  .renders figcaption{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6); padding-top:var(--s1);}
+  ol.findings{padding-left:0; list-style:none; counter-reset:f;}
+  ol.findings > li{counter-increment:f; padding:var(--s3) 0; border-top:1px solid var(--grey-2);}
+  ol.findings > li::before{content:'F' counter(f,decimal-leading-zero); display:block;
+    font-size:12px; letter-spacing:.14em; color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  ol.rsq{padding-left:0; list-style:none; counter-reset:q;}
+  ol.rsq > li{counter-increment:q; padding:var(--s3) 0; border-top:1px solid var(--grey-3);}
+  ol.rsq > li::before{content:'Q' counter(q); display:block; font-size:12px; letter-spacing:.14em;
+    color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  .quote{border-top:1px solid var(--grey-3); padding-top:var(--s3); font-size:19px; max-width:68ch;}
+  footer{padding:var(--s5) 0; font-size:14px; color:var(--grey-6);}
+  @media (max-width:860px){ .dim,.renders,.grid2,.stats{grid-template-columns:1fr;} h1{font-size:40px;} }
+</style>
+</head>
+
+<body>
+
+<nav class="top"><div class="wrap">
+  <a class="back" href="COLDRUN-258-2026-09-08-v5.html">&larr; Cold run v5 (#258)</a>
+  <a href="#answer">Answer</a><a href="#compare">Beside yours</a><a href="#renders">Renders</a><a href="#delta">Delta</a><a href="#findings">Findings</a><a href="#next">What next</a>
+  <span class="meta">session 307 · lane E</span>
+</div></nav>
+
+<section id="answer">
+  <div class="wrap">
+    <p class="label">Cold run #307 · 2026-09-28 · the v1.0.14 pack</p>
+    <h1>Nearly. A fresh session built more than your fettled dashboard, in one pass, and tripped on one wire it could not see.</h1>
+    <p>Your question, from the card: <em>"Can a fresh session, asked for a dashboard, reach what you got after five rounds of fettling?"</em>
+    One arm, blind, the #246 prompt unaltered, against the <strong>current released pack</strong> — <code>Apollo-Spider-v1.0.14.zip</code>,
+    sha256 <code>35ae981b…49bb545</code> (cut at #305 from commit <code>0ef30746</code>; v1.0.13 is no longer the newest).
+    Frozen page: <code>outputs/coldrun-307/arm-A-blind/dashboard.html</code>, sha256 <code>d6f8fa7a…b4e32468</code>, 208,309 bytes, never touched after the freeze.</p>
+    <p>On parts, depth and behaviour it went past your page: ten canon components against your eight, two engine-drawn charts against one,
+    a sortable, pageable, editable grid, a drawer, three working views, dark mode, and state that survives a reload. Where it falls short is
+    the two things nobody was there to give it: <strong>the theme</strong> (no one answered the grill, so it went Mono and square, where yours
+    is Console) and <strong>one look in a browser</strong> — a single wiring bug, visible on the first load, cost the grid its link to the filters
+    and threw the same error 25 times.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">3/3/2/2</div><div class="k">rich · full · persistent · interactive</div></div>
+      <div class="stat"><div class="n">44</div><div class="k">driven steps, 1440 + 820</div></div>
+      <div class="stat"><div class="n">1</div><div class="k">distinct pageerror (25 throws)</div></div>
+      <div class="stat"><div class="n">1 char</div><div class="k">between the screen gate's FAIL and PASS</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="compare" class="band">
+  <div class="wrap">
+    <p class="label">01 · Beside yours — 1440, light</p>
+    <h2>Your dashboard (left) and tonight's frozen page (right).</h2>
+    <div class="renders">
+      <figure><img src="../outputs/coldrun-307/compare/dave-aug30canon-1440-light-full.png" alt="Dave's fettled international banking dashboard, Console theme, 1440 light"><figcaption>Yours · <code>dashboards/international-banking-dashboard.canon.html</code> · Console · rendered on the 26 Aug canon it was built against</figcaption></figure>
+      <figure><img src="../outputs/coldrun-307/renders/1440-light.png" alt="Tonight's cold-run dashboard, Mono theme, 1440 light"><figcaption>Tonight · one blind pass on v1.0.14 · Mono (the grill's default)</figcaption></figure>
+    </div>
+    <p class="meta" style="margin-top:var(--s3)">Your file links the repo's live <code>canon.css</code>, which has moved since August: rendered against today's canon its masthead
+    links underline and the payments filter row stacks (<code>outputs/coldrun-307/compare/dave-1440-light-full.png</code>). The picture above uses the
+    canon of commit <code>416e1a6d</code> (26 Aug), the last before you finished it, copied to a scratch folder — nothing in the repo was changed.</p>
+    <div class="scroll"><table>
+      <tr><th>Row</th><th>Yours (after five rounds)</th><th>Tonight (one pass, blind)</th></tr>
+      <tr><td>Theme</td><td class="ok">Console — rounded groups on a grey page</td><td class="bad">Mono, square — the theme question had no one to answer it</td></tr>
+      <tr><td>Canon components</td><td>8 scopes · 4 stat-cards · 1 chart · summary · list</td><td class="ok">10 scopes · 4 kpi-tiles with sparklines · 2 charts · data grid · list · drawer · shell</td></tr>
+      <tr><td>Charts</td><td>one line, 6 points, monthly/YTD, target, last year</td><td class="ok">multiline (5 currencies) + grouped column (6 entities), drawn by the library engine from <code>DATA</code>, legends, CSV, table</td></tr>
+      <tr><td>Data</td><td>12 payments, typed into the page</td><td class="ok">220 payments · 12 accounts · 6 entities · 5 currencies · 366 days of balances, derived</td></tr>
+      <tr><td>Status on a payment</td><td class="ok">coloured status pills</td><td class="bad">plain text</td></tr>
+      <tr><td>Filter row</td><td class="ok">search + two dropdowns + segment, one calm row inside the panel</td><td>page-level toolbar: search, add filter, range, export, chips</td></tr>
+      <tr><td>Views</td><td>nav links, no views behind them</td><td class="ok">Overview · Liquidity · Payments, each a different wall</td></tr>
+      <tr><td>Survives a reload</td><td class="bad">no state kept</td><td class="ok">view, range, sort, page, size, density, theme — 12 of 13 keys</td></tr>
+      <tr><td>Clutter</td><td class="ok">none</td><td class="bad">the grid's keyboard help paragraph prints under the table; "Value date" header truncates</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">02 · Four scores, each with the one fact that earned it</p>
+    <div class="scroll"><table>
+      <tr><th>Score</th><th></th><th>The fact</th></tr>
+      <tr><td>Visually rich</td><td class="num">3</td><td>Ten canon scopes on one page; both charts drawn by <code>dvRender</code> from <code>DATA</code> (rule 18 — v5 had to hand-author its geometry); every KPI, sparkline point and bar computed at run time.</td></tr>
+      <tr><td>Full</td><td class="num">3</td><td>220 payments, 12 accounts, 6 entities, 5 currencies, footer present; the grid measures <strong>1,262px in a 1,310px tile</strong> at 1440 (<code>render.json</code>); no horizontal page overflow at 1440 or 820. One visible blemish: the toolbar count reads "— of — payments" (F01's knock-on).</td></tr>
+      <tr><td>Persistent</td><td class="num">2</td><td>A cold reload restored 12 of 13 keys (<code>drive-b.json → persistence.match</code>) — but a filter added from Overview is not written to the URL until the next grid action (<code>drive-a.json</code>, step "filter: add Entity = DE": no <code>url</code> change), and a restored filter comes back with no chip.</td></tr>
+      <tr><td>Interactive</td><td class="num">2</td><td>44 steps driven; the toolbar re-drives the KPIs and both charts, grid sort/page/size/density/column filters work, rows open the drawer with focus inside and Escape returns it, export downloads a CSV — <strong>but the toolbar does not reach the grid</strong> until the grid is touched, and 25 <code>pageerror</code>s fire.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section id="renders">
+  <div class="wrap">
+    <p class="label">03 · The renders — default state, both modes, both breakpoints</p>
+    <div class="renders">
+      <figure><img src="../outputs/coldrun-307/renders/1440-light.png" alt="1440 light"><figcaption>1440 · light</figcaption></figure>
+      <figure><img src="../outputs/coldrun-307/renders/1440-dark.png" alt="1440 dark"><figcaption>1440 · dark</figcaption></figure>
+      <figure><img src="../outputs/coldrun-307/renders/820-light.png" alt="820 light"><figcaption>820 · light — the masthead collapses to the menu sheet</figcaption></figure>
+      <figure><img src="../outputs/coldrun-307/renders/820-dark.png" alt="820 dark"><figcaption>820 · dark — the grid scrolls inside its tile</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="label">04 · Gates, run after the freeze on a minted copy inside the unzipped pack</p>
+    <div class="scroll"><table>
+      <tr><th>Gate</th><th>Result</th><th>Log</th></tr>
+      <tr><td><code>_validate_receipt.py</code>, unminted</td><td class="bad">FAIL:NO-RECEIPT (exit 1)</td><td><code>outputs/coldrun-307/gates/receipt-unminted.log</code></td></tr>
+      <tr><td><code>_validate_receipt.py</code>, after <code>--mint</code></td><td class="ok">PASS (+1 UNPROVEN retrievalSet), exit 0</td><td><code>gates/receipt-minted.log</code></td></tr>
+      <tr><td><code>_validate_screen.py</code></td><td class="bad">FAIL on one line: <code>a11y: animates but has no prefers-reduced-motion block (2.3.3)</code></td><td><code>gates/screen-minted.log</code></td></tr>
+      <tr><td><code>_validate_screen.py</code>, one character changed in a comment</td><td class="ok">PASS, exit 0</td><td><code>gates/screen-probe-one-char.log</code></td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)">The gate's only match is the word <code>transition:</code> inside a comment of the dv-behaviour block the skill tells a page to carry verbatim; the linked <code>canon.css</code> carries 198 reduced-motion blocks the gate cannot see. The gate wrote its ledger into the pack copy, not the repo.</p>
+  </div>
+</section>
+
+<section id="delta" class="band">
+  <div class="wrap">
+    <p class="label">05 · #246 &rarr; #258 v1–v5 &rarr; #307</p>
+    <h2>Seven columns, same rows.</h2>
+    <div class="scroll"><table>
+      <tr><th>Row</th><th>#246</th><th>v1</th><th>v2</th><th>v3</th><th>v4</th><th>v5</th><th>#307 (v1.0.14 zip)</th></tr>
+      <tr><td><strong>Scores</strong></td><td class="mono">2/2/0/2</td><td class="mono">3/2/0/2</td><td class="mono">3/2/3/3</td><td class="mono">3/2/3/2</td><td class="mono">3/2/3/3</td><td class="mono">3/3/3/2</td><td class="mono"><strong>3/3/2/2</strong></td></tr>
+      <tr><td>Pack under test</td><td>tree</td><td>v1.0.7 zip</td><td>tree e774fb7</td><td>tree 5c241f7</td><td>tree 84f0a17</td><td>tree c9bf745</td><td><strong>v1.0.14 zip</strong></td></tr>
+      <tr><td>Gates during the build</td><td>no</td><td>no</td><td>no</td><td>no</td><td>yes</td><td>yes + drive</td><td><strong>no (blind)</strong></td></tr>
+      <tr><td><code>pageerror</code> on load</td><td>—</td><td class="bad">1</td><td class="ok">0</td><td class="ok">0</td><td class="ok">0</td><td class="ok">0</td><td class="bad"><strong>1</strong></td></tr>
+      <tr><td>Grid width at 1440</td><td>—</td><td>—</td><td class="bad">~400 in ~1300</td><td class="bad">760 in 1,312</td><td class="bad">760 in 1,376</td><td class="ok">1,328 in 1,376</td><td class="ok"><strong>1,262 in 1,310</strong></td></tr>
+      <tr><td><code>_validate_screen.py</code></td><td>—</td><td class="bad">FAIL</td><td class="bad">FAIL</td><td class="bad">FAIL</td><td>after mint</td><td class="ok">PASS after one repair</td><td class="bad"><strong>FAIL on a comment</strong></td></tr>
+      <tr><td>Charts drawn by</td><td>baked</td><td>baked</td><td>authored</td><td>authored</td><td>authored</td><td>authored</td><td class="ok"><strong>the library engine</strong></td></tr>
+      <tr><td>Data depth</td><td>placeholder</td><td>placeholder</td><td>52 / 6</td><td>50 / 5</td><td>84 / 6</td><td>54 / 6</td><td><strong>220 payments / 6 entities / 12 accounts</strong></td></tr>
+      <tr><td>Views</td><td class="bad">nav dead</td><td class="bad">nav dead</td><td>2</td><td>2</td><td>2</td><td>4</td><td><strong>3 + the 820 menu sheet</strong></td></tr>
+      <tr><td>How it was composed</td><td colspan="6">spliced from the bento template (rule 7a then)</td><td><strong>from the graph's seed (<code>_compose_slice.py</code>), template never traced</strong></td></tr>
+    </table></div>
+    <p class="meta" style="margin-top:var(--s3)">Read in one line: <strong>#246 2/2/0/2 &rarr; #258 3/2/0/2 &rarr; 3/2/3/3 &rarr; 3/2/3/2 &rarr; 3/2/3/3 &rarr; 3/3/3/2 &rarr; #307 3/3/2/2</strong>.
+    The two runs that scored 3 on persistence ran gates or a drive during the build; tonight's did not, and the one point it lost on each of persistent and interactive traces to one bug a single load would have shown.</p>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">06 · Findings — one fact each, with the file that proves it</p>
+    <ol class="findings">
+      <li><strong>The one bug is the author's, and a browser shows it at once.</strong> <code>renderAll()</code> writes the accounts list, but the Overview and Payments views detach that group, so <code>getElementById('acctList')</code> is null and the rest of the pass never runs: the grid is not re-fed, the URL is not written, the toolbar count stays "—". <code>render.json → pageerrors</code>: <em>Cannot set properties of null (setting 'innerHTML')</em> on every load; 25 throws across <code>drive-a.json</code> + <code>drive-b.json</code>, all the same message. In the Liquidity view, where the list is attached, the same pass works end to end.</li>
+      <li><strong>The pack's parts held.</strong> Every carried block was sliced from the pack's own snippets by asserted replacement (<code>outputs/coldrun-307/_build/assemble.py</code>), and nothing the pack supplied failed in the drive: the chart engine, legend, drawer focus order, off-canvas sheet, the toolbar's dropdowns and chips and the grid's sort, pager, density, column filters and edit-in-place all worked as shipped.</li>
+      <li><strong>The screen gate fails a page for carrying the engine verbatim.</strong> <code>_validate_a11y.py:75</code> searches the page text for <code>transition:</code> and finds it in a dv-behaviour comment; changing <code>:</code> to <code>;</code> in that comment flips the gate to PASS (<code>gates/screen-probe-one-char.log</code>). Rule 2a says copy the block verbatim; the gate penalises exactly that.</li>
+      <li><strong>The theme is the widest visual gap, and it is a question, not a defect.</strong> <code>briefs/</code> is absent in the pack, the grill fires, nobody answers, the skill defaults to Mono (<code>arm-A-blind/brief.md</code>). Yours is Console. The difference in the picture is mostly that answer.</li>
+      <li><strong>The skill now composes rather than traces, and it shows.</strong> Step 1's reader returned a seed of 10 components + 12 alternates, 31 governing rulings, 48 obeys, 18 unresolved (<code>arm-A-blind/seed.json</code>); two typed panel runs resolved the charts. No line of the page came from the bento template's body — #258 v1–v5 all spliced it.</li>
+      <li><strong>No part in the graph is "a panel that holds a chart".</strong> The build used <code>stat-card</code> as the chart module because canon's own dashboard rules 7–9 do (<code>canon.css:18272–18287</code>); <code>cards</code> has no padded, non-interactive form. Your C1 back-port (<em>the dashboard tile ground</em>) is this same gap.</li>
+      <li><strong>Status reads as plain text.</strong> The seed never offered <code>status-indicator</code> for a record's status; yours carries coloured pills. One of the eight improvements the card now brings back.</li>
+      <li><strong>Deviations, declared.</strong> The pack was unzipped to <code>~/tmp/ads-307/</code> because <code>/dev/shm</code> is wiped between calls on this seat; the reader was run (not read), which #258's allowed list predates; no node, gate, render or browser before the freeze.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="next" class="band">
+  <div class="wrap">
+    <p class="label">07 · What next</p>
+    <h2>Give the cold build one look before it hands over, and stop the gate reading comments.</h2>
+    <p><strong>Recommendation.</strong> Two small pack changes, then one more cold run on the next cut. (1) Make one headless load and a console read the default last step of <code>ADS-generate-from-canon</code>, with a ten-line driver shipped in the pack — tonight's only real loss would have shown on that load. (2) Strip comments before <code>_validate_a11y.py</code> looks for motion. Then answer the theme question as Console for the next comparison, so the picture measures the build and not the default.</p>
+    <p class="meta">Not ruled here — this is the lane's recommendation for you to take or leave.</p>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  #307 lane E · paths: <code>outputs/coldrun-307/</code> (arm, renders, compare, gates, drive-a.json, drive-b.json, render.json, _build) ·
+  report <code>notes/_subreports/2026-09-28-307-E-cold-run.md</code>
+</div></footer>
+</body>
+</html>

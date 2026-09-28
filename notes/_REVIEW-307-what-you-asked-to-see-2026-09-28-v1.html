@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What you asked to see</title>
+<style>
+:root{--accent:#DA1A00;--black:#000;--white:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max-width:1100px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--black);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--max-width);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--grey-6)}.label.mute::before{background:var(--grey-3)}
+header{padding:64px 0 48px;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:56px;font-weight:200;line-height:1.08;letter-spacing:-.01em;margin:0}
+.sub{font-size:26px;font-weight:300;line-height:1.3;margin:var(--s3) 0 0;max-width:24em}
+h2{font-size:34px;font-weight:300;line-height:1.18;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:13px;line-height:1.7;color:var(--grey-7)}
+.meta b{font-weight:500;color:var(--black)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+section.grey{background:var(--grey-1)}
+section.dark{background:var(--black);color:var(--white)}
+section.dark h2{color:var(--white)}section.dark p{color:var(--grey-3)}section.dark .label{color:var(--white)}section.dark .label::before{background:var(--white)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s5);align-items:start}
+.beats{list-style:none;padding:0;margin:var(--s4) 0 0;counter-reset:b}
+.beats li{counter-increment:b;display:grid;grid-template-columns:72px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--grey-3)}
+.beats li::before{content:counter(b,decimal-leading-zero);font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6)}
+.beats b{display:block;font-weight:500;margin-bottom:4px;font-size:18px;line-height:1.35}
+.beats p{margin:0 0 var(--s1);color:var(--grey-8)}
+.beats .show{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--black);margin-top:6px;line-height:1.5}
+.beats .note{font-size:13px;color:var(--grey-7);margin-top:var(--s1)}
+.line{font-size:26px;font-weight:300;line-height:1.4;max-width:28em;margin:0}
+.line b{font-weight:500}
+dl.facts{margin:var(--s4) 0 0;display:grid;grid-template-columns:120px 1fr;gap:var(--s2) var(--s3);font-size:15px}
+dl.facts dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);padding-top:4px;line-height:1.5}
+dl.facts dd{margin:0}
+dl.facts dd b{font-weight:500}
+blockquote{margin:var(--s4) 0 0;padding:0 0 0 var(--s3);border-left:2px solid var(--accent);font-size:20px;font-weight:300;line-height:1.5;max-width:40em}
+blockquote cite{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6);margin-top:10px;font-style:normal;line-height:1.5}
+.q{font-weight:300}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);margin-top:var(--s4);border:1px solid var(--grey-3)}
+.cols.two-up{grid-template-columns:repeat(2,1fr)}
+.cols>div{background:var(--white);padding:var(--s3)}
+.cols .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--black);font-weight:500;margin-bottom:4px;line-height:1.5}
+.cols .st{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s2);line-height:1.5}
+.cols p{font-size:15px;margin:0 0 var(--s1);color:var(--grey-8)}
+.cols p.for{margin-top:var(--s2);padding-top:var(--s1);border-top:1px solid var(--grey-2);color:var(--black)}
+sup{font-size:10px;line-height:0;color:var(--grey-6);letter-spacing:.02em}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:var(--s3)}
+th,td{text-align:left;padding:.7rem .9rem .7rem 0;border-bottom:1px solid var(--grey-3);vertical-align:top;line-height:1.55}
+th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);font-weight:500}
+td b{font-weight:500}
+/* the diagram */
+.diag{margin-top:var(--s4);background:var(--white);border:1px solid var(--grey-3);padding:var(--s3)}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.diag .tall{display:none;max-width:420px;margin:0 auto}
+.diag-cap{font-size:13px;color:var(--grey-7);margin-top:var(--s2);max-width:60em}
+/* three routes */
+.routes{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:auto;gap:0 1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.route{display:grid;grid-row:span 6;grid-template-rows:subgrid;background:var(--white);padding:0 var(--s3)}
+.route>div{padding:var(--s2) 0;border-top:1px solid var(--grey-2);font-size:15px;line-height:1.55;color:var(--grey-8)}
+.route>div:first-child{border-top:0;padding-top:var(--s3)}
+.route .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:4px;line-height:1.5}
+.route .letter{font-size:40px;font-weight:200;line-height:1.1;color:var(--grey-6);display:block}
+.route h3{margin:6px 0 4px;font-size:19px}
+.route .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.route.pick{box-shadow:inset 0 3px 0 var(--black)}
+.route.pick .tag{color:var(--accent);font-weight:500}
+.route .verdict{color:var(--black)}
+.route .verdict b{font-weight:500}
+/* measured stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.stats>div{background:var(--white);padding:var(--s3)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.1;display:block}
+.stats .n small{font-size:20px;font-weight:300;color:var(--grey-7);margin-left:4px}
+.stats .c{font-size:14px;line-height:1.5;color:var(--grey-8);display:block;margin-top:var(--s1)}
+.gaps{list-style:none;padding:0;margin:0;counter-reset:g}
+.gaps li{counter-increment:g;display:grid;grid-template-columns:48px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--grey-3)}
+.gaps li::before{content:counter(g);font-size:28px;font-weight:200;line-height:1.15;color:var(--grey-6)}
+.gaps b{font-weight:500;display:block}
+.gaps p{margin:0 0 4px;color:var(--grey-8);font-size:15px}
+.gaps .fix{color:var(--black)}
+.moved{list-style:none;padding:0;margin:var(--s3) 0 0}
+.moved li{padding:var(--s1) 0;border-top:1px solid var(--grey-3);font-size:15px}
+.moved b{font-weight:500}
+.tech{font-size:13px;color:var(--grey-7);max-width:64em}
+.tech p{margin:0 0 var(--s2)}
+.tech code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--grey-1);padding:.1em .35em;overflow-wrap:anywhere}
+ol.src{font-size:13px;color:var(--grey-7);padding-left:2.2em;margin:var(--s3) 0 0;max-width:64em}
+ol.src li{margin:0 0 6px;line-height:1.55;overflow-wrap:anywhere}
+ol.src a{color:var(--grey-8)}
+ol.src .re{color:var(--black);font-weight:500}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--grey-6)}
+@media(max-width:820px){
+  .wrap{padding:0 16px}header .grid,.two,.cols,.cols.two-up{grid-template-columns:1fr}
+  .two{gap:0}
+  h1{font-size:40px}.sub{font-size:21px}h2{font-size:26px}.line{font-size:21px}
+  blockquote{font-size:18px}
+  .beats li{grid-template-columns:44px 1fr;gap:var(--s2)}.beats li::before{font-size:30px}
+  dl.facts{grid-template-columns:1fr;gap:4px var(--s2)}dl.facts dd{margin-bottom:var(--s2)}
+  .diag{padding:var(--s2) 12px}.diag .wide{display:none}.diag .tall{display:block}
+  .routes{grid-template-columns:1fr;gap:1px 0}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}.stats>div{padding:var(--s2)}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack tr{border-top:1px solid var(--grey-3);padding:.6rem 0}
+  table.stack td{border:0;padding:.25rem 0}
+  table.stack td::before{content:attr(data-l);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+}
+</style><style>
+/* v2 additions */
+section.part{background:var(--black);color:var(--white);padding:var(--s5) 0;border-bottom:0}
+section.part .label{color:var(--white)}section.part .label::before{background:var(--white)}
+section.part h2{color:var(--white);font-size:44px;font-weight:200;margin:0 0 var(--s2)}
+section.part p{color:var(--grey-3);max-width:40em;margin:0}
+.glance{font-size:26px;font-weight:300;line-height:1.4;max-width:30em;margin:0 0 var(--s4)}
+.glance b{font-weight:500}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.dist>div{background:var(--white);padding:var(--s3)}
+.dist .hd{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2);color:var(--grey-6)}
+.dist .alt .hd{color:var(--accent)}
+.dist dl{margin:0;display:grid;grid-template-columns:1fr;gap:4px}
+.dist dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin-top:var(--s1)}
+.dist dd{margin:0;font-size:15px;line-height:1.55;color:var(--grey-8)}
+.guess{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;border:1px solid var(--black);padding:.3rem .6rem;line-height:1.4;margin:0 0 var(--s3)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);margin-top:var(--s3)}
+.lists h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);line-height:1.5;margin:0 0 var(--s1)}
+.lists ul{margin:0;padding:0;list-style:none}
+.lists li{padding:.55rem 0;border-top:1px solid var(--grey-3);font-size:15px;line-height:1.55}
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s3)}
+.ex>div{background:var(--white);padding:var(--s3)}
+.ex .who{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;margin-bottom:var(--s2)}
+.ex .scr{border:1px solid var(--black);padding:12px;display:grid;gap:8px}
+.ex .scr div{background:var(--grey-1);padding:8px 10px;font-size:13px;line-height:1.45}
+.ex .scr div span{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-7);line-height:1.5}
+.ex .scr .no{background:var(--white);border:1px dashed var(--grey-6);color:var(--grey-7)}
+.ex .rec{font-size:13px;color:var(--grey-7);margin-top:var(--s2);line-height:1.55}
+.ex .rec b{color:var(--black);font-weight:500}
+.ask{font-size:19px;font-weight:300;line-height:1.5;margin:var(--s2) 0 0}
+@media(max-width:820px){
+  section.part h2{font-size:32px}.glance{font-size:21px}
+  .dist,.ex,.lists{grid-template-columns:1fr}.lists{gap:var(--s3)}
+  .dist>div,.ex>div{padding:var(--s2)}
+}
+</style><style>
+/* R6b decision-page additions (house CSS above is copied from the Apollo-MCP v2 page) */
+.beats.decide li p.rec{color:var(--black)}
+.beats.decide li p.rec b{display:inline;font-size:inherit}
+.beats.decide li p.q{font-size:18px;font-weight:500;color:var(--black);margin:0 0 var(--s1);line-height:1.4}
+.stats.four{grid-template-columns:repeat(2,1fr)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.pair>figure{margin:0;background:var(--white);padding:var(--s2) var(--s3)}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin:0 0 var(--s1)}
+.pair figcaption b{display:inline;font-size:inherit;margin:0;color:var(--black);font-weight:500;line-height:inherit}
+.pair img{display:block;max-width:100%;height:auto}
+.pair .chip{margin-top:var(--s2);display:flex;align-items:flex-end;gap:var(--s2)}
+.pair .chip span{font-size:12px;color:var(--grey-7);line-height:1.4}
+.sw{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.sw>div{background:var(--white);padding:var(--s2)}
+.sw .hd{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5;margin-bottom:var(--s1)}
+.sw .row{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;margin-top:8px}
+.sw .blk{height:28px}
+.sw .ln{height:28px;display:flex;align-items:center}
+.sw .ln i{display:block;height:2px;width:100%}
+.sw .v{font-size:13px;line-height:1.4;color:var(--grey-8)}
+.sw .v b{display:block;font-size:13px;margin:0;line-height:1.4;font-weight:500;color:var(--black)}
+.ex3{list-style:none;padding:0;margin:var(--s1) 0 var(--s1)}
+.ex3 li{counter-increment:none;border-top:0;grid-template-columns:none;display:block;padding:.45rem 0 .45rem .9rem;border-left:2px solid var(--grey-3);margin:0 0 6px;font-size:15px;line-height:1.5;color:var(--grey-8)}
+.ex3 li::before{content:none}
+.ex3 li q{quotes:"\201C" "\201D";color:var(--black)}
+.ex3 li .d{font-size:12px;color:var(--grey-6);letter-spacing:.04em}
+.count{font-size:13px;color:var(--grey-7);letter-spacing:.02em;margin:0 0 var(--s1)}
+.xref{font-size:14px;color:var(--grey-8);border-top:1px solid var(--grey-3);padding-top:var(--s1);margin-top:var(--s2)}
+.xref a{color:var(--black)}
+.est{font-size:12px;color:var(--grey-6);letter-spacing:.04em}
+.tech ul{margin:0 0 var(--s2);padding-left:1.2em}
+.tech li{margin:0 0 4px;overflow-wrap:anywhere}
+.tech li code{white-space:nowrap}
+@media(max-width:820px){
+  .stats.four{grid-template-columns:1fr 1fr}
+  .pair,.sw{grid-template-columns:1fr}
+  .pair>figure{padding:var(--s2)}
+}
+</style>
+<style>
+/* #305 B4 additions */
+.pair3{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.pair3.stack{grid-template-columns:1fr}
+.pair3.stack>figure{display:grid;grid-template-columns:2fr 1fr;gap:0 var(--s3);align-items:start}
+.pair3.stack figcaption{grid-column:1/-1}
+.pair3.stack ul{margin-top:0}
+.pair3>figure{margin:0;background:var(--white);padding:var(--s2) var(--s3) var(--s3)}
+.pair3 figcaption{margin:0 0 var(--s2)}
+.pair3 .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;color:var(--grey-6)}
+.pair3 .bad .tag{color:var(--accent)}
+.pair3 .ttl{display:block;font-size:17px;font-weight:500;line-height:1.35;margin-top:2px}
+.pair3 ul{list-style:none;padding:0;margin:var(--s2) 0 0;font-size:14px;line-height:1.5;color:var(--grey-8)}
+.pair3 li{padding:4px 0;border-top:1px solid var(--grey-2)}
+.pair3 li b{font-weight:500;color:var(--black)}
+.src-note{font-size:13px;color:var(--grey-7);margin:0 0 var(--s3);max-width:60em}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--grey-6);margin:var(--s5) 0 var(--s1);line-height:1.5}
+.kicker:first-of-type{margin-top:var(--s3)}
+.rule{border-left:2px solid var(--grey-3);padding:.2rem 0 .2rem var(--s2);margin:var(--s2) 0;font-size:15px;color:var(--grey-8);max-width:48em}
+.rule .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.rule.now{border-left-color:var(--accent)}
+.dd-call{margin-top:var(--s5);border-top:2px solid var(--black);padding-top:var(--s3)}
+.dd-call .idx{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--accent);line-height:1.5}
+.dd-call .q{font-size:22px;font-weight:300;line-height:1.35;margin:4px 0 var(--s2)}
+.dd-call p.rec{font-size:18px;margin:0 0 var(--s1)}
+.dd-call p.rec b{font-weight:500}
+.dd-call p.why{color:var(--grey-8);max-width:44em}
+@media(max-width:820px){
+  .pair3{grid-template-columns:1fr}.pair3>figure{padding:var(--s2)}
+  .pair3.stack>figure{display:block}.pair3.stack ul{margin-top:var(--s2)}
+  .stats:not(.four){grid-template-columns:1fr}
+  .dd-call .q{font-size:19px}
+  .kicker{margin-top:var(--s4)}
+}
+</style>
+<style>
+/* #305 B4: light and dark. The house pages carry light only; dark swaps the same tokens. */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--accent:#FF6A55;--black:#F2F2F2;--white:#141414;--grey-1:#1E1E1E;--grey-2:#2A2A2A;--grey-3:#3C3C3C;--grey-5:#8C8C8C;--grey-6:#A6A6A6;--grey-7:#BDBDBD;--grey-8:#D6D6D6;color-scheme:dark}
+}
+:root[data-theme="dark"]{--accent:#FF6A55;--black:#F2F2F2;--white:#141414;--grey-1:#1E1E1E;--grey-2:#2A2A2A;--grey-3:#3C3C3C;--grey-5:#8C8C8C;--grey-6:#A6A6A6;--grey-7:#BDBDBD;--grey-8:#D6D6D6;color-scheme:dark}
+body{background:var(--white);color:var(--black)}
+/* the decisions bar stays a dark bar in both modes */
+.dd-bar{background:#000 !important;color:#fff !important}
+.dd-bar button{color:#fff !important}
+.dd-bar button.pri{background:#DA1A00 !important;border-color:#DA1A00 !important}
+.dd-chip.on{background:var(--black);color:var(--white)}
+/* renders are light screenshots: frame them so they sit on either ground */
+.shot{display:block;max-width:100%;height:auto;border:1px solid var(--grey-3);background:#fff}
+
+/* the published back link is black: give it an edge on a dark ground */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #rv-back{box-shadow:0 0 0 1px #6a6a6a !important}}
+:root[data-theme="dark"] #rv-back{box-shadow:0 0 0 1px #6a6a6a !important}
+
+/* phones: the decisions bar wraps to three rows; keep the page foot clear of it */
+@media(max-width:820px){html body{padding-bottom:150px}}
+
+</style>
+<style>
+/* #307 lane C additions */
+.quad{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.quad>figure,.cells>figure{margin:0;background:var(--white);padding:var(--s2)}
+.quad figcaption,.cells figcaption{margin:0 0 var(--s1)}
+.quad .tag,.cells .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;color:var(--grey-6)}
+.quad .ttl,.cells .ttl{display:block;font-size:14px;font-weight:500;line-height:1.4;margin-top:2px}
+.quad ul{list-style:none;padding:0;margin:var(--s1) 0 0;font-size:13px;line-height:1.5;color:var(--grey-8)}
+.quad li{padding:3px 0;border-top:1px solid var(--grey-2)}
+.cells{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s2) 0}
+.cells .bad .tag{color:var(--accent)}
+.pair3.one{grid-template-columns:1fr}
+.quad.thumbs{grid-template-columns:repeat(4,1fr)}
+.show{max-width:48em;color:var(--grey-8);margin:var(--s2) 0 0}
+.ids{font-size:12px;line-height:1.55;color:var(--grey-6);margin:var(--s4) 0 0;max-width:72em;overflow-wrap:anywhere}
+.reds{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s2) 0}
+.reds>div{background:var(--white);padding:var(--s2);font-size:13px;line-height:1.45}
+.reds .chip{display:block;height:56px;margin-bottom:var(--s1)}
+.reds b{display:block;font-weight:500;font-size:14px}
+.reds span:not(.chip){color:var(--grey-7)}
+.fk-wrap{overflow-x:auto}
+table.fk{font-size:13px}
+table.fk code{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+table.fk .vals{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+table.fk .vals i{display:inline-block;width:28px;height:18px;border:1px solid var(--grey-3)}
+table.fk tr.err td{background:var(--grey-1)}
+@media(min-width:821px){table.five td:first-child{width:45%}}
+.slot-note{border:1px dashed var(--grey-5);padding:var(--s3);color:var(--grey-7);max-width:48em}
+.slot-note p{margin:0}
+.dd-box .dd-head{flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left}
+.dd-box .dd-chip{text-transform:none;letter-spacing:0;font-size:13px;line-height:1.35;text-align:left;padding:.45rem .7rem}
+.dd-box .dd-chip em{font-style:normal;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-left:.4rem}
+.dd-box .dd-chip.on em{color:inherit}
+@media(max-width:820px){
+  .quad.thumbs{grid-template-columns:1fr 1fr}.reds{grid-template-columns:1fr 1fr}
+  .cells{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:520px){
+  .quad{grid-template-columns:1fr}.quad.thumbs{grid-template-columns:1fr 1fr}
+  .cells{grid-template-columns:1fr 1fr}.cells>figure:last-child{grid-column:1/-1}
+}
+</style>
+</head>
+<body><a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · review page · session 307</p>
+        <h1>What you asked to see</h1>
+        <p class="sub">Five things from your answers tonight, each drawn from the real parts, each with a call and a recommendation.</p>
+      </div>
+      <p class="meta"><b>Review page v1 · Monday 28 September 2026</b><br>Answers your 21:18 export of the sitting page<br>Session 307, lane C<br>Status: recommendations. Nothing here is decided.<br>Every picture is rendered at your seat from the parts' own reference files and canon.</p>
+    </div>
+  </div>
+</header>
+
+<section id="answer">
+  <div class="wrap two">
+    <p class="label">The answer first</p>
+    <div>
+      <p class="glance"><b>Recommend:</b> close the dark captions; keep the tree's mark black and set today's ring inside the chosen square; promote the split button, fold three parts into ones you have, rework three and delete the rating; close the “five unbuilt parts”, as nothing was unbuilt; take the third red out of mono and hand the 29 forks to Claude.</p>
+      <div class="stats four">
+        <div><span class="n">11</span><span class="c">points the dark caption lifts off the page in mono, legacy and console. Supercharge lifts 9, and stays warm.</span></div>
+        <div><span class="n">2<small>px</small></span><span class="c">all that tells today from a plain chosen day now: the square is a little smaller.</span></div>
+        <div><span class="n">3</span><span class="c">faults the pictures show on the eight parts: stars out of step, look-alike arrows, a stray font.</span></div>
+        <div><span class="n">0</span><span class="c">parts the wave-3 build left unbuilt. All eight it was sent for already existed.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="item-1" class="grey">
+  <div class="wrap">
+    <p class="label">1 of 5 · the dark caption</p>
+    <h2>Does the dark caption sit right in all four themes?</h2>
+    <p class="ask">You asked to see the four themes' dark captions side by side once, then close. Each picture is the same capsule card from the bento rails page, in dark mode, with only the theme switched.</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · dark</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-mono-dark.png" width="396" height="274" alt="Mono theme, dark mode: the capsule card with its dark caption"><ul><li>Caption #313131 on page #1A1A1A</li><li>Lifts 11 points of lightness off the page</li><li>White text 13.0 : 1</li></ul></figure><figure><figcaption><span class="tag">Legacy · dark</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-legacy-dark.png" width="396" height="274" alt="Legacy theme, dark mode: the capsule card with its dark caption"><ul><li>Caption #313131 on page #1A1A1A</li><li>Lifts 11 points of lightness off the page</li><li>White text 13.0 : 1</li></ul></figure><figure><figcaption><span class="tag">Console · dark</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-console-dark.png" width="396" height="274" alt="Console theme, dark mode: the capsule card with its dark caption"><ul><li>Caption #313131 on page #1A1A1A</li><li>Lifts 11 points of lightness off the page</li><li>White text 13.0 : 1</li></ul></figure><figure><figcaption><span class="tag">Supercharge · dark</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-supercharge-dark.png" width="396" height="274" alt="Supercharge theme, dark mode: the capsule card with its dark caption"><ul><li>Caption #312C26 on page #1A1A1A</li><li>Lifts 9 points of lightness off the page</li><li>White text 12.8 : 1</li></ul></figure></div>
+    <p class="kicker">The same card in light mode, for reference</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · light</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-mono-light.png" width="396" height="274" alt="Mono theme, light mode: the capsule card with its dark caption"><ul><li>Caption #1A1A1A on page #FFFFFF</li><li>Not moved by the lift</li></ul></figure><figure><figcaption><span class="tag">Legacy · light</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-legacy-light.png" width="396" height="274" alt="Legacy theme, light mode: the capsule card with its dark caption"><ul><li>Caption #1A1A1A on page #FFFFFF</li><li>Not moved by the lift</li></ul></figure><figure><figcaption><span class="tag">Console · light</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-console-light.png" width="396" height="274" alt="Console theme, light mode: the capsule card with its dark caption"><ul><li>Caption #1A1A1A on page #FFFFFF</li><li>Not moved by the lift</li></ul></figure><figure><figcaption><span class="tag">Supercharge · light</span><span class="ttl">Capsule, dark-grey caption</span></figcaption><img class="shot" src="_lanes/307/C/shots/1-caption-supercharge-light.png" width="396" height="274" alt="Supercharge theme, light mode: the capsule card with its dark caption"><ul><li>Caption #13110E on page #F7F6F4</li><li>Not moved by the lift</li></ul></figure></div>
+    <p class="show">Mono, legacy and console lift by the same amount, from neutral 5 (#313131). Supercharge lifts from its own warm ramp (warm 5, #312C26), a little less, and stays warm; before your ruling its caption sat darker than its page. Light mode is as it was in all four. Today only console and, from tonight, mono can pick this caption; legacy and supercharge have the lift ready for when they can.</p>
+    <div class="dd-call" id="c1" data-options="Close it: the four lifts are right|Change one theme (say which in the note)|Keep it open" data-rec="Close it: the four lifts are right"><span class="idx">1 · The dark caption</span><p class="q">Close the dark caption lift in all four themes?</p><p class="rec"><b>Recommend close it.</b></p><p class="why">Because every theme now shows a capsule you can see, lifted by your own rule of aligning to the neutral primitives, and light mode did not move.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-307qi (from W-208) · ruling s220-D1 · values from CAPTION_GROUND_MINTS, knowledge/_render/gen_bento_matrix_217.py · rendered from showroom/_foundations/bento-rails.html, card “Capsule — Dark grey”</p>
+  </div>
+</section>
+<section id="item-2">
+  <div class="wrap">
+    <p class="label">2 of 5 · the tree mark and the ring</p>
+    <h2>How is a chosen tree item marked, and can you see today when it is also the chosen day?</h2>
+    <p class="ask">You said yes, the date picker uses the calendar part, and asked to see these two marks as pictures. Both are drawn from the parts' own reference files, light and dark.</p>
+
+    <p class="kicker">The tree's chosen item, beside the side navigation's “you are here”</p>
+    <div class="quad">
+      <figure><figcaption><span class="tag">Tree · light</span><span class="ttl">Chosen: grey ground, black bar</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-tree-states-light.png" width="400" height="327" alt="Tree states, light: the chosen node has a grey ground and a black bar on its left edge"><ul><li>3px bar in black, on the left</li><li>Label not clipped (21 of 21px)</li></ul></figure>
+      <figure><figcaption><span class="tag">Tree · dark</span><span class="ttl">Chosen: grey ground, white bar</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-tree-states-dark.png" width="400" height="327" alt="Tree states, dark: the chosen node has a dark grey ground and a white bar"><ul><li>3px bar in white, on the left</li></ul></figure>
+      <figure><figcaption><span class="tag">Side navigation · light</span><span class="ttl">You are here: red bar</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-nav-current-light.png" width="247" height="128" alt="Side navigation, light: the current page has a red bar on its left"><ul><li>3px bar in red #DB0011, no ground</li></ul></figure>
+      <figure><figcaption><span class="tag">Side navigation · dark</span><span class="ttl">You are here: red bar</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-nav-current-dark.png" width="247" height="128" alt="Side navigation, dark: the current page has a red bar on its left"><ul><li>The same red in dark</li></ul></figure>
+    </div>
+    <p class="show">The tree marks a chosen item with a grey ground and a black bar (white in dark). The side navigation marks the page you are on with a red bar. The builder kept them apart on purpose: “the thing I chose” and “the page I am on” mean different things, and whether they share a mark was left to you.</p>
+    <div class="dd-call" id="c2a" data-options="Keep the black bar for chosen|Use the red bar for both|Keep it open" data-rec="Keep the black bar for chosen"><span class="idx">2 · first call · the tree mark</span><p class="q">Should the tree's chosen mark stay black, apart from the navigation's red?</p><p class="rec"><b>Recommend keep it black.</b></p><p class="why">Because red already means “you are here” in the navigation, and one mark with two meanings would make a page that has both hard to read.</p><div class="dd-slot"></div></div>
+
+    <p class="kicker">The calendar day, at twice size · light</p>
+    <div class="cells"><figure><figcaption><span class="tag">Today</span><span class="ttl">a ring</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todayonly-light.png" width="184" height="136" alt="Calendar day, today, light mode, at twice size"></figure><figure><figcaption><span class="tag">Chosen</span><span class="ttl">a filled square</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-selonly-light.png" width="184" height="136" alt="Calendar day, chosen, light mode, at twice size"></figure><figure class="bad"><figcaption><span class="tag">Both, now</span><span class="ttl">the ring is page colour</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-now-light.png" width="184" height="136" alt="Calendar day, both, now, light mode, at twice size"></figure><figure><figcaption><span class="tag">Both, proposal</span><span class="ttl">ring set inside the square</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-proposal-light.png" width="184" height="136" alt="Calendar day, both, proposal, light mode, at twice size"></figure><figure class="bad"><figcaption><span class="tag">Both, before the repair</span><span class="ttl">black ring on black</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-old-light.png" width="184" height="136" alt="Calendar day, both, before the repair, light mode, at twice size"></figure></div>
+    <p class="kicker">The same, dark</p>
+    <div class="cells"><figure><figcaption><span class="tag">Today</span><span class="ttl">a ring</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todayonly-dark.png" width="184" height="136" alt="Calendar day, today, dark mode, at twice size"></figure><figure><figcaption><span class="tag">Chosen</span><span class="ttl">a filled square</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-selonly-dark.png" width="184" height="136" alt="Calendar day, chosen, dark mode, at twice size"></figure><figure class="bad"><figcaption><span class="tag">Both, now</span><span class="ttl">the ring is page colour</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-now-dark.png" width="184" height="136" alt="Calendar day, both, now, dark mode, at twice size"></figure><figure><figcaption><span class="tag">Both, proposal</span><span class="ttl">ring set inside the square</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-proposal-dark.png" width="184" height="136" alt="Calendar day, both, proposal, dark mode, at twice size"></figure><figure class="bad"><figcaption><span class="tag">Both, before the repair</span><span class="ttl">black ring on black</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-cal-todaysel-old-dark.png" width="184" height="136" alt="Calendar day, both, before the repair, dark mode, at twice size"></figure></div>
+    <p class="show">Today is a ring; chosen is a filled square. When one day is both, the part now draws the ring in the page colour. That ring meets the page at the cell's edge, so it cannot be seen as a ring: the square just looks 2px smaller all round than a plain chosen day. Before the repair it was worse, a black ring on black. The fourth picture is a one-line change, drawn on the real part, that sets the ring inside the square so it reads as a ring.</p>
+
+    <p class="kicker">The date picker, open on today (Monday 28 September) with today chosen</p>
+    <div class="pair3">
+      <figure class="bad"><figcaption><span class="tag">Date picker · light</span><span class="ttl">28 is today and chosen</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-dp-panel-light.png" width="336" height="331" alt="Date picker panel, light, 28 September chosen and today"><ul><li>Fill #1A1A1A, ring #FFFFFF, 2px</li></ul></figure>
+      <figure class="bad"><figcaption><span class="tag">Date picker · dark</span><span class="ttl">28 is today and chosen</span></figcaption><img class="shot" src="_lanes/307/C/shots/2-dp-panel-dark.png" width="336" height="331" alt="Date picker panel, dark, 28 September chosen and today"><ul><li>Fill #FFFFFF, ring #1A1A1A, 2px</li></ul></figure>
+    </div>
+    <p class="show">The date picker draws it the same way as the calendar, so whichever you choose holds for both once the date picker uses the calendar.</p>
+    <div class="dd-call" id="c2b" data-options="Set the ring inside the square (the proposal)|Keep it as it is now|Keep it open" data-rec="Set the ring inside the square (the proposal)"><span class="idx">2 · second call · the ring</span><p class="q">For a day that is both today and chosen, keep the ring as it is or set it inside the square?</p><p class="rec"><b>Recommend setting the ring inside the square.</b></p><p class="why">Because the ring as it is only shows as a slightly smaller square, and today should be seen, not guessed.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-307qr (from W-72); the date picker using the calendar is W-307qq · receipt notes/_receipts/2026-08-20-210-wave4-laneA-calendar-tree.md, questions 9 and 19 · the page-colour ring is #211 lane R3, in knowledge/snippets/Calendar.reference.html and Date-picker.reference.html · the proposal is one rule, not in canon: box-shadow: inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page)</p>
+  </div>
+</section>
+<section id="item-3" class="grey">
+  <div class="wrap">
+    <p class="label">3 of 5 · the other eight wave-3 parts</p>
+    <h2>The other eight wave-3 parts: promote, rework or delete each?</h2>
+    <p class="ask">You made the transaction row a variant of list items. Here are the other eight, each photographed from its own reference part, light and dark, with a call for each.</p>
+    <p class="kicker">3.1 · Standing order and Direct Debit row</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Standing order and Direct Debit row · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-standing-order-mandate-row-light-top.png" width="748" height="790" alt="Standing order and Direct Debit row, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Standing order and Direct Debit row · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-standing-order-mandate-row-dark-top.png" width="748" height="790" alt="Standing order and Direct Debit row, reference part, dark"></figure>
+    </div><p class="show">One row per regular payment: who, how often, the amount, the next date, a status and a manage button. It has the same bones as the transaction row you made a variant of list items tonight.</p><div class="dd-call" id="c3-1" data-options="Promote as its own part|Rework: a variant of list items|Delete|Keep it open" data-rec="Rework: a variant of list items"><span class="idx">3 · part 1 of 8</span><p class="q">Should the standing order and Direct Debit row be its own part?</p><p class="rec"><b>Recommend rework it as a variant of list items.</b></p><p class="why">Because it is the same shape as the transaction row, and one list part with variants is easier to keep right than two.</p><div class="dd-slot"></div></div><p class="kicker">3.2 · Limits meter</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Limits meter · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-limits-meter-light-trim.png" width="744" height="895" alt="Limits meter, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Limits meter · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-limits-meter-dark-trim.png" width="744" height="895" alt="Limits meter, reference part, dark"></figure>
+    </div><p class="show">Daily and monthly limits as bars. You already folded it into one Meter with the progress bar on 20 August (“keep as one meter”), and its catalogue entry became a short name for Meter. Nothing is left to rule.</p><div class="dd-call" id="c3-2" data-options="Close: it is already part of Meter|Promote on its own|Delete|Keep it open" data-rec="Close: it is already part of Meter"><span class="idx">3 · part 2 of 8</span><p class="q">Close the limits meter as Meter's limits form?</p><p class="rec"><b>Recommend close it: it is already part of Meter.</b></p><p class="why">Because you ruled it on 20 August and the fold is done.</p><div class="dd-slot"></div></div><p class="kicker">3.3 · Range slider</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Range slider · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-range-slider-light-trim.png" width="400" height="87" alt="Range slider, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Range slider · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-range-slider-dark-trim.png" width="400" height="87" alt="Range slider, reference part, dark"></figure>
+    </div><p class="show">Two handles on one track, for a range of amounts. A single Slider part already exists, and your rulings of 15 September on when a slider may be used apply to it.</p><div class="dd-call" id="c3-3" data-options="Promote as its own part|Rework: Slider&#x27;s two-handle form|Delete|Keep it open" data-rec="Rework: Slider&#x27;s two-handle form"><span class="idx">3 · part 3 of 8</span><p class="q">Should the range slider be its own part?</p><p class="rec"><b>Recommend rework it as Slider's two-handle form.</b></p><p class="why">Because a range is a slider with two handles, and your slider rules already cover it.</p><div class="dd-slot"></div></div><p class="kicker">3.4 · Rating</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Rating · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-rating-light-trim.png" width="290" height="348" alt="Rating, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Rating · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-rating-dark-trim.png" width="290" height="348" alt="Rating, reference part, dark"></figure>
+    </div><div class="pair3 one"><figure class="bad"><figcaption><span class="tag">Close-up · twice size</span><span class="ttl">The average: stars out of step</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-rating-aggregate-4x.png" width="502" height="50" alt="Close-up at twice size: the average row, filled stars out of step with the empty ones"></figure></div><p class="show">Stars, to rate something or to show an average. The average row is broken: the filled stars sit on top of the empty ones out of step (close-up above). The stars are ink, because there is no gold in the house colours.</p><div class="dd-call" id="c3-4" data-options="Promote|Rework|Delete|Keep it open" data-rec="Delete"><span class="idx">3 · part 4 of 8</span><p class="q">Promote, rework or delete the rating?</p><p class="rec"><b>Recommend delete it.</b></p><p class="why">Because no banking page asks for stars today, and it can come back when one does.</p><div class="dd-slot"></div></div><p class="kicker">3.5 · Transfer list</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Transfer list · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-transfer-list-light-trim.png" width="680" height="383" alt="Transfer list, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Transfer list · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-transfer-list-dark-trim.png" width="680" height="383" alt="Transfer list, reference part, dark"></figure>
+    </div><div class="pair3 one"><figure class="bad"><figcaption><span class="tag">Close-up · twice size</span><span class="ttl">Move one and move all look the same</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-transfer-list-buttons-4x.png" width="120" height="432" alt="Close-up at twice size: the four move buttons, all single arrows"></figure></div><p class="show">Two lists with buttons to move items across. Two faults show. The “move all” arrows are drawn with only half of the double-arrow icon, so they look the same as “move one” (close-up above). And the select-all box sits above its label, not beside it.</p><div class="dd-call" id="c3-5" data-options="Promote as it is|Rework, then promote|Delete|Keep it open" data-rec="Rework, then promote"><span class="idx">3 · part 5 of 8</span><p class="q">Promote, rework or delete the transfer list?</p><p class="rec"><b>Recommend rework it, then promote.</b></p><p class="why">Because the part is sound and both faults are small and plain to see.</p><div class="dd-slot"></div></div><p class="kicker">3.6 · Split button</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Split button · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-split-button-light-trim.png" width="604" height="420" alt="Split button, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Split button · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-split-button-dark-trim.png" width="608" height="428" alt="Split button, reference part, dark"></figure>
+    </div><p class="show">A main action with a small arrow that opens more actions. It looks right in both modes. The graph already has a rule that points at it: a modal gives way to a split button or a drop-down when either would do (your yes on 27 September).</p><div class="dd-call" id="c3-6" data-options="Promote|Rework|Delete|Keep it open" data-rec="Promote"><span class="idx">3 · part 6 of 8</span><p class="q">Promote, rework or delete the split button?</p><p class="rec"><b>Recommend promote it.</b></p><p class="why">Because a rule already names it and there is no fault to fix.</p><div class="dd-slot"></div></div><p class="kicker">3.7 · Floating add button</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Floating add button · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-fab-light-trim.png" width="907" height="500" alt="Floating add button, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Floating add button · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-fab-dark-trim.png" width="910" height="500" alt="Floating add button, reference part, dark"></figure>
+    </div><p class="show">A floating add button, bottom right, 56px square. You ruled on 15 September that it may be used at any screen size but never with back-to-top on the same screen. Three stray page rules in its overlay are already queued for repair from tonight's answers.</p><div class="dd-call" id="c3-7" data-options="Promote as it is|Rework, then promote|Delete|Keep it open" data-rec="Rework, then promote"><span class="idx">3 · part 7 of 8</span><p class="q">Promote, rework or delete the floating add button?</p><p class="rec"><b>Recommend rework it, then promote.</b></p><p class="why">Because the repair is already queued, and once it lands nothing else stands in the way.</p><div class="dd-slot"></div></div><p class="kicker">3.8 · Back to top</p>
+    <div class="pair3">
+      <figure><figcaption><span class="tag">Back to top · light</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-back-to-top-light-trim.png" width="912" height="488" alt="Back to top, reference part, light"></figure>
+      <figure><figcaption><span class="tag">Back to top · dark</span><span class="ttl">From its reference part</span></figcaption><img class="shot" src="_lanes/307/C/shots/3-back-to-top-dark-trim.png" width="916" height="488" alt="Back to top, reference part, dark"></figure>
+    </div><p class="show">A small button that takes you back to the top of a scrolling area. The button is right. The reference page around it is not: its live demo text falls back to Times, a font the house never uses, and a note shows an empty box where a symbol should be. You ratified when it appears on 15 September.</p><div class="dd-call" id="c3-8" data-options="Promote as it is|Rework, then promote|Delete|Keep it open" data-rec="Rework, then promote"><span class="idx">3 · part 8 of 8</span><p class="q">Promote, rework or delete back to top?</p><p class="rec"><b>Recommend rework the reference page, then promote.</b></p><p class="why">Because the part itself is right; only the page that shows it is wrong.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-307qu (from W-63); the transaction row is W-307qt; the floating button's repair is W-307qy · receipts notes/_receipts/2026-08-20-209-wave3-laneA-fintech-rows.md, -laneB-selection-controls.md, -laneC-action-chrome.md · rulings s210-D1, s210-D5, s272-D36, s272-D40, s305-D25, s272-D5, s272-D73</p>
+  </div>
+</section>
+<section id="item-4">
+  <div class="wrap">
+    <p class="label">4 of 5 · the five the build did not make</p>
+    <h2>The five parts the wave-3 build chose not to make: what were they?</h2>
+    <p class="ask">You asked to see the five and the reasons, rather than agree to leave them unbuilt.</p>
+    <p class="glance" style="margin-top:var(--s3)">There were never five unbuilt parts. The build lane of 25 August was sent to make eight form parts, found all eight already built and checked, and made none. Its five were five questions it left for you. The card that asked you mixed the two up.</p>
+    <p class="kicker">The eight it was sent to build, as they stand tonight</p>
+    <div class="quad thumbs"><figure><figcaption><span class="tag">Built</span><span class="ttl">Form layout</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-form-layout.png" width="480" height="320" alt="Form layout, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Date picker</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-date-picker.png" width="480" height="320" alt="Date picker, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Date range picker</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-date-range-picker.png" width="480" height="320" alt="Date range picker, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Time picker</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-time-picker.png" width="480" height="320" alt="Time picker, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Amount input</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-amount-input.png" width="480" height="320" alt="Amount input, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">File upload</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-file-upload.png" width="480" height="320" alt="File upload, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Passcode and PIN</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-secure-entry.png" width="480" height="320" alt="Passcode and PIN, top of its reference part"></figure><figure><figcaption><span class="tag">Built</span><span class="ttl">Text area</span></figcaption><img class="shot" src="_lanes/307/C/shots/4-textarea.png" width="480" height="320" alt="Text area, top of its reference part"></figure></div>
+    <p class="kicker">Its five questions, and where each stands now</p>
+    <table class="stack five"><thead><tr><th>The question</th><th>Where it stands</th></tr></thead><tbody>
+      <tr><td data-l="The question">Is wave 3 finished, or should it become a quality pass over the forms?</td><td data-l="Where it stands">Never answered. Nothing waits on it: all eight parts are built and pass their checks.</td></tr>
+      <tr><td data-l="The question">The register's one real gap was the logo. Does it want a lane?</td><td data-l="Where it stands">Done. You ruled the logo sizes on 18 September and the masters were drawn.</td></tr>
+      <tr><td data-l="The question">An old spreadsheet column misled a brief. Retire it, rename it, or leave it?</td><td data-l="Where it stands">Done the same day: renamed so it reads as frozen history.</td></tr>
+      <tr><td data-l="The question">File upload marked errors differently from its seven siblings. Fault, or right?</td><td data-l="Where it stands">Fixed the same day: it now flags the field in error like the others.</td></tr>
+      <tr><td data-l="The question">Should the two other wave-3 lanes stop?</td><td data-l="Where it stands">They did. Both found the same thing and built nothing.</td></tr>
+    </tbody></table>
+    <div class="dd-call" id="c4" data-options="Close it|Keep the first question open (is wave 3 finished?)|Keep it open" data-rec="Close it"><span class="idx">4 · The five</span><p class="q">Close it: nothing was left unbuilt, and four of the five questions are done?</p><p class="rec"><b>Recommend close it.</b></p><p class="why">Because the one question still open, whether wave 3 is finished, has nothing waiting on it.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-307qw (from W-151) · receipt notes/_receipts/2026-08-25-wave3-alpha.md (“the lane built ZERO of its eight, on purpose”; “Decisions for Dave” 1–5) · the same day's commit 941c92d7 (frozen column fenced, forms family repaired) · reviews/ITINERARY-STATUS-2026-08-25-v4.json column itinerary_status_2026_07_14_FROZEN · ruling s282-D3 · sibling receipts …-wave3-beta.md, …-wave3-gamma.md</p>
+  </div>
+</section>
+<section id="item-5" class="grey">
+  <div class="wrap">
+    <p class="label">5 of 5 · the third red and the 29 forks</p>
+    <h2>How many reds does an error use, and which colour forks are real faults?</h2>
+    <blockquote>I want to check this visually<cite>Dave · your note on the third red · sitting page, Monday 28 September, 21:05</cite></blockquote>
+    <p class="kicker">The reds, as values</p>
+    <div class="reds"><div><span class="chip" style="background:#DA1A00"></span><b>Dark red</b><span>#DA1A00 · the one for red on white (your two-red law)</span></div><div><span class="chip" style="background:#F6604C"></span><b>Light red</b><span>#F6604C · the one for everywhere else (your two-red law)</span></div><div><span class="chip" style="background:#A8000B"></span><b>The third red</b><span>#A8000B · mono's message box; legacy throughout</span></div><div><span class="chip" style="background:#B92F1E"></span><b>Console and supercharge's red</b><span>#B92F1E · both modes</span></div></div>
+    <p class="kicker">The error field, in each theme · light</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-mono-light.png" width="364" height="75" alt="Mono theme, light mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Legacy · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-legacy-light.png" width="364" height="75" alt="Legacy theme, light mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Console · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-console-light.png" width="364" height="75" alt="Console theme, light mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Supercharge · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-supercharge-light.png" width="364" height="75" alt="Supercharge theme, light mode, input fields in its error state"></figure></div>
+    <p class="kicker">The error field · dark</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-mono-dark.png" width="364" height="75" alt="Mono theme, dark mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Legacy · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-legacy-dark.png" width="364" height="75" alt="Legacy theme, dark mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Console · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-console-dark.png" width="364" height="75" alt="Console theme, dark mode, input fields in its error state"></figure><figure><figcaption><span class="tag">Supercharge · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-input-fields-supercharge-dark.png" width="364" height="75" alt="Supercharge theme, dark mode, input fields in its error state"></figure></div>
+    <p class="kicker">The error message box, in each theme · light</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-mono-light.png" width="540" height="52" alt="Mono theme, light mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Legacy · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-legacy-light.png" width="540" height="52" alt="Legacy theme, light mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Console · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-console-light.png" width="540" height="52" alt="Console theme, light mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Supercharge · light</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-supercharge-light.png" width="540" height="52" alt="Supercharge theme, light mode, notifications in its error state"></figure></div>
+    <p class="kicker">The error message box · dark</p>
+    <div class="quad"><figure><figcaption><span class="tag">Mono · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-mono-dark.png" width="540" height="52" alt="Mono theme, dark mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Legacy · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-legacy-dark.png" width="540" height="52" alt="Legacy theme, dark mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Console · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-console-dark.png" width="540" height="52" alt="Console theme, dark mode, notifications in its error state"></figure><figure><figcaption><span class="tag">Supercharge · dark</span><span class="ttl"></span></figcaption><img class="shot" src="_lanes/307/C/shots/5-notifications-supercharge-dark.png" width="540" height="52" alt="Supercharge theme, dark mode, notifications in its error state"></figure></div>
+    <p class="show">Mono's field paints the light red, #F6604C, in both modes, and mono's message box paints #A8000B. So on one mono page an error field and an error message are two different reds: that is the third red. Legacy uses #A8000B throughout, as its own red. Console and supercharge use a fourth, #B92F1E, in both modes. One more thing for your eye: your two-red law puts the dark red on white, and mono's field on white paints the light red.</p>
+    <div class="dd-call" id="c5a" data-options="Fold it into mono&#x27;s error red|Keep the third red as its own shade|Keep it open" data-rec="Fold it into mono&#x27;s error red"><span class="idx">5 · first call · the third red</span><p class="q">In mono, fold the third red into the one error red?</p><p class="rec"><b>Recommend fold it: mono's message box takes mono's error red, and legacy keeps its own.</b></p><p class="why">Because one theme should say “error” in one red, and #A8000B is legacy's colour, not mono's.</p><div class="dd-slot"></div></div>
+
+    <p class="kicker">The 29 colour forks, run again tonight</p>
+    <p class="src-note">A fork is one colour name carrying two values in different places. Each row shows both values side by side.</p>
+    <div class="fk-wrap"><table class="stack fk"><thead><tr><th>Name</th><th>Theme</th><th>Where</th><th>The two values</th><th>Kind</th><th>Record</th></tr></thead><tbody>
+    <tr class="err"><td data-l="Name"><code>--err</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#f6604c"></i>#f6604c<i style="background:#a8000b"></i>#a8000b</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr class="err"><td data-l="Name"><code>--err</code></td><td data-l="Theme">mono · dark</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#f6604c"></i>#f6604c<i style="background:#a8000b"></i>#a8000b</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--border-disabled</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-dropdown</td><td data-l="The two values"><span class="vals"><i style="background:#e1e1e1"></i>#e1e1e1<i style="background:#d7d8d6"></i>#d7d8d6</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-grid</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-boxplot</td><td data-l="The two values"><span class="vals"><i style="background:#e1e1e1"></i>#e1e1e1<i style="background:#626262"></i>#626262</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-series-1</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-bar [data-contrast=&quot;high&quot;]</td><td data-l="The two values"><span class="vals"><i style="background:#766682"></i>#766682<i style="background:#484d6f"></i>#484d6f</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-series-2</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-bar [data-contrast=&quot;high&quot;]</td><td data-l="The two values"><span class="vals"><i style="background:#a45c3a"></i>#a45c3a<i style="background:#97482c"></i>#97482c</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-series-3</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-bar [data-contrast=&quot;high&quot;]</td><td data-l="The two values"><span class="vals"><i style="background:#577c78"></i>#577c78<i style="background:#385f4f"></i>#385f4f</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-series-4</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-donut [data-contrast=&quot;high&quot;]</td><td data-l="The two values"><span class="vals"><i style="background:#7f7b45"></i>#7f7b45<i style="background:#6e465d"></i>#6e465d</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--data-series-5</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-chart-donut [data-contrast=&quot;high&quot;]</td><td data-l="The two values"><span class="vals"><i style="background:#a37e94"></i>#a37e94<i style="background:#7c6f34"></i>#7c6f34</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--disabled</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-status-indicator</td><td data-l="The two values"><span class="vals"><i style="background:#d7d8d6"></i>#d7d8d6<i style="background:#e1e1e1"></i>#e1e1e1</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--err-t</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-alert</td><td data-l="The two values"><span class="vals"><i style="background:#f9f2f3"></i>#f9f2f3<i style="background:#fdd9d4"></i>#fdd9d4</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--info</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#78a7e8"></i>#78a7e8<i style="background:#305a85"></i>#305a85</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--info</code></td><td data-l="Theme">mono · dark</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#78a7e8"></i>#78a7e8<i style="background:#305a85"></i>#305a85</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--info-t</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-alert</td><td data-l="The two values"><span class="vals"><i style="background:#ebeff4"></i>#ebeff4<i style="background:#dfeaf9"></i>#dfeaf9</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--ink</code></td><td data-l="Theme">common · any</td><td data-l="Where">.cn-chart-bar</td><td data-l="The two values"><span class="vals"><i style="background:#ffffff"></i>#ffffff<i style="background:#333333"></i>#333333</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--ink</code></td><td data-l="Theme">legacy · any</td><td data-l="Where">.cn-chart-bar</td><td data-l="The two values"><span class="vals"><i style="background:#ffffff"></i>#ffffff<i style="background:#333333"></i>#333333</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--ink</code></td><td data-l="Theme">supercharge · any</td><td data-l="Where">.cn-chart-bar</td><td data-l="The two values"><span class="vals"><i style="background:#ffffff"></i>#ffffff<i style="background:#13110e"></i>#13110e</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--mark</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-notifications .inline.warn</td><td data-l="The two values"><span class="vals"><i style="background:#1a1a1a"></i>#1a1a1a<i style="background:#333333"></i>#333333</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--muted</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-hero</td><td data-l="The two values"><span class="vals"><i style="background:#1a1a1a"></i>#1a1a1a<i style="background:#767676"></i>#767676</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--muted</code></td><td data-l="Theme">mono · dark</td><td data-l="Where">.cn-hero</td><td data-l="The two values"><span class="vals"><i style="background:#ffffff"></i>#ffffff<i style="background:#9a9a9a"></i>#9a9a9a</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--pressed</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-quick-actions</td><td data-l="The two values"><span class="vals"><i style="background:#626262"></i>#626262<i style="background:#767676"></i>#767676</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--warn</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#e0a61f"></i>#e0a61f<i style="background:#ffbb33"></i>#ffbb33</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--warn</code></td><td data-l="Theme">mono · dark</td><td data-l="Where">.cn-notifications</td><td data-l="The two values"><span class="vals"><i style="background:#e0a61f"></i>#e0a61f<i style="background:#ffbb33"></i>#ffbb33</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--warn-t</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-alert</td><td data-l="The two values"><span class="vals"><i style="background:#fff8ea"></i>#fff8ea<i style="background:#f6e6c0"></i>#f6e6c0</span></td><td data-l="Kind">typed instead of the token</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--panel</code></td><td data-l="Theme">supercharge · dark</td><td data-l="Where">.cn-app-shell-nav-rail</td><td data-l="The two values"><span class="vals"><i style="background:#2a2621"></i>#2a2621<i style="background:#1a1a1a"></i>#1a1a1a</span></td><td data-l="Kind">near miss</td><td data-l="Record">declared as meant (#215)</td></tr><tr><td data-l="Name"><code>--surface</code></td><td data-l="Theme">supercharge · dark</td><td data-l="Where">.cn-avatar-group</td><td data-l="The two values"><span class="vals"><i style="background:#2a2621"></i>#2a2621<i style="background:#2e2a25"></i>#2e2a25</span></td><td data-l="Kind">near miss</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--surface</code></td><td data-l="Theme">supercharge · dark</td><td data-l="Where">.cn-headers</td><td data-l="The two values"><span class="vals"><i style="background:#2a2621"></i>#2a2621<i style="background:#1a1a1a"></i>#1a1a1a</span></td><td data-l="Kind">near miss</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--ter-border</code></td><td data-l="Theme">supercharge · any</td><td data-l="Where">.cn-button</td><td data-l="The two values"><span class="vals"><i style="background:#000000"></i>#000000<i style="background:#13110e"></i>#13110e</span></td><td data-l="Kind">near miss</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--text-disabled</code></td><td data-l="Theme">mono · any</td><td data-l="Where">.cn-dropdown</td><td data-l="The two values"><span class="vals"><i style="background:#e1e1e1"></i>#e1e1e1<i style="background:#d7d8d6"></i>#d7d8d6</span></td><td data-l="Kind">near miss</td><td data-l="Record">not ruled</td></tr><tr><td data-l="Name"><code>--text-disabled</code></td><td data-l="Theme">mono · dark</td><td data-l="Where">.cn-dropdown</td><td data-l="The two values"><span class="vals"><i style="background:#808080"></i>#808080<i style="background:#767676"></i>#767676</span></td><td data-l="Kind">near miss</td><td data-l="Record">not ruled</td></tr>
+    </tbody></table></div>
+    <p class="show">In August, 29 looked like real faults: 23 where a part typed a colour instead of using its token, and 6 near misses. Run again tonight by the same rule, all 29 are still there. The rule counts 30 tonight: the extra one is a twin, because canon sets “common” alongside legacy. None of them was among the four you declared as meant on 27 September: those were chart line and fill tones and the compact table's padding. So the four were not what was left of the 29.</p>
+    <div class="dd-call" id="c5b" data-options="Hand them to Claude to settle|Show me each one|Keep it open" data-rec="Hand them to Claude to settle"><span class="idx">5 · second call · the forks</span><p class="q">The 29 forks: hand them to Claude to settle within your rules?</p><p class="rec"><b>Recommend hand them to Claude, and bring back only the ones that are a real colour choice.</b></p><p class="why">Because most are a part typing a colour its token already gives, which is a repair, not a decision.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-229 (kept open tonight) · report notes/_subreports/2026-08-27-221-laneB.md §9 · ledger knowledge/_TOKEN-FORK-LEDGER.json · rulings s151-D1, s305-D41 · rendered from showroom/input-fields.html and showroom/notifications.html · re-run: knowledge/_validate_token_forks.py --strict --json, ledger unchanged either side, classified by notes/_lanes/307/C/classify_forks.py</p>
+  </div>
+</section>
+<section id="item-6">
+  <div class="wrap">
+    <p class="label mute">6 · the fresh-session dashboard run</p>
+    <h2>The fresh-session dashboard run</h2>
+    <!-- COLDRUN-SLOT filled by the #307 conductor from outputs/coldrun-307/SLOT.html (lane E) -->
+    <p class="kicker">Nearly. One blind pass on v1.0.14 built more than yours, and tripped on one wire it could not see.</p>
+    <p class="show">The frozen dashboard prompt, run once, blind, on the current pack (v1.0.14). It chose ten canon parts to your eight, drew two charts from the library engine, and gave you a working grid, a drawer, three views, dark mode and state that survives a reload. It went Mono because nobody answered the theme question, and one wiring bug, visible on the first load, stopped the filters reaching the grid.</p>
+    <div style="overflow-x:auto"><table class="cr-scores" style="border-collapse:collapse;font-variant-numeric:tabular-nums;margin:var(--s3) 0">
+      <tr><th style="text-align:left;padding:4px 12px 4px 0">Run</th><th style="padding:4px 10px">#246</th><th style="padding:4px 10px">#258 v1</th><th style="padding:4px 10px">v2</th><th style="padding:4px 10px">v3</th><th style="padding:4px 10px">v4</th><th style="padding:4px 10px">v5</th><th style="padding:4px 10px">Tonight</th></tr>
+      <tr><td style="padding:4px 12px 4px 0">rich · full · persistent · interactive</td><td style="padding:4px 10px">2/2/0/2</td><td style="padding:4px 10px">3/2/0/2</td><td style="padding:4px 10px">3/2/3/3</td><td style="padding:4px 10px">3/2/3/2</td><td style="padding:4px 10px">3/2/3/3</td><td style="padding:4px 10px">3/3/3/2</td><td style="padding:4px 10px">3/3/2/2</td></tr>
+    </table></div>
+    <figure style="margin:var(--s3) 0;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <img style="width:100%;height:auto;border:1px solid var(--grey-3,#ddd)" src="../outputs/coldrun-307/compare/dave-thumb.png" alt="Your fettled dashboard, Console theme, 1440 light">
+      <img style="width:100%;height:auto;border:1px solid var(--grey-3,#ddd)" src="../outputs/coldrun-307/compare/arm-thumb.png" alt="Tonight's one-pass dashboard, Mono theme, 1440 light">
+      <figcaption style="grid-column:1/-1">Yours after five rounds (left, Console) · tonight's single blind pass (right, Mono)</figcaption>
+    </figure>
+    <p class="show">The gap is no longer in the parts. It is the theme answer and one look in a browser. The full review, with every render, gate and driven control: <a href="../reviews/COLDRUN-307-2026-09-28-v1.html">the cold-run review page</a>.</p>
+    <div class="dd-call" id="c6" data-options="Take the three fixes, then run it again on the next cut|Show me the full review first|Keep it open" data-rec="Take the three fixes, then run it again on the next cut"><span class="idx">6 · the fresh-session run · what next</span><p class="q">Make the three fixes, then run it once more on the next cut with Console as the theme answer?</p><p class="rec"><b>Recommend the three fixes: one headless load with a console read as the skill's default last step; the screen gate stops reading comments (it fails the page on a word inside the chart engine's own comment); then run again on the next cut, theme answered as Console.</b></p><p class="why">Because both faults tonight would have shown on one load in a browser, and the theme gap is an unanswered question, not a missing part.</p><div class="dd-slot"></div></div>
+    <p class="ids">Store W-307y7 (from W-304) · ruling s307-D66 · pack apollo-spider/dist/Apollo-Spider-v1.0.14.zip sha256 35ae981b… · frozen outputs/coldrun-307/arm-A-blind/dashboard.html sha256 d6f8fa7a… · report notes/_subreports/2026-09-28-307-E-cold-run.md</p>
+  </div>
+</section>
+<section id="tech" class="grey">
+  <div class="wrap">
+    <p class="label mute">Technical</p>
+    <div class="tech">
+      <p>Every picture was rendered at your seat through the house path (<code>ensure_env.sh</code>, <code>seat_env.sh</code>, headless Chromium, <code>page.goto("file://…")</code>), from the parts' own files. Drivers: <code>notes/_lanes/307/C/shots_1_captions.py</code> (bento rails page, theme and mode switched the page's own way, the card's console scope taken off so it sits in the page theme), <code>shots_2_tree_ring.py</code> (Calendar, Date-picker, Tree and Sidebar-nav reference files; the “before” and “proposal” cells are one-rule mutations on the real part), <code>shots_3_wave3.py</code> and <code>shots_4_formparts.py</code> (reference files, light and dark), <code>shots_5_reds.py</code> (catalogue pages, theme and mode buttons clicked). Measures beside each driver's pictures in <code>notes/_lanes/307/C/shots/*.json</code>.</p>
+      <p>Built by <code>notes/_lanes/307/C/build_page.py</code>; house CSS, decisions bar and lightbox copied from <code>notes/_REVIEW-305-call-27-visuals-2026-09-27-v1.html</code>, with option buttons per call and an export that lists every call. Nothing inscribed, no git write. Report: <code>notes/_subreports/2026-09-28-307-C-what-you-asked-to-see.md</code>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · review page · what you asked to see · v1 · 2026-09-28 · session 307 · lane C</span>
+    <span>Nothing here is decided. Each call takes a decision below it.</span>
+  </div>
+</footer>
+<style>
+.dd-box{margin:var(--s4,2rem) 0 0;border:1px solid var(--grey-3,#D7D8D6);background:var(--white,#fff);color:var(--black,#000);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;padding:1.25rem 1.5rem;
+  border-left:4px solid var(--accent,#DA1A00)}
+.dd-box.dd-has{border-left-color:var(--black,#000)}
+.dd-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem}
+.dd-label{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent,#DA1A00)}
+.dd-box.dd-has .dd-label{color:var(--grey-6,#767676)}
+.dd-chips{display:flex;gap:.35rem;flex-wrap:wrap}
+.dd-chip{font:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--grey-3,#D7D8D6);
+  background:var(--white,#fff);color:var(--grey-7,#545454);cursor:pointer;border-radius:0}
+.dd-chip:hover{border-color:var(--black,#000);color:var(--black,#000)}
+.dd-chip.on{background:var(--black,#000);color:var(--white,#fff);border-color:var(--black,#000)}
+.dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.dd-field{display:flex;flex-direction:column;gap:.3rem}
+.dd-field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-6,#767676);font-weight:500}
+.dd-field textarea{font:inherit;font-size:14px;line-height:1.5;color:var(--black,#000);background:var(--grey-1,#F3F3F3);border:0;
+  border-bottom:1px solid var(--grey-3,#D7D8D6);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.dd-field textarea:focus{outline:none;border-bottom-color:var(--accent,#DA1A00);background:var(--white,#fff);box-shadow:inset 0 0 0 1px var(--grey-3,#D7D8D6)}
+.dd-stamp{font-size:11px;color:var(--grey-5,#9B9B9B);margin-top:.5rem;min-height:1em}
+.dd-bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:var(--black,#000);color:var(--white,#fff);
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:.04em}
+.dd-bar .in{max-width:var(--max-width,var(--max,1200px));margin:0 auto;padding:.6rem 2rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.dd-bar b{font-weight:500}
+.dd-bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .9rem;border:1px solid var(--grey-6,#767676);
+  background:transparent;color:var(--white,#fff);cursor:pointer;border-radius:0}
+.dd-bar button:hover{border-color:var(--white,#fff)}
+.dd-bar button.pri{background:var(--accent,#DA1A00);border-color:var(--accent,#DA1A00)}
+.dd-bar .msg{color:var(--grey-5,#9B9B9B);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body{padding-bottom:64px}
+@media (max-width:820px){.dd-grid{grid-template-columns:1fr}.dd-bar .in{padding:.6rem 1rem;gap:.6rem}}
+@media print{.dd-bar{display:none}body{padding-bottom:0}}
+</style>
+<script>
+(function(){
+  var CFG = {
+    page:'review-307-what-you-asked-to-see-v1', title:'What you asked to see, review page v1', path:'notes/_REVIEW-307-what-you-asked-to-see-2026-09-28-v1.html',
+    pageHost:'footer .wrap',
+    targets:[
+      { sel:'.dd-call', kind:'Decision', title:'.q', host:'.dd-slot', prefix:'c307', num:'.idx' }
+    ]
+  };
+  var KEY = 'dave-decisions:' + CFG.page;
+  var CHIPS = ['Inscribe','Do it','Later','No','Question'];
+  var state = {}; try{ state = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ state = {}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function txt(el){ return (el ? el.textContent : '').replace(/\s+/g,' ').trim(); }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+
+  // ---- collect anchors -------------------------------------------------
+  var items = [];
+  CFG.targets.forEach(function(t){
+    var nodes = document.querySelectorAll(t.sel);
+    Array.prototype.forEach.call(nodes, function(el, i){
+      if (t.skip && t.skip(el)) return;
+      var id = el.id || (t.prefix + '-' + (i+1));
+      var num = txt(el.querySelector(t.num||'.idx')) || (t.count ? String(i+1).padStart(2,'0') : '') || (t.fallbackNum ? txt(el.querySelector(t.fallbackNum)) : '');
+      var title = txt(el.querySelector(t.title));
+      items.push({ id:id, kind:t.kind, num:num, title:title, opts:(el.getAttribute('data-options')||'').split('|').filter(Boolean), rec:el.getAttribute('data-rec')||'', host: (typeof t.host==='function' ? t.host(el) : (t.host && el.querySelector(t.host))) || el.querySelector('.wrap') || el });
+    });
+  });
+  items.push({ id:'page', kind:'Whole page', num:'', title:'Anything that belongs to the page rather than one section', opts:[], rec:'', host: document.querySelector(CFG.pageHost) });
+
+  // ---- render ----------------------------------------------------------
+  items.forEach(function(it){
+    var s = state[it.id] || {};
+    var box = document.createElement('div');
+    box.className = 'dd-box'; box.dataset.id = it.id; box.id = 'dd-'+it.id;
+    box.innerHTML =
+      '<div class="dd-head"><span class="dd-label">Dave · '+esc(it.kind)+(it.num?' '+esc(it.num):'')+'</span>'+
+      '<span class="dd-chips">'+it.opts.map(function(c){return '<button type="button" class="dd-chip'+(s.verdict===c?' on':'')+(c===it.rec?' rec':'')+'" data-v="'+esc(c)+'">'+esc(c)+(c===it.rec?'<em>recommended</em>':'')+'</button>';}).join('')+'</span></div>'+
+      '<div class="dd-grid">'+
+        '<label class="dd-field"><span>Your words, if the buttons do not say it</span><textarea data-f="decision" placeholder="What you rule, or what you want done.">'+esc(s.decision)+'</textarea></label>'+
+        '<label class="dd-field"><span>Comment</span><textarea data-f="comment" placeholder="Anything else — a doubt, a question back, a reason.">'+esc(s.comment)+'</textarea></label>'+
+      '</div><div class="dd-stamp">'+(s.at?'saved '+esc(s.at):'')+'</div>';
+    it.host.appendChild(box);
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('.dd-chip'); if(!b) return;
+      var v = b.dataset.v; var cur = state[it.id]||{};
+      cur.verdict = (cur.verdict===v) ? '' : v; cur.at = now(); state[it.id]=cur; save();
+      box.querySelectorAll('.dd-chip').forEach(function(c){ c.classList.toggle('on', c.dataset.v===cur.verdict); });
+    });
+    box.addEventListener('input', function(e){
+      var f = e.target.dataset && e.target.dataset.f; if(!f) return;
+      var cur = state[it.id]||{}; cur[f]=e.target.value; cur.at=now(); state[it.id]=cur; save();
+    });
+  });
+
+  function has(s){ return s && (s.verdict || (s.decision||'').trim() || (s.comment||'').trim()); }
+  function refresh(){
+    var n=0;
+    items.forEach(function(it){
+      var s=state[it.id], box=document.querySelector('.dd-box[data-id="'+it.id+'"]');
+      if(has(s)) n++;
+      if(box){ box.classList.toggle('dd-has', !!has(s)); box.querySelector('.dd-stamp').textContent = (s&&s.at)?'saved '+s.at:''; }
+    });
+    var c=document.getElementById('dd-count'); if(c) c.textContent = n+' of '+items.length+' answered';
+  }
+
+  // ---- export ----------------------------------------------------------
+  function markdown(){
+    var lines = ['# DAVE-RULINGS — '+CFG.title, '', 'source: `'+CFG.path+'`  ', 'exported: '+now()+'  ', 'status: his words, verbatim — quote, never paraphrase', ''];
+    var n=0, calls=0;
+    items.forEach(function(it){ if(it.opts.length) calls++; if(has(state[it.id])) n++; });
+    lines.push(n+' of '+items.length+' answered ('+calls+' calls and the whole-page note)', '');
+    items.forEach(function(it){
+      var s=state[it.id]||{};
+      lines.push('## '+(it.num?it.num+' · ':'')+it.title+'  ');
+      lines.push('<sub>'+it.kind+' · anchor `#dd-'+it.id+'`'+(s.at?' · saved '+s.at:'')+'</sub>', '');
+      if(it.rec) lines.push('Recommendation: '+it.rec+'  ');
+      if(s.verdict) lines.push('**Chose:** '+s.verdict+(it.rec?(s.verdict===it.rec?' · the recommendation':' · not the recommendation'):''), '');
+      else lines.push('_Not answered by button._', '');
+      if((s.decision||'').trim()) lines.push('**In his words, verbatim:**', '', '> '+s.decision.trim().replace(/\n/g,'\n> '), '');
+      if((s.comment||'').trim()) lines.push('**Comment, verbatim:**', '', '> '+s.comment.trim().replace(/\n/g,'\n> '), '');
+    });
+    lines.push('', '---', '', '<details><summary>machine copy</summary>', '', '```json', JSON.stringify({page:CFG.page, path:CFG.path, exported:now(), calls:items.map(function(it){return {id:it.id, num:it.num, title:it.title, options:it.opts, recommendation:it.rec};}), answers:state}, null, 2), '```', '', '</details>', '');
+    return lines.join('\n');
+  }
+  function download(){
+    var d=new Date(),p=function(n){return (n<10?'0':'')+n;};
+    var name='DAVE-RULINGS-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+CFG.page+'.md';
+    var blob=new Blob([markdown()],{type:'text/markdown'}); var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    msg('Saved '+name+' to Downloads — drop it in notes/_lanes/307/');
+  }
+  function copy(){ var t=markdown(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('Copied — paste it into the chat');},function(){ var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();msg('Copied — paste it into the chat'); }); }
+  function clear(){ if(!confirm('Clear every decision and comment on this page?')) return; state={}; save(); document.querySelectorAll('.dd-box textarea').forEach(function(t){t.value='';}); document.querySelectorAll('.dd-chip.on').forEach(function(c){c.classList.remove('on');}); msg('Cleared'); }
+  function msg(s){ var m=document.getElementById('dd-msg'); if(m){ m.textContent=s; } }
+
+  var bar=document.createElement('div'); bar.className='dd-bar';
+  bar.innerHTML='<div class="in"><b>Your decisions</b><span id="dd-count"></span><span class="msg" id="dd-msg">Saves in this browser as you go</span>'+
+    '<button type="button" id="dd-copy">Copy as text</button><button type="button" class="pri" id="dd-dl">Save as file</button><button type="button" id="dd-clear">Clear</button></div>';
+  document.body.appendChild(bar);
+  document.getElementById('dd-dl').onclick=download; document.getElementById('dd-copy').onclick=copy; document.getElementById('dd-clear').onclick=clear;
+  refresh();
+})();
+</script>
+
+<style>
+img.shot{cursor:zoom-in}
+#lb{position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.88);display:none;overflow:auto;padding:48px 16px 24px}
+#lb.on{display:block}
+#lb img{display:block;max-width:none;width:min(1440px,100%);margin:0 auto;background:#fff;cursor:zoom-out}
+#lb button{position:fixed;top:12px;right:12px;z-index:2147483647;background:#fff;color:#000;border:0;font:600 14px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;padding:10px 14px;cursor:pointer}
+</style>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Enlarged picture"><button type="button" aria-label="Close">Close ✕</button><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lb'),im=lb.querySelector('img');
+function close(){lb.classList.remove('on');im.removeAttribute('src');}
+document.addEventListener('click',function(e){var t=e.target;
+ if(t.matches&&t.matches('img.shot')){e.preventDefault();im.src=t.src;im.alt=t.alt;lb.classList.add('on');lb.scrollTop=0;return;}
+ if(lb.classList.contains('on')&&(t===lb||t===im||t.closest('#lb button')))close();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});})();
+</script>
+</body></html>
