@@ -1,0 +1,377 @@
+# sizes | Sizes, corners and spacing | The segmented control, corner radii, and the row heights on the bento dashboard. Your later re-rules cover much of this.
+
+@ W-166
+Q: Segmented control sizes: five questions from before your re-rule.
+S: You re-ruled the sizes across the board: xs is 28 high, medium has 2px padding, and the corners run concentric.
+K: d s227-D4
+X: were going to make changes across the board for seg-conts, xs is going to be 28 height
+O: The old large size and the label insets are probably covered. A type ramp, two names for 44px touch areas, and a shared token router look open.
+W: your re-rule covers the sizes, and the rest is naming.
+* a: Close it: your re-rule covers the sizes; Claude settles the names
+- b: Show me the leftovers as pictures
+- c: Keep it open
+
+@ W-290
+Q: Segmented control: shadows at zero inset, and wiring the corner-radius generator into the build.
+S: The medium thumb goes concentric: 8 at 2px padding.
+K: r s227-D7
+X: Dave confirmed L3-m (m goes concentric, thumb 8 at pad 2)
+Y: no words of yours are recorded for this pick
+O: Five zero-inset shadows, wiring the generator into the build, and the report's other questions.
+W: at #229 you asked to fix the class, not patch it.
+* a: Wire the generator into the build; Claude settles the shadows
+- b: Leave the generator run by hand
+- c: Keep it open
+
+@ W-286
+Q: The chart toolbar's segmented buttons had square corners: are they fixed?
+S: Search corners were settled: boxed search is rounded, underlined search stays straight. Then you ordered the segmented fix made at one source for every member.
+K: d s229-D3
+X: fix the class the other solution is a patch not a solution
+O: Whether that one-source fix swept up the toolbar's square segments (not confirmed), and four other questions.
+W: the one-source fix most likely covered them, and a render will show it.
+* a: Claude checks the render; close it if they match the rest
+- b: Show me the toolbar first
+- c: Keep it open
+
+@ W-228
+Q: Corners written as one value or four: the questions from a CI red.
+C: A CI red at #221 hinged on whether corner radius is written as one shorthand or four separate values. No ruling since.
+W: it is how code is written, not how it looks.
+* a: Hand it to Claude to settle within your rules
+- b: Keep it open
+- c: Drop it
+
+@ W-418
+Q: Row heights on the dashboard: tokens or plain numbers, the chart tile's inner space, a 4px audit, and whether the container grid is needed at all.
+C: At #245 you said the grid "might simply be unnecessary" if every part sits on 4px. A 4px check now exists, but no ruling says the audit was done.
+W: that is the test you set yourself.
+* a: Run the 4px audit, then drop the container grid if it passes; row heights become tokens
+- b: Keep the container grid
+- c: Keep it open
+
+@ W-413
+Q: Bento row heights: the rail is settled, so should one 4.36 MB page image be pruned?
+S: The rail was given ladder B, and row heights now act as floors.
+K: r s245-D9
+X: KPI 120px / chart 240px / rail 96px
+Y: no words of yours are recorded for this ruling
+O: Whether to delete the 4.36 MB full-page image or apply the size rule for images.
+W: the size rule already exists for this.
+* a: Apply the image size rule; Claude trims it
+- b: Keep the image as it is
+- c: Keep it open
+
+# parts | Parts waiting for your yes or no | Components built but never promoted, and questions about how they behave. Several want pictures before you rule; the recommendations say which.
+
+@ W-72
+Q: Calendar and tree: should the date picker use the calendar, and what mark shows a chosen tree item?
+S: The clipped letters in the side navigation were fixed, and the whole clipping fault was closed with a check before release.
+K: d s268-D3
+X: okay do 13
+Y: approving the v1.0.13 release that carried the fix
+O: Whether the date picker uses the calendar, the tree's selection mark, the date picker's invisible ring on a day that is both today and chosen, and the rest of 19 questions.
+W: one calendar built once, not two.
+* a: Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures
+- b: Keep the date picker's own calendar
+- c: Keep it open
+
+@ W-73
+Q: Cascader, splitter and QR code: should tree and cascader both exist, and what does a QR code do in dark mode?
+S: The style-override fault this report flagged was fixed across every part.
+K: d s268-D3
+X: okay do 13
+Y: approving the v1.0.13 release that carried the fix
+O: Whether tree and cascader both exist, whether the splitter reports a percentage or pixels, what the QR code does in dark mode, and the other questions.
+W: the QR code that follows the theme was measured not to scan.
+* a: Keep both; the splitter reports a percentage; QR codes stay dark on light in every mode
+- b: Keep only the tree
+- c: Show me them as pictures first
+- d: Keep it open
+
+@ W-63
+Q: Nine wave-3 parts: promote, rework or delete each, and is the transaction row a copy of one you have?
+S: The limits meter was folded into one Meter with the progress bar.
+K: d s210-D1
+X: keep as one meter
+O: Whether the transaction row is its own part or a copy of the list-items row, and promote, rework or delete for the other eight.
+W: an earlier review already called it a duplicate.
+* a: Make the transaction row a variant of list items; show me the other eight as pictures
+- b: Keep the transaction row as its own part
+- c: Keep it open
+- d: Delete the nine
+
+@ W-71
+Q: Carousel and image block: promote them? And an autoplay option, a hand-drawn arrow, and a small type debt.
+S: Carousel stays in the library, unpromoted, and image block got a rule for when to use it.
+K: r s272-D9
+X: THE LANE RECOMMENDS option 2. It is already unratified, so nothing is lost by leaving it there
+Y: your click on the lane's recommendation; no words of yours are recorded
+O: Promote or rework for both, the autoplay option, the arrow, and the small type debt.
+W: autoplay fails people who need time to read.
+* a: Promote image block; no autoplay; carousel stays as it is
+- b: Promote both
+- c: Show me them as pictures first
+- d: Keep it open
+
+@ W-151
+Q: Five parts the wave-3 build chose not to make: agree they stay unbuilt?
+C: The build made none of them, on purpose, and gave its reasons. Nothing since decides.
+W: nothing on the page needs them yet.
+* a: Agree: leave them unbuilt until a page needs one
+- b: Show me the five and the reasons
+- c: Keep it open
+
+@ W-152
+Q: Feedback parts: how should a toast be announced to a screen reader? Plus six smaller questions.
+C: Later rulings set how long a toast stays and how many show at once, but not how it is announced.
+W: that is the accessible norm, and it does not cut the reader off.
+* a: Announce politely for news, at once only for errors; Claude settles the six
+- b: Announce every toast at once
+- c: Keep it open
+
+@ W-288
+Q: The floating action button: the summon gesture and three side questions.
+S: It reveals from a hot corner at 72px, and later you allowed it at any screen width.
+K: d s272-D5
+X: Im seeing FABs used in HSBC for help and for AI invocation, we need the flexibility.
+O: The summon gesture (probably moot now), the gap between demo and shipped reveal, how its notes are embedded, and three stray body rules to repair.
+W: the hot corner replaced the gesture.
+* a: Close the gesture as moot; Claude repairs the stray rules and settles the rest
+- b: Keep a summon gesture as well
+- c: Keep it open
+
+@ W-143
+Q: Which parts carry behaviour: five questions (six parts got a script, 34 were judged still).
+S: The same day, you ruled five behaviour questions: build the missing surfaces, meters wait for the fold, adopt the wave-3 plan, and two more.
+K: d s218-D4
+X: okay lets make some decisions
+Y: opening that decision batch
+O: It is not settled if the five here differ from the five you ruled. The ruling never names this report.
+W: it is almost surely the same five.
+* a: Close it: settled
+- b: Have Claude match the two sets of five, then close
+- c: Keep it open
+
+@ W-462
+Q: Roles: are the six authoring calls answered, and are three extensions adopted?
+S: You adopted the roles page as laid out, and said extension is expected.
+K: d s252-D1
+X: Okay these look great, go for it, qq, might we extend this in the future or do you think this is as much as we need?
+O: The record contradicts itself on whether the six calls were answered. The three extensions (input sub-roles, media and identity, needs-attention) are still a reminder.
+W: your "go for it" was given with the six calls on the page.
+* a: Close it: your yes covers the six; add an extension when a part needs one
+- b: Adopt the three extensions now
+- c: Keep it open
+
+# charts | Charts | Stacked charts, fitting charts to their space, and the newer chart types. Two cards ask the same stacked-area question.
+
+@ W-142
+Q: Charts: should the stacked area chart be converted to match the stacked bar?
+S: The growth easing moved to the house curves, letter keys wait until growth lands, the gutter fit is built, and a wave-3 plan was adopted.
+K: r s218-D5
+X: the growth easing moves from the literal CSS keywords to the HOUSE-TUNED curve family
+Y: no words of yours are recorded for this ruling
+O: Converting the stacked area chart, and confirming the adopted plan is this report's draft.
+W: every stacked chart should behave the same.
+* a: Convert it; Claude confirms the plan
+- b: Leave the stacked area chart as it is
+- c: Keep it open
+
+@ W-175
+Q: Chart growth: convert stacked area, which way to carry fixes back, ship the cap before an expandable "Other", and promote a check?
+C: No ruling decides any of the four. The stacked area question is the same as the card above.
+W: a cap alone keeps charts readable today.
+* a: Convert stacked area; ship the cap now and the expandable "Other" after; Claude settles the rest
+- b: Hold the cap until "Other" can expand
+- c: Keep it open
+
+@ W-443
+Q: Chart fit: how marks differ from bars, the 200px height floor, and the template's registration.
+S: Fit lives in one place, the library engine, and the size check counts code only.
+K: d s249-D4
+X: lets go with your recommendation, it seems the most complete.
+O: How marks are told apart from bars, the 200px floor, and whether the template is a full member.
+W: a floor keeps small charts readable.
+* a: Keep the 200px floor; register the template in full; Claude settles marks
+- b: Show me the floor at work first
+- c: Keep it open
+
+@ W-436
+Q: Should the dashboard template register the whole chart-fit part?
+S: Fit lives in one place, as you chose.
+K: d s249-D4
+X: lets go with your recommendation, it seems the most complete.
+O: Whether the template is a full member. The build registered it without your word.
+W: it keeps fit in the one place you chose.
+* a: Yes: confirm what the build did
+- b: No: register only the fit piece
+- c: Keep it open
+
+@ W-100bi
+Q: Butterfly charts: should the 2.2px join at the baseline be checked, and one other item?
+C: The join is provable, but nothing checks it. The only later butterfly ruling picked which question the chart answers.
+W: it is provable and cheap to check.
+* a: Yes: check it; Claude settles the other item
+- b: Leave it unchecked
+- c: Keep it open
+
+@ W-100bk
+Q: The chart driver reached only 1 of 13 pages: how widely should it drive?
+C: It was fixed to reach them, and the chart check now runs at release. How wide it should go was never set.
+W: a check that skips pages gives false comfort.
+* a: Every chart page, every rule
+- b: Only the pages that ship
+- c: Keep it open
+
+@ W-100bh
+Q: Bullet and candlestick charts: three points from their build.
+C: Both were built and drawn cleanly in every theme and mode. No ruling mentions the three points.
+W: both built cleanly, and nothing you would see is at stake.
+* a: Hand it to Claude to settle within your rules
+- b: Show me the three points
+- c: Keep it open
+
+@ W-417
+Q: Behaviour notes on parts: retire an old free-text branch, promote three measured sentences, and schedule moving 14 chart notes.
+C: The build recommended keeping the old branch and promoting two of the three sentences. Nothing later rules on any of it.
+W: the build measured each one.
+* a: Take the build's recommendations and schedule the 14-chart move
+- b: Keep it open
+- c: Drop it
+
+# dash | The dashboard | What the dashboard shows above the fold, your own improvements to it, and the test of whether a fresh session can reach your result.
+
+@ W-304
+Q: Can a fresh session, asked for a dashboard, reach what you got after five rounds of fettling?
+C: At #228 you said the design intent is not settled. A later ruling set the order (the test runs once you are happy with the design), and no fresh run has been done.
+W: it is the only real test of the engine.
+* a: Run it once on the current pack and show me
+- b: Wait until the dashboard design is final
+- c: Keep it open
+
+@ W-458
+Q: How many signals may sit above the fold on a dashboard?
+C: The build put 26 signals of 9 kinds above the fold at 1440 wide, reported and not trimmed. No limit is set.
+W: a cap stops creep, and you can lower it by eye later.
+* a: Cap it at today's count so it cannot grow without you
+- b: Set a lower number now, from pictures
+- c: Keep it open
+
+@ W-455
+Q: The status strip probe: the same above-the-fold limit, plus two questions.
+S: The strip and the card share one wording.
+K: d s251-D2
+X: 14 payments · 5 need you
+O: The above-the-fold limit (the card above) and two other questions.
+W: the limit has its own card.
+* a: Close it: the limit is ruled on its own card
+- b: Keep it open
+
+@ W-457
+Q: The same probe's report: the above-the-fold limit, and two other questions.
+S: The wording clash is settled: the strip's form wins.
+K: d s251-D2
+X: 14 payments · 5 need you
+O: The above-the-fold limit (its own card above) and two other questions.
+W: the limit has its own card.
+* a: Close it: the limit is ruled on its own card
+- b: Keep it open
+
+@ W-283
+Q: Your own dashboard: bring its eight improvements back into the library?
+S: The bento dashboard is in the library, and the skill now asks which theme before it builds.
+K: d s305-D57
+X: yes
+Y: ratifying that the skill reads first
+O: The eight improvements from your dashboard.
+W: they are your own fixes.
+* a: Bring all eight back
+- b: Show me the eight as pictures first
+- c: Keep it open
+
+@ W-432
+Q: Should the first scoring tool gain a row for what sits above the fold?
+S: The Tabs demo-width fault ended when demo chrome was fenced out of builds.
+K: r s258-D3
+X: sweep
+Y: choosing to keep demo chrome in the library and strip it from builds
+O: The fold row. Your #247 ruling said it was not ruled there.
+W: the fold is where you judge a dashboard.
+* a: Yes: add the fold row
+- b: No
+- c: Keep it open
+
+@ W-427
+Q: Dashboard principles: questions 8 to 16.
+S: All 29 principles are enacted, not just 18.
+K: d s247-D1
+X: okay lets do 29, carefully, and test.
+O: Questions 8 to 16. A few may be covered by later principle rulings, and the three-way test is not recorded as done.
+W: most are likely covered by the 29 you enacted.
+* a: Hand it to Claude: match each to the enacted principles, bring back only what is left
+- b: Show me the nine questions again
+- c: Keep it open
+
+@ W-510
+Q: The filter toolbar: how much script room is left?
+S: The wiring names and the one-row fold at 1400px were accepted, and you liked the bar.
+K: d s261-D6
+X: filter tool bar is good
+O: Script room: 14,145 of 16,384 bytes used.
+W: it fits, and the size check blocks it if it grows too far.
+* a: Close it: it fits
+- b: Trim it now
+- c: Keep it open
+
+# build | Building pages from parts | How a page takes its parts: linked or pasted, and where the styles live. Plus the bento editor, which is not built yet.
+
+@ W-425
+Q: Two checks disagree: one rewards pasting a part's code into the page, the other fails it. Link or paste?
+S: Page authors may now write the code that joins parts; you removed the rule that forbade it.
+K: d s258-D1
+X: definitely remove 2a I'd like to see not only the wiring work it might deliver some code creativity.
+O: The two checks that disagree on pasting against linking.
+W: one source cannot drift.
+* a: Link, don't paste; make both checks agree
+- b: Paste, and make both checks agree
+- c: Keep it open
+
+@ W-438
+Q: Rebuild the shared stylesheet, or carry the rules on the page?
+S: Demo chrome is fenced out of builds, and demo widths became real defaults.
+K: r s258-D3
+X: sweep
+Y: choosing to keep demo chrome in the library and strip it from builds
+O: Rebuild the shared stylesheet or carry the rules on the page. Releases rebuilt it in practice.
+W: your #305 rule says a page places parts and never sizes them.
+* a: Rebuild the shared stylesheet
+- b: Carry the rules on the page
+- c: Keep it open
+
+@ W-429
+Q: Two out-of-date comments in the dashboard template, and is the Tabs width fault truly gone?
+S: Demo widths became real defaults when demo chrome was fenced out of builds.
+K: r s258-D3
+X: sweep
+Y: choosing to keep demo chrome in the library and strip it from builds
+O: The two stale comments, and nobody has checked the Tabs fault is gone.
+W: it is a fix and a check, nothing to rule.
+* a: Hand it to Claude: fix the comments, check the Tabs render, close
+- b: Keep it open
+
+@ W-99zm
+Q: The bento edit rails: does "every role" reach settings a role has no surface for? And retire an old rule?
+C: These only matter once the bento editor exists, and the edit-mode work is parked until then.
+W: the editor that would use them is not built.
+* a: Park it until the bento editor is built
+- b: Rule them now
+- c: Drop it
+
+@ W-99zn
+Q: The edit-pass grammar: seven questions.
+C: No later answer, and the bento editor that would settle them by use is not built.
+W: the editor that would use them is not built.
+* a: Park it until the bento editor is built
+- b: Rule them now
+- c: Drop it
