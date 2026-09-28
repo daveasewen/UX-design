@@ -143,3 +143,17 @@ On `_HANDOFF-154` § OWED (addendum at its foot) and in `_CARRIES.md` § `residu
 6. ⛔★ **MEMORY — NOT WRITTEN BY THIS SEAT, BY THE BRIEF'S INSTRUCTION.** Every payload is ready for the conductor in `notes/_lanes/304/W/_work/`: `memory_file_304.md` (4,002 B = frontmatter 739 + the hook body 3,263) · `memory_indexline_304.txt` (968 B, the line for the top of `index.md`) · `memory_archive_line301.txt` (the #301 line, the oldest of the three, to append VERBATIM to `MEMORY-ARCHIVE-3.md` § *Batch 2026-09-27 #304 (wrap)* and then remove from `index.md` with the same string) · `memory_area_apollo-mcp-genui_addition.txt` + `…_description.txt` · `memory_area_jev-integration_addition.txt` · `memory_area_review-pages-as-artifact.md` and `memory_area_roadmap-weekend-runs-304.md` (two new areas). Store versions as this seat read them: `index.md` `34877d8ae0fe` (8,985 B, #303 · #302 · #301) · `MEMORY-ARCHIVE-3.md` `4a9cf3ab340d` (23,921 B) · `areas/apollo-mcp-genui.md` `3b0942dd4383` (1,243 B) · `areas/jev-integration.md` `059a7f7a2256` (2,574 B). **If it is not placed, leave it: the note is `notes/_lanes/304/WRAP-MEMORY-HOOK.md`.** ⚠ #305's opener must NOT read or write the store.
 7. **THE `s214-D6` CHAIN FIGURE AT 5b.** Before: **7,324 tape (slice 6,476 + 848 wrapper), ratio 21%**. After this addendum's ⏱ delta line: **7,847 (slice 6,999 + 848), ratio 23%** of a `GOOD-MORNING.md` of 34,481 tape. Inside the `<40%` floor and under the ~10–12K target. Both reported; no third invented.
 8. ⚠ **STEP 4c runs LAST, after the 5b commit** (it deletes the tiktoken cache every gate needs). Declared, not skipped.
+
+---
+
+## ⬛ #305 WRAP ADDENDUM — STRIKES BY ADDITION, WITH RECEIPTS (`s183-D1` / `s188-D2`); NOTHING ABOVE IS REWRITTEN
+
+*Appended by the #305 delegated wrap seat, 2026-09-28. Provenance: 305 · 2026-09-27 · status: observed.*
+
+- **OWED item 1, the Tuesday sitting — STRUCK BY HIS ACT.** He took it on Sunday 2026-09-27, 13:59 to 14:53 BST, through the artifact, and returned `notes/_lanes/305/DAVE-RULINGS-2026-09-27-sitting.md`; lane A inscribed `s305-D1`..`s305-D56` (`notes/_subreports/2026-09-27-305-A-inscription.md`, committed at `27efb7b6`), call 27 became `s305-D57`. Call 1 is `s305-D2`: v1.0.14 cut by K at `0ef30746` · `02d679b3` · `d3b809a7` (`notes/_subreports/2026-09-27-305-K-cut.md`). Its seven Apollo-MCP decisions are `s305-D45`..`D54`; Jev as an edge suggester is `s305-D55`, built at `e4ff4284`.
+- **OWED item 2, the three behaviours shipped unruled — STRUCK, RULED:** `s305-D7` (call 6) keeps the tick thinning and the right-hand twin; `s305-D14` (call 13) keeps the console padding.
+- **OWED item 3, the two held back — STRUCK, RULED:** `s305-D6` (call 5, the clip-visible form, built and enacted at `568e2534`); `s305-D43` (call 41c, today's trim through the cut; the root version re-reviewed after it).
+- **OWED item 4, do the hub's links open — STRUCK, THEY OPEN:** his export at 14:53 came back from the sitting opened through the hub; his 20:04 BST screenshot shows the hub's list of pages 1–11 (`notes/_lanes/305/WRAP-BRIEF.md`).
+- **OWED item 6, Friday — STRUCK, ANSWERED IN HIS WORDS:** `notes/_lanes/305/FRIDAY-2026-09-25-what-came-back.md`.
+- ⛔ **NOT STRUCK:** item 5 (the dream pass on a live tree — no call asked it) and item 7 except where `_HANDOFF-154`'s own addendum strikes it. Carried in `_CARRIES.md` § `residual → #306`.
+- `_rulings.json` reads 699, newest `s305-D61`. Handoff for #306: `_HANDOFF-156-he-took-the-sitting-v1014-was-cut-and-ci-went-green.md`.

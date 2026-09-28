@@ -150,3 +150,15 @@ On `_HANDOFF-153` § OWED (addendum at its foot) and in `_CARRIES.md` § `residu
 - **OWED item 1, the Apollo-MCP proposal page — STRUCK BY THE ACT.** Lane M wrote v1 at #304's opener (`notes/_PROPOSAL-apollo-mcp-2026-09-26-v1.html`, report `notes/_subreports/2026-09-26-304-M-apollo-mcp-proposal.md`) and the conductor wrote v2 on his 14:51 and 14:52 BST words of Saturday 2026-09-26 (`notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html`); both committed at `6af293df`, pushed, CI `36257551837`. ⚠ **The item's caution — "Jev is ruled dev-time only (#294): any run-time judgement must be mechanical" — is CORRECTED by his words, with that receipt:** *"the reason we've rejected jev at build time is because it makes Apollo less transferable at the moment, its not rulled out completly for a GenUI project."* (`notes/_lanes/304/WRAP-BRIEF.md`). His seven decisions on the page are carried in `_CARRIES.md` § `residual → #305` item ④ and are group 5 of `notes/_SITTING-304-tuesday-2026-09-29-v1.html`.
 - ⛔ **NOT STRUCK:** items 2–8 stand, carried at their true age in `_CARRIES.md` § `residual → #305`. Item 4 (his three observations into the graph) is now also a question on `notes/_DECIDE-304-when-rules-2026-09-26-v1.html` — put, not answered.
 - `_rulings.json` reads 638, newest `s295-D4`; #304 inscribed nothing. Handoff for #305: `_HANDOFF-155-the-weekend-runs-landed-and-the-review-moved-to-an-artifact.md`.
+
+---
+
+## ⬛ #305 WRAP ADDENDUM — STRIKES BY ADDITION, WITH RECEIPTS (`s183-D1` / `s188-D2`); NOTHING ABOVE IS REWRITTEN
+
+*Appended by the #305 delegated wrap seat, 2026-09-28. Provenance: 305 · 2026-09-27 · status: observed.*
+
+- **OWED item 2, Friday — STRUCK, ANSWERED IN HIS WORDS:** *"nothing of substance came out of it aopart from people wanting to know more."* (his sitting export, Sunday 14:53 BST; `notes/_lanes/305/FRIDAY-2026-09-25-what-came-back.md`).
+- **OWED item 3, did the Common prompt run — STRUCK, ANSWERED:** *"The CEO prompt ran well"* (same export, same record).
+- **OWED item 5, which Spider pack is on his work machine — STRUCK, ANSWERED:** *"I used 13"*, and on Monday 08:05 BST, *"Used on my work machine and used in the room"* (`notes/_lanes/305/DAVE-RULINGS-2026-09-28-loose-ends.md`).
+- **OWED item 8, IN PART:** his window words are inscribed as `s305-D28` (working 256,000, hard 300,000, stop 236,000, tolerance 276,000), enacted by H2 (`notes/_subreports/2026-09-27-305-H2-code.md`). The rest of item 8 stands.
+- ⛔ **NOT STRUCK:** items 4, 6 and 7 stand, carried at their true age in `_CARRIES.md` § `residual → #306`.
