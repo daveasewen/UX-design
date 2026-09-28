@@ -811,6 +811,51 @@ EXIT CHECK — to the two `GOOD-MORNING.md` regions that had no roll rule and we
    and the wrap report, never retyped from memory. The conductor gives it to Dave after the wrap; the
    narrative dossier of step 1b is unchanged (it is the WHY and HOW for the record, not the summary for him).
 
+### ★ THE ORDER AFTER THE COMMIT — ONE CI WAIT, THE SUMMARY AT THE PUSH (`s306-D7`, #306, 2026-09-28; added by addition — steps 5, 5b and 5c above are left as written)
+
+Dave, verbatim, call 4 of the wrap-redesign page (`notes/_DECIDE-306-wrap-redesign-2026-09-28-v1.html`,
+export 16:01 BST): *"a · Yes, the next opener reads the follow-up's CI"*, to *"Give you the summary as soon
+as the wrap is pushed, and stop waiting on CI for the small follow-up commit?"* Built at #306 by lane V as
+PHASE 2 of the redesign (his *"go on both"*, 16:58 BST); `s306-D7` stays `ruled` until one real wrap has run
+in this order and the minutes from launch to his summary are measured again (about 59 at #305,
+`notes/_subreports/2026-09-28-306-R-wrap-redesign.md`). Where this block and the text of 5, 5b or 5c above
+disagree about WHEN, this block wins; what each step writes is unchanged.
+
+**The order, from the wrap commit on:**
+
+1. **5 — commit the wrap, push it** (`bash knowledge/_git_commit.sh --push`, the conductor's judgement,
+   `s207-D1`; the "Dave pushes via GitHub Desktop" sentence in step 5 above is the pre-#141 text, corrected in
+   `_RUNBOOK-git-commit.md` step 5).
+2. **Read the wrap commit's CI back — THE ONE WAIT THE WRAP KEEPS.**
+   `python3 knowledge/_ci_readback.py --sha <wrap sha> --poll 170`, repeated call by call until it exits 0
+   (green) or 1 (red). It prints a short run summary only: run id, per-job status and conclusion, failing
+   step names, and for a failed job the blocking lines parsed out of its log — never the log (limit 8 of
+   `s306-D10`). Save what it prints to `notes/_lanes/<n>/W/_ci-runs-<sha8>.txt`.
+3. **5c — the summary goes to Dave NOW**, straight after that read, with the CI verdict as one of its
+   Outputs (or Problems, if red). Nothing after this point changes what he is told.
+4. **5b — the post-wrap addendum**, as written above (the banner addendum if a ruling landed late, the
+   `s271-D4` re-read), plus the wrap commit's CI verdict from step 2, plus this line, verbatim in form:
+   `CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed`
+   A commit cannot carry its own sha, so the line names the tool's `--owed` form, which resolves the sha as
+   the last commit that touched the newest `_HANDOFF-*.md`. If the follow-up is ever a different commit from
+   the one carrying the addendum, write `--sha <that sha>` instead. The conductor also says the 5b sha in chat.
+5. **Commit the 5b addendum and push it — WITHOUT WAITING ON ITS CI.** Its CI is owed, not skipped: the next
+   opener reads it and relays the verdict in that session's chat (`s203-D1`'s read-back, one session late,
+   by Dave's word).
+6. **4c — scratch hygiene, LAST**, as before (it deletes the tiktoken cache every gate needs).
+
+**The gate.** `knowledge/_capture_gate.py::ci_owed_check` (wrap mode, BLOCKING in that mode, born #306):
+from `_HANDOFF-157` on, a handoff carrying a `POST-WRAP ADDENDUM (5b)` heading must carry a `CI owed:` line
+naming `_ci_readback.py` with `--owed` or `--sha <hex>`. It runs inside the 5b commit's committer, so a 5b
+addendum pushed without the line shows red there. Handoffs before 157 are out of scope by date, not graded.
+
+**The next opener.** After reading the newest handoff, if it carries `CI owed:`, run the command on that line
+once and put its summary in the first reply. A red there is the session's first beat.
+
+~~After the 5b commit and push, read its CI back to completion before the session is called done.~~ *(Struck by
+`s306-D7`. The second wait lived in the conductors' wrap briefs and in the handoffs' 5b addenda, never in this
+runbook; it is written here only so the strike has a home. At #303–#305 it cost 9.4, 14.9 and 14.0 minutes.)*
+
 ## ★ FILED SUB-REPORTS — what every sub brief must now say (`s218-D7`, 2026-08-25)
 
 *Ruled by Dave at #218; the ruling's own body lives in `knowledge/_rulings.json` § `s218-D7` and

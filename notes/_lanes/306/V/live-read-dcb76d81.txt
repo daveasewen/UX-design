@@ -1,0 +1,16 @@
+RUN 36437656013 gates completed/failure 2026-09-28T14:39:43Z sha dcb76d81
+   job render completed/success 2026-09-28T14:54:33Z
+   job gates completed/failure 2026-09-28T14:51:48Z | failing steps: ['Survey the COMMITTED tree — every check/selftest before any regeneration', 'Knowledge build — all derived views + blocking gates']
+      ✗ python3 knowledge/_build_survey.py --timeout 60
+          ❌ [88] KG node-title generator drift check — _node_titles.json vs the  exit 1
+          SURVEY: 68 pass · 1 FAIL · 6 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 79 not asked (mutating)
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_build_all.py
+          [88/154] KG node-title generator drift check — _node_titles.json vs the records (#304 W5c) → ❌ KG node titles are STALE (exit 1) — a ruling or rule text moved under _node_titles.json (an inscription adds one). Run: pyth…
+          ❌ build gate failed — see the reports above.
+          ##[error]Process completed with exit code 1.
+      ✗ python3 knowledge/_validate_evidence.py notes/_claims
+          ⛔ EVIDENCE GATE FAIL — 6 lint · 0 unparsed · 3 rc/observation mismatch
+          ##[error]Process completed with exit code 1.
+   job release completed/success 2026-09-28T14:40:36Z
+VERDICT dcb76d81: RED — see the failing steps above

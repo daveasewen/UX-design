@@ -6423,6 +6423,55 @@ def rulings_page_freshness_check(repo):
     return fails, notes
 
 
+# ★★ #306 lane V `s306-D7` — the `CI owed:` line. Dave, call 4 of the wrap-redesign page (16:01 BST):
+# "a · Yes, the next opener reads the follow-up's CI". The wrap stops waiting on the 5b follow-up's CI,
+# and that is only safe if the handoff SAYS a read is owed — otherwise the 5b push is the exact blindness
+# `s203-D1` exists to end (a push whose CI verdict is never relayed). So from `_HANDOFF-157` (the first
+# wrap under `s306-D7`) on, a handoff whose newest copy carries a `POST-WRAP ADDENDUM (5b)` heading must
+# carry, inside that section, a `CI owed:` line naming `_ci_readback.py` with `--owed` or `--sha <hex>`.
+# BLOCKING in wrap mode (the tier is `CI_OWED_BLOCKING`). It binds where it can: the 5b commit's committer
+# runs the wrap gate, so a 5b addendum without the line shows RED on that commit. Before 157 is out of
+# scope by date (the cutover rule: gate the flip, don't chase history) — declared in the notes, NOT a pass.
+CI_OWED_BLOCKING = True
+CI_OWED_FROM_HANDOFF = 157
+_CI_OWED_5B_RE = re.compile(r"^#{1,6} .*POST-WRAP ADDENDUM \(5b\)", re.M)
+_CI_OWED_LINE_RE = re.compile(r"CI owed:.*_ci_readback\.py\s+(?:--owed\b|--sha\s+[0-9a-f]{7,40}\b)")
+
+
+def ci_owed_check(repo):
+    """`s306-D7` — the newest `_HANDOFF-*.md`'s 5b addendum must carry the `CI owed:` line."""
+    fails, notes = [], []
+    hs = []
+    for pth in glob.glob(os.path.join(repo, "_HANDOFF-*.md")):
+        m = re.match(r"_HANDOFF-(\d+)\b", os.path.basename(pth))
+        if m:
+            hs.append((int(m.group(1)), pth))
+    if not hs:
+        return fails, [f"s306-D7 CI-OWED check SKIPPED — no `_HANDOFF-*.md` under {repo}. NOT a pass."]
+    n, pth = max(hs)                       # by NUMBER: a string sort ranks _HANDOFF-99 above -157
+    name = os.path.basename(pth)
+    if n < CI_OWED_FROM_HANDOFF:
+        return fails, [f"s306-D7 CI-OWED: newest handoff {name} predates the cutover "
+                       f"(_HANDOFF-{CI_OWED_FROM_HANDOFF}) — out of scope by date, NOT graded."]
+    with open(pth, encoding="utf-8") as f:
+        text = f.read()
+    m = _CI_OWED_5B_RE.search(text)
+    if not m:
+        return fails, [f"s306-D7 CI-OWED: {name} carries no `POST-WRAP ADDENDUM (5b)` yet — "
+                       f"nothing is owed until the 5b addendum is written."]
+    nxt = re.search(r"^#{1,2} ", text[m.end():], re.M)
+    section = text[m.start(): m.end() + (nxt.start() if nxt else len(text) - m.end())]
+    if _CI_OWED_LINE_RE.search(section):
+        notes.append(f"s306-D7 CI-OWED: {name}'s 5b addendum carries its `CI owed:` line — the next "
+                     f"opener reads that CI.")
+    else:
+        fails.append(f"s306-D7 CI-OWED MISSING — {name} has a `POST-WRAP ADDENDUM (5b)` with no `CI owed:` "
+                     f"line naming `_ci_readback.py --owed` (or `--sha <hex>`). The wrap no longer waits on the "
+                     f"5b commit's CI, so the handoff must say the read is owed. Runbook: "
+                     f"knowledge/_RUNBOOK-capture-ritual.md § ★ THE ORDER AFTER THE COMMIT.")
+    return fails, notes
+
+
 def wrap_checks(repo, today, lane=False):
     fails, warns, notes = [], [], []
     iso = today.isoformat()
@@ -6478,6 +6527,11 @@ def wrap_checks(repo, today, lane=False):
     _mw, _mn = memory_cap_check(repo)
     (fails if MEMORY_CAP_BLOCKING else warns).extend(_mw)
     notes += _mn
+    # ★★ #306 `s306-D7` — the `CI owed:` line on the newest handoff's 5b addendum. Runs for LANE wraps
+    # too: a lane's commit can be the one that pushes the 5b addendum. The tier is `CI_OWED_BLOCKING`.
+    _of, _on = ci_owed_check(repo)
+    (fails if CI_OWED_BLOCKING else warns).extend(_of)
+    notes += _on
     targets = [("_LIVE-STATE.md", '"Last refreshed"'), ("GOOD-MORNING.md", "header date")]
     if lane:
         targets = targets[:1]
@@ -11496,6 +11550,63 @@ def selftest_carry_gate():
     return failures
 
 
+# ★★ #306 lane V `s306-D7` BITE ARM — `ci_owed_check`. The new order (5b pushed without waiting, the
+# addendum carrying `CI owed:`) must pass; the old failure class (a 5b push whose CI nobody is told to
+# read) must fail. Fixture handoffs are written from nothing; no copy of the repo is taken.
+def selftest_ci_owed():
+    print("\n-- CI owed line (s306-D7) --")
+    failures = []
+
+    def bite(name, cond):
+        print(f"[{'OK' if cond else 'FAIL'}] ci-owed: {name}")
+        if not cond:
+            failures.append(f"ci-owed: {name}")
+
+    head = "# HANDOFF #{n}\n\n## WHAT LANDED\n- the wrap commit\n\n"
+    add5b = ("## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN\n\n"
+             "1. CI on the wrap commit: run 1 — release ✅ · gates ✅ · render ✅\n{line}\n\n"
+             "## ⬛ POST-WRAP ADDENDUM (lane L) — later\n\n{later}\n")
+    good = "2. CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed"
+
+    def run(files):
+        with tempfile.TemporaryDirectory() as td:
+            for fn, body in files.items():
+                with open(os.path.join(td, fn), "w", encoding="utf-8") as f:
+                    f.write(body)
+            return ci_owed_check(td)
+
+    f_, n_ = run({})
+    bite("no handoff ⇒ SKIPPED out loud and declared NOT a pass",
+         not f_ and any("SKIPPED" in x and "NOT a pass" in x for x in n_))
+    f_, n_ = run({"_HANDOFF-156-x.md": head.format(n=156) + add5b.format(line="", later="")})
+    bite("a pre-cutover handoff (156) is out of scope by date, not graded and not failed",
+         not f_ and any("NOT graded" in x for x in n_))
+    f_, n_ = run({"_HANDOFF-157-x.md": head.format(n=157)})
+    bite("157 with no 5b addendum yet (the wrap commit itself) ⇒ nothing owed, no fail",
+         not f_ and any("nothing is owed" in x for x in n_))
+    f_, n_ = run({"_HANDOFF-157-x.md": head.format(n=157) + add5b.format(line=good, later="")})
+    bite("NEW ORDER, the green control: a 5b addendum with `CI owed: … --owed` passes AND says so",
+         not f_ and any("carries its `CI owed:` line" in x for x in n_))
+    f_, _ = run({"_HANDOFF-157-x.md": head.format(n=157) + add5b.format(
+        line="2. CI owed: read with python3 knowledge/_ci_readback.py --sha 81bce363", later="")})
+    bite("`--sha <hex>` is the other legal form", not f_)
+    f_, _ = run({"_HANDOFF-157-x.md": head.format(n=157) + add5b.format(
+        line="2. pushed; CI will be read later", later="")})
+    bite("OLD FAILURE CLASS: a 5b addendum pushed with no `CI owed:` line FAILS, naming s306-D7 and the runbook",
+         any("CI-OWED MISSING" in x and "_RUNBOOK-capture-ritual.md" in x for x in f_))
+    f_, _ = run({"_HANDOFF-157-x.md": head.format(n=157) + add5b.format(
+        line="2. CI owed: python3 knowledge/_ci_readback.py --sha <sha>", later="")})
+    bite("a placeholder `--sha <sha>` is not a sha ⇒ FAILS", any("CI-OWED MISSING" in x for x in f_))
+    f_, _ = run({"_HANDOFF-157-x.md": head.format(n=157) + add5b.format(line="", later=good)})
+    bite("the line under a LATER heading does not count — it must sit in the 5b addendum",
+         any("CI-OWED MISSING" in x for x in f_))
+    f_, _ = run({"_HANDOFF-99-x.md": head.format(n=99),
+                 "_HANDOFF-157-x.md": head.format(n=157) + add5b.format(line="", later="")})
+    bite("the newest handoff is chosen by NUMBER (157 over 99), so the missing line is still caught",
+         any("_HANDOFF-157" in x for x in f_))
+    return failures
+
+
 # ⛔ #194 — THE SELFTEST'S COULD-NOT-ASK CHANNEL, one home for the whole suite.
 # Sub-suites return `list[str]` of FAILURES and that contract is untouched; an arm that discovers
 # its INPUT is unreachable appends here instead, and `_selftest_body()` turns a run that has only
@@ -11535,6 +11646,7 @@ def _selftest_body():
                 + selftest_growth() + selftest_usage()
                 + selftest_lanes() + selftest_receipts() + selftest_index_freshness()
                 + selftest_rulings_freshness()   # ★ s263-D10 — #265-B, the arm #263 lane E owed
+                + selftest_ci_owed()             # ★★ #306 `s306-D7` — the `CI owed:` line, BLOCKING
                 + selftest_stale_top()                    # ★ s161-D4, RULED #161
                 + selftest_handoff_history()
                 + selftest_rehearsal())    # #92 — wired HERE, at write time: a suite a new

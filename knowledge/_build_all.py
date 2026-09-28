@@ -693,6 +693,13 @@ STEPS = [
      "_validate_geometry.py", ["--build"]),
     ("own-size gate — every part at its reference size on generated pages (ADVISORY, built #304)",
      "_validate_own_size.py", ["--build"]),
+    # #306 lane V (`s306-D7`, phase 2 of the wrap redesign): the permanent CI read-back that replaced
+    # the per-wrap `ci30N.py` / `cilog30N.py`. The tool itself runs at the wrap (the wrap commit's CI)
+    # and at the NEXT opener (the 5b commit's CI, `--owed`); only its selftest runs here, over canned
+    # API JSON through a fake transport, so CI never needs the network or a token for it. Appended
+    # LAST on purpose: no existing step number moves.
+    ("CI read-back selftest — canned API JSON, no network; the token never printed (s306-D7, built #306)",
+     "_ci_readback.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1116,6 +1123,9 @@ ROUTE_ROWS = [
      "overflow, stretch on generated pages (ADVISORY, built #304)", ADVISORY, None),
     ("own-size gate — every part at its reference size on generated pages (ADVISORY, built #304)",
      ADVISORY, None),
+    # ── #306 lane V · the CI read-back's selftest row, in the SAME edit as its STEPS entry. ABORT, the
+    # tier every tool selftest carries (the `_gm_move.py` / `_roll_state.py` precedent).
+    ("CI read-back selftest — canned API JSON, no network; the token never printed (s306-D7, built #306)", ABORT, None),
 ]
 
 

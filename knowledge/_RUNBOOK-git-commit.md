@@ -116,6 +116,12 @@ from an already-clean `.git`. (Corrected 2026-07-18 after step 1 failed on a 12-
    CONDUCTOR'S JUDGMENT.** The call form (`--push`, master, ff-only, verified) and the CI read-back
    owed in chat (`s203-D1`) both stand unchanged. If Desktop ever complains
    about a lock, Dave can delete `.git/index.lock` on his side (his machine has normal permissions).
+   ⚠ **ONE TIMING EXCEPTION, BY ADDITION (`s306-D7`, #306, Dave: *"a · Yes, the next opener reads the
+   follow-up's CI"*):** the wrap's 5b follow-up push is NOT read back in the wrapping session. Its read-back is
+   owed by the NEXT opener, which runs `python3 knowledge/_ci_readback.py --owed` and relays the verdict in
+   that session's chat. Every other push is read back as before, with `python3 knowledge/_ci_readback.py --sha
+   <sha> --poll 170` (the permanent tool that replaced the per-session `ci30N.py`). Order:
+   `_RUNBOOK-capture-ritual.md` § ★ THE ORDER AFTER THE COMMIT.
 
 ## Gotchas
 - **Judge success by HEAD, not warnings.** The `unable to unlink … tmp_obj_*` / `*.lock` lines are git
