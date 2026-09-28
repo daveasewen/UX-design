@@ -89,3 +89,7 @@ Every limb of its `closes_when` is met, and each one is receipted in `closed_by`
 - This report and `notes/_lanes/305/D1/**`
 
 `backup/_rulings.json.pre-D1` (1.1 MB) is held and not committed: git has the prior version.
+
+## Addendum, by addition (after the close commit; this addendum itself is NOT committed)
+
+The close commit is **`01fb005a`**, pushed `fd607c74..01fb005a` (fast-forward, `ls-remote` = local HEAD, `_push-D1c.log`). CI run **`36349147952`**: release ✅ 20:45:15Z · gates ✅ 20:57:11Z (survey 69 pass · 0 FAIL; step 6 154/154 asked, 0 gate red, advisory [140] [141] [150]) · render ✅ 20:59:07Z. Uncommitted tail for the next commit seat: this addendum, `notes/_lanes/305/D1/{_ci-gates-D1c.log, _ci-runs-01fb005a.txt, _gitcommit-D1c.{log,term}, _msg-D1c.txt.t3-rendered, _push-D1c.log, step6-parse-c.txt}`; `backup/_rulings.json.pre-D1` held.

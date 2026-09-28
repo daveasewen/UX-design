@@ -1,0 +1,221 @@
+roles resolve — metas: 137 · carrying an interchangeability term: 114 · addresses resolved: 179
+  field population: provides 108 · answers 26 · shape 26 · span 26 · priority 25 · when 43 · with 3 · not-with 8
+  `shape` values in use (23 of the 23 in knowledge/shapes.json — CLOSED store, s254-D2 item 1): ancestor-path × links (1) · bins × frequency (1) · categories × five-number-summary (1) · categories × series (1) · categories × two-series-mirrored (2) · destination-set × links (1) · no-data × arbitrary-blocks (1) · no-data × control (2) · no-data × page-regions (1) · no-data × title-and-optional-action (1) · one-measure × committed-vs-balance-split (1) · one-measure × value-and-delta (1) · one-measure × value-delta-and-series (1) · one-state × dot-and-label (1) · parts-of-whole (2) · periods × ohlc (1) · points × two-measures (1) · rows × measure-target-bands (1) · rows × name-value-pairs (1) · shared-x × two-measures-different-units (1) · time-series × 1–5-series (1) · time-series × parts-of-whole (1) · time-series × single-series-no-axes (1)
+  `when` FIELD COUNTS (43 of the 43 in knowledge/when-fields.json — SCRIPT OUTPUT, quote these on a review page rather than counting by eye; this is what closes V-B's M2):
+    answers        15  Chart-boxplot, Chart-bullet, Chart-butterfly-h, Chart-butterfly-v, Chart-candlestick, Chart-histogram, Chart-scatter, chart-bar, chart-combo, chart-donut, chart-line, chart-pie, chart-sparkline, chart-stacked-area, runway-bar
+    shape           9  Chart-candlestick, breadcrumbs, chart-line, kpi-tile, navigations, runway-bar, stat-card, status-indicator, summary
+    span.cols       8  Chart-boxplot, Chart-butterfly-v, chart-donut, chart-line, chart-pie, chart-sparkline, status-indicator, summary
+    series          7  Chart-butterfly-h, Chart-butterfly-v, chart-combo, chart-sparkline, kpi-tile, legend, stat-card
+    interrupts      3  dropdown, modals, split-button
+    records         3  data-grid, list-items, timeline
+    axes            2  chart-line, chart-sparkline
+    categories      2  Chart-boxplot, Chart-butterfly-h
+    entry           2  input-fields, textarea
+    label           2  button, legend
+    needs           2  data-grid, list-items
+    surface         2  layout-utilities, list-items
+    total           2  chart-donut, chart-pie
+    units           2  chart-combo, chart-line
+    actions         1  split-button
+    axis.x          1  chart-bar
+    baseline        1  Chart-histogram
+    bins            1  Chart-histogram
+    breadcrumbs     1  app-shell-focused
+    cause           1  template-error
+    content         1  layout-utilities
+    delta           1  stat-card
+    depth           1  breadcrumbs
+    destinations    1  app-shell-top-nav
+    emphasis        1  button
+    exits           1  app-shell-focused
+    full            1  limits-meter
+    job.count       1  app-shell-focused
+    level           1  headers
+    lockup          1  headers
+    nav.levels      1  app-shell-top-nav
+    options         1  dropdown
+    order           1  template-confirmation
+    parts           1  chart-pie
+    platform        1  headers
+    position        1  template-confirmation
+    primaryNavigation  1  app-shell-focused
+    rows            1  summary
+    scope           1  navigations
+    search          1  app-shell-focused
+    steps           1  template-wizard
+    variables       1  Chart-histogram
+    verdict         1  runway-bar
+    gate clauses carrying NO operator (prose inside the gate — not parsed, not judged, V-B's M2 method): 46
+  `when` predicates as authored:
+    Chart-boxplot                answers = distribution AND categories >= 2 AND each category carries a five-number summary AND span.cols <= 8 — roles.json when: "distribution per category"; beats Chart-histogram (roles.json: "distribution, one variable") whenever the spread must be read PER CATEGORY; yields to it when variables = 1 and the bin shape is the claim.
+    Chart-bullet                 answers=comparison AND the reading is one measure against a target plus qualitative performance bands AND span.cols 4–6 — beats stat-card (60, "default — label · value · delta · period, no series") and kpi-tile (50, "a series exists to show") when the BENCHMARK, not the delta and not a series, is the point; yields to both when no target exists.
+    Chart-butterfly-h            answers=comparison AND series=2 mirrored outward from a shared centre gutter AND categories ≥ 6 — beats chart-bar (grouped) when the two series must read as OPPOSED directions rather than adjacent columns; yields to Chart-butterfly-v (36, "as above, wide panel") when the category axis is ordered left-to-right and span.cols ≥ 8.
+    Chart-butterfly-v            answers=comparison AND series=2 mirrored above/below ONE horizontal baseline AND the category axis is ordered left-to-right (time, rank) AND span.cols ≥ 8 — yields to Chart-butterfly-h (40, "exactly two series mirrored, categories ≥ 6") whenever the categories are unordered or the panel is narrower than 8 cols; both yield to chart-bar for an ordinary grouped comparison.
+    Chart-candlestick            answers = change-over-time AND shape = periods × OHLC (open · high · low · close per session) — roles.json when: "OHLC per period"; beats chart-line (roles.json: "change-over-time") only when all four price points per period are the claim; yields to chart-line whenever one measure's path is enough.
+    Chart-histogram              answers = distribution AND variables = 1 AND bins = contiguous (no inter-bar gap) AND baseline = 0 — roles.json when: "distribution, one variable"; beats Chart-boxplot (roles.json: "distribution per category") when the frequency shape of ONE variable is the claim; yields to Chart-boxplot when categories >= 2; the no-gap rule is not cosmetic — the FT gives the same reason: "keep the gaps between columns small to highlight the 'shape' of the data".
+    Chart-scatter                answers=relationship AND both axes carry quantitative measures — the ONLY provider of relationship in the role, so it beats every sibling on the answers gate alone and needs no further test; yields to chart-combo (56) when the two measures share one x axis in different units instead of being plotted against each other. span.cols max 8 because a runtime fit is not baked (this meta's own responsive rule).
+    alert                        the message is IN FLOW (inside the page or form it refers to) AND it persists until resolved or dismissed AND it carries a status glyph and a title, never colour alone AND an error alert never auto-dismisses — CANON-ADJACENT — our own purpose already states the three-way rule: "Use Toast for transient confirmations and Banner for page-level persistent messages; use inline field validation (Input-fields) for single-control errors"; beats toast (proposed "transient, no answer required") whenever the reader must act; beats banner (proposed "the condition governs the whole page or session") whenever the message belongs to one form or section — Atlassian draws the identical line: "For messages with information affecting the whole site, use a banner"; yields to inline field validation for a single control.
+    app-shell-focused            primaryNavigation = absent AND breadcrumbs = absent AND search = absent AND exits = 1 AND job.count = 1 — the only frame defined by removal; beats every other shell (roles.json: all six carry navigation) whenever abandoning the task is the failure mode — authentication, a wizard, a passcode; yields to app-shell-top-nav the moment the user must be able to go somewhere else.
+    app-shell-top-nav            destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: "> 7 destinations or two nav levels") below those bounds and app-shell-nav-rail (when: "dense app, content cannot spare 248px") when the content can spare the column; yields to app-shell-multi-column (when: "list-and-detail job") and to app-shell-focused (when: "one job, no navigation (auth, wizard)") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.
+    breadcrumbs                  shape = ancestor-path × links AND depth >= 2 — beats anchor-nav (roles.json when: "in-page, long document") when the trail is ancestry rather than in-page position; yields to navigations (when: "global — masthead / main-nav family") for global movement and to tabs (when: "local — peer views in one context") for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.
+    button                       emphasis in (primary, secondary, tertiary, quaternary) AND label = text — the default of the role; yields to icon-button (roles.json when: "space is tight and the glyph is universal") when label = glyph, to split-button (when: "one main action plus a menu of related ones") when a menu hangs off the action, and to links (when: "the action is navigation inside running text") when the action is navigation in prose.
+    chart-bar                    answers = comparison AND axis.x = categorical — beats chart-line (roles.json when: "change-over-time") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: "composition, no centre figure, ≤ 5 parts") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: "composition over time") if the axis is time.
+    chart-combo                  answers=change-over-time AND series=2 AND units=different AND both read against ONE shared x (dv-line-006) — beats chart-line (88, "change-over-time") on the different-units test and on nothing else; yields to chart-line (multi-series) or chart-bar (grouped) for a same-unit pair, which this meta's own antiPattern forbids drawing as a combo.
+    chart-donut                  answers=composition AND parts sum to a whole AND total=printed as a centre figure AND span.cols ≤ 6 — beats chart-pie (48, "composition, no centre figure, ≤ 5 parts") whenever the total is worth printing, and beats it on nothing else; yields to chart-stacked-area (64, "composition over time") when the split MOVES. A ring does not stretch with its tile (ds-030), so it takes a half-width column and never a full-width row (s305-D9).
+    chart-line                   answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 AND units = same AND shape = time-series × 1–5-series — the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, "two measures in different units over one axis") when units differ, to Chart-candlestick (44, "OHLC per period") when all four price points per period are the claim, and to chart-sparkline (30, "inline scale, no axes") when span.cols < 6.
+    chart-pie                    answers=composition AND parts ≤ 5 AND total=not printed AND span.cols ≤ 6 — yields to chart-donut (80, "composition, a centre total is meaningful") whenever a centre total is wanted, which is the only thing separating the two; yields to chart-stacked-area (64) when the split moves over time. A ring does not stretch with its tile (ds-030), so it takes a half-width column and never a full-width row (s305-D9).
+    chart-sparkline              answers=change-over-time AND series=1 AND axes=absent AND span.cols ≤ 4 (inline, or a trend cell in a table) — yields to chart-line (88, "change-over-time") whenever the panel can carry axes, and is normally a complement of headline-metric rather than a chart-panel in its own right (ROLES-REVIEW §03).
+    chart-stacked-area           answers spans change-over-time AND composition AND cumulative bands share ONE total across the time axis — beats chart-donut (80, "composition, a centre total is meaningful") and chart-pie (48) when the split MOVES rather than being a snapshot; yields to chart-line (88, "change-over-time") when the total is not meaningful.
+    data-grid                    records >= 2 AND needs in (sort, filter, select, edit) — the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) whenever sorting, filtering, selecting or editing is required, and yields to list-items when needs = none.
+    dropdown                     options >= 5 AND interrupts = none — one choice from a list, made in place (s270-D1: "we use dropdowns for 5 and above"); beats modals whenever the choice does not need to stop the person.
+    headers                      level in (page, screen, section) AND platform = app AND lockup = none — yields to page-header-lockup (roles.json when: "page level, with actions or tabs") whenever actions or tabs ride the band; beats section-heading-lockup (when: "section level, above one board / table / panel") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: "a kicker alone is enough (rare; normally a part of the above)") whenever a title, not a kicker, is wanted.
+    icon-button                  the control performs an action AND space is tight OR the glyph is universal AND an accessible name is supplied AND the hit target is at least 44x44 AND a tooltip carries the label — CANON on the first half (roles.json: "space is tight and the glyph is universal"); beats button only where the glyph is unambiguous — our own meta: "Use a labelled Button when the action is not unambiguous from a glyph alone"; the tooltip is not optional company: Atlassian ("Use tooltips with icon buttons to display the button label") and Polaris ("Be provided for icon-only buttons") both make it a requirement, which our meta states only as an antiPattern.
+    input-fields                 entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed "the answer may span multiple lines") whenever the answer is a name, a reference or a phone number; yields to amount-input when the value is money, to date-picker / time-picker when it is a date or time, to secure-entry when it is a one-time code or PIN, and to dropdown or combobox whenever the answer must come from a list at all (Carbon: free text there "is likely to result in an error").
+    kpi-tile                     shape = one-measure × value-delta-and-series AND series != none — beats stat-card (roles.json when: "default — label · value · delta · period, no series") whenever a series exists to show; yields to Chart-bullet (when: "a target or performance band is the point, not the delta") when target != none, and to runway-bar (when: "the number is 'money vs what is already scheduled'") when the measure is money-vs-scheduled.
+    layout-utilities             content = arbitrary-blocks AND surface = none — the default of the role; beats cards (roles.json when: "a bordered surface per item") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: "3–6 headline-metrics in a labelled row") whenever the blocks are not headline-metrics; yields to divider (when: "a rule alone") when a rule alone is the whole need.
+    legend                       series ≥ 2 AND label = text — a key is needed only where more than one series is drawn; a single-series chart names its series in the title (chart-sparkline's rule). Placed on its own only when the charts it keys are more than one (small multiples, a comparison row); a lone chart carries its legend inside its own figure, which is what every registered chart type already does.
+    limits-meter                 INHERITS meter's gate, variant = allowance: the value is a cap being spent against AND full = BLOCKED, not done — a thin category alias of meter.meta.json (s210-D5); carries no independent when because writing spec into the alias is an explicit antiPattern on the parent — the reading is "how much of my limit is left", which is what roles.json already names.
+    list-items                   records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none — surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: "default, read-mostly") and data-grid (when: "sort / filter / select / edit-in-place is required") whenever each record is read across its own row; yields to timeline (when: "time is the structure, records have happened") and to tree (when: "records nest").
+    modals                       interrupts = required — the person must stop: confirm a consequential action, or finish a task that cannot share the screen; yields to split-button when interrupts = none AND actions >= 2 (one main action with a few related ones beside it), and to dropdown when interrupts = none AND options >= 5 (one choice from a list, made in place, s270-D1).
+    navigations                  shape = destination-set × links AND scope = global — the default of the role; beats breadcrumbs (roles.json when: "ancestry, depth ≥ 2") and tabs (when: "local — peer views in one context") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: "global, desktop, persistent column (pairs with app-shell-side-nav)") when the page-frame is app-shell-side-nav, and to tab-bar (when: "mobile bottom, 3–5 destinations") on mobile.
+    popover                      the content is STRUCTURED and FOCUSABLE AND it opens on CLICK from a labelled trigger AND it does not scroll AND it is non-modal (no focus trap, no aria-modal) AND only one is open — CANON-ADJACENT — our purpose already carries the three-way rule: "If the user can act inside it, it is a Popover; if it is a sentence of help text, it is a Tooltip; if it must interrupt, it is a Modal"; Atlassian states both halves independently ("For interactive overlays, use the modal dialog component" / "For non-essential, non-interactive messages, use the tooltip component"); yields to drawer or modals once the content scrolls (our antiPatterns[2], Atlassian: "Don't make popups that scroll", Carbon: past four columns wide use a modal).
+    runway-bar                   answers = one-number AND shape = one-measure × committed-vs-balance-split AND verdict != none — beats stat-card (60, "default — label · value · delta · period, no series") and kpi-tile (50, "a series exists to show") when the reading is "money vs what is already scheduled" and the takeaway is a VERDICT WITH A DATE rather than a delta or a trend; yields to stat-card when there is nothing committed to net off, to kpi-tile when a series is the claim, and to Chart-bullet (40, "a target or performance band is the point, not the delta") when a target band, not a coverage date, is the benchmark.
+    split-button                 actions >= 2 AND interrupts = none — one main action plus a menu of related ones, offered in place (button's own `when` already hands this case here); beats modals whenever the related actions can be offered without stopping the person.
+    stat-card                    shape = one-measure × value-and-delta AND series = none AND delta != none — the default of the role; beats kpi-tile (roles.json when: "a series exists to show (s247-D3 / DP-08: no series ⇒ not a KPI tile)") exactly when no series exists, and beats Chart-bullet (when: "a target or performance band is the point, not the delta") when the delta, not a band, is the claim.
+    status-indicator             shape = one-state × dot-and-label AND span.cols <= 4 — the default of the role; beats summary (roles.json when: "n × count as a key/value list, 6–12 cols") whenever exactly one state is read; yields to badge (when: "inline, attached to another element, count only") when the dot is attached to another element rather than standing alone.
+    summary                      shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6 — beats status-indicator (roles.json when: "one state, one dot + label, 2–4 cols") whenever more than one row must be read at once; yields to meter (when: "the threshold is a cap being spent against (limits-meter reading)") when threshold = cap-spent-against, and to badge (when: "inline, attached to another element, count only") when the reading is inline.
+    template-confirmation        position = end of an instruction AND order = message, then FACTS, then actions, then what-happens-next AND a reference is shown if one exists — beats the Confirmation component (roles.json feedback role) because a confirmation PAGE is also the RECEIPT — that reordering is the template's whole contribution; ends a flow that template-wizard began.
+    template-error               cause in (404, 500) AND RAG colour = unbound AND no support semantics invented AND one page serves ALL unexpected failures — beats template-empty (proposed "the query succeeded and returned nothing") because here the page could not be produced at all; beats an inline Alert (slice A) because the failure is the PAGE, not a field.
+    template-wizard              steps >= 2 AND order is enforced AND next is gated AND a review step precedes the end AND the end is a receipt — beats template-create-edit (proposed "one page, no enforced order") on order; composes app-shell-focused (roles.json when: "one job, no navigation (auth, wizard)") and borrows the step mechanism whole from Stepper.
+    textarea                     entry = free text AND the answer may run to more than one line AND there is no fixed option list AND a length limit is shown only where a real limit exists — beats input-fields (proposed "the answer fits one line") the moment a sentence is expected rather than a value — notes to approvers, a reason for payment, a secure message body; yields to input-fields for anything shorter (GOV.UK, verbatim: "enter shorter answers no longer than a single line, such as a phone number"); the counter is added only when a limit genuinely exists (GOV.UK: "Only use the character count component when there is a good reason for limiting").
+    timeline                     records >= 2 AND time IS the structure AND every record has ALREADY HAPPENED AND entries are not buttons AND order is newest-first with date headings — roles.json when: "time is the structure, records have happened"; beats list-items when the date rail is the reading rather than a sort order; yields to list-items inside a date group the moment entries must open (our AP1), and never borrows Progress-tracker's aria-current because there is no current step (our AP0).
+    view-options                 NEVER — superseded 2026-07-24; the view switch is Segmented-control — carries no selection criterion because it is not a choice any composer should make: filter-toolbar-bar's AP1 already says "Consuming View-options instead of Segmented-control for the view switch — View-options was superseded"; the honest `when` here is a redirect, not a predicate.
+DERIVED (printed, NEVER written into a meta — s251-D6, ISO 25964):
+    preferred:  role action           PREFERRED TERM button (priority 60) — 7 co-provider(s)
+    preferred:  role arrangement      PREFERRED TERM layout-utilities (priority 60) — 7 co-provider(s)
+    preferred:  role chart-panel      PREFERRED TERM chart-bar (priority 92) — 11 co-provider(s)
+    preferred:  role feedback         PREFERRED TERM alert (priority None) — 10 co-provider(s)
+    preferred:  role headline-metric  PREFERRED TERM stat-card (priority 60) — 3 co-provider(s)
+    preferred:  role input            PREFERRED TERM account-selector (priority None) — 26 co-provider(s)
+    preferred:  role overlay          PREFERRED TERM command-palette (priority None) — 6 co-provider(s)
+    preferred:  role page-frame       PREFERRED TERM app-shell-top-nav (priority 60) — 6 co-provider(s)
+    preferred:  role page-title       PREFERRED TERM headers (priority 50) — 3 co-provider(s)
+    preferred:  role record-list      PREFERRED TERM list-items (priority 60) — 7 co-provider(s)
+    preferred:  role status-surface   PREFERRED TERM status-indicator (priority 60) — 3 co-provider(s)
+    preferred:  role wayfinding       PREFERRED TERM navigations (priority 60) — 7 co-provider(s)
+    instead-of: action-bar                   instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: cta-lockup                   instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: fab                          instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: icon-button                  instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: links                        instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: quick-actions                instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: split-button                 instead-of button                       [distant] role=action shape=differs span=unknown
+    instead-of: accordion                    instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: cards                        instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: carousel                     instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: divider                      instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: feature-grid-lockup          instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: splitter                     instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: stats-band-lockup            instead-of layout-utilities             [distant] role=arrangement shape=differs span=unknown
+    instead-of: chart-line                   instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: chart-donut                  instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-histogram              instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-scatter                instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: chart-stacked-area           instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-boxplot                instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: chart-combo                  instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: chart-pie                    instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-candlestick            instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-butterfly-h            instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: Chart-butterfly-v            instead-of chart-bar                    [near] role=chart-panel shape=differs span=overlaps
+    instead-of: banner                       instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: confirmation                 instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: countdown-timer              instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: empty-state                  instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: loading-indicator            instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: notifications                instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: progress-bar                 instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: progress-tracker             instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: skeleton-loader              instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: toast                        instead-of alert                        [distant] role=feedback shape=differs span=unknown
+    instead-of: kpi-tile                     instead-of stat-card                    [near] role=headline-metric shape=differs span=overlaps
+    instead-of: Chart-bullet                 instead-of stat-card                    [near] role=headline-metric shape=differs span=overlaps
+    instead-of: runway-bar                   instead-of stat-card                    [near] role=headline-metric shape=differs span=overlaps
+    instead-of: amount-display               instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: amount-input                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: calendar                     instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: cascader                     instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: combobox                     instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: date-picker                  instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: date-range-picker            instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: dropdown                     instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: file-upload                  instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: form-layout                  instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: input-fields                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: multi-select                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: range-slider                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: rating                       instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: reorder                      instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: search-field                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: secure-entry                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: segmented-control            instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: selection-controls           instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: slider                       instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: stepper                      instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: tags-input                   instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: textarea                     instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: time-picker                  instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: transfer-list                instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: view-options                 instead-of account-selector             [distant] role=input shape=differs span=unknown
+    instead-of: drawer                       instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: modal-lightbox               instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: modals                       instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: popconfirm                   instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: popover                      instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: tooltip                      instead-of command-palette              [distant] role=overlay shape=differs span=unknown
+    instead-of: app-shell-doormat            instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: app-shell-focused            instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: app-shell-multi-column       instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: app-shell-nav-rail           instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: app-shell-side-nav           instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: app-shell-split              instead-of app-shell-top-nav            [distant] role=page-frame shape=differs span=unknown
+    instead-of: eyebrow                      instead-of headers                      [distant] role=page-title shape=differs span=unknown
+    instead-of: page-header-lockup           instead-of headers                      [distant] role=page-title shape=differs span=unknown
+    instead-of: section-heading-lockup       instead-of headers                      [distant] role=page-title shape=differs span=unknown
+    instead-of: data-grid                    instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: document-row                 instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: standing-order-mandate-row   instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: table                        instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: timeline                     instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: transaction-row              instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: tree                         instead-of list-items                   [distant] role=record-list shape=differs span=unknown
+    instead-of: summary                      instead-of status-indicator             [distant] role=status-surface shape=differs span=disjoint
+    instead-of: badge                        instead-of status-indicator             [distant] role=status-surface shape=differs span=unknown
+    instead-of: meter                        instead-of status-indicator             [distant] role=status-surface shape=differs span=unknown
+    instead-of: breadcrumbs                  instead-of navigations                  [near] role=wayfinding shape=differs span=overlaps
+    instead-of: anchor-nav                   instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    instead-of: back-to-top                  instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    instead-of: pagination                   instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    instead-of: sidebar-nav                  instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    instead-of: tab-bar                      instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    instead-of: tabs                         instead-of navigations                  [distant] role=wayfinding shape=differs span=unknown
+    not-with:   stat-card                    not-with Chart-butterfly-h            -> DERIVED (symmetric)
+    not-with:   stat-card                    not-with Chart-butterfly-v            -> DERIVED (symmetric)
+    not-with:   chart-bar                    not-with Chart-histogram              -> DERIVED (symmetric)
+    not-with:   stat-card                    not-with Chart-histogram              -> DERIVED (symmetric)
+    not-with:   chart-donut                  not-with chart-pie                    -> DERIVED (symmetric)
+    not-with:   chart-line                   not-with chart-sparkline              -> DERIVED (symmetric)
+    not-with:   chart-bar                    not-with chart-stacked-area           -> DERIVED (symmetric)
+    not-with:   status-surface               not-with kpi-tile                     -> reciprocal NOT DERIVABLE (target is a ROLE, not a meta)
+    not-with:   chart-sparkline              not-with legend                       -> DERIVED (symmetric)
+    with:       filter-toolbar-bar           with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       pagination                   with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       search-field                 with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       selection-controls           with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       skeleton-loader              with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       tags                         with data-grid                    -> DERIVED suggests (from suggests; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       chart-sparkline              with kpi-tile                     -> DERIVED suggests (from recommends; NOT asserted — a complement is one-way until Dave says otherwise)
+    with:       chart-panel                  with legend                       -> reciprocal NOT DERIVABLE (target is a ROLE, not a meta)
+CROSS-CHECK roles.json <-> metas (REPORT ONLY, never a fail — s252-D1):
+    roles.json membership and the metas' `provides` AGREE for every meta that carries the field (108).
+RESULT: PASS — every role/answers/shape/not-with/with address resolves, every `when` field name is legal, priorities are unique in-role, and intent agrees with answers. This proves no address DANGLES; it does not prove any assignment is RIGHT (Dave's eye, against each meta's own `purpose` prose), and it does not prove a `when` predicate is TRUE of its component — only that its field names are in the store.

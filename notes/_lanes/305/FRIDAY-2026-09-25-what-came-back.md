@@ -20,3 +20,12 @@ What came back from the presentation (a pilot, a date, a name, a no); did the CE
 
 - The proof of concept (Apollo-MCP / Launchpad, `s305-D45`–`s305-D54`) is to be a surprise: nothing about it goes on shared material. Tracked as store row `W-305n6` (his).
 - "I used 13" is his answer as written; it is not expanded here into which pack or slide it means.
+
+## 2026-09-28 — what "13" meant, his answer
+
+provenance: 305 · 2026-09-28 · lane A2 (inscription seat), added by addition; nothing above is changed
+source: `notes/_lanes/305/DAVE-RULINGS-2026-09-28-loose-ends.md`, section "5 · v1.0.13" (anchor `#dd-g5-pack`), saved 2026-09-28 08:04 — his answer to the loose-ends page's question (`notes/_DECIDE-305-loose-ends-2026-09-27-v1.html`, group 5): Did "13" mean pack v1.0.13 on your work machine, or the pack you used in the room?
+
+> Used on my work machine and used in the room
+
+So "I used 13" above is answered in his own words: both. It is a record, not a ruling; nothing is expanded here beyond his line.

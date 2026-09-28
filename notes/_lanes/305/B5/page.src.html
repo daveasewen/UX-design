@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The loose ends</title>
+{{HOUSE_CSS}}
+<style>
+/* #305 B5 additions */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.three>figure{margin:0;background:var(--white);padding:var(--s2)}
+.three figcaption{margin:0 0 var(--s1)}
+.three .tag{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;color:var(--grey-6)}
+.three .ttl{display:block;font-size:17px;font-weight:500;line-height:1.35;margin-top:2px}
+.three a{display:block}
+.three ol{margin:var(--s2) 0 0;padding-left:1.3em;font-size:14px;line-height:1.5;color:var(--grey-8)}
+.three ol li{padding:2px 0}
+.ring{margin:var(--s2) 0 var(--s1)}
+.ring figcaption{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;margin:0 0 var(--s1)}
+.ring .v{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5}
+.ring .v.fail{color:var(--accent)}.ring .v.pass{color:var(--black)}
+.ring .n{font-size:28px;font-weight:200;line-height:1.1}
+.ring .w{font-size:14px;color:var(--grey-7)}
+.meter{height:10px;background:var(--grey-2);position:relative;margin:4px 0 var(--s1);max-width:100%}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--grey-6)}
+.meter.over i{background:var(--accent)}
+.meter b{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--black)}
+.meter-cap{font-size:12px;color:var(--grey-6);line-height:1.4;margin-bottom:var(--s1)}
+.dist .hd small{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:13px;color:var(--grey-7);margin-top:2px}
+.dd-call .dist{margin-bottom:var(--s3)}
+.dist p{font-size:15px;line-height:1.55;color:var(--grey-8);margin:0 0 var(--s1)}
+.dist .nm{font-size:13px;color:var(--grey-6);margin:0 0 4px}
+.house{border-left:2px solid var(--accent);padding:.2rem 0 .2rem var(--s2);margin:var(--s3) 0;max-width:48em}
+.house .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.house p{margin:4px 0 0}
+.chipline{font-size:13px;color:var(--grey-7);margin-top:var(--s1)}
+/* swatches: fixed grounds, the same in light and dark */
+.swg{display:grid;grid-template-columns:120px 1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin:var(--s3) 0 var(--s2)}
+.swg>div{background:var(--white);padding:var(--s2)}
+.swg .h{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.swg .rl{font-size:15px;font-weight:500;display:flex;flex-direction:column;justify-content:center}
+.swg .rl small{display:block;font-weight:400;font-size:12px;color:var(--grey-6);line-height:1.4}
+.chip-sw{padding:14px 16px;border:1px solid var(--grey-3)}
+.chip-sw .amt{font-size:26px;font-weight:400;line-height:1.2;display:block}
+.chip-sw .hex{font-size:12px;line-height:1.4;display:block;margin-top:6px}
+.chip-sw.onw{background:#FFFFFF;color:#333}
+.chip-sw.ond{background:#1F1F1F;color:#D6D6D6}
+.swg .cr{font-size:13px;color:var(--grey-8);margin-top:var(--s1);line-height:1.5}
+.swg .cr b{font-weight:500;color:var(--black)}
+.quote-when{font-family:ui-monospace,Menlo,monospace;font-size:13px;line-height:1.6;background:var(--grey-1);padding:var(--s2);margin:var(--s1) 0 var(--s2);overflow-wrap:anywhere;color:var(--grey-8)}
+.quote-when .k{display:block;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:4px}
+.big-quote{font-size:24px;font-weight:300;line-height:1.4;border-left:2px solid var(--accent);padding-left:var(--s3);margin:var(--s2) 0;max-width:30em}
+/* when-rule rows */
+.wr-head{display:grid;grid-template-columns:170px 1fr 330px;gap:var(--s3);border-bottom:1px solid var(--grey-3);padding:0 0 6px;margin-top:var(--s4)}
+.wr-head span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.wr{display:grid;grid-template-columns:170px 1fr 330px;gap:var(--s3);padding:var(--s2) 0;border-bottom:1px solid var(--grey-3);align-items:start}
+.wr .idx{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);line-height:1.5}
+.wr .pn{font-size:16px;font-weight:500;line-height:1.35;margin:2px 0 0}
+.wr .st{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;line-height:1.4;margin-top:6px;padding:2px 6px;border:1px solid var(--grey-3);color:var(--grey-7)}
+.wr .st.new{border-color:var(--accent);color:var(--accent)}
+.wr .rule{border:0;padding:0;margin:0;font-size:15px;line-height:1.55;color:var(--black)}
+.wr .rec{font-size:13px;color:var(--grey-7);margin:6px 0 0;line-height:1.5}
+.wr .rec b{color:var(--black);font-weight:500}
+.wr .flag{font-size:13px;color:var(--accent);margin:6px 0 0;line-height:1.5}
+.wr .dd-slot .dd-box{margin:0}
+.dd-box.dd-compact{padding:.75rem .9rem}
+.dd-box.dd-compact .dd-head{margin-bottom:.5rem}
+.dd-box.dd-compact .dd-grid{grid-template-columns:1fr}
+.dd-box.dd-compact .dd-field:nth-child(2){display:none}
+.dd-box.dd-compact .dd-field textarea{min-height:2.6rem}
+.top-notes{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3);margin-top:var(--s4)}
+.top-notes>div{background:var(--white);padding:var(--s3)}
+.top-notes .k{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.5;color:var(--accent);margin-bottom:6px}
+.top-notes p{margin:0;font-size:17px;line-height:1.5}
+.map{list-style:none;padding:0;margin:var(--s4) 0 0;counter-reset:m}
+.map li{counter-increment:m;display:grid;grid-template-columns:48px 1fr auto;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--grey-3);align-items:baseline}
+.map li::before{content:counter(m);font-size:28px;font-weight:200;line-height:1.15;color:var(--grey-6)}
+.map a{color:var(--black);font-weight:500;text-decoration:none;font-size:17px}
+.map a:hover{text-decoration:underline}
+.map span{font-size:14px;color:var(--grey-7);display:block}
+.map em{font-style:normal;font-size:13px;color:var(--grey-6);white-space:nowrap}
+.small{font-size:12px;color:var(--grey-6);line-height:1.55;margin-top:var(--s1);overflow-wrap:anywhere}
+.small code{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+@media(max-width:820px){
+  .three{grid-template-columns:1fr}
+  .swg{grid-template-columns:1fr 1fr}.swg .rl{grid-column:1/-1}.swg .corner{display:none}
+  .wr-head{display:none}
+  .wr{grid-template-columns:1fr;gap:var(--s1)}
+  .top-notes{grid-template-columns:1fr}
+  .map li{grid-template-columns:36px 1fr}.map em{grid-column:2}
+  .big-quote{font-size:20px}
+}
+</style>
+{{DARK_CSS}}
+</head>
+<body>{{BACK}}
+
+<header>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <p class="label">Apollo · decision page · session 305</p>
+        <h1>The loose ends</h1>
+        <p class="sub">What the Sunday sitting did not answer, in five groups. One box per item.</p>
+      </div>
+      <p class="meta"><b>Decision page v1 · Sunday 27 September 2026</b><br>Session 305, lane B5<br>Status: for you. Nothing here is decided.<br>Every figure is from the record or measured at your seat.</p>
+    </div>
+    <div class="top-notes">
+      <div><span class="k">Nothing here blocks the cut</span><p>v1.0.14 is cut, and it is green. Every item on this page can wait.</p></div>
+      <div><span class="k">One word takes the lot</span><p>"Yes to the recommendations" takes every item that has one: 25 of the 32. Seven are open and need your own answer.</p></div>
+    </div>
+  </div>
+</header>
+
+<section id="map">
+  <div class="wrap two">
+    <p class="label">The five groups</p>
+    <div>
+      <ol class="map">
+        <li><div><a href="#g1">Candidate 2: the six blanks</a><span>Three by eye. Three already answered by your call-8 rule.</span></div><em>3 open · 3 recommended</em></li>
+        <li><div><a href="#g2">Four names: a setting or a slot?</a><span>Data grid, lightbox, stepper, tab bar.</span></div><em>4 recommended</em></li>
+        <li><div><a href="#g3">The two green values</a><span>The record says they were settled on 11 August.</span></div><em>1 recommended · 1 open</em></li>
+        <li><div><a href="#g4">Wording you have not given your word on</a><span>The modal rule, the own-size rule, and 17 when-rules.</span></div><em>2 open · 17 recommended</em></li>
+        <li><div><a href="#g5">"I used 13"</a><span>Which one did you mean?</span></div><em>1 open</em></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GROUP 1 ===================== -->
+<section class="part" id="g1"><div class="wrap"><p class="label">Group 1</p><h2>Candidate 2: the six blanks</h2><p>The candidate-2 review page left you six "Dave: ______" lines. Three ask about the overview. Three ask about the rings.</p></div></section>
+
+<section class="grey" id="g1a">
+  <div class="wrap">
+    <p class="label">1 · The overviews</p>
+    <h2>Does each overview show the three CEO questions as three groups?</h2>
+    <p class="ask">The three questions are resilience, exposure and decisions. Look at each overview and say whether you can see three groups. The review page made no recommendation, so this page makes none.</p>
+    <div class="three">
+      <figure>
+        <figcaption><span class="tag">Run 1</span><span class="ttl">One long column</span></figcaption>
+        <a href="_lanes/304/R4s2/shots/cand2-r1-full-light.png" target="_blank"><img class="shot" src="_lanes/304/R4s2/shots/cand2-r1-full-light.png" alt="Run 1 overview: KPI row, then full-width chart tiles one under another, then approvals and risk lists" loading="lazy"></a>
+        <ol><li>KPI row</li><li>Cash, available liquidity and funding headroom</li><li>Committed facilities: how much is drawn</li><li>Exposure by region and currency</li><li>Share of exposure by currency</li><li>Pending approvals</li><li>Material risk exceptions</li></ol>
+      </figure>
+      <figure>
+        <figcaption><span class="tag">Run 2</span><span class="ttl">A two-by-two chart wall</span></figcaption>
+        <a href="_lanes/304/R4s2/shots/cand2-r2-full-light.png" target="_blank"><img class="shot" src="_lanes/304/R4s2/shots/cand2-r2-full-light.png" alt="Run 2 overview: KPI row, four charts in two rows of two, then approvals and risk lists" loading="lazy"></a>
+        <ol><li>KPI row</li><li>Exposure by region</li><li>Exposure by currency</li><li>Limit utilisation by region</li><li>Exposure trend by region</li><li>Pending approvals</li><li>Material risk exceptions</li></ol>
+      </figure>
+      <figure>
+        <figcaption><span class="tag">Run 3</span><span class="ttl">Half-width pairs</span></figcaption>
+        <a href="_lanes/304/R4s2/shots/cand2-r3-full-light.png" target="_blank"><img class="shot" src="_lanes/304/R4s2/shots/cand2-r3-full-light.png" alt="Run 3 overview: KPI row, two half-width charts, one full-width line chart, then approvals and risk lists" loading="lazy"></a>
+        <ol><li>KPI row</li><li>Asia-Pacific carries the most exposure, at 76% of its limit</li><li>USD is 39% of exposure by currency</li><li>Available liquidity held up over 30 days, ending at £2.50bn (headroom £1.80bn)</li><li>Pending approvals (19, £72.9m)</li><li>Material risk exceptions (7 open breaches)</li></ol>
+      </figure>
+    </div>
+    <p class="src-note">Tap a picture to open it full size. Each is the whole overview at 1440, light, with the 640px shell frame released so you see the whole page (R4s2's shots). The lists are the section titles in order, from the review page.</p>
+
+    <div class="dd-call" id="g1-ceo-r1" data-chips="Yes, three groups|No|Question">
+      <span class="idx">1a · run 1</span>
+      <p class="q">Run 1: can you see resilience, exposure and decisions as three groups?</p>
+      <p class="why">No recommendation. This one is by eye.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <div class="dd-call" id="g1-ceo-r2" data-chips="Yes, three groups|No|Question">
+      <span class="idx">1b · run 2</span>
+      <p class="q">Run 2: can you see resilience, exposure and decisions as three groups?</p>
+      <p class="why">No recommendation. This one is by eye.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <div class="dd-call" id="g1-ceo-r3" data-chips="Yes, three groups|No|Question">
+      <span class="idx">1c · run 3</span>
+      <p class="q">Run 3: can you see resilience, exposure and decisions as three groups?</p>
+      <p class="why">No recommendation. This one is by eye.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Source: <code>notes/_REVIEW-304-candidate-2-2026-09-27-v1.html</code>, "The two judgment rows, left for you". Shots: <code>notes/_lanes/304/R4s2/shots/cand2-r{1,2,3}-full-light.png</code>. The short titles above the pictures ("One long column" and so on) are the review page's own descriptions, shortened by this lane.</p>
+  </div>
+</section>
+
+<section id="g1b">
+  <div class="wrap">
+    <p class="label">2 · The rings</p>
+    <h2>Is any ring in a tile wider than half the wall?</h2>
+    <p class="ask">You answered this in principle at call 8: a ring's tile hugs the drawing, and a donut or pie gets a half-width column. So the answer is already there. Runs 1 and 2 fail. Run 3 passes. Only your tick is missing.</p>
+
+    <figure class="ring">
+      <figcaption><span class="v fail">Run 1 · fails</span><span class="n">90%</span><span class="w">of the content width · overview donut</span></figcaption>
+      <div class="meter over"><i style="width:90%"></i><b></b></div><p class="meter-cap">The line across the bar marks half the wall.</p>
+      <img class="shot" src="_lanes/305/B5/img/ring-cand2-r1.png" alt="Run 1: a donut in a tile that spans almost the full wall, with the legend far to the right" loading="lazy">
+    </figure>
+    <div class="dd-call" id="g1-ring-r1" data-chips="Agree: fails|Disagree|Question">
+      <span class="idx">1d · run 1</span>
+      <p class="q">Run 1: a ring sits in a tile wider than half the wall?</p>
+      <p class="rec"><b>Recommend: agree, it fails.</b></p>
+      <p class="why">All three of its rings sit in tiles at 90% of the content width, and your call-8 rule gives a ring a half-width column.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <figure class="ring">
+      <figcaption><span class="v fail">Run 2 · fails</span><span class="n">95%</span><span class="w">of the content width · liquidity donut</span></figcaption>
+      <div class="meter over"><i style="width:95%"></i><b></b></div><p class="meter-cap">The line across the bar marks half the wall.</p>
+      <img class="shot" src="_lanes/305/B5/img/ring-cand2-r2.png" alt="Run 2: a donut in a tile that spans nearly the full wall" loading="lazy">
+    </figure>
+    <div class="dd-call" id="g1-ring-r2" data-chips="Agree: fails|Disagree|Question">
+      <span class="idx">1e · run 2</span>
+      <p class="q">Run 2: a ring sits in a tile wider than half the wall?</p>
+      <p class="rec"><b>Recommend: agree, it fails.</b></p>
+      <p class="why">All four of its rings sit in tiles at 95% of the content width. Its overview has no ring; the picture is the liquidity view.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <figure class="ring">
+      <figcaption><span class="v pass">Run 3 · passes</span><span class="n">48%</span><span class="w">of the content width · overview donut</span></figcaption>
+      <div class="meter"><i style="width:48%"></i><b></b></div><p class="meter-cap">The line across the bar marks half the wall.</p>
+      <img class="shot" src="_lanes/305/B5/img/ring-cand2-r3.png" alt="Run 3: a donut in a half-width tile, next to a bar chart" loading="lazy">
+    </figure>
+    <div class="dd-call" id="g1-ring-r3" data-chips="Agree: passes|Disagree|Question">
+      <span class="idx">1f · run 3</span>
+      <p class="q">Run 3: a ring sits in a tile wider than half the wall?</p>
+      <p class="rec"><b>Recommend: agree, it passes.</b></p>
+      <p class="why">All five of its rings sit in tiles at 48% of the content width, under half.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Figures: the review page's judgment rows (W4b harness, <code>tile_share_of_content_width</code>). The three pictures are re-rendered at your seat by <code>notes/_lanes/305/B5/rings.py</code> on the candidate-2 zip R4s2 scored (sha 8a75ce32), 1440 wide, shell frame released as R4s2 did. Measured again there: 90.5%, 95.2%, 47.8% (<code>notes/_lanes/305/B5/rings.json</code>). The rule is <code>s305-D9</code> (call 8, "yes"). His comment on it, that "not responsive" does not mean fixed, is open thread W-305n2 and is not asked here.</p>
+  </div>
+</section>
+
+<!-- ===================== GROUP 2 ===================== -->
+<section class="part" id="g2"><div class="wrap"><p class="label">Group 2</p><h2>Four names: a setting or a slot?</h2><p>Four parts use one name for two things: a setting (data the part draws) and a slot (another part placed inside). A catalogue entry can only keep one.</p></div></section>
+
+<section id="g2-body">
+  <div class="wrap">
+    <div class="house">
+      <span class="k">Your rule, call 18</span>
+      <p>"Data is a setting, bound to a data shape; a slot only ever holds another part." You said yes. It settled 23 of the 27 clashes and left these four to you by name.</p>
+    </div>
+    <div class="house">
+      <span class="k">What the 23 have in common · this lane's reading, measured</span>
+      <p>Every slot names what may go in it. The 7 that stayed slots each name a kind of part (an atom, a molecule). The 16 that became settings name only a kind of data. 23 of 23 follow this, with no exception. Read that way, your rule decides all four below.</p>
+    </div>
+
+    <div class="dd-call" id="g2-data-grid" data-chips="As recommended|Other way|Question">
+      <span class="idx">2a · data grid</span>
+      <p class="q">Data grid: columns, and filters</p>
+      <div class="dist">
+        <div class="alt"><p class="hd">Columns · recommended: a setting<small>The slot names data only (column definitions).</small></p><p>The designer writes the columns as a list: key, label, numeric, sortable, editable. The grid draws the headers itself.</p></div>
+        <div><p class="hd">Columns · the other reading: a slot<small>No part in the library is a column.</small></p><p>Each column would be its own part, placed in the grid. There is no such part today.</p></div>
+        <div class="alt"><p class="hd">Filters · recommended: a slot<small>The slot names parts (an atom or a molecule that filters).</small></p><p>The filter controls above the grid are real parts, such as a search field, placed in.</p></div>
+        <div><p class="hd">Filters · the other reading: a setting<small>What the setting holds today.</small></p><p>The list of search terms already applied, drawn as chips. If the slot wins, these terms need a name of their own.</p></div>
+      </div>
+      <p class="rec"><b>Recommend: columns a setting, filters a slot.</b></p>
+      <p class="why">By the reading above. The one cost: the applied terms, today's "filters" setting, would need a new name.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <div class="dd-call" id="g2-lightbox" data-chips="As recommended|Other way|Question">
+      <span class="idx">2b · lightbox</span>
+      <p class="q">Lightbox: items</p>
+      <div class="dist">
+        <div class="alt"><p class="hd">Recommended: a setting<small>The slot names data only (viewable items).</small></p><p>The designer gives a list of documents or images, each with a caption. The lightbox pages through them and counts "1 of 3".</p></div>
+        <div><p class="hd">The other reading: a slot</p><p>Each page would be its own part, such as an image or a document viewer, placed inside the lightbox.</p></div>
+      </div>
+      <p class="rec"><b>Recommend: a setting.</b></p>
+      <p class="why">By the reading above. It is a list of media, like a chart's data.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <div class="dd-call" id="g2-stepper" data-chips="As recommended|Other way|Question">
+      <span class="idx">2c · stepper</span>
+      <p class="q">Stepper: steps</p>
+      <div class="dist">
+        <div class="alt"><p class="hd">Recommended: a slot<small>The slot names parts (a molecule or organism: a step panel).</small></p><p>Each step's panel is a real part, such as a form section, placed in. The stepper drives them and draws the dots.</p></div>
+        <div><p class="hd">The other reading: a setting</p><p>A list of step names only. The panels would have to come from somewhere else.</p></div>
+      </div>
+      <p class="rec"><b>Recommend: a slot.</b></p>
+      <p class="why">By the reading above. What goes in is a part.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <div class="dd-call" id="g2-tab-bar" data-chips="As recommended|Other way|Question">
+      <span class="idx">2d · tab bar</span>
+      <p class="q">Tab bar: items</p>
+      <div class="dist">
+        <div class="alt"><p class="hd">Recommended: a setting<small>The slot names data only (a destination).</small></p><p>The designer gives the 3 to 5 destinations, each an icon and a label. The bar draws them at equal width.</p></div>
+        <div><p class="hd">The other reading: a slot</p><p>Each destination would be its own part, placed in. Today the setting is only a count, 3 to 5.</p></div>
+      </div>
+      <p class="rec"><b>Recommend: a setting.</b></p>
+      <p class="why">By the reading above. The setting will need to carry the icon and label, not just the count.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Sources: <code>notes/_DECIDE-304-schema-2026-09-26-v1.html</code> question 5 ("Needs your eye · 4"); <code>s305-D19</code> says these four "ARE NOT DECIDED BY THIS YES and stay his". Facts from the metas' <code>props</code> and <code>slots</code>: <code>data-grid</code>, <code>modal-lightbox</code>, <code>stepper</code>, <code>tab-bar</code> (<code>knowledge/components/*.meta.json</code>). The pattern (slots with <code>accepts.tier</code> stayed slots, 7 of 7; slots with only <code>accepts.capability</code> became settings, 16 of 16) is this lane's reading, measured on the metas; the #304 page called its own sort "this seat's reading of each name, not a measurement". Plain-word readings are this lane's wording.</p>
+  </div>
+</section>
+
+<!-- ===================== GROUP 3 ===================== -->
+<section class="part" id="g3"><div class="wrap"><p class="label">Group 3</p><h2>The two green values</h2><p>"Green mirrors the two-red law" (11 August). The stamps page asked you for the two greens, or to say they were settled. The record says settled.</p></div></section>
+
+<section id="g3-body">
+  <div class="wrap">
+    <p class="kicker">The pairs, as the record has them</p>
+    <div class="swg">
+      <div class="corner"></div>
+      <div><span class="h">On white</span></div>
+      <div><span class="h">Everywhere else</span></div>
+      <div class="rl">Red<small>ruled 11 Aug, the two-red law</small></div>
+      <div><div class="chip-sw onw"><span class="amt" style="color:#DA1A00">−£1.2m</span><span class="hex">#DA1A00</span></div><p class="cr"><b>5.09 : 1</b> on white</p></div>
+      <div><div class="chip-sw ond"><span class="amt" style="color:#F6604C">−£1.2m</span><span class="hex">#F6604C</span></div><p class="cr"><b>5.26 : 1</b> on the dark tile #1F1F1F</p></div>
+      <div class="rl">Green<small>settled 11 Aug, same session</small></div>
+      <div><div class="chip-sw onw"><span class="amt" style="color:#137F3C">+£1.2m</span><span class="hex">#137F3C</span></div><p class="cr"><b>5.09 : 1</b> on white</p></div>
+      <div><div class="chip-sw ond"><span class="amt" style="color:#66CC8D">+£1.2m</span><span class="hex">#66CC8D</span></div><p class="cr"><b>8.31 : 1</b> on the dark tile #1F1F1F</p></div>
+    </div>
+    <p class="src-note">The greens are the record's own words, from the same session the shape was ruled: "the green is the success green #66CC8D i think and the dark green for txt was ruled already". The dark-on-white green is #137F3C, ruled on 10 August with the reds. Canon already carries both, and has since August.</p>
+
+    <div class="dd-call" id="g3-green" data-chips="Settled at #155|Other values|Question">
+      <span class="idx">3a · the two greens</span>
+      <p class="q">The two green values: settled on 11 August?</p>
+      <p class="rec"><b>Recommend: say "settled".</b> #137F3C on white, #66CC8D everywhere else, for mono only.</p>
+      <p class="why">The ruling was amended the same session with your values. The stamps page read only its first line ("the two green values are still Dave's"), so it asked again. With your word, this one leaves the not-built list: canon already emits the pair.</p>
+      <div class="dd-slot"></div>
+    </div>
+
+    <div class="dd-call" id="g3-seg" data-chips="Read as built|Keep as not built|Question">
+      <span class="idx">3b · one more in the same kind</span>
+      <p class="q">The segmented-control fix of 31 August: it looks built. Take it off the not-built list?</p>
+      <p class="why">Your words then: "fix the class the other solution is a patch not a solution". The records lane found the fix in the tree: the four segmented snippets carry the generated partial, from the 31 August commit. It says it "should not go on a not-built list without a look". No recommendation: have the look first.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Rulings: <code>s151-D1</code> (the two reds, background-keyed: #DA1A00 on white, #F6604C everywhere else). <code>s155-D1</code> (green mirrors it); its status reads "AMENDED BY ADDITION #155, same window: VALUES RESOLVED", citing <code>s144-D1</code> (#137F3C 4.503 on #F1F1F1, #66CC8D 7.531 on #272727), and "ENACTMENT MEASURED #156". Canon today: <code>--rag-success-ink</code> #137F3C in the light block (canon.css:318), #66CC8D in the dark block (:705). Canon switches by mode, not by ground; that is a separate matter and is not asked here. Contrast ratios on this page measured by this lane (WCAG formula). <code>s305-D38</code> left this "still his". The stamps page is <code>notes/_DECIDE-304-uncertain-stamps-2026-09-26-v1.html</code>, kind 5. 3b is <code>s229-D3</code>; the finding is H1's (<code>notes/_subreports/2026-09-27-305-H1-records.md</code>, call 38), commit baf5458e, partial <code>seg-concentric</code>.</p>
+  </div>
+</section>
+
+<!-- ===================== GROUP 4 ===================== -->
+<section class="part" id="g4"><div class="wrap"><p class="label">Group 4</p><h2>Wording you have not given your word on</h2><p>You said yes to these rules. The words themselves were drafted by a lane and went in without your say on them.</p></div></section>
+
+<section class="grey" id="g4a">
+  <div class="wrap">
+    <p class="label">4a · The modal rule · call 24</p>
+    <h2>A modal gives way to a split button or a drop-down.</h2>
+    <p class="ask">At call 24 you said yes, and the call said "the wording is yours". The words now in the three parts' rules are a lane's draft. The chooser already reads them.</p>
+    <div class="quote-when"><span class="k">Modal</span>interrupts = required — the person must stop: confirm a consequential action, or finish a task that cannot share the screen; yields to split-button when interrupts = none AND actions &gt;= 2 (one main action with a few related ones beside it), and to dropdown when interrupts = none AND options &gt;= 5 (one choice from a list, made in place, s270-D1).</div>
+    <div class="quote-when"><span class="k">Split button</span>actions &gt;= 2 AND interrupts = none — one main action plus a menu of related ones, offered in place (button's own `when` already hands this case here); beats modals whenever the related actions can be offered without stopping the person.</div>
+    <div class="quote-when"><span class="k">Drop-down</span>options &gt;= 5 AND interrupts = none — one choice from a list, made in place (s270-D1: "we use dropdowns for 5 and above"); beats modals whenever the choice does not need to stop the person.</div>
+    <p class="src-note">In plain words: use a modal only when the person must stop. If there is one main action with related ones, use a split button. If it is one choice from five or more, use a drop-down. The #304 page proposed a shorter sentence for the same idea: "Use the lightest pattern that does the job. Before a modal, ask whether a split button or a drop-down would do."</p>
+    <div class="dd-call" id="g4-modal" data-chips="Accept the wording|Change it|Question">
+      <span class="idx">4a · modal rule</span>
+      <p class="q">Accept this wording, or change it?</p>
+      <p class="why">No recommendation. The call left the wording to you.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Quoted from the <code>when</code> field of <code>knowledge/components/modals.meta.json</code>, <code>split-button.meta.json</code>, <code>dropdown.meta.json</code> (R4a's draft, carried in by lane B2). <code>s305-D25</code> is back at "ruled" for this reason (verifier V1, finding F3). The plain-words line is this lane's wording. The shorter sentence is from <code>notes/_DECIDE-304-when-rules-2026-09-26-v1.html</code> question 6.</p>
+  </div>
+</section>
+
+<section id="g4b">
+  <div class="wrap">
+    <p class="label">4b · The own-size rule · call 23</p>
+    <h2>A part keeps its own size.</h2>
+    <p class="big-quote">"A part keeps its own size on any page. The page arranges parts; it never shrinks them."</p>
+    <p class="ask">The #304 when-rules page offered this sentence "for yours". You said yes to the rule at call 23, and the sentence went into the web foundations as it stood.</p>
+    <div class="dd-call" id="g4-ownsize" data-chips="Accept|Change it|Question">
+      <span class="idx">4b · own-size rule</span>
+      <p class="q">Accept this sentence, or change it?</p>
+      <p class="why">No recommendation. The wording was offered for yours. Call 27's review page shows what the rule catches, with pictures.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Rule <code>webf-036</code> in <code>knowledge/guidelines/web-foundations.md</code> (<code>s305-D24</code>, enacted e4ff4284; advisory through the cut by <code>s305-D4</code>). Its source line: "The wording is the #304 when-rules page's proposed sentence (question 5)".</p>
+  </div>
+</section>
+
+<section class="grey" id="g4c">
+  <div class="wrap">
+    <p class="label">4c · The dashboard's when-rules · plan lane 4d</p>
+    <h2>Seventeen rules the chooser reads, drafted for your word.</h2>
+    <p class="ask">The weekend plan said a lane would draft about 15 when-rules for the dashboard's parts, and "ratifying the wording is yours". Two were put to you and ruled: the line chart and the data grid. The modal trio is 4a above. These are the other seventeen. Five are new or changed. Twelve stay as they are.</p>
+    <p class="rec"><b>Recommend: accept all seventeen as drafted.</b> Two rows carry a note from the drafting lane itself, marked in red. Neither note is a fault in the rule.</p>
+
+    <div class="wr-head"><span>Part</span><span>The rule, in plain words</span><span>Your answer</span></div>
+
+    <div class="wr" id="wr-filter-bar" data-chips="Accept|Change|Question"><div><span class="idx">4c · 1</span><p class="pn">Filter bar</p><span class="st new">New · draft only</span></div><div><p class="rule">Use it when two or more records need filtering or sorting. It sits only above the thing it drives, never on its own.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-footer" data-chips="Accept|Change|Question"><div><span class="idx">4c · 2</span><p class="pn">Footer</p><span class="st new">New · draft only</span></div><div><p class="rule">Every app page ends with the app footer, after the main area. Never inside the bento wall.</p><p class="rec"><b>Accept.</b> Your #258 words: "the page shells should include the footer".</p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-bento" data-chips="Accept|Change|Question"><div><span class="idx">4c · 3</span><p class="pn">Dashboard bento template</p><span class="st new">Gate ruled · prose draft</span></div><div><p class="rule">Use it when the page answers "how are things, and what needs me?" and is built on the bento. Borrow its grammar; choose every part from the graph. On a plain grid, the plain dashboard template takes over.</p><p class="rec"><b>Accept.</b> You ratified the gate on 15 September; it never reached the part. The second half is where the graph, not the skill, says "compose, never trace".</p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-list" data-chips="Accept|Change|Question"><div><span class="idx">4c · 4</span><p class="pn">List</p><span class="st new">Changed · in the part</span></div><div><p class="rule">A list is for records read across their own row, when nobody needs to sort, filter, select or edit them. When they do, the data grid takes over.</p><p class="rec"><b>Accept.</b> It is the other half of your call-22 grid rule, so it went in with it.</p><p class="flag">Lane's note: a new data shape, "records × fields", is also proposed. That is a separate word and is not taken by accepting this row.</p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-button" data-chips="Accept|Change|Question"><div><span class="idx">4c · 5</span><p class="pn">Button</p><span class="st new">Changed · draft only</span></div><div><p class="rule">A button is for one action. When a main action has related actions beside it, the split button takes over.</p><p class="rec"><b>Accept.</b> It makes the button's own "gives way to the split button" readable. Nothing picked today changes.</p><p class="flag">Lane's note: the one row that came from the lane, not from your words or the probe.</p></div><div class="dd-slot"></div></div>
+
+    <div class="wr" id="wr-top-nav" data-chips="Accept|Change|Question"><div><span class="idx">4c · 6</span><p class="pn">Top-nav shell</p><span class="st">Unchanged</span></div><div><p class="rule">Up to 7 destinations and 2 levels; the default for dashboards. More than that, the side nav. Tight on width, the nav rail. List and detail, the multi-column shell. No navigation, the focused shell.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-breadcrumbs" data-chips="Accept|Change|Question"><div><span class="idx">4c · 7</span><p class="pn">Breadcrumbs</p><span class="st">Unchanged</span></div><div><p class="rule">The path of pages above this one, two or more deep. It answers "where am I?" and sits beside the main nav and tabs, not instead of them.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-bar" data-chips="Accept|Change|Question"><div><span class="idx">4c · 8</span><p class="pn">Bar chart</p><span class="st">Unchanged</span></div><div><p class="rule">Comparing categories. Over time, the line chart. Parts of a whole, the pie. Parts over time, the stacked area.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-headers" data-chips="Accept|Change|Question"><div><span class="idx">4c · 9</span><p class="pn">Page title</p><span class="st">Unchanged</span></div><div><p class="rule">A page, screen or section title on its own. With actions or tabs beside it, the page-header lock-up takes over.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-kpi" data-chips="Accept|Change|Question"><div><span class="idx">4c · 10</span><p class="pn">KPI tile</p><span class="st">Unchanged</span></div><div><p class="rule">One number with its change and a trend line. No trend line, the stat card. A target is the point, the bullet chart. Money against what is already scheduled, the runway bar.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-layout" data-chips="Accept|Change|Question"><div><span class="idx">4c · 11</span><p class="pn">Layout</p><span class="st">Unchanged</span></div><div><p class="rule">Arranging blocks without drawing a surface. A bordered surface per item, cards. A row of 3 to 6 headline numbers, the stats band.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-legend" data-chips="Accept|Change|Question"><div><span class="idx">4c · 12</span><p class="pn">Legend</p><span class="st">Unchanged</span></div><div><p class="rule">Only when two or more series are drawn. A lone chart keeps its key inside itself. A legend stands alone only when it keys several charts.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-nav" data-chips="Accept|Change|Question"><div><span class="idx">4c · 13</span><p class="pn">Main navigation</p><span class="st">Unchanged</span></div><div><p class="rule">The whole set of places to go. In the side-nav shell, the sidebar nav takes over. On a phone, the tab bar.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-stat" data-chips="Accept|Change|Question"><div><span class="idx">4c · 14</span><p class="pn">Stat card</p><span class="st">Unchanged</span></div><div><p class="rule">One number with its change and no trend line. The default headline number.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-status" data-chips="Accept|Change|Question"><div><span class="idx">4c · 15</span><p class="pn">Status dot</p><span class="st">Unchanged</span></div><div><p class="rule">One state, a dot and a label, up to 4 columns wide. Attached to something else, the badge.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-summary" data-chips="Accept|Change|Question"><div><span class="idx">4c · 16</span><p class="pn">Summary</p><span class="st">Unchanged</span></div><div><p class="rule">Two or more name-and-value rows, 6 columns or wider. A cap being spent against, the meter. Inline, the badge.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+    <div class="wr" id="wr-view-options" data-chips="Accept|Change|Question"><div><span class="idx">4c · 17</span><p class="pn">View options</p><span class="st">Unchanged</span></div><div><p class="rule">Never. Replaced on 24 July; the view switch is the segmented control.</p><p class="rec"><b>Accept.</b></p></div><div class="dd-slot"></div></div>
+
+    <p class="small">Drafts: <code>notes/_lanes/304/R4a/drafts/when-rules.proposed.json</code> (22 rows; this page leaves out chart-line <code>s305-D21</code> and data-grid <code>s305-D23</code>, both ruled, and modals, split-button and dropdown, which are 4a). Plan: <code>notes/_PLAN-304-roadmap-and-weekend-runs-2026-09-26-v1.html</code>, lane 4d. Where each row stands today, measured against the metas: list-items is in the meta (lane B2, "other half of question 3"); filter-toolbar-bar, footer, template-dashboard-bento (gate <code>s272-D85</code>) and button are draft only (B2 held them back "for the wrap"); the twelve unchanged rows equal the metas byte for byte. Accepting row 3 also adds the field name <code>layout.grammar</code>, which is not yet in <code>knowledge/when-fields.json</code>. The two red notes are the drafts' own: list-items <code>also.shape</code> (shapes store closed, <code>s254-D2</code>) and button (<code>decision_page</code>: "this seat's addition, for his eye"). The plain-word rules are this lane's wording; each meta holds the full rule.</p>
+  </div>
+</section>
+
+<!-- ===================== GROUP 5 ===================== -->
+<section class="part" id="g5"><div class="wrap"><p class="label">Group 5</p><h2>"I used 13"</h2><p>One small question about your Friday note.</p></div></section>
+
+<section id="g5-body">
+  <div class="wrap">
+    <blockquote>The CEO prompt ran well<br>I used 13<cite>Dave · the Friday box on the sitting page · Sunday 27 September 2026, 14:53</cite></blockquote>
+    <p class="ask">The box asked two things: which pack the CEO prompt ran on in the room, and which pack is on your work machine today. "13" answers one of them.</p>
+    <div class="dd-call" id="g5-pack" data-chips="On my work machine|Used in the room|Both">
+      <span class="idx">5 · v1.0.13</span>
+      <p class="q">Did "13" mean pack v1.0.13 on your work machine, or the pack you used in the room?</p>
+      <p class="why">No recommendation. Tick one, or say it in your own words below.</p>
+      <div class="dd-slot"></div>
+    </div>
+    <p class="small">Source: <code>notes/_lanes/305/FRIDAY-2026-09-25-what-came-back.md</code> ("'I used 13' is his answer as written; it is not expanded here"). The questions are from the sitting page's Friday box. The "Both" chip is this lane's addition.</p>
+  </div>
+</section>
+
+<section id="tech" class="grey">
+  <div class="wrap">
+    <p class="label mute">Technical</p>
+    <div class="tech">
+      <p><b>Source list.</b> <code>notes/_subreports/2026-09-27-305-R1-hub-reconcile.md</code>, "What is left open", items 1 to 5. The page follows its order, but puts the candidate-2 blanks first.</p>
+      <p><b>Counts.</b> 32 item boxes plus one for the whole page. Recommended: 3 ring ticks, 4 names, the green values and the 17 when-rules, 25 in all. Open: the 3 overview ticks, the segmented-control look, the modal wording, the own-size wording and the pack.</p>
+      <p><b>Built by</b> <code>notes/_lanes/305/B5/build.py</code>. The house CSS, dark mode and the decisions bar are copied from <code>notes/_REVIEW-305-call-27-visuals-2026-09-27-v1.html</code> (lane B4). The bar's script gains three things: a chip set per item, a compact box for the when-rule rows, and the item's recommendation in the copied text. Renders by <code>notes/_lanes/305/B5/render.py</code>, bar drive by <code>drive.py</code>. Nothing inscribed, no git write.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+    <span>Apollo · decision page · the loose ends · v1 · 2026-09-27 · session 305 · lane B5</span>
+    <span>Nothing here is decided. "Yes to the recommendations" in this box takes all 25.</span>
+  </div>
+</footer>
+{{OVERLAY}}
+</body></html>
