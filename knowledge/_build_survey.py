@@ -127,6 +127,63 @@ def steps():
     return out, how
 
 
+
+def advisory_labels(path=None):
+    """`(set_of_labels, how)` — the steps `_build_all.py` ROUTES as ADVISORY, or `(set(), why)`.
+
+    ★ #308 lane F (conductor's call, CI `36490341746`, survey red at [163]). The build honours
+    ADVISORY — a non-zero exit from an ADVISORY-routed step prints a warning and the build goes
+    on (`_build_all.py` main loop, `kind == ADVISORY`). The survey did not: it counted every
+    non-zero exit as FAIL, so a step wired ADVISORY *on purpose* (W-307q6, the itinerary
+    register's `--check`) turned the survey red while the build stayed green. Two instruments
+    reading one step two ways is the defect.
+    ⛔ ONE SOURCE, THE BUILD'S OWN: the advisory marker is read from `_build_all.ROUTE_ROWS` —
+    the table `route()` consults — by `ast`, exactly as `steps()` reads `STEPS`, and for the same
+    reason (`import` is not a read; importing `_build_all` RUNS THE BUILD). Never a second list
+    here, never a substring match on the word "advisory" in a label (#77 removed that guessing).
+    ⚠ FAIL CLOSED: if the table cannot be read, NOTHING is advisory — every non-zero exit stays a
+    FAIL — and the reason is printed in the survey header. A survey that goes quietly greener
+    because it could not read the routing is worse than a red one.
+    """
+    import ast
+    path = path or os.path.join(HERE, "_build_all.py")
+    try:
+        tree = ast.parse(open(path, encoding="utf-8").read())
+    except (OSError, SyntaxError) as e:
+        return set(), f"ROUTE_ROWS unreadable ({e}) — no step treated as advisory (fail closed)"
+    raw = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+                isinstance(t, ast.Name) and t.id == "ROUTE_ROWS" for t in node.targets):
+            raw = node.value
+    if raw is None or not isinstance(raw, (ast.List, ast.Tuple)):
+        return set(), "no module-level ROUTE_ROWS in _build_all.py — no step treated as advisory (fail closed)"
+    out = set()
+    for entry in raw.elts:
+        if not isinstance(entry, (ast.Tuple, ast.List)) or len(entry.elts) < 2:
+            continue
+        lab, kind = entry.elts[0], entry.elts[1]
+        if not (isinstance(lab, ast.Constant) and isinstance(lab.value, str)):
+            continue
+        is_adv = ((isinstance(kind, ast.Name) and kind.id == "ADVISORY")
+                  or (isinstance(kind, ast.Constant) and kind.value == "advisory"))
+        if is_adv:
+            out.add(lab.value)
+    return out, f"{len(out)} ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast"
+
+
+def classify(rc, label, advisory):
+    """The survey's verdict for one asked step — pure, so the selftest drives it.
+    Order matters: a declared refusal (77) is COULD-NOT-ASK whatever the route; only then does
+    an ADVISORY route turn a non-zero exit into a warning instead of a FAIL."""
+    if rc == 0:
+        return "passed"
+    if cna.is_refusal(rc):
+        return "refused"
+    if label in advisory:
+        return "advisory"
+    return "failed"
+
 def main():
     include_mut = "--include-mutating" in sys.argv
     timeout = 25
@@ -148,7 +205,8 @@ def main():
     all_steps, how = steps()
     if all_steps is None:
         print(f"✗ survey REFUSED — {how}"); return 2
-    print(f"— {how} · per-step timeout {timeout}s · "
+    advisory, adv_how = advisory_labels()
+    print(f"— {how} · {adv_how} · per-step timeout {timeout}s · "
           f"{'ALL steps (mutating included)' if include_mut else 'non-mutating steps only'}\n")
 
     if include_mut:
@@ -177,7 +235,7 @@ def main():
                   "  resumes over instead of blessing it.")
             return 2
 
-    failed, passed, skipped, errored, refused = [], [], [], [], []
+    failed, passed, skipped, errored, refused, warned = [], [], [], [], [], []
     outside = 0
     for i, (label, script, args) in enumerate(all_steps, 1):
         if rng and not (rng[0] <= i <= rng[1]):
@@ -194,9 +252,18 @@ def main():
         except subprocess.TimeoutExpired:
             errored.append((i, label, script, f"TIMEOUT >{timeout}s — not a verdict"))
             print(f"  ⏱ [{i:>2}] {label[:62]}"); continue
-        if r.returncode == 0:
+        verdict = classify(r.returncode, label, advisory)
+        if verdict == "passed":
             passed.append((i, label)); print(f"  ✅ [{i:>2}] {label[:62]}")
-        elif cna.is_refusal(r.returncode):
+        elif verdict == "advisory":
+            # ★ #308 F: routed ADVISORY in _build_all.ROUTE_ROWS — the build warns and goes on,
+            # so the survey does too. COUNTED and QUOTED, never folded into pass.
+            lines = [l for l in (r.stdout + r.stderr).splitlines()
+                     if any(m in l for m in ("✗", "❌", "⚠", "FAIL", "OUT OF SYNC", "Error"))]
+            warned.append((i, label, script, args, r.returncode,
+                           lines[0].strip()[:150] if lines else "(no marked line — see full output)"))
+            print(f"  ⚠ [{i:>2}] {label[:62]}  ADVISORY exit {r.returncode}")
+        elif verdict == "refused":
             # ★ #193 — THE THIRD VERDICT. The step did not pass and did not fail: it declared, in
             # its own words, that the input it needed is unreachable HERE (a gitignored token
             # cache, an uninstalled browser, an evidence file outside the committed tree). It is
@@ -214,7 +281,8 @@ def main():
             print(f"  ❌ [{i:>2}] {label[:62]}  exit {r.returncode}")
 
     print("\n" + "=" * 78)
-    print(f"SURVEY: {len(passed)} pass · {len(failed)} FAIL · {len(refused)} COULD-NOT-ASK "
+    print(f"SURVEY: {len(passed)} pass · {len(failed)} FAIL · {len(warned)} ADVISORY-warn · "
+          f"{len(refused)} COULD-NOT-ASK "
           f"(self-declared refusals) · {len(errored)} unaskable (missing/timed out) · "
           f"{len(skipped)} not asked (mutating)"
           + (f" · {outside} outside --range {rng[0]}:{rng[1]} (not asked)" if rng else ""))
@@ -231,6 +299,14 @@ def main():
         print(f"\nTHE FULL FAILURE SET ({len(failed)}) — this is the number no single "
               f"`_build_all.py` run can tell you:")
         for i, label, script, args, rc, first in failed:
+            print(f"\n  [{i}] {label}")
+            print(f"      python3 knowledge/{script} {' '.join(args)}   (exit {rc})")
+            print(f"      {first}")
+    if warned:
+        print(f"\nADVISORY-WARN ({len(warned)}) — routed ADVISORY in _build_all.ROUTE_ROWS, so the "
+              f"build reports and continues;\nthe survey does the same. NOT passing, NOT failing "
+              f"— each one is a finding to read:")
+        for i, label, script, args, rc, first in warned:
             print(f"\n  [{i}] {label}")
             print(f"      python3 knowledge/{script} {' '.join(args)}   (exit {rc})")
             print(f"      {first}")
@@ -269,7 +345,7 @@ def main():
             steps_on_disk=len(all_steps), rng=rng, timeout=timeout, include_mut=include_mut,
             passed=[i for i, _l in passed], failed=[r[0] for r in failed],
             refused=[r[0] for r in refused], errored=[r[0] for r in errored],
-            skipped=[r[0] for r in skipped])
+            skipped=[r[0] for r in skipped], advisory=[r[0] for r in warned])
         print(f"\n— recorded → {where}" if where else
               f"\n⚠ NOT RECORDED — {why}. The run happened; the ledger does not know it, and "
               f"`_gen_chain.build_verdict_line()` will say the green count is NOT DERIVABLE "
@@ -297,7 +373,9 @@ def main():
 # passes in a later one is GREEN, and the disagreement is COUNTED and PUBLISHED rather than
 # smoothed, because a step whose verdict changed inside one sha is a fact about the runner.
 LEDGER = os.path.join(ROOT, "notes", "_BUILD-VERDICT-LOG.jsonl")
-_LEDGER_FIELDS = ("passed", "failed", "refused", "errored", "skipped")
+_LEDGER_FIELDS = ("passed", "failed", "refused", "errored", "skipped", "advisory")
+# ★ #308 F: "advisory" = asked, exited non-zero, routed ADVISORY by the build — neither green
+# nor FAIL. Older records lack the key; `r.get(bucket) or []` reads them as empty.
 
 
 def _head_sha():
@@ -388,8 +466,9 @@ def verdict_from_ledger(repo=ROOT, ledger=None):
     seen = set(verdict)
     return {
         "green": counts["passed"], "fail": counts["failed"], "refused": counts["refused"],
-        "errored": counts["errored"], "skipped": counts["skipped"],
-        "asked": counts["passed"] + counts["failed"] + counts["refused"] + counts["errored"],
+        "errored": counts["errored"], "skipped": counts["skipped"], "advisory": counts["advisory"],
+        "asked": (counts["passed"] + counts["failed"] + counts["refused"] + counts["errored"]
+                  + counts["advisory"]),
         "total": total, "sha": newest["sha"], "at": newest.get("at", "?"),
         "dirty": any(r.get("dirty") for r in same), "records": len(same),
         "conflicts": conflicts, "malformed": malformed,
@@ -456,6 +535,46 @@ def selftest():
         v, _ = verdict_from_ledger(td, p)
         bite("records from an older sha are NOT unioned into the newest tree's verdict",
              v["green"] == 1 and v["sha"] == "new1111")
+        # ---- #308 F: an ADVISORY-warned step is its own bucket — asked, not green, not FAIL.
+        with open(p, "w") as f:
+            f.write(rec(passed=[1, 2], failed=[3], advisory=[4]))
+        v, _ = verdict_from_ledger(td, p)
+        bite("an advisory-warned step is COUNTED, neither green nor FAIL",
+             v["green"] == 2 and v["fail"] == 1 and v["advisory"] == 1)
+        bite("an advisory-warned step was ASKED", v["asked"] == 4)
+        # ---- #308 F: the advisory set is read from ROUTE_ROWS by ast, the build's own table.
+        fx = os.path.join(td, "_build_all.py")
+        open(fx, "w").write(
+            'ADVISORY = "advisory"\nGATE = "gate"\nABORT = "abort"\n'
+            'ROUTE_ROWS = [\n'
+            '    ("warn me", ADVISORY, None),\n'
+            '    ("warn " "me " "too", ADVISORY, None),\n'
+            '    ("gate me", GATE, "remedy {code}"),\n'
+            '    ("abort me", ABORT, None),\n'
+            '    ("the word advisory in a label is not a route", ABORT, None),\n'
+            ']\n')
+        adv, _how = advisory_labels(fx)
+        bite("ROUTE_ROWS ADVISORY rows are read (implicit concatenation included)",
+             adv == {"warn me", "warn me too"})
+        bite("an advisory-routed non-zero exit is a WARN, not a FAIL",
+             classify(1, "warn me", adv) == "advisory")
+        bite("a GATE/ABORT-routed non-zero exit stays a FAIL",
+             classify(1, "gate me", adv) == "failed" and classify(1, "abort me", adv) == "failed")
+        bite("the word 'advisory' in a label does NOT make a step advisory (#77, no substrings)",
+             classify(1, "the word advisory in a label is not a route", adv) == "failed")
+        bite("a declared refusal (77) stays COULD-NOT-ASK even on an advisory route",
+             classify(cna.EXIT, "warn me", adv) == "refused")
+        bite("exit 0 passes whatever the route", classify(0, "gate me", adv) == "passed")
+        open(fx, "w").write("STEPS = []\n")
+        adv, how2 = advisory_labels(fx)
+        bite("an unreadable routing table FAILS CLOSED — nothing advisory, reason named",
+             adv == set() and "fail closed" in how2 and classify(1, "warn me", adv) == "failed")
+        # ---- control on the REAL table: [163] is advisory, the package delta-audit is not.
+        real, _ = advisory_labels()
+        bite("control: the real itinerary --check step is routed ADVISORY",
+             any(l.startswith("itinerary register in sync") for l in real))
+        bite("control: the real package delta-audit steps are NOT advisory",
+             not any(l.startswith("memento-package delta-audit") for l in real))
         # ---- the writer's round trip: what record_run writes, verdict_from_ledger reads.
         global LEDGER
         was, LEDGER = LEDGER, p
