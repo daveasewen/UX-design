@@ -19,3 +19,11 @@ status: his words, verbatim — quote, never paraphrase
 >    In his words: Can you list the implications of this decision
 >
 > Note on the page
+
+---
+
+## 13:26 BST — his reply to the conductor's implications message, verbatim
+
+The conductor (chat, ~13:15 BST) listed the implications of blocking and recommended: "take it, but in two steps. Build the checker, run it advisory on one real CI push to measure the time and catch any false reds, then switch it to blocking." and asked "blocking after one clean advisory run, yes?"
+
+> ill take your advice

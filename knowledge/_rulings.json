@@ -14682,6 +14682,25 @@
    "notes/_subreports/2026-09-29-308-C-claim-tables-page.md"
   ],
   "status": "ruled"
+ },
+ {
+  "id": "s308-D30",
+  "ruled": "THE CLAIM-TABLE EVIDENCE LINTER BECOMES BLOCKING, IN CI AND IN THE BUILD, AFTER ONE CLEAN ADVISORY CI RUN OF THE REBUILT CHECKER. On the review page he chose 'Make it blocking' (NOT the recommendation, which was to keep it advisory) and asked, verbatim: 'Can you list the implications of this decision'. The conductor listed them in chat (a sloppy new claim table stops the push; old rows can no longer go stale once judged at their own commit; CI time to be measured; the real risk is false reds from old commands failing for environmental reasons, which must classify as COULD-NOT-ASK; history must never be rewritten; it sits in the gates job, so a red shows on every push) and recommended two steps: build the checker, run it advisory on one real CI push, then switch to blocking. His reply, verbatim: 'ill take your advice'. The advisory run happened: f0596c5e (the s308-D29 rebuild), CI run 36569480324, gates job green with the linter step clean; 13.3 s at the seat (0 lint fail, 3 declared, 0 mismatch, 2 could-not-ask). ENACTED in the same commit as this ruling: .github/workflows/gates.yml drops continue-on-error on the step, and knowledge/_build_all.py routes it GATE instead of ADVISORY, the label renamed in both STEPS and ROUTE_ROWS together.",
+  "date": "2026-09-29",
+  "by": "Dave",
+  "says": "chat #308, Tue 2026-09-29 13:09 BST, call 2 on notes/_REVIEW-308-old-claim-tables-2026-09-29-v1.html, verbatim: '2. Make the CI step blocking afterwards? Chose: Make it blocking (not the recommendation) Recommendation was: Keep it advisory In his words: Can you list the implications of this decision' · then chat #308 13:26 BST, to the conductor's recommendation 'blocking after one clean advisory run, yes?', verbatim: 'ill take your advice' (both saved in notes/_lanes/308/DAVE-RULINGS-2026-09-29-1309-old-claim-tables.md)",
+  "governs": [
+   "W-308c3",
+   ".github/workflows/gates.yml",
+   "knowledge/_build_all.py",
+   "knowledge/_validate_evidence.py"
+  ],
+  "evidence": [
+   "chat #308 2026-09-29 (live) - his 13:09 BST call 2 and his 13:26 BST 'ill take your advice'",
+   "notes/_lanes/308/DAVE-RULINGS-2026-09-29-1309-old-claim-tables.md#ill take your advice",
+   "commit f0596c5e - the advisory run: CI 36569480324, gates job green"
+  ],
+  "status": "ruled"
  }
  ]
 }

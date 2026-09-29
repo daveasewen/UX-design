@@ -601,7 +601,11 @@ STEPS = [
     # between them. Under ADR-0017 history is frozen, so those rows are not mine to rewrite,
     # and a gate born red is a gate that gets switched off (the #79 lesson, quoted above).
     # ⬛ FLIPPING THIS TO BLOCKING IS DAVE'S, once the historical residual is triaged.
-    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)",
+    # ✅ #308 — FLIPPED BLOCKING by Dave (`s308-D30`, 2026-09-29): the residual was triaged on
+    # `notes/_REVIEW-308-old-claim-tables-2026-09-29-v1.html`, the checker rebuilt under `s308-D29`
+    # (judge each row at the commit that wrote it; dated DECLARED notes for the unprobeable), and
+    # one advisory CI run read back clean first (run 36569480324 on f0596c5e) — his "ill take your advice".
+    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, BLOCKING s308-D30)",
      "_validate_evidence.py", ["notes/_claims"]),
     # Wave 1's punted item 4. `_governs.py --selftest` already has a consumer — `_capture_gate`
     # runs its matcher as the trigger-index arm at [12]/[13] — so this is LEGIBILITY: when the
@@ -1095,8 +1099,8 @@ ROUTE_ROWS = [
     # label strings are ROUTING JOIN KEYS duplicated verbatim in STEPS — never edit one alone.
     ("probe registry — every historically-found defect class, re-driven (W-45, advisory)",
      ADVISORY, None),
-    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)",
-     ADVISORY, None),
+    ("claim-table evidence linter — s182-D1 tokens + expected observations (W-44, BLOCKING s308-D30)", GATE,
+     "\n❌ claim-table evidence linter failed (exit {code}) — a claim row is false at the commit that wrote it, malformed, or unprobeable without a DECLARED note (s308-D29/D30). Run: python3 knowledge/_validate_evidence.py notes/_claims"),
     # ---- THE RELEASE LANE (#219 R2) — rows land in the SAME edit as the steps. A STEPS entry
     # with no ROUTE_ROWS row aborts every build above step 1 (#119/#164), and that omission has
     # now been recorded four times in this file; it is not going to be recorded a fifth.

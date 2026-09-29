@@ -295,9 +295,10 @@ jobs:
       # not assumed: the four #208 tables are clean, and the FROZEN #204/#206/#207 tables carry 6
       # lint failures + 3 rc mismatches that ADR-0017 does not let this lane rewrite.
       # ⬛ FLIPPING THIS TO BLOCKING IS DAVE'S, once that historical residual is triaged.
-      - name: Claim-table evidence linter — s182-D1 tokens + expected observations (W-44, advisory)
+      # ✅ #308 — BLOCKING by Dave (s308-D30, 2026-09-29), after the s308-D29 rebuild (each row judged
+      # at the commit that wrote it) and one clean advisory run (36569480324 on f0596c5e).
+      - name: Claim-table evidence linter — s182-D1 tokens + expected observations (W-44, BLOCKING s308-D30)
         if: ${{ !cancelled() }}
-        continue-on-error: true
         run: python3 knowledge/_validate_evidence.py notes/_claims
 
       # ADVISORY, BORN ADVISORY (#221 lane A, from #220-L1 finding 7). THE FALSE GREEN THIS
