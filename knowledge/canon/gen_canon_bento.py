@@ -103,6 +103,7 @@ Usage:
   python3 knowledge/canon/gen_canon_bento.py --check     # verify in-sync (build gate)
   python3 knowledge/canon/gen_canon_bento.py --selftest  # bite test
 """
+import functools
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
 while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate.py")):
@@ -274,46 +275,58 @@ def place(spans, cols):
     -> (rows_used, holes, occupancy). `spans` must already be band-clamped. The cursor resets
     to row 1 for every tile (that is what `dense` means), and the first free rectangle scanning
     rows-then-columns wins — the browser's own order, so this occupancy IS the rendered one."""
-    occ = []
+    # #308: placement is sequential, so the occupancy after tiles 1..n is a pure function of the
+    # occupancy after 1..n-1 plus tile n. It is memoised per PREFIX (`_occ_after`), and rows are
+    # BITMASKS (bit c = column c). Same scan order, same first-fit, same result as the
+    # list-of-bools loop it replaces. WHY: square_wall's exhaustive tail search re-placed the
+    # same head tens of thousands of times; the foundations check (s308-D33) ran 58 s at the seat
+    # and timed out the CI survey's 60 s cap, 99% of it in this function.
+    occ = _occ_after(tuple((int(c), int(r)) for (c, r) in spans), cols)
+    grid = [[bool((row >> c) & 1) for c in range(cols)] for row in occ]
+    return len(grid), sum(1 for row in grid for v in row if not v), grid
 
-    def ensure(r):
-        while len(occ) <= r:
-            occ.append([False] * cols)
 
-    def fits(r, c, cs, rs):
-        for rr in range(r, r + rs):
-            ensure(rr)
-            row = occ[rr]
-            for cc in range(c, c + cs):
-                if row[cc]:
-                    return False
-        return True
+def _holes(spans, cols):
+    """(rows, holes) for `place()` without building the bool grid — the hot path of the
+    squaring search. Same numbers `place()` returns."""
+    occ = _occ_after(tuple((int(c), int(r)) for (c, r) in spans), cols)
+    full = cols * len(occ)
+    return len(occ), full - sum(bin(row).count("1") for row in occ)
 
-    for (cs, rs) in spans:
-        cs = max(1, min(cs, cols))
-        rs = max(1, rs)
-        r = 0
-        while True:
-            hit = None
-            for c in range(0, cols - cs + 1):
-                if fits(r, c, cs, rs):
-                    hit = c
-                    break
-            if hit is not None:
-                for rr in range(r, r + rs):
-                    ensure(rr)
-                    for cc in range(hit, hit + cs):
-                        occ[rr][cc] = True
+
+@functools.lru_cache(maxsize=None)
+def _occ_after(spans, cols):
+    """Occupancy rows (ints) after dense auto-placement of `spans` (a tuple) at `cols`."""
+    if not spans:
+        return ()
+    occ = list(_occ_after(spans[:-1], cols))
+    cs, rs = spans[-1]
+    cs = max(1, min(cs, cols))
+    rs = max(1, rs)
+    mask0 = (1 << cs) - 1
+    r = 0
+    while True:
+        while len(occ) < r + rs:
+            occ.append(0)
+        hit = None
+        for c in range(0, cols - cs + 1):
+            m = mask0 << c
+            if not any(occ[rr] & m for rr in range(r, r + rs)):
+                hit = m
                 break
-            r += 1
-    return len(occ), sum(1 for row in occ for v in row if not v), occ
+        if hit is not None:
+            for rr in range(r, r + rs):
+                occ[rr] |= hit
+            break
+        r += 1
+    return tuple(occ)
 
 
 def is_rectangular(spans, ladder=None, p=None):
     """-> (ok, failing_cols, holes). The rectangle test at EVERY band in the ladder."""
     ladder = ladder or band_ladder(p)
     for cols in ladder:
-        rows, holes, _ = place(band_clamp(spans, cols), cols)
+        rows, holes = _holes(band_clamp(spans, cols), cols)
         if holes:
             return (False, cols, holes)
     return (True, None, 0)
