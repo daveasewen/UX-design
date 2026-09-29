@@ -109,3 +109,19 @@ status: observed
 *Filed report: `notes/_subreports/2026-09-29-308-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-29-308-he-ruled-the-edges-and-the-cards-and-the-build-waits.md`. Memory hook: `notes/_lanes/308/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/308/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #309: the cards and tiles get built`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **834, newest `s308-D44`**.
+
+1. ✅ **CI IS GREEN.** `2115686e` run `36617803460`, all three jobs (release, gates, render), read by `_ci_readback.py` at 19:29:07 UTC (`notes/_lanes/308/W/_ci-runs-2115686e.txt`). The wrap commit `06e4d823` has no run of its own: CI runs on a push's tip.
+2. ⛔ **THE WRAP COMMIT IS `06e4d823`, ON THE `--wrap` PATH** (gate `246 in scope · 0 fail · 56 warn`), 18 paths plus the auto-staged rehearsal log. **`2115686e` carries the seat's files and `notes/_lanes/308/WRAP-MEMORY-HOOK.md`** (the home of row W-308wk), split off because one 44-path `--wrap` run needs more than the 170 s shell cap. One run was cut by a device disconnect, and the next was killed at the cap while staging (rc 124). The third refused on its own report's missing `COUNTS:` line (fixed). The fourth stranded `index.lock` on a no-op add of a path the killed run had already staged. ⚠ **On this mount the committer stages about 2 s a path; keep a `--wrap` commit under about 30 paths.**
+3. **THE PUSH: `4e4634b8..2115686e`**, plain `git push origin master`, fast-forward checked first, `git ls-remote` = local HEAD, at 19:14:18 UTC, **28.6 minutes from the launch** (18:45:43 UTC).
+4. **Phase-1 counts:** scripts written **0** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b** (plus one `--checks-only` pass after two late edits, which wrote nothing) · hand steps **1** (the two `_to_delete/` files, on his grant) · commits **2 for the wrap**, where 1 was the target.
+5. ⚠ **The next title.** `GOOD-MORNING.md` carries the brief's `Apollo - #309: the cards and tiles get built`. `_gen_titles.py` derived `Apollo - #309: build the cards and tiles`. Declared, not reconciled.
+6. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads are in `notes/_lanes/308/W/_work/`; the note is at `notes/_lanes/308/WRAP-MEMORY-HOOK.md`.
+7. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

@@ -94,7 +94,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI.** Five reds found and fixed in session: `d952d912` (ambiguous `#recs` anchors, and a chain generated from uncommitted verdict-log lines), `922b1677` (a canon.css comment pinned by the chart receipts), `6bb91a0b` (`gen_kg_sources` not in the regen serial), `29d581d7` and `f3391434` (two checks over the survey's 60 s cap). CI green on `4e4634b8`, all three jobs. 16:00, with a screenshot of "Claude is temporarily unavailable": *"this is the problem"*. ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **131,520** · 160,000 at 08:34 · **300,000 at 12:45** · 320,000 at 13:09 · 350,000 at 14:45 · **475,220 at his "yea lets wrap"** (19:44). subs 2,828,705 (n=8).
 
-> ⛔★ **5b —** PLACEHOLDER-308W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`06e4d823`** (`--wrap`, gate `246 in scope · 0 fail · 56 warn`) and **`2115686e`** (the seat's files, split off for the 170 s shell cap); pushed `4e4634b8..2115686e` at 19:14:18 UTC. **CI on `2115686e`, run `36617803460`: GREEN, all three jobs.** `_CHAIN.md` 7,503 cl100k after the wrap's regen. This addendum's CI is owed to #309.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-09-29-308-he-ruled-the-edges-and-the-cards-and-the-build-waits.md`. Handoff: `_HANDOFF-159-he-ruled-the-edges-and-the-cards-and-the-build-waits.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/308/DAVE-*.md`. Lane reports: `notes/_subreports/2026-09-29-308-*.md`. Wrap: `notes/_subreports/2026-09-29-308-W-wrap.md`.**
 
