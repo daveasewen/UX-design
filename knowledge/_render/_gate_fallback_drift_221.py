@@ -95,27 +95,56 @@ def canon_answers(tok, resolve):
     return _ANSWER_CACHE[tok]
 
 
-def scan_source(src, resolve):
-    """-> (drifted, local_drift, unchecked) for one generator's source text."""
+def scan_source(src, resolve, shared=None):
+    """-> (drifted, local_drift, unchecked) for one generator's source text.
+    ⬛ s308 lane D round 2 — A PAGE-LOCAL ALIAS SHADOWS canon's token of the same name, as it does
+    in the browser inside the scope that declares it. The chrome preamble declares `.fx{--ink:
+    var(--text-default,#1A1A1A)}`, and canon ALSO declares a global `--ink` (the inverting
+    secondary ground, canon.css `:root, [data-theme=…]` alias block). Once the shared resolver read
+    every canon block (#308), canon's `--ink` became visible and six `var(--ink,#1A1A1A)` consumers
+    went red against a token they never read. So a name the preamble declares is judged against the
+    preamble's own literal FIRST: this file's declaration, else `shared` — every declaration across
+    the glob, because the preamble is copied into siblings and a body module (gen_grids_218) consumes
+    the one its host page declares."""
     fbs = sorted({(t, h.upper()) for t, h in FB_RE.findall(src)})
     local = {t: h.upper() for t, h in DECL_RE.findall(src)}
+    shared = shared or {}
     drifted, local_drift, unchecked = [], [], []
     for tok, lit in fbs:
+        if tok in local:
+            if lit != local[tok]:
+                local_drift.append((tok, lit, local[tok]))
+            continue
+        if tok in shared:
+            if lit not in shared[tok]:
+                local_drift.append((tok, lit, "/".join(sorted(shared[tok]))))
+            continue
         ans = canon_answers(tok, resolve)
         if ans:
             if lit not in ans:
                 drifted.append((tok, lit, sorted(ans)))
-        elif tok in local:
-            if lit != local[tok]:
-                local_drift.append((tok, lit, local[tok]))
         else:
             unchecked.append((tok, lit))
     return drifted, local_drift, unchecked
 
 
+def shared_declarations(files):
+    """-> {alias: {literal, …}} — every page-local `--x: var(--canon,#HEX)` across the glob."""
+    out = {}
+    for p in files:
+        try:
+            src = open(p, encoding="utf-8").read()
+        except OSError:
+            continue
+        for tok, lit in DECL_RE.findall(src):
+            out.setdefault(tok, set()).add(lit.upper())
+    return out
+
+
 def run(paths=None, verbose=False):
     resolve = _resolver()
     files = sorted(paths if paths is not None else glob.glob(GLOB))
+    shared = shared_declarations(files)
     tot_d, tot_l, tot_u, scanned = [], [], [], 0
     for p in files:
         if os.path.basename(p) == os.path.basename(__file__):
@@ -128,7 +157,7 @@ def run(paths=None, verbose=False):
         if not FB_RE.search(src):
             continue
         scanned += 1
-        d, l, u = scan_source(src, resolve)
+        d, l, u = scan_source(src, resolve, shared)
         rel = os.path.relpath(p, os.path.dirname(os.path.dirname(HERE)))
         for tok, lit, ans in d:
             tot_d.append((rel, tok, lit, ans))
@@ -199,6 +228,30 @@ def selftest():
          "swallowed — the hole is declared, and it does not read as coverage",
          (dr, lo, sorted(t for t, _ in un)),
          ([], [], ["--border-radius-surface", "--target-min"]))
+    # ⬛ s308 lane D round 2 — THE RESOLVER THIS GATE BORROWS MUST SEE EVERY THEME BLOCK. Until
+    # #308 `gen_bento_matrix_217.theme_tokens` read only the FIRST block per theme, so canon's
+    # answers for `--color-neutral-5` collapsed to mono's #313131 and this gate called the RULED
+    # supercharge fallback #312C26 (s220-D1, s308-D1) DRIFTED — the instrument flagged the right
+    # value. Both warm and grey must now be canon's answers; a foreign literal still goes red.
+    bite("7 · ⬛ s308 — supercharge's warm `var(--color-neutral-5,#312C26)` is one of canon's "
+         "answers (the multi-block theme is read), and so is mono's #313131",
+         (scan_source(".c{a:var(--color-neutral-5,#312C26);b:var(--color-neutral-5,#313131);}",
+                      resolve)),
+         ([], [], []))
+    d7, _, _ = scan_source(".c{a:var(--color-neutral-5,#123456);}", resolve)
+    bite("7b · …and a literal canon never answers for it still goes RED, with both answers printed",
+         [(t, h, a) for t, h, a in d7], [("--color-neutral-5", "#123456", ["#312C26", "#313131"])])
+    bite("8 · ⬛ s308 — a page-local alias SHADOWS canon's same-named token: `--ink` declared "
+         "locally as #1A1A1A is judged against that, not canon's global inverting --ink",
+         scan_source(".fx{ --ink: var(--text-default,#1A1A1A); } .b{color:var(--ink,#1A1A1A);}",
+                     resolve), ([], [], []))
+    bite("8b · …and via the SHARED preamble when the body module declares nothing itself",
+         scan_source(".b{color:var(--ink,#1A1A1A);}", resolve, {"--ink": {"#1A1A1A"}}),
+         ([], [], []))
+    bite("8c · ⬛ MUTANT — a shadowed alias consumed with a literal its declaration does not carry "
+         "is still RED",
+         scan_source(".b{color:var(--ink,#000000);}", resolve, {"--ink": {"#1A1A1A"}}),
+         ([], [("--ink", "#000000", "#1A1A1A")], []))
     # ⬛ the glob is the rule: prove it actually reaches every sibling generator, not just one.
     reach = sorted(os.path.basename(p) for p in glob.glob(GLOB)
                    if FB_RE.search(open(p, encoding="utf-8").read()))

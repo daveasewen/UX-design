@@ -566,24 +566,86 @@ def _css_block(text, selector_re):
     return out
 
 
-def theme_tokens(theme, mode="light"):
-    """-> {token: value} for one theme in one mode, by canon's own cascade."""
+# ⛔ s308 (lane D, round 2) — EVERY BLOCK, NOT THE FIRST. `_css_block` returns the FIRST rule its
+# anchored regex matches, and canon.css does not keep one block per theme. Two faults, one cause,
+# both measured at #308 lane D:
+#   · since 71b3363c (#288) AUTO-BENTO-ROLE-VARS writes `[data-apollo-theme="console"]{` and
+#     `[data-apollo-theme="supercharge"]{` AHEAD of AUTO-THEMES, holding two gutter vars — so the
+#     first match was the gutter block and both themes resolved to MONO's colours (supercharge dark
+#     neutral/5 read #313131 instead of its ruled warm/5 #312C26, s220-D1 / s308-D1);
+#   · since 53303b0f (#228, the s227-D8(a) `common` alias) the legacy blocks open with a two-line
+#     selector LIST (`[data-apollo-theme="legacy"],\n[data-apollo-theme="common"]{`), which the
+#     anchored regex never matched at all — legacy resolved to mono for a month.
+# The browser merges every rule whose selector list names the element; so does this, in source
+# order, per tier. `_css_rules` walks TOP-LEVEL rules only (at-rule bodies are skipped whole), so a
+# `@media`/`@container` block cannot leak a conditional value into the static cascade.
+_RULES_CACHE = {}
+
+
+def _css_rules(text):
+    """-> [(selector-list, body)] for every top-level rule of `text`, in source order. Comments are
+    blanked first (a `{` inside a comment must not open a block); at-rules are stepped over whole."""
+    key = (len(text), hash(text))
+    if key in _RULES_CACHE:
+        return _RULES_CACHE[key]
+    src = re.sub(r"/\*.*?\*/", lambda m: " " * len(m.group(0)), text, flags=re.S)
+    out, i, n = [], 0, len(src)
+    while i < n:
+        j = src.find("{", i)
+        if j < 0:
+            break
+        sel = src[i:j].strip()
+        depth, k = 1, j + 1
+        while k < n and depth:
+            if src[k] == "{":
+                depth += 1
+            elif src[k] == "}":
+                depth -= 1
+            k += 1
+        # the prelude may carry a stray `}` or `;` from an earlier construct — keep only its tail
+        sel = re.split(r"[};]", sel)[-1].strip()
+        if sel and not sel.startswith("@"):
+            out.append((sel, src[j + 1:k - 1]))
+        i = k
+    _RULES_CACHE[key] = out
+    return out
+
+
+def _css_blocks(text, selector):
+    """-> {token: value} merged over EVERY top-level rule whose comma-separated selector list names
+    `selector` exactly (whitespace-normalised), in source order — later declarations win, as in the
+    browser for equal specificity."""
+    want = re.sub(r"\s+", " ", selector.strip())
+    out = {}
+    for sel, body in _css_rules(text):
+        if want in [re.sub(r"\s+", " ", s.strip()) for s in sel.split(",")]:
+            for k, v in re.findall(r"(--[a-z0-9-]+)\s*:\s*([^;]+);", body):
+                out[k] = v.strip()
+    return out
+
+
+def theme_tokens(theme, mode="light", text=None):
+    """-> {token: value} for one theme in one mode, by canon's own cascade: `:root` ->
+    `[data-theme="dark"]` -> EVERY block naming the theme -> EVERY block naming the theme in dark.
+    `text` (a canon.css string) is for the selftest's planted arms; it bypasses the cache."""
     key = (theme, mode)
-    if key in _TOKEN_CACHE:
+    if text is None and key in _TOKEN_CACHE:
         return _TOKEN_CACHE[key]
-    with open(CANON_CSS, encoding="utf-8") as fh:
-        text = fh.read()
-    d = dict(_css_block(text, r"^:root"))
+    if text is None:
+        with open(CANON_CSS, encoding="utf-8") as fh:
+            src = fh.read()
+    else:
+        src = text
+    d = _css_blocks(src, ":root")
     if mode == "dark":
-        d.update(_css_block(text, r"^\[data-theme=\"dark\"\]"))
+        d.update(_css_blocks(src, '[data-theme="dark"]'))
     if theme != "mono":
-        d.update(_css_block(text, r"^\[data-apollo-theme=\"%s\"\]" % theme))
+        d.update(_css_blocks(src, '[data-apollo-theme="%s"]' % theme))
         if mode == "dark":
-            d.update(_css_block(
-                text,
-                r"^\[data-apollo-theme=\"%s\"\]\[data-theme=\"dark\"\],\s*\n"
-                r"\[data-apollo-theme=\"%s\"\] \[data-theme=\"dark\"\]" % (theme, theme)))
-    _TOKEN_CACHE[key] = d
+            d.update(_css_blocks(src, '[data-apollo-theme="%s"][data-theme="dark"]' % theme))
+            d.update(_css_blocks(src, '[data-apollo-theme="%s"] [data-theme="dark"]' % theme))
+    if text is None:
+        _TOKEN_CACHE[key] = d
     return d
 
 
@@ -1314,11 +1376,20 @@ def grouping_dial(template_stem="template-dashboard-bento"):
     members = [c.split(":", 1)[1] for c in tpl.get("$composes", []) if c.startswith("component:")]
     edges, declared = [], []
     for stem in members:
-        for e in meta(stem).get("edges", {}).get("groupsWith", []):
+        m = meta(stem)
+        for e in m.get("edges", {}).get("groupsWith", []):
             if e.get("ref") is None:
                 declared.append({"on": "component:" + stem, "$note": e.get("$note", "")})
             else:
                 edges.append(("component:" + stem, e["ref"]))
+        # ⬛ s308-D19 (#308, Dave: "move the 22 self-lines to the fields they mean — Take it"): a
+        # same-kind group is no longer a `groupsWith` SELF-edge — lane E (6bb91a0b) moved kpi-tile's
+        # and stat-card's into the meta's `count` field as `{min: 2, per: "group"}`. The fact did not
+        # change, only its home, so the dial reads it from there: one `per: "group"` count = one
+        # same-kind group of that component. Still ONE home in the KG (s234-D4); still derived.
+        for c in m.get("count", []) or []:
+            if isinstance(c, dict) and c.get("per") == "group":
+                edges.append(("component:" + stem, "component:" + stem))
     parent = {}
     def find(x):
         parent.setdefault(x, x)
@@ -3956,6 +4027,36 @@ def selftest():
           resolve_token("--text-reverse", "console", "dark")),       # rgb(255,255,255)
          ("#F0F0F0", "#1F1F1F", "#545454", "#9B9B9B",
           "#F7F6F4", "#DFDEDC", "#1A1A1A", "#FFFFFF"))
+    # ⬛ s308 lane D round 2 — THE MULTI-BLOCK THEME, PLANTED. canon.css keeps more than one block
+    # per theme: a gutter block written AHEAD of the colour block (71b3363c, #288) and a two-line
+    # selector LIST for legacy/common (53303b0f, #228). The first-match reader read the gutter block
+    # for supercharge and nothing at all for legacy — both fell back to mono. The planted sheet
+    # has both shapes; the reader must merge every block, and the retired first-match reader is run
+    # beside it as the MUTANT, so the arm proves it can tell the two apart.
+    _planted = ("/* a comment with a { brace in it */\n"
+                ":root{\n  --color-neutral-5: #313131;\n  --x-gap: 8px;\n}\n"
+                '[data-apollo-theme="supercharge"]{\n  --bento-dashboard-main:24px;\n}\n'
+                '@media (min-width:1px){[data-apollo-theme="supercharge"]{--color-neutral-5:#FF0000;}}\n'
+                '[data-apollo-theme="legacy"],\n[data-apollo-theme="common"]{\n'
+                "  --badge-background: #DB0011;\n}\n"
+                '[data-apollo-theme="supercharge"]{\n  --color-neutral-5: #312C26;\n}\n')
+    _first = (dict(_css_block(_planted, r"^:root"),
+                   **_css_block(_planted, r'^\[data-apollo-theme="supercharge"\]')).get(
+                  "--color-neutral-5"),
+              _css_block(_planted, r'^\[data-apollo-theme="legacy"\]').get("--badge-background"))
+    bite("C0m · ⬛ s308 — EVERY block naming a theme is merged: a gutter block ahead of the colour "
+         "block, a two-line selector list, an @media block that must NOT leak in; the retired "
+         "first-match reader (the MUTANT) reads mono's #313131 and nothing for legacy",
+         (theme_tokens("supercharge", "light", text=_planted).get("--color-neutral-5"),
+          theme_tokens("legacy", "light", text=_planted).get("--badge-background"),
+          theme_tokens("supercharge", "light", text=_planted).get("--bento-dashboard-main"),
+          _first),
+         ("#312C26", "#DB0011", "24px", ("#313131", None)))
+    bite("C0n · ⬛ s308 — the LIVE canon.css answers s220-D1 / s308-D1 again: supercharge dark "
+         "neutral/5 is its warm/5, and legacy reads its own block (badge #DB0011, not mono's alias)",
+         (resolve_token("--color-neutral-5", "supercharge", "dark"),
+          theme_tokens("legacy").get("--badge-background")),
+         ("#312C26", "#DB0011"))
     bite("C0b · ⛔ a dangling ground var is a NAMED RAISE, never a plausible black "
          "([[dangling-dataviz-var-renders-silent-black]])",
          isinstance(_raises(lambda: resolve_token("--surface-nonexistent", "mono", "light")),
