@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-29 #308
+
+> **COMMIT STATE #307:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-307-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Eight commits before the wrap, all declared not-a-wrap:** `cb29648a` · `4d647958` (pushed `a4f1848a..4d647958`, run `36471193102` green) · `31008631` · `1822ac15` · `6cbaaeeb` (pushed `4d647958..6cbaaeeb`, run `36481312303` RED, the uncommitted export) · `fb42e3c4` · `6a06340d` · `6ed2657a` (the last three ride this wrap's push). Handoff `_HANDOFF-158-the-78-were-answered-and-the-picture-page-waits.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **358,651 real at the launch of this seat — a hand sum; over the hard 350,000 line by 8,651.**
+
+> ## ★ PRIOR — 2026-09-28 (Mon **#306**, ONE DAY, Opus 5.5 conductor in the CLOUD, **9 subs**, DELEGATED wrap on Opus 5.5 — ★★ **HIS TICKS CAME BACK, AND THE WRAP WAS REDESIGNED AND RUN ON ITS NEW TOOLS**)
+>
+> - ★★★ ① **THE 102 PARKED QUESTIONS: 24 CLOSED AS ANSWERED, 78 KEPT OPEN BY HIS TICKS; `_rulings.json` 702 → 712.** `s306-D1`..`D3` enacted by T (`138d45fe`, `dcb76d81`). CI went red once on stale KG titles (the regen serial lacked `gen_kg_titles.py`), fixed `fe243c6c`, green.
+> - ★★ ② **THE WRAP REDESIGN: HIS SIX YESES `s306-D4`..`D9` AND THE ELEVEN LIMITS `s306-D10`; PHASES 1 AND 2 BUILT** (W1 six tools `079740c5`, V `_ci_readback.py` `0afaca91`). This wrap is their first real run.
+> - ⚠ ③ FILL 321,077 at the launch of this seat (hand sum, `_wrap_facts.py`), over 320,000 by 1,077. **`_HANDOFF-157-his-ticks-came-back-and-the-wrap-runs-tools.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #307:** ⬛ **THE 78 REOPENED QUESTIONS, HOW HE WANTS THEM WORKED** [NEW — 0, DAVE'S] — put it first. `s225-D2`. **416 items, 4 new, 2 STRUCK (the boot ceiling, by `s305-D64`)**, `_CARRIES.md` § `residual → #307` `carries:residual-307`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#307:**' in l][0])))"` = 416.
+> **residual (GENERATED #306):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #305) — _roll_state.py · 2026-09-28
+
+
+*Rolled at the #308 wrap (2c, ritual 2026-09-29). The old ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite.*
+
 ## Batch 2026-09-28 #307
 
 > **COMMIT STATE #306:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-306-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Six commits before the wrap, all declared not-a-wrap, pushed `80d4198d..079740c5`:** `138d45fe` · `dcb76d81` · `fe243c6c` · `3b4cae5d` · `0afaca91` · `079740c5`; CI runs `36437656013` (RED, stale KG titles) · `36439579304` · `36443037064` (green) · `36453625640` (in the 5b line). Handoff `_HANDOFF-157-his-ticks-came-back-and-the-wrap-runs-tools.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **321,077 real at the launch of this seat — a hand sum; over the 320,000 limit by 1,077.**
