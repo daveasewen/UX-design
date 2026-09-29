@@ -34,7 +34,7 @@ copied out of that document as a number.
   slug that has no node — in the file's own `unresolved` ledger, routed by type so the
   union of the two files is the whole ledger. Two relations exist ONLY as nulls:
   `defaultActive` (s277-D6) and `governedBy` (s277-D7, the unbound lockups "enter
-  VISIBLY"). `governedBy` is never drawn; the ratified six remain the only types
+  VISIBLY"; declared under `obeys` since s308-D17, #308 lane E). Neither is drawn by this generator; the ratified six remain the only types
   this generator draws from the corpus.
 
   DAVE'S OWN ANSWERS ARE AN INPUT (#280 lane IN2). `defaultActive` is the one
@@ -202,7 +202,13 @@ EDGE_STATUS = {t: "NEW" for t in EDGE_TYPES}
 # in the landed files ONLY as `t: null` + `$note` — the same shape the orphan
 # activeVariantOf and the s230-D2 defaultFor nulls already use. NO edge of either type
 # ever carries a target: the ratified six remain the only DRAWN types (#75, bite 13).
-NULL_ONLY_TYPES = ("defaultActive", "governedBy")
+# #308 lane E, s308-D17 (Dave 2026-09-29 09:26 BST: '2. Check every edge’s two ends against its row — Take it',
+# answering v1's 'move them to obeys ... keeping governedBy for rulings only'): the logo→rule relation
+# is `obeys`, not `governedBy`. The unbound-lockup null is declared under `obeys`, so the hand-authored
+# logo→rule lines in _logo_nodes.json (s282-D5, now typed obeys) still speak for it and the merge
+# suppresses it by (source, type) exactly as before. governedBy is component→ruling only
+# (knowledge/_edge_register.json). No other behaviour moves.
+NULL_ONLY_TYPES = ("defaultActive", "obeys")
 NULL_ONLY_STATUS = {t: "DECLARED-NULL ONLY — never drawn, never resolved"
                     for t in NULL_ONLY_TYPES}
 # ONE exception, and it is Dave's, not the generator's: where his own manual review names
@@ -217,7 +223,7 @@ NULL_ONLY_STATUS_RULED = (
 # `unresolved` lists is therefore the whole ledger, with nothing counted twice.
 NULL_FILE = {"defaultActive": "icon", "activeVariantOf": "icon", "usesIcon": "icon",
              "ruledBy": "icon", "icon:": "icon",
-             "governedBy": "logo", "defaultFor": "logo", "usesLogo": "logo", "logo:": "logo"}
+             "obeys": "logo", "defaultFor": "logo", "usesLogo": "logo", "logo:": "logo"}
 
 # The manifest record fields carried verbatim onto the node. `slug` becomes the id.
 ICON_FIELDS = ("name", "slug", "file", "active", "fillMode", "fills")
@@ -948,7 +954,7 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                                 for m in [GOVERNS_LOGO_RX.search(str(e).strip())] if m})
     unbound = sorted(s for s in logo_fields if s not in named) if not no_logos else []
     for s in unbound:
-        declare(LOGO + s, "governedBy",
+        declare(LOGO + s, "obeys",
                 f"NOTHING binds this lockup: {DEFAULT_RULING} does not name it, "
                 f"_rules-index.json holds {logo_rules} rules whose file is logos.md, and "
                 f"{len(logo_ruling_paths)} rulings name a logo .svg in governs. logos.md says "
@@ -1683,7 +1689,7 @@ def selftest():
         #      not. The one exception is Dave's own answer, which carries a `$ruled` sentence
         #      naming his export — and this corpus has no export, so here there are none and
         #      the strict form of the assertion holds (bite 20 is the other side of it).
-        bite(13, "all six edge types are declared NEW, only defaultActive/governedBy exist beyond them, and no seventh type is ever DRAWN — nor either null-only type, absent an export of Dave's", lambda:
+        bite(13, "all six edge types are declared NEW, only defaultActive/obeys (the logo null, governedBy until s308-D17) exist beyond them, and no seventh type is ever DRAWN — nor either null-only type, absent an export of Dave's", lambda:
              sorted(rep["edge_status"]) == sorted(EDGE_TYPES)
              and set(rep["edge_status"].values()) == {"NEW"}
              and set(rep["edge_targets_resolved"]) <= set(EDGE_TYPES)
@@ -1943,22 +1949,22 @@ def selftest():
             k24 = _with_exports(td, _sheet(alpha=CLEAN))
             land(k24, "s277-D4")
             _p = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
-            _stub = any(e["type"] == "governedBy" and e["t"] is None for e in _p["edges"])
-            _p["edges"] = [e for e in _p["edges"] if not (e["type"] == "governedBy"
+            _stub = any(e["type"] == "obeys" and e["t"] is None for e in _p["edges"])
+            _p["edges"] = [e for e in _p["edges"] if not (e["type"] == "obeys"
                                                           and e["s"] == "logo:mark-light-colour")]
             _p["edges"].append({"s": "logo:mark-light-colour", "t": "rule:made-up-001",
-                                "type": "governedBy", "fam": FAMILY, "authored": "hand",
+                                "type": "obeys", "fam": FAMILY, "authored": "hand",
                                 "why": "a human ruled this, and no corpus can say it"})
-            _p["edge_types"]["governedBy"] = "RESOLVED BY HAND — 1 edge drawn"
+            _p["edge_types"]["obeys"] = "RESOLVED BY HAND — 1 edge drawn"
             _p["$hand-block"] = {"ruled": "a lane's own record",
                                  VERDICT_KEY: "the generator drew 0 edges"}
             (k24 / LANDED_LOGOS).write_text(json.dumps(_p, indent=2) + "\n", encoding="utf-8")
             land(k24, "s277-D4")                       # the run that used to destroy it
             _a = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
             _h1 = [e for e in _a["edges"] if e.get("authored") == "hand"]
-            _renull = [e for e in _a["edges"] if e["type"] == "governedBy" and e["t"] is None
+            _renull = [e for e in _a["edges"] if e["type"] == "obeys" and e["t"] is None
                        and e["s"] == "logo:mark-light-colour"]
-            _reun = [u for u in _a["unresolved"] if u["type"] == "governedBy"
+            _reun = [u for u in _a["unresolved"] if u["type"] == "obeys"
                      and u["source"] == "logo:mark-light-colour"]
             _v1 = _a.get("$hand-block", {}).get(VERDICT_KEY, "")
             _desc = _a["$description"]

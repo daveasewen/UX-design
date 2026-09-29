@@ -1,0 +1,5787 @@
+{
+ "$schema": {
+  "what": "THE EDGE REGISTER (s308-D16, Dave 2026-09-29 09:26 BST: '1. Write one edge register — Take it'). Every edge type in the knowledge graph, defined ONCE: one row per type actually present in the graph the explorer builds (knowledge/_build_kg_explorer.py extract() + extract_extra()). Read by knowledge/_validate_edges.py, which checks every edge against its row (s308-D17, advisory first) and checks that the register covers the graph (blocking).",
+  "fields": {
+   "word": "Apollo's storage type — the word on the edge. Never renamed here (s308-D22 keeps Apollo's words).",
+   "plain": "how the line reads, s → t, in plain words",
+   "verb": "which of the twelve verbs in knowledge/_kg_verbs.json reads this type, with its force (must / should / is); `unread` or `missing` where none does. Read from that file when this register was written.",
+   "from": "the node kinds (id prefix before the colon) an edge of this type may START from. CHECKED.",
+   "to": "the node kinds it may END at. CHECKED. An empty list means the type exists only as declared nulls.",
+   "pairs": "optional: where `from` × `to` would admit a wrong combination, the legal (from, to) pairs. CHECKED when present.",
+   "nulls": "whether a declared null (t: null, carried with its prose) is legal for this type, and the ruling or code that says so. CHECKED.",
+   "opposite": "the opposite relation. `today` is measured; `declared` is owed to item 3 (s308-D18).",
+   "shape": "self-lines, two-step loops and repeated pairs, measured; `declared` is owed to item 4 (s308-D19).",
+   "count": "how many targets one start may have (distinct targets). CHECKED where `perStart.max` is set, and set only where a definition says one; `basis` names it.",
+   "reason": "the field carrying the reason for the line today, and whether any schema requires it; the one field `why` is owed to item 5 (s308-D20).",
+   "maker": "where the edges are made — authored by hand (and where), generated (by which script), or ratified (by which ruling's verdicts) — plus the `authored` flag as measured; the one maker field is owed to item 6 (s308-D21).",
+   "outside": "candidate outside terms from lane O's v2 word map (Canonical ds:/dt:, Adobe Spectrum, then SKOS / Dublin Core / PROV / Kruchten / IBIS / ARIA). CANDIDATES ONLY: the choice and the grade are owed to item 7 (s308-D22).",
+   "family": "the explorer's storage family for the edge (fam), as built",
+   "$measured": "live tallies when this row was written; drift is reported by the check, never a failure"
+  },
+  "kinds": "a node's kind is its id's prefix before the first colon (component:, rule:, ux:, …) — the grammar _validate_kg.py enforces.",
+  "rulings": {
+   "s308-D16": "item 1 — this register",
+   "s308-D17": "item 2 — the ends check; the 12 logo lines to obeys",
+   "s308-D18": "item 3 — owed",
+   "s308-D19": "item 4 — owed",
+   "s308-D20": "item 5 — owed",
+   "s308-D21": "item 6 — owed",
+   "s308-D22": "item 7 — owed",
+   "s308-D23": "item 8 — owed",
+   "s308-D24": "item 9 — owed"
+  }
+ },
+ "$doc": {
+  "written": "#308 lane E, 2026-09-29T08:45Z, from the live graph (_build_kg_explorer.extract() + extract_extra())",
+  "sources_reconciled": [
+   "knowledge/components/meta.schema.json (edges.properties)",
+   "knowledge/_kg_verbs.json (reads + unread)",
+   "knowledge/_kg_explorer.template.html (FAMILY map) + knowledge/_build_kg_explorer.py (the graph)",
+   "knowledge/_validate_kg.py (reads the schema’s edge types; holds no list of its own)"
+  ],
+  "not_yet": "The meta schema, the verbs map and the explorer still hold their own partial copies; making them READ this file is the rest of item 1 (row W-308ie) and is not done here. Until then the coverage check refuses any type any of them names that this file does not.",
+  "owed": {
+   "item 8 (s308-D23)": "knowledge/_decision-graph.json's nine types are not graph edges and have no row; folding them into the ten ruling→ruling rows is item 8's.",
+   "item 9 (s308-D24)": "token→token alias, providesCapability, a theme to point at, component→ARIA role: no rows until those edges exist."
+  }
+ },
+ "types": [
+  {
+   "word": "acceptsCapability",
+   "plain": "accepts the capability",
+   "verb": {
+    "reads": [],
+    "unread": "component → capability: (a slot's accepts.capability; `slots` names the slots) — landed #305 B2 under s305-D26. Only the accepts half exists; no providesCapability is minted. Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "capability"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose ends are both known"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+     "note": null,
+     "store": [
+      "knowledge/_source_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 95
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Backstage consumesApi"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "sources",
+   "note": "only the accepts half exists; s308-D24 item 9b owes providesCapability",
+   "$measured": {
+    "edges": 95,
+    "nulls": 0,
+    "from": {
+     "component": 95
+    },
+    "to": {
+     "capability": 95
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "activeVariantOf",
+   "plain": "is the active variant of",
+   "verb": {
+    "reads": [],
+    "unread": "icon:-active → icon: base — the variant relation inside the library (s277-D4); `is-a` reads kinship between COMPONENTS and stretching it to glyph variants would be forcing; the 15 bases held null are under Dave's manual review (RI-3).",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "icon"
+   ],
+   "to": [
+    "icon"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_icon_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 234
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:variantOf",
+     "Dublin Core isVersionOf"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "$measured": {
+    "edges": 234,
+    "nulls": 2,
+    "from": {
+     "icon": 234
+    },
+    "to": {
+     "icon": 232
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "answersIntent",
+   "plain": "answers the reader question",
+   "verb": {
+    "reads": [
+     {
+      "verb": "provides-answers",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "intent"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_roles_desk.py from the meta `answers` field (s270-D2)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.answersIntent"
+     ],
+     "authoredFlag": {
+      "None": 28
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS responds-to"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 28,
+    "nulls": 0,
+    "from": {
+     "component": 28
+    },
+    "to": {
+     "intent": 28
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "appliesTo",
+   "plain": "applies to",
+   "verb": {
+    "reads": [
+     {
+      "verb": "must",
+      "force": "must"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "sc"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from the rule's applies_to names, matched to meta `name`",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 826
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core conformsTo (walked back)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 826,
+    "nulls": 0,
+    "from": {
+     "sc": 826
+    },
+    "to": {
+     "component": 826
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "behaviourFrom",
+   "plain": "takes its behaviour from",
+   "verb": {
+    "reads": [],
+    "unread": "component → file: (a canon script) or snippet: (its own inline script, `inline`) — landed #305 B2 under s305-D26, from behaviour.script + behaviour.partial. Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "file",
+    "snippet"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose ends are both known"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+     "note": null,
+     "store": [
+      "knowledge/_source_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 73
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "PROV prov:hadPrimarySource",
+     "PROV prov:wasDerivedFrom"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "sources",
+   "$measured": {
+    "edges": 73,
+    "nulls": 0,
+    "from": {
+     "component": 73
+    },
+    "to": {
+     "file": 55,
+     "snippet": 18
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "bindsToken",
+   "plain": "binds the token group",
+   "verb": {
+    "reads": [],
+    "unread": "component → token: group — landed #304 R3 under s277-D12 (tokens at group grain with their tier, bindsToken from the metas' typed tokens block). The same join the slice's `tokens` field (Q9) reads from the meta; the explorer draws it under its own Tokens chip (off by default). No verb of the twelve ",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "token"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose ends are both known"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_tokens.py (--land --ratified s277-D12) from the metas' typed tokens block",
+     "note": null,
+     "store": [
+      "knowledge/_token_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 835
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:hasTokenBinding",
+     "Spectrum tokenBindings"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "tokens",
+   "$measured": {
+    "edges": 835,
+    "nulls": 0,
+    "from": {
+     "component": 835
+    },
+    "to": {
+     "token": 835
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "boundBy",
+   "plain": "is bound by the policy",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → the HSBC accessibility policy — provenance of the criterion",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "sc"
+   ],
+   "to": [
+    "policy"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "one policy node, one internal_policy_ref field per rule"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from sources.internal_policy_ref",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 55
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core conformsTo",
+     "Dublin Core source"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 55,
+    "nulls": 0,
+    "from": {
+     "sc": 55
+    },
+    "to": {
+     "policy": 55
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "bounds",
+   "plain": "bounds",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten overrides",
+     "Kruchten subsumes"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 1,
+    "nulls": 0,
+    "from": {
+     "ruling": 1
+    },
+    "to": {
+     "ruling": 1
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "capturedFrom",
+   "plain": "was captured from",
+   "verb": {
+    "reads": [],
+    "unread": "component → figma: node, or the snippet:/file: its provenance.code_path names — landed #305 B2 under s305-D26, from provenance. Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "snippet",
+    "figma",
+    "file"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose ends are both known"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+     "note": null,
+     "store": [
+      "knowledge/_source_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 80
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "PROV prov:hadPrimarySource",
+     "PROV prov:wasDerivedFrom"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "sources",
+   "$measured": {
+    "edges": 80,
+    "nulls": 0,
+    "from": {
+     "component": 80
+    },
+    "to": {
+     "snippet": 42,
+     "figma": 33,
+     "file": 5
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "challengedBy",
+   "plain": "is challenged by",
+   "verb": {
+    "reads": [],
+    "unread": "polarity → ruling — s238-D6 typed link: the ruling challenges the trade-off. Not named by the twelve; not a decision about the polarity. Not forced.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "polarity"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 4
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS objects-to"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 4,
+    "nulls": 0,
+    "from": {
+     "polarity": 4
+    },
+    "to": {
+     "ruling": 4
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "checkedBy",
+   "plain": "is checked by the axe rule",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → axe rule id — the automatable check behind a criterion",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "sc"
+   ],
+   "to": [
+    "axe"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from external_automatable_refs",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 68
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SHACL shape / W3C ACT rule that checks it"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 68,
+    "nulls": 0,
+    "from": {
+     "sc": 68
+    },
+    "to": {
+     "axe": 68
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "cites",
+   "plain": "cites the criterion",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → sc: — a PARSED citation the rule's author wrote in prose (A2 §5); ASK Q11 walks it to reach the sc: and the designer reads the sc: through `must` (appliesTo), never this hop",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "rule"
+   ],
+   "to": [
+    "sc"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s274-D10: a declared null is carried, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+     "note": null,
+     "store": [
+      "knowledge/_rule_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 51
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core references"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelinerules",
+   "$measured": {
+    "edges": 51,
+    "nulls": 0,
+    "from": {
+     "rule": 51
+    },
+    "to": {
+     "sc": 51
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "commonPattern",
+   "plain": "commonly appears in pattern",
+   "verb": {
+    "reads": [
+     {
+      "verb": "lives-in",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "pattern"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from relationships.commonPatterns",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.commonPattern"
+     ],
+     "authoredFlag": {
+      "None": 421
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "pattern-language related patterns"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 421,
+    "nulls": 0,
+    "from": {
+     "component": 421
+    },
+    "to": {
+     "pattern": 421
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "composedOf",
+   "plain": "is composed from",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "authored in the meta (s268-D5); carried verbatim through a gen_kg_edges.py rebuild (s268-D6)",
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.composedOf"
+     ],
+     "authoredFlag": {
+      "None": 5
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Atomic Design composition",
+     "Dublin Core hasPart"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 5,
+    "nulls": 0,
+    "from": {
+     "component": 5
+    },
+    "to": {
+     "component": 5
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "confirms",
+   "plain": "confirms",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 5
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten enables",
+     "IBIS supports"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 5,
+    "nulls": 0,
+    "from": {
+     "ruling": 5
+    },
+    "to": {
+     "ruling": 5
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "consumes",
+   "plain": "consumes",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from $consumes prose, name-matched; resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.consumes"
+     ],
+     "authoredFlag": {
+      "None": 70
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Backstage consumesApi",
+     "Dublin Core requires"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 70,
+    "nulls": 0,
+    "from": {
+     "component": 70
+    },
+    "to": {
+     "component": 70
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "containedBy",
+   "plain": "is contained by",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "hasPart",
+     "stored": "both",
+     "measured": "0 of 10 component→component hasPart lines (self-lines excluded) mirrored by containedBy"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 1,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from relationships.livesInside, name-matched; resolutions MERGE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.containedBy"
+     ],
+     "authoredFlag": {
+      "None": 88
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:parentComponent",
+     "Dublin Core isPartOf"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 88,
+    "nulls": 0,
+    "from": {
+     "component": 88
+    },
+    "to": {
+     "component": 88
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "corrects",
+   "plain": "corrects",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS replaces"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 1,
+    "nulls": 0,
+    "from": {
+     "ruling": 1
+    },
+    "to": {
+     "ruling": 1
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "defaultActive",
+   "plain": "has as its default active twin",
+   "verb": {
+    "reads": [],
+    "unread": "icon: → null ONLY — declared-null, never drawn, never resolved (s277-D4: no default ruled); a null carried, not a reading.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "icon"
+   ],
+   "to": [
+    "icon"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_icon_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Wikidata qualifier (the theme)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "note": "the explorer's asset pass draws only ASSET_DRAWN types, so the resolved defaultActive edges in storage are SKIPPED and only the declared null reaches the graph (measured #308 lane E: 15 in storage, 1 in the graph)",
+   "$measured": {
+    "edges": 1,
+    "nulls": 1,
+    "from": {
+     "icon": 1
+    },
+    "to": {},
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "defaultFor",
+   "plain": "is the default for (a theme)",
+   "verb": {
+    "reads": [],
+    "unread": "logo: → null ONLY — s230-D2 names the default lockup per theme but theme: is not a node kind; carried as a declared null with the theme on the edge. Not a reading.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "logo"
+   ],
+   "to": [],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_logo_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 2
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Wikidata qualifier (the theme)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "note": "declared-null only: s230-D2 names the default lockup per theme, but theme is not a node kind (s308-D24 item 9c owes one)",
+   "$measured": {
+    "edges": 2,
+    "nulls": 2,
+    "from": {
+     "logo": 2
+    },
+    "to": {},
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "definedIn",
+   "plain": "is defined in",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → the guideline .md that defines it — a file join the slice uses to name `file` on an obeys row",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "rule"
+   ],
+   "to": [
+    "artefact"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s274-D10: a declared null is carried, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "one `file` per row of knowledge/guidelines/_rules-index.json"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+     "note": null,
+     "store": [
+      "knowledge/_rule_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 474
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "RDFS rdfs:isDefinedBy"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelinerules",
+   "$measured": {
+    "edges": 474,
+    "nulls": 0,
+    "from": {
+     "rule": 474
+    },
+    "to": {
+     "artefact": 474
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "delegatesTo",
+   "plain": "hands its trigger off to",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "triggeredBy",
+     "stored": "both",
+     "measured": "a candidate pairing read from the two definitions (lane O), not ruled"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "authored in the meta (s268-D5)",
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.delegatesTo"
+     ],
+     "authoredFlag": {
+      "None": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "ARIA aria-controls",
+     "ARIA aria-haspopup"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 1,
+    "nulls": 0,
+    "from": {
+     "component": 1
+    },
+    "to": {
+     "component": 1
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "drivesConsumer",
+   "plain": "drives at runtime",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "authored in the meta from its $contract (s268-D5, s263-D4)",
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.drivesConsumer"
+     ],
+     "authoredFlag": {
+      "None": 5
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "ARIA aria-controls"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 5,
+    "nulls": 0,
+    "from": {
+     "component": 5
+    },
+    "to": {
+     "component": 5
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "enacts",
+   "plain": "enacts",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 6
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten enables",
+     "Kruchten comprises"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 6,
+    "nulls": 0,
+    "from": {
+     "ruling": 6
+    },
+    "to": {
+     "ruling": 6
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "enClause",
+   "plain": "maps to the EN 301 549 clause",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → the EN 301 549 clause — provenance of the criterion",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "sc"
+   ],
+   "to": [
+    "standard"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "one standard node, one clause field per rule"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from sources.en301549_clause",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 55
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core conformsTo",
+     "Dublin Core source"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 55,
+    "nulls": 0,
+    "from": {
+     "sc": 55
+    },
+    "to": {
+     "standard": 55
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "enforcedBy",
+   "plain": "is enforced by",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): rule → the gate script that enforces it — provenance of enforcement, not a reading for the designer",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "rule"
+   ],
+   "to": [
+    "artefact"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s274-D10: a declared null is carried, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+     "note": null,
+     "store": [
+      "knowledge/_rule_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 64
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SHACL shape / W3C ACT rule that checks it"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelinerules",
+   "$measured": {
+    "edges": 64,
+    "nulls": 0,
+    "from": {
+     "rule": 64
+    },
+    "to": {
+     "artefact": 64
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "evidencedBy",
+   "plain": "is evidenced by",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling",
+    "ux"
+   ],
+   "to": [
+    "evidence"
+   ],
+   "pairs": [
+    [
+     "ruling",
+     "evidence"
+    ],
+    [
+     "ux",
+     "evidence"
+    ]
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s281-D1: a principle whose evidence field carries no URL keeps a declared null with its prose"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass A (rulings) · knowledge/gen_kg_principles.py (principles, s281-D1)",
+     "note": null,
+     "store": [
+      "knowledge/_rulings.json evidence[] (pass A)",
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 2681
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "PROV prov:hadPrimarySource"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance · uxprinciples",
+   "$measured": {
+    "edges": 2681,
+    "nulls": 11,
+    "from": {
+     "ruling": 2536,
+     "ux": 145
+    },
+    "to": {
+     "evidence": 2670
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "explainedBy",
+   "plain": "is explained by",
+   "verb": {
+    "reads": [],
+    "unread": "polarity → ruling — s238-D6 typed link: the ruling explains the trade-off. Not named by the twelve. Not forced.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "polarity"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS supports"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 1,
+    "nulls": 0,
+    "from": {
+     "polarity": 1
+    },
+    "to": {
+     "ruling": 1
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "extends",
+   "plain": "extends",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 16
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten enables",
+     "Kruchten comprises",
+     "IBIS replaces"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 16,
+    "nulls": 0,
+    "from": {
+     "ruling": 16
+    },
+    "to": {
+     "ruling": 16
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "family",
+   "plain": "is in the same family as",
+   "verb": {
+    "reads": [
+     {
+      "verb": "is-a",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 9,
+     "twoCycles": 0,
+     "repeatedPairs": 0,
+     "readAs": "points both ways (lane O reading, not declared)"
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from $family prose (null) with resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.family"
+     ],
+     "authoredFlag": {
+      "None": 12
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS related"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 12,
+    "nulls": 2,
+    "from": {
+     "component": 12
+    },
+    "to": {
+     "component": 10
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "flaggedBy",
+   "plain": "is flagged by",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): snippet → rule — an advisory-signal join the slice walks to reach the `derived` obeys class; the designer reads the resulting obeys row's verb, never this hop",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "snippet"
+   ],
+   "to": [
+    "rule"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s274-D10: a declared null is carried, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+     "note": null,
+     "store": [
+      "knowledge/_rule_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 50
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelinerules",
+   "$measured": {
+    "edges": 50,
+    "nulls": 0,
+    "from": {
+     "snippet": 50
+    },
+    "to": {
+     "rule": 50
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "governedBy",
+   "plain": "is governed by the ruling",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "governs",
+     "stored": "both",
+     "measured": "18 of 28 governedBy lines mirrored by a governs line"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/gen_kg_edges.py from the s135-D4 resolutions file's ATTACH verdicts (Dave's)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.governedBy"
+     ],
+     "authoredFlag": {
+      "None": 28
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "governs walked back (Apollo)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "note": "s308-D17: governedBy is kept for rulings only; the 12 logo→rule lines were moved to obeys at #308 lane E",
+   "$measured": {
+    "edges": 28,
+    "nulls": 0,
+    "from": {
+     "component": 28
+    },
+    "to": {
+     "ruling": 28
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "governs",
+   "plain": "governs",
+   "verb": {
+    "reads": [
+     {
+      "verb": "must",
+      "force": "must"
+     },
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json",
+    "split": "by the target's kind — what the ruling's governs[] entry resolved to"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "artefact",
+    "component",
+    "snippet"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target; it never writes a null"
+   },
+   "opposite": {
+    "today": {
+     "type": "governedBy",
+     "stored": "both",
+     "measured": "the component branch only; see governedBy's row"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 14
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass A from each ruling's governs[] (gov_target(): a meta path → component, a snippet path → its component or snippet, else artefact)",
+     "note": null,
+     "store": [
+      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+     ],
+     "authoredFlag": {
+      "True": 2013
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten traces to"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "$measured": {
+    "edges": 2013,
+    "nulls": 0,
+    "from": {
+     "ruling": 2013
+    },
+    "to": {
+     "artefact": 1676,
+     "component": 337
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "groupsWith",
+   "plain": "shares a group with",
+   "verb": {
+    "reads": [
+     {
+      "verb": "sits-with",
+      "force": "should"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 2,
+     "twoCycles": 0,
+     "repeatedPairs": 0,
+     "readAs": "points both ways (lane O reading, not declared)"
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "authored in the meta (s245-D7)",
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.groupsWith"
+     ],
+     "authoredFlag": {
+      "None": 8
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS related"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 8,
+    "nulls": 4,
+    "from": {
+     "component": 8
+    },
+    "to": {
+     "component": 4
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "hasDataShape",
+   "plain": "takes the data shape",
+   "verb": {
+    "reads": [
+     {
+      "verb": "provides-answers",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "shape"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_roles_desk.py from the meta `shape` field (s270-D2)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.hasDataShape"
+     ],
+     "authoredFlag": {
+      "None": 26
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 26,
+    "nulls": 0,
+    "from": {
+     "component": 26
+    },
+    "to": {
+     "shape": 26
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "hasPart",
+   "plain": "has the part",
+   "verb": {
+    "reads": [
+     {
+      "verb": "contains",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "containedBy",
+     "stored": "both",
+     "measured": "see containedBy's row"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 4,
+     "twoCycles": 0,
+     "repeatedPairs": 4
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from subComponents (null + part name) with resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.hasPart"
+     ],
+     "authoredFlag": {
+      "None": 22
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:hasSubcomponent",
+     "Dublin Core hasPart"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 22,
+    "nulls": 8,
+    "from": {
+     "component": 22
+    },
+    "to": {
+     "component": 14
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "hasParty",
+   "plain": "has the party",
+   "verb": {
+    "reads": [],
+    "unread": "polarity → ux: | ruling — the two sides of a polarity (s275-D2). The audit's twelve name no polarity verb; `rests-on` reads the tension between the sides (tensionWith), and the sides themselves are the polarity's structure — reading them as rests-on would run the edge backwards. Not forced.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "polarity"
+   ],
+   "to": [
+    "ux",
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 68
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "W3C n-ary relations, pattern 1"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 68,
+    "nulls": 15,
+    "from": {
+     "polarity": 68
+    },
+    "to": {
+     "ux": 51,
+     "ruling": 2
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "inFamily",
+   "plain": "is in the research family",
+   "verb": {
+    "reads": [],
+    "missing": "named by neither the twelve verbs nor `unread` in knowledge/_kg_verbs.json (the map's own $measured.$drift names this gap)",
+    "source": null
+   },
+   "from": [
+    "ux"
+   ],
+   "to": [
+    "family"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "s281-D1: the principle's one `family` attribute became this edge"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (s281-D1)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 145
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS broader",
+     "SKOS inScheme"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 145,
+    "nulls": 0,
+    "from": {
+     "ux": 145
+    },
+    "to": {
+     "family": 145
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "inGroup",
+   "plain": "is in the icon group",
+   "verb": {
+    "reads": [],
+    "unread": "icon: → iconGroup: — the icon library's own grouping (s277-D4); structure of the assets family, not a reading for a design.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "icon"
+   ],
+   "to": [
+    "iconGroup"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "gen_kg_icons.py: the manifest key the record sits under — one per icon"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_icon_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 666
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS inScheme"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "$measured": {
+    "edges": 666,
+    "nulls": 0,
+    "from": {
+     "icon": 666
+    },
+    "to": {
+     "iconGroup": 666
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "mentions",
+   "plain": "mentions",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): ruling → ruling by regex over `says` — an UNRATIFIED proposal drawn dashed (s267-D3); a proposal is not a decision, so it is not `decided`",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target; it never writes a null"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 2,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass A — DERIVED by regex over `says`, unratified (authored: false)",
+     "note": null,
+     "store": [
+      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+     ],
+     "authoredFlag": {
+      "False": 243
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core references"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "$measured": {
+    "edges": 243,
+    "nulls": 0,
+    "from": {
+     "ruling": 243
+    },
+    "to": {
+     "ruling": 243
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "mustNotNeighbour",
+   "plain": "must not sit next to",
+   "verb": {
+    "reads": [
+     {
+      "verb": "must-not-sit-with",
+      "force": "must"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 7,
+     "twoCycles": 1,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.mustNotNeighbour"
+     ],
+     "authoredFlag": {
+      "None": 70
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten forbids",
+     "SHACL sh:disjoint"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 70,
+    "nulls": 51,
+    "from": {
+     "component": 70
+    },
+    "to": {
+     "component": 19
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "narrows",
+   "plain": "narrows",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 2
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten overrides",
+     "Kruchten subsumes"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 2,
+    "nulls": 0,
+    "from": {
+     "ruling": 2
+    },
+    "to": {
+     "ruling": 2
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "obeys",
+   "plain": "obeys the rule / rests on the principle",
+   "verb": {
+    "reads": [
+     {
+      "verb": "must",
+      "force": "must"
+     },
+     {
+      "verb": "should",
+      "force": "should"
+     },
+     {
+      "verb": "rests-on",
+      "force": "should"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json",
+    "split": "by the target's kind, and for rule: targets the rule's own `destiny` (knowledge/guidelines/_rules-index.json)"
+   },
+   "from": [
+    "component",
+    "logo"
+   ],
+   "to": [
+    "rule",
+    "ux"
+   ],
+   "pairs": [
+    [
+     "component",
+     "rule"
+    ],
+    [
+     "component",
+     "ux"
+    ],
+    [
+     "logo",
+     "rule"
+    ]
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "$why",
+     "carried": "180 of 180",
+     "required": true,
+     "floor": 40,
+     "basis": "meta.schema.json definitions.obeysEdge: $why required, minLength 40, for the metas' obeys; the 12 logo lines carry `why` in _logo_nodes.json, which no schema checks"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "authored in the meta (s276-D3); the 12 logo lines hand-authored in _logo_nodes.json under s282-D5 and moved here from governedBy by s308-D17 (#308 lane E)",
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.obeys",
+      "knowledge/_logo_nodes.json edges (type obeys, authored: \"hand\")"
+     ],
+     "authoredFlag": {
+      "None": 168,
+      "True": 12
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core conformsTo"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base (metas) · assets (logos)",
+   "$measured": {
+    "edges": 180,
+    "nulls": 0,
+    "from": {
+     "component": 168,
+     "logo": 12
+    },
+    "to": {
+     "rule": 166,
+     "ux": 14
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "partial",
+   "plain": "is a partial of",
+   "verb": {
+    "reads": [
+     {
+      "verb": "is-a",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from $partials prose (null) with resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.partial"
+     ],
+     "authoredFlag": {
+      "None": 6
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:inheritsFrom",
+     "Dublin Core isVersionOf"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 6,
+    "nulls": 1,
+    "from": {
+     "component": 6
+    },
+    "to": {
+     "component": 5
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "providesRole",
+   "plain": "provides the role",
+   "verb": {
+    "reads": [
+     {
+      "verb": "provides-answers",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "role"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_roles_desk.py from the meta `provides` field (s270-D2)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.providesRole"
+     ],
+     "authoredFlag": {
+      "None": 108
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Backstage providesApi"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 108,
+    "nulls": 0,
+    "from": {
+     "component": 108
+    },
+    "to": {
+     "role": 108
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "refines",
+   "plain": "refines",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 4
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten overrides",
+     "Kruchten subsumes"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 4,
+    "nulls": 0,
+    "from": {
+     "ruling": 4
+    },
+    "to": {
+     "ruling": 4
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "renderedBy",
+   "plain": "is rendered by the snippet",
+   "verb": {
+    "reads": [
+     {
+      "verb": "renders-as",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "snippet"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "_kg_verbs.json renders-as: 'The component's one reference rendering'"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from knowledge/snippets/<Stem>.reference.html if it exists",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.renderedBy"
+     ],
+     "authoredFlag": {
+      "None": 137
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Canonical ds:implementsBlock (walked back)",
+     "UI ontology realizes"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 137,
+    "nulls": 0,
+    "from": {
+     "component": 137
+    },
+    "to": {
+     "snippet": 137
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "resolvedBy",
+   "plain": "is resolved by",
+   "verb": {
+    "reads": [],
+    "unread": "polarity → ruling — s238-D6 typed link: the ruling resolves the trade-off. Close to `decided` in meaning, but the audit's sentence names neither it nor any polarity→ruling type; reading it in is a judgement Dave has not seen, so it waits with its three siblings rather than splitting the four.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "polarity"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 7
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS responds-to"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 7,
+    "nulls": 0,
+    "from": {
+     "polarity": 7
+    },
+    "to": {
+     "ruling": 7
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "restsOn",
+   "plain": "rests on the principle",
+   "verb": {
+    "reads": [
+     {
+      "verb": "rests-on",
+      "force": "should"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "rule"
+   ],
+   "to": [
+    "ux"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s281-D6: a rule that rests on convention alone carries a declared null with its note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "why",
+     "carried": "75 of 75",
+     "required": false,
+     "floor": null,
+     "basis": "carried on every line, required by no schema"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "hand",
+     "script": null,
+     "note": "hand-authored from Dave's export of the 59-card page (s281-D3 authorised, s281-D6 landed, #281 lane RL); stored in _rule_nodes.json",
+     "store": [
+      "knowledge/_rule_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 75
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS supports"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelinerules",
+   "$measured": {
+    "edges": 75,
+    "nulls": 8,
+    "from": {
+     "rule": 75
+    },
+    "to": {
+     "ux": 67
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "retires",
+   "plain": "retires",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 1
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS replaces",
+     "Dublin Core replaces"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 1,
+    "nulls": 0,
+    "from": {
+     "ruling": 1
+    },
+    "to": {
+     "ruling": 1
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "reuses",
+   "plain": "reuses the implementation of",
+   "verb": {
+    "reads": [
+     {
+      "verb": "is-a",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from $reuses prose, name-matched",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.reuses"
+     ],
+     "authoredFlag": {
+      "None": 2
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core requires"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 2,
+    "nulls": 0,
+    "from": {
+     "component": 2
+    },
+    "to": {
+     "component": 2
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "ruledBy",
+   "plain": "is ruled by",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "icon"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": "governs",
+     "stored": "both",
+     "measured": "a candidate: lane O reads it as governs walked back (icon → ruling), not ruled"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_icon_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 8
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "governs walked back (Apollo)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "$measured": {
+    "edges": 8,
+    "nulls": 0,
+    "from": {
+     "icon": 8
+    },
+    "to": {
+     "ruling": 8
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "ruledIn",
+   "plain": "was ruled in the session",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "session"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target; it never writes a null"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "one `ruled` field per ruling, one leading #N (SESSION_RX)"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass A from the ruling's `ruled` field (#N)",
+     "note": null,
+     "store": [
+      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+     ],
+     "authoredFlag": {
+      "True": 199
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "PROV prov:wasGeneratedBy"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "$measured": {
+    "edges": 199,
+    "nulls": 0,
+    "from": {
+     "ruling": 199
+    },
+    "to": {
+     "session": 199
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "setIn",
+   "plain": "is set in the type style",
+   "verb": {
+    "reads": [],
+    "unread": "component → typestyle: (a type composite canon/type.css defines) — landed #305 B2 under s305-D26 (step 5 of s269-D1), from every `.t-cm-*`/`.t-ed-*` class the meta names; `refs` counts the naming. Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "typestyle"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose ends are both known"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+     "note": null,
+     "store": [
+      "knowledge/_source_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 154
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "DTCG typography composite"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "sources",
+   "$measured": {
+    "edges": 154,
+    "nulls": 0,
+    "from": {
+     "component": 154
+    },
+    "to": {
+     "typestyle": 154
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "supersedes",
+   "plain": "supersedes",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 3
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core replaces",
+     "ADR superseded"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 3,
+    "nulls": 0,
+    "from": {
+     "ruling": 3
+    },
+    "to": {
+     "ruling": 3
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "supersedesClause",
+   "plain": "supersedes a clause of",
+   "verb": {
+    "reads": [
+     {
+      "verb": "decided",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ruling"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the reader keeps only edges whose s and t are both rulings"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": "evidence",
+     "carried": "in storage, every edge",
+     "required": false,
+     "floor": null,
+     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "ratified",
+     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
+     "note": null,
+     "store": [
+      "knowledge/_ruling_edges.json"
+     ],
+     "authoredFlag": {
+      "True": 9
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core replaces",
+     "ADR superseded"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "governance",
+   "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
+   "$measured": {
+    "edges": 9,
+    "nulls": 0,
+    "from": {
+     "ruling": 9
+    },
+    "to": {
+     "ruling": 9
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "tensionWith",
+   "plain": "is in tension with",
+   "verb": {
+    "reads": [
+     {
+      "verb": "rests-on",
+      "force": "should"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "ux"
+   ],
+   "to": [
+    "ux"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0,
+     "readAs": "points both ways (lane O reading, not declared)"
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 22
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS related",
+     "QOC trade-off"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 22,
+    "nulls": 0,
+    "from": {
+     "ux": 22
+    },
+    "to": {
+     "ux": 22
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "touches",
+   "plain": "touches",
+   "verb": {
+    "reads": [],
+    "unread": "polarity → ruling — one of s238-D6's four typed links (s275-D2). Not named by the audit's twelve; a ruling that TOUCHES a polarity has not decided it, so `decided` would overclaim. Not forced.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "polarity"
+   ],
+   "to": [
+    "ruling"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s275-D2: an unresolvable target is ref:null with a note"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+     "note": null,
+     "store": [
+      "knowledge/_ux_principle_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 9
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "IBIS responds-to"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "uxprinciples",
+   "$measured": {
+    "edges": 9,
+    "nulls": 0,
+    "from": {
+     "polarity": 9
+    },
+    "to": {
+     "ruling": 9
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "triggeredBy",
+   "plain": "is triggered by",
+   "verb": {
+    "reads": [],
+    "unread": "component → component, 22 of 25 declared null — 'prose, awaiting Dave's-eye' in the schema; the audit's sentence names it in NEITHER list (not a contains/lives-in type, not machinery). A trigger relation is not containment and not kinship; no verb of the twelve honestly covers it.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "delegatesTo",
+     "stored": "both",
+     "measured": "a candidate pairing read from the two definitions (lane O), not ruled"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.triggeredBy"
+     ],
+     "authoredFlag": {
+      "None": 25
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "delegatesTo read backwards (Apollo)"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 25,
+    "nulls": 22,
+    "from": {
+     "component": 25
+    },
+    "to": {
+     "component": 3
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "under",
+   "plain": "sits under",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → guideline → principle — WCAG's own hierarchy, structure of the standard",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "sc",
+    "guideline"
+   ],
+   "to": [
+    "guideline",
+    "principle"
+   ],
+   "pairs": [
+    [
+     "sc",
+     "guideline"
+    ],
+    [
+     "guideline",
+     "principle"
+    ]
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 42
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "an sc sits under one guideline and a guideline under one principle — both derived from the sc number"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from the sc number (WCAG hierarchy)",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 110
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SKOS broader"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 110,
+    "nulls": 0,
+    "from": {
+     "sc": 55,
+     "guideline": 55
+    },
+    "to": {
+     "guideline": 55,
+     "principle": 55
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "usedInContext",
+   "plain": "is used in the context",
+   "verb": {
+    "reads": [
+     {
+      "verb": "lives-in",
+      "force": "is"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "context"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_edges.py from relationships.livesInside targets that are not components",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.usedInContext"
+     ],
+     "authoredFlag": {
+      "None": 367
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "ARIA required context"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 367,
+    "nulls": 0,
+    "from": {
+     "component": 367
+    },
+    "to": {
+     "context": 367
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "usesIcon",
+   "plain": "uses the icon",
+   "verb": {
+    "reads": [],
+    "unread": "component → icon: — landed AFTER the audit's list (assets family, s277-D4..D7). Read by the slice's `assets` field and ASK Q12 (so it HAS a consumer) but no verb of the twelve names it; a thirteenth verb ('uses') is Dave's to ratify, not this lane's to pad.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "icon"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_icon_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 371
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core requires"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "$measured": {
+    "edges": 371,
+    "nulls": 0,
+    "from": {
+     "component": 371
+    },
+    "to": {
+     "icon": 371
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "usesLogo",
+   "plain": "uses the logo",
+   "verb": {
+    "reads": [],
+    "unread": "component → logo: — as usesIcon: read by `assets` / ASK Q12, no verb of the twelve; not padded.",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "logo"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+     "note": null,
+     "store": [
+      "knowledge/_logo_nodes.json"
+     ],
+     "authoredFlag": {
+      "True": 19
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Dublin Core requires"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "assets",
+   "$measured": {
+    "edges": 19,
+    "nulls": 1,
+    "from": {
+     "component": 19
+    },
+    "to": {
+     "logo": 18
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "verifiedBy",
+   "plain": "is verified by the script",
+   "verb": {
+    "reads": [],
+    "unread": "machinery the reader uses and the agent never names (the audit's own sentence, A2 §4): sc → verification script — the same, for scripts",
+    "source": "knowledge/_kg_verbs.json unread"
+   },
+   "from": [
+    "sc"
+   ],
+   "to": [
+    "artefact"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "the builder only links a resolved target"
+   },
+   "opposite": {
+    "today": {
+     "type": null,
+     "stored": "none",
+     "measured": "no opposite is declared or stored today"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/_build_kg_explorer.py pass B from compliance/graph-index.json verification.by_sc",
+     "note": null,
+     "store": [
+      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+     ],
+     "authoredFlag": {
+      "True": 6
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "SHACL shape / W3C ACT rule that checks it"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "guidelines",
+   "$measured": {
+    "edges": 6,
+    "nulls": 0,
+    "from": {
+     "sc": 6
+    },
+    "to": {
+     "artefact": 6
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  },
+  {
+   "word": "yieldsTo",
+   "plain": "stands down for",
+   "verb": {
+    "reads": [
+     {
+      "verb": "yields-to",
+      "force": "should"
+     }
+    ],
+    "source": "knowledge/_kg_verbs.json"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "component"
+   ],
+   "nulls": {
+    "allowed": true,
+    "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
+   },
+   "opposite": {
+    "today": {
+     "type": "beats",
+     "stored": "one",
+     "measured": "meta.schema.json / _kg_verbs.json: the inverse is read by traversal, never stored"
+    },
+    "declared": null,
+    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+   },
+   "shape": {
+    "today": {
+     "selfLoops": 0,
+     "twoCycles": 7,
+     "repeatedPairs": 0
+    },
+    "declared": null,
+    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "reason": {
+    "today": {
+     "field": null,
+     "carried": "0",
+     "required": false,
+     "floor": null,
+     "basis": "no reason field today"
+    },
+    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
+   },
+   "maker": {
+    "today": {
+     "made": "generated",
+     "script": "knowledge/gen_kg_roles_desk.py from the prose half of the meta `when` (s270-D2)",
+     "note": null,
+     "store": [
+      "knowledge/components/<slug>.meta.json edges.yieldsTo"
+     ],
+     "authoredFlag": {
+      "None": 51
+     }
+    },
+    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+   },
+   "outside": {
+    "candidates": [
+     "Kruchten 'is an alternative to'"
+    ],
+    "grade": null,
+    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+   },
+   "family": "base",
+   "$measured": {
+    "edges": 51,
+    "nulls": 2,
+    "from": {
+     "component": 51
+    },
+    "to": {
+     "component": 49
+    },
+    "at": "2026-09-29T08:45Z"
+   }
+  }
+ ],
+ "$absent": {
+  "overrides": {
+   "namedIn": [
+    "_kg_explorer.template.html FAMILY"
+   ],
+   "why": "a key in the template's FAMILY map (governance) and a mention-verb stem in the builder; no edge of this type exists in knowledge/_ruling_edges.json or anywhere else in the graph"
+  }
+ }
+}

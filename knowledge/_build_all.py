@@ -726,6 +726,17 @@ STEPS = [
      "canon/gen_canon_components.py", ["--selftest"]),
     ("itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)",
      "gen_itinerary_status.py", ["--check"]),
+    # #308 lane E — the edge register (s308-D16) and its two checks (s308-D17), APPENDED LAST, no existing
+    # step number moves; route rows in the SAME edit. The ends check is ADVISORY because Dave's item 2 says
+    # "advisory first". The coverage check is BLOCKING: it was born with zero backlog (65 of 65 types), it is
+    # what keeps "every edge type defined once" true, and its remedy is always one row. `--coverage` is not a
+    # --check/--selftest argv, so _build_survey.py lists it as not-asked; the build and CI run it.
+    ("KG edge register — every edge's two ends against its row in knowledge/_edge_register.json (ADVISORY, s308-D17, built #308)",
+     "_validate_edges.py", ["--check"]),
+    ('KG edge register coverage — every graph edge type has exactly one row, every row a type (BLOCKING, s308-D16, built #308)',
+     "_validate_edges.py", ["--coverage"]),
+    ('KG edge register selftest — control on the real graph + one planted red per refusal, 13 bites (s308-D16/D17, built #308)',
+     "_validate_edges.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1162,6 +1173,15 @@ ROUTE_ROWS = [
     ("wrap commit door selftest — unchanged paths refused, T3 prefix pinned, locks moved never rm'd, temp repo (s306-D4 phase 1, built #306)", ABORT, None),
     ("canon components ds-039 harvest-guard selftest — four bites on temp snippets, canon.css never opened (W-307q7, built #307)", ABORT, None),
     ("itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)", ADVISORY, None),
+    # ── #308 lane E · the edge register's three rows, in the SAME edit as their STEPS entries. The label
+    # strings are ROUTING JOIN KEYS duplicated verbatim in STEPS — never edit one alone.
+    ("KG edge register — every edge's two ends against its row in knowledge/_edge_register.json (ADVISORY, s308-D17, built #308)", ADVISORY, None),
+    ('KG edge register coverage — every graph edge type has exactly one row, every row a type (BLOCKING, s308-D16, built #308)', GATE,
+     "\n❌ edge register coverage failed (exit {code}) — an edge type is in the knowledge graph with no row in "
+     "knowledge/_edge_register.json, a row names a type the graph does not carry, a type the meta schema / "
+     "_kg_verbs.json / the explorer's FAMILY map names is neither a row nor in `$absent`, or a row is malformed. "
+     "Every edge type is defined ONCE there (s308-D16): add or fix the row. Run: python3 knowledge/_validate_edges.py --coverage"),
+    ('KG edge register selftest — control on the real graph + one planted red per refusal, 13 bites (s308-D16/D17, built #308)', ABORT, None),
 ]
 
 
