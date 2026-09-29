@@ -741,6 +741,16 @@ STEPS = [
      "_validate_edges.py", ["--coverage"]),
     ('KG edge register selftest — control on the real graph + one planted red per refusal, 13 bites (s308-D16/D17, built #308)',
      "_validate_edges.py", ["--selftest"]),
+    # #308 lane D round 2 — s308-D33 (Dave 2026-09-29 17:01, by click: "Wire the page check and the matrix
+    # selftest into the build, blocking, after the fixes"). The foundations generator had its own --check
+    # since #217 and nothing ran it: the #288 colour-reader fault and the #282 logo scrap sat on the
+    # committed pages for weeks (lane D, notes/_subreports/2026-09-29-308-D-foundations-drift.md).
+    # APPENDED LAST, route row in the SAME edit. ~60 s. ⛔ HELD, NOT WIRED: `gen_bento_matrix_217.py
+    # --selftest` — two bites (R6e/R6d) are red on the #261 nav family counting as a dashboard tile group,
+    # a question between s245-D7 and the #261 family edges that is Dave's (W2 #305); wiring it blocking now
+    # would turn every build red. It joins this list when he answers.
+    ("foundations pages sync — the eight showroom/_foundations/ pages equal their generation (BLOCKING, s308-D33, wired #308)",
+     "_render/gen_foundations_217.py", ["--check"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1186,6 +1196,12 @@ ROUTE_ROWS = [
      "_kg_verbs.json / the explorer's FAMILY map names is neither a row nor in `$absent`, or a row is malformed. "
      "Every edge type is defined ONCE there (s308-D16): add or fix the row. Run: python3 knowledge/_validate_edges.py --coverage"),
     ('KG edge register selftest — control on the real graph + one planted red per refusal, 13 bites (s308-D16/D17, built #308)', ABORT, None),
+    # #308 lane D round 2 — s308-D33, the SAME edit as its STEPS entry (join key duplicated verbatim).
+    ("foundations pages sync — the eight showroom/_foundations/ pages equal their generation (BLOCKING, s308-D33, wired #308)", GATE,
+     "\n❌ foundations pages out of sync (exit {code}) — a page under showroom/_foundations/ differs from "
+     "what knowledge/_render/gen_foundations_217.py generates from the stores, the logo assets and canon.css. "
+     "Never hand-edit those pages: if the generator is right, run python3 knowledge/_render/gen_foundations_217.py "
+     "and commit the pages; if the page is right, fix the generator (s308-D31/D32)."),
 ]
 
 
