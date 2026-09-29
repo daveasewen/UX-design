@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 137 components · 1047 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
+**Totals:** 138 components · 1047 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,34 +10,34 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 109 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `text/default` | 108 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
 | `background/default` | 74 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
-| `tertiary/background/default` | 51 | Account card, Action bar, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
+| `tertiary/background/default` | 50 | Account card, Action bar, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
 | `icon/default` | 46 | Accordion, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
-| `border-radius/surface` | 43 | Alert, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
+| `border-radius/surface` | 42 | Alert, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
 | `focus/ring` | 40 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
-| `border/subtle` | 39 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
+| `border/subtle` | 38 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
 | `text/secondary` | 37 | Account card, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
 | `divider/border/section` | 35 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `tertiary/background/hover` | 35 | Accordion, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
 | `border-radius/control` | 34 | Amount input, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `form/border/default` | 30 | Account card, Account selector, App shell — split, Cascader, Combobox, Command palette… |
 | `elevation/functional` | 29 | Account selector, App shell — nav rail, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Card-header-lockup… |
-| `rag/success` | 29 | Account card, Amount input, Bar chart, Button, Card-header-lockup, Confirmation… |
-| `rag/error` | 27 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
+| `rag/success` | 28 | Account card, Amount input, Bar chart, Button, Card-header-lockup, Confirmation… |
+| `rag/error` | 26 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 114 |
+| `text/` | 113 |
 | `background/` | 74 |
-| `tertiary/` | 64 |
-| `border-radius/` | 63 |
-| `rag/` | 51 |
+| `tertiary/` | 63 |
+| `border-radius/` | 62 |
+| `rag/` | 50 |
 | `icon/` | 48 |
 | `form/` | 44 |
-| `border/` | 43 |
+| `border/` | 42 |
 | `divider/` | 41 |
 | `focus/` | 40 |
 | `elevation/` | 29 |

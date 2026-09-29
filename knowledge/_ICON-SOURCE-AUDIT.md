@@ -74,14 +74,14 @@
 | 66 | Icon-button | 5 | 5 | 0 | 0 | — | ✅ verified |
 | 67 | Image-block | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 68 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 69 | Kpi-tile | 9 | 9 | 0 | 0 | yes | ✅ verified |
-| 70 | Layout-utilities | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 71 | Legend | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 72 | Limits-meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 73 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 74 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 75 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 76 | Meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 69 | Layout-utilities | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 70 | Legend | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 71 | Limits-meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 72 | Links | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 73 | List-items | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 74 | Loading-indicator | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 75 | Meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
+| 76 | Metric | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 77 | Modal-lightbox | 3 | 3 | 0 | 0 | yes | ✅ verified |
 | 78 | Modals | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 79 | Multi-select | 13 | 5 | 8 | 0 | yes | ✅ verified · 8 bespoke |

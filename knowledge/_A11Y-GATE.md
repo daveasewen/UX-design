@@ -629,10 +629,6 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 
-## Kpi-tile
-- ⚪ note — `button.kpi-retry.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.kpi-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-
 ## Legend
 - ⚪ note — `button#mode.t-cm-chart-label.toggle` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 
@@ -663,6 +659,10 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - ⚪ note — `button.is-pressed.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button.row` — UNMEASURED: one axis declared (autox76), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+
+## Metric
+- ⚪ note — `button.metric-retry.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.metric-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Modal-lightbox
 - ⚪ note — `button#open` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
