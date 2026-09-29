@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edges, and how others define them · v2</title>
+<meta name="description" content="Research for Apollo session 308: design-system ontologies and adjacent vocabularies, read against Apollo's 65 edge types, with a recommendation to rule on. Version 2 adds the catalogue of published ontologies, led by Canonical’s.">
+<style>
+:root{--accent:#DA1A00;--ink:#000;--paper:#fff;--grey-1:#F3F3F3;--grey-2:#EDEDED;--grey-3:#D7D8D6;--grey-5:#9B9B9B;--grey-6:#767676;--grey-7:#545454;--grey-8:#333;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1120px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#F3F3F3;--paper:#111;--grey-1:#1C1C1C;--grey-2:#2A2A2A;--grey-3:#3A3A3A;--grey-5:#8A8A8A;--grey-6:#A0A0A0;--grey-7:#B8B8B8;--grey-8:#D0D0D0;--accent:#F6604C}}
+:root[data-theme="dark"]{--ink:#F3F3F3;--paper:#111;--grey-1:#1C1C1C;--grey-2:#2A2A2A;--grey-3:#3A3A3A;--grey-5:#8A8A8A;--grey-6:#A0A0A0;--grey-7:#B8B8B8;--grey-8:#D0D0D0;--accent:#F6604C}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+a{color:inherit;text-decoration-color:var(--grey-3);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
+nav.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--grey-2)}
+nav.top .wrap{display:flex;align-items:center;gap:var(--s3);height:54px;overflow-x:auto;white-space:nowrap}
+nav.top .ctx{font-size:13px;color:var(--grey-6);letter-spacing:.04em;flex:none}
+nav.top .links{display:flex;gap:var(--s3);margin-left:auto}
+nav.top .links a{font-size:13px;color:var(--grey-6);text-decoration:none;letter-spacing:.04em}
+nav.top .links a:hover{color:var(--ink)}
+#bar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);transform-origin:left;transform:scaleX(0);z-index:6}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--grey-6)}.label.mute::before{background:var(--grey-3)}
+header{padding:72px 0 56px;border-bottom:1px solid var(--grey-2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:56px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.35;margin:var(--s3) 0 0;max-width:26em}
+h2{font-size:34px;font-weight:300;line-height:1.18;letter-spacing:-.01em;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+p{margin:0 0 var(--s2)}
+.meta{font-size:13px;line-height:1.7;color:var(--grey-7)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--grey-2)}
+section.grey{background:var(--grey-1)}
+.prop{display:grid;grid-template-columns:3fr 1px 4fr;gap:var(--s5);align-items:start}
+.prop .rule{background:var(--grey-3);min-height:140px;width:1px}
+.line{font-size:26px;font-weight:300;line-height:1.4;margin:0}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s5);align-items:start}
+.idx{font-size:84px;font-weight:100;line-height:1;color:var(--grey-5);margin:0 0 var(--s2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grey-2);border-top:1px solid var(--grey-2);border-bottom:1px solid var(--grey-2);margin-top:var(--s5)}
+.stats div{background:var(--paper);padding:var(--s3) var(--s2) var(--s3) 0}
+.stats .n{font-size:43px;font-weight:200;line-height:1.05}
+.stats .c{font-size:13px;color:var(--grey-7);line-height:1.5;margin-top:6px;padding-right:var(--s2)}
+.finds{list-style:none;margin:0;padding:0;counter-reset:f}
+.finds li{counter-increment:f;display:grid;grid-template-columns:56px 1fr;gap:var(--s2);padding:var(--s3) 0;border-top:1px solid var(--grey-3)}
+.finds li::before{content:counter(f,decimal-leading-zero);font-size:30px;font-weight:200;line-height:1.1;color:var(--grey-6)}
+.finds h3{margin-bottom:4px}
+.finds p{margin:0 0 6px;color:var(--grey-8)}
+.src{font-size:12px;letter-spacing:.04em;color:var(--grey-6);line-height:1.5}
+.src code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grey-3);border:1px solid var(--grey-3)}
+.cards article{background:var(--grey-1);padding:var(--s3)}
+.cards .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.cards p{font-size:15px;line-height:1.65;margin:0 0 var(--s1)}
+.cards .so{font-size:12px;color:var(--grey-7);line-height:1.5;margin-top:var(--s2)}
+.two>*,.prop>*,.split2>*,header .grid>*{min-width:0}
+figure{margin:0}
+.frame{border:1px solid var(--grey-3);padding:var(--s3);background:var(--paper)}
+svg text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+figcaption{font-size:13px;color:var(--grey-7);margin-top:var(--s2);line-height:1.6}
+.tablewrap{overflow-x:auto;border-top:1px solid var(--ink)}
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:14px;line-height:1.5}
+th{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);text-align:left;padding:10px 12px 10px 0;border-bottom:1px solid var(--grey-3);vertical-align:bottom}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--grey-2);vertical-align:top}
+td.w{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;white-space:nowrap}
+tr.grp td{padding-top:var(--s3);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);border-bottom:1px solid var(--grey-3)}
+.fit{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-6)}
+.recs{list-style:none;margin:0;padding:0;counter-reset:r}
+.recs>li{counter-increment:r;display:grid;grid-template-columns:72px 1fr;gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--grey-3)}
+.recs>li::before{content:counter(r);font-size:57px;font-weight:100;line-height:1;color:var(--grey-5)}
+.recs h3{font-size:22px;font-weight:400;line-height:1.3;margin-bottom:var(--s1)}
+.recs p{margin:0 0 var(--s1);color:var(--grey-8)}
+.recs ul{margin:0 0 var(--s1);padding-left:1.1em;color:var(--grey-8)}
+.recs .why{font-size:13px;color:var(--grey-7)}
+.rule-on{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;margin-top:var(--s2)}
+.rule-on label{font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:flex;gap:6px;align-items:center;cursor:pointer;border:1px solid var(--grey-3);padding:6px 12px}
+.rule-on input[type=radio]{accent-color:var(--accent)}
+.rule-on textarea{flex:1 1 280px;min-height:38px;font:inherit;font-size:14px;border:1px solid var(--grey-3);padding:6px 10px;background:var(--paper);color:var(--ink);resize:vertical}
+.btn{font:inherit;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:0;padding:12px 20px;cursor:pointer}
+.btn:hover{opacity:.85}
+pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;background:var(--grey-1);padding:var(--s3);overflow-x:auto;margin:0 0 var(--s2);border-left:2px solid var(--grey-3)}
+details{border-top:1px solid var(--grey-3);padding:var(--s2) 0}
+summary{cursor:pointer;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-7)}
+.split2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--grey-3);border:1px solid var(--grey-3)}
+.split2>div{background:var(--paper);padding:var(--s3)}
+.split2 .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-6);margin-bottom:var(--s1)}
+.split2 .k.on{color:var(--accent)}
+.split2 ul{margin:0;padding-left:1.1em;font-size:15px}
+ol.sources{margin:0;padding-left:1.4em;font-size:14px;line-height:1.6;columns:2;column-gap:var(--s5)}
+ol.sources li{break-inside:avoid;margin-bottom:10px}
+ol.sources .d{color:var(--grey-6);font-size:12px}
+footer{padding:var(--s5) 0 var(--s6);font-size:13px;color:var(--grey-6)}
+@media (max-width:860px){
+  .wrap{padding:0 16px}
+  h1{font-size:40px}.sub{font-size:20px}h2{font-size:28px}
+  header .grid,.prop,.two,.split2{grid-template-columns:1fr}
+  .prop .rule{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .cards{grid-template-columns:1fr}
+  .recs>li{grid-template-columns:44px 1fr}.recs>li::before{font-size:40px}
+  ol.sources{columns:1}
+  .idx{font-size:57px}
+  nav.top .links{display:none}
+}
+</style></head>
+<body><a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+<div id="bar"></div>
+<nav class="top"><div class="wrap">
+  <span class="ctx">Apollo · session 308 · research lane O</span>
+  <span class="links">
+    <a href="#answer">Answer</a><a href="#catalogue">Catalogue</a><a href="#today">Apollo today</a><a href="#outside">Outside</a><a href="#picture">Picture</a><a href="#map">Word map</a><a href="#rule">To rule on</a><a href="#gate">The check</a><a href="#sources">Sources</a>
+  </span>
+</div></nav>
+
+<header><div class="wrap grid">
+  <div>
+    <p class="label">Research · design-system ontologies · v2</p>
+    <h1>Ubuntu’s makers publish a design-system ontology. Map to it; don’t swap to it</h1>
+    <p class="sub">Canonical, who make Ubuntu, publish an OWL design-system ontology checked by SHACL shapes, and Adobe publishes a relationship schema for Spectrum. Both cover how components are built and styled. Neither covers what Apollo governs. So keep Apollo’s words, map the build half to theirs, and borrow their discipline: every kind of edge defined once, with its ends, its opposite and a check.</p>
+  </div>
+  <div class="meta">
+    Asked by Dave, Tue 29 Sep 2026, 08:43 BST: “I also want some research around design system ontologies, this might help our edge definitions.”<br><br>
+    Apollo measured on the repo at 07:53 UTC the same morning. Outside sources read the same day.<br><br>
+    Read-only. Nothing in the tree was changed.<br><br>v2 answers Dave’s 08:48 challenge (“there are many defined online ubuntu comes to mind too”). v1 is kept unchanged beside it.
+  </div>
+</div></header>
+
+<section id="answer"><div class="wrap">
+  <p class="label">The answer</p>
+  <div class="prop">
+    <p class="line">v1 said nobody had published one. That was wrong: Canonical has, and so has Adobe in part. Neither covers Apollo’s governance, so map to them rather than adopt them. Their lesson is the same as the standards’: define each kind of edge once, and have a check read that definition.</p>
+    <div class="rule"></div>
+    <div>
+      <p>Canonical’s Design System Ontology (<a href="#catalogue">catalogue below</a>) declares, per relation, its ends, its opposite and whether only one is allowed, and it checks its anatomy with SHACL shapes. OWL, SKOS, SHACL, Dublin Core, Backstage and Wikidata all do the same thing. They write down, once per relation, what may sit at each end, what its opposite is, whether it points both ways, whether it may loop or chain, and how many are allowed. Then a check reads those definitions and reports the edges that break them.</p>
+      <p>Apollo already has the hard parts: a closed word list, typed ends by prefix, “null, never guessed”, a reading map with force (must, should, is), and polarity nodes that are a textbook way to put a reason on a relation. What it lacks is the per-type definition. It is spread across four files, and the knowledge-graph gate checks that a target exists, not that it is the right kind.</p>
+      <p>The recommendation is still <a href="#rule">nine items</a>; items 4, 7 and 9 change in v2. The first is one edge register. Most of the others are fields in it, and the last two are small additions to the vocabulary. Its first run would name some seventy real problems in today’s graph (<a href="#today">measured below</a>).</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div><div class="n">65</div><div class="c">edge types live in the graph (11,412 edges, 5,901 nodes)</div></div>
+    <div><div class="n">2</div><div class="c">types whose edges carry a reason: obeys and rests-on</div></div>
+    <div><div class="n">0</div><div class="c">per-type checks on an edge’s ends in the knowledge-graph gate</div></div>
+    <div><div class="n">22</div><div class="c">edges that point at themselves, across four types that should never do so</div></div>
+  </div>
+</div></section>
+
+<section id="catalogue"><div class="wrap">
+  <p class="idx">02</p>
+  <p class="label">New in v2 · the catalogue of published ontologies</p>
+  <h2 style="max-width:24em">You were right: Ubuntu’s makers have published one</h2>
+  <div class="two" style="margin-bottom:var(--s5)">
+    <div>
+      <p class="meta">Your sentence, 08:48 BST: “there are many defined online ubuntu comes to mind too”. v1 said nobody had published a design-system ontology worth adopting. That was wrong. I searched by name, not by topic, and read the files themselves. Everything below was read on 29 September 2026.</p>
+    </div>
+    <div>
+      <h3>Canonical’s Design System Ontology (the “ds:” vocabulary)</h3>
+      <p style="color:var(--grey-8)">Canonical publish Ubuntu. Their design team announced the ontology on Ubuntu Discourse on 22 October 2025 (“Canonical’s new design system: towards a design system ontology”, Adrian Villa). It succeeds the Vanilla CSS framework, which has run since 2015. The ontology is now published under LGPL-3.0 in <a href="https://github.com/canonical/pragma-core/tree/main/packages/semantics">canonical/pragma-core</a>. That repository was created on 28 September 2026 from the now-archived canonical/design-system, anatomy-dsl and design-tokens repositories.</p>
+      <p style="color:var(--grey-8)">The ontology is written in OWL, as Turtle files, and labelled “Design System Ontology”, version 3.0.0, under the namespace ds.canonical.com. Each relation declares its ends (domain and range), and the key ones declare their opposite and whether only one is allowed (“functional”). It has three companions. A token ontology (“dt:”) sits over the design-tokens standard. An anatomy grammar describes a component’s parts, and its SHACL shapes check them. A code-standards vocabulary describes coding rules. The data behind it covers 139 components, 95 subcomponents, 63 patterns and 16 layouts, as counted from the file tree. It is queried with SPARQL, a CLI and an MCP server.</p>
+    </div>
+  </div>
+
+  <div class="split2" style="margin-bottom:var(--s5)">
+    <div><div class="k">Its relations, read from the ontology files</div>
+      <ul>
+        <li>inheritsFrom ↔ specializedBy, declared opposites: “a Data tooltip inherits from Tooltip”</li>
+        <li>variantOf ↔ hasVariant, declared opposites</li>
+        <li>hasSubcomponent ↔ parentComponent, declared opposites. A subcomponent is its own kind, with a flag for “can stand alone”</li>
+        <li>hasModifierFamily; hasModifier ↔ modifierFamily (only one allowed): the variant axes such as importance and criticality</li>
+        <li>hasProperty, tier (one only), implementsBlock (code → block, one only), library</li>
+        <li>hasTokenBinding → a binding record holding the symbol, the path through the anatomy tree and a fallback rank: an edge made into a node</li>
+        <li>Tokens: aliasOf (one only), refersTo, tokenType; coordinate, resolvesBy, otherwise; contains (declared transitive)</li>
+        <li>Anatomy: hasEdge → Edge → hasRelation (with cardinality and slot name) → edgeTarget. Every parent–child link is a node that carries its own count</li>
+        <li>changeLog entries (timestamp, owner, change type, link); decisionLog is a plain text field</li>
+      </ul></div>
+    <div><div class="k on">Read against Apollo</div>
+      <ul>
+        <li>It covers the build half. By my reading, about 11 of Apollo’s 65 edge types have a counterpart: family, partial, hasPart, containedBy, composedOf, activeVariantOf, renderedBy, bindsToken, setIn, acceptsCapability, capturedFrom.</li>
+        <li>It has nothing for the governance half: no rules, rulings, principles, WCAG criteria, obeys, rests-on, must-not-sit-with, yields-to or groups-with. Decisions are a text log, not a graph. No edge carries a reason.</li>
+        <li>What it has that Apollo lacks:
+          <ul>
+            <li>declared opposite pairs</li>
+            <li>“only one” declared per relation</li>
+            <li>SHACL shapes that check the anatomy</li>
+            <li>a subcomponent kind</li>
+            <li>token-to-token aliases</li>
+            <li>themes and modes as coordinates with a fallback</li>
+            <li>a binding that records which part of the anatomy uses a token</li>
+          </ul></li>
+        <li>It is a young, moving target: version 3.0.0, and a repository one day old.</li>
+      </ul></div>
+  </div>
+
+  <h3 style="margin-bottom:var(--s2)">Everything else searched for by name</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Name</th><th>Who · status</th><th>Form</th><th>Its relation words</th><th>Maps onto Apollo</th><th>Has what Apollo lacks</th></tr></thead>
+    <tbody>
+    <tr class="grp"><td colspan="6">Design-system vocabularies with relations</td></tr>
+    <tr><td>Canonical Design System Ontology</td><td>Canonical (Ubuntu) · v3.0.0 · LGPL-3.0 · live</td><td>OWL + SHACL, Turtle</td><td>As above</td><td>~11 build types</td><td>Opposites, “only one”, shapes, subcomponent kind, token alias, modes</td></tr>
+    <tr><td>Spectrum Design Data spec</td><td>Adobe · 1.0.0-draft · live</td><td>JSON Schema 2020-12 + numbered graph rules</td><td>Component/token relationship (component, part, property, options, state → value or $ref); lifecycle introduced, deprecatedIn, replacedBy, plannedRemoval</td><td>bindsToken; hasPart (anatomy parts)</td><td>A token binding scoped to part and state; replaced-by on every entity; two-layer checking (shape, then graph rules)</td></tr>
+    <tr><td>Open UI component data</td><td>W3C community group · research, live</td><td>JSON Schema (draft-07) per design system</td><td>openUIName (one name across systems), anatomy parts, concepts</td><td>hasPart</td><td>A shared cross-system name for each component</td></tr>
+    <tr class="grp"><td colspan="6">Token and design-tool formats</td></tr>
+    <tr><td>Design Tokens format 2025.10</td><td>W3C community group · stable</td><td>JSON</td><td>alias {…}, $ref, $extends, $deprecated</td><td>bindsToken, setIn</td><td>Token alias with a loop ban</td></tr>
+    <tr><td>Figma variables and components</td><td>Figma · live API</td><td>REST API types</td><td>VARIABLE_ALIAS; scopes; collection → modes; component set → variants</td><td>bindsToken</td><td>Modes; a range (“scopes”) set by the designer</td></tr>
+    <tr><td>Tokens Studio</td><td>Tokens Studio · live</td><td>JSON ($themes)</td><td>theme group → theme option → token set (enabled, source, disabled)</td><td>defaultFor (the missing theme)</td><td>Themes as things</td></tr>
+    <tr><td>Style Dictionary v4</td><td>open source · live</td><td>DTCG reader</td><td>references between tokens</td><td>bindsToken</td><td>Nothing new over the design-token format</td></tr>
+    <tr><td>Theo · Salesforce Lightning tokens</td><td>Salesforce · archived Jun 2025</td><td>YAML/JSON</td><td>aliases {!name}, imports</td><td>—</td><td>Token alias only</td></tr>
+    <tr><td>Material tokens (DSP) · Design System Package</td><td>Google / Adobe XD · archived 2023 / idle since 2021</td><td>JSON folder format</td><td>token aliases; component docs; tags</td><td>—</td><td>Nothing Apollo needs</td></tr>
+    <tr><td>GOV.UK Frontend</td><td>GDS · live</td><td>YAML per component</td><td>params (name, type, required, nested params)</td><td>none (props, not edges)</td><td>No relations</td></tr>
+    <tr class="grp"><td colspan="6">UI modelling standards and research</td></tr>
+    <tr><td>W3C Model-Based UI (CAMELEON)</td><td>W3C Working Group Note · 7 Jan 2014</td><td>prose framework</td><td>four levels (task, abstract, concrete, final UI); concretisation, abstraction, translation, reflexion</td><td>renderedBy (concrete → final)</td><td>Levels of abstraction, if Apollo ever needs them</td></tr>
+    <tr><td>UsiXML</td><td>research · wiki archived 2009</td><td>XML language</td><td>not listed on the W3C wiki page I read</td><td>—</td><td>Not established</td></tr>
+    <tr><td>IFML</td><td>OMG standard · 2013/2015</td><td>UML-style metamodel</td><td>view container contains view component; event → action; navigation flow; data flow</td><td>containedBy; delegatesTo, drivesConsumer</td><td>Flows between screens</td></tr>
+    <tr><td>Paulheim &amp; Probst UI ontology</td><td>research · 2011</td><td>OWL on DOLCE</td><td>realizes, part, adjacent to, makes use of</td><td>renderedBy, hasPart</td><td>Adjacency (spatial)</td></tr>
+    <tr><td>schema.org WebPageElement</td><td>schema.org · live</td><td>RDFS</td><td>hasPart / isPartOf; header, footer, sidebar, navigation, table types</td><td>hasPart</td><td>Page-region types only</td></tr>
+    <tr><td>Dublin Core · Backstage</td><td>DCMI 2020 · Spotify, live</td><td>RDF · YAML</td><td>paired opposites (hasPart / isPartOf, dependsOn / dependencyOf …)</td><td>see the word map</td><td>Declared pairs</td></tr>
+    <tr><td>W3C UI Specification Schema group</td><td>W3C community group · Aug 2025 – closed May 2026</td><td>planned JSON Schema</td><td>none published</td><td>—</td><td>Closed with no output</td></tr>
+    <tr class="grp"><td colspan="6">Named but not a fit, or not examined</td></tr>
+    <tr><td>Vanilla framework</td><td>Canonical · since 2015</td><td>CSS framework</td><td>none: the ontology is its successor</td><td>—</td><td>—</td></tr>
+    <tr><td>ODS-Terms (“Open Design System Ontology”)</td><td>GitHub OpenDesignSystem/odso · 2018 · no stars</td><td>ontology stub</td><td>not examined: about open design, not UI, as far as the README shows</td><td>—</td><td>—</td></tr>
+    <tr><td>Other GitHub hits</td><td>design-ontology-harness, montology, design-token-context-model</td><td>tooling or drafts</td><td>no published relation vocabulary found in their READMEs</td><td>—</td><td>—</td></tr>
+    <tr><td>Carbon · Polaris · Atlassian</td><td>IBM · Shopify · Atlassian</td><td>—</td><td>No public relation schema found. Carbon appears only as an Open UI data file; Polaris’s repository has moved; for Atlassian I found only the token changelog</td><td>—</td><td>Searched, not established</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="two" style="margin-top:var(--s5)">
+    <div><p class="label mute">Does it change the nine?</p></div>
+    <div>
+      <p class="line" style="font-size:22px">Map, don’t adopt. Keep Apollo’s words, and point the outside column at Canonical and Spectrum first.</p>
+      <p style="color:var(--grey-8);margin-top:var(--s2)">No published vocabulary covers what Apollo governs: rules, rulings, principles, criteria and the reasons between them. Canonical’s covers about a sixth of Apollo’s edge types, and it is one day into a new repository. Adopting it outright would drop five-sixths of the graph’s meaning into “relates to”. It does prove items 1 to 3 in practice: an OWL file where every relation states its ends, opposite and count, checked by SHACL shapes. Items 4, 7 and 9 change in the light of it, and they are marked below.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="today"><div class="wrap two">
+  <div>
+    <p class="idx">01</p>
+    <p class="label">What Apollo has today</p>
+    <h2>Good names, typed ends, thin definitions</h2>
+    <p class="meta">Every number here was measured on Dave’s repo by running the explorer’s own extract (<span class="mono">knowledge/_build_kg_explorer.py</span>, <span class="mono">extract()</span> plus <span class="mono">extract_extra()</span>) at 2026-09-29 07:53 UTC. Other lanes were writing to the tree that morning, so counts can move by a few.</p>
+  </div>
+  <div>
+    <h3>Where an edge is defined today: four places, none complete</h3>
+    <ul class="meta" style="font-size:15px;color:var(--grey-8);padding-left:1.1em;margin:0 0 var(--s4)">
+      <li><span class="mono">knowledge/components/meta.schema.json</span>. The shared edge shape is <span class="mono">{ref, $note}</span>, and a ref may point at any of eight kinds, whatever the edge type. Only <span class="mono">obeys</span> has its own shape, which the schema split out on purpose “because widening the shared ref pattern would let containedBy point at a rule”.</li>
+      <li><span class="mono">knowledge/_kg_verbs.json</span> is the twelve-verb reading map: which verb reads which storage type, its force, its direction sentence and a count. It is a reading, not a definition of the ends.</li>
+      <li><span class="mono">knowledge/_build_kg_explorer.py</span> gives each type its family, and so whether it is drawn.</li>
+      <li><span class="mono">knowledge/_validate_kg.py</span> checks that every ref matches the id grammar and resolves. A search for domain, range, inverse, symmetric, self-loop or cycle finds nothing in it.</li>
+    </ul>
+    <h3>What is already strong</h3>
+    <p style="color:var(--grey-8)">The vocabulary is closed. A new type is a ruling, not a drift. A target that cannot be found is carried as a declared null with its prose, never guessed. <span class="mono">obeys</span> requires a reason of at least 40 characters, which is exactly what SHACL’s <span class="mono">minLength</span> and Wikidata’s “required qualifier” do. The verbs’ force (must, should, is) is the same three steps as SHACL’s severity (violation, warning, info). And <span class="mono">knowledge/brain/polarities.json</span> makes each trade-off a node with typed parties. That is pattern 1 of the W3C note on n-ary relations, the standard way to hang facts off a relation.</p>
+  </div>
+</div>
+<div class="wrap" style="margin-top:var(--s5)">
+  <p class="label mute">Where the definitions are thin — measured</p>
+  <ol class="finds">
+    <li><div><h3>One name, two kinds of target</h3><p><span class="mono">governedBy</span> runs from 28 components to a ruling, and from 12 logo lockups to a rule. Those are two different relations under one word. A per-type check on the ends would refuse one of them.</p><p class="src">Measured: ends of governedBy = component→ruling 28, logo→rule 12. The 12 logo lines were hand-written into <span class="mono">_logo_nodes.json</span> (builder version note 1.26).</p></div></li>
+    <li><div><h3>Opposites stored twice and out of step</h3><p>A ruling says it <span class="mono">governs</span> a component, and the component says it is <span class="mono">governedBy</span> the ruling. Both directions are written by hand, in different files. Only 18 of the 28 component-side lines have a matching ruling-side line. <span class="mono">containedBy</span> (88) and <span class="mono">hasPart</span> (14 between components) are also opposites, and none of the 14 is mirrored.</p><p class="src">Measured. Apollo already has the right rule, for one type: <span class="mono">yieldsTo</span>’s schema note says “the inverse is read by traversing the graph, never by writing a second edge into a second meta”.</p></div></li>
+    <li><div><h3>Edges that point at themselves</h3><p>22 edges start and end on the same component. There are 9 <span class="mono">family</span> lines, where the note means “this meta covers a family”. There are 7 <span class="mono">mustNotNeighbour</span> lines, where the note means “only one on screen at a time”. There are 4 <span class="mono">hasPart</span> lines naming sub-parts that are not components, and 2 <span class="mono">groupsWith</span> lines. Each one is a different fact squeezed into an edge.</p><p class="src">Measured: self-loops by type, family 9 · mustNotNeighbour 7 · hasPart 4 · groupsWith 2.</p></div></li>
+    <li><div><h3>A containment loop</h3><p>Carousel is contained by cards, and cards is contained by carousel. Containment should never loop.</p><p class="src">Measured: the only two-step cycle in containedBy.</p></div></li>
+    <li><div><h3>The reason lives on two types, under four names</h3><p>Only <span class="mono">obeys</span> (168 of 168) and <span class="mono">restsOn</span> (75 of 75) carry a reason on the edge. The reason is called <span class="mono">$why</span> in the metas and <span class="mono">why</span> in the graph. The ruling-to-ruling edges hold <span class="mono">evidence</span> in storage. Everything else has only a free <span class="mono">$note</span>.</p><p class="src">Measured on the graph. <span class="mono">evidence</span> as read from <span class="mono">knowledge/_ruling_edges.json</span>.</p></div></li>
+    <li><div><h3>“Authored” means “drawn solid”, not “written by hand”</h3><p>1,648 edges carry no maker flag at all, including all 168 hand-written <span class="mono">obeys</span> lines. Meanwhile the 835 <span class="mono">bindsToken</span> lines, which a script lands from the metas’ token block, are flagged <span class="mono">authored: true</span>.</p><p class="src">Measured: authored flag by type. Provenance of bindsToken from its own note in <span class="mono">_kg_verbs.json</span>.</p></div></li>
+    <li><div><h3>Repeated edges</h3><p>29 pairs appear more than once under the same type: 14 under <span class="mono">governs</span>, 11 under <span class="mono">under</span> and 4 under <span class="mono">hasPart</span>, with 60 extra copies in all.</p><p class="src">Measured, one run earlier the same morning.</p></div></li>
+    <li><div><h3>Two vocabularies for ruling-to-ruling links</h3><p>The older <span class="mono">_decision-graph.json</span> uses nine types: refines, relates, supersedes, verified-by, bounds, conflicts-with, subsumes, diverges-from and enacted-by. <span class="mono">_ruling_edges.json</span> uses ten, spelled differently (<span class="mono">enacts</span> against <span class="mono">enacted-by</span>). Nothing maps one onto the other.</p><p class="src">Measured: 172 edges in the decision graph; 48 ruling-to-ruling lines in the live graph.</p></div></li>
+    <li><div><h3>One type read by no verb</h3><p><span class="mono">inFamily</span> (145 lines, principle → research family) is in neither the twelve verbs nor the unread list. The verbs file names this gap itself.</p><p class="src"><span class="mono">_kg_verbs.json</span>, <span class="mono">$measured.$drift</span>; confirmed by comparing the verbs map with the live types.</p></div></li>
+  </ol>
+</div></section>
+
+<section id="outside" class="grey"><div class="wrap">
+  <p class="idx">03</p>
+  <p class="label">What the outside world does</p>
+  <h2 style="max-width:22em">The general standards, one idea each</h2>
+  <p style="max-width:44em;color:var(--grey-8);margin-bottom:var(--s5)">These are the general standards the design-system vocabularies above are built on or echo. Canonical’s is written in OWL and checked with SHACL; Spectrum’s is JSON Schema plus graph rules. The ideas worth borrowing are here, stated once each.</p>
+  <div class="cards">
+    <article><div class="k">OWL 2 · relations carry their own character</div><p>A property can be declared the inverse of another, symmetric, asymmetric, transitive, functional (at most one), or irreflexive (never itself). It can also have a domain and a range. Caution: in OWL a domain or range “is not a constraint” but lets a reasoner infer. It fills in facts rather than refusing bad ones.</p><div class="so">W3C OWL 2 Primer, Rec. 11 Dec 2012</div></article>
+    <article><div class="k">SHACL · checking is a separate job</div><p>Shapes state what a node’s edges must look like: the class at the far end, minimum and maximum count, a text pattern, a minimum length, disjoint properties. Each break carries a severity: violation, warning or info. This is the closed-world check Apollo wants, and its three severities match Apollo’s must, should and is.</p><div class="so">W3C SHACL, Rec. 20 Jul 2017</div></article>
+    <article><div class="k">SKOS · a small, plain word set</div><p><span class="mono">broader</span> and <span class="mono">narrower</span> are opposites. <span class="mono">broader</span> is not transitive, but it sits under a transitive <span class="mono">broaderTransitive</span>, so you keep the direct link and can still ask for the whole chain. <span class="mono">related</span> points both ways and may not be used where a hierarchy exists. It also has mapping words (exactMatch, closeMatch, relatedMatch) for saying “our word, their word”.</p><div class="so">W3C SKOS Reference, Rec. 18 Aug 2009</div></article>
+    <article><div class="k">Dublin Core · schema.org · plain opposite pairs</div><p>hasPart and isPartOf, replaces and isReplacedBy, requires and isRequiredBy, references and isReferencedBy, conformsTo, source. Schema.org declares its ends softly (“domainIncludes”) and names each property’s opposite.</p><div class="so">DCMI Metadata Terms, 2020-01-20 · schema.org/hasPart</div></article>
+    <article><div class="k">Backstage · store one side, emit both</div><p>Every relation comes as a declared pair (ownedBy and ownerOf, dependsOn and dependencyOf, partOf and hasPart, providesApi and apiProvidedBy, consumesApi and apiConsumedBy). Only the owner’s field is written. The catalogue emits the opposite automatically. This is Apollo’s own <span class="mono">yieldsTo</span> rule, made general.</p><div class="so">Backstage docs, well-known relations</div></article>
+    <article><div class="k">Design tokens · aliases that cannot loop</div><p>The 2025.10 stable format lets tokens point at tokens (<span class="mono">{group.token}</span> or <span class="mono">$ref</span>). Tools follow the chain, and circular references “MUST” be detected and reported. A token that aliases another takes the resolved type of its target. Groups can <span class="mono">$extends</span>, and tokens can carry <span class="mono">$deprecated</span>.</p><div class="so">W3C Design Tokens CG, stable 28 Oct 2025; draft read 29 Sep 2026</div></article>
+    <article><div class="k">Figma · aliases and scopes</div><p>A variable may reference another variable “of the same type”. Scopes limit which properties a variable may be applied to. That is a range, stated by the designer and enforced by the tool.</p><div class="so">Figma Help Centre, variables and collections</div></article>
+    <article><div class="k">WAI-ARIA 1.2 · containment with rules</div><p>Roles form a superclass and subclass tree. Some roles have a required context (a listitem must sit in a list) and some have required owned elements (a listbox must own an option or group). Relations like <span class="mono">aria-controls</span> and <span class="mono">aria-owns</span> are named edges between elements.</p><div class="so">W3C WAI-ARIA 1.2, Rec. 6 Jun 2023</div></article>
+    <article><div class="k">UI ontologies · composition models</div><p>Paulheim and Probst built a formal UI ontology on DOLCE, with relations such as <span class="mono">realizes</span> (a design-time thing to its runtime form), <span class="mono">part</span> and <span class="mono">adjacent to</span>. Atomic Design is “a mental model”, not a word list. Pattern languages link related patterns. Design-system-as-graph blog posts (McCoy 2021, Singh 2024) publish no schema; Canonical’s ontology does.</p><div class="so">SEMAIS 2011 · Frost 2016 · van Welie &amp; van der Veer 2003 · PLML 2003</div></article>
+    <article><div class="k">Design rationale · how decisions relate</div><p>Kruchten’s ontology of design decisions has these relations: constrains (if A is dropped, B falls), forbids, enables, subsumes, conflicts with, overrides (a local exception), comprises, is bound to, is an alternative to, and traces to an artefact. Decisions move through states from idea to obsolesced. IBIS links arguments that support or object. ADRs mark a decision superseded, with a pointer to its replacement.</p><div class="so">Kruchten 2004 · Kunz &amp; Rittel 1970 · MacLean et al. 1991 · Nygard 2011</div></article>
+    <article><div class="k">Edges that carry a reason</div><p>Property graphs (the GQL standard, 2024) let an edge hold its own fields. RDF 1.2 adds triple terms and reifiers, so a statement can be annotated, even with who claimed it and why, without being asserted. Wikidata hangs qualifiers and references on each claim. Its constraints are “hints, not firm restrictions”: they are reported, not enforced, like Apollo’s advisory gates. PROV-O names who made a thing, how, and from what.</p><div class="so">ISO/IEC 39075:2024 · RDF 1.2 CR 7 Apr 2026 · Wikidata · PROV-O Rec. 30 Apr 2013</div></article>
+    <article style="background:var(--paper)"><div class="k" style="color:var(--accent)">What this adds up to</div><p>Each kind of edge gets one definition with the same few facts: its ends, its opposite, its shape, how many, whether it needs a reason, and who made it. A separate check reads that definition and reports by severity. Apollo has none of these definitions in one place. Canonical does exactly this in OWL and SHACL. Apollo already stores edges the modern way, as edges with fields, so it does not need to move to RDF to get the benefit.</p></article>
+  </div>
+</div></section>
+
+<section id="picture"><div class="wrap">
+  <p class="idx">04</p>
+  <p class="label">The picture</p>
+  <h2>Today, an edge’s meaning is scattered. Recommended, it is written once</h2>
+  <figure class="frame">
+    <svg viewBox="0 0 1040 470" width="100%" role="img" aria-labelledby="dgt dgd">
+      <title id="dgt">Apollo’s edge definitions today against the recommended register</title>
+      <desc id="dgd">Left: one example edge, component governed by ruling, carrying only a reference and a note, with its meaning split across four files. Right: one register row defines the edge type once, with ends, opposite, shape, count, reason and maker, and four consumers read it.</desc>
+      <g fill="none" stroke="var(--grey-3)"><line x1="520" y1="20" x2="520" y2="450"/></g>
+      <text x="20" y="34" font-size="12" letter-spacing="1.6" fill="var(--grey-6)">TODAY</text>
+      <text x="540" y="34" font-size="12" letter-spacing="1.6" fill="var(--accent)">RECOMMENDED</text>
+      <!-- today: the edge -->
+      <g font-size="14" fill="var(--ink)">
+        <rect x="20" y="60" width="150" height="44" fill="var(--grey-1)" stroke="var(--ink)"/>
+        <text x="95" y="87" text-anchor="middle">component</text>
+        <rect x="330" y="60" width="150" height="44" fill="var(--grey-1)" stroke="var(--ink)"/>
+        <text x="405" y="87" text-anchor="middle">ruling</text>
+        <line x1="170" y1="82" x2="322" y2="82" stroke="var(--ink)"/>
+        <path d="M322 77 L330 82 L322 87 Z" fill="var(--ink)"/>
+        <text x="250" y="74" text-anchor="middle" font-size="13" fill="var(--grey-8)">governedBy</text>
+        <text x="250" y="102" text-anchor="middle" font-size="12" fill="var(--grey-6)">{ ref, $note }</text>
+      </g>
+      <g font-size="12" fill="var(--grey-8)">
+        <rect x="20" y="140" width="220" height="70" fill="none" stroke="var(--grey-3)"/>
+        <text x="32" y="162" fill="var(--ink)">meta.schema.json</text>
+        <text x="32" y="182">ref may be any of eight kinds</text>
+        <text x="32" y="198">no ends per type</text>
+        <rect x="260" y="140" width="220" height="70" fill="none" stroke="var(--grey-3)"/>
+        <text x="272" y="162" fill="var(--ink)">_kg_verbs.json</text>
+        <text x="272" y="182">reads as “decided”, force “is”</text>
+        <text x="272" y="198">no opposite, no shape</text>
+        <rect x="20" y="226" width="220" height="70" fill="none" stroke="var(--grey-3)"/>
+        <text x="32" y="248" fill="var(--ink)">_build_kg_explorer.py</text>
+        <text x="32" y="268">family, drawn or not</text>
+        <text x="32" y="284">“authored” = drawn solid</text>
+        <rect x="260" y="226" width="220" height="70" fill="none" stroke="var(--grey-3)"/>
+        <text x="272" y="248" fill="var(--ink)">_validate_kg.py</text>
+        <text x="272" y="268">the ref resolves: yes / no</text>
+        <text x="272" y="284">not: is it the right kind?</text>
+      </g>
+      <g font-size="13" fill="var(--grey-8)">
+        <text x="20" y="336" fill="var(--ink)">What slips through today, measured:</text>
+        <text x="20" y="360">· 12 governedBy lines that end on a rule, not a ruling</text>
+        <text x="20" y="382">· 10 of 28 governedBy lines with no matching governs</text>
+        <text x="20" y="404">· 22 edges that point at themselves</text>
+        <text x="20" y="426">· 1 containment loop · 29 repeated pairs</text>
+      </g>
+      <!-- recommended: register row -->
+      <g>
+        <rect x="540" y="56" width="300" height="262" fill="var(--paper)" stroke="var(--accent)"/>
+        <text x="556" y="80" font-size="12" letter-spacing="1.4" fill="var(--accent)">EDGE REGISTER · ONE ROW</text>
+        <g font-size="13" fill="var(--ink)">
+          <text x="556" y="108">governedBy</text>
+          <text x="690" y="108" fill="var(--grey-7)">reads as “decided”</text>
+        </g>
+        <g font-size="12" fill="var(--grey-8)">
+          <text x="556" y="136" fill="var(--grey-6)">from</text><text x="650" y="136">component · icon · logo</text>
+          <text x="556" y="158" fill="var(--grey-6)">to</text><text x="650" y="158">ruling only</text>
+          <text x="556" y="180" fill="var(--grey-6)">opposite</text><text x="650" y="180">governs · stored on the ruling</text>
+          <text x="556" y="202" fill="var(--grey-6)">stored?</text><text x="650" y="202">no: read by walking back</text>
+          <text x="556" y="224" fill="var(--grey-6)">shape</text><text x="650" y="224">never itself · may not loop</text>
+          <text x="556" y="246" fill="var(--grey-6)">reason</text><text x="650" y="246">required, 40+ characters</text>
+          <text x="556" y="268" fill="var(--grey-6)">maker</text><text x="650" y="268">hand · generated · ratified</text>
+          <text x="556" y="290" fill="var(--grey-6)">outside</text><text x="650" y="290">Kruchten “traces to” (close)</text>
+        </g>
+      </g>
+      <g font-size="12" fill="var(--ink)">
+        <rect x="880" y="56" width="140" height="44" fill="var(--grey-1)" stroke="var(--grey-3)"/><text x="950" y="83" text-anchor="middle">meta schema</text>
+        <rect x="880" y="128" width="140" height="44" fill="var(--grey-1)" stroke="var(--grey-3)"/><text x="950" y="155" text-anchor="middle">verbs map</text>
+        <rect x="880" y="200" width="140" height="44" fill="var(--grey-1)" stroke="var(--grey-3)"/><text x="950" y="227" text-anchor="middle">explorer</text>
+        <rect x="880" y="272" width="140" height="44" fill="var(--paper)" stroke="var(--ink)"/><text x="950" y="299" text-anchor="middle">edge check</text>
+      </g>
+      <g stroke="var(--grey-5)" fill="none">
+        <path d="M840 110 H860 V78 H872"/><path d="M840 150 H872"/><path d="M840 222 H872"/><path d="M840 290 H872"/>
+      </g>
+      <g fill="var(--grey-5)"><path d="M872 74 L880 78 L872 82Z"/><path d="M872 146 L880 150 L872 154Z"/><path d="M872 218 L880 222 L872 226Z"/><path d="M872 286 L880 290 L872 294Z"/></g>
+      <g font-size="13" fill="var(--grey-8)">
+        <text x="540" y="360" fill="var(--ink)">The check reads the row and reports by force:</text>
+        <text x="540" y="382">must → refuse · should → warn · is → note</text>
+        <text x="540" y="404">(SHACL’s violation · warning · info)</text>
+        <text x="540" y="426">Advisory first, as the house does with every new gate.</text>
+      </g>
+    </svg>
+  </figure>
+  <p class="meta" style="margin-top:var(--s2)">The left side uses real counts from 07:53 UTC. On the right, the governedBy row is a proposed filling, not a ruling. Whether icons and logos share this edge is item 2 below.</p>
+</div></section>
+
+<section id="map" class="grey"><div class="wrap">
+  <p class="idx">05</p>
+  <p class="label">Word map</p>
+  <h2>Apollo’s word, the nearest outside term, and what to do</h2>
+  <p style="max-width:46em;color:var(--grey-8)">The recommendation is the same throughout: keep Apollo’s plain word and write the outside term beside it — a design-system term first (Canonical or Spectrum) where one exists, a general one otherwise, graded as exact, close or loose. SKOS uses those same three grades for mapping one vocabulary onto another. How close each match is was my judgement, made by reading both definitions. The ends and counts are measured.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Apollo word</th><th>Ends today (measured)</th><th>Lines</th><th>Nearest outside term</th><th>Fit</th><th>Recommendation</th></tr></thead>
+    <tbody>
+    <tr class="grp"><td colspan="6">is-a · kinship between components</td></tr>
+    <tr><td class="w">family</td><td>component→component 10, null 2</td><td>12</td><td>SKOS related (siblings)</td><td class="fit">loose</td><td>Keep. Points both ways, never at itself. Move the 9 self-lines to a “covers a family” field.</td></tr>
+    <tr><td class="w">partial</td><td>component→component 5, null 1</td><td>6</td><td>Canonical inheritsFrom · Dublin Core isVersionOf</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">reuses</td><td>component→component</td><td>2</td><td>Dublin Core requires</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr class="grp"><td colspan="6">contains · build and wiring</td></tr>
+    <tr><td class="w">containedBy</td><td>component→component</td><td>88</td><td>Canonical parentComponent · Dublin Core isPartOf</td><td class="fit">exact</td><td>Keep as the stored side. Chains, never loops. Opposite: hasPart.</td></tr>
+    <tr><td class="w">hasPart</td><td>component→component 14, null 8</td><td>22</td><td>Canonical hasSubcomponent · Dublin Core hasPart</td><td class="fit">exact</td><td>Read it as containedBy walked back. Move the 4 self-lines’ part names to a subcomponent kind (Canonical’s answer).</td></tr>
+    <tr><td class="w">composedOf</td><td>component→component</td><td>5</td><td>Atomic Design composition · hasPart</td><td class="fit">close</td><td>Keep. Reason required.</td></tr>
+    <tr><td class="w">consumes</td><td>component→component</td><td>70</td><td>Backstage consumesApi · Dublin Core requires</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">drivesConsumer</td><td>component→component</td><td>5</td><td>ARIA aria-controls</td><td class="fit">close</td><td>Keep. Reason required.</td></tr>
+    <tr><td class="w">delegatesTo</td><td>component→component</td><td>1</td><td>ARIA aria-controls / aria-haspopup</td><td class="fit">loose</td><td>Keep. Reason required.</td></tr>
+    <tr><td class="w">triggeredBy</td><td>component→component 3, null 22</td><td>25</td><td>delegatesTo read backwards</td><td class="fit">close</td><td>For Dave’s eye: probably delegatesTo stored on the other side.</td></tr>
+    <tr class="grp"><td colspan="6">sits-with · must-not-sit-with · yields-to</td></tr>
+    <tr><td class="w">groupsWith</td><td>component→component 4, null 4</td><td>8</td><td>SKOS related</td><td class="fit">close</td><td>Keep. Points both ways, so store it once. Never at itself.</td></tr>
+    <tr><td class="w">mustNotNeighbour</td><td>component→component 19, null 51</td><td>70</td><td>Kruchten forbids · SHACL disjoint</td><td class="fit">loose</td><td>Keep. Move the 7 “only one at a time” self-lines to a count on the component.</td></tr>
+    <tr><td class="w">yieldsTo</td><td>component→component 49, null 2</td><td>51</td><td>Kruchten “is an alternative to”, with precedence</td><td class="fit">loose</td><td>Keep. Its test sentence is the reason, so require it.</td></tr>
+    <tr class="grp"><td colspan="6">renders-as · lives-in · provides-answers</td></tr>
+    <tr><td class="w">renderedBy</td><td>component→snippet</td><td>137</td><td>Canonical implementsBlock, walked back · UI ontology realizes</td><td class="fit">close</td><td>Keep. Check whether “at most one” holds.</td></tr>
+    <tr><td class="w">usedInContext</td><td>component→context</td><td>367</td><td>ARIA required context</td><td class="fit">loose</td><td>Keep. Maker: generated.</td></tr>
+    <tr><td class="w">commonPattern</td><td>component→pattern</td><td>421</td><td>pattern-language related patterns</td><td class="fit">loose</td><td>Keep. Maker: generated.</td></tr>
+    <tr><td class="w">providesRole</td><td>component→role</td><td>108</td><td>Backstage providesApi</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">answersIntent</td><td>component→intent</td><td>28</td><td>IBIS responds-to</td><td class="fit">loose</td><td>Keep.</td></tr>
+    <tr><td class="w">hasDataShape</td><td>component→shape</td><td>26</td><td>none found</td><td class="fit">—</td><td>Keep. This one is Apollo’s own.</td></tr>
+    <tr class="grp"><td colspan="6">must · should · rests-on</td></tr>
+    <tr><td class="w">appliesTo</td><td>criterion→component</td><td>826</td><td>Dublin Core conformsTo, walked back</td><td class="fit">close</td><td>Keep. Maker: generated.</td></tr>
+    <tr><td class="w">obeys</td><td>component→rule 154, →principle 14</td><td>168</td><td>Dublin Core conformsTo</td><td class="fit">close</td><td>Keep. It is the model for the reason field.</td></tr>
+    <tr><td class="w">restsOn</td><td>rule→principle 67, null 8</td><td>75</td><td>IBIS supports</td><td class="fit">close</td><td>Keep. It is the model for an edge with fields.</td></tr>
+    <tr><td class="w">tensionWith</td><td>principle→principle</td><td>22</td><td>SKOS related · QOC trade-off</td><td class="fit">loose</td><td>Declare it symmetric: store once, read both ways.</td></tr>
+    <tr class="grp"><td colspan="6">decided · the record</td></tr>
+    <tr><td class="w">governs</td><td>ruling→artefact 1,658, →component 337</td><td>1,995</td><td>Kruchten traces to</td><td class="fit">close</td><td>Keep as the stored side. Remove the 14 repeated pairs.</td></tr>
+    <tr><td class="w">governedBy</td><td>component→ruling 28, logo→rule 12</td><td>40</td><td>governs, walked back</td><td class="fit">exact</td><td>Read, not stored. Move the 12 logo→rule lines to obeys.</td></tr>
+    <tr><td class="w">ruledBy</td><td>icon→ruling</td><td>8</td><td>governs, walked back</td><td class="fit">exact</td><td>Same meaning as governedBy (its own note says so). One word.</td></tr>
+    <tr><td class="w">evidencedBy</td><td>ruling→evidence 2,494, principle→evidence 134</td><td>2,639</td><td>PROV hadPrimarySource</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">ruledIn</td><td>ruling→session</td><td>199</td><td>PROV wasGeneratedBy</td><td class="fit">exact</td><td>Keep.</td></tr>
+    <tr><td class="w">supersedes · supersedesClause</td><td>ruling→ruling</td><td>3 · 9</td><td>Dublin Core replaces · ADR superseded</td><td class="fit">exact</td><td>Keep. Chains, never loops.</td></tr>
+    <tr><td class="w">refines · narrows · bounds</td><td>ruling→ruling</td><td>4 · 2 · 1</td><td>Kruchten overrides / subsumes</td><td class="fit">loose</td><td>Keep.</td></tr>
+    <tr><td class="w">extends · enacts · confirms · corrects · retires</td><td>ruling→ruling</td><td>16 · 6 · 5 · 1 · 1</td><td>Kruchten enables / comprises · IBIS replaces</td><td class="fit">loose</td><td>Keep. Fold the older nine into these (item 8).</td></tr>
+    <tr><td class="w">mentions</td><td>ruling→ruling</td><td>243</td><td>Dublin Core references</td><td class="fit">exact</td><td>Keep. Maker: generated, unratified.</td></tr>
+    <tr class="grp"><td colspan="6">explanation · polarities and principles</td></tr>
+    <tr><td class="w">hasParty</td><td>polarity→principle 51, →ruling 2, null 15</td><td>68</td><td>W3C n-ary relation, pattern 1</td><td class="fit">exact</td><td>Keep. Already the right shape.</td></tr>
+    <tr><td class="w">resolvedBy · challengedBy · explainedBy · touches</td><td>polarity→ruling</td><td>7 · 4 · 1 · 9</td><td>IBIS responds-to · objects-to · supports</td><td class="fit">close</td><td>Keep. Needs a verb (they have none today).</td></tr>
+    <tr><td class="w">inFamily</td><td>principle→family</td><td>145</td><td>SKOS broader / inScheme</td><td class="fit">close</td><td>Needs a verb. The register would have caught this.</td></tr>
+    <tr class="grp"><td colspan="6">machinery · the criteria and rules</td></tr>
+    <tr><td class="w">definedIn</td><td>rule→file</td><td>474</td><td>RDFS isDefinedBy</td><td class="fit">exact</td><td>Keep.</td></tr>
+    <tr><td class="w">cites</td><td>rule→criterion</td><td>51</td><td>Dublin Core references</td><td class="fit">exact</td><td>Keep.</td></tr>
+    <tr><td class="w">under</td><td>criterion→guideline 55, guideline→principle 55</td><td>110</td><td>SKOS broader</td><td class="fit">exact</td><td>Keep. Chains. Remove the 11 repeated pairs.</td></tr>
+    <tr><td class="w">enforcedBy · checkedBy · verifiedBy</td><td>rule→file · criterion→axe · criterion→file</td><td>64 · 68 · 6</td><td>a SHACL shape or ACT rule that checks it</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">boundBy · enClause</td><td>criterion→policy · criterion→standard</td><td>55 · 55</td><td>Dublin Core conformsTo / source</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">flaggedBy</td><td>snippet→rule</td><td>50</td><td>none found</td><td class="fit">—</td><td>Keep.</td></tr>
+    <tr class="grp"><td colspan="6">assets · tokens · sources</td></tr>
+    <tr><td class="w">usesIcon · usesLogo</td><td>component→icon 371 · →logo 18</td><td>371 · 19</td><td>Dublin Core requires</td><td class="fit">close</td><td>Keep. Needs a verb; the notes propose “uses”.</td></tr>
+    <tr><td class="w">inGroup</td><td>icon→icon group</td><td>666</td><td>SKOS inScheme</td><td class="fit">close</td><td>Keep. Exactly one per icon.</td></tr>
+    <tr><td class="w">activeVariantOf</td><td>icon→icon 232, null 2</td><td>234</td><td>Canonical variantOf · Dublin Core isVersionOf</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">defaultFor · defaultActive</td><td>logo→null 2 · icon→null 1</td><td>2 · 1</td><td>Wikidata qualifier (the theme)</td><td class="fit">close</td><td>Give them a theme to point at (item 9c).</td></tr>
+    <tr><td class="w">bindsToken</td><td>component→token</td><td>835</td><td>Canonical hasTokenBinding · Spectrum tokenBindings</td><td class="fit">close</td><td>Keep. Maker: generated. Add token→token (item 9a).</td></tr>
+    <tr><td class="w">setIn</td><td>component→type style</td><td>154</td><td>design-token typography composite</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">capturedFrom · behaviourFrom</td><td>component→figma, snippet or file</td><td>80 · 73</td><td>PROV hadPrimarySource · wasDerivedFrom</td><td class="fit">close</td><td>Keep.</td></tr>
+    <tr><td class="w">acceptsCapability</td><td>component→capability</td><td>95</td><td>Backstage consumesApi</td><td class="fit">close</td><td>Keep. Add the providing half (item 9b).</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="rule"><div class="wrap">
+  <p class="idx">06</p>
+  <p class="label">To rule on</p>
+  <h2>Nine items. Take it, change it or leave it</h2>
+  <p style="max-width:44em;color:var(--grey-8)">They build on each other. Item 1 is the foundation, items 2 to 6 are fields in it, item 7 is a column in it, and items 8 and 9 change the vocabulary. Your answers stay in this browser. The button at the foot copies them as plain text.</p>
+  <ol class="recs" id="recs">
+    <li data-n="1"><div><h3>Write one edge register</h3>
+      <p>Define every edge type once, in one file, with one row per type: plain word, verb, starting kind, ending kind, opposite, shape, how many, reason rule, maker, and nearest outside term. The meta schema, the verbs map, the explorer and the new check all read it, so none of them holds its own partial copy.</p>
+      <p class="why">v2: Canonical’s ontology.ttl is exactly such a register, for its own properties. Why: OWL, SKOS, Backstage and Wikidata all keep these facts on the relation. Today Apollo spreads them over four files, which is how inFamily slipped through with no verb. The register would have 65 rows today (measured). The file name, perhaps knowledge/_edge_register.json, is yours to choose.</p></div></li>
+    <li data-n="2"><div><h3>Check every edge’s two ends against its row</h3>
+      <p>Each type names the kinds it may start from and end at. An edge that starts or ends on the wrong kind is reported. Take SHACL’s idea (a closed-world check that refuses) rather than OWL’s (a range that quietly infers). The first case it would catch is the 12 logo lines filed as governedBy that end on a rule. I recommend moving them to obeys, which is what “a logo obeys a rule” means, and keeping governedBy for rulings only.</p>
+      <p class="why">v2: Canonical checks its anatomy with SHACL shapes; Spectrum checks shape first, then numbered graph rules. Why: the schema’s own note says one shared ref pattern would “let containedBy point at a rule”. Today only obeys is protected from that.</p></div></li>
+    <li data-n="3"><div><h3>Store one direction and read the other</h3>
+      <p>The register names each type’s opposite and says which side is stored. The opposite is read by walking the graph backwards, never written as a second edge. This is Apollo’s own yieldsTo rule applied to every type. Stored side: governs (on the ruling) over governedBy, and containedBy over hasPart. Before switching, run a one-off check of where the two sides disagree today: 10 of 28 governedBy lines have no matching governs.</p>
+      <p class="why">v2: Canonical declares four opposite pairs (inheritsFrom/specializedBy, variantOf/hasVariant, hasSubcomponent/parentComponent, hasModifier/modifierFamily). Why: Backstage and Dublin Core both declare pairs and store one side. Two hand-written sides always drift, and here they have.</p></div></li>
+    <li data-n="4"><div><h3>Say each type’s shape, and move the 22 self-lines to the fields they mean <span class="fit">Changed in v2</span></h3>
+      <p>For each type, record four things. May it point at itself? May it loop? Does it point both ways (groupsWith, family, tensionWith)? Does it chain (containedBy, under, supersedes)? Then send each self-line to the fact it really states:</p>
+      <ul><li>The 7 “only one on screen at a time” lines become a count on the component, such as at most one per view.</li><li>The 9 “this meta covers a family” lines become a field.</li><li>The 4 part-names become a subcomponent kind, as in Canonical’s ontology, where a subcomponent carries a flag for “can stand alone”. <span class="fit">Changed in v2</span></li><li>The carousel and cards containment loop goes to your eye.</li></ul>
+      <p class="why">Why: OWL names these characteristics (irreflexive, symmetric, transitive), and SKOS keeps a direct link while offering the whole chain as a separate word.</p></div></li>
+    <li data-n="5"><div><h3>One reason field, required by type</h3>
+      <p>Use one name for the reason everywhere: why. The register says, per type, whether it is required. Require it on every hand-made judgement: obeys and restsOn as now, plus mustNotNeighbour, yieldsTo, groupsWith, composedOf, delegatesTo, drivesConsumer and governedBy. The ruling-to-ruling types already carry evidence that serves. Do not require it on generated structure such as bindsToken, inGroup or usedInContext. Keep the obeys floor of 40 characters.</p>
+      <p class="why">Why: only 2 of 65 types carry a reason today, under four different names. A required reason is Wikidata’s “required qualifier” and SHACL’s minimum length.</p></div></li>
+    <li data-n="6"><div><h3>One maker field on every edge</h3>
+      <p>Every edge says who made it. There are three values: by hand (and whose), generated (and by which script), or ratified (and by which ruling). This replaces the authored flag, which today means “drawn solid”.</p>
+      <p class="why">Why: 1,648 edges carry no maker flag, including every hand-written obeys, while 835 generated bindsToken lines are marked authored. PROV-O has names for all three makers (attributed to, generated by, derived from).</p></div></li>
+    <li data-n="7"><div><h3>Keep Apollo’s words and write the outside term beside them <span class="fit">Changed in v2</span></h3>
+      <p>Do not adopt Canonical’s or anyone’s vocabulary outright, and do not move to RDF. Add one column to the register for the nearest outside term, graded exact, close or loose. Point it first at a design-system vocabulary (Canonical’s ds: and dt:, or Spectrum’s) where one covers the type, and at SKOS, Dublin Core or PROV otherwise. Add each component’s Open UI name, the shared cross-system name. Apollo’s storage already works the modern way, as edges with fields, which the GQL standard and RDF 1.2 both now support.</p>
+      <p class="why">Why: no published vocabulary covers the governance half. Canonical’s covers about 11 of 65 types, is version 3.0.0, and moved repositories yesterday, so a mapping survives its changes where an adoption would not. You also prefer plain Anglo-Saxon words. The mapping costs one column and lets research, exports and newcomers line Apollo up against the standards.</p></div></li>
+    <li data-n="8"><div><h3>Fold the two ruling-to-ruling vocabularies into one</h3>
+      <p>Map the nine types of the older decision graph onto the ten in the ruling-edges file, or retire them. Where no match exists, bring the older type forward as a proposal. The one Apollo lacks is conflicts-with (8 older lines use it; Kruchten names it too). A second one is worth considering later: “depends on”, meaning that if this ruling is retired, the other falls with it (Kruchten’s constrains).</p>
+      <p class="why">Why: two spellings of the same idea (enacted-by and enacts) cannot both stay closed and still be read the same way.</p></div></li>
+    <li data-n="9"><div><h3>Five edges the outside world has and Apollo lacks <span class="fit">Changed in v2</span></h3>
+      <p>Each is a separate yes or no. You can take this item whole or say which letters you want.</p>
+      <ul>
+        <li>a) Token → token alias, with a loop check. Canonical has it as dt:aliasOf, with only one allowed. The design-token standard says circular references must be detected, and Apollo’s token tiers imply alias chains it does not draw.</li>
+        <li>b) Provides capability, the other half of acceptsCapability. The verbs file notes that “no providesCapability is minted”, and Backstage always pairs provides with consumes.</li>
+        <li>c) A theme node kind, so “default for a theme” has something to point at. v2 leans to a node: Canonical models themes and modes as coordinates with a fallback, and Tokens Studio as theme groups and options. Today both defaults are declared nulls.</li>
+        <li>d) Component → ARIA role. ARIA’s own required-context and required-owned rules could then be checked against containedBy and hasPart. Neither Canonical nor Spectrum has this.</li>
+        <li>e) Replaced-by on components and tokens, with the version it happened in. Spectrum carries introduced, deprecatedIn, replacedBy and plannedRemoval on every entity, and the design-token format has $deprecated. Apollo has replacement only between rulings.</li>
+      </ul>
+      <p class="why">Why: each one closes a gap that a named standard or published design-system vocabulary already covers. None of them is invented here.</p></div></li>
+  </ol>
+  <div style="margin-top:var(--s4);display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap">
+    <button class="btn" id="copy" type="button">Copy my answers</button>
+    <span class="meta" id="copied" aria-live="polite"></span>
+  </div>
+</div></section>
+
+<section id="gate" class="grey"><div class="wrap two">
+  <div>
+    <p class="idx">07</p>
+    <p class="label">The check</p>
+    <h2>What the edge check would do, in Apollo’s gate style</h2>
+    <p class="meta">A sketch, not code to run. It follows the house pattern: stdlib only, read-only, degrades loudly, advisory first, names every failure.</p>
+  </div>
+  <div>
+    <pre>for edge in graph.edges:
+    row = REGISTER[edge.type]          # unknown type → refuse
+    start, end = kind(edge.s), kind(edge.t)
+    if start not in row.from:          report(row.force, "wrong start")
+    if edge.t is None:
+        if not row.null_ok or not edge.note:  report("null without its prose")
+    elif end not in row.to:            report(row.force, "wrong end")
+    if edge.s == edge.t and not row.self_ok:  report("points at itself")
+    if row.reason == "required" and len(edge.why or "") &lt; 40:
+                                       report("no reason")
+    if row.stored == "opposite":       report("opposite written as a second edge")
+    if edge.maker not in ("hand", "generated", "ratified"):
+                                       report("no maker")
+
+per type:  no_loops → look for cycles · at_most → count per start
+           both_ways → one stored copy only · no repeats of the same pair
+
+force from the verb: must → refuse · should → warn · is → note</pre>
+    <h3>What its first run would print, from today’s measurement</h3>
+    <ul style="color:var(--grey-8);padding-left:1.1em;margin:0">
+      <li>12 wrong ends: the governedBy lines that end on a rule</li>
+      <li>22 points-at-itself: family 9, mustNotNeighbour 7, hasPart 4, groupsWith 2</li>
+      <li>1 containment loop: carousel and cards</li>
+      <li>29 repeated pairs: governs 14, under 11, hasPart 4</li>
+      <li>10 governedBy lines with no matching governs (the one-off agreement check in item 3)</li>
+      <li>1 type with no verb: inFamily</li>
+      <li>Reason and maker: every edge of the types item 5 names, until those fields are filled</li>
+    </ul>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <p class="label mute">Measured and estimated</p>
+  <div class="split2">
+    <div><div class="k">Measured on the repo, 29 Sep 2026</div>
+      <ul><li>65 types, 11,412 edges, 5,901 nodes; the ends and counts per type (07:53 UTC run)</li><li>Reasons on obeys 168/168 and restsOn 75/75; on no other type</li><li>22 self-lines, 1 containment loop, 29 repeated pairs (one run earlier that morning)</li><li>governedBy: 28 component lines, 18 mirrored by governs; 12 logo→rule lines</li><li>Maker flag missing on 1,648 edges; set true on the 835 bindsToken</li><li>Decision graph: 172 edges in 9 types</li><li>No domain, range, inverse, symmetric, self-loop or cycle check in _validate_kg.py (by search)</li></ul></div>
+    <div><div class="k on">Judgement and estimate</div>
+      <ul><li>The fit grades (exact, close, loose) in the word map: my reading of both definitions</li><li>That hasPart and containedBy, and triggeredBy and delegatesTo, are opposites: read from their definitions, not ruled</li><li>“What its first run would print”: an inference from the measurements, not a run of a gate that does not exist yet</li><li>v1’s “no published design-system ontology”: wrong, corrected here after Dave’s challenge. The v1 search was by topic; v2 searched by name and found Canonical’s.</li><li>“About 11 of 65” types covered by Canonical’s ontology: my reading of both vocabularies</li><li>Canonical’s counts (139 components etc.): files counted in the repository tree, not instances queried</li><li>No effort or time estimate is given</li></ul></div>
+  </div>
+</div></section>
+
+<section id="sources"><div class="wrap">
+  <p class="label">Sources</p>
+  <h2>Read on 29 September 2026</h2>
+  <ol class="sources">
+    <li><a href="https://discourse.ubuntu.com/t/canonicals-new-design-system-towards-a-design-system-ontology/70367">Canonical’s new design system: towards a design system ontology</a> <span class="d">Adrian Villa, Ubuntu Discourse, 22 Oct 2025</span></li>
+    <li><a href="https://github.com/canonical/pragma-core/tree/main/packages/semantics">canonical/pragma-core · packages/semantics</a> <span class="d">ds: ontology v3.0.0, dt: token ontology, anatomy DSL + SHACL shapes; LGPL-3.0; repository created 28 Sep 2026</span></li>
+    <li><a href="https://github.com/canonical/pragma-core/blob/main/packages/semantics/design-system/definitions/ontology.ttl">ds: ontology.ttl</a> <span class="d">read in full, 29 Sep 2026</span></li>
+    <li><a href="https://vanillaframework.io/">Vanilla framework</a> <span class="d">Canonical, since 2015</span></li>
+    <li><a href="https://opensource.adobe.com/spectrum-design-data/spec">Spectrum Design Data specification</a> <span class="d">Adobe, 1.0.0-draft</span></li>
+    <li><a href="https://github.com/adobe/spectrum-design-data">adobe/spectrum-design-data</a> <span class="d">relationship.schema.json, relationship-format.md</span></li>
+    <li><a href="https://github.com/openui/open-ui/tree/main/site/src/schemas">Open UI component and design-system schemas</a> <span class="d">JSON Schema, with per-system data files</span></li>
+    <li><a href="https://www.w3.org/TR/mbui-intro/">Introduction to Model-Based User Interfaces</a> <span class="d">W3C WG Note, 7 Jan 2014</span></li>
+    <li><a href="https://www.w3.org/2005/Incubator/model-based-ui/wiki/UsiXML.html">UsiXML</a> <span class="d">W3C MBUI wiki, archived 2009</span></li>
+    <li><a href="https://www.omg.org/spec/IFML/1.0/About-IFML">IFML 1.0</a> <span class="d">OMG; summary read via Wikipedia</span></li>
+    <li><a href="https://schema.org/WebPageElement">schema.org WebPageElement</a></li>
+    <li><a href="https://www.w3.org/community/uispec/">W3C UI Specification Schema Community Group</a> <span class="d">Aug 2025 – closed May 2026</span></li>
+    <li><a href="https://developers.figma.com/docs/rest-api/variables/">Figma REST API — variables</a> · <a href="https://developers.figma.com/docs/rest-api/component-types/">component types</a></li>
+    <li><a href="https://documentation.tokens.studio/platform/themes/theme-groups-and-theme-options">Tokens Studio — theme groups and options</a></li>
+    <li><a href="https://styledictionary.com/info/dtcg/">Style Dictionary — DTCG support</a></li>
+    <li><a href="https://github.com/salesforce-ux/theo">Salesforce Theo</a> <span class="d">archived 9 Jun 2025</span></li>
+    <li><a href="https://github.com/material-foundation/material-tokens">Material tokens (DSP)</a> · <a href="https://github.com/AdobeXD/design-system-package-dsp">Design System Package docs</a></li>
+    <li><a href="https://github.com/alphagov/govuk-frontend/blob/main/packages/govuk-frontend/src/govuk/components/button/button.yaml">GOV.UK Frontend button.yaml</a> <span class="d">component params</span></li>
+    <li><a href="https://github.com/OpenDesignSystem/odso">OpenDesignSystem/odso</a> <span class="d">2018, README only</span></li>
+
+    <li><a href="https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/">Design Tokens specification reaches first stable version</a> <span class="d">W3C DTCG, 28 Oct 2025</span></li>
+    <li><a href="https://www.designtokens.org/tr/drafts/format/">Design Tokens Format Module 2025.10</a> <span class="d">draft CG report; aliases, $ref, circular references, $extends, $deprecated</span></li>
+    <li><a href="https://www.w3.org/TR/owl2-primer/">OWL 2 Web Ontology Language Primer (Second Edition)</a> <span class="d">W3C Rec., 11 Dec 2012</span></li>
+    <li><a href="https://www.w3.org/TR/shacl/">Shapes Constraint Language (SHACL)</a> <span class="d">W3C Rec., 20 Jul 2017</span></li>
+    <li><a href="https://www.w3.org/TR/skos-reference/">SKOS Simple Knowledge Organization System Reference</a> <span class="d">W3C Rec., 18 Aug 2009</span></li>
+    <li><a href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/">DCMI Metadata Terms</a> <span class="d">2020-01-20</span></li>
+    <li><a href="https://schema.org/hasPart">schema.org hasPart</a> <span class="d">inverse isPartOf; domainIncludes and rangeIncludes</span></li>
+    <li><a href="https://www.w3.org/TR/prov-o/">PROV-O: The PROV Ontology</a> <span class="d">W3C Rec., 30 Apr 2013</span></li>
+    <li><a href="https://www.w3.org/TR/rdf12-concepts/">RDF 1.2 Concepts and Abstract Data Model</a> <span class="d">W3C CR snapshot, 7 Apr 2026</span></li>
+    <li><a href="https://www.w3.org/news/2026/w3c-invites-implementations-of-rdf-1-2-concepts-and-abstract-data-model-and-rdf-1-2-semantics/">W3C invites implementations of RDF 1.2</a> <span class="d">W3C news, 2026</span></li>
+    <li><a href="https://www.w3.org/TR/rdf12-primer/">RDF 1.2 Primer</a> <span class="d">W3C Group Note draft, 17 Sep 2026; triple terms and reifiers</span></li>
+    <li><a href="https://www.w3.org/TR/swbp-n-aryRelations/">Defining N-ary Relations on the Semantic Web</a> <span class="d">W3C WG Note, 12 Apr 2006</span></li>
+    <li><a href="https://www.iso.org/standard/76120.html">ISO/IEC 39075:2024 — GQL</a> <span class="d">property graph query language standard, 2024</span></li>
+    <li><a href="https://www.wikidata.org/wiki/Help:Property_constraints_portal">Wikidata property constraints portal</a> <span class="d">inverse, symmetric, value-type, single value, required qualifier; “hints, not firm restrictions”</span></li>
+    <li><a href="https://www.w3.org/TR/wai-aria-1.2/">WAI-ARIA 1.2</a> <span class="d">W3C Rec., 6 Jun 2023; required context role, required owned elements</span></li>
+    <li><a href="https://backstage.io/docs/features/software-catalog/well-known-relations/">Backstage — well-known relations between catalog entities</a> <span class="d">declared relation pairs</span></li>
+    <li><a href="https://help.figma.com/hc/en-us/articles/15145852043927-Create-and-manage-variables-and-collections">Figma — create and manage variables and collections</a> <span class="d">aliases of the same type; scopes</span></li>
+    <li><a href="https://atomicdesign.bradfrost.com/chapter-2/">Atomic Design, chapter 2</a> <span class="d">Brad Frost, 2016</span></li>
+    <li><a href="https://ceur-ws.org/Vol-747/paper9.pdf">A Formal Ontology on User Interfaces — Yet Another UI Description Language?</a> <span class="d">Paulheim &amp; Probst, SEMAIS 2011</span></li>
+    <li><a href="https://www.semanticscholar.org/paper/Pattern-Languages-in-Interaction-Design:-Structure-Welie-Veer/3b4118b996840e8da37426273ac00b09050ffaf7">Pattern Languages in Interaction Design: Structure and Organization</a> <span class="d">van Welie &amp; van der Veer, INTERACT 2003 (title and listing only; full text not reachable)</span></li>
+    <li><a href="https://www.cs.kent.ac.uk/people/staff/saf/patterns/plml.html">PLML: Pattern Language Markup Language</a> <span class="d">CHI 2003 workshop; page updated 2006</span></li>
+    <li><a href="https://philippe.kruchten.com/wp-content/uploads/2009/07/kruchten-2004-design-decisions.pdf">An Ontology of Architectural Design Decisions in Software-Intensive Systems</a> <span class="d">Kruchten, 2004</span></li>
+    <li><a href="https://openaccess.city.ac.uk/id/eprint/223/2/Argumentation-based_Design_Rationale.pdf">Argumentation-based design rationale (IBIS, QOC)</a> <span class="d">City Research Online</span></li>
+    <li><a href="https://acawiki.org/Questions,_Options,_and_Criteria:_Elements_of_design_space_analysis">Questions, Options, and Criteria</a> <span class="d">MacLean, Young, Bellotti &amp; Moran, 1991 (summary)</span></li>
+    <li><a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">Documenting Architecture Decisions</a> <span class="d">Nygard, 15 Nov 2011</span></li>
+    <li><a href="https://chsmc.org/2021/08/systems-as-knowledge-graphs/">Design systems as knowledge graphs</a> <span class="d">Chase McCoy, 15 Aug 2021</span></li>
+    <li><a href="https://shodo.medium.com/my-experiments-with-design-systems-as-knowledge-graphs-8a94f395d6c9">My experiments with design systems as knowledge graphs</a> <span class="d">Shobhit Singh, 27 Sep 2024; no schema published</span></li>
+    <li><a href="https://www.supernova.io/blog/design-system-mcp-servers">Design system MCP servers</a> <span class="d">Supernova, 30 Aug 2026; a vendor’s own comparison</span></li>
+  </ol>
+  <p class="meta" style="margin-top:var(--s4)">Apollo files read: knowledge/_kg_verbs.json · knowledge/components/meta.schema.json · knowledge/_ruling_edges.json · knowledge/_decision-graph.json · knowledge/_graph_edges.py · knowledge/_validate_kg.py · knowledge/_validate_polarities.py · knowledge/brain/polarities.json · knowledge/roles.json · knowledge/when-fields.json · knowledge/_build_kg_explorer.py (extract functions and version notes). The search <span class="mono">_memento_search.py "edge vocabulary"</span> returned the older supersedes, refines and bounds lines only.</p>
+</div></section>
+
+<footer><div class="wrap">Apollo session 308 · lane O · research, read-only · v2 (adds the catalogue; v1 kept unchanged) · 29 Sep 2026</div></footer>
+
+<script>
+(function(){
+  var bar=document.getElementById('bar');
+  function onScroll(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;bar.style.transform='scaleX('+(m>0?h.scrollTop/m:0)+')';}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  var KEY='r308-ontology-answers-v2';var saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){saved={};}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}}
+  var items=document.querySelectorAll('#recs>li');
+  items.forEach(function(li){
+    var n=li.getAttribute('data-n');var box=li.querySelector('div');
+    var row=document.createElement('div');row.className='rule-on';
+    ['Take it','Change it','Leave it'].forEach(function(v){
+      var l=document.createElement('label');var r=document.createElement('input');r.type='radio';r.name='r'+n;r.value=v;
+      if(saved[n]&&saved[n].v===v)r.checked=true;
+      r.addEventListener('change',function(){saved[n]=saved[n]||{};saved[n].v=v;save();});
+      l.appendChild(r);l.appendChild(document.createTextNode(v));row.appendChild(l);
+    });
+    var t=document.createElement('textarea');t.placeholder='A sentence, if you want one';t.setAttribute('aria-label','Note on item '+n);
+    t.value=(saved[n]&&saved[n].t)||'';
+    t.addEventListener('input',function(){saved[n]=saved[n]||{};saved[n].t=t.value;save();});
+    row.appendChild(t);box.appendChild(row);
+  });
+  document.getElementById('copy').addEventListener('click',function(){
+    var out=['Session 308 · edge definitions · answers (v2)'];
+    items.forEach(function(li){var n=li.getAttribute('data-n');var h=li.querySelector('h3').textContent;var s=saved[n]||{};
+      out.push(n+'. '+h+' — '+(s.v||'no answer')+(s.t?' — '+s.t:''));});
+    var txt=out.join('\n');var msg=document.getElementById('copied');
+    function done(){msg.textContent='Copied.';}
+    try{navigator.clipboard.writeText(txt).then(done,function(){fallback();});}catch(e){fallback();}
+    function fallback(){var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand('copy');done();}catch(e){msg.textContent='Copy failed — select the text above.';}document.body.removeChild(a);}
+  });
+})();
+</script>
+</body></html>
