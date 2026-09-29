@@ -25,3 +25,11 @@ status: his words, verbatim — quote, never paraphrase
 > So extending this do we need a series of container types like section, division, sector, panel, etc
 >
 > What is 'holder' in this, description, behaviour? what about housing or something. again maybe it doesnt matter.
+
+---
+
+## 19:01 BST — his answer to the conductor's two naming questions, verbatim
+
+The conductor (chat, ~18:58 BST) asked: "**Yours:** "housing" in place of "holder", and "cell" as the grid position only? One word each."
+
+> yes to both
