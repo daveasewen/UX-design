@@ -331,7 +331,12 @@ def snippet_manifests():
             continue
         slug = re.sub(r"[^a-z0-9]+", "-",
                       os.path.basename(f).replace(".reference.html", "").lower()).strip("-")
-        out.append((slug, json.loads(mm.group(1)).get("vars", {})))
+        man = json.loads(mm.group(1))
+        out.append((slug, man.get("vars", {})))
+        # s308-D42 (#309 lane C): an old name kept as an alias gets the same projection under its own
+        # scope, as gen_canon_components.py emits its block (the manifest's `scopeAliases`).
+        for old in (man.get("scopeAliases") or {}):
+            out.append((re.sub(r"[^a-z0-9]+", "-", old.lower()).strip("-"), man.get("vars", {})))
     return out
 
 def component_overrides(varmap, theme):

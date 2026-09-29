@@ -24,6 +24,8 @@ import glob, os, re, json, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+ALIAS_SEATS = set()   # names of s210-D5 alias seats: they hold no spec, so no snippet of their own
+
 def real_metas():
     out = {}
     for f in glob.glob(os.path.join(HERE, "components", "*.meta.json")):
@@ -31,7 +33,10 @@ def real_metas():
         if b.startswith("EXAMPLE"):
             continue
         try:
-            out[json.load(open(f)).get("name", b)] = b + ".meta.json"
+            d = json.load(open(f))
+            out[d.get("name", b)] = b + ".meta.json"
+            if d.get("aliasOf"):
+                ALIAS_SEATS.add(d.get("name", b))
         except Exception as e:
             out[b] = f"UNPARSEABLE ({e})"
     return out
@@ -59,7 +64,9 @@ def main():
     metas = real_metas()
     snips, bad = snippet_manifests()
     mset, sset = set(metas), set(snips)
-    missing = sorted(mset - sset)     # meta but no snippet
+    # meta but no snippet. An alias seat (aliasOf) is drawn by its owner's snippet - #309 lane C, s308-D42:
+    # kpi-tile.meta.json is an alias of Metric and its snippet became Metric.reference.html.
+    missing = sorted(n for n in mset - sset if n not in ALIAS_SEATS)
     orphan = sorted(sset - mset)      # snippet but no meta
 
     fails = []

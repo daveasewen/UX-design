@@ -307,9 +307,27 @@ def strip_css_noise(style):
     no_comments = re.sub(r"/\*.*?\*/", "", style, flags=re.S)
     return _CSS_STRING.sub('""', no_comments)
 
-def gen_one(path):
+# s308-D42 (Dave, #308): "old names kept as aliases". A snippet that took over another component's
+# name (#309 lane C: Kpi-tile.reference.html became Metric.reference.html, s309-D2) lists the OLD
+# name in its manifest's `scopeAliases`, with the class rename it made: {"Kpi-tile": {"class":
+# ["metric", "kpi-tile"], "prefix": ["metric-", "kpi-"]}}. Canon then ALSO carries the old scope,
+# generated from the SAME snippet with the rename undone, so a page built on the old name renders as
+# it did. One source; the alias block is never authored and cannot drift from it.
+def alias_style(style, spec):
+    new_cls, old_cls = spec["class"]
+    new_pre, old_pre = spec["prefix"]
+    for kf in re.findall(r"@keyframes\s+([\w-]+)", style):
+        if kf.startswith(new_pre):
+            style = re.sub(r"(?<![\w-])" + re.escape(kf) + r"(?![\w-])", old_pre + kf[len(new_pre):], style)
+    style = re.sub(r"(?<=\.)" + re.escape(new_pre) + r"(?=[a-z0-9])", old_pre, style)
+    return re.sub(r"(?<=\.)" + re.escape(new_cls) + r"(?![\w-])", old_cls, style)
+
+def gen_one(path, alias=None):
     html = open(path).read()
     name = os.path.basename(path).replace(".reference.html", "")
+    of = None
+    if alias:
+        of, (name, spec) = name, alias
     sc = "cn-" + slug(name)
     # ds-039 (#122): strip HTML comments BEFORE harvesting — a '<style>' merely MENTIONED
     # in a documentation comment (Chart-butterfly-h) made the lazy regex swallow the
@@ -321,6 +339,8 @@ def gen_one(path):
     # Cold run 4 finding 1: the fenced `.dg{--dg-max:760px}` reached canon.css:10538 and made
     # "the page owns the width" false for every page linking canon.css.
     style = re.sub(r"/\* ===== APOLLO-DEMO[^\n]*?START.*?APOLLO-DEMO[^\n]*?END ===== \*/", "", style, flags=re.S)
+    if alias:
+        style = alias_style(style, spec)
     if "<" in strip_css_noise(style):
         raise SystemExit(f"gen_canon_components: HARVEST NOT CSS — literal '<' outside comments "
                          f"or CSS strings in harvested <style> of {os.path.basename(path)}; "
@@ -372,14 +392,19 @@ def gen_one(path):
 
     # ---- decision header ----
     hdr = [f"/* ============================================================",
-           f"   {name}  (from snippets/{name}.reference.html)"]
+           f"   {name}  (from snippets/{name}.reference.html)" if not of else
+           f"   {name}  (ALIAS of {of}, generated from snippets/{of}.reference.html - s308-D42: old names kept as aliases)"]
     if manifest.get("requiredAria"): hdr.append(f"   Aria: {cmt(', '.join(manifest['requiredAria']))}")
     if manifest.get("reuses"): hdr.append(f"   Reuses: {cmt(', '.join(manifest['reuses']) if isinstance(manifest['reuses'],list) else manifest['reuses'])}")
     for fnd in manifest.get("knownFindings", []) or []:
         hdr.append(f"   Finding: {cmt(fnd if isinstance(fnd,str) else json.dumps(fnd))}")
     if drift.get("$reason"): hdr.append(f"   Drift: {cmt(drift['$reason'])}")
     hdr.append(f"   Scope: .{sc}   ============================================================ */")
-    return "\n".join(hdr) + "\n" + "\n".join(vb) + "\n" + body_css + "\n"
+    out = "\n".join(hdr) + "\n" + "\n".join(vb) + "\n" + body_css + "\n"
+    if not alias:
+        for old_name, spec_ in (manifest.get("scopeAliases") or {}).items():
+            out += gen_one(path, (old_name, spec_))
+    return out
 
 ORDER = ["Button","List-items","Cards","Headers","Navigations","Notifications","Modals","Input-fields",
  "Progress-tracker","Badge","Links","Tags","Status-indicator","Avatar","Divider","Table","Tabs",

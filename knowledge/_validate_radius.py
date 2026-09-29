@@ -76,7 +76,7 @@ MIGRATED_SNIPPETS = {
     "Combobox.reference.html",
     "Multi-select.reference.html",
     "Tags-input.reference.html",
-    "Kpi-tile.reference.html",
+    "Metric.reference.html",  # was Kpi-tile.reference.html until #309 (s308-D42)
     "Timeline.reference.html",
     "Avatar-group.reference.html",
     "Button.reference.html",

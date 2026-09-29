@@ -174,8 +174,8 @@ CATEGORIES = [
                            "summary", "accordion",
                            # Phase-2 wave 1 (worker B) + wave 2 (worker C):
                            "stat-card", "data-grid",
-                           # Wave 3b, #203 (conductor-registered):
-                           "kpi-tile", "timeline", "avatar-group"]),
+                           # Wave 3b, #203 (conductor-registered); kpi-tile is metric since #309 (s308-D42):
+                           "metric", "timeline", "avatar-group"]),
     ("Identity and display", ["avatar", "tags", "eyebrow", "headers", "hero", "divider",
                            "video-player"]),
     # Phase-2 wave 2 (worker D's lane; bucket cut by the conductor — provisional-agent

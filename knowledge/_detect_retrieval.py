@@ -738,7 +738,7 @@ def selftest(snippet_dir):
           % (len(corpus.files), len(corpus.vocab), DF_OWN))
 
     # The subjects are REAL FILES, not fixtures ([[green-tests-cannot-see-scope]]).
-    subjects = [f for f in ("Chart-bar", "Chart-line", "Kpi-tile", "Cards", "Accordion")
+    subjects = [f for f in ("Chart-bar", "Chart-line", "Metric", "Cards", "Accordion")
                 if f in corpus.trees]
     if len(subjects) < 3:
         raise DetectorRefusal("selftest needs >=3 of its named real subjects present in "

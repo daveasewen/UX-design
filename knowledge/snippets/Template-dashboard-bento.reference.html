@@ -634,7 +634,8 @@
   /* #305 call 41b (Dave, 2026-09-27: "40px, the tile's own") — the 44px is THIS template's own demo
      tiles. A real Kpi-tile placed in the wall keeps its own 40px spark: the rule stops at a Kpi-tile
      scope (zero specificity, so nothing else in the cascade moves). Its other spark rules are untouched. */
-  .spark-inline:not(:where(.cn-kpi-tile *)){display:block; width:100%; height:44px; overflow:visible;}
+  /* #309 C: the KPI tile is now Metric (s308-D42, s309-D2) - the stop covers the Metric scope and its kpi-tile alias. */
+  .spark-inline:not(:where(.cn-metric *, .cn-kpi-tile *)){display:block; width:100%; height:44px; overflow:visible;}
   .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--spark-base-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
   .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
     stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
