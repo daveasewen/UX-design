@@ -211,6 +211,20 @@
                 "type": "string"
               },
               "minItems": 1
+            },
+            "kind": {
+              "description": "s308-D40 (Dave, #308, by click: 'By kind through accepts, advisory first like every new check'): the KINDS of component this slot accepts, from the five in knowledge/_edge_register.json `$containers.kinds` (s308-D44 names the second one housing). Checked against every containedBy line by knowledge/_validate_edges.py --check (ACCEPTS, advisory).",
+              "type": "array",
+              "items": {
+                "enum": [
+                  "layout",
+                  "housing",
+                  "record",
+                  "block",
+                  "part"
+                ]
+              },
+              "minItems": 1
             }
           }
         },
@@ -219,6 +233,10 @@
         },
         "multiple": {
           "type": "boolean"
+        },
+        "sameKind": {
+          "type": "boolean",
+          "description": "s308-D43 limit 3 (a carousel's slides all hold the same kind): every child this slot accepts must be of one kind. Checked as MIXED-SLOTS."
         },
         "use": {
           "type": "string",
@@ -384,6 +402,24 @@
         "organism",
         "template",
         "page"
+      ]
+    },
+    "kind": {
+      "description": "s308-D39/D40/D44 (Dave, #308): the ONE kind this component is, of five - layout, housing, record, block, part. Defined once in knowledge/_edge_register.json `$containers.kinds`; a slot's accepts.kind names kinds, and knowledge/_validate_edges.py --check reads both (ACCEPTS, advisory first). An alias seat (aliasOf) carries none: it is its owner's kind.",
+      "enum": [
+        "layout",
+        "housing",
+        "record",
+        "block",
+        "part"
+      ]
+    },
+    "surface": {
+      "description": "s308-D41 (Dave, #308, by click: 'All three as proposed, including renaming the chart-panel role to chart'): surface is a PROPERTY, never a type - ground (it paints its own ground: a tile), border (it is bounded by its border: a card) or none.",
+      "enum": [
+        "ground",
+        "border",
+        "none"
       ]
     },
     "purpose": {

@@ -613,7 +613,7 @@ def selftest():
             shutil.rmtree(tmp, ignore_errors=True)
 
     def stores(rp, ip, sp, wp):
-        json.dump({"roles": {"chart-panel": {"providers": [{"slug": "chart-bar"}]},
+        json.dump({"roles": {"chart": {"providers": [{"slug": "chart-bar"}]},
                              "headline-metric": {"providers": []}}},
                   open(rp, "w", encoding="utf-8"))
         json.dump({"chart-intent": {w: {"definition": "x"} for w in
@@ -633,7 +633,7 @@ def selftest():
 
     print("selftest — _validate_roles_resolve.py")
     bite("a fully-tagged meta resolves", False,
-         lambda c, r, i: meta(c, "chart-bar", provides="chart-panel", answers="comparison",
+         lambda c, r, i: meta(c, "chart-bar", provides="chart", answers="comparison",
                               shape="series", span={"cols": {"min": 6, "max": 12}},
                               priority=60, when="span.cols >= 6"))
     # ^ the `when` here was `span >= 6` until #254. Check 10 (s254-D2 item 2) refused it:
@@ -646,10 +646,10 @@ def selftest():
     bite("not-with slug resolving to nothing refuses", True,
          lambda c, r, i: meta(c, "Bad3", not_with=[{"slug": "ghost-card"}]))
     bite("duplicate priority inside one role refuses", True,
-         lambda c, r, i: (meta(c, "A", provides="chart-panel", priority=60),
-                          meta(c, "B", provides="chart-panel", priority=60)))
+         lambda c, r, i: (meta(c, "A", provides="chart", priority=60),
+                          meta(c, "B", provides="chart", priority=60)))
     bite("same priority in DIFFERENT roles is legal", False,
-         lambda c, r, i: (meta(c, "A", provides="chart-panel", priority=60),
+         lambda c, r, i: (meta(c, "A", provides="chart", priority=60),
                           meta(c, "B", provides="headline-metric", priority=60)))
     bite("priority with no provides refuses", True,
          lambda c, r, i: meta(c, "Bad6", priority=60))
@@ -658,7 +658,7 @@ def selftest():
     bite("span min > max refuses", True,
          lambda c, r, i: meta(c, "Bad5", span={"cols": {"min": 9, "max": 4}}))
     bite("absent roles store fails LOUD", True,
-         lambda c, r, i: (os.remove(r), meta(c, "Orphan", provides="chart-panel")))
+         lambda c, r, i: (os.remove(r), meta(c, "Orphan", provides="chart")))
     bite("unknown shape refuses", True,
          lambda c, r, i: meta(c, "Bad7", shape="bins × frequency"))
     bite("a shape IN the store resolves", False,
@@ -685,10 +685,10 @@ def selftest():
 # carries its probe) — including a GREEN arm, so the harness is not a one-way ratchet.
 MUTATIONS = {
     "unknown-role": ("chart-bar gains provides='chart-pane' (a typo for a real role)", "RED"),
-    "known-role": ("chart-bar gains provides='chart-panel' (the true role)", "GREEN"),
+    "known-role": ("chart-bar gains provides='chart' (the true role)", "GREEN"),
     "unknown-answer": ("chart-bar gains answers='count-vs-threshold' (unruled word)", "RED"),
     "answer-disagrees": ("chart-bar gains answers='distribution' against intent='comparison'", "RED"),
-    "dup-priority": ("chart-bar + chart-line both provide chart-panel at priority 60", "RED"),
+    "dup-priority": ("chart-bar + chart-line both provide chart at priority 60", "RED"),
     "span-inverted": ("chart-bar gains span cols min 9 > max 4", "RED"),
     "notwith-ghost": ("chart-bar gains not-with slug 'ghost-card'", "RED"),
     "derive-demo": ("chart-bar + chart-line tagged legally, with a not-with edge — the arm "
@@ -723,15 +723,15 @@ def mutate(name):
         if name == "unknown-role":
             d["provides"] = "chart-pane"
         elif name == "known-role":
-            d["provides"] = "chart-panel"
+            d["provides"] = "chart"
         elif name == "unknown-answer":
             d["answers"] = "count-vs-threshold"
         elif name == "answer-disagrees":
             d["answers"] = "distribution"
         elif name == "dup-priority":
-            d["provides"], d["priority"] = "chart-panel", 60
+            d["provides"], d["priority"] = "chart", 60
             e = copy.deepcopy(docs["chart-line"])
-            e["provides"], e["priority"] = "chart-panel", 60
+            e["provides"], e["priority"] = "chart", 60
             json.dump(e, open(line, "w", encoding="utf-8"))
         elif name == "span-inverted":
             d["span"] = {"cols": {"min": 9, "max": 4}}
@@ -743,12 +743,12 @@ def mutate(name):
             # invented shape and priority 60 now collides with a live provider — so the
             # FIXTURE moved to the store's own values and the metas' own priorities. The
             # arm still drives derive(); nothing about the check was relaxed.
-            d["provides"], d["priority"] = "chart-panel", 92
+            d["provides"], d["priority"] = "chart", 92
             d["shape"] = "categories × series"
             d["span"] = {"cols": {"min": 6, "max": 12}}
             d["not-with"] = [{"slug": "chart-line", "when": "span.cols < 6"}]
             e = copy.deepcopy(docs["chart-line"])
-            e["provides"], e["priority"] = "chart-panel", 88
+            e["provides"], e["priority"] = "chart", 88
             e["shape"] = "categories × series"
             e["span"] = {"cols": {"min": 6, "max": 12}}
             e["with"] = [{"slug": "chart-bar", "rel": "recommends"}]

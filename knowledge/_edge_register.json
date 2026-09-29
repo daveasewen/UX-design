@@ -47,6 +47,85 @@
    "item 9 (s308-D24)": "token→token alias, providesCapability, a theme to point at, component→ARIA role: no rows until those edges exist."
   }
  },
+ "$containers": {
+  "what": "THE CONTAINER MODEL (#309 lane B, enacting s308-D39..D44). 'Container' is this register's UMBRELLA WORD for anything that accepts children - a layout, a housing or a record - and never a component name, except the layout utility's width container (s308-D41). Every component meta declares ONE kind (meta `kind`; an alias seat is its owner's kind). A container's slots say which kinds they accept (`slots.<name>.accepts.kind`); a container with no kind-bearing slot accepts what its kind accepts below. knowledge/_validate_edges.py --check reads this block and every containedBy line (ACCEPTS, advisory first - s308-D40).",
+  "rulings": {
+   "s308-D39": "Dave, by click, verbatim: 'Canonical’s line: card = one of a set of like records; tile = one bento cell, surfaced, holding one thing'",
+   "s308-D40": "Dave, by click, verbatim: 'By kind through accepts, advisory first like every new check'",
+   "s308-D41": "Dave, by click, verbatim: 'All three as proposed, including renaming the chart-panel role to chart'",
+   "s308-D43": "Dave, by click, verbatim: 'All four limits: the first three refuse, and the lone-card rule warns'",
+   "s308-D44": "Dave, 19:01 BST, verbatim: 'yes to both' - the kind the research page called 'holder' is HOUSING; 'cell' is the grid position only"
+  },
+  "terms": {
+   "card": "one of a set of like records (s308-D39). A record; bounded by its border (surface: border). A lone card is a tile (s308-D43, warns).",
+   "tile": "one bento cell, surfaced, holding one thing (s308-D39). A housing; paints its own ground (surface: ground). No component is a tile today: the bento's tiles live only in template-dashboard-bento's markup, so `tiles` below is empty.",
+   "cell": "the grid position only - where something sits in a bento and what it spans; it has no surface and is not a part. A tile is the surfaced thing that occupies a cell (s308-D44).",
+   "container": "the umbrella word for a layout, a housing or a record - never a component name, except the layout utility's width container (s308-D41).",
+   "surface": "a PROPERTY, never a type: ground, border or none (s308-D41; meta `surface`).",
+   "panel": "a region of the screen frame only - a side panel, a drawer, a splitter pane (s308-D41). Not a content box; the role once called chart-panel is `chart` (knowledge/roles.json)."
+  },
+  "kinds": {
+   "layout": {
+    "plain": "arranges several things (a bento, a card grid, a page template, a shell)",
+    "accepts": [
+     "layout",
+     "housing",
+     "record",
+     "block"
+    ]
+   },
+   "housing": {
+    "plain": "frames exactly one thing (or one sequence) with its own surface or behaviour - tile, carousel and panel are housings (s308-D44)",
+    "accepts": [
+     "layout",
+     "housing",
+     "record",
+     "block"
+    ]
+   },
+   "record": {
+    "plain": "one of a set of like records - a card (s308-D39)",
+    "accepts": [
+     "block",
+     "part"
+    ],
+    "never": [
+     "layout",
+     "housing",
+     "record"
+    ]
+   },
+   "block": {
+    "plain": "carries content, the thing the reader came for (a metric, a chart, a table, a list, an image)",
+    "accepts": [
+     "block",
+     "part"
+    ]
+   },
+   "part": {
+    "plain": "a named piece of one component (a card's header); a subcomponent: node is a part",
+    "accepts": [
+     "block",
+     "part"
+    ]
+   }
+  },
+  "tiles": [],
+  "limits": {
+   "CARD-HOLDS": "refuses (s308-D43 limit 1): a card never holds a layout, a housing or another record",
+   "TOO-MANY": "refuses (limit 2): a tile holds exactly one thing - a tile's accepting slot may not be multiple",
+   "TILE-IN-TILE": "refuses (limit 2): a tile never sits directly in a tile - nest through a bento",
+   "MIXED-SLOTS": "refuses (limit 3): a carousel's slides all hold the same kind - a sameKind slot may not accept two kinds",
+   "LONE-CARD": "WARNS (limit 4): a card always has peers - a record accepted by a housing through no multiple slot is a lone card, which is a tile",
+   "NOT-ACCEPTED": "refuses (s308-D40): the parent does not accept the child's kind",
+   "MISSING": "refuses (s308-D40): a required kind-bearing slot that accepts no containedBy line",
+   "NO-KIND": "refuses: a component meta with no kind (an alias seat excepted)"
+  },
+  "derived": {
+   "s308-D34": "'a carousel holds cards' is no longer an authored pair: Carousel's `slides` slot accepts kind record, and Cards declares kind record, so the check derives it; the reverse (Cards holding a Carousel) is refused as CARD-HOLDS."
+  },
+  "$assigned": "#309 lane B assigned the kinds from each meta's purpose against the ruled definitions (notes/_lanes/309/B/kinds.py): layout = the 12 templates, the 7 app shells, layout-utilities, form-layout, splitter, stats-band-lockup, feature-grid-lockup, footer, footer-doormat-lockup, hero, hero-variants; housing = carousel, drawer, modals, modal-lightbox, popover, accordion, tabs; record = cards, account-card, transaction-row, document-row, standing-order-mandate-row; part = card-header-lockup; block = the rest. JUDGEMENT, not ruled: tabs, accordion and popover are housings because each frames one thing or one sequence with its own behaviour (s308-D44's definition), which makes their lines into Cards refuse under limit 1."
+ },
  "types": [
   {
    "word": "acceptsCapability",
@@ -1490,6 +1569,7 @@
   },
   {
    "word": "containedBy",
+   "accepts": {"by": "kind", "home": "$containers", "check": "knowledge/_validate_edges.py --check, the ACCEPTS classes (advisory first, s308-D40)", "basis": "s308-D40: each component declares one kind and each container's slots say which kinds they accept; the check refuses any containedBy line the parent does not accept"},
    "plain": "is contained by",
    "verb": {
     "reads": [

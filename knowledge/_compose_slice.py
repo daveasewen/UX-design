@@ -192,7 +192,7 @@ ROLE_LEXICON = {
     "headline-metric": ["stat", "stat card", "kpi", "metric", "metrics", "figure", "big number",
                         "headline number", "tile", "scorecard"],
     "status-surface": ["status", "state", "health", "rag", "threshold", "badge", "traffic light"],
-    "chart-panel": ["chart", "charts", "graph", "graphs", "plot", "visualisation", "visualization",
+    "chart": ["chart", "charts", "graph", "graphs", "plot", "visualisation", "visualization",
                     "trend", "series", "sparkline", "dataviz"],
     "record-list": ["table", "data table", "datatable", "grid", "rows", "records", "list",
                     "transactions", "transaction", "ledger", "line items", "timeline"],
@@ -260,10 +260,10 @@ SCREEN_ALWAYS = ["accessibility-content-authoring.md", "web-foundations.md",
 # A COMPOSITE task word stands for several roles at once. These are INFERRED roles, flagged
 # `inferred: true` so a reader can tell an inference from a request.
 COMPOSITE_LEXICON = {
-    "dashboard": ["page-frame", "wayfinding", "headline-metric", "chart-panel", "record-list",
+    "dashboard": ["page-frame", "wayfinding", "headline-metric", "chart", "record-list",
                   "page-title"],
-    "overview": ["page-frame", "headline-metric", "chart-panel", "page-title"],
-    "report": ["page-title", "record-list", "chart-panel"],
+    "overview": ["page-frame", "headline-metric", "chart", "page-title"],
+    "report": ["page-title", "record-list", "chart"],
 }
 
 STOP = set("""a an and are as at be build by can do for from get give has have her his in into is it
@@ -834,14 +834,14 @@ def pick_components(task, terms, roles, intents, g, max_components=14, min_score
         m = g["metas"][slug]
         rl = sorted(set(role_slugs.get(slug, [])))
         named = "named in the task" in " ".join(whys) or slug in forced
-        # chart-panel is chosen by the INTENT WORD, not by the role (roles.json, role 3).
-        if rl == ["chart-panel"] and not named:
+        # chart is chosen by the INTENT WORD, not by the role (roles.json, role 3).
+        if rl == ["chart"] and not named:
             mi = m.get("intent") or m.get("answers")
             mi = mi if isinstance(mi, list) else [mi]
             if not want_intents:
-                if any(nn["what"] == "role:chart-panel" for nn in notes):
+                if any(nn["what"] == "role:chart" for nn in notes):
                     continue
-                notes.append({"what": "role:chart-panel", "ref": None,
+                notes.append({"what": "role:chart", "ref": None,
                               "$note": "the task asks for a chart but names no analytical intent "
                                        "(knowledge/chart-intents.json). The chart cannot be chosen "
                                        "mechanically — ask, do not guess.",
@@ -851,7 +851,7 @@ def pick_components(task, terms, roles, intents, g, max_components=14, min_score
             if want_intents is None or not any(i in (mi or []) for i in want_intents):
                 continue
         primary = rl[0] if rl else None
-        if primary and primary in seen_role and not named and primary != "chart-panel":
+        if primary and primary in seen_role and not named and primary != "chart":
             if alts.get(primary, 0) >= ALT_PER_ROLE or score < ALT_MIN_SCORE:
                 continue
             alts[primary] = alts.get(primary, 0) + 1
@@ -2230,7 +2230,7 @@ def selftest():
     sc = build_slice(TASK_C, graph=g)
     bite("a chart task resolves through chart-intents, not by chart name",
          any(i["intent"] in ("comparison", "change-over-time") for i in sc["query"]["intents"]) and
-         any((c.get("provides") == "chart-panel") for c in sc["components"]))
+         any((c.get("provides") == "chart") for c in sc["components"]))
     bite("unresolved is honest — every entry carries ref:null and a note",
          all(u.get("ref", None) is None and u.get("$note") for u in s["unresolved"]))
     sb = build_slice(TASK_B, graph=g)
