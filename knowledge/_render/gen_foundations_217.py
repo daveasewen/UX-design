@@ -9,7 +9,7 @@ WHY IT EXISTS — Dave, 2026-08-22, verbatim:
 WHAT IT WRITES
   showroom/_foundations/photography.html   — ALL 251 minted web derivatives (#218), bento-laid,
                                              lazy-loaded, each opening a ZERO-JS popover lightbox
-  showroom/_foundations/logos.html         — the 12 exported HSBC marks, each on the ground its
+  showroom/_foundations/logos.html         — the 8 exported HSBC marks (s282-D4), each on the ground its
                                              artwork requires
 Both are addressed by knowledge/_render/gen_library_214.py, whose Foundations ladder tier
 (s215-D4) was drawn empty until this generator existed. That file holds the ONE list of
@@ -59,7 +59,7 @@ foundation entries (`FOUNDATIONS`); this file imports it rather than keeping a s
 
 ⛔ NO POLICY IS AUTHORED
   The logos page carries only what knowledge/guidelines/logos.md already says plus facts
-  MEASURED off the twelve files. The photography page carries only the manifest's own rows.
+  MEASURED off the eight files (s282-D4 scrapped the identifier lockup). The photography page carries only the manifest's own rows.
   No preference ordering, no clearspace rule, no licence interpretation.
 
 EVERY NUMBER ON BOTH PAGES IS MEASURED AT BUILD TIME
@@ -735,14 +735,15 @@ def span_attrs(span):
 # ---------------------------------------------------------------------------
 VIEWBOX_RE = re.compile(r'viewBox="([^"]+)"')
 FILL_RE = re.compile(r'fill="([^"]+)"')
-LOGO_ORDER = ["hexagon", "masterbrand", "masterbrand-identifier"]
+# ⬛ s282-D4 (#282, Dave: "scrap the identifier versions") — TWO lockups, 8 variants. The
+# masterbrand-with-identifier lockup left the tree at da9f824e; this list kept naming it until #308
+# lane D round 2 (Dave 2026-09-29 17:01: "Take the identifier lockup out of the generator, then
+# regenerate logos.html with 8"), so the page drew four broken images and, regenerated, would have
+# printed "4 expected file(s) missing". A lockup comes back only by being added here.
+LOGO_ORDER = ["hexagon", "masterbrand"]
 LOGO_LOCKUP = {
     "hexagon": ("Hexagon", "The HSBC hexagon mark alone."),
     "masterbrand": ("Masterbrand", "Hexagon + the HSBC wordmark."),
-    "masterbrand-identifier": (
-        "Masterbrand with identifier",
-        "The masterbrand plus an “Example identifier” label (a business or division "
-        "name), set in Univers Next Light."),
 }
 GROUND_HEX = {"light": "#FFFFFF", "dark": "#1A1A1A"}
 
@@ -1834,7 +1835,7 @@ def logos_page(rows, residuals):
     body = """
   <section id="intro">
     <h2 class="t-ed-heading-3">Logos</h2>
-    <p class="t-ed-body lede">A Foundations tier entry, not a component. Three lockups, each in
+    <p class="t-ed-body lede">A Foundations tier entry, not a component. Two lockups, each in
       <b>Colour</b> and <b>Monotone</b>, each in an <b>On light</b> and an <b>On dark</b>
       treatment &mdash; the on-dark artwork is the reverse cut, drawn for dark surfaces. %d files
       in all, in <code>knowledge/assets/logos/</code>. Every fill in every file is hardcoded, so
@@ -1850,15 +1851,6 @@ def logos_page(rows, residuals):
     <div class="c-bento fx-wall-logo"><div class="c-bento__grid">
 %s
     </div></div>
-    <div class="finding">
-      <div class="t-ed-body-small"><b>&#9888; Measured, not fixed &mdash; the two ON-DARK
-        identifier exports carry no identifier label.</b></div>
-      <p class="t-ed-body-small">Both dark files are the plain masterbrand artwork on a 795-unit
-        viewBox: the label paths are absent, so 480 units (60%% of the box) render empty. The two
-        tiles above show the files <b>as they are</b>; the gap is the export's, not the page's.
-        Logged as <code>ds-045</code> in <code>knowledge/_DS-IMPROVEMENTS.md</code> &mdash;
-        re-exporting is the fix and it is not this page's to make.</p>
-    </div>
   </section>
 
   <section id="inventory">
@@ -2393,12 +2385,15 @@ def selftest():
     bite("10 · logo tile grounds are LITERAL and pinned per variant, never a token",
          (pbody.count('data-ground="'),
           lbody.count('data-ground="light"'), lbody.count('data-ground="dark"')),
-         (0, 6, 6))
+         (0, 4, 4))
     bite("11 · a dark mark never floats on a light ground",
          sorted({(r["ground"], GROUND_HEX[r["ground"]]) for r in rows["logos"]}),
          [("dark", "#1A1A1A"), ("light", "#FFFFFF")])
-    bite("12 · ds-045 is reported on the page as a measured defect, not silently fixed",
-         ("ds-045" in logos and "not this page" in logos), True)
+    # ⬛ s282-D4 + #308 lane D round 2: ds-045 was a defect in two identifier files; the lockup is
+    # scrapped, so the finding is MOOT and must not outlive it — nor may any identifier file.
+    bite("12 · s282-D4 — the scrapped identifier lockup and its moot ds-045 finding are OFF the page",
+         ("ds-045" in logos, "masterbrand-identifier" in logos, len(rows["logos"])),
+         (False, False, 8))
     bite("13 · the theme broadcast is the showroom's, incl. the hashchange re-theme",
          all(s in photo and s in logos
              for s in ["data-apollo-theme", "data-theme", "hashchange", "chrome"]), True)
