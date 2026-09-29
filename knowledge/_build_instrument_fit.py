@@ -178,6 +178,24 @@ def rule_aliases(rid):
     return forms
 
 
+# #308: a bounded match `(?<![\w-])FORM(?![\w-])` of a FORM made only of [\w-] characters is
+# true exactly when FORM is one whole maximal [\w-]+ run of the source. So each file is split
+# into its runs ONCE and every rule is a set lookup - same answers as the 82,000 regex scans
+# they replace (40 s at the seat; the CI survey's 60 s per-step cap timed out on it at f3391434).
+# Any form with another character falls back to the regex, unchanged.
+_WORD_RUN = re.compile(r"[\w-]+")
+
+
+def _runs(src):
+    return set(_WORD_RUN.findall(src))
+
+
+def _names(form, src, runs):
+    if _WORD_RUN.fullmatch(form):
+        return form in runs
+    return re.search(r"(?<![\w-])" + re.escape(form) + r"(?![\w-])", src) is not None
+
+
 def dangling_citations(rules):
     """Rule IDs a gate CITES AS ITS AUTHORITY that the rules index does not contain.
 
@@ -205,8 +223,9 @@ def dangling_citations(rules):
     # Sort BOTH the iteration and the emitted keys — do not "simplify" either away.
     for path in check_files():                       # already sorted (see check_files)
         src = open(path, encoding="utf-8", errors="replace").read()
+        runs = _runs(src)
         for rid in sorted(untagged):
-            if re.search(r"(?<![\w-])" + re.escape(rid) + r"(?![\w-])", src):
+            if _names(rid, src, runs):
                 out.setdefault(rid, []).append(os.path.relpath(path, REPO))
     return {k: out[k] for k in sorted(out)}, len(declared), len(untagged)
 
@@ -217,12 +236,12 @@ def harvest_gates(rules):
     gates = {}
     for path in check_files():
         src = open(path, encoding="utf-8", errors="replace").read()
-        gates[os.path.relpath(path, REPO)] = (src, gate_instrument(src))
+        gates[os.path.relpath(path, REPO)] = (src, gate_instrument(src), _runs(src))
     idx = collections.defaultdict(list)
     for r in rules:
-        for name, (src, inst) in gates.items():
+        for name, (src, inst, runs) in gates.items():
             for form in rule_aliases(r["id"]):
-                if re.search(r"(?<![\w-])" + re.escape(form) + r"(?![\w-])", src):
+                if _names(form, src, runs):
                     idx[r["id"]].append((name, inst, form))
                     break
     return idx, {k: v[1] for k, v in gates.items()}
