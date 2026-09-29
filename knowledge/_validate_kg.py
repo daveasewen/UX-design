@@ -492,8 +492,10 @@ def check_resolutions_consumed(components_dir=None, proforma_dir=None,
     fails = []
 
     # --- MERGE: the merged-away context node must be GONE, everywhere -------
+    def verdict_of(r):   # s308-D35/D37/D38: an `amended` block (added by addition) is the verdict read
+        return (r.get("amended") or {}).get("verdict") or r.get("verdict") or ""
     merged_nodes = {r["node"] for r in raw["nearmiss"]
-                    if r.get("verdict") == "MERGE" and r.get("node")}
+                    if verdict_of(r) == "MERGE" and r.get("node")}
     ctx_ids = registry_ids(nodes_context_path)
     for node in sorted(merged_nodes):
         counts["merge"] += 1
@@ -509,7 +511,7 @@ def check_resolutions_consumed(components_dir=None, proforma_dir=None,
 
     # --- PROMOTE: the named edge must carry the ruled ref -------------------
     for r in raw["prose"]:
-        verdict = r.get("verdict") or ""
+        verdict = verdict_of(r)
         if not verdict.startswith("PROMOTE"):
             continue
         counts["promote"] += 1
@@ -556,7 +558,7 @@ def check_resolutions_consumed(components_dir=None, proforma_dir=None,
 
     # --- ATTACH: governedBy must carry the ruled ruling --------------------
     for r in raw["governed"]:
-        if r.get("verdict") != "ATTACH":
+        if verdict_of(r) != "ATTACH":
             continue
         counts["attach"] += 1
         comp, rid = r.get("comp"), r.get("rid")

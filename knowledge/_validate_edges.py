@@ -23,7 +23,8 @@ TWO CHECKS, TWO TIERS.
                 LOOP              a cycle (named once, by its members) on a type whose shape.loops is false
                 BOTH-WAYS-STORED  a symmetric type (shape.bothWays) stored in both directions for one pair
                 READ-SIDE-STORED  an edge of a type whose row says it is the READ side of its opposite
-                                  (opposite.stored false) — the line belongs on the opposite's side
+                                  (opposite.stored false) — the line belongs on the opposite's side —
+                                  unless the row names it in opposite.kept (s308-D35: lines Dave kept)
               A node's kind is its id's prefix before the first colon. Prints COUNTS first, then every
               failure by name. Exit 1 on any failure, 0 on none — routed ADVISORY in _build_all.py, so
               the build warns and goes on.
@@ -204,7 +205,7 @@ def check_shape(edges, rows):
         if row is None or t is None:
             continue
         sh, op = row.get('shape') or {}, row.get('opposite') or {}
-        if not op.get('stored', True):
+        if not op.get('stored', True) and [s, t] not in (op.get('kept') or []):   # s308-D35: lines Dave kept, named
             failures.append(('READ-SIDE-STORED', ty, s, t, f"{ty} is read as {op.get('type')} walked backwards; the line belongs on that side"))
         if s == t and not sh.get('self', True):
             failures.append(('SELF-LINE', ty, s, t, 'points at itself; the shape says it may not'))
@@ -436,6 +437,13 @@ def selftest():
          lambda: not any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in cov)
          and (w24['opposite'].__setitem__('stored', True) or True)
          and any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in check_coverage(edges, r24, names, skips)))
+    gb_row = rows.get('governedBy') or {}
+    kept = (gb_row.get('opposite') or {}).get('kept') or []
+    bite(25, "READ-SIDE-STORED spares a governedBy line the row names in opposite.kept (s308-D35), and still refuses one it does not",
+         lambda: bool(kept)
+         and check_shape(edges + [{'s': kept[0][0], 't': kept[0][1], 'type': 'governedBy'}], rows)['byClass']['READ-SIDE-STORED']
+         == shp0['byClass']['READ-SIDE-STORED']
+         and shape_red('READ-SIDE-STORED', [{'s': kept[0][0], 't': 'ruling:s001-D1', 'type': 'governedBy'}]))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 

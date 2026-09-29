@@ -120,3 +120,35 @@ The page was rendered at 1440 and 390 and checked by eye.
 - The verdict log was restored from HEAD after the surveys.
 
 **Rows:** W-308ig is closed against this commit. W-308io stays open until Dave rules on carousel↔cards. W-308e2 is the page, born closed. W-308e3 is live, owned by Dave: rule the edge questions.
+
+
+## Round 3 — Dave's five edge-question answers (s308-D34..D38), 2026-09-29 evening
+
+COUNTS (round 3): rulings inscribed 5 (s308-D34..D38) · register rows 64 · edges checked 11,543 · ends pass 11,543 · shape advisories 21 → 0 · ruledBy lines retired 8 (now 8 governs lines ending on the icon) · governedBy stored 10 → 6 (all six kept by Dave) · selftest 25 of 25 bites
+
+Asked: Dave, 17:07 BST, answered the edge-questions page and took all five recommendations. His words are verbatim in `notes/_lanes/308/DAVE-RULINGS-2026-09-29-1708-drift-and-edges.md` § Edge questions.
+
+**What was enacted:**
+1. **s308-D34, carousel and cards: A, a carousel holds cards.** Carousel's livesInside line "Cards (a media card sequence)" and the containedBy edge it made are gone, and the loop with them. The ruling quotes his whole note. It says plainly that A stands only until the card and tile definitions land, and that it may then be re-expressed as type-based "accepts" rules. That question goes to a separate research lane.
+2. **s308-D35, the ten governed-by lines: keep six, drop four.**
+   - Dropped: Banner ← s125-D1, by an `amended` block (verdict SKIP) added to its s135-D4 ATTACH row. The original verdict is kept, and gen_kg_edges drops the old line. Legend's three hand-written lines also left `legend.meta.json`.
+   - Kept: the page proposed keeping the six by adding each component to its ruling's own list. **That list cannot be edited**: `_inscribe_ruling.py` fences `governs` on an inscribed ruling, and nothing else may write `_rulings.json`. So the six stay stored as governedBy, and the register names them in `opposite.kept`, marked "kept by s308-D35". The check spares exactly those six and still flags any other governedBy line (bite 25). **For Dave:** this is the one place the page's form of "keep" could not be done as written.
+3. **s308-D36, ruled-by retired.**
+   - `gen_kg_icons.py` no longer writes the type, which amends s277-D4's closed list of six to five. Bite 7 was rewritten, and the selftest passes. `--land` regenerated both asset files.
+   - The explorer (1.34) ends a ruling's governs entry that names an icon .svg on that icon: all 8 of s264-D3's lines, with their artefact nodes dropped.
+   - The register row is gone, and governs may now end on an icon. The verbs map drops ruledBy, and the slice reads governs→icon as `decided`.
+4. **s308-D37, tab bar's line points at Tabs.** An `amended` verdict PROMOTE→tabs was added to the s135-D4 row. The last self-line is gone.
+5. **s308-D38, Alert's line stays.** Toast's "Alert carrying the identical message" left toast.meta.json's relationships and edges, and its PROMOTE row is amended to RETIRED. The slice now reads a mustNotNeighbour line from both ends, so toast still gets Alert's prohibition.
+
+**The reader for amended rows:** gen_kg_edges.py and `_validate_kg.py` (f) read `amended.verdict` when a row has one. The rows are amended by addition, and the #135 verdicts stay as record.
+
+**Verification:**
+- `_validate_edges --check`: 11,543 edges, 0 wrong ends, 0 shape advisories. Coverage OK, selftest 25 of 25.
+- `_validate_kg` OK, including the regeneration check.
+- gen_kg_icons selftest passes. `gen_kg_sources --check` is in sync.
+- `_compose_slice --selftest`: the same six pre-existing reds.
+- Explorer 1.34 rebuilt.
+- Regen serial run. The verdict log was restored before regen.
+- The check steps were swept before the last commit (see the commit).
+
+**Rows:** W-308io and W-308e3 closed. The rulings are stamped enacted in the next commit, with this build's sha.

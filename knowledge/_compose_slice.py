@@ -413,6 +413,8 @@ def verb_of(g, etype, t=None, ref=None):
             return "must", "governs[]->component:"
         if kind == "artefact":
             return "decided", "governs[]->artefact:"
+        if kind == "icon":   # s308-D36: an icon .svg entry now ends on the icon (ruledBy, retired, read `decided`)
+            return "decided", "governs[]->icon:"
         return UNREAD, "governs -> %s: target kind %r is neither component: nor artefact: — verb withheld" % (tgt or "(null)", kind)
     return UNREAD, "%s is split in the map but the reader has no rule for it — verb withheld, not guessed" % etype
 
@@ -1290,6 +1292,18 @@ def must_not_for(chosen, g):
         for txt in ((m.get("relationships") or {}).get("mustNotNeighbour") or []):
             out.append({"from": c["id"], "to": None, "ref": None, "$note": str(txt), "in_slice": False,
                         "why": "relationships.mustNotNeighbour on " + base, "blocking": True})
+        # s308-D18 / s308-D38 (#308 lane E round 3): the prohibition is symmetric and stored ONCE, so a line
+        # another component's meta carries toward this one is read from this end as well
+        for slug2, m2 in sorted(g["metas"].items()):
+            if m2 is m:
+                continue
+            for e in ((m2.get("edges") or {}).get("mustNotNeighbour") or []):
+                if isinstance(e, dict) and e.get("ref") == c["id"]:
+                    other = "component:" + slug2
+                    out.append({"from": c["id"], "to": other, "ref": other,
+                                "$note": (e.get("$note") or "") or None, "in_slice": other in ids,
+                                "why": "edges.mustNotNeighbour on %s, read from the other end (symmetric, s308-D18)"
+                                       % os.path.basename(m2["$path"]), "blocking": True})
         for nw in (c.get("not-with") or []):
             ref = nw if isinstance(nw, str) else (nw.get("ref") if isinstance(nw, dict) else None)
             out.append({"from": c["id"], "to": ref, "ref": ref,
@@ -1911,6 +1925,10 @@ def ask(question, seed=None, budget=ASK_BUDGET, root=HERE, live=None):
             declared.append("no component answers %s by edge or by field" % node)
     elif verb == "avoid":
         rows = [_e(e, live) for e in out_e if e["type"] == "mustNotNeighbour"]
+        # s308-D18 / s308-D38 (#308 lane E round 3): must-not-sit-with is SYMMETRIC and stored once, so the
+        # line another component carries toward this one is read from this end too
+        rows += [dict(_e(e, live, "s"), readFrom="the other end — symmetric, stored once (s308-D18, s308-D38)")
+                 for e in in_e if e["type"] == "mustNotNeighbour" and e["s"] != node]
         m = g["metas"].get(node.split(":", 1)[1], {})
         for txt in ((m.get("relationships") or {}).get("mustNotNeighbour") or []):
             rows.append({"type": "relationships.mustNotNeighbour", "t": None, "ref": None, "$note": str(txt)[:200]})

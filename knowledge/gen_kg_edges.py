@@ -221,8 +221,13 @@ def load_resolutions(comp_idx, path=None):
     merges, promotes, governed = {}, {}, {}
     rows = 0
 
+    def verdict_of(r):
+        """s308-D35/D37/D38 (#308 lane E round 3): a row may carry an `amended` block, added BY ADDITION under
+        a later ruling; its verdict is the one read, and the original stays in the file as record."""
+        return (r.get("amended") or {}).get("verdict") or r.get("verdict") or ""
+
     for r in raw["nearmiss"]:
-        if r.get("verdict") != "MERGE":
+        if verdict_of(r) != "MERGE":
             continue
         rows += 1
         node = r.get("node")
@@ -235,7 +240,7 @@ def load_resolutions(comp_idx, path=None):
         merges[node] = target
 
     for r in raw["prose"]:
-        verdict = r.get("verdict") or ""
+        verdict = verdict_of(r)
         if not verdict.startswith("PROMOTE"):
             continue
         rows += 1
@@ -250,8 +255,11 @@ def load_resolutions(comp_idx, path=None):
             raise ResolutionsError(f"RESOLUTIONS INPUT CONFLICT — {path}: prose row {key} promoted to two targets")
         promotes[key] = target
 
+    retired_attach = set()
     for r in raw["governed"]:
-        if r.get("verdict") != "ATTACH":
+        if verdict_of(r) != "ATTACH":
+            if r.get("verdict") == "ATTACH" and r.get("comp") and r.get("rid"):
+                retired_attach.add((r["comp"], r["rid"]))   # s308-D35: amended away — its old line must go too
             continue
         rows += 1
         comp, rid = r.get("comp"), r.get("rid")
@@ -267,6 +275,7 @@ def load_resolutions(comp_idx, path=None):
         "merges": merges,
         "promotes": promotes,
         "governed": {k: sorted(v) for k, v in governed.items()},
+        "retired_attach": retired_attach,
         "rows": rows,
         "landed": {"merge": {}, "promote": {}, "attach": {}},
     }
@@ -567,6 +576,7 @@ def fold_one_direction(edges, stem, data, res):
     own = f"component:{stem}"
     out = {k: v for k, v in edges.items() if k not in RETIRED_EDGE_TYPES}
     attach = {f"ruling:{r}" for r in res.get("$carried", {}).get(stem, ())}
+    attach |= {f"ruling:{r}" for (c, r) in res.get("retired_attach", ()) if c == stem}   # s308-D35: dropped by Dave
     if isinstance(out.get("governedBy"), list) and attach:
         out["governedBy"] = [e for e in out["governedBy"] if not (isinstance(e, dict) and e.get("ref") in attach)]
     counted = {c.get("$note") for c in (data.get("count") or []) if isinstance(c, dict)}

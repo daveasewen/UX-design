@@ -25,7 +25,9 @@ copied out of that document as a number.
               usesIcon         comp  -> icon        NEW   371   BYTE-MATCH
               usesLogo         comp  -> logo        NEW    18   src= attribute
               defaultFor       logo  -> (null)      NEW     2   s230-D2 verbatim
-              ruledBy          icon  -> ruling      NEW     9   ruling `governs`
+              ruledBy          RETIRED by s308-D36 (#308 lane E round 3, Dave 2026-09-29: "Retire
+                               ruled-by"): it repeated a ruling's `governs` list backwards; the
+                               explorer now ends that governs line on the icon itself
 
   DECLARED NULLS ARE LANDED, NOT REPORTED (#279 lane IL2, RIV FIX 1). `--land` writes
   every declared null INTO the two node files: those that have a source as a `t: null`
@@ -190,7 +192,7 @@ ICON, GROUP, LOGO = "icon:", "iconGroup:", "logo:"
 LANDED_ICONS = "_icon_nodes.json"
 LANDED_LOGOS = "_logo_nodes.json"
 
-EDGE_TYPES = ("inGroup", "activeVariantOf", "usesIcon", "usesLogo", "defaultFor", "ruledBy")
+EDGE_TYPES = ("inGroup", "activeVariantOf", "usesIcon", "usesLogo", "defaultFor")  # ruledBy RETIRED, s308-D36
 # MEASURED absent from the live graph (notes/_KG-EXPLORER.html carries 20 kinds and
 # none of these six edge types). Asserted by bite 13, never trusted.
 EDGE_STATUS = {t: "NEW" for t in EDGE_TYPES}
@@ -222,7 +224,7 @@ NULL_ONLY_STATUS_RULED = (
 # edge has no target to route it by, so the TYPE routes it; the union of the two files'
 # `unresolved` lists is therefore the whole ledger, with nothing counted twice.
 NULL_FILE = {"defaultActive": "icon", "activeVariantOf": "icon", "usesIcon": "icon",
-             "ruledBy": "icon", "icon:": "icon",
+             "icon:": "icon",
              "obeys": "logo", "defaultFor": "logo", "usesLogo": "logo", "logo:": "logo"}
 
 # The manifest record fields carried verbatim onto the node. `slug` becomes the id.
@@ -929,13 +931,9 @@ def build(corpus=None, icons_only=False, no_logos=False, no_usesicon=False):
                 ruled_pairs.append((stem, r["id"]))
             else:
                 ruled_declared.append((stem, r["id"], str(entry).strip()))
-    for stem, rid in sorted(set(ruled_pairs)):
-        link(ICON + stem, "ruling:" + rid, "ruledBy")
-    for stem, rid, entry in sorted(set(ruled_declared)):
-        unresolved.append({"source": None, "type": "ruledBy", "why":
-                           f"{rid} governs this .svg but the manifest does not hold the slug, so "
-                           f"there is no icon: node to source the edge from — blocker B1 again",
-                           "note": f"{rid} governs {entry}"})
+    # s308-D36 (#308 lane E round 3, Dave 2026-09-29: "Retire ruled-by"): the pairs are still COUNTED (the
+    # report keys below), but no ruledBy edge and no ruledBy null is written — the ruling's own governs[] is
+    # the stored side, and knowledge/_build_kg_explorer.py ends that line on the icon node itself.
 
     # ---- B3: the logos bound by NO rule -----------------------------------
     rule_files, logo_rules = {}, 0
@@ -1592,15 +1590,16 @@ def selftest():
                  for u in rep["unresolved"])
              and not [e for e in of("usesIcon") if e["t"] == "icon:beta"])
 
-        # 7 — B1: on disk, RULED IN, not in the manifest -> no node, and its ruledBy is declared.
-        bite(7, "a ruled-in .svg missing from the manifest gets NO node, is named as B1, and its ruledBy edge is declared not invented", lambda:
+        # 7 — B1: on disk, RULED IN, not in the manifest -> no node. s308-D36: ruledBy is RETIRED, so the
+        #     ruled pairs are counted and NO ruledBy edge or null is written.
+        bite(7, "a ruled-in .svg missing from the manifest gets NO node and is named as B1; ruledBy is retired (s308-D36): the pairs are counted, no ruledBy edge or null is written", lambda:
              rep["on_disk_not_in_manifest"] == ["stray"] and rep["in_manifest_not_on_disk"] == []
              and "icon:stray" not in ids
              and any(u["type"] == "icon:" and "B1" in u["why"] and "s001-D1" in u["note"]
                      for u in rep["unresolved"])
              and rep["ruledBy_declared"] == 1 and rep["ruledBy_drawn"] == 1
-             and of("ruledBy")[0]["s"] == "icon:alpha"
-             and of("ruledBy")[0]["t"] == "ruling:s001-D1")
+             and not of("ruledBy")
+             and not [u for u in rep["unresolved"] if u["type"] == "ruledBy"])
 
         # 8 — logos: three filename fields parsed, a malformed stem REFUSED (no node),
         #     usesLogo from src= only.
@@ -1689,7 +1688,7 @@ def selftest():
         #      not. The one exception is Dave's own answer, which carries a `$ruled` sentence
         #      naming his export — and this corpus has no export, so here there are none and
         #      the strict form of the assertion holds (bite 20 is the other side of it).
-        bite(13, "all six edge types are declared NEW, only defaultActive/obeys (the logo null, governedBy until s308-D17) exist beyond them, and no seventh type is ever DRAWN — nor either null-only type, absent an export of Dave's", lambda:
+        bite(13, "all five edge types (ruledBy retired, s308-D36) are declared NEW, only defaultActive/obeys (the logo null, governedBy until s308-D17) exist beyond them, and no seventh type is ever DRAWN — nor either null-only type, absent an export of Dave's", lambda:
              sorted(rep["edge_status"]) == sorted(EDGE_TYPES)
              and set(rep["edge_status"].values()) == {"NEW"}
              and set(rep["edge_targets_resolved"]) <= set(EDGE_TYPES)

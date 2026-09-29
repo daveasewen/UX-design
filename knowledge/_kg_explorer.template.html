@@ -353,7 +353,7 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   // #279 s277-D4 — the six ratified asset edge types, their own family and chip (OFF by default).
   // defaultActive (s277-D6) and the logos' governedBy (s277-D7) are DECLARED-NULL ONLY: never drawn,
   // so they need no family here — they are counted and listed as declared nulls.
-  inGroup:'assets',activeVariantOf:'assets',usesIcon:'assets',usesLogo:'assets',defaultFor:'assets',ruledBy:'assets',
+  inGroup:'assets',activeVariantOf:'assets',usesIcon:'assets',usesLogo:'assets',defaultFor:'assets',
   // #304 R3 s277-D12 — the tokens family's one edge type, its own family and chip (OFF by default).
   bindsToken:'tokens',
   // #305 B2 s305-D26 — step 5's four edge types, their own family and chip (OFF by default).
@@ -414,7 +414,7 @@ let LAYOUT=LAYOUTS.includes(QS.get('layout'))?QS.get('layout'):'force';
 const BY=n=>LAYOUT==='strata'?n.oy2:n.oy;          // a node's y at rest, in the 2D layout that is live
 const LNAME={force:'force',strata:'strata',shells:'shells'};
 const bandShown=b=>b.id!=='constitution'||famOn.governance;  // the bedrock appears with its chip
-const DR=e=>e.type==='governedBy'||e.type==='ruledBy'||(e.type==='governs'&&/^(component|snippet):/.test(e.t||''));
+const DR=e=>e.type==='governedBy'||e.type==='ruledBy'||(e.type==='governs'&&/^(component|snippet|icon):/.test(e.t||''));  // 1.34 s308-D36: a governs line ending on an icon replaces ruledBy
 const NEWFAM=['governance','guidelines','guidelinerules','uxprinciples','assets','tokens','sources'];
 /* 1.33 (#308 lane E, s308-D18): the two readings of each type come from knowledge/_edge_register.json (KG.read); this map is the fallback only. */
 const READ=Object.assign({bindsToken:['binds token','is bound by'],setIn:['is set in','sets'],behaviourFrom:['takes its behaviour from','gives behaviour to'],capturedFrom:['was captured from','is the source of'],acceptsCapability:['accepts in a slot','is accepted by'],containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
