@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Old claim tables</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1120px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:72px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--g6)}.label.mute::before{background:var(--g3)}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+/* nav */
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+/* header */
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:64px;font-weight:200;line-height:1;color:var(--g5);display:block;margin-bottom:var(--s2)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:var(--s4)}
+.stats>div{background:var(--card);padding:var(--s3) var(--s2)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.05;display:block}
+.stats .c{font-size:13px;line-height:1.5;color:var(--g7);display:block;margin-top:var(--s1)}
+/* groups and cards */
+.group{padding:var(--s5) 0 0}
+.group:first-of-type{padding-top:0}
+.ghead{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;padding-bottom:var(--s3);border-bottom:1px solid var(--fg)}
+.ghead h3{font-size:26px;font-weight:300;line-height:1.25;margin:0}
+.ghead p{margin:0;color:var(--g8);font-size:15px}
+.kind{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.4;padding:.25rem .55rem;border:1px solid var(--fg);margin-bottom:var(--s2)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);border-top:0}
+.cards.n2{grid-template-columns:repeat(2,1fr)}
+.cards.n1{grid-template-columns:1fr}
+.cards.n1 .card{display:grid;grid-template-columns:1fr 1fr;column-gap:var(--s5);align-items:start}
+.cards.n1 .card .who{grid-column:1 / -1}
+.cards.n1 .card .qs{display:flex;flex-direction:column;gap:var(--s2)}
+.cards.n1 .card .facts{display:flex;flex-direction:column;gap:var(--s2)}
+.card{background:var(--card);padding:var(--s3);display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+.card .who{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.card blockquote{margin:0;padding:0 0 0 var(--s2);border-left:2px solid var(--g3);font-size:15px;line-height:1.6;color:var(--fg)}
+.card blockquote.ev{font-size:13px;color:var(--g7)}
+.card dl{margin:0;display:grid;grid-template-columns:1fr;gap:2px}
+.card dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;margin-top:var(--s1)}
+.card dt:first-child{margin-top:0}
+.card dd{margin:0;font-size:15px;line-height:1.55;color:var(--g8)}
+.card dd b{font-weight:500;color:var(--fg)}
+.fx{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:auto;font-size:12px;line-height:1.4}
+.fx span{background:var(--card);padding:.45rem .5rem;color:var(--g7)}
+.fx span b{display:block;font-weight:500;color:var(--fg);font-size:13px;letter-spacing:.02em}
+.fx span.ok b::after{content:" ✓"}
+/* options */
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:var(--s4)}
+.opt{background:var(--card);padding:var(--s3);display:flex;flex-direction:column;gap:0}
+.opt .letter{font-size:48px;font-weight:200;line-height:1;color:var(--g5)}
+.opt h3{margin:var(--s1) 0 var(--s1)}
+.opt .tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g6);line-height:1.5;min-height:1.5em}
+.opt.pick{box-shadow:inset 0 3px 0 var(--fg)}
+.opt.pick .tag{color:var(--accent);font-weight:500}
+.opt .row{padding:var(--s2) 0 var(--s1);border-top:1px solid var(--g2);font-size:15px;line-height:1.55;color:var(--g8)}
+.opt .row:first-of-type{margin-top:var(--s2)}
+.opt .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);margin-bottom:4px;line-height:1.5}
+.opt .big{font-size:34px;font-weight:200;line-height:1.1;color:var(--fg);display:block}
+.verdict{font-size:26px;font-weight:300;line-height:1.4;max-width:30em;margin:var(--s5) 0 0}
+/* checks */
+.checks{list-style:none;padding:0;margin:0}
+.checks li{display:grid;grid-template-columns:120px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--g3)}
+.checks li:last-child{border-bottom:1px solid var(--g3)}
+.checks .a{font-size:26px;font-weight:300;line-height:1.2}
+.checks p{margin:0 0 var(--s1);color:var(--g8)}
+.checks p.q{color:var(--fg);font-weight:500;font-size:17px}
+/* corrections */
+.corr{list-style:none;padding:0;margin:0;counter-reset:c}
+.corr li{counter-increment:c;display:grid;grid-template-columns:48px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--g3)}
+.corr li::before{content:counter(c);font-size:28px;font-weight:200;line-height:1.15;color:var(--g5)}
+.corr p{margin:0 0 4px;color:var(--g8);font-size:15px}
+.corr p.said{color:var(--fg)}
+/* decisions */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* tech */
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:900px){
+  .cards{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .opts{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  nav.toc{top:0}
+  header{padding-top:72px}
+  header .grid,.two,.ghead{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:40px}.sub{font-size:20px}h2{font-size:27px}.lead{font-size:18px}.verdict{font-size:21px}
+  .idx{font-size:44px}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}
+  .stats>div:last-child{grid-column:1 / -1}
+  .cards,.cards.n2{grid-template-columns:1fr}
+  .cards.n1 .card{display:flex}
+  .checks li{grid-template-columns:1fr;gap:var(--s1)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#answer">The answer</a>
+  <a href="#rows">The nine rows</a>
+  <a href="#options">Three options</a>
+  <a href="#buildable">Can (a) be built?</a>
+  <a href="#corrections">Two corrections</a>
+  <a href="#decide">Your calls</a>
+</div></nav>
+
+<header id="answer">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 308 · review page · old claim tables</p>
+      <h1>Only two of the nine rows went stale.</h1>
+      <p class="sub">Choose (b): add a dated note to each of the nine rows and never rewrite them. It is the only option that clears all nine. Keep the CI step advisory for now.</p>
+    </div>
+    <div class="meta">
+      <span>Tuesday 29 September 2026</span>
+      <span>Lane C, for your 12:08 words: "I need to see this in a document to review properly"</span>
+      <span>Every checkable row below was re-read today against the repo as it stood when its table was written.</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap two">
+    <div><span class="idx">01</span><p class="label">What this is</p></div>
+    <div>
+      <p class="lead">A claim table is the list a lane leaves behind: each row makes one claim about the work and names the evidence, such as a command, a file or a count. A checker in CI re-reads every row and re-runs some of the commands, so that a claim nobody can check stands out.</p>
+      <p>The conductor said nine rows "are stale against today's files", meaning the tree moved on after they were written. I tested that against the tree at each table's own commit. It holds for two rows. Of the rest, three are misread by the checker itself, three never named anything a machine could check, and one fails only in CI.</p>
+      <p>Two things are true of all nine. None of them is a false claim: every row that can be checked was true on the day it was written. And none of them turns CI red. The checker's CI step is allowed to fail, and it has been failing on the same six rows since the day it was wired on 19 August.</p>
+      <div class="stats">
+        <div><span class="n">2</span><span class="c">went stale: the tree moved on after they were written</span></div>
+        <div><span class="n">3</span><span class="c">misread by the checker: the rows were right then and are still right</span></div>
+        <div><span class="n">3</span><span class="c">never checkable: they point at other rows instead of evidence</span></div>
+        <div><span class="n">1</span><span class="c">fails only in CI and passes on your machine</span></div>
+        <div><span class="n">0</span><span class="c">claim tables written since 19 August, forty days ago</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="rows">
+  <div class="wrap">
+    <p class="label">02 · The nine rows, by kind</p>
+    <h2>What each row said, when, whether it was true then, and what is true now</h2>
+    <p style="max-width:44em;color:var(--g8)">Each card quotes the row word for word. Its foot shows what each of the three options would do to that row: a tick means it clears, and "stays" means it keeps failing.</p>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">Went stale</span><h3>A count that has grown</h3></div><p>The row was right then. More build steps were added afterwards.</p></div>
+      <div class="cards n1">
+        <article class="card">
+          <span class="who">Row WIRE-14 · session 208 wiring table</span>
+          <div class="qs"><blockquote>"the registry is a STEP and its ROUTE_ROWS row landed in the SAME edit — STEPS and ROUTE_ROWS are both 127 and every label resolves, so the #119/#164 abort class is not re-armed"</blockquote>
+          <blockquote class="ev">Evidence: "<code>python3 knowledge/_build_all.py --selftest</code> -&gt; rc=0, 'selftest PASS — exact-ID failure routing over 127 steps'"</blockquote>
+          </div><div class="facts"><dl>
+            <dt>Written</dt><dd>Session 208 · 19 Aug 2026, 21:13 · commit <code>9d552ddc</code></dd>
+            <dt>True then?</dt><dd><b>Yes.</b> At that commit the build file lists 127 steps and 127 routes. I read both lists straight from the file as it was.</dd>
+            <dt>True now</dt><dd><b>166 steps on your machine today.</b> CI counted 163 on this morning's push. The number keeps moving, so no single number written into the row could stay true.</dd>
+          </dl>
+          <div class="fx"><span class="ok"><b>a</b>clears</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </div></article>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">Went stale</span><h3>A setting that changed</h3></div><p>The row was right then. A third job was added to CI afterwards, with the same setting.</p></div>
+      <div class="cards n1">
+        <article class="card">
+          <span class="who">Row WIRE-21 · session 208 wiring table</span>
+          <div class="qs"><blockquote>"the CI steps parse, and fetch-depth: 0 is untouched on BOTH checkouts — the registry went into the RENDER job because that is the only job installing Playwright and therefore the only place P-3 (the #184 silent-black class) can actually be asked"</blockquote>
+          <blockquote class="ev">Evidence: "<code>grep -c 'fetch-depth: 0' .github/workflows/gates.yml</code> counts the two live settings plus the header prose that names them load-bearing" · expected count 3</blockquote>
+          </div><div class="facts"><dl>
+            <dt>Written</dt><dd>Session 208 · 19 Aug 2026, 21:13 · commit <code>9d552ddc</code></dd>
+            <dt>True then?</dt><dd><b>Yes.</b> The CI file at that commit has exactly 3 such lines: two checkouts and one header comment.</dd>
+            <dt>True now</dt><dd><b>4.</b> The release job, added in session 219 on 26 August (<code>801fe7cc</code>), brought a third checkout with the same setting. The row's point, that the setting is untouched, still holds.</dd>
+          </dl>
+          <div class="fx"><span class="ok"><b>a</b>clears</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </div></article>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">Checker misread</span><h3>"A file that no longer exists." It does.</h3></div><p>The row quotes the tool's own message, and that message names the file from inside the <code>knowledge</code> folder. The checker looks for it from the top of the repo, where it has never been. So the file has not gone anywhere: it is at <code>knowledge/tokens/_blast-radius.json</code> today and was there on the day.</p></div>
+      <div class="cards n2">
+        <article class="card">
+          <span class="who">Row L1-1 · session 204 build table · the claim</span>
+          <blockquote>"`[3]` blast radius REPAIRED"</blockquote>
+          <blockquote class="ev">Evidence: "<code>python3 knowledge/tokens/_build_blast_radius.py --check</code> → rc=0 · `✓ _build_blast_radius --check PASS — tokens/_blast-radius.json and _GRAPH-REPORT.md match a fresh compute() (content, not mtime)`"</blockquote>
+          <dl>
+            <dt>Written</dt><dd>Session 204 · 19 Aug 2026, 13:00 (receipt <code>973d3fa8</code>). Copied into the table in session 205 at 14:11 · commit <code>541ffcc3</code></dd>
+            <dt>True then?</dt><dd><b>Yes.</b> The file was present at <code>knowledge/tokens/</code> at that commit, and it was never at <code>tokens/</code> at the top of the repo, then or now.</dd>
+            <dt>True now</dt><dd><b>Still present, in the same place.</b> The tool still prints the same short path today.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </article>
+        <article class="card">
+          <span class="who">Row L1-1 · session 204 verifier table · the challenge</span>
+          <blockquote>"CONFIRMED — FIXED"</blockquote>
+          <blockquote class="ev">Evidence: the same words as the claim beside it, re-run by the verifier: "<code>python3 knowledge/tokens/_build_blast_radius.py --check</code> → rc=0 · `✓ … tokens/_blast-radius.json and _GRAPH-REPORT.md match a fresh compute()`"</blockquote>
+          <dl>
+            <dt>Written</dt><dd>Session 204 · 19 Aug 2026, 13:00 (receipt <code>973d3fa8</code>). Copied into the table at <code>541ffcc3</code></dd>
+            <dt>True then?</dt><dd><b>Yes</b>, for the same reason as the claim beside it.</dd>
+            <dt>True now</dt><dd><b>Still present.</b> Same misread.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">Checker misread</span><h3>A truncated path, used on purpose</h3></div><p>The verifier fed the build a made-up path to prove the build refuses it, and the row says so. The checker takes that test input for a pointer to evidence.</p></div>
+      <div class="cards n1">
+        <article class="card">
+          <span class="who">Row W2-13 · session 208 verifier table</span>
+          <div class="qs"><blockquote>"✅ CONFIRMED and WIDENED — I fed it eight plausible-but-unknown tokens, refusal paths only"</blockquote>
+          <blockquote class="ev">Evidence, the part the checker flags: "… a bare path token (<code>notes/x.md…</code>, a path that does not exist) -&gt; rc=2 for all eight …"</blockquote>
+          </div><div class="facts"><dl>
+            <dt>Written</dt><dd>Session 208 · 19 Aug 2026, 21:13 · commit <code>9d552ddc</code></dd>
+            <dt>True then?</dt><dd><b>Yes.</b> <code>notes/x.md</code> did not exist at that commit and has never existed in the history, which is exactly what the row said.</dd>
+            <dt>True now</dt><dd><b>Still does not exist</b>, as intended.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </div></article>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">Never checkable</span><h3>Rows with nothing to probe</h3></div><p>These rows point at other rows, or give counts without saying where they came from, so the checker has nothing to re-run or look up. Nothing has changed since they were written. The checker as it stood on 19 August flags these same three rows.</p></div>
+      <div class="cards n3">
+        <article class="card">
+          <span class="who">Row L1-4 · session 204 build table</span>
+          <blockquote>"The `[114]` figures are the LIVE tree's `34,250 vs 81,637`, not the brief's `21,237 vs 51,204` (which are the capture-gate fixture tree's)"</blockquote>
+          <blockquote class="ev">Evidence: "The verbatim gate line in L1-3. ⛔ Do not quote the brief's numbers"</blockquote>
+          <dl>
+            <dt>Written</dt><dd>Session 204 · 19 Aug 2026 · table commit <code>541ffcc3</code></dd>
+            <dt>True then?</dt><dd><b>Confirmed by the verifier on the day</b>, who reran the gate and quoted the same figures. A machine cannot check it, because the row's own evidence only says "see the row above".</dd>
+            <dt>True now</dt><dd>Not checkable, then or now.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </article>
+        <article class="card">
+          <span class="who">Row C-2 · session 204 verifier table</span>
+          <blockquote>"CONFIRMED AND EXTENDED"</blockquote>
+          <blockquote class="ev">Evidence: "The claim table only counted `PROPOSED` in the snippets. The brief (step 3) requires it in snippet, meta AND review page. I counted all three: popconfirm 5/8/2 · footer 4/7/1 · …"</blockquote>
+          <dl>
+            <dt>Written</dt><dd>Session 204 · 19 Aug 2026 · table commit <code>541ffcc3</code></dd>
+            <dt>True then?</dt><dd><b>Not checkable.</b> It gives eighteen counts but no command and no file path, so nothing says where to recount.</dd>
+            <dt>True now</dt><dd>Not checkable, then or now.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </article>
+        <article class="card">
+          <span class="who">Row H-5 · session 204 verifier table</span>
+          <blockquote>"CONFIRMED"</blockquote>
+          <blockquote class="ev">Evidence: "C-6 + L1-10: the six are absent from canon, the generators exist, the reconciliation is available and unrun"</blockquote>
+          <dl>
+            <dt>Written</dt><dd>Session 204 · 19 Aug 2026 · table commit <code>541ffcc3</code></dd>
+            <dt>True then?</dt><dd><b>Not checkable on its own.</b> It leans on two other rows (C-6 and L1-10), which do carry evidence.</dd>
+            <dt>True now</dt><dd>Not checkable, then or now.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="ghead"><div><span class="kind">CI only</span><h3>The ninth row: passes on your machine, cannot be asked in CI</h3></div><p>On your machine this check passes today. In CI it answers "could not ask", because some of the files it looks at are not in CI's copy of the repo. That is why the conductor counted eight rows at the seat and nine in CI.</p></div>
+      <div class="cards n1">
+        <article class="card">
+          <span class="who">Row WIRE-20 · session 208 wiring table</span>
+          <div class="qs"><blockquote>"wave 1's punted item 4 is wired as its own step with its own route, so a broken matcher names _governs rather than surfacing as a red capture gate at [12]/[13]; it is also the only one of the three that _build_survey.py surveys, because its argv is --selftest"</blockquote>
+          <blockquote class="ev">Evidence: "<code>python3 knowledge/_governs.py --selftest</code> -&gt; rc=0, '_governs.py selftest: all bites green'"</blockquote>
+          </div><div class="facts"><dl>
+            <dt>Written</dt><dd>Session 208 · 19 Aug 2026, 21:13 · commit <code>9d552ddc</code></dd>
+            <dt>True then?</dt><dd><b>Yes on your machine</b>, where the check still passes today. There is no CI record from that day, because the run on that commit stopped before reaching this step.</dd>
+            <dt>True now</dt><dd><b>Passes on your machine. In CI it returns "could not ask"</b> (exit 77) on this morning's push, <code>417ce218</code>.</dd>
+          </dl>
+          <div class="fx"><span><b>a</b>stays</span><span class="ok"><b>b</b>clears</span><span><b>c</b>stays</span></div>
+        </div></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="options">
+  <div class="wrap">
+    <p class="label">03 · Three options</p>
+    <h2>What each one does to these nine rows, and to every table after them</h2>
+    <div class="opts">
+      <div class="opt">
+        <span class="letter">a</span>
+        <h3>Judge each old table against the tree it was written in</h3>
+        <span class="tag">Lane F's recommendation</span>
+        <div class="row"><span class="k">These nine rows</span><span class="big">2 of 9 clear</span>Only the two that went stale. The other seven fail against their own day's tree too.</div>
+        <div class="row"><span class="k">Every future table</span>Rows age without anyone having to act. A count that grows later never turns the checker red.</div>
+        <div class="row"><span class="k">Cost</span>A real build. The checker learns each row's commit, looks files up in the old tree, and re-runs commands in a temporary old copy of the repo.</div>
+        <div class="row"><span class="k">Rewrites history?</span>No.</div>
+      </div>
+      <div class="opt pick">
+        <span class="letter">b</span>
+        <h3>Add a dated note to each stale row, never a rewrite</h3>
+        <span class="tag">Recommended</span>
+        <div class="row"><span class="k">These nine rows</span><span class="big">9 of 9 clear</span>Each note says in plain words why that row fails: stale, misread by the checker, never checkable, or CI only.</div>
+        <div class="row"><span class="k">Every future table</span>When a row ages, someone adds a note. No claim table has been written in forty days, so there is nothing to keep up with today.</div>
+        <div class="row"><span class="k">Cost</span>Small. Nine notes by addition, plus teaching the checker to read a note. The notes also make the misreads visible, so the checker's two bugs can be fixed separately.</div>
+        <div class="row"><span class="k">Rewrites history?</span>No. This is what the write-once rule allows: history is frozen, and additions are dated.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">c</span>
+        <h3>Leave it as it is, advisory</h3>
+        <span class="tag">No work</span>
+        <div class="row"><span class="k">These nine rows</span><span class="big">0 of 9 clear</span>The step keeps printing a red cross on every CI read.</div>
+        <div class="row"><span class="k">Every future table</span>A new real failure would land among nine known ones and would be easy to miss. A cross that is always red teaches readers to skip it.</div>
+        <div class="row"><span class="k">Cost</span>None now. Some attention on every read-back.</div>
+        <div class="row"><span class="k">Rewrites history?</span>No.</div>
+      </div>
+    </div>
+    <p class="verdict">Choose (b), because it is the only option that clears all nine rows. Seven of them are not stale, so the time machine in (a) cannot reach them.</p>
+  </div>
+</section>
+
+<section class="grey" id="buildable">
+  <div class="wrap two">
+    <div><span class="idx">04</span><p class="label">Testing lane F's premise</p><h2>Can (a) be built?</h2></div>
+    <div>
+      <ul class="checks">
+        <li><span class="a">Yes</span><div><p class="q">Can the checker learn each table's commit?</p><p>Yes, and it can do it for each row rather than each file. One table had rows added in two separate commits, and git can name the commit behind every line. That works in CI too.</p></div></li>
+        <li><span class="a">Yes</span><div><p class="q">Are the old files reachable through git?</p><p>Yes. CI's gates job fetches the full history (the <code>fetch-depth: 0</code> checkout), so any file can be looked up as it was at any commit. I did exactly that for this page.</p></div></li>
+        <li><span class="a">Heavier</span><div><p class="q">Can it re-run old commands?</p><p>Only by checking out a temporary old copy of the repo for each commit. There are five such commits here. It runs old code, and it still hits "could not ask" in CI wherever files are missing.</p></div></li>
+        <li><span class="a">No</span><div><p class="q">After (a), could the CI step become blocking?</p><p>No. The checker as it stood on 19 August already flags the same six rows, so (a) cannot clear them. The CI-only row would still say "could not ask". The step would stay red.</p></div></li>
+        <li><span class="a">Not yet</span><div><p class="q">After (b), could it become blocking?</p><p>Technically yes: all nine clear. But the session 208 wiring table has twelve more rows that expect an exact count or exact text, and they will age the same way. If the step were blocking, an unrelated edit to the build or the CI file could turn CI red. Make it blocking only once (a) is built as well.</p></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="corrections">
+  <div class="wrap two">
+    <div><span class="idx">05</span><p class="label mute">For the record</p><h2>Two corrections to this morning's report</h2></div>
+    <div>
+      <ol class="corr">
+        <li><div><p class="said">The report said: "<code>tokens/_blast-radius.json</code> no longer exists".</p><p>It exists, at <code>knowledge/tokens/_blast-radius.json</code>, and always has. The checker looks for it in the wrong folder.</p></div></li>
+        <li><div><p class="said">The report said: "the mismatch count moves with the sampler's seed; seat run: 2, CI: 3".</p><p>The seed is fixed at 205, and both runs drew the same twenty rows. The third mismatch comes from the environment: in CI, the ninth row answers "could not ask".</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="decide">
+  <div class="wrap">
+    <p class="label">06 · Your calls</p>
+    <h2>Two calls, and a note if you want one</h2>
+    <div class="call" data-id="option" data-q="Which fix for the old claim tables?" data-rec="(b) Dated notes on all nine">
+      <p class="q">1 · Which fix for the old claim tables?</p>
+      <p class="rec">Recommendation: (b), because it is the only one that clears all nine.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="(a) Judge each table against its own day's tree">(a) Judge against its own day's tree</button>
+        <button type="button" class="chip" data-v="(b) Dated notes on all nine">(b) Dated notes on all nine<em>recommended</em></button>
+        <button type="button" class="chip" data-v="(c) Leave it advisory as it is">(c) Leave it as it is</button>
+        <button type="button" class="chip" data-v="(a) and (b) together">(a) and (b) together</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="blocking" data-q="Make the CI step blocking afterwards?" data-rec="Keep it advisory">
+      <p class="q">2 · Once that is done, should the checker's CI step become blocking?</p>
+      <p class="rec">Recommendation: keep it advisory, unless you choose (a) and (b) together.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Make it blocking">Make it blocking</button>
+        <button type="button" class="chip" data-v="Keep it advisory">Keep it advisory<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Question">I have a question</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="page" data-q="Anything else on this page">
+      <p class="q">Anything else on this page</p>
+      <label class="field"><span>Note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <details class="tech"><summary>Technical detail: how each fact was checked</summary>
+      <ol>
+        <li>The current run of the checker is <code>python3 knowledge/_validate_evidence.py notes/_claims</code>. On your machine it gives 6 lint failures and 2 mismatches, with seed 205 and the same 20 rows drawn.</li>
+        <li>The CI log is from the gates job of run 36490341746 on <code>417ce218</code>, read through <code>_ci_readback.py</code>'s client. It gives 6 lint failures and 3 mismatches: WIRE-14 (163), WIRE-20 (rc 77 against a declared 0) and WIRE-21 (4). The step there is <code>continue-on-error: true</code> (<code>.github/workflows/gates.yml</code> lines 298–301).</li>
+        <li>Table commits come from <code>git log</code> on each file: the 204 tables at <code>541ffcc3</code> (converted from the #204 receipts at <code>973d3fa8</code>), and the 208 wiring and verifier tables at <code>9d552ddc</code>. No claim file has changed since then.</li>
+        <li>The 127 is from <code>git show 9d552ddc:knowledge/_build_all.py</code>, with STEPS and ROUTE_ROWS each read with <code>ast</code>: 127 and 127. The 166 is from <code>_build_all.py --selftest</code> today: "exact-ID failure routing over 166 steps".</li>
+        <li>The 3 is from <code>git show 9d552ddc:.github/workflows/gates.yml | grep -c 'fetch-depth: 0'</code>, and today's count is 4. The fourth line arrived with <code>801fe7cc</code> (#219).</li>
+        <li>For the blast-radius file, <code>git cat-file -e</code> at <code>541ffcc3</code>, <code>9d552ddc</code> and HEAD finds <code>knowledge/tokens/_blast-radius.json</code> present and <code>tokens/_blast-radius.json</code> absent every time. <code>_build_blast_radius.py</code> line 294 prints the short path.</li>
+        <li>For <code>notes/x.md</code>, it is absent at <code>9d552ddc</code>, and <code>git log --all</code> on that path is empty.</li>
+        <li>The six lint failures date from day one. The checker from <code>9d552ddc</code>, run on today's tables with <code>--no-sample</code>, prints the same six rows. The gates.yml comment written at #208 records "6 lint failures".</li>
+        <li>WIRE-20 in CI goes through <code>_governs.py --selftest</code>, which returns 77 when evidence pointers name paths "this checkout cannot hold" (the #194 COULD-NOT-ASK channel). The run on <code>9d552ddc</code> has no evidence-step lines in its gates log.</li>
+        <li>Declared observations: all 15 rows with an expected count or expected text are in <code>208-wiring-claims.jsonl</code>. Two have gone stale and one is CI only. Of the other twelve, eight pass and four are refused as unsafe to run.</li>
+        <li>Write-once is <code>docs/decisions/ADR-0017-write-once-live-facts.md</code>, rule 3: "History is exempt and protected … rewriting them is the falsification this ADR forbids."</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · old claim tables · v1 · 2026-09-29 · session 308 · lane C</span>
+  <span>Nothing here is decided until you choose.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your answers"><div class="in">
+  <b>Your answers</b><span id="count">0 of 3 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-308-old-claim-tables-v1';
+  var PATH='notes/_REVIEW-308-old-claim-tables-2026-09-29-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 308 · old claim tables · answers','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el,i){
+      var s=state[el.dataset.id]||{}, rec=el.dataset.rec||'';
+      L.push((el.dataset.id==='page'?'Note on the page':(i+1)+'. '+el.dataset.q));
+      if(el.dataset.id!=='page'){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+        if(rec) L.push('   Recommendation was: '+rec);
+      }
+      if((s.note||'').trim()) L.push('   In his words: '+s.note.trim().replace(/\n/g,'\n   '));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Select the text and copy it by hand'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
