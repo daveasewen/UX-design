@@ -151,4 +151,4 @@ Asked: Dave, 17:07 BST, answered the edge-questions page and took all five recom
 - Regen serial run. The verdict log was restored before regen.
 - The check steps were swept before the last commit (see the commit).
 
-**Rows:** W-308io and W-308e3 closed. The rulings are stamped enacted in the next commit, with this build's sha.
+**Rows:** W-308io and W-308e3 closed. Build commit e24b47bc. s308-D34..D38 are stamped `enacted` with that sha through `_inscribe_ruling.py --set-status`, in the commit that follows it.
