@@ -1,6 +1,7 @@
 {
   "name": "QR code",
   "category": "atom",
+  "kind": "block",
   "purpose": "Show a string as a machine-readable square so a second device can pick it up — a link, a reference, an enrolment code. The component's whole job is to stay SCANNABLE: real modules at a real size, with the quiet zone carried inside the artwork, and the same content repeated as text for anyone who is not going to point a camera at a screen.",
   "$provenance-note": "NEW at #210 (wave 4, lane B) against the wave-4 heavy-7 fan-out brief. Verified absent first-hand at build: `ls knowledge/snippets/ | grep -i qr` -> 0; `ls knowledge/components/ | grep -i qr` -> 0; `grep -rli qr knowledge/snippets/` -> 0.",
   "$encoding-note": "EVERY MATRIX IN THE SNIPPET IS A REAL ISO/IEC 18004 SYMBOL AND WAS DECODE-VERIFIED BEFORE THE FILE WAS WRITTEN. They were produced by a byte-mode encoder written for this lane (Reed-Solomon over GF(256), the four masking penalty rules, BCH(15,5) format information) and each was read back with OpenCV's QRCodeDetector; the build script REFUSES to emit a symbol that does not decode to its own stated payload. Symbol A encodes 'https://www.hsbc.co.uk/' (version 2, ECC M, mask 6, 25x25 modules). Symbol B encodes 'Pay 250.00 GBP to Acme Ltd ref INV-2291' (version 3, ECC M, mask 2, 29x29 modules). Both payloads are printed in the page beside their symbol. The brief's fence was explicit that a plausible-looking fake was the worst possible outcome; the verification is a known-answer decode, not an eyeball.",
