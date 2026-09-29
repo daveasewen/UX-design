@@ -41,8 +41,17 @@ Checks, all BY ADDITION — this script only reads the corpus, it never edits it
         MERGE   — no edge anywhere may still carry the merged-away context
                   node-id, and it must not survive in _nodes-context.json
         PROMOTE — the named (meta filename, edge-type, $note) edge must carry
-                  the ruled component ref (not null, not something else)
-        ATTACH  — the named component must carry governedBy ruling:<rid>
+                  the ruled component ref (not null, not something else).
+                  s308-D18/D19/D26 (#308 lane E): a hasPart row to ANOTHER
+                  component lands as a containedBy line on that component
+                  naming the part; a hasPart row to the component itself is a
+                  subcomponent and lands as no edge at all; a self-line PROMOTE
+                  may land as the meta's field (family → `covers`,
+                  mustNotNeighbour → a `count` entry carrying its words)
+        ATTACH  — s308-D18: the row is carried EXACTLY ONCE — by the ruling's
+                  own governs[] (meta path or reference snippet), or, where
+                  that does not name the component, as governedBy on the meta.
+                  Both is a second edge; neither is a dropped verdict.
       A build in which the verdicts file is ignored therefore FAILS here.
       Mutation-tested: neuter consumption in gen_kg_edges.py, regenerate,
       and this check goes red.
@@ -396,6 +405,10 @@ def check_freshness():
             scratch_reviews = tdp / "reviews"
             scratch_reviews.mkdir(exist_ok=True)
             shutil.copy2(RESOLUTIONS, scratch_reviews / RESOLUTIONS.name)
+        # s308-D18 (#308 lane E): the generator reads _rulings.json to know which ATTACH rows the ruling's own
+        # governs[] already carries (those are not written as governedBy) — mirror it, or it refuses
+        if RULINGS.exists():
+            shutil.copy2(RULINGS, scratch_knowledge / RULINGS.name)
 
         proc = subprocess.run(
             [sys.executable, str(scratch_gen)],
@@ -505,9 +518,31 @@ def check_resolutions_consumed(components_dir=None, proforma_dir=None,
             fails.append(f"resolutions: FAIL — malformed prose PROMOTE row (missing file/grp/note): {r!r}")
             continue
         seen = False
+        stem = fname[: -len(".meta.json")]
+        if grp == "hasPart":
+            # s308-D18: the part is stored on the CONTAINED side — a containedBy line on the named component
+            part = note.split(":", 1)[0].strip()
+            named = verdict.split("→", 1)[1].strip().lower().replace(" ", "-") if "→" in verdict else ""
+            lines = [(f.name, e) for f, d in metas.items()
+                     for e in (d.get("edges") or {}).get("containedBy", []) or []
+                     if isinstance(e, dict) and e.get("part") == part and e.get("ref") == f"component:{stem}"]
+            if named == stem.lower():
+                if lines:
+                    fails.append(f"resolutions: FAIL — PROMOTE MIS-LANDED — {stem}/{part} was ruled a part of its own "
+                                 f"component (a subcomponent), but {lines[0][0]} carries it as containedBy")
+            elif len(lines) != 1 or lines[0][0].lower() != f"{named}.meta.json":
+                fails.append(f"resolutions: FAIL — PROMOTE NOT CONSUMED — no single containedBy line on "
+                             f"{named}.meta.json naming part '{part}' of {stem} (found {[x[0] for x in lines]})")
+            continue
         for f, d in metas.items():
             if f.name != fname:
                 continue
+            # s308-D19: a self-line may have left the graph for the field it meant
+            if grp == "family" and d.get("covers"):
+                seen = True; continue
+            if grp == "mustNotNeighbour" and any(isinstance(c, dict) and c.get("$note") == note
+                                                 for c in (d.get("count") or [])):
+                seen = True; continue
             for e in (d.get("edges") or {}).get(grp, []) or []:
                 if isinstance(e, dict) and e.get("$note") == note:
                     seen = True
@@ -534,11 +569,27 @@ def check_resolutions_consumed(components_dir=None, proforma_dir=None,
             fails.append(f"resolutions: FAIL — ATTACH UNMATCHED — no meta '{comp}.meta.json' "
                          f"in the corpus (verdicts file is stale)")
             continue
-        if not any(any(isinstance(e, dict) and e.get("ref") == want
-                       for e in (d.get("edges") or {}).get("governedBy", []) or [])
-                   for d in targets):
-            fails.append(f"resolutions: FAIL — ATTACH NOT CONSUMED — {comp}.meta.json carries no "
-                         f"governedBy edge '{want}'")
+        # s308-D18 (#308 lane E): exactly one side carries the row
+        try:
+            gov = {r.get("id"): [g.strip() for g in (r.get("governs") or []) if isinstance(g, str)]
+                   for r in json.loads(RULINGS.read_text(encoding="utf-8")).get("rulings", []) if isinstance(r, dict)}
+        except Exception:
+            gov = {}
+        if rid not in gov:
+            fails.append(f"resolutions: FAIL — ATTACH UNMATCHED — ruling '{rid}' is not in {RULINGS.name}")
+            continue
+        snips = [e.get("ref", "").split(":", 1)[-1] for d in targets
+                 for e in (d.get("edges") or {}).get("renderedBy", []) or [] if isinstance(e, dict) and e.get("ref")]
+        ruling_side = any(g == f"knowledge/components/{comp}.meta.json" or
+                          any(g.endswith("/" + sn) or g == sn for sn in snips if sn) for g in gov[rid])
+        meta_side = any(any(isinstance(e, dict) and e.get("ref") == want
+                            for e in (d.get("edges") or {}).get("governedBy", []) or []) for d in targets)
+        if ruling_side and meta_side:
+            fails.append(f"resolutions: FAIL — ATTACH STORED TWICE — {comp}.meta.json carries governedBy '{want}', "
+                         f"but {rid}'s own governs[] already names the component (s308-D18: the ruling side is stored)")
+        elif not ruling_side and not meta_side:
+            fails.append(f"resolutions: FAIL — ATTACH NOT CONSUMED — neither {rid}'s governs[] nor "
+                         f"{comp}.meta.json's governedBy carries the row")
 
     return fails, counts
 

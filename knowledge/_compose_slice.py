@@ -562,7 +562,19 @@ def load_live(root=HERE):
                     add(ref)
                     if et == "renderedBy":
                         snip_owner.setdefault(ref, cid)
-                link(cid, ref or None, et, "components", note=note)
+                link(cid, ref or None, et, "components", note=note, part=e.get("part"))
+    # s308-D26 (#308 lane E): a subComponents key no component carries a `part` line for is a subcomponent node
+    # containedBy its component — the explorer's own derivation, so the two readers keep one containedBy count
+    claimed = {(e["t"], e.get("part")) for e in edges if e["type"] == "containedBy" and e.get("part")}
+    for slug, m in g["metas"].items():
+        sc = m.get("subComponents")
+        if not isinstance(sc, dict):
+            continue
+        for key in sc:
+            if key.startswith("$") or ("component:" + slug, key) in claimed:
+                continue
+            link(add("subcomponent:%s/%s" % (slug, key), label=key, canStandAlone=False), "component:" + slug,
+                 "containedBy", "components", note="part " + key)
     # governance — LIVE from _rulings.json
     for rid, r in g["rulings"].items():
         nid = add("ruling:" + rid, date=r.get("date"), by=r.get("by"), ruled=r.get("ruled"),
@@ -874,7 +886,9 @@ def _component_row(m, score, whys, roles, g, alternate=None):
         "meta": m["$path"],
         "snippet": (refs("renderedBy") or [None])[0],
         "consumes": refs("consumes"),
-        "hasPart": refs("hasPart") + refs("composedOf"),
+        # s308-D18 (#308 lane E): hasPart is no longer stored — a part that IS a registered component carries a
+        # containedBy line back to this one naming the part, so the parts are read by walking containedBy backwards
+        "hasPart": _parts_of("component:" + m["$slug"], g) + refs("composedOf"),
         "containedBy": refs("containedBy"),
         "family": refs("family"),
         "not-with": m.get("not-with") or [],
@@ -884,6 +898,16 @@ def _component_row(m, score, whys, roles, g, alternate=None):
         "why": "; ".join(whys),
         "blocking": False,
     }
+
+
+def _parts_of(cid, g):
+    """s308-D18 (#308 lane E): the registered components that are parts of `cid` — every meta whose containedBy
+    line points at `cid` and names a `part` (written from cid's own subComponents by gen_kg_edges.py)."""
+    return list(dict.fromkeys(
+        "component:" + slug for slug, m in sorted(g["metas"].items())
+        for e in ((m.get("edges") or {}).get("containedBy") or [])
+        if isinstance(e, dict) and e.get("ref") == cid and e.get("part")
+    ))
 
 
 def expand_required(chosen, g):

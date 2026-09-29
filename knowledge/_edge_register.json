@@ -9,8 +9,9 @@
    "to": "the node kinds it may END at. CHECKED. An empty list means the type exists only as declared nulls.",
    "pairs": "optional: where `from` × `to` would admit a wrong combination, the legal (from, to) pairs. CHECKED when present.",
    "nulls": "whether a declared null (t: null, carried with its prose) is legal for this type, and the ruling or code that says so. CHECKED.",
-   "opposite": "the opposite relation. `today` is measured; `declared` is owed to item 3 (s308-D18).",
-   "shape": "self-lines, two-step loops and repeated pairs, measured; `declared` is owed to item 4 (s308-D19).",
+   "opposite": "s308-D18: the opposite relation (`type`: a word, 'itself' for a symmetric type, or null), whether THIS side is the stored one (`stored`), the rule that chose it (`basis`) and, for the pairs that were stored on both sides, the one-off agreement check run before the switch. A row with stored:false is READ by walking its opposite backwards; any edge of it still in storage is named by the check (READ-SIDE-STORED). CHECKED.",
+   "reads": "s308-D18: the two readings — `forward` s→t and `back` t←s. The explorer reads an incoming edge with `back` (its `read` block is built from this field), so the opposite is derived here, never stored as a second edge.",
+   "shape": "s308-D19: may it point at itself (`self`), may a chain of it return to its start (`loops`), does it hold both ways so it is stored once (`bothWays`), is it read transitively (`chains`); `basis` says why, `measured` what the graph holds. CHECKED: SELF-LINE, LOOP, BOTH-WAYS-STORED.",
    "count": "how many targets one start may have (distinct targets). CHECKED where `perStart.max` is set, and set only where a definition says one; `basis` names it.",
    "reason": "the field carrying the reason for the line today, and whether any schema requires it; the one field `why` is owed to item 5 (s308-D20).",
    "maker": "where the edges are made — authored by hand (and where), generated (by which script), or ratified (by which ruling's verdicts) — plus the `authored` flag as measured; the one maker field is owed to item 6 (s308-D21).",
@@ -22,8 +23,9 @@
   "rulings": {
    "s308-D16": "item 1 — this register",
    "s308-D17": "item 2 — the ends check; the 12 logo lines to obeys",
-   "s308-D18": "item 3 — owed",
-   "s308-D19": "item 4 — owed",
+   "s308-D18": "item 3 — one direction stored, the other read (`opposite`, `reads`)",
+   "s308-D19": "item 4 — each type's shape (`shape`); the self-lines moved to count / covers / the subcomponent kind",
+   "s308-D26": "item 4 as changed in v2 — the part names become a subcomponent kind",
    "s308-D20": "item 5 — owed",
    "s308-D21": "item 6 — owed",
    "s308-D22": "item 7 — owed",
@@ -32,14 +34,14 @@
   }
  },
  "$doc": {
-  "written": "#308 lane E, 2026-09-29T08:45Z, from the live graph (_build_kg_explorer.extract() + extract_extra())",
+  "written": "#308 lane E, 2026-09-29T14:09Z, from the live graph (_build_kg_explorer.extract() + extract_extra())",
   "sources_reconciled": [
    "knowledge/components/meta.schema.json (edges.properties)",
    "knowledge/_kg_verbs.json (reads + unread)",
    "knowledge/_kg_explorer.template.html (FAMILY map) + knowledge/_build_kg_explorer.py (the graph)",
    "knowledge/_validate_kg.py (reads the schema’s edge types; holds no list of its own)"
   ],
-  "not_yet": "The meta schema, the verbs map and the explorer still hold their own partial copies; making them READ this file is the rest of item 1 (row W-308ie) and is not done here. Until then the coverage check refuses any type any of them names that this file does not.",
+  "not_yet": "Since s308-D18 (#308 lane E round 2) the explorer takes each type's two readings from this file (`reads` → its `read` block) and the meta schema, the verbs map and the explorer name the stored side of each pair as this file does. They still hold their own lists of types (schema edge keys, the verbs' reads, the explorer's FAMILY map); making every one READ its list from here is the rest of item 1 (row W-308ie). Until then the coverage check refuses any type one of them names that this file does not.",
   "owed": {
    "item 8 (s308-D23)": "knowledge/_decision-graph.json's nine types are not graph edges and have no row; folding them into the ten ruling→ruling rows is item 8's.",
    "item 9 (s308-D24)": "token→token alias, providesCapability, a theme to point at, component→ARIA role: no rows until those edges exist."
@@ -65,22 +67,25 @@
     "basis": "the reader keeps only edges whose ends are both known"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "accepts in a slot",
+    "back": "is accepted by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -128,7 +133,7 @@
     "to": {
      "capability": 95
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -150,22 +155,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is the active variant of",
+    "back": "has active variant"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -213,7 +221,7 @@
     "to": {
      "icon": 232
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -239,22 +247,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "answers intent",
+    "back": "is answered by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -301,7 +312,7 @@
     "to": {
      "intent": 28
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -327,22 +338,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "applies to",
+    "back": "must satisfy"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -389,7 +403,7 @@
     "to": {
      "component": 826
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -412,22 +426,25 @@
     "basis": "the reader keeps only edges whose ends are both known"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "takes its behaviour from",
+    "back": "gives behaviour to"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -476,7 +493,7 @@
      "file": 55,
      "snippet": 18
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -498,22 +515,25 @@
     "basis": "the reader keeps only edges whose ends are both known"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "binds token",
+    "back": "is bound by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -561,7 +581,7 @@
     "to": {
      "token": 835
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -583,22 +603,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is bound by",
+    "back": "binds"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -648,7 +671,7 @@
     "to": {
      "policy": 55
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -674,22 +697,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "bounds",
+    "back": "is bounded by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -738,7 +764,7 @@
     "to": {
      "ruling": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -762,22 +788,25 @@
     "basis": "the reader keeps only edges whose ends are both known"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "was captured from",
+    "back": "is the source of"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -827,7 +856,7 @@
      "figma": 33,
      "file": 5
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -849,22 +878,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is challenged by",
+    "back": "challenges"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -911,7 +943,7 @@
     "to": {
      "ruling": 4
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -933,22 +965,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is checked by",
+    "back": "can check"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -995,7 +1030,7 @@
     "to": {
      "axe": 68
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1017,22 +1052,25 @@
     "basis": "s274-D10: a declared null is carried, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "cites",
+    "back": "is cited by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1079,7 +1117,7 @@
     "to": {
      "sc": 51
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1105,22 +1143,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "common pattern",
+    "back": "is a pattern of"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1167,7 +1208,7 @@
     "to": {
      "pattern": 421
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1193,22 +1234,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is composed of",
+    "back": "composes"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "a chain (s308-D19 v1: containedBy, under, supersedes; composedOf builds the same way): read transitively, never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1256,7 +1300,7 @@
     "to": {
      "component": 5
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1282,22 +1326,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "confirms",
+    "back": "is confirmed by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1346,7 +1393,7 @@
     "to": {
      "ruling": 5
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1372,22 +1419,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "consumes",
+    "back": "is consumed by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1435,7 +1485,7 @@
     "to": {
      "component": 70
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1451,7 +1501,8 @@
     "source": "knowledge/_kg_verbs.json"
    },
    "from": [
-    "component"
+    "component",
+    "subcomponent"
    ],
    "to": [
     "component"
@@ -1461,22 +1512,26 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "hasPart",
-     "stored": "both",
-     "measured": "0 of 10 component→component hasPart lines (self-lines excluded) mirrored by containedBy"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "hasPart",
+    "stored": true,
+    "basis": "s308-D18: Dave named the stored side of both pairs he was shown — governs (on the ruling) over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim — the ruling for governance, the contained part for containment — and read the other by walking backwards.",
+    "agreement": "before the switch: 0 of 88 containedBy and 0 of 14 hasPart→component lines were mirrored (0 of 102); all 22 hasPart lines are now carried as containedBy — 10 as a part line on the contained component, 12 as subcomponent nodes"
+   },
+   "reads": {
+    "forward": "is contained by",
+    "back": "contains"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "a chain (s308-D19 v1: containedBy, under, supersedes; composedOf builds the same way): read transitively, never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 1,
-     "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+     "repeatedPairs": 3
+    }
    },
    "count": {
     "perStart": null,
@@ -1495,13 +1550,13 @@
    "maker": {
     "today": {
      "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from relationships.livesInside, name-matched; resolutions MERGE (s135-D4)",
+     "script": "knowledge/gen_kg_edges.py from relationships.livesInside, name-matched (resolutions MERGE, s135-D4), and from a container's subComponents where a ruled PROMOTE names the part as this component (the line carries `part`, s308-D18); a subcomponent's line is derived by knowledge/_build_kg_explorer.py from its container's subComponents (s308-D26)",
      "note": null,
      "store": [
       "knowledge/components/<slug>.meta.json edges.containedBy"
      ],
      "authoredFlag": {
-      "None": 88
+      "None": 110
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -1516,15 +1571,16 @@
    },
    "family": "base",
    "$measured": {
-    "edges": 88,
+    "edges": 110,
     "nulls": 0,
     "from": {
-     "component": 88
+     "component": 98,
+     "subcomponent": 12
     },
     "to": {
-     "component": 88
+     "component": 110
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1550,22 +1606,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "corrects",
+    "back": "is corrected by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1613,7 +1672,7 @@
     "to": {
      "ruling": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1621,7 +1680,7 @@
    "plain": "has as its default active twin",
    "verb": {
     "reads": [],
-    "unread": "icon: → icon: — Dave's named active twin of a multi-active base (s277-D6, his #279 sheet), 14 resolved and DRAWN since explorer 1.32 (#308 lane L), 1 declared null (jade-lifestyle, answered 'open'); no verb reads it yet.",
+    "unread": "icon: → icon: — Dave's named active twin of a multi-active base (s277-D6, his #279 sheet); 14 resolved and DRAWN since explorer 1.32 (#308 lane L), 1 declared null (jade-lifestyle, answered 'open'). Unread: no verb reads it yet. Was: 'null ONLY — declared-null, never drawn' — true of the graph only ",
     "source": "knowledge/_kg_verbs.json unread"
    },
    "from": [
@@ -1635,22 +1694,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is active by default for",
+    "back": "defaults to"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1675,7 +1737,7 @@
       "knowledge/_icon_nodes.json"
      ],
      "authoredFlag": {
-      "True": 1
+      "True": 15
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -1688,7 +1750,7 @@
     "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
    },
    "family": "assets",
-   "note": "DRAWN since explorer 1.32 (#308 lane L, Dave 2026-09-29 12:08 BST: 'Okay, is this simple to fix?'): defaultActive joined ASSET_DRAWN, so all 15 in storage reach the graph — 14 lines + 1 declared null. History: lane E measured 15 in storage and 1 in the graph (2026-09-29T08:45Z), because the asset pass drew only ASSET_DRAWN types and skipped the rest in silence; a skip is now printed by type and refused by _validate_edges --coverage unless declared.",
+   "note": "drawn since explorer 1.32 (#308 lane L): 14 of Dave's answers as lines, jade-lifestyle ('open') a declared null",
    "$measured": {
     "edges": 15,
     "nulls": 1,
@@ -1698,7 +1760,7 @@
     "to": {
      "icon": 14
     },
-    "at": "2026-09-29T11:22Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1718,22 +1780,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is the default for",
+    "back": "defaults to"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1779,7 +1844,7 @@
      "logo": 2
     },
     "to": {},
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1801,22 +1866,25 @@
     "basis": "s274-D10: a declared null is carried, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is defined in",
+    "back": "defines"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -1865,7 +1933,7 @@
     "to": {
      "artefact": 474
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1891,22 +1959,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "triggeredBy",
-     "stored": "both",
-     "measured": "a candidate pairing read from the two definitions (lane O), not ruled"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "see triggeredBy"
+   },
+   "reads": {
+    "forward": "delegates to",
+    "back": "is delegated to by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -1954,7 +2025,7 @@
     "to": {
      "component": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -1980,22 +2051,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "drives consumer",
+    "back": "is driven by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2042,7 +2116,7 @@
     "to": {
      "component": 5
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2068,22 +2142,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "enacts",
+    "back": "is enacted by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2132,7 +2209,7 @@
     "to": {
      "ruling": 6
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2154,22 +2231,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "has EN 301 549 clause",
+    "back": "is the clause for"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -2219,7 +2299,7 @@
     "to": {
      "standard": 55
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2241,22 +2321,25 @@
     "basis": "s274-D10: a declared null is carried, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is enforced by",
+    "back": "enforces"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2303,7 +2386,7 @@
     "to": {
      "artefact": 64
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2340,22 +2423,25 @@
     "basis": "s281-D1: a principle whose evidence field carries no URL keeps a declared null with its prose"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is evidenced by",
+    "back": "is evidence for"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2381,7 +2467,7 @@
       "knowledge/_ux_principle_nodes.json"
      ],
      "authoredFlag": {
-      "True": 2681
+      "True": 2708
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -2395,16 +2481,16 @@
    },
    "family": "governance · uxprinciples",
    "$measured": {
-    "edges": 2681,
+    "edges": 2708,
     "nulls": 11,
     "from": {
-     "ruling": 2536,
+     "ruling": 2563,
      "ux": 145
     },
     "to": {
-     "evidence": 2670
+     "evidence": 2697
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2426,22 +2512,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is explained by",
+    "back": "explains"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2488,7 +2577,7 @@
     "to": {
      "ruling": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2514,22 +2603,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "extends",
+    "back": "is extended by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2579,7 +2671,7 @@
     "to": {
      "ruling": 16
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2605,23 +2697,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "itself",
+    "stored": true,
+    "basis": "symmetric: stored once, read both ways (s308-D18 + s308-D19)"
+   },
+   "reads": {
+    "forward": "in family with",
+    "back": "in family with"
    },
    "shape": {
-    "today": {
-     "selfLoops": 9,
+    "self": false,
+    "loops": true,
+    "bothWays": true,
+    "chains": false,
+    "basis": "symmetric — the fact holds both ways, so it is stored ONCE and read both ways (s308-D19 v1: groupsWith, family, tensionWith; mustNotNeighbour's prohibition is mutual)",
+    "measured": {
+     "selfLoops": 0,
      "twoCycles": 0,
-     "repeatedPairs": 0,
-     "readAs": "points both ways (lane O reading, not declared)"
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+     "repeatedPairs": 0
+    }
    },
    "count": {
     "perStart": null,
@@ -2646,7 +2740,7 @@
       "knowledge/components/<slug>.meta.json edges.family"
      ],
      "authoredFlag": {
-      "None": 12
+      "None": 3
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -2660,15 +2754,15 @@
    },
    "family": "base",
    "$measured": {
-    "edges": 12,
+    "edges": 3,
     "nulls": 2,
     "from": {
-     "component": 12
+     "component": 3
     },
     "to": {
-     "component": 10
+     "component": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2690,22 +2784,25 @@
     "basis": "s274-D10: a declared null is carried, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is flagged by",
+    "back": "flags"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2750,7 +2847,7 @@
     "to": {
      "rule": 50
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2776,22 +2873,26 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "governs",
-     "stored": "both",
-     "measured": "18 of 28 governedBy lines mirrored by a governs line"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "governs",
+    "stored": false,
+    "basis": "s308-D18: Dave named the stored side of both pairs he was shown — governs (on the ruling) over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim — the ruling for governance, the contained part for containment — and read the other by walking backwards. The lines still stored here are the ones the ruling's governs[] does not carry: the edge check names each one, for Dave.",
+    "agreement": "10 of 28 had no governs line: badge ← s123-D4; banner ← s125-D1; banner ← s130-D4; banner ← s131-D1; button ← ds-032; legend ← s151-D1; legend ← s248-D3; legend ← s258-D1; selection-controls ← s130-D5; tabs ← s123-D4"
+   },
+   "reads": {
+    "forward": "governed by",
+    "back": "governs"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2810,13 +2911,13 @@
    "maker": {
     "today": {
      "made": "ratified",
-     "script": "knowledge/gen_kg_edges.py from the s135-D4 resolutions file's ATTACH verdicts (Dave's)",
+     "script": "knowledge/gen_kg_edges.py from the s135-D4 ATTACH verdicts the ruling's own governs[] does not carry (s308-D18); legend's three lines by hand (#261)",
      "note": null,
      "store": [
       "knowledge/components/<slug>.meta.json edges.governedBy"
      ],
      "authoredFlag": {
-      "None": 28
+      "None": 10
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -2829,17 +2930,17 @@
     "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
    },
    "family": "base",
-   "note": "s308-D17: governedBy is kept for rulings only; the 12 logo→rule lines were moved to obeys at #308 lane E",
+   "note": "s308-D17: governedBy is kept for rulings only (the 12 logo→rule lines moved to obeys). s308-D18: it is the READ side of governs; the lines still stored are the ones the ruling side does not carry — for Dave",
    "$measured": {
-    "edges": 28,
+    "edges": 10,
     "nulls": 0,
     "from": {
-     "component": 28
+     "component": 10
     },
     "to": {
-     "ruling": 28
+     "ruling": 10
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2872,22 +2973,26 @@
     "basis": "the builder only links a resolved target; it never writes a null"
    },
    "opposite": {
-    "today": {
-     "type": "governedBy",
-     "stored": "both",
-     "measured": "the component branch only; see governedBy's row"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "governedBy",
+    "stored": true,
+    "basis": "s308-D18: Dave named the stored side of both pairs he was shown — governs (on the ruling) over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim — the ruling for governance, the contained part for containment — and read the other by walking backwards.",
+    "agreement": "before the switch: 18 of 28 governedBy lines were mirrored by governs; those 18 left the metas and are read here"
+   },
+   "reads": {
+    "forward": "governs",
+    "back": "is governed by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 14
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -2912,7 +3017,7 @@
       "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
      ],
      "authoredFlag": {
-      "True": 2013
+      "True": 2031
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -2926,16 +3031,16 @@
    },
    "family": "governance",
    "$measured": {
-    "edges": 2013,
+    "edges": 2031,
     "nulls": 0,
     "from": {
-     "ruling": 2013
+     "ruling": 2031
     },
     "to": {
-     "artefact": 1676,
+     "artefact": 1694,
      "component": 337
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -2961,23 +3066,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "itself",
+    "stored": true,
+    "basis": "symmetric: stored once, read both ways (s308-D18 + s308-D19)"
+   },
+   "reads": {
+    "forward": "groups with",
+    "back": "groups with"
    },
    "shape": {
-    "today": {
-     "selfLoops": 2,
+    "self": false,
+    "loops": true,
+    "bothWays": true,
+    "chains": false,
+    "basis": "symmetric — the fact holds both ways, so it is stored ONCE and read both ways (s308-D19 v1: groupsWith, family, tensionWith; mustNotNeighbour's prohibition is mutual)",
+    "measured": {
+     "selfLoops": 0,
      "twoCycles": 0,
-     "repeatedPairs": 0,
-     "readAs": "points both ways (lane O reading, not declared)"
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+     "repeatedPairs": 0
+    }
    },
    "count": {
     "perStart": null,
@@ -3002,7 +3109,7 @@
       "knowledge/components/<slug>.meta.json edges.groupsWith"
      ],
      "authoredFlag": {
-      "None": 8
+      "None": 6
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -3016,15 +3123,15 @@
    },
    "family": "base",
    "$measured": {
-    "edges": 8,
+    "edges": 6,
     "nulls": 4,
     "from": {
-     "component": 8
+     "component": 6
     },
     "to": {
-     "component": 4
+     "component": 2
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3050,22 +3157,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "takes data shape",
+    "back": "is taken by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3110,48 +3220,49 @@
     "to": {
      "shape": 26
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
    "word": "hasPart",
    "plain": "has the part",
    "verb": {
-    "reads": [
-     {
-      "verb": "contains",
-      "force": "is"
-     }
-    ],
+    "reads": [],
+    "readVia": "not a storage type: read as containedBy walked backwards (s308-D18) — the verb is containedBy's, read the other way",
     "source": "knowledge/_kg_verbs.json"
    },
    "from": [
     "component"
    ],
    "to": [
-    "component"
+    "component",
+    "subcomponent"
    ],
    "nulls": {
     "allowed": true,
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "containedBy",
-     "stored": "both",
-     "measured": "see containedBy's row"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "containedBy",
+    "stored": false,
+    "basis": "s308-D18: Dave named the stored side of both pairs he was shown — governs (on the ruling) over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim — the ruling for governance, the contained part for containment — and read the other by walking backwards.",
+    "agreement": "see containedBy"
+   },
+   "reads": {
+    "forward": "has part",
+    "back": "is part of"
    },
    "shape": {
-    "today": {
-     "selfLoops": 4,
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
+     "selfLoops": 0,
      "twoCycles": 0,
-     "repeatedPairs": 4
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+     "repeatedPairs": 0
+    }
    },
    "count": {
     "perStart": null,
@@ -3169,15 +3280,13 @@
    },
    "maker": {
     "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from subComponents (null + part name) with resolutions PROMOTE (s135-D4)",
-     "note": null,
+     "made": "never stored",
+     "script": null,
+     "note": "s308-D18: READ ONLY — containedBy walked backwards. Until #308 gen_kg_edges.py wrote it from subComponents; the parts that are registered components now carry a containedBy line naming the part, the rest are subcomponent nodes (s308-D26)",
      "store": [
       "knowledge/components/<slug>.meta.json edges.hasPart"
      ],
-     "authoredFlag": {
-      "None": 22
-     }
+     "authoredFlag": {}
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
    },
@@ -3191,15 +3300,11 @@
    },
    "family": "base",
    "$measured": {
-    "edges": 22,
-    "nulls": 8,
-    "from": {
-     "component": 22
-    },
-    "to": {
-     "component": 14
-    },
-    "at": "2026-09-29T08:45Z"
+    "edges": 0,
+    "nulls": 0,
+    "from": {},
+    "to": {},
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3222,22 +3327,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "has party",
+    "back": "is a party to"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3285,7 +3393,7 @@
      "ux": 51,
      "ruling": 2
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3307,22 +3415,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is in research family",
+    "back": "is the research family of"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -3372,7 +3483,7 @@
     "to": {
      "family": 145
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3394,22 +3505,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is in group",
+    "back": "groups"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -3458,7 +3572,7 @@
     "to": {
      "iconGroup": 666
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3480,22 +3594,25 @@
     "basis": "the builder only links a resolved target; it never writes a null"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "mentions",
+    "back": "is mentioned by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 2,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3520,7 +3637,7 @@
       "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
      ],
      "authoredFlag": {
-      "False": 243
+      "False": 246
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -3534,15 +3651,15 @@
    },
    "family": "governance",
    "$measured": {
-    "edges": 243,
+    "edges": 246,
     "nulls": 0,
     "from": {
-     "ruling": 243
+     "ruling": 246
     },
     "to": {
-     "ruling": 243
+     "ruling": 246
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3568,22 +3685,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "itself",
+    "stored": true,
+    "basis": "symmetric: stored once, read both ways (s308-D18 + s308-D19)"
+   },
+   "reads": {
+    "forward": "must not neighbour",
+    "back": "must not neighbour"
    },
    "shape": {
-    "today": {
-     "selfLoops": 7,
+    "self": false,
+    "loops": true,
+    "bothWays": true,
+    "chains": false,
+    "basis": "symmetric — the fact holds both ways, so it is stored ONCE and read both ways (s308-D19 v1: groupsWith, family, tensionWith; mustNotNeighbour's prohibition is mutual)",
+    "measured": {
+     "selfLoops": 1,
      "twoCycles": 1,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3608,7 +3728,7 @@
       "knowledge/components/<slug>.meta.json edges.mustNotNeighbour"
      ],
      "authoredFlag": {
-      "None": 70
+      "None": 64
      }
     },
     "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
@@ -3623,15 +3743,15 @@
    },
    "family": "base",
    "$measured": {
-    "edges": 70,
+    "edges": 64,
     "nulls": 51,
     "from": {
-     "component": 70
+     "component": 64
     },
     "to": {
-     "component": 19
+     "component": 13
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3657,22 +3777,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "narrows",
+    "back": "is narrowed by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3721,7 +3844,7 @@
     "to": {
      "ruling": 2
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3772,22 +3895,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "obeys",
+    "back": "binds"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3838,7 +3964,7 @@
      "rule": 166,
      "ux": 14
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3864,22 +3990,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "partial of",
+    "back": "has partial"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -3927,7 +4056,7 @@
     "to": {
      "component": 5
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -3953,22 +4082,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "provides role",
+    "back": "is provided by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4015,7 +4147,7 @@
     "to": {
      "role": 108
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4041,22 +4173,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "refines",
+    "back": "is refined by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4105,7 +4240,7 @@
     "to": {
      "ruling": 4
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4131,22 +4266,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "rendered by",
+    "back": "renders"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -4196,7 +4334,7 @@
     "to": {
      "snippet": 137
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4218,22 +4356,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is resolved by",
+    "back": "resolves"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4280,7 +4421,7 @@
     "to": {
      "ruling": 7
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4306,22 +4447,25 @@
     "basis": "s281-D6: a rule that rests on convention alone carries a declared null with its note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "rests on",
+    "back": "is what this rule rests on"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4368,7 +4512,7 @@
     "to": {
      "ux": 67
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4394,22 +4538,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "retires",
+    "back": "is retired by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4458,7 +4605,7 @@
     "to": {
      "ruling": 1
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4484,22 +4631,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "reuses",
+    "back": "is reused by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4546,7 +4696,7 @@
     "to": {
      "component": 2
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4572,22 +4722,26 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": "governs",
-     "stored": "both",
-     "measured": "a candidate: lane O reads it as governs walked back (icon → ruling), not ruled"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "governs",
+    "stored": false,
+    "basis": "s308-D18: Dave named the stored side of both pairs he was shown — governs (on the ruling) over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim — the ruling for governance, the contained part for containment — and read the other by walking backwards. ruledBy is s264-D3's governs[] (an icon .svg) read backwards onto the icon node; it is a ratified type of gen_kg_icons.py (s277-D4, closed vocabulary #75), so it is still stored — the check names its lines, for Dave.",
+    "agreement": "8 of 8 mirrored by a governs line to the .svg artefact"
+   },
+   "reads": {
+    "forward": "is ruled by",
+    "back": "rules"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4634,7 +4788,7 @@
     "to": {
      "ruling": 8
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4660,22 +4814,25 @@
     "basis": "the builder only links a resolved target; it never writes a null"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "was ruled in",
+    "back": "ruled"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -4724,7 +4881,7 @@
     "to": {
      "session": 199
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4746,22 +4903,25 @@
     "basis": "the reader keeps only edges whose ends are both known"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is set in",
+    "back": "sets"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4808,7 +4968,7 @@
     "to": {
      "typestyle": 154
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4834,22 +4994,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "supersedes",
+    "back": "is superseded by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "a chain (s308-D19 v1: containedBy, under, supersedes; composedOf builds the same way): read transitively, never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4898,7 +5061,7 @@
     "to": {
      "ruling": 3
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -4924,22 +5087,25 @@
     "basis": "the reader keeps only edges whose s and t are both rulings"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "supersedes a clause of",
+    "back": "has a clause superseded by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -4988,7 +5154,7 @@
     "to": {
      "ruling": 9
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5014,23 +5180,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": "itself",
+    "stored": true,
+    "basis": "symmetric: stored once, read both ways (s308-D18 + s308-D19)"
+   },
+   "reads": {
+    "forward": "is in tension with",
+    "back": "is in tension with"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": true,
+    "chains": false,
+    "basis": "symmetric — the fact holds both ways, so it is stored ONCE and read both ways (s308-D19 v1: groupsWith, family, tensionWith; mustNotNeighbour's prohibition is mutual)",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
-     "repeatedPairs": 0,
-     "readAs": "points both ways (lane O reading, not declared)"
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+     "repeatedPairs": 0
+    }
    },
    "count": {
     "perStart": null,
@@ -5078,7 +5246,7 @@
     "to": {
      "ux": 22
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5100,22 +5268,25 @@
     "basis": "s275-D2: an unresolvable target is ref:null with a note"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "touches",
+    "back": "is touched by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5162,7 +5333,7 @@
     "to": {
      "ruling": 9
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5184,22 +5355,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "delegatesTo",
-     "stored": "both",
-     "measured": "a candidate pairing read from the two definitions (lane O), not ruled"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "not an opposite of delegatesTo (lane O's candidate): delegatesTo is a hand-off contract with `when` (s268-D5), triggeredBy a prose trigger; 0 of 3 triggeredBy lines mirror the 1 delegatesTo line. Folding them is a vocabulary call — Dave's"
+   },
+   "reads": {
+    "forward": "triggered by",
+    "back": "triggers"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5246,7 +5420,7 @@
     "to": {
      "component": 3
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5280,22 +5454,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "sits under",
+    "back": "contains"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "a chain (s308-D19 v1: containedBy, under, supersedes; composedOf builds the same way): read transitively, never a loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 42
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": {
@@ -5346,7 +5523,7 @@
      "guideline": 55,
      "principle": 55
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5372,22 +5549,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "used in context",
+    "back": "is a context for"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5434,7 +5614,7 @@
     "to": {
      "context": 367
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5456,22 +5636,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "uses icon",
+    "back": "is used by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5518,7 +5701,7 @@
     "to": {
      "icon": 371
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5540,22 +5723,25 @@
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "uses logo",
+    "back": "is used by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5602,7 +5788,7 @@
     "to": {
      "logo": 18
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5624,22 +5810,25 @@
     "basis": "the builder only links a resolved target"
    },
    "opposite": {
-    "today": {
-     "type": null,
-     "stored": "none",
-     "measured": "no opposite is declared or stored today"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is verified by",
+    "back": "verifies"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 0,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5686,7 +5875,7 @@
     "to": {
      "artefact": 6
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   },
   {
@@ -5712,22 +5901,25 @@
     "basis": "meta.schema.json definitions.edge: ref may be null with its $note (s131-D2)"
    },
    "opposite": {
-    "today": {
-     "type": "beats",
-     "stored": "one",
-     "measured": "meta.schema.json / _kg_verbs.json: the inverse is read by traversal, never stored"
-    },
-    "declared": null,
-    "owed": "item 3 (s308-D18): name the opposite and which side is stored"
+    "type": null,
+    "stored": true,
+    "basis": "meta.schema.json / _kg_verbs.json (s270-D2): the inverse ('beats') is read by traversal, never stored — the rule s308-D18 applies to every type"
+   },
+   "reads": {
+    "forward": "yields to",
+    "back": "is yielded to by"
    },
    "shape": {
-    "today": {
+    "self": false,
+    "loops": true,
+    "bothWays": false,
+    "chains": false,
+    "basis": "may loop: nothing in its definition orders its two ends",
+    "measured": {
      "selfLoops": 0,
      "twoCycles": 7,
      "repeatedPairs": 0
-    },
-    "declared": null,
-    "owed": "item 4 (s308-D19): may it point at itself, loop, point both ways, chain"
+    }
    },
    "count": {
     "perStart": null,
@@ -5774,7 +5966,7 @@
     "to": {
      "component": 49
     },
-    "at": "2026-09-29T08:45Z"
+    "at": "2026-09-29T14:09Z"
    }
   }
  ],

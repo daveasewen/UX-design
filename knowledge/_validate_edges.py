@@ -18,6 +18,12 @@ TWO CHECKS, TWO TIERS.
                 NULL-NOT-ALLOWED  a declared null on a type whose row says nulls are not legal
                 OVER-COUNT        a start with more DISTINCT targets than the row's count.perStart.max
                                   (counted once per start, not per edge)
+              and THE SHAPE (s308-D18 + s308-D19, #308 lane E round 2), same tier:
+                SELF-LINE         an edge from a node to itself on a type whose shape.self is false
+                LOOP              a cycle (named once, by its members) on a type whose shape.loops is false
+                BOTH-WAYS-STORED  a symmetric type (shape.bothWays) stored in both directions for one pair
+                READ-SIDE-STORED  an edge of a type whose row says it is the READ side of its opposite
+                                  (opposite.stored false) — the line belongs on the opposite's side
               A node's kind is its id's prefix before the first colon. Prints COUNTS first, then every
               failure by name. Exit 1 on any failure, 0 on none — routed ADVISORY in _build_all.py, so
               the build warns and goes on.
@@ -29,7 +35,8 @@ TWO CHECKS, TWO TIERS.
                 UNREGISTERED-NAME a type named by the meta schema, the verbs map or the explorer's
                                   FAMILY map that is neither a row nor declared in `$absent`
                 ABSENT-HAS-EDGES  a `$absent` entry that now carries edges (it needs a row)
-                REGISTER-SHAPE    a row missing a checked field, or two rows with one word
+                REGISTER-SHAPE    a row missing a checked field (incl. opposite / reads / shape), or two rows
+                                  with one word
                 SKIPPED-UNDECLARED an edge the explorer READ from storage and did not link, whose
                                   "<pass> <type>" is not named in the builder's SKIP_DECLARED
                                   (#308 lane L — the class that hid 14 of Dave's defaultActive
@@ -60,7 +67,9 @@ REGISTER = os.path.join(HERE, '_edge_register.json')
 ENDS_CLASSES = ('UNKNOWN-TYPE', 'WRONG-FROM', 'WRONG-TO', 'WRONG-PAIR', 'NULL-NOT-ALLOWED', 'OVER-COUNT')
 COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE',
                  'SKIPPED-UNDECLARED')
-ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count')
+ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape')
+SHAPE_CLASSES = ('SELF-LINE', 'LOOP', 'BOTH-WAYS-STORED', 'READ-SIDE-STORED')   # s308-D18/D19 (#308 lane E r2)
+SHAPE_KEYS = ('self', 'loops', 'bothWays', 'chains')
 
 
 class CouldNotAsk(Exception):
@@ -111,6 +120,11 @@ def register_rows(reg):
             probs.append(f"row {i} ({r.get('word')!r}) lacks {miss}"); continue
         if r['word'] in rows:
             probs.append(f"two rows carry the word {r['word']!r}"); continue
+        sh, op = r.get('shape'), r.get('opposite')
+        if not (isinstance(sh, dict) and all(isinstance(sh.get(k), bool) for k in SHAPE_KEYS)):
+            probs.append(f"row {r['word']!r}: shape must carry booleans {list(SHAPE_KEYS)}"); continue
+        if not (isinstance(op, dict) and isinstance(op.get('stored'), bool) and 'type' in op):
+            probs.append(f"row {r['word']!r}: opposite must carry `type` and a boolean `stored`"); continue
         rows[r['word']] = r
     return rows, probs
 
@@ -178,13 +192,77 @@ def check_ends(edges, rows):
             'failures': failures}
 
 
+def check_shape(edges, rows):
+    """s308-D18 + s308-D19 (#308 lane E round 2). {'byClass', 'byClassType', 'failures'}; a failure is
+    (class, type, s, t, detail). SELF-LINE and READ-SIDE-STORED count edges, LOOP counts cycles, BOTH-WAYS-STORED
+    counts unordered pairs."""
+    failures = []
+    pairs = defaultdict(set)
+    for e in edges:
+        ty, s, t = e.get('type'), e.get('s'), e.get('t')
+        row = rows.get(ty)
+        if row is None or t is None:
+            continue
+        sh, op = row.get('shape') or {}, row.get('opposite') or {}
+        if not op.get('stored', True):
+            failures.append(('READ-SIDE-STORED', ty, s, t, f"{ty} is read as {op.get('type')} walked backwards; the line belongs on that side"))
+        if s == t and not sh.get('self', True):
+            failures.append(('SELF-LINE', ty, s, t, 'points at itself; the shape says it may not'))
+        pairs[ty].add((s, t))
+    for ty, P in sorted(pairs.items()):
+        sh = rows[ty].get('shape') or {}
+        if sh.get('bothWays'):
+            for (a, b) in sorted(P):
+                if a < b and (b, a) in P:
+                    failures.append(('BOTH-WAYS-STORED', ty, a, b, 'a symmetric fact stored in both directions; store it once'))
+        if not sh.get('loops', True):
+            for cyc in _cycles({(a, b) for (a, b) in P if a != b}):
+                failures.append(('LOOP', ty, cyc[0], cyc[-1], 'a loop: ' + ' → '.join(cyc + [cyc[0]])))
+    byc, bycT = Counter(), defaultdict(Counter)
+    for c, ty, *_ in failures:
+        byc[c] += 1; bycT[c][ty] += 1
+    return {'byClass': {c: byc[c] for c in SHAPE_CLASSES}, 'byClassType': {c: dict(bycT[c]) for c in bycT}, 'failures': failures}
+
+
+def _cycles(P):
+    """The strongly connected components of size > 1 (Tarjan, iterative), each as a sorted member list — one
+    report per loop, whatever its length."""
+    adj = defaultdict(list)
+    for a, b in P: adj[a].append(b)
+    index, low, onstack, stack, out, n = {}, {}, set(), [], [], [0]
+    for root in sorted(adj):
+        if root in index: continue
+        work = [(root, iter(sorted(adj[root])))]
+        index[root] = low[root] = n[0]; n[0] += 1; stack.append(root); onstack.add(root)
+        while work:
+            v, it = work[-1]
+            w = next(it, None)
+            if w is not None:
+                if w not in index:
+                    index[w] = low[w] = n[0]; n[0] += 1; stack.append(w); onstack.add(w)
+                    work.append((w, iter(sorted(adj[w]))))
+                elif w in onstack:
+                    low[v] = min(low[v], index[w])
+                continue
+            work.pop()
+            if work: low[work[-1][0]] = min(low[work[-1][0]], low[v])
+            if low[v] == index[v]:
+                comp = []
+                while True:
+                    x = stack.pop(); onstack.discard(x); comp.append(x)
+                    if x == v: break
+                if len(comp) > 1: out.append(sorted(comp))
+    return out
+
+
 def check_coverage(edges, reg, names, skips=None):
     rows, probs = register_rows(reg)
     live = Counter(e.get('type') for e in edges)
     absent = reg.get('$absent') or {}
     out = [('REGISTER-SHAPE', p) for p in probs]
     out += [('NO-ROW', f'{t} ({live[t]} edges in the graph)') for t in sorted(live) if t not in rows]
-    out += [('ROW-WITHOUT-EDGES', t) for t in sorted(rows) if not live.get(t)]
+    out += [('ROW-WITHOUT-EDGES', t) for t in sorted(rows) if not live.get(t)
+            and (rows[t].get('opposite') or {}).get('stored', True)]   # a READ-side row (s308-D18) stores nothing
     out += [('UNREGISTERED-NAME', f"{t} (named in {sorted(w)})") for t, w in sorted(names.items())
             if t not in rows and t not in absent]
     out += [('ABSENT-HAS-EDGES', f'{t} ({live[t]} edges)') for t in sorted(absent) if live.get(t)]
@@ -201,20 +279,28 @@ def drift(edges, rows):
             if (r.get('$measured') or {}).get('edges') is not None and r['$measured']['edges'] != live.get(t, 0)]
 
 
-def print_ends(res, rows, how, dr):
+def print_ends(res, rows, how, dr, shp=None):
     fails = {c: n for c, n in res['byClass'].items() if n}
+    shf = {c: n for c, n in ((shp or {}).get('byClass') or {}).items() if n}
     print(f"COUNTS: types registered {len(rows)} · edges checked {res['checked']} · pass {res['pass']} · fail {res['fail']}"
-          f" · by class {fails or 'none'}")
+          f" · by class {fails or 'none'} · shape {shf or 'none'}")
     print(f"  graph: {how}")
     for c in ENDS_CLASSES:
         if res['byClass'][c]:
             print(f"  {c}: {res['byClass'][c]} — by type {res['byClassType'][c]}")
     for c, ty, s, t, d in res['failures']:
         print(f"  ✗ {c:16} {ty:18} {s} → {t}   {d}")
+    for c in SHAPE_CLASSES:
+        if shf.get(c):
+            print(f"  {c}: {shf[c]} — by type {shp['byClassType'][c]}")
+    for c, ty, s, t, d in (shp or {}).get('failures') or []:
+        print(f"  ✗ {c:16} {ty:18} {s} → {t}   {d}")
     for t, was, now in dr:
         print(f"  · drift (not a failure): {t} {was} → {now} edges since the row was measured")
     print('EDGE ENDS: ' + ('all edges match their rows' if not res['fail'] and not res['byClass']['OVER-COUNT']
                            else 'FAILURES above (ADVISORY, s308-D17)'))
+    print('EDGE SHAPE: ' + ('every edge matches its type\'s shape and stored side' if not shf
+                            else 'FAILURES above (ADVISORY, s308-D18/D19)'))
 
 
 def main(argv):
@@ -236,11 +322,14 @@ def main(argv):
         print('EDGE REGISTER COVERAGE: ' + ('OK' if not probs else 'REFUSED (BLOCKING) — add or fix the row(s) in knowledge/_edge_register.json'))
         return 1 if probs else 0
     res = check_ends(edges, rows)
+    shp = check_shape(edges, rows)
     if '--json' in argv:
-        print(json.dumps({k: v for k, v in res.items() if k != 'failures'}, sort_keys=True)); 
+        out = {k: v for k, v in res.items() if k != 'failures'}
+        out['shape'] = {k: v for k, v in shp.items() if k != 'failures'}
+        print(json.dumps(out, sort_keys=True))
     else:
-        print_ends(res, rows, how, drift(edges, rows))
-    return 1 if (res['fail'] or res['byClass']['OVER-COUNT']) else 0
+        print_ends(res, rows, how, drift(edges, rows), shp)
+    return 1 if (res['fail'] or res['byClass']['OVER-COUNT'] or any(shp['byClass'].values())) else 0
 
 
 # ------------------------------------------------------------------ selftest
@@ -318,6 +407,35 @@ def selftest():
          == sum(1 for k, _ in cov if k == 'SKIPPED-UNDECLARED'))
     bite(16, "the real extract reports its skips by type (the tally exists, whatever it holds today)",
          lambda: isinstance(skips.get('by'), dict) and isinstance(skips.get('declared'), dict))
+    # — s308-D18 / s308-D19 (#308 lane E round 2): the shape and the stored side
+    shp0 = check_shape(edges, rows)
+
+    def shape_red(cls, planted):
+        return check_shape(edges + planted, rows)['byClass'][cls] == shp0['byClass'][cls] + 1
+    comps = sorted(i for i in nodes if kind_of(i) == 'component')
+    a_, b_, c_ = comps[0], comps[1], comps[2]
+    bite(17, 'SELF-LINE: a containedBy line from a component to itself goes red',
+         lambda: shape_red('SELF-LINE', [{'s': a_, 't': a_, 'type': 'containedBy'}]))
+    bite(18, 'LOOP: a three-step composedOf loop goes red, once',
+         lambda: shape_red('LOOP', [{'s': a_, 't': b_, 'type': 'composedOf'}, {'s': b_, 't': c_, 'type': 'composedOf'},
+                                    {'s': c_, 't': a_, 'type': 'composedOf'}]))
+    tw = next(e for e in edges if e['type'] == 'tensionWith' and e.get('t'))
+    bite(19, 'BOTH-WAYS-STORED: a tensionWith line stored the other way round too goes red',
+         lambda: shape_red('BOTH-WAYS-STORED', [{'s': tw['t'], 't': tw['s'], 'type': 'tensionWith'}]))
+    bite(20, 'READ-SIDE-STORED: a hasPart line (the read side of containedBy) goes red',
+         lambda: shape_red('READ-SIDE-STORED', [{'s': b_, 't': a_, 'type': 'hasPart'}]))
+    bite(21, 'LOOP is not raised on a type whose shape allows loops (a consumes two-step loop stays quiet)',
+         lambda: check_shape(edges + [{'s': a_, 't': b_, 'type': 'consumes'}, {'s': b_, 't': a_, 'type': 'consumes'}],
+                             rows)['byClass']['LOOP'] == shp0['byClass']['LOOP'])
+    r22 = copy.deepcopy(reg); r22['types'][3]['shape'].pop('chains')
+    bite(22, 'REGISTER-SHAPE: a row whose shape lacks `chains` goes red', lambda: cov_red('REGISTER-SHAPE', reg2=r22))
+    r23 = copy.deepcopy(reg); r23['types'][4]['opposite'] = {'type': None}
+    bite(23, 'REGISTER-SHAPE: a row whose opposite has no boolean `stored` goes red', lambda: cov_red('REGISTER-SHAPE', reg2=r23))
+    r24 = copy.deepcopy(reg); w24 = next(r for r in r24['types'] if r['word'] == 'hasPart')
+    bite(24, 'ROW-WITHOUT-EDGES spares a READ-side row (hasPart, 0 edges), and still refuses it once it claims to be stored',
+         lambda: not any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in cov)
+         and (w24['opposite'].__setitem__('stored', True) or True)
+         and any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in check_coverage(edges, r24, names, skips)))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 

@@ -57,3 +57,66 @@ Measured for items 3–6, recorded in each row's `today`, not checked:
 - Survey steps 84–85: step 85, the _validate_kg selftest, passes. Step 84 has no arguments, so the survey does not ask it; run directly, `_validate_kg.py: OK`, exit 0.
 - `_wrap_regen.py --checks-only --session 308`: only the schematic was stale, and it was regenerated. _gen_titles refuses until the wrap, as expected.
 - The two surveys appended lines to notes/_BUILD-VERDICT-LOG.jsonl. I did not commit that file; it is shared.
+
+
+## Round 2 — items 3 and 4 (s308-D18, s308-D19, s308-D26), 2026-09-29 afternoon
+
+COUNTS (round 2): register rows 65 (64 stored types + hasPart, now read-only) · edges checked 11,499 · ends pass 11,499 · shape advisories 21 (READ-SIDE-STORED 18: governedBy 10, ruledBy 8 · SELF-LINE 1 · LOOP 1 · BOTH-WAYS-STORED 1) · coverage refusals 0 · self-lines moved 20 of 22 · selftest 24 of 24 bites
+
+Asked: the conductor, 14:44 BST, relaying Dave's rulings s308-D18 (item 3), s308-D19 (item 4, v1) and s308-D26 (item 4, v2: "The 4 part-names become a subcomponent kind"), under D27's neatest-name note.
+
+**The rule for the stored side.** Dave named both pairs he was shown: governs over governedBy, containedBy over hasPart. The same rule decides any other pair: store the side written on the record that makes the claim (the ruling for governance, the contained part for containment), and read the other by walking backwards. The rule is recorded on each row as `opposite.basis`.
+
+**The agreement check, run before the switch** (`notes/_lanes/308/E/agreement-before-switch-2026-09-29.json`):
+- governedBy: 28 lines. 18 were mirrored by governs, and 10 stood alone.
+- containedBy/hasPart: 0 of 102 mirrored. That is containedBy 88 and hasPart→component 14, with 22 hasPart lines in all.
+- ruledBy: all 8 are mirrored by a governs line to the icon's .svg.
+- alert and toast carry the one both-ways mustNotNeighbour pair.
+- triggeredBy and delegatesTo: 0 of 3 mirrored. They are not opposites. delegatesTo is a hand-off contract with `when` (s268-D5), and triggeredBy is a prose trigger.
+
+**What moved, at the source:**
+- **gen_kg_edges.py:**
+  - hasPart is RETIRED. A part that a ruled PROMOTE names as another component is now a `containedBy` line on that component, with a `part` field. There are 10 such lines.
+  - An s135-D4 ATTACH row is written as governedBy only when the ruling's own `governs[]` does not already carry it. That drops 18 lines and keeps 10.
+  - A self-line whose fact is now a field is folded away. `count` takes 5 mustNotNeighbour lines and 2 groupsWith lines, and `covers` takes 9 family lines.
+  - The generator is two-pass and idempotent. It reads `_rulings.json`, and refuses loudly if that file is missing.
+- **Subcomponents (s308-D26):** the 12 part names with no component of their own are `subcomponent:<component>/<part>` nodes, with canStandAlone false. The explorer and `_compose_slice.py` derive them from the container's own `subComponents`, so nothing is stored twice.
+- **Metas:** 17 metas gained `count` or `covers` by text splice. kpi-tile's and stat-card's groupsWith self-lines moved into `count`, with their s245-D7 notes verbatim. meta.schema.json gains `count`, `covers` and the edge's `part`, and drops `edges.hasPart`.
+- **Readers:**
+  - The explorer is now 1.33. It reads each type's two readings from the register (the `read` block), and adds a `subcomponent` type chip.
+  - `_kg_verbs.json` drops hasPart from `contains`.
+  - `_compose_slice.py` reads a component's parts through containedBy walked backwards. For example, data-grid needs button, pagination, search-field and selection-controls.
+  - `_validate_kg.py` (f) now checks that every ATTACH row is stored exactly once, and that hasPart PROMOTEs land as part lines. It also mirrors `_rulings.json` into the scratch copy it regenerates from. Three planted mutants went red.
+- **Register:**
+  - `opposite` is now {type, stored, basis, agreement}, and `reads` is {forward, back}.
+  - `shape` is {self, loops, bothWays, chains, basis, measured} on all 65 rows. No type may point at itself. containedBy, under, supersedes and composedOf chain. groupsWith, family, tensionWith and mustNotNeighbour are symmetric and stored once. Order-like types may not loop.
+  - The "owed to item 3/4" markers are gone.
+- **_validate_edges.py:**
+  - `--check` adds SELF-LINE, LOOP (Tarjan, once per cycle), BOTH-WAYS-STORED and READ-SIDE-STORED, all advisory.
+  - `--coverage` requires the new fields, and spares a read-only row that has no edges.
+  - Selftest arms 17–24 plant each shape class and go red.
+
+**Left for Dave: `notes/_REVIEW-308-edge-questions-2026-09-29-v1.html`**, five calls, each with a recommendation:
+1. carousel↔cards, drawn side by side. A is recommended: a carousel holds cards.
+2. The 10 governedBy lines that no ruling lists. Keep six (Badge, Tabs, Banner ×2, Button, Selection controls) by adding each to its ruling's list. Drop four: Banner←s125-D1 is a word match on "chain banner", and Legend ×3 are not named.
+3. Retire ruledBy, a second copy of s264-D3's list, from the icon generator's ratified six.
+4. Point tab-bar's self-line at Tabs.
+5. Keep Alert's line and drop Toast's.
+
+The page was rendered at 1440 and 390 and checked by eye.
+
+**Calls made:**
+- I did not move the 10 governedBy lines, the 8 ruledBy lines, tab-bar's line or Toast's line. Each needs a record changed that only Dave can rule on.
+- All 22 part names became something. The 4 self-lines and the 8 nulls became subcomponents, because hasPart is no longer stored and D26 names the subcomponent kind as the home for part names. The 10 that are real components became containedBy part lines.
+- A first cut stored subcomponents in a new registry file and read the ATTACH rows from `reviews/`. That broke the designer pack's reader boundary (compose bites 65, 66 and 68), so it was replaced by the design above. The stray registry file was moved to `outputs/308/E/_to_delete/` (ignored), because deleting is off.
+
+**Verification:**
+- `_validate_kg` passes, including the regeneration check.
+- `_validate_edges --coverage` is OK, and `--selftest` passes 24 of 24.
+- Survey 164–166: selftest pass, check ADVISORY-warn (the 21 above), coverage not asked, and OK when run directly. Survey 85: pass.
+- `_compose_slice --selftest`: 6 of 79 red, the same six as before round 2.
+- Explorer 1.33 loads with no page errors and shows 12 subcomponent nodes.
+- The regen serial: the memento index and graph mention map were rebuilt, and everything else was fresh. _gen_titles refuses until the wrap, as expected.
+- The verdict log was restored from HEAD after the surveys.
+
+**Rows:** W-308ig is closed against this commit. W-308io stays open until Dave rules on carousel↔cards. W-308e2 is the page, born closed. W-308e3 is live, owned by Dave: rule the edge questions.

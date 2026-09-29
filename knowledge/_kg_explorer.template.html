@@ -8,7 +8,7 @@
 :root{
   --bg:#FFFFFF;--ink:#111111;--ink-2:#555555;--ink-3:#8A8A8A;--rule:#E3E3E3;--panel:#F6F6F6;
   --accent:#DA1A00;
-  --c-component:#DA1A00;--c-snippet:#7A7A7A;--c-pattern:#1F4FBF;--c-context:#0E8A5F;--c-ruling:#111111;--c-role:#8A4FBF;--c-intent:#B07A00;--c-shape:#0E6F8A;
+  --c-component:#DA1A00;--c-snippet:#7A7A7A;--c-pattern:#1F4FBF;--c-context:#0E8A5F;--c-ruling:#111111;--c-role:#8A4FBF;--c-intent:#B07A00;--c-shape:#0E6F8A;--c-subcomponent:#5B6770;
   --c-session:#5E5E5E;--c-artefact:#8A7A66;--c-evidence:#A99C8B;--c-sc:#7A4B00;--c-guideline:#A06A16;--c-principle:#4A3000;--c-policy:#1F6B5B;--c-standard:#2F5488;--c-axe:#5B4B9E;
   --f-structure:#111111;--f-usage:#1F4FBF;--f-render:#7A7A7A;--f-rules:#DA1A00;
   /* v1.2 — governance reuses the rules red (authored solid, derived dashed); guidelines is an
@@ -37,7 +37,7 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#0C0C0C;--ink:#F2F2F2;--ink-2:#B5B5B5;--ink-3:#7A7A7A;--rule:#262626;--panel:#161616;
-    --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;
+    --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;--c-subcomponent:#A9B4BD;
     --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
     --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
     --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
@@ -48,7 +48,7 @@
 }
 :root[data-theme="dark"]{
   --bg:#0C0C0C;--ink:#F2F2F2;--ink-2:#B5B5B5;--ink-3:#7A7A7A;--rule:#262626;--panel:#161616;
-  --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;
+  --accent:#F6604C;--c-component:#F6604C;--c-snippet:#9A9A9A;--c-pattern:#6C94FF;--c-context:#3FCB98;--c-ruling:#F2F2F2;--c-role:#B58CE6;--c-intent:#E0A93A;--c-shape:#4FB3D6;--c-subcomponent:#A9B4BD;
   --c-session:#8F8F8F;--c-artefact:#C2AE92;--c-evidence:#9E9384;--c-sc:#E0A155;--c-guideline:#D9A05B;--c-principle:#F0C68A;--c-policy:#4FC7AC;--c-standard:#7FA6E8;--c-axe:#A697E8;
   --f-structure:#F2F2F2;--f-usage:#6C94FF;--f-render:#9A9A9A;--f-rules:#F6604C;--f-governance:#F6604C;--f-guidelines:#D9A05B;--c-rule:#8FD67A;--f-guidelinerules:#8FD67A;
   --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
@@ -416,7 +416,8 @@ const LNAME={force:'force',strata:'strata',shells:'shells'};
 const bandShown=b=>b.id!=='constitution'||famOn.governance;  // the bedrock appears with its chip
 const DR=e=>e.type==='governedBy'||e.type==='ruledBy'||(e.type==='governs'&&/^(component|snippet):/.test(e.t||''));
 const NEWFAM=['governance','guidelines','guidelinerules','uxprinciples','assets','tokens','sources'];
-const READ={bindsToken:['binds token','is bound by'],setIn:['is set in','sets'],behaviourFrom:['takes its behaviour from','gives behaviour to'],capturedFrom:['was captured from','is the source of'],acceptsCapability:['accepts in a slot','is accepted by'],containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
+/* 1.33 (#308 lane E, s308-D18): the two readings of each type come from knowledge/_edge_register.json (KG.read); this map is the fallback only. */
+const READ=Object.assign({bindsToken:['binds token','is bound by'],setIn:['is set in','sets'],behaviourFrom:['takes its behaviour from','gives behaviour to'],capturedFrom:['was captured from','is the source of'],acceptsCapability:['accepts in a slot','is accepted by'],containedBy:['is contained by','contains'],hasPart:['has part','is part of'],composedOf:['is composed of','composes'],family:['in family with','in family with'],groupsWith:['groups with','groups with'],partial:['partial of','has partial'],reuses:['reuses','is reused by'],delegatesTo:['delegates to','is delegated to by'],usedInContext:['used in context','is a context for'],commonPattern:['common pattern','is a pattern of'],renderedBy:['rendered by','renders'],governedBy:['governed by','governs'],mustNotNeighbour:['must not neighbour','must not neighbour'],consumes:['consumes','is consumed by'],triggeredBy:['triggered by','triggers'],drivesConsumer:['drives consumer','is driven by'],
   governs:['governs','is governed by'],evidencedBy:['is evidenced by','is evidence for'],ruledIn:['was ruled in','ruled'],mentions:['mentions','is mentioned by'],
   definedIn:['is defined in','defines'],cites:['cites','is cited by'],enforcedBy:['is enforced by','enforces'],flaggedBy:['is flagged by','flags'],
   tensionWith:['is in tension with','is in tension with'],hasParty:['has party','is a party to'],touches:['touches','is touched by'],
@@ -438,7 +439,7 @@ const READ={bindsToken:['binds token','is bound by'],setIn:['is set in','sets'],
   // #281 s281-D1. NOTE the neighbour two rows up: `family` is an EDGE type (component→component,
   // structure) and has been since v1.1. `inFamily` is the new one and `family:` is the new NODE
   // type; neither renames nor moves the other.
-  inFamily:['is in research family','is the research family of']};
+  inFamily:['is in research family','is the research family of']},(typeof KG!=="undefined"&&KG.read)||{});
 // #281 s281 lane CM — SECOND FALL-THROUGH, found by the probe. The chip map was not the only place
 // these dots were missing from: `shape`, `intent` and `role` are base node types with 23/14/12 nodes
 // and their OWN palette entries (--c-shape / --c-intent / --c-role have been in the stylesheet all
@@ -446,7 +447,7 @@ const READ={bindsToken:['binds token','is bound by'],setIn:['is set in','sets'],
 // and the dots were not drawn even once their edges had a family. Giving the edge a family without
 // giving the node a chip lights nothing; both were needed and both are one line. No type is renamed
 // and no id moves — three names join the row they always belonged to.
-const TYPES=['component','snippet','pattern','context','ruling','shape','intent','role'];
+const TYPES=['component','snippet','pattern','context','ruling','shape','intent','role','subcomponent'];  // 1.33 (s308-D26): the subcomponent kind
 // #281 s281-D1 — `family` joins the row for the same reason shape/intent/role did in 1.21: an edge
 // with a family draws nothing if the dot at its end has no type chip. 32 research-family hubs.
 const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','family','icon','iconGroup','logo','token','typestyle','file','figma','capability'];

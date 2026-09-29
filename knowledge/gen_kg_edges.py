@@ -13,9 +13,10 @@ Populates (mechanical, resolvable-by-string-match only — no invention):
   consumes/reuses -> component refs found by name-matching $consumes/$reuses
                      prose against the component stem registry; unresolved
                      mentions get ref:null + $note (flagged, not invented)
-  hasPart         -> subComponents keys (ref:null always — these are internal
-                     parts, not top-level nodes in the id grammar; $note holds
-                     the part name + its 'use'/description)
+  subComponents   -> (s308-D18/D26, #308 lane E) a part a ruled PROMOTE names as another
+                     component becomes a containedBy line ON THAT COMPONENT (`part` names it);
+                     any other part is a subcomponent the explorer reads from subComponents.
+                     `hasPart` is no longer stored
   partial         -> $partials prose (ref:null + $note — free text, not a
                      structured list; Dave's-eye territory to convert)
   family          -> $family prose (ref:null + $note, same reasoning)
@@ -73,6 +74,7 @@ PROFORMA = ROOT / "_proforma" / "icon-button.meta.json"
 SNIPPETS = ROOT / "snippets"
 NODES_PATTERN = COMPONENTS / "_nodes-pattern.json"
 NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
+RULINGS = ROOT / "_rulings.json"  # s308-D18: which ATTACH rows the ruling side already carries
 # s245-D7 — edge types that are AUTHORED in the meta (ruled, Dave's-eye) rather than derived
 # from prose by this generator. The generator carries them through a regeneration verbatim.
 # s268-D6 (a) (Dave, #268: "both now") — WIDENED from the single entry ("groupsWith",) to
@@ -84,8 +86,16 @@ NODES_CONTEXT = COMPONENTS / "_nodes-context.json"
 DERIVED_EDGE_TYPES = (
     "renderedBy", "containedBy", "usedInContext", "commonPattern",
     "mustNotNeighbour", "triggeredBy", "consumes", "reuses",
-    "hasPart", "partial", "family", "governedBy",
+    "partial", "family", "governedBy",
 )
+# s308-D18 / s308-D26 (#308 lane E) — STORE ONE DIRECTION, READ THE OTHER. `hasPart` is RETIRED as a stored
+# edge: the stored side of the pair is containedBy (Dave, s308-D18: "containedBy over hasPart"). A
+# `subComponents` key that a ruled s135-D4 PROMOTE names as ANOTHER registered component becomes a containedBy
+# line on THAT component's meta, pointing at the container and naming the part (`part`) — written on the
+# contained side, as every containedBy is. A key with no component of its own is a SUBCOMPONENT (s308-D26): its
+# definition is the container's own `subComponents` entry, and the explorer reads it as a `subcomponent:` node
+# containedBy the container, canStandAlone false. A `hasPart` key found in a meta is REMOVED on regeneration.
+RETIRED_EDGE_TYPES = ("hasPart",)
 
 
 def _schema_edge_types():
@@ -106,7 +116,7 @@ RESOLUTIONS = ROOT.parent / "reviews" / "KG-REVIEW-VERDICTS-2026-08-08-s135-v1.j
 # The five edge types the generator otherwise hard-codes to ref:null. Listed
 # for documentation only — the PROMOTE post-pass is deliberately generic and
 # applies to any edge type the resolutions file names.
-PROSE_EDGE_TYPES = ("mustNotNeighbour", "triggeredBy", "hasPart", "partial", "family")
+PROSE_EDGE_TYPES = ("mustNotNeighbour", "triggeredBy", "partial", "family")  # + subComponents part names (s308-D26)
 
 EXCLUDE = {"EXAMPLE-button.meta.json"}
 
@@ -391,7 +401,8 @@ def merge_edges(prior_edges, gen_edges):
     return out
 
 
-def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, fname):
+def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, fname,
+                         parts_out=None):
     edges = {}
 
     # renderedBy
@@ -467,22 +478,29 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
         if out:
             edges[out_key] = out
 
-    # subComponents -> hasPart (internal parts are not top-level nodes; always ref:null)
+    # subComponents (s308-D18 + s308-D26, #308 lane E). Until #308 each key became a `hasPart` edge on THIS meta
+    # (ref:null, or a ruled s135-D4 PROMOTE ref). s308-D18 stores containedBy over hasPart, so a key a PROMOTE
+    # names as ANOTHER registered component is handed to parts_out and written as a containedBy line on THAT
+    # component's meta (main, pass 2). A key with no component of its own (no PROMOTE, or a PROMOTE to this
+    # component itself) is a SUBCOMPONENT: nothing is written for it here — its definition is this meta's own
+    # subComponents entry, which the explorer reads. The PROMOTE join (and its landing count) is unchanged.
     sc = data.get("subComponents")
-    if sc:
-        out = []
+    if sc and parts_out is not None:
+        parts = []
         if isinstance(sc, dict):
             for part_name, spec in sc.items():
                 if part_name.startswith("$"):
                     continue  # #305 call 15: a `$`-key is a note on the parts (data-grid's $composes), never a part itself
                 use = spec.get("use") if isinstance(spec, dict) else str(spec)
                 note = f"{part_name}: {use}" if use else part_name
-                out.append({"ref": None, "$note": note})
-        elif isinstance(sc, list):
-            for item in sc:
-                out.append({"ref": None, "$note": json.dumps(item, ensure_ascii=False) if not isinstance(item, str) else item})
-        if out:
-            edges["hasPart"] = out
+                parts.append((part_name, {"ref": None, "$note": note}))
+        tmp = {"hasPart": [p[1] for p in parts]}
+        apply_promotions(tmp, fname, res)  # the ruled join, landed and counted exactly as before
+        own = f"component:{stem}"
+        for part_name, e in parts:
+            if e.get("ref") and e["ref"] != own:
+                parts_out.setdefault(e["ref"], []).append(
+                    {"ref": own, "$note": f"part {part_name} of {stem} — {e['$note']}", "part": part_name})
 
     # $partials — free prose, ref:null
     partials = data.get("$partials")
@@ -497,15 +515,66 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
     # s135-D4 PROMOTE — ruled refs win over the generator's own derivation.
     apply_promotions(edges, fname, res)
 
-    # s135-D4 ATTACH — governedBy is emitted ONLY from the resolutions file.
-    # Nothing here invents an attribution; anything beyond the ruled set stays
-    # the Dave's-eye batch per s133-D1.
+    # s135-D4 ATTACH — governedBy is emitted ONLY from the resolutions file, and since s308-D18 (#308 lane E)
+    # ONLY for a row the ruling's own governs[] does NOT already carry: governs is the stored side, so a row
+    # it carries is read there and never written here as a second edge. A row it does not carry stays here —
+    # the two records disagree, and which one is right is Dave's (the edge check names each line).
     rids = res["governed"].get(stem)
     if rids:
-        edges["governedBy"] = [{"ref": f"ruling:{r}"} for r in rids]
+        snip = snip_idx.get(norm(stem)) or snip_idx.get(norm(stem.replace("-", " ")))
+        alone = [r for r in rids if not ruling_side_carries(r, stem, snip)]
+        if alone:
+            edges["governedBy"] = [{"ref": f"ruling:{r}"} for r in alone]
         res["landed"]["attach"][stem] = sorted(rids)
 
     return edges
+
+
+_RULING_GOVERNS = None
+
+
+def ruling_side_carries(rid, stem, snippet):
+    """True when ruling `rid`'s own governs[] names this component — by its meta path, or by its reference
+    snippet at the END of the entry (the explorer's gov_target join, verbatim). A missing _rulings.json is a
+    LOUD refusal: without it the stored side cannot be told from the read side."""
+    global _RULING_GOVERNS
+    if _RULING_GOVERNS is None:
+        if not RULINGS.exists():
+            raise ResolutionsError(f"RULINGS MISSING — {RULINGS}: s308-D18 needs the ruling side to know which "
+                                   f"ATTACH rows it already carries")
+        _RULING_GOVERNS = {r["id"]: [g.strip() for g in (r.get("governs") or []) if isinstance(g, str)]
+                           for r in json.loads(RULINGS.read_text(encoding="utf-8")).get("rulings", [])
+                           if isinstance(r, dict) and r.get("id")}
+    for g in _RULING_GOVERNS.get(rid, []):
+        if g == f"knowledge/components/{stem}.meta.json":
+            return True
+        m = re.search(r"([^/\s]+\.reference\.html)$", g)
+        if m and snippet and m.group(1) == snippet:
+            return True
+    return False
+
+
+def fold_one_direction(edges, stem, data, res):
+    """s308-D18 + s308-D19 (#308 lane E), applied AFTER merge_edges (which never deletes, so a line the
+    ruling moved elsewhere would otherwise be carried forever):
+      * a RETIRED type (hasPart) is removed — its facts live on the subcomponent nodes;
+      * a governedBy line from an s135-D4 ATTACH row that the ruling's own governs[] already carries is
+        removed — the ruling side is stored, this side is read (rows it does not carry are regenerated by
+        build_edges_for_meta, and the edge check names each one for Dave);
+      * a SELF-LINE whose fact the meta now states as a field is removed: `family` → `covers`, and
+        `mustNotNeighbour` → a `count` entry carrying the same words. A self-line with no such field is
+        KEPT (tab-bar's is a PROMOTE Dave may want to re-point, not a count) and the edge check names it."""
+    own = f"component:{stem}"
+    out = {k: v for k, v in edges.items() if k not in RETIRED_EDGE_TYPES}
+    attach = {f"ruling:{r}" for r in res.get("$carried", {}).get(stem, ())}
+    if isinstance(out.get("governedBy"), list) and attach:
+        out["governedBy"] = [e for e in out["governedBy"] if not (isinstance(e, dict) and e.get("ref") in attach)]
+    counted = {c.get("$note") for c in (data.get("count") or []) if isinstance(c, dict)}
+    for etype, keep in (("family", lambda e: not data.get("covers")),
+                        ("mustNotNeighbour", lambda e: e.get("$note") not in counted)):
+        if isinstance(out.get(etype), list):
+            out[etype] = [e for e in out[etype] if not (isinstance(e, dict) and e.get("ref") == own and not keep(e))]
+    return {k: v for k, v in out.items() if not (isinstance(v, list) and not v)}
 
 
 def _edges_block_span(raw):
@@ -622,6 +691,17 @@ def main():
 
     pattern_registry = {}
     context_registry = {}
+    # s308-D18: pass 1 — the parts a PROMOTE names as another component, keyed by THAT component, so its own
+    # meta can carry the containedBy line (the stored side) when it is built in pass 2
+    parts_by_target = {}
+    for f in files:
+        d0 = json.loads(remove_existing_edges_field(f.read_text(encoding="utf-8")))
+        build_edges_for_meta(d0, f.name[: -len(".meta.json")], comp_idx, snip_idx, {}, {}, res, f.name, parts_by_target)
+    res["landed"] = {"merge": {}, "promote": {}, "attach": {}}   # pass 1 only looked; pass 2 lands
+    res["$carried"] = {}
+    for stem_, rids_ in res["governed"].items():
+        snip_ = snip_idx.get(norm(stem_)) or snip_idx.get(norm(stem_.replace("-", " ")))
+        res["$carried"][stem_] = {r for r in rids_ if ruling_side_carries(r, stem_, snip_)}
 
     counts = {}
     carried_refs = set()
@@ -634,7 +714,10 @@ def main():
         data_before = json.loads(raw_clean)
         stem = f.name[: -len(".meta.json")]
 
-        gen_edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name)
+        gen_edges = build_edges_for_meta(data_before, stem, comp_idx, snip_idx, pattern_registry, context_registry, res, f.name,
+                                         {})
+        for line in parts_by_target.get(f"component:{stem}", []):   # s308-D18: this component is a part of another
+            gen_edges.setdefault("containedBy", []).append(dict(line))
         # s245-D7 (#245) + s268-D6 (#268): DECLARED edge types are CARRIED, never derived —
         # and since s268-D6 (c) the CARRY IS THE DEFAULT rather than a list lookup: merge_edges
         # starts from the meta's own `edges` and refreshes only what was derived, so a type the
@@ -643,6 +726,7 @@ def main():
         # the widening of (a) is a checked fact and not only a comment.
         prior_edges = json.loads(raw).get("edges", {}) if '"edges"' in raw else {}
         edges = merge_edges(prior_edges, gen_edges)
+        edges = fold_one_direction(edges, stem, data_before, res)
         for etype in DECLARED_EDGE_TYPES:
             if etype in prior_edges and edges.get(etype) != prior_edges[etype]:
                 print(f"DECLARED EDGE TYPE ALTERED — {f.name} / {etype}", file=sys.stderr)
@@ -728,6 +812,7 @@ def main():
     print(f"resolved vs ref:null (consumes/reuses/containedBy only): resolved={resolved} unresolved={unresolved}")
     print(f"pattern nodes: {len(pattern_list)}")
     print(f"context nodes: {len(context_list)}")
+    print(f"parts written as containedBy on the contained component (s308-D18): {sum(len(v) for v in parts_by_target.values())}")
     n_merge_edges = sum(res["landed"]["merge"].values())
     n_promote_edges = sum(res["landed"]["promote"].values())
     n_attach_edges = sum(len(v) for v in res["landed"]["attach"].values())
@@ -735,7 +820,8 @@ def main():
         f"resolutions consumed ({res['path'].name}): {res['rows']} ruled rows compiled -> "
         f"MERGE {len(res['merges'])} rules on {n_merge_edges} edges, "
         f"PROMOTE {len(res['promotes'])} keys on {n_promote_edges} edges, "
-        f"ATTACH {n_attach_edges} governedBy edges across {len(res['landed']['attach'])} components"
+        f"ATTACH {n_attach_edges} rows across {len(res['landed']['attach'])} components "
+        f"({sum(len(v) for v in res['$carried'].values())} carried by the ruling's governs[], the rest stored as governedBy — s308-D18)"
     )
 
 

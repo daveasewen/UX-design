@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edge questions</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1120px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:72px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+.label.mute{color:var(--g6)}.label.mute::before{background:var(--g3)}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+/* nav */
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+/* header */
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:64px;font-weight:200;line-height:1;color:var(--g5);display:block;margin-bottom:var(--s2)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:var(--s4)}
+.stats>div{background:var(--card);padding:var(--s3) var(--s2)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.05;display:block}
+.stats .c{font-size:13px;line-height:1.5;color:var(--g7);display:block;margin-top:var(--s1)}
+/* groups and cards */
+.group{padding:var(--s5) 0 0}
+.group:first-of-type{padding-top:0}
+.ghead{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start;padding-bottom:var(--s3);border-bottom:1px solid var(--fg)}
+.ghead h3{font-size:26px;font-weight:300;line-height:1.25;margin:0}
+.ghead p{margin:0;color:var(--g8);font-size:15px}
+.kind{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;line-height:1.4;padding:.25rem .55rem;border:1px solid var(--fg);margin-bottom:var(--s2)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);border-top:0}
+.cards.n2{grid-template-columns:repeat(2,1fr)}
+.cards.n1{grid-template-columns:1fr}
+.cards.n1 .card{display:grid;grid-template-columns:1fr 1fr;column-gap:var(--s5);align-items:start}
+.cards.n1 .card .who{grid-column:1 / -1}
+.cards.n1 .card .qs{display:flex;flex-direction:column;gap:var(--s2)}
+.cards.n1 .card .facts{display:flex;flex-direction:column;gap:var(--s2)}
+.card{background:var(--card);padding:var(--s3);display:flex;flex-direction:column;gap:var(--s2);min-width:0}
+.card .who{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.card blockquote{margin:0;padding:0 0 0 var(--s2);border-left:2px solid var(--g3);font-size:15px;line-height:1.6;color:var(--fg)}
+.card blockquote.ev{font-size:13px;color:var(--g7)}
+.card dl{margin:0;display:grid;grid-template-columns:1fr;gap:2px}
+.card dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;margin-top:var(--s1)}
+.card dt:first-child{margin-top:0}
+.card dd{margin:0;font-size:15px;line-height:1.55;color:var(--g8)}
+.card dd b{font-weight:500;color:var(--fg)}
+.fx{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:auto;font-size:12px;line-height:1.4}
+.fx span{background:var(--card);padding:.45rem .5rem;color:var(--g7)}
+.fx span b{display:block;font-weight:500;color:var(--fg);font-size:13px;letter-spacing:.02em}
+.fx span.ok b::after{content:" ✓"}
+/* options */
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:var(--s4)}
+.opt{background:var(--card);padding:var(--s3);display:flex;flex-direction:column;gap:0}
+.opt .letter{font-size:48px;font-weight:200;line-height:1;color:var(--g5)}
+.opt h3{margin:var(--s1) 0 var(--s1)}
+.opt .tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g6);line-height:1.5;min-height:1.5em}
+.opt.pick{box-shadow:inset 0 3px 0 var(--fg)}
+.opt.pick .tag{color:var(--accent);font-weight:500}
+.opt .row{padding:var(--s2) 0 var(--s1);border-top:1px solid var(--g2);font-size:15px;line-height:1.55;color:var(--g8)}
+.opt .row:first-of-type{margin-top:var(--s2)}
+.opt .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);margin-bottom:4px;line-height:1.5}
+.opt .big{font-size:34px;font-weight:200;line-height:1.1;color:var(--fg);display:block}
+.verdict{font-size:26px;font-weight:300;line-height:1.4;max-width:30em;margin:var(--s5) 0 0}
+/* checks */
+.checks{list-style:none;padding:0;margin:0}
+.checks li{display:grid;grid-template-columns:120px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--g3)}
+.checks li:last-child{border-bottom:1px solid var(--g3)}
+.checks .a{font-size:26px;font-weight:300;line-height:1.2}
+.checks p{margin:0 0 var(--s1);color:var(--g8)}
+.checks p.q{color:var(--fg);font-weight:500;font-size:17px}
+/* corrections */
+.corr{list-style:none;padding:0;margin:0;counter-reset:c}
+.corr li{counter-increment:c;display:grid;grid-template-columns:48px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--g3)}
+.corr li::before{content:counter(c);font-size:28px;font-weight:200;line-height:1.15;color:var(--g5)}
+.corr p{margin:0 0 4px;color:var(--g8);font-size:15px}
+.corr p.said{color:var(--fg)}
+/* decisions */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* tech */
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:900px){
+  .cards{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .opts{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  nav.toc{top:0}
+  header{padding-top:72px}
+  header .grid,.two,.ghead{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:40px}.sub{font-size:20px}h2{font-size:27px}.lead{font-size:18px}.verdict{font-size:21px}
+  .idx{font-size:44px}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}
+  .stats>div:last-child{grid-column:1 / -1}
+  .cards,.cards.n2{grid-template-columns:1fr}
+  .cards.n1 .card{display:flex}
+  .checks li{grid-template-columns:1fr;gap:var(--s1)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+
+/* #308 lane E — two-reading drawings and the governed-by table */
+.opts.n2{grid-template-columns:repeat(2,1fr)}
+.opt svg{display:block;width:100%;height:auto;margin:var(--s2) 0 0}
+.opt svg .box{fill:none;stroke:var(--fg);stroke-width:1.5}
+.opt svg .inner{fill:var(--g1);stroke:var(--g5);stroke-width:1}
+.opt svg .dot{fill:var(--g3)}.opt svg .dot.on{fill:var(--fg)}
+.opt svg text{fill:var(--fg);font:13px "Helvetica Neue",Helvetica,Arial,sans-serif}
+.opt svg text.mute{fill:var(--g6)}
+table.gt{width:100%;border-collapse:collapse;margin-top:var(--s3);font-size:14px;line-height:1.5}
+table.gt th{text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;padding:0 var(--s2) var(--s1) 0;border-bottom:1px solid var(--fg)}
+table.gt td{padding:var(--s1) var(--s2) var(--s1) 0;border-bottom:1px solid var(--g3);vertical-align:top;color:var(--g8)}
+table.gt td:first-child{color:var(--fg);font-weight:500;white-space:nowrap}
+table.gt td:nth-child(2){white-space:nowrap}
+table.gt td.keep,table.gt td.drop{color:var(--fg)}
+table.gt td em{font-style:normal;text-decoration:underline}
+@media(max-width:760px){
+  .opts.n2{grid-template-columns:1fr}
+  table.gt thead{display:none}
+  table.gt,table.gt tbody,table.gt tr,table.gt td{display:block;width:100%}
+  table.gt tr{padding:var(--s2) 0;border-bottom:1px solid var(--g3)}
+  table.gt td{border:0;padding:2px 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#answer">The answer</a>
+  <a href="#carousel">Carousel and cards</a>
+  <a href="#governed">Ten governed-by lines</a>
+  <a href="#ruled">Eight ruled-by lines</a>
+  <a href="#tabbar">Tab bar</a>
+  <a href="#alert">Alert and toast</a>
+  <a href="#decide">Your calls</a>
+</div></nav>
+
+<header id="answer">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 308 · review page · edge questions</p>
+      <h1>Five places where two records disagree.</h1>
+      <p class="sub">Items 3 and 4 are built. The graph now stores each relation once and says what shape it may take. The check found 21 lines that the record alone cannot settle. They fall into five calls, and each one has a recommendation.</p>
+    </div>
+    <div class="meta">
+      <span>Tuesday 29 September 2026</span>
+      <span>Lane E round 2, for your 09:26 and 12:13 answers on items 3 and 4</span>
+      <span>Nothing below has been changed. Every line stays where it is until you answer.</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap two">
+    <div><span class="idx">01</span><p class="label">What was done</p></div>
+    <div>
+      <p class="lead">Each relation is now stored on one side only and read backwards from the other. Every edge type also says whether it may point at itself, loop, run both ways, or chain.</p>
+      <p>"Is part of" is no longer stored. The ten parts that are real components now sit inside their container as "contained by" lines, and each one names the part it plays. The twelve parts with no component of their own became a new kind, the subcomponent. 18 of the 28 "governed by" lines were copies of what the ruling already lists, so they were dropped. 20 of the 22 lines that pointed at themselves moved to fields on the component. "One on screen at a time" became a count, and "this page covers a family" became <code>covers</code>. The four part names became subcomponents.</p>
+      <p>The check now runs over all 11,499 edges. Every edge starts and ends on the right kind of node. What is left is below.</p>
+      <div class="stats">
+        <div><span class="n">10</span><span class="c">governed-by lines that no ruling lists</span></div>
+        <div><span class="n">8</span><span class="c">ruled-by lines that repeat a ruling's own list</span></div>
+        <div><span class="n">1</span><span class="c">line that points at itself: tab bar</span></div>
+        <div><span class="n">1</span><span class="c">rule stored both ways: alert and toast</span></div>
+        <div><span class="n">1</span><span class="c">containment loop: carousel and cards</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="carousel">
+  <div class="wrap">
+    <p class="label">02 · Carousel and cards</p>
+    <h2>Does a carousel hold cards, or does a card hold a carousel?</h2>
+    <p style="max-width:44em;color:var(--g8)">Each meta lists where its component lives, and the two lists point at each other. <code>carousel.meta.json</code> says it lives in "Cards (a media card sequence)". <code>cards.meta.json</code> says it lives in "Carousel". Nothing else in the record settles it. The Carousel snippet draws captioned media slides, not cards. The Cards snippet never mentions a carousel. The Carousel meta is still marked "PROPOSED … not registered, not ruled".</p>
+    <div class="opts n2">
+      <div class="opt pick">
+        <span class="letter">A</span>
+        <span class="tag">Recommended</span>
+        <h3>A carousel holds cards</h3>
+        <svg viewBox="0 0 420 170" role="img" aria-label="A carousel frame holding three cards, one shown at a time">
+          <rect class="box" x="10" y="20" width="400" height="140"/><text x="24" y="42">Carousel</text>
+          <rect class="inner" x="30" y="58" width="110" height="80"/><text x="46" y="102">Card</text>
+          <rect class="inner" x="155" y="58" width="110" height="80"/><text x="171" y="102">Card</text>
+          <rect class="inner" x="280" y="58" width="110" height="80"/><text x="296" y="102">Card</text>
+          <circle class="dot on" cx="190" cy="150" r="3"/><circle class="dot" cx="202" cy="150" r="3"/><circle class="dot" cx="214" cy="150" r="3"/>
+        </svg>
+        <div class="row"><span class="k">What it keeps</span>Cards keep "Carousel" in the places they live.</div>
+        <div class="row"><span class="k">What goes</span>Carousel's "Cards (a media card sequence)" line. Read plainly, it describes what a carousel holds, not where it lives.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">B</span>
+        <span class="tag">The other reading</span>
+        <h3>A card holds a carousel</h3>
+        <svg viewBox="0 0 420 170" role="img" aria-label="A card whose media area is a carousel">
+          <rect class="box" x="10" y="20" width="400" height="140"/><text x="24" y="42">Card</text>
+          <rect class="inner" x="30" y="54" width="360" height="66"/><text x="46" y="92">Carousel · the card's image area</text>
+          <text class="mute" x="30" y="146">Title · body · action</text>
+        </svg>
+        <div class="row"><span class="k">What it keeps</span>Carousel keeps "Cards (a media card sequence)".</div>
+        <div class="row"><span class="k">What goes</span>Cards lose "Carousel" from the places they live.</div>
+      </div>
+    </div>
+    <p class="verdict">Choose A. Both metas then say the same thing, and the loop check goes quiet.</p>
+  </div>
+</section>
+
+<section id="governed">
+  <div class="wrap two">
+    <div><span class="idx">03</span><p class="label">Ten governed-by lines</p></div>
+    <div>
+      <h2>A component says a ruling governs it, but that ruling's own list does not name the component.</h2>
+      <p>These are the lines left after the switch. Seven came from your #135 attach verdicts, and three were written by hand when the legend was built in session 261. For each line, the fix is either to add the component to the ruling's list, which keeps the line, or to drop the line. The recommendation below is made line by line, from what each ruling's list actually names.</p>
+      <table class="gt">
+        <thead><tr><th>Component</th><th>Ruling</th><th>What the ruling's own list names</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr><td>Badge</td><td>s123-D4</td><td>the badge background token, via the error alias</td><td class="keep">Keep: add Badge to the list</td></tr>
+          <tr><td>Tabs</td><td>s123-D4</td><td>the tabs badge background token, same alias</td><td class="keep">Keep: add Tabs</td></tr>
+          <tr><td>Banner</td><td>s130-D4</td><td>the banner action state tokens and their canon.css half</td><td class="keep">Keep: add Banner</td></tr>
+          <tr><td>Banner</td><td>s131-D1</td><td>the banner consumption half of canon.css</td><td class="keep">Keep: add Banner</td></tr>
+          <tr><td>Button</td><td>ds-032</td><td>six snippets, plus <code>--pri-hover</code> and the primary button hover token</td><td class="keep">Keep: add Button</td></tr>
+          <tr><td>Selection controls</td><td>s130-D5</td><td>the selection-controls tokens and canon.css half</td><td class="keep">Keep: add Selection controls</td></tr>
+          <tr><td>Banner</td><td>s125-D1</td><td>the build-step count in the generated chain <em>banner</em>, the header of <code>_CHAIN.md</code></td><td class="drop">Drop: the word matched, the component did not</td></tr>
+          <tr><td>Legend</td><td>s151-D1</td><td>the error ink, selection-control atoms and status symbols</td><td class="drop">Drop: the legend is not named</td></tr>
+          <tr><td>Legend</td><td>s248-D3</td><td>every component placed in a bento tile, through the bento template</td><td class="drop">Drop: it covers every tile, so naming one is partial</td></tr>
+          <tr><td>Legend</td><td>s258-D1</td><td>the generate-from-canon skill and the receipt gate</td><td class="drop">Drop: the legend is not named</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="ruled">
+  <div class="wrap two">
+    <div><span class="idx">04</span><p class="label">Eight ruled-by lines</p></div>
+    <div>
+      <h2>Eight icons each say s264-D3 rules them. s264-D3's own list already names all eight icon files.</h2>
+      <p>The icon generator reads that list and writes it again, backwards, onto each icon. That is the second copy that item 3 retires. The explorer can read the ruling's list straight onto the icons instead, so nothing is lost.</p>
+      <p>This one is yours because "ruled by" is one of the six edge types you ratified for the icon family in session 277 (s277-D4). Retiring it changes that closed list.</p>
+      <p class="verdict">Retire "ruled by". The icons are read from s264-D3's list.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tabbar">
+  <div class="wrap two">
+    <div><span class="idx">05</span><p class="label">Tab bar</p></div>
+    <div>
+      <h2>Tab bar's "must not sit next to" line points at tab bar itself, but its words name Tabs.</h2>
+      <p>The line reads: "Tabs (in-page) — a tab bar is app navigation, not in-page section switching". Your #135 verdict sent it to "tab bar", which is the component itself. Every other line that pointed at itself moved to a count, but this one is not a count. It says a tab bar must not sit next to in-page Tabs.</p>
+      <p class="verdict">Point it at Tabs.</p>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="alert">
+  <div class="wrap two">
+    <div><span class="idx">06</span><p class="label">Alert and toast</p></div>
+    <div>
+      <h2>"Must not sit next to" runs both ways, so it is stored once. Alert and Toast each store it.</h2>
+      <p>Alert says: "Toast (same message twice)". Toast says: "Alert carrying the identical message". Both say the same thing. Item 3 says to store a fact once and read it from both sides.</p>
+      <p class="verdict">Keep Alert's line and drop Toast's. Alert's words name what goes wrong.</p>
+    </div>
+  </div>
+</section>
+
+<section id="decide">
+  <div class="wrap">
+    <p class="label">07 · Your calls</p>
+    <h2>Five calls. Nothing moves until you answer.</h2>
+    <div class="call" data-id="carousel" data-q="Carousel and cards: which contains which?" data-rec="A · A carousel holds cards">
+      <p class="q">1 · Carousel and cards: which contains which?</p>
+      <p class="rec">Recommendation: A. Both metas then agree, and the loop goes.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="A · A carousel holds cards">A · A carousel holds cards<em>recommended</em></button>
+        <button type="button" class="chip" data-v="B · A card holds a carousel">B · A card holds a carousel</button>
+        <button type="button" class="chip" data-v="Both, in different places">Both, in different places</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="governed" data-q="The ten governed-by lines no ruling lists" data-rec="Line by line as recommended: keep six, drop four">
+      <p class="q">2 · The ten governed-by lines that no ruling lists</p>
+      <p class="rec">Recommendation: go line by line as the table says. Keep six by adding each component to its ruling's list, and drop four.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Line by line as recommended: keep six, drop four">Line by line as recommended<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Keep all ten">Keep all ten</button>
+        <button type="button" class="chip" data-v="Drop all ten">Drop all ten</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="ruled" data-q="Retire the eight ruled-by lines?" data-rec="Retire ruled-by">
+      <p class="q">3 · Retire "ruled by", and read the icons from s264-D3's own list?</p>
+      <p class="rec">Recommendation: retire it. It is a second copy of the ruling's list.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Retire ruled-by">Retire it<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Keep ruled-by">Keep it</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="tabbar" data-q="Tab bar's self-line: point it at Tabs?" data-rec="Point it at Tabs">
+      <p class="q">4 · Tab bar's "must not sit next to" line: point it at Tabs?</p>
+      <p class="rec">Recommendation: yes. Its own words name in-page Tabs.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Point it at Tabs">Point it at Tabs<em>recommended</em></button>
+        <button type="button" class="chip" data-v="It means one tab bar per screen">It means one tab bar per screen</button>
+        <button type="button" class="chip" data-v="Drop the line">Drop the line</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="alert" data-q="Alert and toast: which line stays?" data-rec="Keep Alert's line">
+      <p class="q">5 · Alert and toast: store the rule once. Which line stays?</p>
+      <p class="rec">Recommendation: Alert's. Its words name what goes wrong.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Keep Alert's line">Keep Alert's line<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Keep Toast's line">Keep Toast's line</button>
+        <button type="button" class="chip" data-v="Keep both, they say different things">Keep both</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="page" data-q="Anything else on this page">
+      <p class="q">Anything else on this page</p>
+      <label class="field"><span>Note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <details class="tech"><summary>Technical detail: where each fact comes from</summary>
+      <ol>
+        <li>The check is <code>python3 knowledge/_validate_edges.py --check</code>, run over the explorer's own extract. It found 11,499 edges with 0 wrong ends, plus four shape classes: READ-SIDE-STORED 18 (governedBy 10, ruledBy 8), SELF-LINE 1 (tab-bar), LOOP 1 (containedBy cards ↔ carousel) and BOTH-WAYS-STORED 1 (alert ↔ toast). All four are advisory.</li>
+        <li>The agreement check before the switch is <code>notes/_lanes/308/E/agreement-before-switch-2026-09-29.json</code>. governedBy was 28 lines, 18 of them mirrored by governs and 10 alone. containedBy 88 and hasPart 14→component had 0 of 102 mirrored.</li>
+        <li>The governed-by lines are the s135-D4 ATTACH rows in <code>reviews/KG-REVIEW-VERDICTS-2026-08-08-s135-v1.json</code>, matched against each ruling's <code>governs</code> list in <code>knowledge/_rulings.json</code>. The match is by meta path or reference snippet, the same join the explorer uses. Legend's three lines are in <code>knowledge/components/legend.meta.json</code>, from session 261.</li>
+        <li>ruledBy is written by <code>notes/_lanes/277/icons-propose/gen_kg_icons.py</code> (s277-D4) from s264-D3's <code>governs</code>, which names all eight .svg files.</li>
+        <li>The tab-bar line is prose row <code>tab-bar.meta.json</code> / mustNotNeighbour, with verdict "PROMOTE→tab bar", in the same verdicts file.</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · edge questions · v1 · 2026-09-29 · session 308 · lane E</span>
+  <span>Nothing here is decided until you choose.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your answers"><div class="in">
+  <b>Your answers</b><span id="count">0 of 6 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-308-edge-questions-v1';
+  var PATH='notes/_REVIEW-308-edge-questions-2026-09-29-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 308 · edge questions · answers','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el,i){
+      var s=state[el.dataset.id]||{}, rec=el.dataset.rec||'';
+      L.push((el.dataset.id==='page'?'Note on the page':(i+1)+'. '+el.dataset.q));
+      if(el.dataset.id!=='page'){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+        if(rec) L.push('   Recommendation was: '+rec);
+      }
+      if((s.note||'').trim()) L.push('   In his words: '+s.note.trim().replace(/\n/g,'\n   '));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Select the text and copy it by hand'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
