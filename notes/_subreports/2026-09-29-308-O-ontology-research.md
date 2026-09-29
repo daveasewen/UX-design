@@ -50,3 +50,52 @@ Corrected headline: v1 was WRONG. Canonical (Ubuntu's publisher) publishes an OW
 Effect on the nine: MAP, don't adopt. Items 1–3 confirmed by Canonical in practice. Item 4: part-names become a subcomponent kind (Canonical). Item 7: outside column points first at Canonical ds:/dt: or Spectrum, then SKOS/DC/PROV; add Open UI name per component. Item 9: a) = dt:aliasOf; c) leans to a theme NODE (Canonical coordinates, Tokens Studio); new e) replaced-by lifecycle on components and tokens (Spectrum, DTCG $deprecated).
 
 Lesson for the record: v1 searched by topic and rounded an empty search to an absence; v2 searched by name and found it in minutes.
+
+## Round 3: cards, tiles and containers (Dave, 17:07 BST)
+
+Dave's question, verbatim: "i think we have to create a definition for cards and tiles, this might help as a differentiator, in the case of a bento one of it's 'tiles' could contain a carousel, it's tricky as a card is a container and a carousel can sit in a container, is the question about the hierarchy of containers or clear definitions for different types. we need to work this out, is there a standard nomenclature for this?"
+
+Output: notes/_RESEARCH-308-cards-tiles-containers-2026-09-29-v1.html. It has the rv-back link after `<body>`, and its decision bar copies under the header "Session 308 · cards and tiles · answers".
+
+COUNTS (round 3): 17 systems and specs read · 5 calls.
+
+Headline: no standard nomenclature exists. "Card" is broadly settled: content about one thing, usually one of a set. It appears in 12 of the 27 systems in Open UI's data, and Carbon has none. "Tile" is not settled. It means four different things:
+- Carbon: any container.
+- Canonical: a surfaced box for unlike content, the one used in dashboards and bento layouts.
+- Atlassian: a 16–48 px square holding one asset.
+- Material 1: a grid cell holding a picture.
+
+The conductor's premise mostly holds, with one correction. The line that fits Apollo best is Canonical's, from card.ttl and tile.ttl in pragma-core:
+- A card is one of a set of like records. It is not a surface; its border bounds it.
+- A tile holds one-off content, with a surface. Canonical's own example: a lone "Total users" number goes in a tile.
+
+Apollo's #274 ruling already matches the card half: a record is a card when its container draws a border around each record. Definitions come first, and the hierarchy falls out of the accept rules.
+
+Apollo collisions (measured over the 142 metas):
+- "Tile" has four meanings: the KPI tile component; the stat card ("the dashboard tile for one headline number"); a bento cell; and the app tile in logos.md.
+- "Card" has four meanings: the Cards container; the stat card metric; the account card record; and the payment card, meaning the plastic.
+- The stat card and the KPI tile are one object, split only by whether a series is present. The KPI tile meta cites the ruling that says so. This is the #202 "switch" class again.
+- "Panel" is used for the chart-panel role and as a word for a box. Outside Apollo it means a region at the side of the screen.
+- Cards and carousel are both providers of the arrangement role.
+- containedBy has no accepts check.
+
+Proposed definitions (proposals only, not rulings):
+- Five kinds: layout, holder, record, block and part.
+- Bento: accepts two or more tiles.
+- Tile: accepts exactly one block, carousel or layout; never a tile directly inside a tile.
+- Carousel: its slides each hold one record or image block, all of the same kind.
+- Card: accepts its parts only; its content accepts atom- or molecule-sized blocks; it always has peers.
+- Card grid: accepts two or more records of the same kind.
+- Panel: a region of the screen frame only.
+- Container becomes an umbrella word in the register, and surface becomes a property (ground, border or none).
+
+Enforcement: add accepts-by-kind to the containedBy row of the edge register. Each meta declares its kind, and each slot's accepts names kinds. The check refuses any containedBy line the parent does not accept (NOT-ACCEPTED, TOO-MANY, MIXED-SLOTS, and LONE-CARD as a warning). Tonight's pair ruling, "a carousel holds cards", then becomes something the check derives.
+
+Calls, each with a recommendation:
+1. Canonical's line between card and tile.
+2. Check containment by kind through accepts, advisory first.
+3. Container as the umbrella word, surface as a property, panel as a frame region; rename the chart-panel role to chart.
+4. Merge the stat card and KPI tile into one Metric block, with the trend as an optional slot and the old names kept as aliases.
+5. Write in all four nesting limits: three refuse and the lone-card limit warns.
+
+Nothing is committed and nothing in the tree was changed.
