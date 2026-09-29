@@ -30,6 +30,10 @@ TWO CHECKS, TWO TIERS.
                                   FAMILY map that is neither a row nor declared in `$absent`
                 ABSENT-HAS-EDGES  a `$absent` entry that now carries edges (it needs a row)
                 REGISTER-SHAPE    a row missing a checked field, or two rows with one word
+                SKIPPED-UNDECLARED an edge the explorer READ from storage and did not link, whose
+                                  "<pass> <type>" is not named in the builder's SKIP_DECLARED
+                                  (#308 lane L — the class that hid 14 of Dave's defaultActive
+                                  answers from 1.15 to 1.31: counted, drawn by nothing, said by no one)
               Exit 1 on any. WHY BLOCKING: it had zero backlog when it was born (65 of 65), it is the
               one thing that keeps "defined once" true — the way inFamily entered with no verb — and
               the remedy is always one row, written by the lane that adds the type.
@@ -54,7 +58,8 @@ from collections import defaultdict, Counter
 HERE = os.path.dirname(os.path.abspath(__file__))
 REGISTER = os.path.join(HERE, '_edge_register.json')
 ENDS_CLASSES = ('UNKNOWN-TYPE', 'WRONG-FROM', 'WRONG-TO', 'WRONG-PAIR', 'NULL-NOT-ALLOWED', 'OVER-COUNT')
-COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE')
+COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE',
+                 'SKIPPED-UNDECLARED')
 ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count')
 
 
@@ -66,8 +71,9 @@ def kind_of(node_id):
     return str(node_id).split(':', 1)[0] if node_id else None
 
 
-def load_graph(K=HERE):
-    """(nodes, edges, how) — the explorer's own extract, stdout swallowed."""
+def load_graph(K=HERE, skips=None):
+    """(nodes, edges, how) — the explorer's own extract, stdout swallowed. Pass a dict as `skips` to
+    receive {'by': rep['skipped_by'], 'declared': B.SKIP_DECLARED} (#308 lane L)."""
     if K not in sys.path: sys.path.insert(0, K)
     how = '_build_kg_explorer.extract() + extract_extra()'
     try:
@@ -80,6 +86,9 @@ def load_graph(K=HERE):
             import _build_kg_explorer as B
             n, e = B.extract(K=K)
             xn, xe, _rep = B.extract_extra(n, e, K=K)
+            if skips is not None:
+                skips['by'] = dict(_rep.get('skipped_by') or {})
+                skips['declared'] = dict(getattr(B, 'SKIP_DECLARED', {}) or {})
     except Exception as ex:
         raise CouldNotAsk(f'the explorer extract could not be run here ({type(ex).__name__}: {str(ex)[:160]})')
     nodes = {x['id']: x for x in n + xn}
@@ -169,7 +178,7 @@ def check_ends(edges, rows):
             'failures': failures}
 
 
-def check_coverage(edges, reg, names):
+def check_coverage(edges, reg, names, skips=None):
     rows, probs = register_rows(reg)
     live = Counter(e.get('type') for e in edges)
     absent = reg.get('$absent') or {}
@@ -179,6 +188,10 @@ def check_coverage(edges, reg, names):
     out += [('UNREGISTERED-NAME', f"{t} (named in {sorted(w)})") for t, w in sorted(names.items())
             if t not in rows and t not in absent]
     out += [('ABSENT-HAS-EDGES', f'{t} ({live[t]} edges)') for t in sorted(absent) if live.get(t)]
+    sk = skips or {}
+    out += [('SKIPPED-UNDECLARED', f"{k} ({n} edge(s) read from storage and not linked) — draw it, or name it in "
+             f"_build_kg_explorer.SKIP_DECLARED with the reason")
+            for k, n in sorted((sk.get('by') or {}).items()) if k not in (sk.get('declared') or {})]
     return out
 
 
@@ -207,16 +220,18 @@ def print_ends(res, rows, how, dr):
 def main(argv):
     if '--selftest' in argv:
         return selftest()
+    skips = {}
     try:
-        nodes, edges, how = load_graph()
+        nodes, edges, how = load_graph(skips=skips)
     except CouldNotAsk as ex:
         print(f'COULD-NOT-ASK: {ex}'); return 77
     reg = load_register()
     rows, _ = register_rows(reg)
     if '--coverage' in argv:
-        probs = check_coverage(edges, reg, named_types())
+        probs = check_coverage(edges, reg, named_types(), skips)
         print(f"COUNTS: rows {len(rows)} · graph types {len(set(e.get('type') for e in edges))} · declared absent "
-              f"{len(reg.get('$absent') or {})} · refusals {len(probs)}")
+              f"{len(reg.get('$absent') or {})} · skipped on read {sum((skips.get('by') or {}).values())}"
+              f" (declared {len(skips.get('declared') or {})}) · refusals {len(probs)}")
         for c, d in probs: print(f'  ✗ {c:18} {d}')
         print('EDGE REGISTER COVERAGE: ' + ('OK' if not probs else 'REFUSED (BLOCKING) — add or fix the row(s) in knowledge/_edge_register.json'))
         return 1 if probs else 0
@@ -239,13 +254,14 @@ def selftest():
         ok_all &= ok
         print(f"  {'✓' if ok else '✗'} {n:>2} {desc}")
 
+    skips = {}
     try:
-        nodes, edges, how = load_graph()
+        nodes, edges, how = load_graph(skips=skips)
     except CouldNotAsk as ex:
         print(f'COULD-NOT-ASK: {ex}'); return 77
     reg = load_register(); rows, probs = register_rows(reg); names = named_types()
     base = check_ends(edges, rows)
-    cov = check_coverage(edges, reg, names)
+    cov = check_coverage(edges, reg, names, skips)
     print(f'_validate_edges selftest — control on the real graph ({len(edges)} edges, {len(rows)} rows), then one planted red per refusal')
 
     # control: the tool, not the graph — the real graph's verdict is whatever it is today
@@ -274,8 +290,9 @@ def selftest():
     bite(6, 'OVER-COUNT: a second renderedBy snippet on one component goes red (max 1)',
          lambda: planted('OVER-COUNT', {'s': rend['s'], 't': other, 'type': 'renderedBy'}))
 
-    def cov_red(cls, e2=None, reg2=None, names2=None):
-        c = check_coverage(e2 if e2 is not None else edges, reg2 if reg2 is not None else reg, names2 if names2 is not None else names)
+    def cov_red(cls, e2=None, reg2=None, names2=None, skips2=None):
+        c = check_coverage(e2 if e2 is not None else edges, reg2 if reg2 is not None else reg,
+                           names2 if names2 is not None else names, skips2 if skips2 is not None else skips)
         return sum(1 for k, _ in c if k == cls) == sum(1 for k, _ in cov if k == cls) + 1
     r1 = copy.deepcopy(reg); gone = r1['types'].pop(0)['word']
     bite(7, f'NO-ROW: the register without its {gone!r} row goes red', lambda: cov_red('NO-ROW', reg2=r1))
@@ -292,6 +309,15 @@ def selftest():
     bite(12, "REGISTER-SHAPE: a row without `from` goes red", lambda: cov_red('REGISTER-SHAPE', reg2=r6))
     bite(13, 'the exit is red when a planted failure is present (check_ends → non-zero verdict)',
          lambda: check_ends(edges + [{'s': comp, 't': None, 'type': 'noSuchEdgeType'}], rows)['fail'] > 0)
+    s14 = {'by': dict(skips.get('by') or {}, **{'asset plantedSkipType': 14}), 'declared': dict(skips.get('declared') or {})}
+    bite(14, "SKIPPED-UNDECLARED: an edge type read and not linked, with no SKIP_DECLARED line, goes red (the defaultActive class)",
+         lambda: cov_red('SKIPPED-UNDECLARED', skips2=s14))
+    s15 = {'by': s14['by'], 'declared': dict(s14['declared'], **{'asset plantedSkipType': 'planted: declared with its reason'})}
+    bite(15, "SKIPPED-UNDECLARED: the same skip DECLARED with its reason does not go red",
+         lambda: sum(1 for k, _ in check_coverage(edges, reg, names, s15) if k == 'SKIPPED-UNDECLARED')
+         == sum(1 for k, _ in cov if k == 'SKIPPED-UNDECLARED'))
+    bite(16, "the real extract reports its skips by type (the tally exists, whatever it holds today)",
+         lambda: isinstance(skips.get('by'), dict) and isinstance(skips.get('declared'), dict))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 
