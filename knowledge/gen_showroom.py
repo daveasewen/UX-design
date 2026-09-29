@@ -403,6 +403,53 @@ def theme_buttons(themes):
            htmlmod.escape(t["label"].replace("Apollo ", "")))
         for t in themes)
 
+# ---------------------------------------------------------------- s308-D25 · the label guard
+# Dave 2026-09-29 12:08 BST: "Common is legacy - its how we should label it in any interfaces, we can
+# rename or alias it, whatever is the best solutio". ALIAS: the id stays `legacy` wherever it is an
+# identifier; knowledge/tokens/themes/_themes.json `label` is the ONE place a theme's display name
+# lives. A theme picker a person reads must print that label (less the "Apollo " prefix), never the
+# bare id and never a hand-typed name. --check (the showroom sync gate, BLOCKING) scans every live
+# picker: the showroom pages and the pack's theme picker (showroom/*.html), the foundations pages
+# (showroom/_foundations/*.html), the dashboard, and the view-time overlay apollo-fab.js. History
+# (reviews/, old review pages, reports, rulings) is not a surface and is never scanned.
+PICKER_SURFACES = ("showroom/*.html", "showroom/_foundations/*.html", "dashboard/index.html",
+                   "knowledge/_render/apollo-fab.js")
+PICKER_BUTTON_RX = re.compile(r'<button\b[^>]*?\bdata-theme(?:-attr)?="([a-z-]+)"[^>]*>([^<]*)</button>')
+PICKER_ARRAY_RX = re.compile(r"\[\s*'([a-z-]+)'\s*,\s*'([^']*)'\s*\]")   # apollo-fab.js THEMES rows
+
+
+def picker_labels(themes):
+    """attr (and every attrAlias) -> the label a person reads, e.g. legacy -> 'Common'."""
+    out = {}
+    for t in themes:
+        short = t["label"].replace("Apollo ", "")
+        for a in [t["attr"]] + list(t.get("attrAliases") or []):
+            out[a] = short
+    return out
+
+
+def label_faults(text, want, where="?"):
+    """[(where, attr, printed, wanted)] for every picker control in `text` whose attr is a theme and
+    whose printed name is not the registry label."""
+    bad = []
+    rxs = (PICKER_ARRAY_RX,) if where.endswith(".js") else (PICKER_BUTTON_RX,)
+    for rx in rxs:
+        for m in rx.finditer(text):
+            attr, shown = m.group(1), htmlmod.unescape(m.group(2)).strip()
+            if attr in want and shown != want[attr]:
+                bad.append((where, attr, shown, want[attr]))
+    return bad
+
+
+def label_guard(themes=None):
+    want = picker_labels(themes or cascade.load_themes())
+    bad = []
+    for pat in PICKER_SURFACES:
+        for f in sorted(glob.glob(os.path.join(ROOT, pat))):
+            bad += label_faults(open(f, encoding="utf-8").read(), want, os.path.relpath(f, ROOT))
+    return bad
+
+
 def build_pages():
     """-> {relpath: content} for the whole showroom."""
     themes = cascade.load_themes()
@@ -429,7 +476,9 @@ def build_pages():
         b64 = base64.b64encode(payload.encode("utf-8")).decode("ascii")
         meta = theme_meta(themes, varmap)
         legacy_hits = next((m["hits"] for m in meta if m["attr"] == "legacy"), 0)
-        meta_line = "%d token(s) · Legacy re-binds %d" % (len(varmap), legacy_hits)
+        # s308-D25: the person reads the registry's label ('Common'), never the bare id
+        meta_line = "%d token(s) · %s re-binds %d" % (len(varmap), picker_labels(themes)["legacy"],
+                                                      legacy_hits)
         # Replay lives in the ONE bar (#98-D1); DISABLED where the snippet has no
         # motion idiom — the bar states inapplicability, never hides it.
         # Two recognised idioms (ds-029): (1) the `dv-animate` class-toggle idiom,
@@ -539,6 +588,19 @@ def selftest():
     bite("7e · overlay is opt-OUT — default (no chrome=0) still carries it (REVIEW-213)",
          "h.chrome!=='1'" in PAGE_TMPL, False)
 
+    # s308-D25 — the label guard bites a bare id and a hand-typed name, and passes the label
+    want = picker_labels(cascade.load_themes())
+    bite("8 · the registry labels legacy 'Common' (s308-D25, alias not rename)", want.get("legacy"), "Common")
+    bite("8b · a picker printing the bare id goes red",
+         len(label_faults('<button data-theme="legacy" aria-pressed="false">Legacy</button>', want, "x.html")), 1)
+    bite("8c · a foundations-style picker (data-theme-attr) printing the id goes red",
+         len(label_faults('<button type="button" data-theme-attr="legacy">legacy</button>', want, "x.html")), 1)
+    bite("8d · the label passes, and a light/dark button is not a theme",
+         label_faults('<button data-theme="legacy">Common</button><button data-theme="dark">Dark</button>',
+                      want, "x.html"), [])
+    bite("8e · an overlay THEMES row printing the id goes red", len(label_faults("['legacy', 'Legacy']", want, "x.js")), 1)
+    bite("8f · the live pickers carry the label today (the guard --check runs)", label_guard(), [])
+
     if fails:
         print("gen_showroom --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -546,7 +608,7 @@ def selftest():
         sys.exit(1)
     print("gen_showroom --selftest OK — %d bites (rebase · fragments · absolutes · "
           "double-rebase fails loud · missing-target gate · query suffix · "
-          "#98-D1 one-bar contract ×4 · embed mode ×5)." % len(ran))
+          "#98-D1 one-bar contract ×4 · embed mode ×5 · s308-D25 theme label ×6)." % len(ran))
 
 def main():
     if "--selftest" in sys.argv:
@@ -583,10 +645,17 @@ def main():
                        "index %s writes (two-index drift, forbidden by s215-D5)"
                        % INDEX_OWNED_ELSEWHERE)
     if check:
-        if stale or orphans or index_fault:
-            print("gen_showroom --check: OUT OF SYNC — stale: %s orphaned: %s index: %s\n"
-                  "Run: python3 knowledge/gen_showroom.py"
-                  % (stale[:6], orphans[:6], index_fault or "ok"))
+        lbl = label_guard()
+        if lbl:
+            print("gen_showroom --check: THEME LABEL (s308-D25) — %d picker control(s) print a name that is "
+                  "not the registry label (knowledge/tokens/themes/_themes.json `label`):" % len(lbl))
+            for where, attr, shown, wanted in lbl[:12]:
+                print("   %s  %s prints %r, the label is %r" % (where, attr, shown, wanted))
+        if stale or orphans or index_fault or lbl:
+            print("gen_showroom --check: OUT OF SYNC — stale: %s orphaned: %s index: %s theme labels: %s\n"
+                  "Run: python3 knowledge/gen_showroom.py (labels on a page another generator owns: "
+                  "fix that generator to read the registry)"
+                  % (stale[:6], orphans[:6], index_fault or "ok", len(lbl) or "ok"))
             sys.exit(1)
         print("gen_showroom --check OK — %d page(s) + index in sync (index owned by %s)."
               % (len(files), INDEX_OWNED_ELSEWHERE))

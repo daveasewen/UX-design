@@ -12,11 +12,11 @@
 
 | Theme | Palette | Token | Moved | Ink (base → theme) | Ground (base → theme) | Contrast | Need | Status |
 |---|---|---|---|---|---|---|---|---|
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/icon/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/label/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
-| **Apollo Legacy** (`apollo-legacy`) | `palettes/rag/legacy.json` | `text/secondary` | ink | `#FFFFFF` → `#9B9B9B` | page/raised `#1D1D1D` | **6.07:1** | 4.5:1 | ✅ OK |
+| **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/icon/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
+| **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `button/primary/label/default` | ink+ground | `#333333` → `#FFFFFF` | `button/primary/background/default` `#FAFAFA` → `#DB0011` | **5.22:1** | 3.0:1 | ✅ OK |
+| **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
+| **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#A8000B` | **7.87:1** | 4.5:1 | ✅ OK |
+| **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `text/secondary` | ink | `#FFFFFF` → `#9B9B9B` | page/raised `#1D1D1D` | **6.07:1** | 4.5:1 | ✅ OK |
 | **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |

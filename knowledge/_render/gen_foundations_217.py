@@ -1158,10 +1158,7 @@ __SENTINEL__
   <span class="spacer"></span>
   <div class="ctl"><span class="t-ed-caption">Theme</span>
     <div class="seg" id="themes" role="group" aria-label="Theme">
-      <button type="button" data-theme-attr="mono" aria-pressed="true">Mono</button>
-      <button type="button" data-theme-attr="legacy" aria-pressed="false">Legacy</button>
-      <button type="button" data-theme-attr="console" aria-pressed="false">Console</button>
-      <button type="button" data-theme-attr="supercharge" aria-pressed="false">Supercharge</button>
+__THEME_BTNS__
     </div>
   </div>
   <div class="ctl"><span class="t-ed-caption">Mode</span>
@@ -1212,6 +1209,7 @@ def shell(title, h1, subtitle, body, extra_css="", extra_script="", extra_class=
              .replace("__EXTRA_CSS__",
                       ("\n<style>%s</style>" % extra_css) if extra_css.strip() else "")
              .replace("__H1__", esc(h1))
+             .replace("__THEME_BTNS__", theme_btns())
              # ⚠ the space is part of the SLOT, not the value: with it in the template every
              # existing page's <body> would gain a trailing space and rewrite on the next run —
              # a diff on two signed-off pages for an addition that does not touch them.
@@ -2605,6 +2603,20 @@ def write_default_mutant(arm=("gallery", "mono", "capBg", "white")):
           % (dest, os.path.getsize(dest), arm[0], arm[1], arm[2], arm[3], wrong,
              GALLERY_SETTINGS[arm[1]][arm[2]], ruled))
     return dest
+
+
+def theme_btns():
+    """s308-D25 (#308 lane L — Dave 2026-09-29 12:08 BST, "Common is legacy - its how we should label
+    it in any interfaces"): the four picker buttons print the theme registry's `label`
+    (knowledge/tokens/themes/_themes.json, read through gen_theme_cascade.load_themes()), less the
+    'Apollo ' prefix, in this page's own order. They were hand-typed, and printed 'Legacy'. The
+    attribute stays `legacy`; the label is what a person reads. gen_showroom.py --check refuses a
+    picker here that prints anything else."""
+    lab = {t["attr"]: t["label"].replace("Apollo ", "") for t in library.cascade.load_themes()}
+    return "\n".join(
+        '      <button type="button" data-theme-attr="%s" aria-pressed="%s">%s</button>'
+        % (a, "true" if a == "mono" else "false", esc(lab[a]))
+        for a in ("mono", "legacy", "console", "supercharge"))
 
 
 def main():
