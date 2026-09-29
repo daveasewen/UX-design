@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Foundations drift</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+h3{font-size:19px;font-weight:500;line-height:1.3;margin:0 0 var(--s1)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.two{display:grid;grid-template-columns:1fr 2fr;gap:var(--s6);align-items:start}
+.idx{font-size:64px;font-weight:200;line-height:1;color:var(--g5);display:block;margin-bottom:var(--s2)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin-top:var(--s4)}
+.stats>div{background:var(--card);padding:var(--s3) var(--s2)}
+.stats .n{font-size:48px;font-weight:200;line-height:1.05;display:block}
+.stats .c{font-size:13px;line-height:1.5;color:var(--g7);display:block;margin-top:var(--s1)}
+/* verdict table */
+table.vt{width:100%;border-collapse:collapse;margin-top:var(--s3);font-size:15px;line-height:1.5}
+table.vt th{text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;padding:0 var(--s2) var(--s1) 0;border-bottom:1px solid var(--fg)}
+table.vt td{padding:var(--s2) var(--s2) var(--s2) 0;border-bottom:1px solid var(--g3);vertical-align:top;color:var(--g8)}
+table.vt td:first-child{color:var(--fg);font-weight:500}
+/* pictures */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair figcaption b{font-weight:500;color:var(--fg)}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair .note{font-size:13px;color:var(--g7);line-height:1.55;margin:0}
+.swatch{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:6px;border:1px solid var(--g3)}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.say{font-size:21px;font-weight:300;line-height:1.45;margin:var(--s4) 0 0;padding-top:var(--s2);border-top:1px solid var(--g3);max-width:34em}
+/* decisions */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid,.two{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}.say{font-size:18px}
+  .idx{font-size:44px}
+  .stats{grid-template-columns:1fr 1fr}.stats .n{font-size:36px}
+  .pair{grid-template-columns:1fr}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  table.vt thead{display:none}
+  table.vt,table.vt tbody,table.vt tr,table.vt td{display:block;width:100%}
+  table.vt tr{padding:var(--s2) 0;border-bottom:1px solid var(--g3)}
+  table.vt td{border:0;padding:2px 0}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#answer">The answer</a>
+  <a href="#caption">Supercharge caption</a>
+  <a href="#logos">Logos</a>
+  <a href="#why">Why nothing caught it</a>
+  <a href="#decide">Your calls</a>
+</div></nav>
+
+<header id="answer">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 308 · review page · foundations drift</p>
+      <h1>Two differences. The pages are right on the colour, and the generator is right on the logos.</h1>
+      <p class="sub">Regenerating the eight foundations pages would change two things. One is a colour the generator now reads wrong. The other is four logos you scrapped on 18 September that the pages still show, as broken images. Nothing has been regenerated or committed.</p>
+    </div>
+    <div class="meta">
+      <span>Tuesday 29 September 2026</span>
+      <span>Lane D, for your 14:44 "lets look at the foundations drift after"</span>
+      <span>The regeneration ran into a scratch folder. The committed pages are untouched.</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap two">
+    <div><span class="idx">01</span><p class="label">What drifted</p></div>
+    <div>
+      <p class="lead">I regenerated all eight pages into a scratch folder and compared them with the committed ones, byte by byte.</p>
+      <div class="stats">
+        <div><span class="n">2</span><span class="c">pages identical: the 12-column grid and photography</span></div>
+        <div><span class="n">5</span><span class="c">pages that differ by one line: the Supercharge caption colour</span></div>
+        <div><span class="n">1</span><span class="c">page that differs in its logos: 12 marks become 8</span></div>
+        <div><span class="n">0</span><span class="c">other differences of any kind</span></div>
+      </div>
+      <table class="vt">
+        <thead><tr><th>Difference</th><th>Which side is right</th><th>Cause</th></tr></thead>
+        <tbody>
+          <tr><td>Supercharge dark caption: warm <code>#312C26</code> becomes grey <code>#313131</code></td><td>The committed pages</td><td>At session 288 (19 September), canon.css gained a small block of bento spacing values placed ahead of the theme blocks. The generator reads only the first block it finds for each theme, so for Supercharge it now reads two spacing values and falls back to Mono's colours.</td></tr>
+          <tr><td>Logos: 12 marks become 8</td><td>The regenerated page, nearly</td><td>You scrapped the masterbrand-with-identifier lockup at session 282 (18 September) and its four files left the disk. The committed page was last written on 3 September and still shows them, broken. The generator draws 8, but it still lists the identifier lockup, so it prints a "4 files missing" warning and an old finding about those files.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="grey" id="caption">
+  <div class="wrap">
+    <p class="label">02 · The Supercharge caption</p>
+    <h2>Today nobody can see it. It would show only if canon.css failed to load.</h2>
+    <p class="lead">The line that changes is the fallback colour in <code>var(--color-neutral-5, …)</code>. With canon loaded, both pages paint the right warm caption, pixel for pixel. The fallback only paints when canon.css is missing, for example in a pack export or a page opened outside the repo. It is the safety net, and the regenerated version would fill that net with the wrong colour.</p>
+
+    <div class="pair">
+      <figure><figcaption><b>Committed</b> · canon loaded · Supercharge dark · 2x</figcaption>
+        <img src="_lanes/308/D/D-caption-committed-canon.png" alt="Committed bento page, Supercharge dark, dark-grey caption ground: warm #312C26">
+        <p class="note"><span class="swatch" style="background:#312C26"></span>paints rgb(49, 44, 38), which is #312C26</p></figure>
+      <figure><figcaption><b>Regenerated</b> · canon loaded · Supercharge dark · 2x</figcaption>
+        <img src="_lanes/308/D/D-caption-regen-canon.png" alt="Regenerated bento page, Supercharge dark: identical warm #312C26">
+        <p class="note"><span class="swatch" style="background:#312C26"></span>paints #312C26 too. The two PNGs are byte-identical.</p></figure>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Committed</b> · canon.css blocked · the fallback shows</figcaption>
+        <img src="_lanes/308/D/D-caption-committed-nocanon.png" alt="Committed page with canon blocked: caption falls back to warm #312C26">
+        <p class="note"><span class="swatch" style="background:#312C26"></span>falls back to #312C26, the warm lift you ruled</p></figure>
+      <figure><figcaption><b>Regenerated</b> · canon.css blocked · the fallback shows</figcaption>
+        <img src="_lanes/308/D/D-caption-regen-nocanon.png" alt="Regenerated page with canon blocked: caption falls back to grey #313131">
+        <p class="note"><span class="swatch" style="background:#313131"></span>falls back to #313131, Mono's grey: the regression</p></figure>
+    </div>
+
+    <ul class="facts">
+      <li><span class="k">The ruling</span><span><b>s220-D1</b> (27 August): each theme's dark caption lifts off its own dark page, taken from its own ramp. Supercharge takes its warm 5, <code>#312C26</code>. You closed it this morning as <b>s308-D1</b>: "Close it: the four lifts are right." The committed pages carry that value.</span></li>
+      <li><span class="k">What broke</span><span>The generator's colour reader, <code>theme_tokens()</code> in <code>gen_bento_matrix_217.py</code>. It takes the first <code>[data-apollo-theme="supercharge"]{</code> block in canon.css. Since commit <code>71b3363c</code> (the #288 capture, 19 September), that first block is the bento spacing block, which holds two spacing values and no colours. Console has the same fault, but its caption is grey anyway, so nothing shows.</span></li>
+      <li><span class="k">Worse for Common</span><span>Since commit <code>53303b0f</code> (#228, 31 August), the Common theme block has opened with a two-line selector (<code>legacy</code>, <code>common</code>), and the reader matches none of it. For Common the reader has returned Mono's values for a month. Its badge, for example, reads Mono's error red and not Common's <code>#DB0011</code>. Common's caption grey happens to equal Mono's, which is why it did not show here.</span></li>
+      <li><span class="k">The proof</span><span>I mended the reader in memory only, so that it gathers every block that names the theme. With that fix, <b>seven of the eight pages regenerate byte-identical</b> to the committed ones, and the eighth differs only in its logos. No other cause is hiding.</span></li>
+      <li><span class="k">Seen before</span><span>Lane W2 named this reader fault on 27 September (#305), while holding the rails file. It said Common was "spared". Common is in fact the most affected theme. No work row was opened for the fix.</span></li>
+    </ul>
+    <p class="say">Recommendation: fix the reader, not the pages. The pages already say what you ruled.</p>
+  </div>
+</section>
+
+<section id="logos">
+  <div class="wrap">
+    <p class="label">03 · The logos</p>
+    <h2>The committed page shows four logos you scrapped, and all four are broken images.</h2>
+    <p class="lead">You said "scrap the identifier versions" at session 282. That is <b>s282-D4</b>: the set is two lockups, hexagon and masterbrand, each in colour and mono, on light and on dark, which makes 8 variants. The four files left the disk on 18 September. The logos page was last written on 3 September.</p>
+
+    <div class="pair">
+      <figure><figcaption><b>Committed</b> · logos.html · 12 tiles, 4 broken</figcaption>
+        <img src="_lanes/308/D/D-logos-committed.png" alt="Committed logos page: 8 good tiles, then four masterbrand-with-identifier tiles showing broken-image icons">
+        <p class="note">The last four tiles ask for files that are gone. The browser logs four failed loads.</p></figure>
+      <figure><figcaption><b>Regenerated</b> · logos.html · 8 tiles</figcaption>
+        <img src="_lanes/308/D/D-logos-regen.png" alt="Regenerated logos page: the 8 ruled variants and no broken images">
+        <p class="note">The right set. But the box below the tiles still reports a defect in two identifier files that no longer exist.</p></figure>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Regenerated</b> · the notes at the foot of the page</figcaption>
+        <img src="_lanes/308/D/D-logos-regen-notes.png" alt="Regenerated notes list ending with a warning: 4 expected files missing from disk">
+        <p class="note">The generator still expects the identifier lockup, so it prints "4 expected file(s) missing from disk".</p></figure>
+      <figure><figcaption><b>What the fix is</b></figcaption>
+        <p class="note">In <code>gen_foundations_217.py</code>, take <code>masterbrand-identifier</code> out of <code>LOGO_ORDER</code> and <code>LOGO_LOCKUP</code>. Remove the "on-dark identifier exports carry no identifier label" finding, which s282-D4 closed as moot. Change "12 exported marks" to 8 in the header. Then regenerate logos.html. Its tiles match the right-hand picture above, with no warning and no stale finding.</p></figure>
+    </div>
+    <p class="say">Recommendation: take the identifier lockup out of the generator, then regenerate the page with 8 marks.</p>
+  </div>
+</section>
+
+<section class="grey" id="why">
+  <div class="wrap two">
+    <div><span class="idx">04</span><p class="label">Why nothing caught it</p></div>
+    <div>
+      <p class="lead">The checks exist. None of them is wired into the build.</p>
+      <ul class="facts">
+        <li><span class="k">The page check</span><span><code>gen_foundations_217.py --check</code> exists and today says <b>OUT OF SYNC, 6 pages</b>. It is not in <code>_build_all.py</code> and not in <code>gates.yml</code>. The last lane that ran it by hand was #245, on 3 September. It takes about 60 seconds.</span></li>
+        <li><span class="k">The reader check</span><span><code>gen_bento_matrix_217.py --selftest</code> has a bite, C0, that says "the static token resolver agrees with the browser". It would have gone red at #288. Today <b>9 bites are red</b>, including C0 and four caption-lift bites. That selftest is not wired either.</span></li>
+        <li><span class="k">The fallback gate</span><span><code>_gate_fallback_drift_221.py</code> checks that every fallback colour matches canon. It is advisory and unwired, and it uses the same broken reader, so today it flags the <b>right</b> value, <code>#312C26</code>, as drift. Wiring it before the reader is fixed would enforce the regression.</span></li>
+        <li><span class="k">The class</span><span>It is the known pattern: an instrument with no consumer. All three would have caught this, and none of them runs unless someone thinks to run it.</span></li>
+      </ul>
+      <p class="say">Recommendation: once the two fixes land, add the page check and the matrix selftest to the build as blocking. Leave the fallback gate advisory until it has been re-run on the fixed reader.</p>
+    </div>
+  </div>
+</section>
+
+<section id="decide">
+  <div class="wrap">
+    <p class="label">05 · Your calls</p>
+    <h2>Three calls. Nothing moves until you answer.</h2>
+    <p>If you take all three, the order is: fix the reader, fix the logos list, regenerate logos.html (the only page that then changes), then wire the check. The check would be red until the first two land.</p>
+    <div class="call" data-id="caption" data-q="The Supercharge caption: which side is right?" data-rec="Fix the generator's colour reader so it reproduces the committed pages">
+      <p class="q">1 · The Supercharge caption: fix the generator, or accept its grey?</p>
+      <p class="rec">Recommendation: fix the reader. The committed warm #312C26 is s220-D1, which you closed this morning.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Fix the generator's colour reader so it reproduces the committed pages">Fix the reader, keep the pages<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Accept the regenerated grey #313131">Accept the grey</button>
+        <button type="button" class="chip" data-v="Leave it; it only shows without canon">Leave it for now</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="logos" data-q="The logos page: 12 or 8?" data-rec="Take the identifier lockup out of the generator, then regenerate logos.html with 8">
+      <p class="q">2 · The logos page: take the scrapped lockup out and regenerate with 8?</p>
+      <p class="rec">Recommendation: yes. The committed page shows four broken images today.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Take the identifier lockup out of the generator, then regenerate logos.html with 8">Remove it, then regenerate with 8<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Regenerate as it stands, warning line and all">Regenerate as it stands</button>
+        <button type="button" class="chip" data-v="Leave the committed 12 for now">Leave the 12 for now</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="check" data-q="Wire the foundations check into the build?" data-rec="Wire the page check and the matrix selftest into the build, blocking, after the fixes">
+      <p class="q">3 · Wire the foundations page check and the matrix selftest into the build?</p>
+      <p class="rec">Recommendation: yes, blocking, once calls 1 and 2 have landed. Keep the fallback gate advisory.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Wire the page check and the matrix selftest into the build, blocking, after the fixes">Wire both, blocking<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Wire them as advisory">Wire them as advisory</button>
+        <button type="button" class="chip" data-v="Not now">Not now</button>
+      </div>
+      <label class="field"><span>Your words, if the buttons do not say it</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="page" data-q="Anything else on this page">
+      <p class="q">Anything else on this page</p>
+      <label class="field"><span>Note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <details class="tech"><summary>Technical detail: where each fact comes from</summary>
+      <ol>
+        <li>Regeneration: <code>gen_foundations_217.build()</code> written to a scratch tree outside the repo, with <code>knowledge/</code> symlinked so the relative paths resolve, then compared byte by byte with <code>showroom/_foundations/*.html</code>. <code>--check</code> at HEAD: OUT OF SYNC on bento-rails, bento, grids-dashboard, grids-display, grids-gallery, logos.</li>
+        <li>The colour line: <code>[data-apollo-theme="supercharge"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#312C26);}</code> becomes <code>…#313131…</code>. It comes from <code>gen_bento_matrix_217.CAPTION_GROUND_MINTS</code> via <code>resolve_token()</code> → <code>theme_tokens()</code> → <code>_css_block()</code>, which uses <code>re.search</code> and so returns the first match only. canon.css has two supercharge blocks, at lines 22135 (AUTO-BENTO-ROLE-VARS, from <code>gen_bento_role_vars.py</code>, first committed in 71b3363c) and 26442 (AUTO-THEMES, which holds <code>--color-neutral-5: #312C26</code>). Console has blocks at 22131 and 24788. Common's blocks are <code>[data-apollo-theme="legacy"],\n[data-apollo-theme="common"]{</code>, a two-line list the anchored regex never matches. The before and after counts at 53303b0f are 1 and 0 matches.</li>
+        <li>The proof: <code>theme_tokens</code> was replaced in memory by a reader that merges every top-level rule whose selector list names the exact theme selector (root, then dark, then theme, then theme dark, in source order). It gives supercharge dark neutral-5 <code>#312C26</code>. The rebuild left 7 of 8 pages byte-identical; logos.html was the one that differed. Driver: <code>~/scratch308D/regen_fixed.py</code> at the seat (scratch, not in the repo).</li>
+        <li>Renders: <code>notes/_lanes/308/D/render_D.py</code>, Playwright at the seat with <code>RENDER_SHELL</code>, over <code>file://</code>. The caption shots set the page to supercharge, dark mode, gallery, dark-grey caption ground. The "canon blocked" shots abort the canon.css request. Computed colours are in <code>notes/_lanes/308/D/D-render-log.json</code>.</li>
+        <li>Logos: <code>da9f824e</code> (#282, 18 September) removed the four <code>masterbrand-identifier-*.svg</code> files under s282-D4. The committed logos.html is from <code>5ae4d32c</code> (#245, 3 September). The regeneration reports <code>residual missing: 4</code>.</li>
+        <li>Other readers of the same <code>theme_tokens()</code>: <code>_bento_edit_rails.json</code> (W2 held it at #305, and its drift item 1 is this fault), <code>gen_mono_gallery_221.py</code>, <code>verify_bento_matrix_217.py</code>, <code>_gate_fallback_drift_221.py</code>. Fixing the reader will move the rails file too. W2's drift item 2, the nav family as a tile group, is a separate question and stays yours.</li>
+        <li>The 12 other reds in the fallback gate (<code>--border-subtle #D7D8D6</code>, <code>--text-secondary #545454</code>) are Common's own values, which the reader cannot see. They are likely false reds from the same fault. I did not re-run the gate on the fixed reader.</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · foundations drift · v1 · 2026-09-29 · session 308 · lane D</span>
+  <span>Nothing here is decided until you choose.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your answers"><div class="in">
+  <b>Your answers</b><span id="count">0 of 4 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-308-foundations-drift-v1';
+  var PATH='notes/_REVIEW-308-foundations-drift-2026-09-29-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 308 · foundations drift · answers','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el,i){
+      var s=state[el.dataset.id]||{}, rec=el.dataset.rec||'';
+      L.push((el.dataset.id==='page'?'Note on the page':(i+1)+'. '+el.dataset.q));
+      if(el.dataset.id!=='page'){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+        if(rec) L.push('   Recommendation was: '+rec);
+      }
+      if((s.note||'').trim()) L.push('   In his words: '+s.note.trim().replace(/\n/g,'\n   '));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Select the text and copy it by hand'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
