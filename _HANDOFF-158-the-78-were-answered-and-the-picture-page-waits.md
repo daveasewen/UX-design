@@ -112,3 +112,11 @@ status: observed
 9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ POST-WRAP ADDENDUM 2 — Tue 2026-09-29, by the #307 conductor, BY ADDITION; nothing above is rewritten
+
+⛔★★★ **#308'S FIRST BEAT IS HIS PICTURE-PAGE ANSWERS, NOT THE PAGE.** He answered the review page `notes/_REVIEW-307-what-you-asked-to-see-2026-09-28-v1.html` at 08:05 BST today: export saved verbatim, UNCOMMITTED, at `notes/_lanes/307/DAVE-RULINGS-2026-09-29-what-you-asked-to-see.md` (sha256 f201bacd27fe0f0d…). 15 of 16 answered. Inscribe from it — quote him, never paraphrase. Read with `later-with-a-sentence-is-a-ruling`: the tree-mark call is ticked "Keep it open" but carries his sentence *"The red is correct for Supercharge and Common, the black is correct for console and mono"* — read it back and ask for the one word. Two more "keep open / investigate" notes (the third red; the forks' halation and contrast) and his cold-run note, *"lets work on this together, I like the run you did I wouldn't treat the prompted one I did as any type of exemplar I didn't spend a lot of time on it."* — his fettled dashboard is NOT the benchmark.
+
+⛔ **ALSO UNCOMMITTED, from his 07:50 "I'm lost in a dead end because there is no back button":** `reviews/COLDRUN-307-2026-09-28-v1.html` (the dead #258 link replaced by "All review pages"), `notes/_lanes/307/C/verify_coldrun_back.py`, `notes/_lanes/307/C/check-coldrun-back-390.png`. Live in the artifact "Apollo 304 review" v12. Two commit runs timed out at the ~100 s shell cap after the witness step (rc 124); locks moved (`notes/_lanes/_orphan-locks/*-307-P*`). Commit all four paths at #308, then fix the red CI (§ POST-WRAP remedies).
