@@ -63,3 +63,45 @@ Order if all three are taken: reader, then logos list, then regenerate logos.htm
 - `notes/_lanes/308/D/D-page-1440.png`, `D-page-390.png` (page checks, not embedded)
 
 Not done, by the brief: no regeneration of committed pages, no generator edit, no commit. Scratch lives at the seat's `~/scratch308D/` (outside the repo). `/dev/shm` does not persist between device_bash calls at this seat, so the scratch tree went under $HOME instead.
+
+---
+
+# Round 2 — BUILD: Dave took all three calls (17:01 BST)
+
+COUNTS (round 2): rulings 3 inscribed (s308-D31..D33, store 820 → 823), 3 stamped (D31 enacted at c78cdb14, D32 enacted at a35e2474, D33 enacted in part at a95444a3) / row W-308d3 closed / commits 4 (c78cdb14, a35e2474, a95444a3, and the report commit) / pages regenerated 1 (logos.html) / selftest reds 9 → 2 (both HELD for Dave) / build steps 166 → 167 / pushed no
+
+His words: `notes/_lanes/308/DAVE-RULINGS-2026-09-29-1708-drift-and-edges.md` § Foundations drift, committed in c78cdb14. There are three clicks, one per recommendation.
+
+## 1 · The colour reader (s308-D31), c78cdb14
+
+- `gen_bento_matrix_217.theme_tokens()` now merges EVERY top-level canon.css rule whose comma-separated selector list names the theme. It walks the tiers root → `[data-theme="dark"]` → theme → theme dark (both the `][` and the descendant forms), in source order within each tier. Comments are blanked and @-rule bodies are skipped whole, so a `@media` value cannot leak in. `_css_block` stays, used as the mutant in the new bite.
+- Proof: all 8 pages regenerated in memory. 7 are byte-identical to HEAD, and logos.html is the only one that differs (call 2). Supercharge dark neutral/5 is `#312C26`, and legacy's badge is `#DB0011` (it had been reading mono's alias since #228).
+- New selftest bites: **C0m** uses a planted sheet with a gutter block ahead of the colour block, a two-line `legacy, common` list, an `@media` block that must not leak, and a comment containing a brace. The retired first-match reader runs beside it as the mutant and must read `#313131` and `None`. **C0n** checks the live canon. I also ran an in-memory mutation with the first-match reader swapped back in: C0m and C0n both go red.
+- **The grouping dial follows s308-D19.** Lane E (6bb91a0b) moved kpi-tile's and stat-card's `groupsWith` self-lines into `count: {min: 2, per: "group"}`. `grouping_dial()` now reads a `per: "group"` count as a same-kind group, so the fact keeps one home (s234-D4) and the dial follows it.
+- **Fallback-drift gate (advisory).** It borrows the fixed resolver, so `#312C26` is canon's answer again (bites 7 and 7b). The fix exposed canon's global `--ink` (the `:root, [data-theme=…]` alias block), which put six `var(--ink,#1A1A1A)` consumers falsely red. A page-local alias now shadows canon's same-named token, as it does in the browser in scope. It is read from the file's own declaration, else from the shared preamble across the glob (bites 8, 8b, 8c mutant). Selftest: 16 bites. Run: 13 drifted → **0 drifted, 1 local-drift**: `gen_grids_218.py var(--surface-2,#F3F3F3)` against the preamble's `#F0F0F0`. That is a real #221 leftover, reported and not fixed, because fixing it changes the grids pages' fallback bytes.
+
+## 2 · The logos (s308-D32), a35e2474
+
+- `LOGO_ORDER = ["hexagon", "masterbrand"]` with the s282-D4 note. The identifier `LOGO_LOCKUP` row, the moot ds-045 finding block, "Three lockups" and the "12"/"twelve" prose are gone. Selftest bite 10 is re-based to 4 light + 4 dark tiles. Bite 12 now asserts that ds-045 and every `masterbrand-identifier` file are OFF the page, with 8 rows. `--selftest` passes 46 bites; `--check` reports 8 pages in sync.
+- **Render at the seat** (mono light and supercharge dark, full page): `notes/_lanes/308/D/D2-logos-mono-light.png` and `notes/_lanes/308/D/D2-logos-supercharge-dark.png`. Both show 8 tiles, 0 broken images, 0 failed requests and 0 page errors. There is no "missing from disk" line, no ds-045, and no horizontal scroll. I checked both by eye: the grounds are pinned per tile and the chrome follows the theme.
+- `gen_library_214 --check` OK and `gen_showroom --check` OK (lane L's picker guard included).
+
+## 3 · Wiring (s308-D33), a95444a3, enacted in part
+
+- **Wired BLOCKING**: STEPS label "foundations pages sync — the eight showroom/_foundations/ pages equal their generation (BLOCKING, s308-D33, wired #308)" → `_render/gen_foundations_217.py --check`, appended last, with its GATE route row in the same edit. `check_routes()` resolves 167 labels. The step is green at HEAD and takes about 60 s. CI runs `_build_all.py`, and the 251 photography derivatives are tracked, so the check can run there.
+- **HELD, not wired: `gen_bento_matrix_217.py --selftest`.** 9 reds → 2 reds, and both remaining reds are the same cause:
+  - **R6e**: the grouping dial now also derives `navigations + sidebar-nav + tab-bar`. navigations has been in the template's `$composes` since #231, and its `groupsWith` edges to sidebar-nav and tab-bar were **declared by the #261 nav lane** ("SAME-ANSWER", "MODULE level (s245-D7 Q7(a))"). No ruling names them.
+  - **R6d**: the rails file on disk is not this generation. With the reader and count fixes, a fresh `--rails` differs from `_bento_edit_rails.json` in the nav group **only** (measured with a sorted-key JSON diff).
+  - **Why stop here**: including the nav family as a dashboard tile group, or excluding module-level same-answer families from the dial, is a choice between s245-D7's derivation and the #261 family edges. #305 W2 put the same question to Dave ("a question, not a regen"). I did not regenerate the rails file and did not re-base the bite. Wiring the selftest blocking now would turn every build red, so it is wired when he answers. The `_build_all.py` comment and s308-D33's status both say so.
+
+## Record
+
+- `_inscribe_ruling.py` dry run, then write, for s308-D31, D32 and D33. The reconstruction proof passed each time. Receipt: `notes/_lanes/308/D/inscribe.write.txt`. Entries: `notes/_lanes/308/D/entries/`.
+- W-308d3 closed with `_wrap_rows.py` (`notes/_lanes/308/D/rows.json`). `closed_by` names the three rulings.
+- `--set-status`: D31 `enacted` at c78cdb14, D32 `enacted` at a35e2474, and D33 `enacted in part …` at a95444a3, with the hold written into the status.
+
+## Verification before the last commit
+
+- Sweep `outputs/308/sweep.py` over steps 1–166: the only reds were [11] (seat-only), [13] and [127] (timeouts) and [163] and [164] (advisory), all of them known. I ran step 167 directly, because the sweep's 40 s timeout is shorter than the check: `gen_foundations_217 --check` OK, 8 pages.
+- `gen_kg_sources --check` OK. `_wrap_regen --checks-only --session 308`: fresh, apart from `_gen_titles` (it refuses until the wrap, as expected) and `_render_rulings`, which I regenerated for this commit.
+- `canon.css` and `notes/_BUILD-VERDICT-LOG.jsonl` are byte-identical to HEAD throughout. I never ran `git status` and did not push.
