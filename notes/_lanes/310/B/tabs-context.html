@@ -1,0 +1,42 @@
+<!doctype html><html lang="en" data-apollo-theme="console" data-theme="light"><head><meta charset="utf-8">
+<title>Tab strip in context — #310 lane B</title>
+<!-- Composed the way dashboards/international-banking-dashboard.canon.html composes: type.css + canon.css,
+     canon component scopes (.cn-tabs markup from knowledge/snippets/Tabs.reference.html), the bento
+     (.c-bento/.dashboard-tile, the demo's own tile rules copied verbatim), grounds bound to real tokens:
+     page = --background-default, bento ground = --surface-subtle (the demo), section = --surface-section
+     (Template-dashboard-bento's --wall-ground, #305 call 9), tile = --surface-raised. The indicator
+     position is set by the few lines of script at the end (Tabs' own script does this in the snippet). -->
+<link rel="stylesheet" href="../../../../knowledge/canon/type.css">
+<link rel="stylesheet" href="../../../../knowledge/canon/canon.css">
+<style>
+body{margin:0;background:var(--background-default);color:var(--text-default)}
+.c-bento.dashboard-bento{--bento-gutter:2px;--bento-outer-padding:0;--bento-row-unit:auto;background:var(--surface-subtle)}
+.dashboard-tile{padding:24px;background:var(--surface-raised);min-width:0;overflow:visible}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:28px}
+.ctx .cap{font:500 13px/1.3 "Univers Next for HSBC",Arial,sans-serif;margin:0 0 8px;opacity:.8}
+.frame{padding:24px;min-height:230px;box-sizing:border-box}
+.f-page{background:var(--background-default);outline:1px dashed var(--border-subtle, #8886);outline-offset:-1px}
+.f-ground{background:var(--surface-subtle)} .f-section{background:var(--surface-section)}
+.cn-tabs .tabs{width:100%} .strip-wrap{margin-bottom:16px}
+.lbl2{margin:0 0 6px;opacity:.6} .fig{margin:0}
+.cn-tabs .panel{padding:20px 4px 0}
+.GROUND-section{background:var(--surface-section)!important}
+</style></head><body class="canon">
+<div class="grid" data-theme="light">
+<div class="ctx"><p class="cap">(a) directly on the page ground</p><div class="frame f-page"><div class="cn-tabs"><div class="tabs"><div class="tablist" role="tablist" aria-label="Views">
+<button class="tab t-cm-button" role="tab" aria-selected="true">Overview</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Transactions</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Statements</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Payments</button>
+<span class="indicator" aria-hidden="true"></span></div><div class="panel" role="tabpanel"><h2>Overview</h2><p>A summary of balances and recent activity for the selected account.</p></div></div></div></div></div>
+<div class="ctx"><p class="cap">(b) inside a bento section (the demo's ground)</p><div class="frame f-ground"><div class="cn-tabs strip-wrap"><div class="tabs"><div class="tablist" role="tablist" aria-label="Views">
+<button class="tab t-cm-button" role="tab" aria-selected="true">Overview</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Transactions</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Statements</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Payments</button>
+<span class="indicator" aria-hidden="true"></span></div></div></div><div class="c-bento dashboard-bento " data-bento-role="dashboard"><div class="c-bento__grid"><section class="c-bento__tile dashboard-tile" data-c="3" data-r="1"><p class="t-cm-caption lbl2">Available cash</p><p class="t-cm-figure-4 fig">£18,420,000</p></section><section class="c-bento__tile dashboard-tile" data-c="3" data-r="1"><p class="t-cm-caption lbl2">Payments in flight</p><p class="t-cm-figure-4 fig">£2,760,000</p></section></div></div></div></div>
+<div class="ctx"><p class="cap">(c) inside a tile</p><div class="frame f-ground"><div class="c-bento dashboard-bento"><div class="c-bento__grid"><section class="c-bento__tile dashboard-tile" data-c="6" data-r="1"><div class="cn-tabs"><div class="tabs"><div class="tablist" role="tablist" aria-label="Views">
+<button class="tab t-cm-button" role="tab" aria-selected="true">Overview</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Transactions</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Statements</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Payments</button>
+<span class="indicator" aria-hidden="true"></span></div><div class="panel" role="tabpanel"><h2>Overview</h2><p>A summary of balances and recent activity for the selected account.</p></div></div></div></section></div></div></div></div>
+<div class="ctx"><p class="cap">(d) on a section background (Template-dashboard-bento's section)</p><div class="frame f-section"><div class="cn-tabs strip-wrap"><div class="tabs"><div class="tablist" role="tablist" aria-label="Views">
+<button class="tab t-cm-button" role="tab" aria-selected="true">Overview</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Transactions</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Statements</button><button class="tab t-cm-button" role="tab" aria-selected="false" tabindex="-1">Payments</button>
+<span class="indicator" aria-hidden="true"></span></div></div></div><div class="c-bento dashboard-bento GROUND-section" data-bento-role="dashboard"><div class="c-bento__grid"><section class="c-bento__tile dashboard-tile" data-c="3" data-r="1"><p class="t-cm-caption lbl2">Available cash</p><p class="t-cm-figure-4 fig">£18,420,000</p></section><section class="c-bento__tile dashboard-tile" data-c="3" data-r="1"><p class="t-cm-caption lbl2">Payments in flight</p><p class="t-cm-figure-4 fig">£2,760,000</p></section></div></div></div></div>
+</div>
+<script>
+function place(){document.querySelectorAll('.tablist').forEach(l=>{const t=l.querySelector('[aria-selected=true]'),i=l.querySelector('.indicator');if(t&&i){i.style.left=t.offsetLeft+'px';i.style.width=t.offsetWidth+'px';}})}
+addEventListener('load',place);
+</script></body></html>
