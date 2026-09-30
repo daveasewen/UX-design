@@ -6,7 +6,7 @@
 gate (check 3, bite-tested). This advisory continues as the exhaustive/state×theme
 watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 
-**Headline: 0 declared dead-zone · 49 exhaustive (upper bound) · 5 roundel fails (<3:1) · 3 mark fails (<4.5 vs roundel, light).**
+**Headline: 0 declared dead-zone · 46 exhaustive (upper bound) · 5 roundel fails (<3:1) · 3 mark fails (<4.5 vs roundel, light).**
 
 ## 1. Declared icon pairs (the concrete promotion cost)
 
@@ -17,29 +17,29 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Amount-input.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Amount-input.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | App-shell-doormat.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-doormat.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-doormat.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-doormat.reference.html | icon/default | surface/subtle | light | 15.27 | pass-4.5 |
 | App-shell-doormat.reference.html | icon/default | surface/subtle | dark | 16.48 | pass-4.5 |
 | App-shell-focused.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-focused.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-focused.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-multi-column.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-multi-column.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-multi-column.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-multi-column.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | App-shell-multi-column.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | App-shell-nav-rail.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-nav-rail.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-nav-rail.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-nav-rail.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | App-shell-nav-rail.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | App-shell-side-nav.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-side-nav.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-side-nav.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-side-nav.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | App-shell-side-nav.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | App-shell-split.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-split.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-split.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-split.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | App-shell-split.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | App-shell-top-nav.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| App-shell-top-nav.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| App-shell-top-nav.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | App-shell-top-nav.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | App-shell-top-nav.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | Button.reference.html | button/primary/icon/default | button/primary/background/default | light | 17.4 | pass-4.5 |
@@ -47,9 +47,9 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Calendar.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Calendar.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Carousel.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Carousel.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Carousel.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Command-palette.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Command-palette.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Command-palette.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Data-grid.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Data-grid.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Data-grid.reference.html | icon/default | table/header/background | light | 15.27 | pass-4.5 |
@@ -65,7 +65,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Fab.reference.html | button/primary/icon/default | button/primary/background/pressed | light | 21.0 | pass-4.5 |
 | Fab.reference.html | button/primary/icon/default | button/primary/background/pressed | dark | 12.63 | pass-4.5 |
 | Feature-grid-lockup.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Feature-grid-lockup.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Feature-grid-lockup.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | File-upload.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | File-upload.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Filter-toolbar-bar.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
@@ -91,23 +91,29 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Loading-indicator.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Loading-indicator.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Modal-lightbox.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Modal-lightbox.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
-| Navigations.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
-| Navigations.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
+| Modal-lightbox.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
+| Navigations.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
+| Navigations.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
+| Navigations.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
+| Navigations.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | Pagination.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Pagination.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Quick-actions.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Quick-actions.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Reorder.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Reorder.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Reorder.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Search-field.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Search-field.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Secure-entry.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Secure-entry.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Sidebar-nav.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Sidebar-nav.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Sidebar-nav.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Sidebar-nav.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | Sidebar-nav.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
+| Tab-bar.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
+| Tab-bar.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
+| Tab-bar.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
+| Tab-bar.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 | Template-auth.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Template-auth.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Template-confirmation.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
@@ -135,7 +141,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | Time-picker.reference.html | icon/default | background/default | light | 17.4 | pass-4.5 |
 | Time-picker.reference.html | icon/default | background/default | dark | 17.4 | pass-4.5 |
 | Tree.reference.html | icon/default | tertiary/background/default | light | 17.4 | pass-4.5 |
-| Tree.reference.html | icon/default | tertiary/background/default | dark | 16.48 | pass-4.5 |
+| Tree.reference.html | icon/default | tertiary/background/default | dark | 21.0 | pass-4.5 |
 | Tree.reference.html | icon/default | tertiary/background/hover | light | 15.27 | pass-4.5 |
 | Tree.reference.html | icon/default | tertiary/background/hover | dark | 15.72 | pass-4.5 |
 
@@ -231,6 +237,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | surface/action-primary-pressed | dark | 1.0 | below-3(gated) |
 | icon/default-reverse | surface/raised | light | 1.0 | below-3(gated) |
 | icon/default-reverse | surface/raised-hover | light | 1.14 | below-3(gated) |
+| icon/default-reverse | surface/section | light | 1.14 | below-3(gated) |
 | icon/default-reverse | surface/subtle | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/column/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/header/background | light | 1.14 | below-3(gated) |
@@ -299,9 +306,10 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | surface/action-primary-pressed | dark | 3.95 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/digital-black | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/raised | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | surface/raised | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/raised-hover | light | 1.15 | below-3(gated) |
 | icon/disabled (allowlisted) | surface/raised-hover | dark | 3.98 | DEAD-ZONE |
+| icon/disabled (allowlisted) | surface/section | light | 1.15 | below-3(gated) |
+| icon/disabled (allowlisted) | surface/section | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | surface/subtle | light | 1.15 | below-3(gated) |
 | icon/disabled (allowlisted) | surface/subtle | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/column/background | light | 1.15 | below-3(gated) |
@@ -309,14 +317,11 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | table/header/background | light | 1.15 | below-3(gated) |
 | icon/disabled (allowlisted) | table/header/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tabs/background | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tabs/badge/background | light | 2.4 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/badge/background | dark | 1.26 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/overflow-background | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tabs/overflow-background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/active | dark | 4.41 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/default | light | 1.31 | below-3(gated) |
-| icon/disabled (allowlisted) | tertiary/background/default | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | tertiary/background/disabled | light | 1.0 | below-3(gated) |
 | icon/disabled (allowlisted) | tertiary/background/disabled | dark | 2.32 | below-3(gated) |
 | icon/disabled (allowlisted) | tertiary/background/hover | light | 1.15 | below-3(gated) |
@@ -366,9 +371,11 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | surface/action-disabled | dark | 1.38 | below-3(gated) |
 | icon/on-inverse | surface/digital-black | dark | 1.38 | below-3(gated) |
 | icon/on-inverse | surface/raised | light | 1.0 | below-3(gated) |
-| icon/on-inverse | surface/raised | dark | 1.3 | below-3(gated) |
+| icon/on-inverse | surface/raised | dark | 1.66 | below-3(gated) |
 | icon/on-inverse | surface/raised-hover | light | 1.14 | below-3(gated) |
 | icon/on-inverse | surface/raised-hover | dark | 1.24 | below-3(gated) |
+| icon/on-inverse | surface/section | light | 1.14 | below-3(gated) |
+| icon/on-inverse | surface/section | dark | 1.38 | below-3(gated) |
 | icon/on-inverse | surface/subtle | light | 1.14 | below-3(gated) |
 | icon/on-inverse | surface/subtle | dark | 1.3 | below-3(gated) |
 | icon/on-inverse | table/column/background | light | 1.14 | below-3(gated) |
@@ -376,14 +383,14 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | table/header/background | light | 1.14 | below-3(gated) |
 | icon/on-inverse | table/header/background | dark | 1.3 | below-3(gated) |
 | icon/on-inverse | tabs/background | light | 1.0 | below-3(gated) |
-| icon/on-inverse | tabs/background | dark | 1.3 | below-3(gated) |
+| icon/on-inverse | tabs/background | dark | 1.66 | below-3(gated) |
 | icon/on-inverse | tabs/badge/background | light | 3.14 | DEAD-ZONE |
 | icon/on-inverse | tabs/badge/background | dark | 4.03 | DEAD-ZONE |
 | icon/on-inverse | tabs/overflow-background | light | 1.0 | below-3(gated) |
-| icon/on-inverse | tabs/overflow-background | dark | 1.3 | below-3(gated) |
+| icon/on-inverse | tabs/overflow-background | dark | 1.66 | below-3(gated) |
 | icon/on-inverse | tertiary/background/active | dark | 1.38 | below-3(gated) |
 | icon/on-inverse | tertiary/background/default | light | 1.0 | below-3(gated) |
-| icon/on-inverse | tertiary/background/default | dark | 1.3 | below-3(gated) |
+| icon/on-inverse | tertiary/background/default | dark | 1.66 | below-3(gated) |
 | icon/on-inverse | tertiary/background/disabled | light | 1.31 | below-3(gated) |
 | icon/on-inverse | tertiary/background/disabled | dark | 1.38 | below-3(gated) |
 | icon/on-inverse | tertiary/background/hover | light | 1.14 | below-3(gated) |
@@ -394,7 +401,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | tooltip/background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tooltip/background | dark | 1.38 | below-3(gated) |
 
-_(174 of 456 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(181 of 464 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 
@@ -419,15 +426,13 @@ _(174 of 456 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 | Form-layout.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Form-layout.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Hero-variants.reference.html | rag/error | tertiary/background/default | light | 3.14 | pass-3(roundel) |
-| Hero-variants.reference.html | rag/error | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
+| Hero-variants.reference.html | rag/error | tertiary/background/default | dark | 6.7 | pass-3(roundel) |
 | Input-fields.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Input-fields.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/error | tertiary/background/default | light | 3.14 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/error | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/error-ink | tertiary/background/default | light | 5.09 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/error-ink | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/success-ink | tertiary/background/default | light | 5.09 | pass-3(roundel) |
-| Kpi-tile.reference.html | rag/success-ink | tertiary/background/default | dark | 8.31 | pass-3(roundel) |
+| Legend.reference.html | rag/success-ink | background/default | light | 5.09 | pass-3(roundel) |
+| Legend.reference.html | rag/success-ink | background/default | dark | 8.77 | pass-3(roundel) |
+| Legend.reference.html | rag/error-ink | background/default | light | 5.09 | pass-3(roundel) |
+| Legend.reference.html | rag/error-ink | background/default | dark | 5.55 | pass-3(roundel) |
 | Multi-select.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Multi-select.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Popconfirm.reference.html | rag/error-ink | background/default | light | 5.09 | pass-3(roundel) |
@@ -435,13 +440,13 @@ _(174 of 456 exhaustive combos already clear 4.5:1; 32 transparent/composite sur
 | Secure-entry.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Secure-entry.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Stat-card.reference.html | rag/error | tertiary/background/default | light | 3.14 | pass-3(roundel) |
-| Stat-card.reference.html | rag/error | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
+| Stat-card.reference.html | rag/error | tertiary/background/default | dark | 6.7 | pass-3(roundel) |
 | Stats-band-lockup.reference.html | rag/error | tertiary/background/default | light | 3.14 | pass-3(roundel) |
-| Stats-band-lockup.reference.html | rag/error | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
+| Stats-band-lockup.reference.html | rag/error | tertiary/background/default | dark | 6.7 | pass-3(roundel) |
 | Stats-band-lockup.reference.html | rag/error-ink | tertiary/background/default | light | 5.09 | pass-3(roundel) |
-| Stats-band-lockup.reference.html | rag/error-ink | tertiary/background/default | dark | 5.26 | pass-3(roundel) |
+| Stats-band-lockup.reference.html | rag/error-ink | tertiary/background/default | dark | 6.7 | pass-3(roundel) |
 | Stats-band-lockup.reference.html | rag/success-ink | tertiary/background/default | light | 5.09 | pass-3(roundel) |
-| Stats-band-lockup.reference.html | rag/success-ink | tertiary/background/default | dark | 8.31 | pass-3(roundel) |
+| Stats-band-lockup.reference.html | rag/success-ink | tertiary/background/default | dark | 10.59 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/error | background/default | light | 3.14 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/error | background/default | dark | 5.55 | pass-3(roundel) |
 | Status-indicator.reference.html | rag/neutral | background/default | light | 3.95 | pass-3(roundel) |

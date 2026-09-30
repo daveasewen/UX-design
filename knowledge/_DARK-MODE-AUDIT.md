@@ -2,7 +2,7 @@
 
 > Which components re-theme correctly in dark mode. **LEAK** = binds a raw colour *primitive* directly (single-valued, no dark variant — a real defect; the P3 family). *flat* = binds a semantic token whose dark value equals its light value (frequently intentional — reverse text, RAG, brand red — confirm per case). Derived view over the colour stores + blast-radius; regenerate: `python3 knowledge/_build_dark_mode_audit.py`. Detail in `_DARK-MODE-AUDIT.json`.
 
-**Coverage:** 123/130 components clean · 7 leak a primitive. Store: 198 semantic colour tokens (light+dark), 68 flat (dark==light), 229 primitives.
+**Coverage:** 123/130 components clean · 7 leak a primitive. Store: 200 semantic colour tokens (light+dark), 68 flat (dark==light), 229 primitives.
 
 ## Primitive leaks — fix before dark mode
 
@@ -72,7 +72,7 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Feature-grid-lockup | ✅ clean | — | — |
 | File upload | ✅ clean | — | `form/border/default`, `rag/error`, `rag/success` |
 | Filter-toolbar-bar | ✅ clean | — | `form/border/default` |
-| Footer | ✅ clean | — | — |
+| Footer | ✅ clean | — | `border/strong`, `rag/success-glyph`, `rag/text/on-light`, `rag/warning-background`, `rag/warning-glyph` |
 | Form layout | ✅ clean | — | `rag/error`, `rag/success` |
 | Grid / stack utilities | ✅ clean | — | — |
 | Headers | ✅ clean | — | — |
@@ -81,12 +81,13 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Icon button | ✅ clean | — | `icon/default-reverse` |
 | Image block | ✅ clean | — | `form/border/default` |
 | Input fields | ✅ clean | — | `form/background/default`, `form/border/default`, `icon/default-reverse`, `rag/error`, `text/reverse` |
-| KPI tile | ✅ clean | — | `rag/error`, `rag/success` |
+| Legend | ✅ clean | — | `data/series/1` |
 | Line chart | ✅ clean | — | `data/series/1` |
 | Links | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `primary/background/default`, `text/reverse` |
 | List items | 🔴 LEAK | `color/primary` | `icon/default-reverse`, `image/opacity/default`, `image/opacity/disabled`, `rag/success`, `text/reverse` |
 | Loading indicator | ✅ clean | — | `icon/default-reverse`, `text/reverse` |
 | Meter | ✅ clean | — | `rag/success`, `rag/warning` |
+| Metric | ✅ clean | — | `rag/warning` |
 | Modal lightbox | ✅ clean | — | `overlay/version1` |
 | Modals | ✅ clean | — | `icon/default-reverse`, `overlay/version1`, `primary/background/default`, `text/reverse` |
 | Multi-select | ✅ clean | — | `form/background/default`, `form/border/default`, `rag/error` |
@@ -117,7 +118,6 @@ Each raw primitive bound directly, and the components binding it. Rebind to a se
 | Splitter | ✅ clean | — | `form/border/default` |
 | Stacked area chart | ✅ clean | — | `data/series/1`, `data/text/on-series` |
 | Standing-order / mandate row | ✅ clean | — | `rag/information`, `rag/success`, `rag/warning` |
-| Stat card | ✅ clean | — | `rag/error`, `rag/success` |
 | Stats-band-lockup | ✅ clean | — | `primary/background/default` |
 | Status indicator | ✅ clean | — | `rag/error`, `rag/success`, `rag/warning` |
 | Stepper | ✅ clean | — | `rag/error`, `rag/success`, `step/complete`, `step/on-complete` |

@@ -107,6 +107,28 @@
    }
   }
  },
+ "options": {
+  "$description": "PAGE-LEVEL THEME SETTINGS (#310, s310-D3). A plain, named switch a page sets as an attribute on its [data-theme] element (or an ancestor of it); the default needs no attribute. This is the record a future edit mode and a chat prompt read: `label`, `values.*.label` and `prompt` are the words a person sees; `attr` and the value keys are what gets written on the page. canon/gen_theme_cascade.py reads every option here and emits its CSS into canon.css's AUTO-THEME-OPTIONS block, for Mono and for every theme whose values differ, so the option works in all four themes without a hand-written rule.",
+  "dark-tiles": {
+   "label": "Dark mode tiles",
+   "attr": "data-dark-tiles",
+   "default": "black",
+   "values": {
+    "black": {
+     "label": "Black tiles on a grey ground (mirrors light)",
+     "$note": "The default (s310-D3): surface/raised dark is the extreme (Mono #000000, Supercharge #13110E), surface/subtle stays the grey. No attribute needed."
+    },
+    "grey": {
+     "label": "Grey tiles on the darkest ground (the reverse)",
+     "mode": "dark",
+     "swap": ["surface/raised", "surface/subtle"],
+     "$note": "The option (s310-D3, 'the other is an option both are valid'): in dark only, the two paths trade values, and every token that follows either of them follows the swap (tertiary/background/default, tabs/*, table header and column, scrollbar)."
+    }
+   },
+   "prompt": "In dark mode, should tiles be black on a grey ground (the default, the mirror of light) or grey on the darkest ground?",
+   "$ruling": "s310-D3 (#310, Dave 2026-09-30: 'I actually like both lets have the mirror as default but the other is an option both are valid. In teh edit mode we create we can have this as an option and it can be prompted in chat too')"
+  }
+ },
  "notes": {
   "resolution": "resolve(role, mode, theme): theme override wins; else base (Mono). Components stay theme-blind.",
   "cascade": "Rendered by canon/gen_theme_cascade.py into canon.css (AUTO-THEMES block): [data-apollo-theme=\"<attr>\"] root-level canonical vars + per-component vars via each snippet's #token-manifest; dark values on the [data-apollo-theme][data-theme=dark] combo (and descendant form). Mono = base, no block emitted. Divergence axes are theme-overridable, NEVER hardcoded (Dave 2026-07-21): colour, neutral ramp, shape/border-radius, anticipated input error-condition.",
