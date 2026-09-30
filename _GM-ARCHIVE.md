@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-29 #309
+
+> **COMMIT STATE #308:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the ⏱ LATEST DELTA's 5b line and in `notes/_subreports/2026-09-29-308-W-wrap.md`. **34 commits before the wrap, all declared not-a-wrap, all pushed:** `417ce218..4e4634b8` (listed in `notes/_lanes/308/W/COMMITS.txt`); CI green on `4e4634b8`, all three jobs, by the conductor's read. Handoff `_HANDOFF-159-he-ruled-the-edges-and-the-cards-and-the-build-waits.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **475,220 real at his "yea lets wrap" — a hand sum; over the hard 350,000 line by 125,220.**
+
+> ## ★ PRIOR — 2026-09-28 (Mon **#307**, ONE DAY, Opus 5.5 conductor in the CLOUD, **5 subs**, DELEGATED wrap on Opus 5.5 — ★★ **THE 78 WERE ANSWERED BY HAND, AND THE PICTURE PAGE WAITS FOR HIS EYE**)
+>
+> - ★★★ ① **ALL 78 REOPENED QUESTIONS ANSWERED BY HAND ON THE SITTING PAGE (21:18 BST), 76 ON THE RECOMMENDATION; `_rulings.json` 712 → 790 (`s307-D1`..`D78`).** Lane B: 28 closed, 3 parked, 46 answered with 49 work rows; 30 stamped enacted (`1822ac15`, `6cbaaeeb`); lane D closed 6 more (`fb42e3c4`, `6a06340d`).
+> - ★★ ② **PHASES 1 AND 2 OF THE WRAP REDESIGN CLOSED OUT ON HIS 19:58 WORDS:** the two phase-1 gaps fixed in the tools (`cb29648a`); `s306-D7` enacted, `s306-D4` phase 1 proven (`4d647958`). The picture page (16 calls, lane C) and one blind cold run on v1.0.14 (3/3/2/2, lane E) wait for his eye in the artifact "Apollo 304 review" v11.
+> - ⚠ ③ **CI RED ON `6cbaaeeb` (run `36481312303`): the export the 78 rulings cite was never committed, so 50 rows had no home on CI; this wrap commits it.** FILL 358,651 at the launch of this seat (hand sum, `_wrap_facts.py`), over the hard 350,000 line by 8,651. **`_HANDOFF-158-the-78-were-answered-and-the-picture-page-waits.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #308:** ⬛ **HIS ANSWERS ON THE PICTURE PAGE, 16 CALLS** [NEW — 0, DAVE'S] — put it first. `s225-D2`. **420 items, 4 new, 2 STRUCK (the 78, and the phase 1 and 2 proof)**, `_CARRIES.md` § `residual → #308` `carries:residual-308`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#308:**' in l][0])))"` = 420.
+> **residual (GENERATED #307):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #306) — _roll_state.py · 2026-09-28
+
+
+*Rolled at the #309 wrap (2c, ritual 2026-09-30). The old ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite.*
+
 ## Batch 2026-09-29 #308
 
 > **COMMIT STATE #307:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the returned stub, in `notes/_subreports/2026-09-28-307-W-wrap.md` and in the ⏱ LATEST DELTA's 5b line. **Eight commits before the wrap, all declared not-a-wrap:** `cb29648a` · `4d647958` (pushed `a4f1848a..4d647958`, run `36471193102` green) · `31008631` · `1822ac15` · `6cbaaeeb` (pushed `4d647958..6cbaaeeb`, run `36481312303` RED, the uncommitted export) · `fb42e3c4` · `6a06340d` · `6ed2657a` (the last three ride this wrap's push). Handoff `_HANDOFF-158-the-78-were-answered-and-the-picture-page-waits.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **358,651 real at the launch of this seat — a hand sum; over the hard 350,000 line by 8,651.**

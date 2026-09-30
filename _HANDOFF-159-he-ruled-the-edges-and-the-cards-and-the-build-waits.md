@@ -125,3 +125,9 @@ status: observed
 7. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ STRUCK AT THE #309 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+- ~~OWED item 1, build the cards and tiles~~ ⛔ **STRUCK #309 2026-09-30 BY THE WRAP SEAT** — lane B built the kinds, the accepts check, container, surface and panel, the four limits and the carousel rule (`94ba3c73`..`bba80abd`; W-308ir, is, it, iv closed); his 21:37 "1. good" / "2. go" (`s309-D1`, `s309-D2`) and lane C's Metric (`879f9aae`..`f197743e`; W-308iu closed). Item 2 (container types) stands; `_HANDOFF-160` carries it.
