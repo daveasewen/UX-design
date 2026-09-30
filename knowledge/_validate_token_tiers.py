@@ -40,7 +40,7 @@ SEMANTIC_ACTION = [
 COMPONENTS_ON_SEMANTIC = {
     "tertiary/background/default": "surface/raised",
     "tertiary/background/hover": "surface/raised-hover",
-    "tabs/background": "surface/raised",
+    "tabs/background": "surface/transparent",  # s310-D8 (#311): the strip takes its container's colour
     "tabs/overflow-background": "surface/raised",
     "tabs/hover": "surface/raised-hover",
     "table/header/background": "surface/subtle",

@@ -241,7 +241,6 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/default-reverse | surface/subtle | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/column/background | light | 1.14 | below-3(gated) |
 | icon/default-reverse | table/header/background | light | 1.14 | below-3(gated) |
-| icon/default-reverse | tabs/background | light | 1.0 | below-3(gated) |
 | icon/default-reverse | tabs/badge/background | light | 3.14 | DEAD-ZONE |
 | icon/default-reverse | tabs/badge/background | dark | 3.14 | DEAD-ZONE |
 | icon/default-reverse | tabs/overflow-background | light | 1.0 | below-3(gated) |
@@ -316,7 +315,6 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/disabled (allowlisted) | table/column/background | dark | 4.17 | DEAD-ZONE |
 | icon/disabled (allowlisted) | table/header/background | light | 1.15 | below-3(gated) |
 | icon/disabled (allowlisted) | table/header/background | dark | 4.17 | DEAD-ZONE |
-| icon/disabled (allowlisted) | tabs/background | light | 1.31 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/badge/background | light | 2.4 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/badge/background | dark | 1.26 | below-3(gated) |
 | icon/disabled (allowlisted) | tabs/overflow-background | light | 1.31 | below-3(gated) |
@@ -382,8 +380,6 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | table/column/background | dark | 1.3 | below-3(gated) |
 | icon/on-inverse | table/header/background | light | 1.14 | below-3(gated) |
 | icon/on-inverse | table/header/background | dark | 1.3 | below-3(gated) |
-| icon/on-inverse | tabs/background | light | 1.0 | below-3(gated) |
-| icon/on-inverse | tabs/background | dark | 1.66 | below-3(gated) |
 | icon/on-inverse | tabs/badge/background | light | 3.14 | DEAD-ZONE |
 | icon/on-inverse | tabs/badge/background | dark | 4.03 | DEAD-ZONE |
 | icon/on-inverse | tabs/overflow-background | light | 1.0 | below-3(gated) |
@@ -401,7 +397,7 @@ watchdog — that leg never blocks. DEAD-ZONE = passes 3:1, fails brand 4.5:1.*
 | icon/on-inverse | tooltip/background | light | 1.0 | below-3(gated) |
 | icon/on-inverse | tooltip/background | dark | 1.38 | below-3(gated) |
 
-_(181 of 464 exhaustive combos already clear 4.5:1; 32 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
+_(177 of 464 exhaustive combos already clear 4.5:1; 40 transparent/composite surfaces skipped (alpha — true contrast needs the render path) — omitted.)_
 
 ## 3. Roundel vs surface — rag/* pairs at the ROUNDEL threshold (≥3:1, ruled policy)
 
