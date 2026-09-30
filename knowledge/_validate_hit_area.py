@@ -288,6 +288,13 @@ PROBE_JS = r"""
 
 def _shell_path():
     """Locate the headless shell. Fails LOUD and NAMED, never guesses."""
+    # #309 lane E — the SEAT's shell first. `knowledge/_render/seat_env.sh` exports RENDER_SHELL
+    # only after asserting it resolves; the seat's playwright build lays the shell out as
+    # `chrome-headless-shell-linux-*/chrome-headless-shell`, which neither glob below matches, so
+    # `--all` refused 77 at the seat with the browser on disk. CI never sets RENDER_SHELL, so its
+    # path through this function is unchanged.
+    if os.environ.get("RENDER_SHELL") and os.path.isfile(os.environ["RENDER_SHELL"]):
+        return os.environ["RENDER_SHELL"]
     roots = []
     if os.environ.get("PLAYWRIGHT_BROWSERS_PATH"):
         roots.append(os.environ["PLAYWRIGHT_BROWSERS_PATH"])

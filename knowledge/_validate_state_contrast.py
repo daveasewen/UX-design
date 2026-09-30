@@ -34,6 +34,11 @@ is a passive div outside SEL) and every unreadable or unfounded one is NAMED, ne
 
 Usage:  python3 _validate_state_contrast.py [name-filter ...]   (default: all snippets)
         python3 _validate_state_contrast.py --selftest          (bites, no snippets)
+        python3 _validate_state_contrast.py --slice I/N OUT.json  (#309 seat: sweep every Nth
+                snippet from the I-th, raw results to OUT.json — NOT a verdict, writes no audit)
+        python3 _validate_state_contrast.py --merge OUT1.json … (the verdict: refuses unless the
+                slices cover every snippet exactly once, then writes the SAME audit and exit
+                code one full run gives). The full run in a 170 s seat call does not fit (#309).
         An unknown option is a NAMED failure, never a silent name-filter, and a name-filter
         that matches no snippet is a NAMED failure too — a filter that quietly selects
         nothing writes an empty audit that looks like a clean one.
@@ -593,8 +598,9 @@ def audit_page(pg, theme, sink):
             for fl in fails:
                 sink.append((theme, label, fl))
 
-def run(filters):
-    files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
+def run(filters, files=None):
+    if files is None:
+        files = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
     if filters:
         files = [f for f in files if any(x.lower() in os.path.basename(f).lower() for x in filters)]
         # A filter that matches nothing used to write an EMPTY audit, which reads exactly like a
@@ -1370,7 +1376,42 @@ def selftest():
           "unchanged.")
     return 0
 
+def _slice_or_merge(argv):
+    """#309 lane E — the full sweep in pieces a seat call can hold. A slice writes raw results
+    only; the verdict is the MERGE, which refuses a gap or an overlap by name (a missing slice
+    must never read as a clean one) and then goes through the same render/write/exit as main()."""
+    import json
+    every = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))
+    names = [os.path.basename(f).replace(".reference.html", "") for f in every]
+    if argv[0] == "--slice":
+        m = re.fullmatch(r"(\d+)/(\d+)", argv[1] if len(argv) > 1 else "")
+        if len(argv) != 3 or not m or not 1 <= int(m.group(1)) <= int(m.group(2)):
+            raise StateContrastArgError("usage: --slice I/N OUT.json  (1 <= I <= N)")
+        i, n = int(m.group(1)), int(m.group(2))
+        res = run([], files=every[i - 1::n])
+        json.dump({"slice": f"{i}/{n}", "snippets": sorted(res), "results": res},
+                  open(argv[2], "w", encoding="utf-8"))
+        print(f"slice {i}/{n}: {len(res)} snippet(s) swept -> {argv[2]} (not a verdict; --merge)")
+        return 0
+    if len(argv) < 2:
+        raise StateContrastArgError("usage: --merge OUT1.json [OUT2.json ...]")
+    res = {}
+    for path in argv[1:]:
+        for name, sink in json.load(open(path, encoding="utf-8"))["results"].items():
+            if name in res:
+                raise StateContrastArgError(f"--merge: {name!r} is in more than one slice ({path})")
+            res[name] = [tuple(r) for r in sink]
+    missing = sorted(set(names) - set(res)); extra = sorted(set(res) - set(names))
+    if missing or extra:
+        raise StateContrastArgError(
+            f"--merge: slices do not cover the snippet set — missing {missing}, unknown {extra}; "
+            "refusing to write an audit that would read as a full sweep")
+    return _write_verdict(res)
+
+
 def main(argv):
+    if argv and argv[0] in ("--slice", "--merge"):
+        return _slice_or_merge(argv)
     filters, want_selftest = parse_args(argv)
     if want_selftest:
         # ⛔ #194 — BEFORE ANY WORK. See the fork-bomb note above `HOLE_REASON_UNRECORDED`. The
@@ -1380,7 +1421,10 @@ def main(argv):
         if _PLAYWRIGHT_IMPORT_ERROR is not None:
             raise _playwright_unreachable()
         return selftest()
-    res = run(filters)
+    return _write_verdict(run(filters))
+
+
+def _write_verdict(res):
     text, total, refused, fellback, carrier_fails = render_report(res)
     open(os.path.join(HERE,"_STATE-CONTRAST-AUDIT.md"),"w",encoding="utf-8").write(text)
     print(text)
