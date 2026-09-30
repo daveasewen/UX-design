@@ -1,0 +1,34 @@
+— 167 steps read from _build_all.STEPS by ast (never imported) · 22 ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast · per-step timeout 60s · ALL steps (mutating included)
+
+  ✅ [ 1] compliance knowledge graph
+  ✅ [ 2] token blast-radius + graph report
+  ✅ [ 3] token blast-radius + graph report — determinism/staleness chec
+  ✅ [ 4] token blast-radius + graph report selftest (#79 P6)
+  ✅ [ 5] guideline rules index (gate)
+  ✅ [ 6] runbook index (generated)
+  ✅ [ 7] standing-instructions reachability gate
+  ✅ [ 8] help-gate — no entry point may write before it reads argv (#15
+  ✅ [ 9] help-gate selftest — 5 mutation bites (#158 class gate)
+  ⊘ [10] assertion veracity gate — claims that can rot  COULD-NOT-ASK
+  ✅ [11] assertion veracity selftest — verbs bite + registry well-forme
+  ✅ [12] capture/provenance gate — status+provenance on new notes+dossi
+
+==============================================================================
+SURVEY: 11 pass · 0 FAIL · 0 ADVISORY-warn · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 0 not asked (mutating) · 155 outside --range 1:12 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [10] assertion veracity gate — claims that can rot
+      python3 knowledge/_validate_assertions.py    (exit 77)
+      COULD-NOT-ASK: assertion gate — 1 of 8 claim(s) untestable in this environment, 0 false — ASSERT-007: ROOT UNRESOLVED — root 'mount' unreachable HERE: no '<session>/mnt' ancestor of ROOT=/tmp/pp311a2 (running outside the sandbox mount) — an environment fact, not a registry defect
+
+⚠ --no-record: this run is NOT in the verdict ledger, so nothing downstream can quote it. The chain's green count keeps saying whatever the last recorded run said.
