@@ -4,7 +4,7 @@
 
 **Result:** 17 pass · 5 allowed exception(s) · **1 minor defect(s) (⚠ warn, non-gating)** · **0 gating failure(s)** · 5 skipped (light-only).
 
-**Per-theme (s169 grounds + s170 overrides):** 12 pair(s) regraded where a theme moves the ground or the ink · **0 gating failure(s)** · 0 minor (⚠ warn) · 0 R-D24 exempted.
+**Per-theme (s169 grounds + s170 overrides):** 13 pair(s) regraded where a theme moves the ground or the ink · **0 gating failure(s)** · 0 minor (⚠ warn) · 0 R-D24 exempted.
 
 ## Per-theme palette-resolved pairs (s157-D2 palette tier)
 
@@ -19,6 +19,7 @@
 | **Apollo Common** (`apollo-legacy`) | `palettes/rag/legacy.json` | `text/secondary` | ink | `#E1E1E1` → `#9B9B9B` | page/raised `#1D1D1D` | **6.07:1** | 4.5:1 | ✅ OK |
 | **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Console** (`apollo-console`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
+| **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `icon/default` | ink | `#E1E1E1` → `#F7F6F4` | page/raised `#1D1D1D` | **15.61:1** | 3.0:1 | ✅ OK |
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-dark` | ground | `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `rag/text/on-information` | ink+ground | `#1A1A1A` → `#FFFFFF` | `rag/error-background` `#F6604C` → `#B92F1E` | **6.02:1** | 4.5:1 | ✅ OK |
 | **Apollo Supercharge** (`apollo-supercharge`) | `palettes/rag/console-supercharge.json` | `tertiary/text/pressed` | ground | `#FFFFFF` | `tertiary/background/pressed` `#1A1A1A` → `#25211C` | **15.99:1** | 4.5:1 | ✅ OK |
@@ -72,7 +73,7 @@ Why each is minor:
 | `button/tertiary/label/disabled` | `#808080` | `#232323` | 3.98:1 | ✅ OK |
 | `data/control/label-disabled/color` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
 | `data/text/on-series` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
-| `icon/default` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
+| `icon/default` | `#E1E1E1` | `#1D1D1D` | 12.89:1 | ✅ OK |
 | `icon/default-reverse` | `#FFFFFF` | `#1D1D1D` | 16.86:1 | ✅ OK |
 | `icon/disabled` | `#808080` | `#1D1D1D` | 4.27:1 | ✅ OK |
 | `rag/text/on-dark` | `#FFFFFF` | `#F6604C` | 3.14:1 | ⚠ minor (ruled s194-D1) |

@@ -162,21 +162,30 @@ def _expand_aliases(entry, amap):
     """Materialise EFFECTIVE overrides: any aliased path not itself overridden,
     whose target (transitively) is, inherits the theme value — unless the result
     equals the base value (no-op emissions are skipped, keeps blocks minimal).
-    A path's own override always wins (checked first). Fixed-point for chains."""
+    A path's own override always wins (checked first). Fixed-point for chains.
+
+    #311 lane B (s311-D2): an EXPANDED path is re-derived on every pass until the fixed
+    point, not locked the first time it is written. Before, a path whose light target was
+    overridden in pass 1 (background/default -> color/neutral/15) was materialised with its
+    dark leg filled from the Mono base, because its dark target (surface/digital-black) had
+    not expanded yet, and `if path in ov: continue` never let it be revisited — Supercharge's
+    dark page read the neutral #1A1A1A while its own digital black is #13110E. Only the
+    theme's OWN overrides (the set present on entry) are skipped now."""
     ov = entry["overrides"]
     if not ov:
         return
+    own = set(ov)
     for _ in range(len(amap) + 1):
         changed = False
         for path, al in amap.items():
-            if path in ov:
+            if path in own:
                 continue
             if "modeless" in al:
                 t = ov.get(al["modeless"])
                 if t:
                     base = css_value(path, base_value(path, "light"))
                     val = t.get("modeless") or t.get("light")
-                    if val != base:
+                    if val != base and ov.get(path) != dict(t):
                         ov[path] = dict(t)
                         changed = True
             else:
@@ -189,7 +198,8 @@ def _expand_aliases(entry, amap):
                 if hit:
                     for m in MODES:
                         pair.setdefault(m, css_value(path, base_value(path, m)))
-                    if any(pair[m] != css_value(path, base_value(path, m)) for m in MODES):
+                    if any(pair[m] != css_value(path, base_value(path, m)) for m in MODES) \
+                            and ov.get(path) != pair:
                         ov[path] = pair
                         changed = True
         if not changed:
@@ -893,6 +903,20 @@ def selftest():
         fails.append("s310-D4: Supercharge surface/raised dark must be #13110E")
     if (scv.get("tertiary/background/default") or {}).get("dark") != "#13110E":
         fails.append("s310-D4: Supercharge tile must reach tertiary/background/default by expansion")
+    # 4f. s311-D2 — Supercharge's dark page and section take warm/4 #25211C, one step up from
+    #     its tile; and the expansion no longer locks a path after its first expanded mode: a
+    #     probe theme overriding only the two ladder steps must reach BOTH legs of
+    #     background/default (light via color/neutral/15, dark via surface/digital-black ->
+    #     color/neutral/4). Before #311 lane B the dark leg stayed the Mono base #1A1A1A.
+    for p in ("background/default", "surface/section"):
+        if (scv.get(p) or {}).get("dark") != "#25211C":
+            fails.append(f"s311-D2: Supercharge {p} dark must be warm/4 #25211C")
+    probe = {"overrides": {"color/neutral/15": {"modeless": "#ABCDEF"},
+                           "color/neutral/4": {"modeless": "#123456"}}}
+    _expand_aliases(probe, alias_map())
+    if probe["overrides"].get("background/default") != {"light": "#ABCDEF", "dark": "#123456"}:
+        fails.append(f"s311-D2 unlock: background/default expanded to "
+                     f"{probe['overrides'].get('background/default')} (a leg locked before its target expanded)")
     ob = build_options_block(list(themes.values()), list(mans.items()))
     mono_sw = option_swap(None, ("surface/raised", "surface/subtle"), alias_map())
     if mono_sw.get("surface/raised") != "#1F1F1F" or mono_sw.get("surface/subtle") != "#000000":
