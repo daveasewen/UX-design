@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The dark tiles, built</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.record{font-size:12px;color:var(--g6);line-height:1.5;margin:var(--s2) 0 0}
+/* pictures */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair figcaption b{font-weight:500;color:var(--fg)}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair .note{font-size:13px;color:var(--g7);line-height:1.55;margin:0}
+.swatch{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px;border:1px solid var(--g3)}
+/* the arrow grid */
+.agrid{margin:var(--s3) 0 var(--s2);border-top:1px solid var(--fg)}
+.agrid .hd,.agrid .row{display:grid;grid-template-columns:190px 1fr;gap:var(--s3);align-items:center}
+.agrid .hd{padding:var(--s1) 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;border-bottom:1px solid var(--g3)}
+.agrid .hd .cols{display:grid;grid-template-columns:1fr 1fr}
+.agrid .row{padding:var(--s2) 0;border-bottom:1px solid var(--g3)}
+.agrid .k{font-size:15px;font-weight:500;line-height:1.4}
+.agrid .k small{display:block;font-size:12px;font-weight:400;color:var(--g7);line-height:1.6;margin-top:4px}
+.agrid img{display:block;width:100%;height:auto;border:1px solid var(--g3)}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+/* comment boxes and calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s1)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair{grid-template-columns:1fr}
+  .agrid .hd{display:none}
+  .agrid .row{grid-template-columns:1fr;gap:var(--s1)}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#built">As built</a>
+  <a href="#supercharge">Supercharge</a>
+  <a href="#library">The library</a>
+  <a href="#calls">Four calls</a>
+  <a href="#note">Page note</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 310 · review page · The dark tiles, built</p>
+      <h1>Dark mode now mirrors light: black tiles on a grey ground. The reverse is one switch away.</h1>
+      <p class="sub">Your two rulings are in the tokens, not hand-painted. Below is the banking demo before, after and with the option on, then every library component whose dark picture changed, then four things the build turned up.</p>
+    </div>
+    <div class="meta">
+      <span>Wednesday 30 September 2026</span>
+      <span>For your 14:43 answers: "lets have the mirror as default but the other is an option both are valid", and Supercharge "Yes".</span>
+      <span>Every picture is a fresh render at the seat. Before is the tree before this change; after is the tree now.</span>
+    </div>
+  </div>
+</header>
+
+<!-- 1 · As built -->
+<section id="built">
+  <div class="wrap">
+    <p class="label">01 · As built · Console (Mono and Common paint the same)</p>
+    <h2>The tiles are black, the ground stays the dark grey. The option swaps them.</h2>
+    <p class="lead">Only the tile colour moved. The ground, the page, the text and every ink are as they were. The option is a plain setting on the page, <code>data-dark-tiles="grey"</code>, which puts the black on the ground and the grey on the tiles.</p>
+    <div class="agrid" role="table" aria-label="The top of the banking demo in Console dark: before, as built, with the option">
+      <div class="row" role="row"><div class="k">Before<small>ground #1F1F1F<br>tiles #1F1F1F</small></div><img src="_lanes/310/A/img/demo-console-before.png" alt="Before: metrics, chart and snapshot on one flat dark grey"></div>
+      <div class="row" role="row"><div class="k">As built, the default<small>ground #1F1F1F<br>tiles #000000</small></div><img src="_lanes/310/A/img/demo-console-after.png" alt="As built: black tiles on the dark grey ground"></div>
+      <div class="row" role="row"><div class="k">With the option<small>ground #000000<br>tiles #1F1F1F</small></div><img src="_lanes/310/A/img/demo-console-option.png" alt="With the option: dark grey tiles on a black ground"></div>
+    </div>
+    <ul class="facts">
+      <li><span class="k">Default</span><span><b>No setting needed.</b> Every page in dark mode gets black tiles on the grey ground, in all four themes.</span></li>
+      <li><span class="k">The option</span><span><b><code>data-dark-tiles="grey"</code></b> on the page's <code>[data-theme]</code> element, or on anything around it. It only acts in dark mode; light mode never changes.</span></li>
+      <li><span class="k">Where it is written down</span><span>In the theme register, <code>knowledge/tokens/themes/_themes.json</code>, under <b>options · dark-tiles</b>, with the words a person would see and a ready question for a chat prompt. The edit mode can read it from there when it is built.</span></li>
+    </ul>
+    <p class="record">record: s310-D3 enacted at 8db81543 · colours read from the rendered page (body, bento, first tile)</p>
+  </div>
+</section>
+
+<!-- 2 · Supercharge -->
+<section class="grey" id="supercharge">
+  <div class="wrap">
+    <p class="label">02 · Supercharge</p>
+    <h2>Supercharge follows the same rule in its browns: tiles #13110E on the #2A2621 ground.</h2>
+    <div class="agrid" role="table" aria-label="The top of the banking demo in Supercharge dark: before, as built, with the option">
+      <div class="row" role="row"><div class="k">Before<small>ground #2A2621<br>tiles #2A2621</small></div><img src="_lanes/310/A/img/demo-supercharge-before.png" alt="Supercharge before: one flat warm dark brown"></div>
+      <div class="row" role="row"><div class="k">As built, the default<small>ground #2A2621<br>tiles #13110E</small></div><img src="_lanes/310/A/img/demo-supercharge-after.png" alt="Supercharge as built: near-black tiles on the warm brown ground"></div>
+      <div class="row" role="row"><div class="k">With the option<small>ground #13110E<br>tiles #2A2621</small></div><img src="_lanes/310/A/img/demo-supercharge-option.png" alt="Supercharge with the option: warm brown tiles on a near-black ground"></div>
+    </div>
+    <p class="record">record: s310-D4 enacted at 8db81543</p>
+  </div>
+</section>
+
+<!-- 3 · The library -->
+<section id="library">
+  <div class="wrap">
+    <p class="label">03 · The library · 51 components changed in dark</p>
+    <h2>Anything that is a card, panel, tile, tab strip or sheet is now black in dark mode.</h2>
+    <p class="lead">Each picture is the component's own reference page in dark mode, before on the left, after on the right. Fifty-one of 137 changed. The twelve below are the clearest; the other thirty-nine are grouped underneath.</p>
+    <div class="pair">
+      <figure><figcaption><b>Dashboard template</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Template-dashboard-bento.png" alt="Dashboard template, before and after: tiles go from grey to black"></figure>
+      <figure><figcaption><b>Detail template</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Template-detail.png" alt="Detail template, before and after"></figure>
+      <figure><figcaption><b>Metric</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Metric.png" alt="Metric tiles, before and after"></figure>
+      <figure><figcaption><b>Cards</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Cards.png" alt="Cards, before and after"></figure>
+      <figure><figcaption><b>Transaction row</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Transaction-row.png" alt="Transaction rows, before and after"></figure>
+      <figure><figcaption><b>Log on template</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Template-auth.png" alt="Log on template, before and after"></figure>
+      <figure><figcaption><b>Tabs</b> · before | after · see call 3</figcaption><img src="_lanes/310/A/img/sheet/Tabs.png" alt="Tabs, before and after: the tab strip becomes a black band"></figure>
+      <figure><figcaption><b>Page header</b> · before | after · see call 3</figcaption><img src="_lanes/310/A/img/sheet/Page-header-lockup.png" alt="Page header with tabs, before and after"></figure>
+      <figure><figcaption><b>Toast</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Toast.png" alt="Toast, before and after"></figure>
+      <figure><figcaption><b>Command palette</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Command-palette.png" alt="Command palette, before and after"></figure>
+      <figure><figcaption><b>Segmented control</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Segmented-control.png" alt="Segmented control, before and after"></figure>
+      <figure><figcaption><b>Quick actions</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/Quick-actions.png" alt="Quick actions, before and after"></figure>
+    </div>
+    <div class="sub3"><h3>The other thirty-nine</h3>
+      <p>Group one: Settings, Dashboard, App shell multi-column, Stats band, Transfer list, Sidebar nav, Create and edit, App shell split, App shell doormat, Anchor nav, Wizard, Tab bar, View options. Group two: Standing order row, Payment card, Document row, List items, Confirmation, App shell nav rail, Card header, Tree, Account card, Navigations, Reorder, Filter toolbar, Range slider. Group three: Feature grid, Timeline, App shell side nav, Report, App shell focused, Stat card, App shell top nav, Drawer, Image block, Action bar, Carousel, List index, Slider.</p>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Group one</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/group-1.png" alt="Thirteen components before and after, group one"></figure>
+      <figure><figcaption><b>Group two</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/group-2.png" alt="Thirteen components before and after, group two"></figure>
+      <figure><figcaption><b>Group three</b> · before | after</figcaption><img src="_lanes/310/A/img/sheet/group-3.png" alt="Thirteen components before and after, group three"></figure>
+    </div>
+    <p class="record">Six more components changed in states the reference page does not open by default (the modals, the hero variants, avatar group, layout utilities, empty state); they follow the same token.</p>
+  </div>
+</section>
+
+<!-- 4 · Calls -->
+<section class="grey" id="calls">
+  <div class="wrap">
+    <p class="label">04 · Four calls the build turned up</p>
+    <h2>One is a real fault in Supercharge. Three are yours to confirm.</h2>
+
+    <div class="sub3"><h3>1. In Supercharge a pressed tile now looks the same as a resting one.</h3>
+      <p>The tile's pressed and active states were always Supercharge's darkest, #13110E, because they sat darker than the old grey tile. Now the resting tile is that same #13110E, so a press shows nothing. In Mono the pressed state (#1A1A1A) still differs from black, and it moves away from the extreme exactly as it does in light mode.</p>
+      <div class="pair one"><figure><figcaption><b>Tile states in dark</b> · rest · hover · pressed · active · page · before and after</figcaption><img src="_lanes/310/A/img/tile-states.png" alt="Swatches: in Supercharge after, rest, pressed and active are all #13110E"></figure></div>
+    </div>
+    <div class="call" data-id="pressed" data-q="1. Supercharge: a pressed or active tile now equals its rest colour (#13110E)" data-rec="Move them one step lighter, to #25211C">
+      <p class="q">What should a pressed or active Supercharge tile be in dark?</p>
+      <p class="rec">Recommendation: one step lighter than rest, #25211C (the warm ramp's step 4), which does in brown what Mono does with #1A1A1A over black. Nothing is changed until you say.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Move them one step lighter, to #25211C">One step lighter, #25211C<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Leave them as they are">Leave them</button>
+        <button type="button" class="chip" data-v="Something else, say below">Something else, say below</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>2. White text now sits on pure black.</h3>
+      <p>Apollo's page colour in dark is "digital black", #1A1A1A, not #000, and its note says why: white on pure black is the harshest edge there is (21:1) and makes text shimmer. The note says pure black is for borders and marks, not for surfaces carrying text. The tiles carry text, and they are now #000. You chose it by eye, and it reads well in the renders above.</p>
+    </div>
+    <div class="call" data-id="halation" data-q="2. White text on pure black tiles, against the digital black note" data-rec="Keep black; name tiles as the exception in the note">
+      <p class="q">Keep the black tiles, and write them into the digital black note as the one exception?</p>
+      <p class="rec">Recommendation: yes. You chose black by eye, and the note should say so rather than contradict the tokens.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Keep black; name tiles as the exception in the note">Keep black, note the exception<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Use digital black #1A1A1A for tiles instead">Tiles take #1A1A1A instead</button>
+        <button type="button" class="chip" data-v="Something else, say below">Something else, say below</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>3. Tab strips now show as a black band on the page.</h3>
+      <p>The tab strip's background follows the tile. In light mode that is white on a white page, so no band shows. In dark it is now black on the #1A1A1A page, so Tabs, the page header and the detail template each gain a black strip (pictures in section 03). If the strip followed the page instead, light would not change and dark would lose the band.</p>
+    </div>
+    <div class="call" data-id="tabs" data-q="3. Tab strips: follow the tile (a black band in dark) or the page (no band)" data-rec="Follow the page">
+      <p class="q">Should the tab strip follow the tile or the page?</p>
+      <p class="rec">Recommendation: follow the page, so a tab strip never draws a band in either mode.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Follow the page">Follow the page<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Follow the tile, keep the band">Follow the tile, keep the band</button>
+        <button type="button" class="chip" data-v="Something else, say below">Something else, say below</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>4. The option's name and where it lives.</h3>
+      <p>There was no register for page-level settings, so the option is written into the theme register, beside the four themes, under a new heading, options. Its name on a page is <code>data-dark-tiles</code>, with the values black (the default) and grey. Later page settings would join it there.</p>
+    </div>
+    <div class="call" data-id="name" data-q="4. The option is data-dark-tiles (black, grey), kept in the theme register under options" data-rec="Yes, keep the name and the home">
+      <p class="q">Keep the name and that home?</p>
+      <p class="rec">Recommendation: yes. The theme register is already what every theme picker reads.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Yes, keep the name and the home">Yes<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Rename it, say below">Rename it, say below</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Page note -->
+<section id="note">
+  <div class="wrap">
+    <p class="label">05 · Anything else</p>
+    <div class="call" data-id="page" data-q="Note on the page">
+      <p class="q">Anything else on this page</p>
+      <label class="field"><span>Note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <details class="tech"><summary>Technical detail: what was built and how each picture was made</summary>
+      <ol>
+        <li>Default (s310-D3): <code>surface/raised</code> dark in <code>knowledge/tokens/semantic-colour.json</code> now aliases <code>color/black</code> #000000 (was <code>color/neutral/raise-1</code> #1F1F1F); its cached followers <code>tertiary/background/default</code>, <code>tabs/background</code>, <code>tabs/overflow-background</code> re-stamped. Supercharge (s310-D4): <code>surface/raised</code> in <code>apollo-supercharge.overrides.json</code>, dark #13110E (warm/2), light restating #F7F6F4 (warm/15). <code>surface/subtle</code> and the page are untouched.</li>
+        <li>Option: <code>options.dark-tiles</code> in <code>knowledge/tokens/themes/_themes.json</code>; <code>knowledge/canon/gen_theme_cascade.py</code> emits it into a new <code>AUTO-THEME-OPTIONS</code> region of canon.css, for Mono and for each theme whose values differ (today Supercharge), at root and component tier. Supercharge's component tier carries baked colours, which is why the option had to be generated, not hand-written.</li>
+        <li>Regenerated in order: canon tokens, snippet projections (57 snippets, 9 tranches), token ramp, canon components, theme cascade, showroom (57 pages). State-contrast sweep at the seat: no text failures; the status pills' own fill readings rise on black (advisory only). The 13 chart-engine pages re-driven: all 27 receipts fresh, no measurement moved.</li>
+        <li>Pictures: <code>notes/_lanes/310/A/render_310A.py</code> (demo at 1440, reference pages at 1280 in Mono dark, before = the tree at 3737c6f7) and <code>render_states.py</code> for the swatches. Ten further components differed only by animation (charts, loaders) and are left out.</li>
+        <li>Found, not fixed: Supercharge's dark page resolves to #1A1A1A, not the #13110E its alias chain names, because the theme generator fixes the page colour after resolving only its light half. Fixing it would move Supercharge's dark page everywhere, so it is left for its own decision.</li>
+        <li>Selections save in this browser only. Use Copy as text and paste it into the chat; the rulings land there.</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · The dark tiles, built · v1 · 2026-09-30 · session 310 lane A</span>
+  <span>Nothing here is decided until you choose.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 5 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-310-A-dark-tiles-v1';
+  var PATH='notes/_REVIEW-310-A-dark-tiles-2026-09-30-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 310 · The dark tiles, built · comments','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('5. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-310-A-dark-tiles.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

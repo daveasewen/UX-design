@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>tile states</title>
+<script>const c=new URLSearchParams(location.search).get('css')||'../../../../knowledge/canon/canon.css';document.write('<link rel="stylesheet" href="'+c+'">')</script>
+<style>body{margin:0;padding:24px;font:14px "Univers Next for HSBC",Arial,sans-serif}
+.row{display:flex;gap:12px;align-items:stretch;margin:0 0 14px;padding:16px;background:var(--surface-subtle)}
+.row h3{width:170px;margin:0;font-size:14px;font-weight:500;color:var(--text-default);align-self:center}
+.sw{width:150px;height:84px;padding:10px;box-sizing:border-box;color:var(--text-default);border:1px solid var(--border-subtle);font-size:13px}
+.sw b{display:block;font-weight:500;margin-bottom:4px}.pg{background:var(--background-default)}</style></head>
+<body class="canon" data-theme="dark">
+<div class="row" data-theme="dark"><h3 class="lbl"></h3>
+<div class="sw" style="background:var(--tertiary-background-default)"><b>Rest</b><span></span></div>
+<div class="sw" style="background:var(--tertiary-background-hover)"><b>Hover</b><span></span></div>
+<div class="sw" style="background:var(--tertiary-background-pressed)"><b>Pressed</b><span></span></div>
+<div class="sw" style="background:var(--tertiary-background-active)"><b>Active</b><span></span></div>
+<div class="sw pg"><b>Page</b><span></span></div></div>
+<script>addEventListener('load',()=>{document.querySelectorAll('.sw').forEach(e=>{const m=getComputedStyle(e).backgroundColor.match(/\d+/g).slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('').toUpperCase();e.querySelector('span').textContent='#'+m});
+document.querySelector('.lbl').textContent=new URLSearchParams(location.search).get('label')||''})</script>
+</body></html>
