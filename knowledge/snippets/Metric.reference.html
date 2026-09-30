@@ -255,8 +255,17 @@
   .metric-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
   .metric-delta.down .glyph{color:var(--neg-ink);}
   .metric-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
-  .metric-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+  /* NO CHANGE IS FULL INK (s309-D6, Dave by click: 'Full ink, as ruled'; s182-D3 'the default ink
+     near-black ... white on dark'). It was drawn at alpha-60 until #309. */
+  .metric-delta.flat .glyph{color:var(--text);}
   .metric-delta.flat .glyph svg{transform:scale(.78);}
+  /* UP IS BAD — ONE OPTIONAL SETTING (s309-D5, Dave by click: 'Let a metric say up is bad').
+     A class on the tile, .metric.up-is-bad, for a figure where a rise is bad news (a cost, a risk).
+     A rise takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow
+     still points the way the number moved, and the sign and the word are untouched. The default
+     stays colour by direction. No new colour: the same two canon RAG inks, swapped. */
+  .metric.up-is-bad .metric-delta.up .glyph{color:var(--neg-ink);}
+  .metric.up-is-bad .metric-delta.down .glyph{color:var(--pos-ink);}
   .metric-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
 
   /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
@@ -273,6 +282,10 @@
   .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
   .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
   .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="up"] .dv-series{stroke:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="up"] .dv-area{fill:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="down"] .dv-series{stroke:var(--pos-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="down"] .dv-area{fill:var(--pos-ink);}
 
   /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
      fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out

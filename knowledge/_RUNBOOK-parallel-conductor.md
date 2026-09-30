@@ -140,6 +140,21 @@ UNMEASURED) was REJECTED at ruling — expiring an unmeasured cost rewards the s
    receipt's reliability, e.g. `Context gauge at authoring: 🟡 AMBER ~55% (ESTIMATE)`). The session-slug in the
    filename means two workers physically cannot collide. The conductor can also read you directly via
    `session_info`; the receipt is the durable fallback and the anchor its reconcile step (2.5) looks for.
+5. **Before handing back, survey your own commit in a throwaway clone** (`s309-D7`, Dave by click, #309:
+   'Yes'; lane E's routine, `notes/_subreports/2026-09-30-309-E-checks-at-the-seat.md` § C). It asks the
+   writer gates the mount survey never asks, so a red CI would give is found before the conductor pushes.
+   Commit through `_git_commit.sh` as usual, then, one call each:
+   - `rm -rf /tmp/pp && git clone -q --shared --no-checkout "$PWD" /tmp/pp && git -C /tmp/pp checkout -q HEAD` (~25 s).
+   - In `/tmp/pp`: `python3 -u knowledge/_build_survey.py --include-mutating --no-record --timeout 60 --range 1:12`,
+     then `13:55`, `56:140`, `141:167`, adding `--resume` from the second on (~80–100 s each).
+   - Still in the clone: `TMPDIR=/tmp/pp-tmp python3 knowledge/_tests/test_gates.py` and
+     `python3 knowledge/_validate_evidence.py notes/_claims` (~30 s).
+   - Touched a snippet or `canon.css`? Also the state-contrast sweep at the seat, CI's fonts
+     (`FONTCONFIG_FILE` unset), in two calls of four slices (`--slice 1/8 … 4/8`, then `5/8 … 8/8`), then
+     `--merge` (~4.5 min); restore `_STATE-CONTRAST-AUDIT.md` from HEAD unless the audit is meant to change.
+   Any ❌ or ⏱ is a red CI will also give: fix it, commit, survey again. ⊘ and ⚠ match CI and do not block.
+   Whole routine ~7 min in six calls, ~12 min in eight with the sweep. Delete `/tmp/pp` after. Never run this
+   survey on the mount: it skips the writer gates there and three selftests go red for seat reasons.
 
 ## Conductor checklist
 

@@ -13790,8 +13790,17 @@
 :where(.cn-metric) .metric-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
 :where(.cn-metric) .metric-delta.down .glyph{color:var(--neg-ink);}
 :where(.cn-metric) .metric-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
-:where(.cn-metric) .metric-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+/* NO CHANGE IS FULL INK (s309-D6, Dave by click: 'Full ink, as ruled'; s182-D3 'the default ink
+     near-black ... white on dark'). It was drawn at alpha-60 until #309. */
+:where(.cn-metric) .metric-delta.flat .glyph{color:var(--text);}
 :where(.cn-metric) .metric-delta.flat .glyph svg{transform:scale(.78);}
+/* UP IS BAD — ONE OPTIONAL SETTING (s309-D5, Dave by click: 'Let a metric say up is bad').
+     A class on the tile, .metric.up-is-bad, for a figure where a rise is bad news (a cost, a risk).
+     A rise takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow
+     still points the way the number moved, and the sign and the word are untouched. The default
+     stays colour by direction. No new colour: the same two canon RAG inks, swapped. */
+:where(.cn-metric) .metric.up-is-bad .metric-delta.up .glyph{color:var(--neg-ink);}
+:where(.cn-metric) .metric.up-is-bad .metric-delta.down .glyph{color:var(--pos-ink);}
 :where(.cn-metric) .metric-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
 /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
 :where(.cn-metric) .metric-spark{margin-top:4px; width:100%;}
@@ -13807,6 +13816,10 @@
 :where(.cn-metric) .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
 :where(.cn-metric) .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
 :where(.cn-metric) .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+:where(.cn-metric) .metric.up-is-bad .spark-inline[data-trend="up"] .dv-series{stroke:var(--neg-ink);}
+:where(.cn-metric) .metric.up-is-bad .spark-inline[data-trend="up"] .dv-area{fill:var(--neg-ink);}
+:where(.cn-metric) .metric.up-is-bad .spark-inline[data-trend="down"] .dv-series{stroke:var(--pos-ink);}
+:where(.cn-metric) .metric.up-is-bad .spark-inline[data-trend="down"] .dv-area{fill:var(--pos-ink);}
 /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
      fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out
      in words underneath. Deliberate: a bank CAIO reads "72% of the £3.5m target", and a reader
@@ -14014,8 +14027,17 @@
 :where(.cn-kpi-tile) .kpi-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
 :where(.cn-kpi-tile) .kpi-delta.down .glyph{color:var(--neg-ink);}
 :where(.cn-kpi-tile) .kpi-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
-:where(.cn-kpi-tile) .kpi-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+/* NO CHANGE IS FULL INK (s309-D6, Dave by click: 'Full ink, as ruled'; s182-D3 'the default ink
+     near-black ... white on dark'). It was drawn at alpha-60 until #309. */
+:where(.cn-kpi-tile) .kpi-delta.flat .glyph{color:var(--text);}
 :where(.cn-kpi-tile) .kpi-delta.flat .glyph svg{transform:scale(.78);}
+/* UP IS BAD — ONE OPTIONAL SETTING (s309-D5, Dave by click: 'Let a metric say up is bad').
+     A class on the tile, .kpi-tile.up-is-bad, for a figure where a rise is bad news (a cost, a risk).
+     A rise takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow
+     still points the way the number moved, and the sign and the word are untouched. The default
+     stays colour by direction. No new colour: the same two canon RAG inks, swapped. */
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .kpi-delta.up .glyph{color:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .kpi-delta.down .glyph{color:var(--pos-ink);}
 :where(.cn-kpi-tile) .kpi-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
 /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
 :where(.cn-kpi-tile) .kpi-spark{margin-top:4px; width:100%;}
@@ -14031,6 +14053,10 @@
 :where(.cn-kpi-tile) .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
 :where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
 :where(.cn-kpi-tile) .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .spark-inline[data-trend="up"] .dv-series{stroke:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .spark-inline[data-trend="up"] .dv-area{fill:var(--neg-ink);}
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .spark-inline[data-trend="down"] .dv-series{stroke:var(--pos-ink);}
+:where(.cn-kpi-tile) .kpi-tile.up-is-bad .spark-inline[data-trend="down"] .dv-area{fill:var(--pos-ink);}
 /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
      fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out
      in words underneath. Deliberate: a bank CAIO reads "72% of the £3.5m target", and a reader
