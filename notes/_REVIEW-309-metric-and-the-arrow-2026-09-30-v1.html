@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metric and the arrow</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.record{font-size:12px;color:var(--g6);line-height:1.5;margin:var(--s2) 0 0}
+/* pictures */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair figcaption b{font-weight:500;color:var(--fg)}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair .note{font-size:13px;color:var(--g7);line-height:1.55;margin:0}
+.swatch{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px;border:1px solid var(--g3)}
+/* the arrow grid */
+.agrid{margin:var(--s3) 0 var(--s2);border-top:1px solid var(--fg)}
+.agrid .hd,.agrid .row{display:grid;grid-template-columns:190px 1fr;gap:var(--s3);align-items:center}
+.agrid .hd{padding:var(--s1) 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;border-bottom:1px solid var(--g3)}
+.agrid .hd .cols{display:grid;grid-template-columns:1fr 1fr}
+.agrid .row{padding:var(--s2) 0;border-bottom:1px solid var(--g3)}
+.agrid .k{font-size:15px;font-weight:500;line-height:1.4}
+.agrid .k small{display:block;font-size:12px;font-weight:400;color:var(--g7);line-height:1.6;margin-top:4px}
+.agrid img{display:block;width:100%;height:auto;border:1px solid var(--g3)}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+/* comment boxes and calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s1)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair{grid-template-columns:1fr}
+  .agrid .hd{display:none}
+  .agrid .row{grid-template-columns:1fr;gap:var(--s1)}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#metric">Metric</a>
+  <a href="#arrow">The arrow</a>
+  <a href="#banking">Banking demo</a>
+  <a href="#progress">Progress dashboard</a>
+  <a href="#receipt">Receipt page</a>
+  <a href="#calls">Three smaller calls</a>
+  <a href="#note">Page note</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 309 · review page · Metric and the arrow</p>
+      <h1>The stat card pages now use Metric. The arrow changed colour, and its shape changed too.</h1>
+      <p class="sub">Three live pages moved from the stat card to Metric this morning. The arrow now takes the red and green inks in all four themes. It is also a thin line arrow now, where it used to be a filled triangle. That is the main thing to look at.</p>
+    </div>
+    <div class="meta">
+      <span>Wednesday 30 September 2026</span>
+      <span>For your 10:24 "Can I have a review doc rather than pngs"</span>
+      <span>Before is the repo just before the move. After is the repo now. Every picture is a fresh render at 1440.</span>
+    </div>
+  </div>
+</header>
+
+<!-- 1 · Metric -->
+<section id="metric">
+  <div class="wrap">
+    <p class="label">01 · Metric, with and without the trend</p>
+    <h2>One block. The trend line is an optional slot.</h2>
+    <p class="lead">The KPI tile and the stat card are now one block, Metric. With the trend filled, the tile is 155px tall. Without it, 103px. The arrow sits in the green ink: #137F3C in light, #66CC8D in dark.</p>
+    <div class="pair one">
+      <figure><figcaption><b>Light</b> · with the trend, then without · 2x</figcaption>
+        <a href="_lanes/309/F/img/metric-light.png"><img src="_lanes/309/F/img/metric-light.png" alt="Metric in light mode: Net cash flow +£2,450.00, +12.4% up vs February, with a trend line on the left and without on the right"></a></figure>
+      <figure><figcaption><b>Dark</b> · with the trend, then without · 2x</figcaption>
+        <a href="_lanes/309/F/img/metric-dark.png"><img src="_lanes/309/F/img/metric-dark.png" alt="Metric in dark mode, the same two tiles, green arrow #66CC8D"></a></figure>
+    </div>
+    <p class="record">record: s308-D42 · s309-D2 · the render is lane C's page, notes/_lanes/309/C/metric-with-without-trend.html</p>
+    <div class="call" data-id="metric" data-q="1. Metric, with and without the trend">
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · The arrow -->
+<section class="grey" id="arrow">
+  <div class="wrap">
+    <p class="label">02 · The arrow · the main call</p>
+    <h2>The colour is now the same in every theme. The shape changed from a filled triangle to a thin line arrow.</h2>
+    <p class="lead">Before, the stat card drew a filled triangle in each theme's own fill colours. After, Metric draws a thin line arrow in the red and green inks, the same in all four themes. Only light and dark differ.</p>
+    <ul class="facts">
+      <li><span class="k">Why the shape changed</span><span>Your earlier ruling at session 263 put the KPI tile's arrow on the ink colours, and said the stat card moves with it. Metric is built from the KPI tile's drawing, so moving the pages to Metric brought the KPI tile's thin arrow with it. No one redrew anything.</span></li>
+      <li><span class="k">After, all themes</span><span><b>Rise</b> <span class="swatch" style="background:#137F3C"></span>#137F3C light · <span class="swatch" style="background:#66CC8D"></span>#66CC8D dark. <b>Fall</b> <span class="swatch" style="background:#DA1A00"></span>#DA1A00 light · <span class="swatch" style="background:#F6604C"></span>#F6604C dark.</span></li>
+      <li><span class="k">Before, by theme</span><span><b>Mono</b> <span class="swatch" style="background:#66CC8D"></span>#66CC8D / <span class="swatch" style="background:#F6604C"></span>#F6604C in both modes. <b>Common</b> <span class="swatch" style="background:#00847F"></span>#00847F / <span class="swatch" style="background:#A8000B"></span>#A8000B, the dark third red. <b>Console and Supercharge</b> <span class="swatch" style="background:#5DAC7B"></span>#5DAC7B / <span class="swatch" style="background:#B92F1E"></span>#B92F1E.</span></li>
+    </ul>
+
+    <div class="agrid" role="table" aria-label="The arrow rows at 4x, before and after, for each theme and mode">
+      <div class="hd" role="row"><span>Theme · mode</span><span class="cols"><span>Before · stat card</span><span>After · Metric</span></span></div>
+      <div class="row" role="row"><div class="k">Mono · light<small>before #66CC8D / #F6604C<br>after #137F3C / #DA1A00</small></div><img src="_lanes/309/F/img/arrow-mono-light.png" alt="Mono light: filled triangles in #66CC8D and #F6604C, then thin arrows in #137F3C and #DA1A00"></div>
+      <div class="row" role="row"><div class="k">Mono · dark<small>before #66CC8D / #F6604C<br>after #66CC8D / #F6604C</small></div><img src="_lanes/309/F/img/arrow-mono-dark.png" alt="Mono dark: filled triangles, then thin arrows, both in #66CC8D and #F6604C"></div>
+      <div class="row" role="row"><div class="k">Common · light<small>before #00847F / #A8000B<br>after #137F3C / #DA1A00</small></div><img src="_lanes/309/F/img/arrow-common-light.png" alt="Common light: teal and dark red triangles, then thin arrows in #137F3C and #DA1A00"></div>
+      <div class="row" role="row"><div class="k">Common · dark<small>before #00847F / #A8000B<br>after #66CC8D / #F6604C</small></div><img src="_lanes/309/F/img/arrow-common-dark.png" alt="Common dark: teal and dark red triangles, then thin arrows in #66CC8D and #F6604C"></div>
+      <div class="row" role="row"><div class="k">Console · light<small>before #5DAC7B / #B92F1E<br>after #137F3C / #DA1A00</small></div><img src="_lanes/309/F/img/arrow-console-light.png" alt="Console light: triangles in #5DAC7B and #B92F1E, then thin arrows in #137F3C and #DA1A00"></div>
+      <div class="row" role="row"><div class="k">Console · dark<small>before #5DAC7B / #B92F1E<br>after #66CC8D / #F6604C</small></div><img src="_lanes/309/F/img/arrow-console-dark.png" alt="Console dark: triangles in #5DAC7B and #B92F1E, then thin arrows in #66CC8D and #F6604C"></div>
+      <div class="row" role="row"><div class="k">Supercharge · light<small>before #5DAC7B / #B92F1E<br>after #137F3C / #DA1A00</small></div><img src="_lanes/309/F/img/arrow-supercharge-light.png" alt="Supercharge light: triangles in #5DAC7B and #B92F1E, then thin arrows in #137F3C and #DA1A00"></div>
+      <div class="row" role="row"><div class="k">Supercharge · dark<small>before #5DAC7B / #B92F1E<br>after #66CC8D / #F6604C</small></div><img src="_lanes/309/F/img/arrow-supercharge-dark.png" alt="Supercharge dark: triangles in #5DAC7B and #B92F1E, then thin arrows in #66CC8D and #F6604C"></div>
+    </div>
+    <p class="record">record: s309-D3 · s263-D1 · s261-D4 · s182-D3 · s151-D1 · s155-D1 · inks measured at the seat on the banking demo</p>
+
+    <div class="call" data-id="arrow" data-q="2. The arrow: shape and colour" data-rec="Keep Metric's thin arrow in the red and green ink">
+      <p class="q">Keep the thin arrow, or bring the filled triangle back?</p>
+      <p class="rec">Recommendation: keep the thin arrow in the red and green ink, because it is what your session 263 ruling set and it gives Apollo one arrow everywhere.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Keep Metric's thin arrow in the red and green ink">Keep the thin arrow, in the ink<em>recommended</em></button>
+        <button type="button" class="chip" data-v="Bring the filled triangle back, in the red and green ink">Bring the filled triangle back, in the ink</button>
+        <button type="button" class="chip" data-v="Something else (see comment)">Something else, say below</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Banking demo -->
+<section id="banking">
+  <div class="wrap">
+    <p class="label">03 · The banking demo</p>
+    <h2>The whole page, before and after. The layout holds, and the two arrows change.</h2>
+    <p class="lead">The page renders in the Console theme. Its four stat tiles now use Metric. Two of them carry an arrow: Available cash, +4.8% up, and Net FX exposure, −8.1%. Click any picture to open it full size.</p>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · light</figcaption>
+        <a href="_lanes/309/F/img/banking-before-light.png"><img src="_lanes/309/F/img/banking-before-light.png" alt="Banking demo before the move, light mode, Console theme"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · light</figcaption>
+        <a href="_lanes/309/F/img/banking-after-light.png"><img src="_lanes/309/F/img/banking-after-light.png" alt="Banking demo after the move, light mode, Console theme"></a></figure>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · dark</figcaption>
+        <a href="_lanes/309/F/img/banking-before-dark.png"><img src="_lanes/309/F/img/banking-before-dark.png" alt="Banking demo before the move, dark mode"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · dark</figcaption>
+        <a href="_lanes/309/F/img/banking-after-dark.png"><img src="_lanes/309/F/img/banking-after-dark.png" alt="Banking demo after the move, dark mode"></a></figure>
+    </div>
+    <p class="record">record: dashboards/international-banking-dashboard.canon.html · s309-D3</p>
+    <div class="call" data-id="banking" data-q="3. The banking demo">
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Progress dashboard -->
+<section class="grey" id="progress">
+  <div class="wrap">
+    <p class="label">04 · The progress dashboard</p>
+    <h2>No arrows here. The tiles come out slightly tighter.</h2>
+    <p class="lead">These counts carry no change figure, so there is no arrow to move. With Metric's spacing, the block is 31px shorter at 1440. The numbers themselves differ only because the counts moved between the two commits.</p>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · light · 2x</figcaption>
+        <a href="_lanes/309/F/img/progress-before-light.png"><img src="_lanes/309/F/img/progress-before-light.png" alt="Progress dashboard counts before, light mode"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · light · 2x</figcaption>
+        <a href="_lanes/309/F/img/progress-after-light.png"><img src="_lanes/309/F/img/progress-after-light.png" alt="Progress dashboard counts after, light mode"></a></figure>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · dark · 2x</figcaption>
+        <a href="_lanes/309/F/img/progress-before-dark.png"><img src="_lanes/309/F/img/progress-before-dark.png" alt="Progress dashboard counts before, dark mode: the heading is white on a light grey ground"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · dark · 2x</figcaption>
+        <a href="_lanes/309/F/img/progress-after-dark.png"><img src="_lanes/309/F/img/progress-after-dark.png" alt="Progress dashboard counts after, dark mode: the same faint heading"></a></figure>
+    </div>
+    <p class="pair-note" style="font-size:14px;color:var(--g7);max-width:44em">In dark mode the heading "The counts that move" is barely visible, before and after. It was already so. The move did not cause it and did not fix it.</p>
+    <p class="record">record: dashboard/index.html · gen_dashboard.py · s309-D3</p>
+    <div class="call" data-id="progress" data-q="4. The progress dashboard">
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Receipt page -->
+<section id="receipt">
+  <div class="wrap">
+    <p class="label">05 · The receipt page</p>
+    <h2>The empty chart and the missing arrow were already there before the move.</h2>
+    <p class="lead">The chart is empty after because the page was already out of date before the move. It regenerates against today's line chart, and the old stat card version regenerates to the same empty chart. Neither side draws an arrow, because a receipt copies the element but not its icons.</p>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · light</figcaption>
+        <a href="_lanes/309/F/img/receipt-before-light.png"><img src="_lanes/309/F/img/receipt-before-light.png" alt="Receipt page before, light mode"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · light</figcaption>
+        <a href="_lanes/309/F/img/receipt-after-light.png"><img src="_lanes/309/F/img/receipt-after-light.png" alt="Receipt page after, light mode: the metric tile, then an empty chart area"></a></figure>
+    </div>
+    <div class="pair">
+      <figure><figcaption><b>Before</b> · stat card · dark</figcaption>
+        <a href="_lanes/309/F/img/receipt-before-dark.png"><img src="_lanes/309/F/img/receipt-before-dark.png" alt="Receipt page before, dark mode"></a></figure>
+      <figure><figcaption><b>After</b> · Metric · dark</figcaption>
+        <a href="_lanes/309/F/img/receipt-after-dark.png"><img src="_lanes/309/F/img/receipt-after-dark.png" alt="Receipt page after, dark mode"></a></figure>
+    </div>
+    <p class="record">record: dashboards/international-banking-dashboard.regen-v2-receipt.html · outside every CI gate</p>
+    <div class="call" data-id="receipt" data-q="5. The receipt page">
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Three smaller calls -->
+<section class="grey" id="calls">
+  <div class="wrap">
+    <p class="label">06 · Three smaller calls</p>
+    <h2>Each has a recommendation. Nothing moves until you answer.</h2>
+
+    <div class="sub3">
+      <h3>a · Should a cost going up show red?</h3>
+      <p>Today the colour follows direction: a rise is green and a fall is red, from earlier rulings. Nothing lets a metric say "up is bad". The live example is the banking demo's Net FX exposure, −8.1%, drawn red, though a reader might count a falling exposure as good.</p>
+      <p class="record">record: s182-D3 · col26-016 · dv-017</p>
+      <div class="call" data-id="cost" data-q="6a. Should a cost going up show red?" data-rec="Keep direction only for now; decide when a real page needs it">
+        <p class="rec">Recommendation: keep direction only for now, and decide when a real page needs it.</p>
+        <div class="chips">
+          <button type="button" class="chip" data-v="Keep direction only for now; decide when a real page needs it">Keep direction for now<em>recommended</em></button>
+          <button type="button" class="chip" data-v="Let a metric say up is bad">Let a metric say "up is bad"</button>
+          <button type="button" class="chip" data-v="Decide later">Decide later</button>
+        </div>
+        <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+        <div class="stamp"></div>
+      </div>
+    </div>
+
+    <div class="sub3">
+      <h3>b · The no-change mark: full ink or 60%?</h3>
+      <p>Metric draws its no-change mark at 60% of the text colour. Its ruling says full ink, and so does Metric's own comment. None of the moved pages shows a no-change mark, so it was left as drawn.</p>
+      <p class="record">record: s182-D3</p>
+      <div class="call" data-id="flat" data-q="6b. The no-change mark: full ink or 60%?" data-rec="Full ink, as ruled">
+        <p class="rec">Recommendation: full ink, as ruled.</p>
+        <div class="chips">
+          <button type="button" class="chip" data-v="Full ink, as ruled">Full ink, as ruled<em>recommended</em></button>
+          <button type="button" class="chip" data-v="Keep 60%">Keep 60%</button>
+        </div>
+        <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+        <div class="stamp"></div>
+      </div>
+    </div>
+
+    <div class="sub3">
+      <h3>c · Every lane runs the pre-push check before handing back?</h3>
+      <p>Lane E's routine checks a throwaway copy of the repo in chunks. It takes about 7 minutes, or 12 with the contrast sweep. Lane D ran it this morning and found no reds. The proposal is to put it in the lane checklist so every lane runs it before handing back.</p>
+      <div class="call" data-id="prepush" data-q="6c. Every lane runs the pre-push check before handing back?" data-rec="Yes">
+        <p class="rec">Recommendation: yes.</p>
+        <div class="chips">
+          <button type="button" class="chip" data-v="Yes">Yes<em>recommended</em></button>
+          <button type="button" class="chip" data-v="No">No</button>
+        </div>
+        <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+        <div class="stamp"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Page note -->
+<section id="note">
+  <div class="wrap">
+    <p class="label">07 · Anything else</p>
+    <div class="call" data-id="page" data-q="Note on the page">
+      <p class="q">Anything else on this page</p>
+      <label class="field"><span>Note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <details class="tech"><summary>Technical detail: where each picture and figure comes from</summary>
+      <ol>
+        <li>Before is <code>git archive b690a19b</code>, the commit just before the move. After is the working tree at <code>893028e1</code>. Both rendered at the seat with Playwright over <code>file://</code>, viewport 1440, with each page's own styles plus canon.css.</li>
+        <li>The arrow rows are each delta row cropped at 4x on the banking demo, with the theme set on the root and the mode set on every <code>[data-theme]</code> element. The inks in the grid are the computed colours read from the same render. They agree with lane D's report.</li>
+        <li>Metric's two pictures are lane C's page, <code>notes/_lanes/309/C/metric-with-without-trend.html</code>, at 2x. The 155px and 103px heights are from lane C's report.</li>
+        <li>The banking and receipt pages are full-page captures at 1x. The progress dashboard is the counts section at 2x, trimmed to its content. Its section is 1610px tall before and 1548px after at 2x, which is 31px at 1x.</li>
+        <li>Sources for the text: <code>notes/_subreports/2026-09-30-309-D-stat-card-to-metric.md</code> and <code>notes/_subreports/2026-09-29-309-C-metric-and-reclass.md</code>.</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · Metric and the arrow · v1 · 2026-09-30 · session 309 · lane F</span>
+  <span>Nothing here is decided until you choose.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 9 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-309-metric-and-the-arrow-v1';
+  var PATH='notes/_REVIEW-309-metric-and-the-arrow-2026-09-30-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 309 · Metric and the arrow · comments','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('7. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-309-metric-and-the-arrow.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
