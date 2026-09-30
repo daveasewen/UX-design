@@ -12,6 +12,12 @@ cascade, are:
              (Dave's standing requirement, ds-035 / #108-D3: four themes and the
              flexibility to create more. Divergence ACROSS themes is the feature.)
   * MODE   - [data-theme="light"|"dark"] (plus @media context).
+  * OPTION - a page-level theme option REGISTERED in tokens/themes/_themes.json
+             `options` (s310-D3, #310: data-dark-tiles="grey", Dave: 'the other is
+             an option both are valid'). Read from the register, never from a list
+             here: an attribute that is not registered there is not an axis, and a
+             divergence it carries is still a FORK. Folded into the MODE key as
+             "<mode>|<attr>=<value>", and a var() inside it falls back to <mode>.
 
 A FORK is therefore: one property NAME resolving to two or more DIFFERENT final
 values INSIDE ONE (theme, mode) - i.e. the divergence is carried by component
@@ -207,12 +213,43 @@ RE_MODE = re.compile(r'\[data-theme="([^"]+)"\]')
 RE_CN = re.compile(r'\.(cn-[A-Za-z0-9_-]+)')
 
 
+def registered_options(path=None):
+    """{(attr, value)} for every page-level option value in the theme register (s310-D3)."""
+    path = path or os.path.join(REPO, "knowledge", "tokens", "themes", "_themes.json")
+    try:
+        reg = json.load(open(path))
+    except (OSError, ValueError) as e:
+        fail("theme register unreadable for the OPTION axis: %s (%s)" % (path, e))
+    out = set()
+    for name, opt in (reg.get("options") or {}).items():
+        if name.startswith("$") or not isinstance(opt, dict):
+            continue
+        for val in (opt.get("values") or {}):
+            out.add((opt["attr"], val))
+    return out
+
+
+OPTIONS = None  # (attr, value) pairs; loaded once, overridable by the selftest
+
+
+def _option_res():
+    global OPTIONS
+    if OPTIONS is None:
+        OPTIONS = registered_options()
+    return [(a, v, re.compile(r'\[%s="%s"\]' % (re.escape(a), re.escape(v))))
+            for a, v in sorted(OPTIONS)]
+
+
 def context_of(selector_part):
     """(theme, mode, scope) for ONE selector out of a comma list."""
     m = RE_APOLLO.search(selector_part)
     theme = m.group(1) if m else "mono"
     m = RE_MODE.search(selector_part)
     mode = m.group(1) if m else "any"
+    for attr, val, rx in _option_res():          # the OPTION axis (s310-D3)
+        if rx.search(selector_part):
+            mode = "%s|%s=%s" % (mode, attr, val)
+            selector_part = rx.sub("", selector_part)
     cns = RE_CN.findall(selector_part)
     if cns:
         scope = "." + cns[-1]
@@ -248,14 +285,23 @@ def build_index(decls):
 RE_VAR = re.compile(r'var\(\s*(--[A-Za-z0-9_-]+)\s*(?:,([^()]*(?:\([^()]*\)[^()]*)*))?\)')
 
 
-def lookup_ladder(theme, mode, scope):
-    """The order a browser's cascade would consult, most specific first."""
+def _plain_ladder(theme, mode, scope):
     ladder = [(theme, mode, scope), (theme, "any", scope)]
     if scope != "ROOT":
         ladder += [(theme, mode, "ROOT"), (theme, "any", "ROOT")]
     if theme != "mono":
         ladder += [("mono", mode, scope), ("mono", "any", scope),
                    ("mono", mode, "ROOT"), ("mono", "any", "ROOT")]
+    return ladder
+
+
+def lookup_ladder(theme, mode, scope):
+    """The order a browser's cascade would consult, most specific first.
+    An OPTION mode ("dark|attr=value", s310-D3) consults its own declarations first,
+    then the plain mode's whole ladder: the option only re-binds what it names."""
+    ladder = _plain_ladder(theme, mode, scope)
+    if "|" in mode:
+        ladder += _plain_ladder(theme, mode.split("|", 1)[0], scope)
     seen, out = set(), []
     for k in ladder:
         if k not in seen:
@@ -416,6 +462,14 @@ SELFTEST_MEDIA_FORK = """
 """
 
 
+# s310-D3 - the OPTION arm: the same property re-bound under a page-level option attribute.
+# Registered in the theme register it is a sanctioned axis; unregistered it is a fork.
+SELFTEST_OPTION = """
+[data-theme="dark"] { --surface-raised: #000000; }
+[data-theme="dark"][data-dark-tiles="grey"] { --surface-raised: #1F1F1F; }
+"""
+
+
 def selftest():
     """Four bites, in memory, no repo bytes touched.
 
@@ -455,6 +509,21 @@ def selftest():
     ok = ok and mgood
     print("  selftest media  --pri-hover -> %-18s want %-18s %s"
           % (mv, "FORK", "OK" if mgood else "FAIL"))
+
+    # --- arm 5 (s310-D3): a REGISTERED option attribute is an axis; an unregistered one is not ---
+    global OPTIONS
+    saved = OPTIONS
+    for reg, want in (({("data-dark-tiles", "grey")}, "BENIGN_MODE_AXIS"), (set(), "FORK")):
+        OPTIONS = reg
+        odecls = parse_declarations(SELFTEST_OPTION, "<selftest-option>")
+        oindex, ocontexts = build_index(odecls)
+        _, overdicts = measure(oindex, ocontexts)
+        ov = overdicts.get("--surface-raised", {}).get("verdict")
+        ogood = ov == want
+        ok = ok and ogood
+        print("  selftest option %-11s --surface-raised -> %-18s want %-18s %s"
+              % ("registered" if reg else "unregistered", ov, want, "OK" if ogood else "FAIL"))
+    OPTIONS = saved
 
     for label, css, want in (("clean", SELFTEST_CLEAN, "BENIGN_THEME_AXIS"),
                              ("forked", SELFTEST_FORKED, "FORK")):
