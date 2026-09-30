@@ -131,6 +131,7 @@ body=f'''<body>
     <ul class="facts">
       <li><span class="k">Legibility</span><span><b>The quiet tab labels still pass everywhere.</b> The lowest is on the light grey ground, 6.44 to 1; in dark the lowest is 7.18 to 1 (the labels are the softer #E1E1E1 at 72%).</span></li>
       <li><span class="k">The More menu</span><span>The overflow menu that drops from the strip keeps its own surface, as before.</span></li>
+      <li><span class="k">Found on the way</span><span><b>The inactive tab's stored grey had to follow the softer white.</b> The tab labels you see are the text ink at 72%, so they softened with it. But the library also stores a plain grey for tools that cannot do transparency, and it was worked out from white: #B7B7B7. It is now #9D9D9D, the step that keeps the same share of the new ink (6.42 to 1 on the page). To make it land on that step, its stored fade moves from 70% to 67%. Nothing on screen paints this grey, but the 70% was set when you ruled the tab states, so say if you want it otherwise. Common's inactive tab was white in dark and now follows its text to #E1E1E1.</span></li>
     </ul>
     {call("strip","2. The tab strip, built","Does it stand?","",STAND)}
     <details class="tech"><summary>Technical</summary><ol>
