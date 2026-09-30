@@ -101,3 +101,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-09-30-309-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-29-309-metric-was-built-and-the-checks-run-before-the-push.md`. Memory hook: `notes/_lanes/309/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/309/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #310: the arrow, the dark ground and the loose ends`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **841, newest `s309-D7`**.
+
+1. ✅ **CI IS GREEN.** `b973f27a` run `36715837052`, all three jobs (release, gates, render), read by `_ci_readback.py` at 12:51 UTC (`notes/_lanes/309/W/_ci-runs-b973f27a.txt`). The wrap commit `2e90d6d5` has no run of its own: CI runs on a push's tip.
+2. ✅ **THE OWED READ ON `fc203264` IS GREEN:** run `36713414485`, all three jobs, the render job finishing 12:27:57 UTC (`notes/_lanes/309/W/_ci-runs-fc203264.txt`). The [131] red on `99ba4a6e` is closed.
+3. ⛔ **THE WRAP COMMIT IS `2e90d6d5`, ON THE `--wrap` PATH** (gate `247 in scope · 0 fail · 49 warn`), 19 paths plus the auto-staged rehearsal log, in one run of 114 s. **`b973f27a` carries the seat's 33 files** under `notes/_lanes/309/W/`, split off on the #308 lesson (keep a `--wrap` run under about 30 paths). Both passed first time.
+4. **THE PUSH: `fc203264..b973f27a`**, plain `git push origin master`, fast-forward checked first, `git ls-remote` = local HEAD, at 12:36:20 UTC, **22.1 minutes from the launch** (12:14:17 UTC); the summary went at the CI read, **36.9 minutes**.
+5. **Phase-1 counts:** scripts written **0** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b** · hand steps **1** (one carry item reworded, W report § 3) · commits **2 for the wrap**.
+6. ⚠ **`_CHAIN.md` IS 7,947 cl100k, OVER THE 7,700 WARN** (`CHAIN_BUDGET_TK`, `s212-D11`) by 247, under the 10,000 fail. The date-split line and the longer delta are the growth. Stated, not trimmed.
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the brief's `Apollo - #310: the arrow, the dark ground and the loose ends`. `_gen_titles.py` derived `Apollo - #310: the arrow — thin line or filled triangle, in the rag ink?`. Declared, not reconciled. The retrospective rename it derived for this chat: `Apollo - #309: metric was built, the arrow took the rag ink, and the checks run before the push`.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads are in `notes/_lanes/309/W/_work/`; the note is at `notes/_lanes/309/WRAP-MEMORY-HOOK.md`.
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

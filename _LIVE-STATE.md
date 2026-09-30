@@ -95,7 +95,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI.** Red on `528e8318` ([10], ASSERT-009 138 → 139 for metric.meta.json; re-based `054aee4b`, green) and on `99ba4a6e` ([131], lane G's regen left `knowledge/_graph-mark-observations.jsonl` uncommitted; `fc203264`). ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **133,692** · 160,000 at 20:50 Tue · **300,000 at 10:39 Wed** · 320,000 at 11:48 · **326,997 at his "i think we need to wrap"** (13:08), under the hard 350,000 by 23,003. subs 1,780,076 (n=6).
 
-> ⛔★ **5b —** PLACEHOLDER-309W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`2e90d6d5`** (`--wrap`, gate `247 in scope · 0 fail · 49 warn`) and **`b973f27a`** (the seat's files); pushed `fc203264..b973f27a` at 12:36:20 UTC. **CI on `b973f27a`, run `36715837052`: GREEN, all three jobs.** The owed read on `fc203264` (run `36713414485`): GREEN. `_CHAIN.md` 7,947 cl100k after the wrap's regen, over the 7,700 warn by 247. This addendum's CI is owed to #310.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-09-29-309-metric-was-built-and-the-checks-run-before-the-push.md`. Handoff: `_HANDOFF-160-metric-was-built-and-the-checks-run-before-the-push.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/309/DAVE-*.md`. Lane reports: `notes/_subreports/2026-09-29-309-{B,C}-*.md`, `notes/_subreports/2026-09-30-309-{D,E,F,G}-*.md`. Wrap: `notes/_subreports/2026-09-30-309-W-wrap.md`.**
 
