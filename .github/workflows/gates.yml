@@ -435,6 +435,39 @@ jobs:
         continue-on-error: true
         run: python3 knowledge/_probe_registry/_registry.py --run
 
+      # ---- SEVENTH ENTRY, 2026-10-01 (#311 lane A7, _HANDOFF-161 item 8 "hit-area has never run in
+      # CI"). AN ADDITION; nothing above is found false. `_validate_hit_area.py` (the 44px minimum,
+      # RENDERED geometry) has been in `_build_all.STEPS` since #209, but that step lives in the
+      # `gates` job, which has no browser: its only CI outcome was the declared 77 COULD-NOT-ASK,
+      # so the instrument never measured anything in CI. This job installs chromium, so the sweep
+      # goes HERE, and `_validate_hit_area.py`'s own 77 message has always named this job as the
+      # proof of record. It stays ADVISORY — `continue-on-error` mirrors the tier in the script's
+      # header (1,045 findings on the 137 snippets at the 2026-10-01 regeneration; ⬛ promoting it
+      # to BLOCKING, or remedying what it finds, is DAVE'S). What changes is that a red or a
+      # refusal is a visible failed step with its report uploaded, not a check nobody ran.
+      # ⚠ The sweep rewrites `knowledge/_HIT-AREA-ADVISORY.md` in the CI checkout only; the
+      # committed copy is regenerated at the seat. The CI copy rides along as an artifact.
+      - name: Hit-area sweep — 44px minimum on rendered geometry (ADVISORY; wired into CI #311)
+        continue-on-error: true
+        run: |
+          python3 knowledge/_validate_hit_area.py --selftest 2>&1 | tee hit-area-selftest.log
+          st=${PIPESTATUS[0]}
+          python3 knowledge/_validate_hit_area.py --all --out knowledge/_HIT-AREA-ADVISORY.md 2>&1 | tee hit-area-sweep.log
+          sw=${PIPESTATUS[0]}
+          exit $(( st != 0 ? st : sw ))
+
+      - name: "Upload hit-area report — evidence, not a gate"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hit-area-advisory
+          path: |
+            hit-area-selftest.log
+            hit-area-sweep.log
+            knowledge/_HIT-AREA-ADVISORY.md
+          if-no-files-found: warn
+
+
   # Release job — added #219 R2 (s219-D4(3), "CI both halves"). See the FOURTH ENTRY in the
   # header for why these two things had no instrument until now.
   #
