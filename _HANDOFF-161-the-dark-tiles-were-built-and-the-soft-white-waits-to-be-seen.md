@@ -102,3 +102,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-09-30-310-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-30-310-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md`. Memory hook: `notes/_lanes/310/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/310/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #311: the soft white and the tab strip, built and shown`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **849, newest `s310-D8`**.
+
+1. ✅ **CI IS GREEN.** `4ece47a5` run `36748452503`, all three jobs (release, gates, render), read by `_ci_readback.py` at 17:16 UTC (`notes/_lanes/310/W/_ci-runs-4ece47a5.txt`). The wrap commit `b40bddc2` and the conductor's `69173275` have no run of their own: CI runs on a push's tip.
+2. ✅ **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST** (Worker checklist step 5, in a `/tmp` clone at `4ece47a5`): the survey over 167 steps, 155 pass, 0 FAIL, 0 timed out, 3 advisory (the pre-existing 140, 150, 163), 9 could-not-ask; `test_gates` 32 of 32; the evidence gate PASS. No snippet or `canon.css` changed, so no state-contrast sweep. Logs: `notes/_lanes/310/W/_prepush-*.txt`.
+3. ⛔ **THE WRAP COMMIT IS `b40bddc2`, ON THE `--wrap` PATH** (gate `248 in scope · 0 fail · 31 warn`), 19 paths plus the auto-staged rehearsal log, 91 s. **`4ece47a5` carries the seat's files and the two lane briefs** (34 paths, 87 s). Both passed first time.
+4. **THE PUSH: `44696966..4ece47a5`**, plain `git push origin master`, fast-forward checked first, `git ls-remote` = local HEAD, at 17:01:30 UTC, **21.7 minutes from the launch** (16:39:51 UTC); the summary went at the CI read, **36.5 minutes**.
+5. **Phase-1 counts:** scripts written **0** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b** · hand steps **0** · commits **2 for the wrap**.
+6. ⚠ **`_CHAIN.md` IS 7,824 cl100k, OVER THE 7,700 WARN** (`CHAIN_BUDGET_TK`, `s212-D11`) by 124, under the 10,000 fail, and 123 under #309's 7,947, at the wrap's regen; **7,988** after this addendum's own regen (the filled 5b line), under #309's 8,105. Stated, not trimmed.
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the brief's `Apollo - #311: the soft white and the tab strip, built and shown`. `_gen_titles.py` derived `Apollo - #311: build the soft white and the tab strip, then show him`. Declared, not reconciled. The retrospective rename it derived for this chat: `Apollo - #310: the dark tiles were built, and the soft white waits to be seen`.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads are in `notes/_lanes/310/W/_work/`; the note is at `notes/_lanes/310/WRAP-MEMORY-HOOK.md`.
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.** ⚠ The clone `/tmp/pp310w` was left in place (this seat runs no `rm`); it lives outside the mount.
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

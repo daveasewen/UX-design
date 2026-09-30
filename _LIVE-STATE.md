@@ -96,7 +96,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI AND THE FILL.** Red on `93cdb12a` (step 88, `_node_titles.json` stale after the inscription; the conductor pushed without its pre-push check); lane B's `7e4602db` fixed it; `44696966` GREEN, all three jobs. ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **135,179** (over the ceiling by 179) · 160,000 at 14:03 · **300,000 at 14:47** · 320,000 at 16:24 · ⛔ **350,000 at 17:17** · **372,194 at his "wrap"** (17:38), past the hard line by 22,194. subs 647,656 (n=2).
 
-> ⛔★ **5b —** PLACEHOLDER-310W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`b40bddc2`** (`--wrap`, gate `248 in scope · 0 fail · 31 warn`) and **`4ece47a5`** (the seat's files); the pre-push check on the wrap's tree first (155 pass, 0 FAIL, 32 tests); pushed `44696966..4ece47a5` at 17:01:30 UTC, carrying `69173275`. **CI on `4ece47a5`, run `36748452503`: GREEN, all three jobs.** `_CHAIN.md` 7,824 cl100k after the wrap's regen, over the 7,700 warn by 124. This addendum's CI is owed to #311.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-09-30-310-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md`. Handoff: `_HANDOFF-161-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/310/DAVE-*.md`. Lane reports: `notes/_subreports/2026-09-30-310-A-dark-tiles.md`, `notes/_subreports/2026-09-30-310-B-white-ink-and-tab-strip.md`. Wrap: `notes/_subreports/2026-09-30-310-W-wrap.md`.**
 
