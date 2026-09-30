@@ -167,23 +167,23 @@ const insBtn = f1.panel.querySelectorAll('[data-af-inspect]')[0];
 f1.panel.fire('click', { target: insBtn });
 ok('inspector toggles on', f1.inspect === true && f1.layer.getAttribute('data-inspect') === 'true');
 
-/* .cn-stat-card > .stat-card > .amt — copied from the canon dashboard's own markup */
-const tile = mkEl(hostDoc, 'section'); tile.className = 'c-bento__tile dashboard-tile cn-stat-card';
-const card = mkEl(hostDoc, 'div'); card.className = 'stat-card';
-const amt = mkEl(hostDoc, 'span'); amt.className = 'amt t-cm-figure-4';
+/* .cn-metric > .metric > .metric-val — copied from the canon dashboard's own markup (s309-D3: its stat tiles moved to Metric) */
+const tile = mkEl(hostDoc, 'section'); tile.className = 'c-bento__tile dashboard-tile cn-metric';
+const card = mkEl(hostDoc, 'div'); card.className = 'metric';
+const amt = mkEl(hostDoc, 'span'); amt.className = 'metric-val t-cm-figure-4';
 hostDoc.body.appendChild(tile); tile.appendChild(card); card.appendChild(amt);
 
 hostDoc.fire('pointerover', { target: amt });
 ok('tooltip shows for a nested descendant', f1.tip.style.display === 'block');
-ok('names the ANCESTOR component', f1.tip.innerHTML.indexOf('Stat card') > -1);
-ok('shows the class', f1.tip.innerHTML.indexOf('.cn-stat-card') > -1);
+ok('names the ANCESTOR component', f1.tip.innerHTML.indexOf('Metric') > -1);
+ok('shows the class', f1.tip.innerHTML.indexOf('.cn-metric') > -1);
 ok('DEFAULT-SAFE path says so, not an error', f1.tip.innerHTML.indexOf('class-name only') > -1);
 ok('highlight box placed', f1.box.style.display === 'block');
 
 f1.meta = META.components; f1.metaState = 'full';
 hostDoc.fire('pointerover', { target: amt });
 ok('with the REAL generated map: purpose appears',
-  f1.tip.innerHTML.indexOf('The dashboard tile for one headline number') > -1);
+  f1.tip.innerHTML.indexOf('One headline number as one block') > -1);
 ok('with the map: category + token verdict appear',
   f1.tip.innerHTML.indexOf('molecule') > -1 && f1.tip.innerHTML.indexOf('tokens PASS') > -1);
 

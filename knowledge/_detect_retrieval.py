@@ -892,8 +892,10 @@ def selftest(snippet_dir):
     # does not measure what it claims to.
     repo = os.path.dirname(os.path.abspath(snippet_dir))
     repo = os.path.dirname(repo) if os.path.basename(repo) == "knowledge" else repo
-    pair = [os.path.join(repo, "dashboards", "international-banking-dashboard.%s.html" % s)
-            for s in ("canon", "regen-v1")]
+    # #309 D (s309-D3): the live demo's stat tiles moved to Metric, so the pair's hand half is the
+    # demo FROZEN as it stood when regen-v1 was rebuilt from it (b690a19b), kept as a fixture.
+    pair = [os.path.join(repo, "knowledge", "_tests", "retrieval", "international-banking-dashboard.canon-227.html"),
+            os.path.join(repo, "dashboards", "international-banking-dashboard.regen-v1.html")]
     if all(os.path.isfile(p) for p in pair):
         rr = [grade_file(p, corpus) for p in pair]
         fid = [{f["family"]: f["fidelity"] for f in r["families"]
@@ -931,7 +933,7 @@ def selftest(snippet_dir):
     else:
         arms.append(("N/A ", "N/A ", ""))
         arms[-1] = ("N1-N3 real built-page arms", "N/A ",
-                    "dashboards/international-banking-dashboard.{canon,regen-v1}.html "
+                    "knowledge/_tests/retrieval/...canon-227.html + dashboards/...regen-v1.html "
                     "NOT PRESENT — the real-data arms did not run and prove nothing")
 
     # O · THIN EVIDENCE IS NEVER A PASS, driven on a REAL file end-to-end (arm L2 only

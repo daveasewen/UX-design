@@ -260,6 +260,10 @@ def compose(spec_path, out_path):
             text, _off = extract_element(html, r["select"])
         elif kind == "style":
             text, _off = extract_style(html)
+            # s258-D3: APOLLO-DEMO fenced CSS is showroom harness, never spliced - the same span
+            # gen_canon_components.py drops from canon (#309 D: Metric's style carries one).
+            text = re.sub(r"/\* ===== APOLLO-DEMO[^\n]*?START.*?APOLLO-DEMO[^\n]*?END ===== \*/", "",
+                          text, flags=re.S)
         elif kind == "behaviour":
             text, _off = extract_behaviour(html, r["behaviour"])
         else:
@@ -407,8 +411,8 @@ def selftest():
     ok = True
     d = tempfile.mkdtemp()
     spec = {"title": "selftest", "pack": "selftest", "regions": [
-        {"snippet": "Stat-card", "select": ".stat-card", "kind": "markup"},
-        {"snippet": "Stat-card", "kind": "style"}]}
+        {"snippet": "Metric", "select": ".metric", "kind": "markup"},
+        {"snippet": "Metric", "kind": "style"}]}
     sp = os.path.join(d, "spec.json")
     json.dump(spec, open(sp, "w"))
     out = os.path.join(d, "page.html")
@@ -416,9 +420,9 @@ def selftest():
     page = open(out, encoding="utf-8").read()
 
     # A — the spliced markup is byte-identical to the snippet's own bytes
-    snip = open(snippet_path("Stat-card"), encoding="utf-8").read()
-    want, _ = extract_element(snip, ".stat-card")
-    got, _ = VR.region_bytes(page, "Stat-card#1")
+    snip = open(snippet_path("Metric"), encoding="utf-8").read()  # s309-D3: the stat card moved to Metric
+    want, _ = extract_element(snip, ".metric")
+    got, _ = VR.region_bytes(page, "Metric#1")
     a = (got.strip() == want.strip()) and want in snip
     ok &= a; print(("  ✅ " if a else "  ❌ ") + "A  splice is byte-identical to the snippet")
 

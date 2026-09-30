@@ -1306,13 +1306,14 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     a('<section class="band"><div class="wrap">')
     a('<p class="label">Progress toward atomic</p>')
     a("<h2>The counts that move</h2>")
-    a('<div class="cn-stat-card"><div class="board" style="max-width:none">')
+    a('<div class="cn-metric"><div class="board" style="max-width:none">')
 
     def card(label, value, note):
-        a('<div class="stat-card" role="group" aria-label="%s">' % E(label))
-        a('<p class="lbl16 t-cm-caption">%s</p>' % E(label))
-        a('<span class="amt t-cm-figure-3"><span>%s</span></span>' % E(value))
-        a('<span class="delta"><span class="t-cm-figure-6">%s</span></span>' % E(note))
+        # s309-D3 (#309 D): the counts are Metric tiles (s308-D42); no delta here, so no arrow.
+        a('<div class="metric" role="group" aria-label="%s">' % E(label))
+        a('<p class="metric-lbl t-cm-caption">%s</p>' % E(label))
+        a('<span class="metric-val t-cm-figure-3"><span>%s</span></span>' % E(value))
+        a('<span class="metric-delta"><span class="t-cm-figure-6">%s</span></span>' % E(note))
         a("</div>")
 
     card("Rulings recorded", rulings["n"], "tail %s" % rulings["tail"]["id"])
@@ -1332,7 +1333,7 @@ def render(state, rulings, gaps, session, ratchets, tdebt, future, gates, wave, 
     if wave:
         card("The s142-D1 bind wave", "114/114", "claimed by %s, not measured here" % wave["id"])
     a("</div></div>")
-    a('<p class="sourceline">Mono <code>.cn-stat-card</code> from knowledge/canon/canon.css — the '
+    a('<p class="sourceline">Mono <code>.cn-metric</code> from knowledge/canon/canon.css — the '
       'gated component, unmodified. SOURCES · _rulings.json · _state.json · _binds-ratchet.json · '
       '_type_ratchet.json · the live _governs run.</p>')
     a("</div></section>")
