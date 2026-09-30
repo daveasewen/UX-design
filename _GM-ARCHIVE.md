@@ -1,5 +1,20 @@
 # GOOD-MORNING — banner archive
 
+## Batch 2026-09-30 #310
+
+> **COMMIT STATE #309:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the ⏱ LATEST DELTA's 5b line and in `notes/_subreports/2026-09-30-309-W-wrap.md`. **23 commits before the wrap, all declared not-a-wrap, all pushed:** `3457115c..fc203264` (listed in `notes/_lanes/309/W/COMMITS.txt`); CI red on `528e8318` and `99ba4a6e`, each fixed by the next conductor commit; `fc203264` read by this seat in the 5b. Handoff `_HANDOFF-160-metric-was-built-and-the-checks-run-before-the-push.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **326,997 real at his "i think we need to wrap" — a hand sum; past the stop and the limit, under the hard 350,000 by 23,003.**
+
+> ## ★ PRIOR — 2026-09-29 (Tue **#308**, ONE DAY, Opus 5.5 conductor in the CLOUD, **8 subs**, DELEGATED wrap on Opus 5.5 — ★★ **HE RULED THE EDGES, THE DRIFT AND THE CARDS, AND THE BUILD IS WHAT IS LEFT**)
+>
+> - ★★★ ① **44 RULINGS IN ONE DAY, `_rulings.json` 790 → 834 (`s308-D1`..`D44`).** His 15 picture-page answers (D1..D15); the nine edge-definition calls, twice, after his Ubuntu challenge found Canonical's Design System Ontology (D16..D28); Common is legacy by alias (D25); the old claim tables rebuilt and made blocking (D29, D30); the foundations drift (D31..D33); five edge questions (D34..D38); cards and tiles (D39..D43); "housing" and "cell" (D44).
+> - ★★ ② **BUILT TODAY:** the edge register (65 types, 11,543 edges pass, items 1 to 4), the default icons 15 of 15 in the graph, the claim-table checker judging each row at its own commit (blocking), the colour reader fixed and the logos page with 8 marks (page check blocking). 34 commits `417ce218..4e4634b8`, all pushed; CI green on `4e4634b8`, all three jobs.
+> - ⚠ ③ **FIVE CI REDS WERE FOUND AND FIXED IN SESSION, EACH A LESSON** (ambiguous anchors, a comment in canon.css pinned by the chart receipts, `gen_kg_sources` outside the regen serial, two checks over the survey's 60 s cap). FILL 475,220 at his "yea lets wrap" (hand sum, `_wrap_facts.py`), over the hard 350,000 line by 125,220. **`_HANDOFF-159-he-ruled-the-edges-and-the-cards-and-the-build-waits.md` OUTRANKS `_CHAIN.md`.**
+> **residual → #309:** ⬛ **BUILD THE CARDS AND TILES** [NEW — 0] — put it first. `s225-D2`. **424 items by `_carry_items`, 5 new (which count from #310: `[NEW — 0]` carries no age the reader matches), 2 STRUCK (the picture page, the logos page)**, `_CARRIES.md` § `residual → #309` `carries:residual-309`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#309:**' in l][0])))"` = 424.
+> **residual (GENERATED #308):** 2c OK (banners 2/2) · 2d OK (deltas 3/3) · 2f OK (strata 1, log #307) — _roll_state.py · 2026-09-29
+
+
+*Rolled at the #310 wrap (2c, ritual 2026-09-30). The old ★ PRIOR banner, moved VERBATIM by `_gm_move.py` — a move, never a rewrite.*
+
 ## Batch 2026-09-29 #309
 
 > **COMMIT STATE #308:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the ⏱ LATEST DELTA's 5b line and in `notes/_subreports/2026-09-29-308-W-wrap.md`. **34 commits before the wrap, all declared not-a-wrap, all pushed:** `417ce218..4e4634b8` (listed in `notes/_lanes/308/W/COMMITS.txt`); CI green on `4e4634b8`, all three jobs, by the conductor's read. Handoff `_HANDOFF-159-he-ruled-the-edges-and-the-cards-and-the-build-waits.md` OUTRANKS `_CHAIN.md`. Context gauge at authoring: ⚙ **475,220 real at his "yea lets wrap" — a hand sum; over the hard 350,000 line by 125,220.**

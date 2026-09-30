@@ -1,0 +1,104 @@
+# HANDOFF #161 — #310 → #311 — THE DARK TILES WERE BUILT, AND THE SOFT WHITE WAITS TO BE SEEN
+
+provenance: 310 · 2026-09-30
+status: observed
+
+*Written by the delegated OPUS 5.5 wrap seat at the close of #310 (conductor Opus 5.5, a CLOUD session linked to Dave's computer). Every figure is from `notes/_lanes/310/W/FACTS.json` (`_wrap_facts.py`) unless it says otherwise; the lanes' figures are the lanes'.*
+
+**One day, no date split.** Opened Wednesday 2026-09-30 14:02 BST (`_HANDOFF-160`, chat "Good Morning!"); his word at 17:38 BST, verbatim: *"wrap"*, answering the conductor's *"Yours: wrap now?"* after it reported the fill past the hard line.
+
+⛔ **`knowledge/_rulings.json` READS 849**, newest `s310-D8` (841 at the opener). Every one of `s310-D1`..`D8` is his, from a chat line or his review export, kept verbatim in `notes/_lanes/310/DAVE-*.md`. **Quote them; never paraphrase.**
+
+⛔★ **#311'S FIRST BEAT: READ THE `CI owed:` LINE AT THE FOOT, THEN BUILD `s310-D7` AND `s310-D8` AND SHOW HIM.** Both are RULED NOT ENACTED. His page note on the export that ruled them, verbatim: *"i need to see this"*. Build them, then a picture page for his eye; neither stands until he has looked.
+
+⛔ **THE FILL IS A HAND SUM BY `_wrap_facts.py`**, over the conductor's cloud transcript `/root/.claude/projects/-home-claude/bf88163f-4d53-515a-815f-99c7d9c614d0.jsonl`, copied to the gitignored `knowledge/_tmp/wrap310/`: **boot 135,179** (OVER the 135,000 ceiling by 179) · 160,000 at 14:03 · **300,000 at 14:47** (the message that launched lane A) · 320,000 at 16:24 · ⛔ **350,000 at 17:17** · **372,194 at his "wrap"** (17:38), past the hard 350,000 (`s305-D62`) by 22,194 · 383,092 at the launch of this seat. ⚠ The brief typed 366,307; the hand sum is 5,887 higher and stands. The conductor did not read the fill between lanes and noticed only at 17:35. subs 647,656 real (n=2, quota, never added).
+
+---
+
+## ⛔ READ FIRST, IN THIS ORDER
+
+1. **This file.** It is newer than `_CHAIN.md` and **OUTRANKS it**.
+2. `_CHAIN.md` — the read contract (header → ★ LATEST banner → ⏱ LATEST delta).
+3. ⛔ **It does NOT replace `_HANDOFF-130`…`-160`.** Every open item on those still stands **except the ones struck with receipts**: this wrap strikes `_HANDOFF-160` OWED items 1, 2, 3 and 7 (the arrow, up-is-bad, the dark ground, the review route), in `_CARRIES.md` § `residual → #311` and by addition at the foot of `_HANDOFF-160`.
+4. **His words:** `notes/_lanes/310/DAVE-WORDS-2026-09-30-1403.md` · `notes/_lanes/310/DAVE-RULINGS-2026-09-30-1443-the-dark-ground.md` · `notes/_lanes/310/DAVE-WORDS-2026-09-30-1624.md` · `notes/_lanes/310/DAVE-RULINGS-2026-09-30-1735-white-ink-and-tab-strip.md`.
+5. `_CARRIES.md` § `residual → #311` when you need the bodies. Fetch the section; do not read it at boot.
+6. The lane reports, when the work needs them: `notes/_subreports/2026-09-30-310-A-dark-tiles.md` · `notes/_subreports/2026-09-30-310-B-white-ink-and-tab-strip.md` · this wrap's `notes/_subreports/2026-09-30-310-W-wrap.md`.
+
+---
+
+## ⛔⛔ HIS WORDS (chat lines; the exports are in the files above)
+
+> 14:02 — Good Morning!
+
+> 14:03 — the rhin arrow from the icon assets *(answering "Yours: thin arrow, or the filled triangle back?")*
+
+> 14:07 — I think your logic is sound, its positive and negative news, not up and down *(answering "Yours: switch Net FX exposure to "up is bad"?")*
+
+> 14:14 — go *(build the dark-ground review page)*
+
+> 14:43 — (his review-page export, `DAVE-RULINGS-2026-09-30-1443-the-dark-ground.md`) call 2 chose *"Your reading: dark grey ground, black tiles (the recommendation)"*, comment *"I actually like both lets have the mirror as default but the other is an option both are valid. In teh edit mode we create we can have this as an option and it can be prompted in chat too"* · call 3 *"Yes (the recommendation)"*, comment *"see the note before"*
+
+> 16:24 — 1. lets do that for now, I have some proper specs for this but cant access the figma files at teh moment
+> 2. we can avoid halation by choosing a different white ink maybe, of maybe we reverse the decision, I think we need a review of the options.
+> 3. I need to see this, it gets complicated when we have page backgrounds and bento sections
+> 4. yes
+
+> 16:56 — there is a halation tool in the repo that might help us select the white ink btw
+
+> 17:35 — (his review-page export, `DAVE-RULINGS-2026-09-30-1735-white-ink-and-tab-strip.md`) call 1 *"2b: text #E1E1E1 on black tiles (Mono, Console, Common); Supercharge keeps #F7F6F4 (the recommendation)"* · call 2 *"The strip takes its container's colour in both modes (the recommendation)"* · page note *"i need to see this"*
+
+> 17:38 — wrap
+
+---
+
+## WHAT THE SESSION DID
+
+- **The opener.** #309's owed CI read on `7608504f`: GREEN.
+- **The arrow (`s310-D1`).** The thin library `direction` arrow from the icon assets, the one lane D already drew at `d6d570bf`, byte-matched at the seat. ⚠ Found: the receipt page's arrow draws NOTHING (`<use href="#metric-up">`, no symbol). Owed item 3.
+- **Up-is-bad (`s310-D2`).** Net FX exposure on the banking demo is the first live up-is-bad metric; his reason is the rule: colour means good or bad news, not direction. Built in the seat (`7bc6b0c5`), measured light rgb(218,26,0) → rgb(19,127,60), dark rgb(246,96,76) → rgb(102,204,141). ⚠ The store still reads `ruled` for D2.
+- **The dark ground (`s310-D3`, `s310-D4`).** Measured first: the ground equalled the tiles in every theme (#1F1F1F; Supercharge #2A2621). The conductor's review page (`fce11443`, `24865ab8`) went into the artifact "Apollo 304 review" as v18: the #309 refusal did NOT recur. His 14:43 export ruled the mirror by default and the reverse an option.
+- **Lane A (Opus, `8db81543`, `8f9c2cd1`, `dcd9b688`, `6044a213`, `3b47aa5d`).** Dark tiles #000000 at the token source, Supercharge #13110E; the option `data-dark-tiles="grey"` registered under `options` in `knowledge/tokens/themes/_themes.json`, the first page-option register, which the fork-ban gate now reads as a sanctioned axis; 51 of 137 components change in dark; 27 chart receipts fresh; its review page (`notes/_REVIEW-310-A-dark-tiles-2026-09-30-v1.html`) → artifact v19 with four calls.
+- **His 16:24 answers.** `s310-D5`: the interim pressed tile #25211C (he has Figma specs he cannot reach). `s310-D6`: the option named and homed. ⛔ **The conductor pushed `93cdb12a` WITHOUT its own pre-push check → CI RED at step 88** (`_node_titles.json` stale after the inscription); lane B's `7e4602db` fixed it; `44696966` pushed and GREEN.
+- **Lane B (Opus, `896b2b0e`, `9a0ebe86`, `10821801`, `7e4602db`, `9b61f39c`, `44696966`).** `s310-D5` built; one review page (`notes/_REVIEW-310-B-white-ink-and-tab-strip-2026-09-30-v1.html`): five white-ink options with contrast, the tab strip on page, bento, tile and section grounds. On his 16:56 pointer the conductor added the repo's halation tool, `reviews/_rag_bloom_model.py`: the ink is the lever, the tile barely moves the bloom (#FFF 29 on black or grey; #E1E1E1 16.5). Artifact v20.
+- **His 17:35 export.** `s310-D7` and `s310-D8`, RULED NOT ENACTED (`69173275`, with the node titles and the rulings page; not pushed until the wrap).
+
+| Range | What |
+|---|---|
+| `7bc6b0c5..69173275` | 17 commits (`notes/_lanes/310/W/COMMITS.txt`); pushed through `44696966`, `69173275` rides the wrap push |
+| *the wrap* | § POST-WRAP |
+
+---
+
+## ⬛ OWED TO #311, IN ORDER — EACH WRITTEN AS THE QUESTION IT IS
+
+1. ⬛★★★ **Mine, first beat: build `s310-D7` and `s310-D8`, then show him before they stand.** D7: dark `text/default` and `text/secondary` → neutral step 12, #E1E1E1; Supercharge keeps #F7F6F4; the two literal-white chevrons in the banking demo must follow. D8: `tabs/background` → the container; re-point Tabs' contrast pairs. Then a picture page for his eye: *"i need to see this"*.
+2. ⬛★★ **Dave's: should Supercharge's dark page read its own near-black, not #1A1A1A?** `gen_theme_cascade.py` `_expand_aliases` locks `background/default` after its light half only. Fixing it moves every Supercharge dark page, and with it Supercharge's `surface/section` (= the tile, #13110E) makes tiles vanish on a section background. One decision, with pictures.
+3. ⬛ **Mine, small: can the receipt page's blank arrow and the older looks be fixed?** The missing `metric-up` symbol, plus W-309g4 (the chart script, and the splice markers dropping a rule each; the one-tile group is his) and W-309g3 (the filters onto one row).
+4. ⬛ **Dave's, when he can reach Figma: what replaces the interim #25211C (`s310-D5`)?**
+5. ⬛ **The designer pack re-cut towards the end of the week (`s309-D4`):** it now carries Metric, the kinds, the logos fix, the dark tiles and whatever of D7 and D8 he has seen.
+6. ⬛ **Future, recorded not ordered: when do edit mode and a chat prompt read the `options` register?** His 14:43 comment, `s310-D3`.
+7. ⬛ **Found, not fixed:** Template-error hard-codes `--surface:#1F1F1F`; the showroom panes cannot show options (`snippet_theme_css()` projects themes only); `_drive_chart_engine.py` hard-codes `channel="chromium"` (lane A's wrapper `outputs/310/A/drive_wrap.py`); the avatar disc 1.03:1 on grey tiles; `_state.py` has no add-row command (rows hand-inserted twice); `s310-D2` still reads `ruled`.
+8. ⬛ **Everything still standing from `_HANDOFF-160` items 5 to 8:** container types (W-308iw); `_HANDOFF-159` OWED 3 to 6; hit-area has never run in CI; the stat card's old drawing.
+
+---
+
+## ⚠ THINGS A COLD SEAT SHOULD KNOW BEFORE IT TOUCHES ANYTHING
+
+- ⛔★★ **AN INSCRIPTION IS NOT DONE UNTIL `python3 knowledge/gen_kg_titles.py --write` AND `python3 knowledge/_render_rulings.py` RUN AND COMMIT WITH IT.** CI went red at step 88 on `93cdb12a`.
+- ⛔★★ **THE CONDUCTOR'S OWN PUSH RUNS THE PRE-PUSH CHECK TOO.** `s309-D7` names lanes; this session's red was a conductor push.
+- ⛔★★ **READ THE FILL BETWEEN LANES:** at the cloud seat, sum `cache_read + cache_creation + input` on the last usage record of the conductor transcript. This session crossed the hard line at 17:17 unseen.
+- ✅ **REVIEW PAGES REACH HIM THROUGH THE ARTIFACT:** mirror the published tree under `/home/claude/apollo-review/`, stage the page and its PNGs from the seat, edit `index.html` (read it with Artifact read `path: index.html`, strip the service wrapper), publish with `root` plus a `files` map. Pictures inline `<img>` only, no links to PNGs. v18 to v20 went through.
+- ✅ **THE HALATION TOOL IS `reviews/_rag_bloom_model.py`.** Load its functions without running its prints: `notes/_lanes/310/C/bloom_options.py`.
+- ⚠ **Commit msgfile line 1 carries NO `#310 date —` prefix** (the script adds it; a reused file is refused); non-wrap commits need `SESSION_N=<n>`. `/dev/shm` does not persist between device_bash calls. Supercharge's dark block out-specifies a plain `[data-theme="dark"]` override (renders need `!important`).
+- ⚠ **The state-contrast sweep takes about 2 min per slice at the seat:** three or four slices per call.
+- ⛔ **`device_bash` DEFAULTS TO A 120 s TIMEOUT.** Pass `timeout_ms` (up to 178000) on a commit.
+- ⛔★★ **NEVER RUN `git status`.** After every gate run, `python3 knowledge/_wrap_commit.py unlock --tag <n>-<seat>`.
+- ⛔ **Window lines (`s305-D62`, `s305-D64`):** stop 300,000 · limit 320,000 · hard 350,000 · `BOOT_CEILING_TK` 135,000. This session booted 179 over the ceiling and crossed all three lines.
+- ⛔ **Project memory: none at the opener, none while the chat is live.** The note is placed only after he says he is done.
+- ⚠ **Other-seat paths stay dirty by declaration** (the W report names them); the transcripts in `knowledge/_tmp/wrap310/` are gitignored.
+
+---
+
+*Filed report: `notes/_subreports/2026-09-30-310-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-30-310-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md`. Memory hook: `notes/_lanes/310/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/310/W/FACTS.json`.*
+
+*Title the next chat:* `Apollo - #311: the soft white and the tab strip, built and shown`

@@ -119,3 +119,12 @@ status: observed
 9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ STRUCK AT THE #310 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+- ~~OWED item 1, the arrow's shape~~ ⛔ **STRUCK #310 2026-09-30 BY THE WRAP SEAT** — his 14:03 *"the rhin arrow from the icon assets"* is `s310-D1`: the thin library direction arrow stays (`7bc6b0c5`).
+- ~~OWED item 2, which live metrics are "up is bad"~~ ⛔ **STRUCK #310 2026-09-30 BY THE WRAP SEAT** — his 14:07 *"I think your logic is sound, its positive and negative news, not up and down"* is `s310-D2`: Net FX exposure, built at `7bc6b0c5`.
+- ~~OWED item 3, the dark ground and tile colour~~ ⛔ **STRUCK #310 2026-09-30 BY THE WRAP SEAT** — his 14:43 export is `s310-D3` and `s310-D4`; lane A built both (`8db81543`..`3b47aa5d`); W-309g2 closed. The white ink and the tab strip (`s310-D7`, `s310-D8`) are `_HANDOFF-161`'s first item.
+- ~~OWED item 7, the review surface~~ ⛔ **STRUCK #310 2026-09-30 BY THE WRAP SEAT** — the three #310 review pages reached him through the artifact "Apollo 304 review", v18 to v20. Items 4, 5, 6 and 8 stand; `_HANDOFF-161` carries them.
