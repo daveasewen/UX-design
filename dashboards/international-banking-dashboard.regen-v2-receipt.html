@@ -130,8 +130,8 @@
    "source": "knowledge/snippets/Metric.reference.html",
    "select": null,
    "behaviour": null,
-   "hash": "sha256:a9e4133122927eda02b75d2df643c419db4ceeeacd433235c4e78e69101e509b",
-   "bytes": 16938,
+   "hash": "sha256:af49f4c947f053f64ff037ed8b58c68c1539e671af423cdcfe72bb8653fcf9e3",
+   "bytes": 18049,
    "variant": null,
    "props": null,
    "script": null,
@@ -201,14 +201,14 @@
    "snippet": "Metric",
    "kind": "markup",
    "source": "knowledge/snippets/Metric.reference.html",
-   "select": ".metric",
+   "select": ".compact",
    "behaviour": null,
-   "hash": "sha256:0b19e90c6aed2ae8d8978d453be1d632b18b2ab5c03fa96957324b55c5fb7607",
-   "bytes": 1545,
-   "variant": "figure-4 display",
+   "hash": "sha256:23b639012d3973cc1435e0fe3f67fb53dd2acf3e935ac32efe567d0ec0d06d1d",
+   "bytes": 452,
+   "variant": "compact (the DP-06 four-tile row, s246-D5)",
    "props": {
     "delta": "up",
-    "trend": true
+    "trend": false
    },
    "script": null,
    "$scriptNote": "no ADDRESS exists to declare: the snippet carries no AUTO-BEHAVIOUR block, and meta `behaviour` is untyped prose (meta.schema.json:197). Typing it is s234-D5 (L2)."
@@ -642,8 +642,17 @@
   .metric-delta.up .glyph svg{transform:rotate(45deg) scale(.78);}
   .metric-delta.down .glyph{color:var(--neg-ink);}
   .metric-delta.down .glyph svg{transform:rotate(-45deg) scale(.78);}
-  .metric-delta.flat .glyph{color:var(--text); opacity:var(--alpha-60);}
+  /* NO CHANGE IS FULL INK (s309-D6, Dave by click: 'Full ink, as ruled'; s182-D3 'the default ink
+     near-black ... white on dark'). It was drawn at alpha-60 until #309. */
+  .metric-delta.flat .glyph{color:var(--text);}
   .metric-delta.flat .glyph svg{transform:scale(.78);}
+  /* UP IS BAD — ONE OPTIONAL SETTING (s309-D5, Dave by click: 'Let a metric say up is bad').
+     A class on the tile, .metric.up-is-bad, for a figure where a rise is bad news (a cost, a risk).
+     A rise takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow
+     still points the way the number moved, and the sign and the word are untouched. The default
+     stays colour by direction. No new colour: the same two canon RAG inks, swapped. */
+  .metric.up-is-bad .metric-delta.up .glyph{color:var(--neg-ink);}
+  .metric.up-is-bad .metric-delta.down .glyph{color:var(--pos-ink);}
   .metric-per{margin:0 0 0 4px; opacity:var(--alpha-60);}
 
   /* ---- the spark slot. The atom carries no width (s184-D1); the SLOT does. ---- */
@@ -660,6 +669,10 @@
   .spark-inline[data-trend="up"] .dv-area{fill:var(--pos-ink);}
   .spark-inline[data-trend="down"] .dv-series{stroke:var(--neg-ink);}
   .spark-inline[data-trend="down"] .dv-area{fill:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="up"] .dv-series{stroke:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="up"] .dv-area{fill:var(--neg-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="down"] .dv-series{stroke:var(--pos-ink);}
+  .metric.up-is-bad .spark-inline[data-trend="down"] .dv-area{fill:var(--pos-ink);}
 
   /* ---- THE TARGET / PROGRESS ROW (new #261) — NO HUE AT ALL. The track is border/subtle, the
      fill is standing ink, the target tick is standing ink at 60%, and the figure is spelled out
@@ -1261,21 +1274,10 @@
         </div>
 <!-- ===== APOLLO-SPLICE Page-header-lockup#markup END ===== -->
 <!-- ===== APOLLO-SPLICE Metric#markup START (source=knowledge/snippets/Metric.reference.html kind=markup) ===== -->
-<div class="metric" role="group" aria-label="Net cash flow, March">
-      <p class="metric-lbl t-cm-caption">Net cash flow</p>
-      <span class="metric-val t-cm-figure-4"><span class="unit">+£</span><span>2,450.00</span></span>
-      <span class="metric-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-up"/></svg></span><span class="t-cm-figure-6">+12.4% up</span><span class="metric-per t-cm-legal">vs February</span></span>
-      <div class="metric-spark">
-        <!-- The sparkline atom at its INLINE scale. PASSIVE and aria-hidden by design (s184-D1:
-             "INLINE-44px KPI SPECIMEN STAYS PASSIVE") — the tile's value and delta carry the
-             meaning; the line is ambient. Trend is read from FIRST vs LAST datum and DECLARED as
-             data-trend, so colour is never the only channel. -->
-        <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-          <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-          <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
-          <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
-        </svg>
-      </div>
+<div class="metric compact" role="group" aria-label="Active payees">
+      <p class="metric-lbl t-cm-legal">Active payees</p>
+      <span class="metric-val t-cm-figure-3"><span>34</span></span>
+      <span class="metric-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-up"/></svg></span><span class="t-cm-figure-6">+2 up</span><span class="metric-per t-cm-legal">this month</span></span>
     </div>
 <!-- ===== APOLLO-SPLICE Metric#markup END ===== -->
 <!-- ===== APOLLO-SPLICE Chart-line#markup START (source=knowledge/snippets/Chart-line.reference.html kind=markup) ===== -->

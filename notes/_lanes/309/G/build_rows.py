@@ -1,0 +1,33 @@
+# #309 lane G - his two review-page comments as rows (items 3 and 5), quoted from the export, never retyped.
+import json, pathlib
+EXP = "notes/_lanes/309/DAVE-RULINGS-2026-09-30-1104-metric-and-the-arrow.md"
+PAGE = "notes/_REVIEW-309-metric-and-the-arrow-2026-09-30-v1.html"
+exp = open(EXP).read()
+c3a = "1. the filters are stacking vertically here"
+c3b = ("2. theres no tile colour in dark mode, if there is I cant see it, the background should be the darkest grey and the tiles black. "
+       "Anyway this is something we need to decide separatly.")
+c5 = ("the sparkline has become an area chart, but weird, and I though we had a rule for the minimum items in a stat bar.\n"
+      "> where has tall that blank space come from on the after")
+for q in (c3a, c3b, c5): assert q in exp, q[:40]
+c5q = c5.replace("\n> ", " / ")
+pre = "Dave's comment on the #309 review page (export 11:04 BST Wed 2026-09-30, " + EXP + "), "
+ops = [
+ {"op": "mint", "id": "W-309g2", "live": True, "owner": "dave",
+  "title": "#309 review item 3 comment - decide dark-mode ground and tile colour (his: the background the darkest grey, the tiles black); not built",
+  "home": EXP, "links": [PAGE, "dashboards/international-banking-dashboard.canon.html"],
+  "closes_when": "Dave has decided the dark-mode ground and tile colours for dashboards, as a ruling",
+  "body": pre + "item '3. The banking demo', verbatim: \"" + c3b + "\" He says it is a separate decision, so nothing is built; the row is his. Minted #309 lane G."},
+ {"op": "mint", "id": "W-309g3", "live": True, "owner": "claude",
+  "title": "#309 review item 3 comment - the banking demo's filters stack vertically: its filter bar still wears the pre-#261 anatomy (.ftb-row), which canon no longer styles",
+  "home": EXP, "links": [PAGE, "dashboards/international-banking-dashboard.canon.html", "knowledge/snippets/Filter-toolbar-bar.reference.html", "notes/_subreports/2026-09-30-309-G-review-answers.md"],
+  "closes_when": "the banking demo's filter bar is moved onto Filter-toolbar-bar's current anatomy and a render at 1440 shows search, the two filters and the view control in one row, light and dark, with the page's geometry and own-size counts as before",
+  "body": pre + "item '3. The banking demo', verbatim: \"" + c3a + "\" Looked at by #309 lane G: the same before the move (b690a19b) and after; not caused by it. Cause: the demo (#227) marks its filter row .ftb-row (and .ftb-filter, .ftb-view); #261 re-drew the bar with .ftb-primary / .ftb-ctl, and canon regenerated at #267 (e470ae08) carries no .ftb-row rule, so the row is a plain block and its four children stack at 250px. Probe: renaming the row to .ftb-primary alone puts all four on one line (search 845px, filters 129 and 147, view 187). Not fixed (predates the move; fence)."},
+ {"op": "mint", "id": "W-309g4", "live": True, "owner": "claude",
+  "title": "#309 review item 5 comment - the receipt page: the tall blank space (Chart-line drawn by dv-render, which the spec does not splice) and the splice markers that break the page's CSS; the stat-bar minimum to put to Dave",
+  "home": EXP, "links": [PAGE, "dashboards/international-banking-dashboard.regen-v2-receipt.spec.json", "knowledge/gen_provenance_receipt.py", "knowledge/components/metric.meta.json", "notes/_subreports/2026-09-30-309-G-review-answers.md"],
+  "closes_when": "the receipt page's line chart draws (its dv-render behaviour spliced) at its 260px height, the style splice markers no longer swallow the rule after them, and Dave has said whether the page's single stat tile breaks Metric's two-per-group count",
+  "body": pre + "item '5. The receipt page', verbatim: \"" + c5q + "\" Looked at by #309 lane G. (a) The area chart was the move's: the spec cut Metric's first tile, which carries the trend slot, across the full 1360px; fixed by cutting Metric's compact tile (no trend) - see lane G's report. (b) The record's nearest rule: metric.meta.json count, min 2 per group (s245-D7, moved to a count by s308-D19); s245-D7 Q3 (a) makes a one-member group legal only as a declared carve-out; the page shows one tile, before the move and after. (c) The blank space predates the move: the page at b690a19b was stale, and the old spec regenerated at HEAD gives the same 685px empty chart; Chart-line is now drawn by dv-render, which the spec does not splice (the gate says BEHAVIOUR-NOT-LOADED), so the empty svg sizes by its viewBox. Also found: the generator writes its splice markers as HTML comments inside <style>; CSS does not read them as comments, so each marker swallows the rule after it (every splice's --alpha-* tokens are lost; that is why the trend's area painted solid)."},
+]
+spec = {"session": 309, "by": "#309 G (2026-09-30)", "ops": ops}
+pathlib.Path("notes/_lanes/309/G/rows.json").write_text(json.dumps(spec, ensure_ascii=False, indent=1) + "\n")
+print("ops", len(ops))
