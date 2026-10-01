@@ -15300,6 +15300,133 @@
    "notes/_REVIEW-311-A-soft-white-and-tab-strip-2026-09-30-v1.html"
   ],
   "status": "ruled"
+ },
+ {
+  "id": "s311-D3",
+  "ruled": "THE SNIPPET IS A FIXTURE GENERATED FROM THE SPEC, no longer the source the compiler reads. Each knowledge/snippets/*.reference.html becomes the HTML+CSS emitter's (E1) output for a documented example, rendered from the meta plus a components/<slug>.css and a behaviour/<slug>.js, committed, viewed in the showroom, read unchanged by the ~35 gates that read snippets today, and ruled on by Dave's eye; a round-trip gate (_validate_roundtrip.py) refuses any emitter whose output does not match the committed snippet byte for byte. This REVERSES ADR-0013 ruling 4 and the 'snippets are the source of truth' docstring in gen_canon_components.py lines 3-7 and gen_component_partials.py lines 9-11; the reversal is enacted cohort by cohort in phase 2 behind the round-trip gate, never all at once. Dave, by click, verbatim: 'Fixture, generated from the spec' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 1, verbatim: 'The snippets' job' — his answer, by click, verbatim: 'Fixture, generated from the spec (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "knowledge/snippets/",
+   "knowledge/canon/gen_canon_components.py",
+   "knowledge/gen_component_partials.py",
+   "docs/decisions/ADR-0013-component-type-tier-composition.md"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D4",
+  "ruled": "THE NEUTRAL SPEC LIVES IN THE META, as four new fields in knowledge/components/meta.schema.json: anatomy (an element tree naming parts, slots, aria and the attributes each state sets, prop holes as '{props.x}', state attributes as '{state.y}'), states (states, initial, transitions {from,on,to,guard?} and the keyboard map, Zag-shaped), emits (the events a part fires, with payload types; behaviour.events stays as the listener list beside it), and bindings (the snippet's #token-manifest moved in as DTCG references, replacing the 727 prose token entries). No separate spec file per component, no third-party source format (Mitosis or Stencil). Phase 1 adds the four fields and renames none; the #252-#276 meta work (provides, when, accepts, the #253 tags) is kept. Dave, by click, verbatim: 'In the meta: four new fields' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 2, verbatim: 'Where the spec lives' — his answer, by click, verbatim: 'In the meta: four new fields (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "knowledge/components/"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D5",
+  "ruled": "THE SECOND RUNTIME AFTER HTML+CSS IS LIT CUSTOM ELEMENTS, WITH REACT AND ANGULAR WRAPPERS GENERATED OVER THEM: emitter E2 writes one <apollo-*> element per interactive meta from anatomy, states, emits and the behaviour module; emitter E3 generates @apollo/react (via @lit/react createComponent, events map from emits) and @apollo/angular (a generated module with CUSTOM_ELEMENTS_SCHEMA plus a thin typed directive per element, Stencil's output target as the model); wrapper files are generated, never hand-edited, and a diff against the tree is part of the build. Not hand-written React and Angular packages (Carbon), not Mitosis (DB UX), not HTML+CSS only with fixtures for porters (GOV.UK). Phases 3 and 4; later. Dave, by click, verbatim: 'Lit custom elements, wrappers generated' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 3, verbatim: 'The second runtime' — his answer, by click, verbatim: 'Lit custom elements, wrappers generated (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "knowledge/components/meta.schema.json",
+   "docs/decisions/ADR-0008-canonical-core-and-adapters.md",
+   "designer-skills-v1/generate-from-canon/SKILL.md"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D6",
+  "ruled": "THE CUSTOM ELEMENTS USE LIGHT DOM, STYLED BY canon.css: no Shadow DOM, no per-component custom-property bridge (Nord's pattern), so canon.css styles every <apollo-*> element as it styles the snippet and the ~35 gates that measure rendered geometry, contrast and hit area keep working on the element unchanged; encapsulation is the trade accepted, and the SSR and form-participation caveats of Shadow DOM are sidestepped rather than carried. Not 'decide after phase 3's first element is built both ways'. Dave, by click, verbatim: 'Light DOM, styled by canon.css' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 4, verbatim: 'Light DOM or Shadow DOM' — his answer, by click, verbatim: 'Light DOM, styled by canon.css (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "knowledge/canon/canon.css",
+   "knowledge/canon/"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D7",
+  "ruled": "APOLLO MEETS A CLIENT'S EXISTING LIBRARY (S2) THROUGH AN ADAPTER MANIFEST PER LIBRARY: adapters/<lib-id>.json, Code Connect in shape, maps each Apollo role or meta to their component name and import, prop to prop with typed holes, slot to slot, a status per binding (unverified -> rendered only when a side-by-side render exists -> accepted only when Dave says so), and their tokens onto Apollo's semantic tokens as a DTCG resolver set; an unmapped list is REQUIRED (a manifest without one is invalid); adapters/schema.json and _validate_adapter.py refuse a composed screen whose parts have no binding and no declared Apollo-native fallback. Apollo governs (roles, when-rules, gates, composition run unchanged); their components render. The four existing codeBindings spokes (Sutherland React, unverified) are rewritten as the first manifest; a generated theme file for their library is the day-one win, not the integration. Not theme-only (placement C from the other side), not replacing their library (that is S1). Dave, by click, verbatim: 'Adapter manifest per library, Apollo governs, theirs renders' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 5, verbatim: 'How Apollo meets a client's library (S2)' — his answer, by click, verbatim: 'Adapter manifest per library, Apollo governs, theirs renders (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "docs/decisions/ADR-0008-canonical-core-and-adapters.md",
+   "knowledge/_RUNBOOK-onboard-code-library.md",
+   "knowledge/components/meta.schema.json"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D8",
+  "ruled": "THE TOKENS MOVE TO W3C DTCG 2025.10 NOW, with one generator and no information lost: $alias becomes {group.token} references; light and dark leave the path and become Resolver Module sets (the four theme override files resolve through the resolver to the same CSS gen_theme_cascade gives today); $note, $contrast, $confidence, $label and the other non-standard $ keys move under $extensions.apollo so no tool drops them and every value is recoverable; dimensions become value objects. Gate: gen_canon_tokens.py is re-fed and the canon.css token spine is byte-equal before and after; Style Dictionary v4 parses the files with zero warnings. Phase 0, not after phase 2, not stay as is. Dave, by click, verbatim: 'Now, one generator, extras under $extensions' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 6, verbatim: 'Tokens to DTCG' — his answer, by click, verbatim: 'Now, one generator, extras under $extensions (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "knowledge/tokens/",
+   "knowledge/canon/gen_canon_tokens.py",
+   "knowledge/gen_snippet_tokens.py",
+   "knowledge/canon/gen_theme_cascade.py"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
+ },
+ {
+  "id": "s311-D9",
+  "ruled": "ORDER AND START: phase 0 (tokens to DTCG, s311-D8), phase 1 (extract anatomy, states, emits and bindings from the snippets into the metas with a $extracted marker and a review page per cohort of ~15, s311-D4) and the S2 schema (adapters/schema.json, _validate_adapter.py, the first manifest, s311-D7) start NOW, because none of them edits a snippet, changes a generator's output, or needs a further ruling; phase 2 (move components/<slug>.css and behaviour/<slug>.js out of each snippet, re-feed the compiler, regenerate the snippets as fixtures, s311-D3) follows call 1 and runs cohort by cohort behind the round-trip gate, starting with button, tabs, table, date-picker and metric; phases 3 and 4 (Lit elements and generated wrappers, s311-D5/D6) later, after phase 2's first three cohorts. Not all phases in one weekend run (the reversal and the extraction would share one diff), not wait until a client asks. The page note is his go-ahead, verbatim: 'This cool, lets get it done'; his chat line asks that this be rolled into the other plans and that those plans be revised. Dave, by click, verbatim: 'Phases 0, 1 and the S2 schema now; 2 after call 1; 3 and 4 later' (the recommendation); comment: none.",
+  "date": "2026-10-01",
+  "by": "Dave",
+  "says": "proposal page export, Thu 2026-10-01 11:10 BST ('Copy as text' pasted into chat #311; notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html, saved verbatim as notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md) · call 7, verbatim: 'Order and start' — his answer, by click, verbatim: 'Phases 0, 1 and the S2 schema now; 2 after call 1; 3 and 4 later (the recommendation)' · comment: none · page note, verbatim: 'This cool, lets get it done' · his chat line after the export, verbatim: 'How do we role this into our other plans, this probably needs revising'",
+  "governs": [
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html",
+   "notes/_lanes/312/WAVE-2-START.md",
+   "knowledge/tokens/",
+   "knowledge/components/meta.schema.json"
+  ],
+  "evidence": [
+   "chat #311 2026-10-01 (live) - his 11:10 BST export and the chat line after it, quoted verbatim in `says`",
+   "notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md",
+   "notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html"
+  ],
+  "status": "ruled"
  }
  ]
 }
