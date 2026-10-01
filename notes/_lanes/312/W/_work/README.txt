@@ -1,0 +1,1 @@
+Payloads cut verbatim from notes/_lanes/312/WRAP-MEMORY-HOOK.md at its marked headings (INDEX LINE, FRONT BLOCK, BODY); memory_file_312.md = front + blank line + body. No area payload: /projects/.../areas/apollo-other-libraries.md already carries his 12:51 call-5 and 13:02 lines (read-only check by the #312 wrap seat, version 400d235aaa70). The seat wrote no Project memory.
