@@ -173,6 +173,40 @@ try:
     # and the git stamp alone never stales it: a different --metas-sha on a fresh copy still passes
     rc_sha = subprocess.run([sys.executable, os.path.join(HERE, "gen_catalogue.py"), "--check", "--out", d1, "--metas-sha", "0000000f"], capture_output=True, text=True).returncode
     check("T1.9b", rc_body == 1 and rc_sha == 0, "--check on a body-tampered copy under its old stamp exit %d (want 1); on a fresh copy stamped with another git sha exit %d (want 0)" % (rc_body, rc_sha))
+
+    # ---- T1.10 a data setting takes a binding (#313 lane C1F; lane C3's F2). Every data setting typed
+    # object-or-binding or array-or-binding is driven inside its own entry: a bound value passes; literal data
+    # passes; a bare word, a non-string path and a binding with a stray key stay refused. Bite: the pre-fix
+    # object branch (no `not path`) refuses the bound value again on every object-typed setting.
+    reg10 = va.registry(dash)
+    data_props = []
+    for cid, entry in sorted(dash["components"].items()):
+        for k, sch in sorted((entry["allOf"][-1].get("properties") or {}).items()):
+            alts = sch.get("oneOf") or []
+            if any((a.get("$ref") or "").endswith("DataBinding") for a in alts) and any(a.get("type") in ("object", "array") for a in alts):
+                data_props.append((cid, k, "object" if any(a.get("type") == "object" for a in alts) else "array"))
+
+    def entry_ok(cat_, cid, k, v):
+        inst = va.full(cid, cat_["components"][cid]); inst[k] = v
+        return not va.errs({"$ref": va.CATALOG_URI + "#/components/" + cid}, inst, va.registry(cat_) if cat_ is not dash else reg10)
+    bad10, n_obj, bitten = [], 0, 0
+    for cid, k, kind in data_props:
+        want = [({"path": "/data/x"}, True), ([], True), ("x", False), ({"path": 5}, False), ({"path": "/data/x", "probe": 1}, False)]
+        if kind == "object":
+            want.append(({"series": [{"name": "a", "values": [1]}]}, True))
+        for v, exp in want:
+            if entry_ok(dash, cid, k, v) != exp:
+                bad10.append("%s.%s %s want %s" % (cid, k, json.dumps(v), "pass" if exp else "refused"))
+        if kind == "object":
+            n_obj += 1
+            pre = copy.deepcopy(dash)
+            for br in pre["components"][cid]["allOf"][-1]["properties"][k]["oneOf"]:
+                br.pop("not", None)
+            bitten += not entry_ok(pre, cid, k, {"path": "/data/x"})
+    check("T1.10", data_props and not bad10 and n_obj and bitten == n_obj,
+          "data settings taking a binding: %d (%d object-or-binding, %d array-or-binding); bound value passes, literal data passes, "
+          "bare word / non-string path / stray key refused on every one%s; bite: the pre-fix oneOf refuses the bound value on %d/%d object-typed settings" % (
+              len(data_props), n_obj, len(data_props) - n_obj, (" — WRONG: " + "; ".join(bad10[:4])) if bad10 else "", bitten, n_obj))
 finally:
     shutil.rmtree(tmp, ignore_errors=True)
 

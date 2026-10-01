@@ -257,6 +257,30 @@ def main():
     cat2["components"]["Metric"]["x-apollo"]["status"] = "deprecated"
     g2 = G.Gate(cat2)
     case("N4", "S7: a part whose entry says deprecated (catalogue mutated in memory)", ["S7"], lambda: g2.gate_surface(T))
+    # ---- #313 lane C1F: a data setting takes a binding. C3's F2 found the catalogue typed it
+    # oneOf[object, array, DataBinding], so a binding matched twice and was refused; the generator's object
+    # branch now excludes `path`. A bound value passes; a malformed binding and a bare word stay refused.
+    good = {"series": [{"name": "b", "values": [1, 2]}]}
+
+    def bal(v):
+        return with_comps(T, [dict(c, data=v) if c["id"] == "balance" else c for c in clean],
+                          [{"version": "v0.9.1", "updateDataModel": {"surfaceId": "treasurer", "path": "/balance", "value": good}}])
+    case("B1", "a data setting bound to the data model (A2UI DataBinding), well-formed", [],
+         lambda: g.gate_surface(bal({"path": "/balance"})))
+    case("B2", "a binding whose path is not a string", ["S1", "S2"], lambda: g.gate_surface(bal({"path": 5})))
+    case("B3", "a binding carrying a stray key beside its path", ["S1", "S2"],
+         lambda: g.gate_surface(bal({"path": "/balance", "probe": 1})))
+    case("B4", "a data setting given a bare word", ["S1", "S2"], lambda: g.gate_surface(bal("x")))
+    n2c = next(c for c in cases if c["id"] == "N2c")
+    say(n2c["failed"] == ["S9"], "T3.2 N2c1", "the six-series binding is refused by S9 alone now the binding itself is legal "
+        "(refused by %s)" % ",".join(n2c["failed"]))
+    # bite: put back the pre-fix object branch (no `not path`) in memory and the well-formed binding is refused again
+    cat3 = copy.deepcopy(g.cat)
+    for br in cat3["components"]["ChartLine"]["allOf"][-1]["properties"]["data"]["oneOf"]:
+        br.pop("not", None)
+    v3 = G.Gate(cat3).gate_surface(bal({"path": "/balance"}))
+    say(v3["verdict"] == "fail" and "S2" in failed_ids(v3), "T3.2 B1m",
+        "mutation: the pre-fix oneOf (object branch admits a path) refuses B1's binding (%s, %s)" % (v3["verdict"], ",".join(failed_ids(v3))))
     RESULTS["T3.2"] = cases
 
     # known misses and found defects: reported, never scored
@@ -280,12 +304,7 @@ def main():
          lambda: g.gate_page(inl),
          "the motion regex reads script text: dv-render's comment 'turns it into a transition:' trips 2.3.3 for a part "
          "whose reduced-motion block lives in the snippet's <head>; the stand-in loads behaviour by address to avoid it")
-    bound = [dict(c, data={"path": "/balance"}) if c["id"] == "balance" else c for c in clean]
-    note("F2", "a data setting bound to the data model (A2UI DataBinding), well-formed",
-         lambda: g.gate_surface(with_comps(T, bound, [{"version": "v0.9.1", "updateDataModel": {
-             "surfaceId": "treasurer", "path": "/balance", "value": {"series": [{"name": "b", "values": [1, 2]}]}}}])),
-         "the catalogue types a data setting as oneOf[object, array, DataBinding]; a binding is also an object, so "
-         "oneOf matches twice and every bound data setting is refused (S1, S2) — the catalogue's, not the gate's")
+    # F2 (a well-formed binding refused by the catalogue) was fixed in the generator at #313 lane C1F: scored as B1
     RESULTS["known"] = known
 
     # ================================================================ T3.3

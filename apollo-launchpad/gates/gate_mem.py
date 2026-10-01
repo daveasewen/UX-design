@@ -362,6 +362,8 @@ class Gate:
                     continue
                 v = c[k]
                 if isinstance(v, dict) and set(v) == {"path"}:
+                    if not isinstance(v["path"], str):   # a malformed binding is S1/S2's to refuse; S9 has no count
+                        continue                          # (#313 lane C1F: a non-string path raised here)
                     found, v = pointer_get(dm, v["path"])
                     if not found:
                         U["S9"].append("%s.%s is bound to %s, which no updateDataModel on this surface sets" % (

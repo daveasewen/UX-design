@@ -152,7 +152,11 @@ def build(metas_sha=None, prev_dash=None, prev_all=None, overlay=None):
             return s
         if t in ("object", "table"):
             note_sink.append("type %r bound as an object or a data-model path: no member schema in the meta" % t)
-            return {"oneOf": [{"type": "object"}, {"type": "array"}, {"$ref": CT + "DataBinding"}]}
+            # the literal-object branch must not also match a DataBinding ({"path": ...}), or the oneOf
+            # matches twice and every bound value is refused (#313 lane C3's F2); an object that names
+            # `path` is a binding or nothing, so a malformed binding is still refused (#313 lane C1F)
+            return {"oneOf": [{"type": "object", "not": {"required": ["path"]}}, {"type": "array"},
+                              {"$ref": CT + "DataBinding"}]}
         return None
 
     def map_prop(p):

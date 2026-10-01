@@ -102,7 +102,9 @@ TABLE = [
     ("W16", "arrangement", {"content": "arbitrary-blocks", "surface": "none"}, "layout-utilities", None),
     ("W17", "wayfinding", {"shape": "destination-set × links", "scope": "global"}, "navigations", None),
     ("W18", "record-list", {"records": 40, "surface": "none"}, "data-grid", None),
-    ("W18b", "record-list", {"records": 40, "surface": "none", "needs": "sort"}, "data-grid", None),
+    # W18b moved from needs = sort to needs = select at #313 lane C1F: s313-D27 (Dave, 'Option 1, toolbar does not
+    # change the shape') keeps a sorted list a list; the grid wins only when rows are selected or edited
+    ("W18b", "record-list", {"records": 40, "surface": "none", "needs": "select"}, "data-grid", None),
 ]
 
 
@@ -146,7 +148,7 @@ def t42():
     named = all(r["why"] for r in rows if not r["ok"])
     aliases_ok = readings.get("stat-card", {}).get("reading") == "without trend" and readings.get("kpi-tile", {}).get("reading") == "with trend"
     check("T4.2", named and aliases_ok and w3b["ok"],
-          "W table variant B: %d of %d on R5's twenty (spec expected 19 of 20); added rows W3b (alias rule) and W18b (needs = sort) %s; misses named: %s"
+          "W table variant B: %d of %d on R5's twenty (spec expected 19 of 20); added rows W3b (alias rule) and W18b (needs = select, s313-D27) %s; misses named: %s"
           % (hit, len(r5), "OK" if w3b["ok"] else "MISS", "; ".join(misses) or "none"))
     return hit, len(r5), misses
 
