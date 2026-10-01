@@ -71,3 +71,46 @@ flex tier (`_FUTURE-STATE`, 2026-07-21) and the composition gap are one architec
   never re-type sub-atoms.
 - The queued responsive-stepper collapse (Tranche-1 canon dots, `273d18c~1`) folds into canon
   Progress-tracker when its migration runs.
+
+## Addendum 2026-10-01 — ruling 4 is reversed by `s311-D3`; the reversal is enacted in phase 2, not today
+
+**Status of this addendum:** RECORDED by #312 lane L1 (the schema lane, `s311-D4`). It records a ruling
+already made; it enacts nothing. Ruling 4 above still describes the tree as it stands at this commit.
+
+**The ruling (Dave, #311, Thu 2026-10-01 11:10 BST, by click on the proposal page
+`notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html`, call 1 "The snippets' job", verbatim:
+"Fixture, generated from the spec (the recommendation)"; comment: none; page note: "This cool, lets get it
+done"; export saved at `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`;
+inscribed as `s311-D3` at `2fbc8184`).** The snippet becomes a FIXTURE generated from the spec, no longer
+the source the compiler reads. Each `knowledge/snippets/*.reference.html` becomes the HTML+CSS emitter's
+output for a documented example, rendered from the meta plus a `components/<slug>.css` and a
+`behaviour/<slug>.js`, committed, viewed in the showroom, read unchanged by the ~35 gates that read snippets
+today, and ruled on by Dave's eye. A round-trip gate (`_validate_roundtrip.py`) refuses any emitter whose
+output does not match the committed snippet byte for byte.
+
+**What it reverses here.** Ruling 4 ("`gen_canon_components` joins `_build_all` — regenerate-always +
+`--check` … so snippet RULE-text changes self-heal into canon") rests on the premise that the snippet is
+the source of truth and canon is projected from it. Under `s311-D3` the direction flips for every
+component in a converted cohort: the META (with `s311-D4`'s four fields — `anatomy`, `states`, `emits`,
+`bindings`) plus `components/<slug>.css` and `behaviour/<slug>.js` are the source; the snippet is their
+generated output; `gen_canon_components` and `gen_theme_cascade` read the new sources. The same ruling
+reverses the "snippets are the source of truth" docstrings in `knowledge/canon/gen_canon_components.py`
+(lines 3–7) and `knowledge/gen_component_partials.py` (lines 9–11). Rulings 1–3 (sequence, generated
+partials, the one registry) stand: the partials and the registry are inputs the emitter consumes, not a
+mechanism the reversal removes.
+
+**When it takes effect — cohort by cohort in phase 2, never all at once (`s311-D9`).** Phase 1 (now,
+`s311-D4`) adds the four fields to `knowledge/components/meta.schema.json` and drafts them from the
+snippets with a `$extracted` marker; it edits no snippet and changes no generator's output. Phase 2 moves
+each cohort's CSS and script out of its snippets, re-feeds the compiler and regenerates the snippets as
+fixtures behind the round-trip gate (byte-equal snippet, byte-equal `AUTO-COMPONENTS` block, the 35
+snippet gates green on the generated files). The first cohort is the five M2 sampled — button, tabs,
+table, date-picker, metric — plus ten interactive neighbours (Dave, #312, 12:51, `notes/_lanes/312/DAVE-RULINGS-2026-10-01-1251-wave-2-calls.md`; the list with meta ids is
+at `notes/_lanes/312/L/COHORT-ONE.md`). Until a cohort has passed the round-trip gate, ruling 4 and both
+docstrings remain TRUE for it, which is why neither docstring is edited today. Each phase-2 cohort commit
+updates this addendum with the cohort's name and landing sha; when every cohort has converted, ruling 4 is
+tombstoned in place and the docstrings rewritten, in that same commit.
+
+**Related:** `s311-D3` (the reversal) · `s311-D4` (the spec lives in the meta) · `s311-D9` (order and
+start) · ADR-0008 decision 3 (adapters — `s311-D7` makes the adapter an `adapters/<lib-id>.json` manifest)
+· `notes/_lanes/311/M/M2-COMPILER-DEPENDENCIES.md` (the measurement the proposal rests on).

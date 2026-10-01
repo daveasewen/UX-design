@@ -64,7 +64,7 @@ scripts 11 → 0, move files 9 → 1, rebuilds 5 → 1 (#305's counts).
 
 (`<n>/W` = `notes/_lanes/<n>/W`; every tool is `python3 knowledge/<tool>`.) Unchanged: `_gm_move.py`, `_roll_state.py`,
 `_gen_size_stamp.py --write`, `_state.py`, `_capture_gate.py`, `_git_commit.sh`. Still hand-written until phase 3: the prose (handoff, dossier,
-W report, memory payload, summary).
+W report, memory payload, summary). ★ #312: phase 3 is BUILT — see `★ PHASE 3` below; the prose becomes ONE story file and every view is generated.
 
 1. **Refresh `_LIVE-STATE.md`** — and its siblings where touched: `_FUTURE-STATE.md` (ideas /
    side-quests / resurrection candidates) and `_DECISION-HISTORY/` (narrative >10 lines relocates
@@ -381,8 +381,13 @@ W report, memory payload, summary).
    *(Added 2026-07-28 #32. Order is the whole point: the index must be built from the files as they
    will be COMMITTED, not as they were when the session's last `_build_all.py` ran.)*
    ```
-   python3 knowledge/_build_memento_index.py     # then stage knowledge/_memento-index.json
+   python3 knowledge/_build_memento_index.py     # built, NEVER staged — gitignored since s312-D1
    ```
+   ★ **#312 (s312-D1): the index is built, never committed.** `knowledge/_memento-index.json` is in
+   `.gitignore`; the opener (`ensure_env.sh` step 5) and CI's gates job build it. Run the command so the
+   local copy the later regen steps read is fresh, and do NOT stage it (git refuses the ignored path;
+   `_wrap_regen.py` names no output for this step). The freshness check below still refuses a stale
+   local copy at the wrap.
    **Why this step exists, measured at #32's opener:** `_memento_search.py --fetch gm:LATEST` returned
    **#29's banner** while the file carried #31's — because the index regenerates inside `_build_all.py`
    and the wrap rewrites GM/LS *afterwards*. Retrieval was structurally one session behind, and
@@ -882,6 +887,73 @@ once and put its summary in the first reply. A red there is the session's first 
 ~~After the 5b commit and push, read its CI back to completion before the session is called done.~~ *(Struck by
 `s306-D7`. The second wait lived in the conductors' wrap briefs and in the handoffs' 5b addenda, never in this
 runbook; it is written here only so the strike has a home. At #303–#305 it cost 9.4, 14.9 and 14.0 minutes.)*
+
+### ★ PHASE 3 — ONE STORY, EVERY VIEW GENERATED (`s306-D4`, `s306-D5`, `s306-D8`, `s306-D10`; #311/#312, 2026-10-01; added by addition — the PHASE 1 table above is unchanged and its inputs are now generated)
+
+Designed by #311 lane E0 (`notes/_lanes/312/E/DESIGN.md`), built by #312 lane E-build (`notes/_subreports/2026-10-01-312-E-build.md`).
+Nothing in steps 1–5b above is rewritten: phase 3 sits UPSTREAM of the PHASE 1 table and writes its inputs.
+
+**The two-file rule, one writer each.** The wrap seat writes ONE file by hand, `notes/_lanes/<n>/W/STORY.md`, and measures
+ONE file by tool, `notes/_lanes/<n>/W/FACTS.json`. A figure lives in `FACTS.json` and nowhere else; a sentence lives in
+`STORY.md` and nowhere else; the story names a figure as `{facts.fill.now:,}` or `{d.hard_line:,}` and never types it (a
+typed figure that `FACTS.json` also holds WARNS, naming the placeholder). `python3 knowledge/_wrap_views.py --session N`
+reads both and writes every other file of the wrap into `notes/_lanes/<n>/W/views/`: banner, delta, stratum, stamp,
+datesplit (on a date split), 5b (stage post), handoff, the prior handoff's STRUCK addendum, dossier, W report, the ONE
+memory hook file, `new.txt` + `strike-<k>.txt` + the carries delta block, `rows.json`, the commit msgfile, the summary.
+Dry run by default (sizes against limits, diff against disk); `--write` writes `views/` and places handoff, dossier,
+report, memory hook and summary at their homes. The generated W report IS the filed report (`s306-D5`).
+
+**The story's sections** (the grammar is `DESIGN.md` § 2; the parser refuses an unknown `## @name` and a second `## @tally`):
+
+| section | one item is |
+|---|---|
+| front block | `key: value` between `---` lines: session, headline (lower case), one_sentence, opened_word, wrap_word[, wrap_word_context], conductor, wrap_seat, lanes, first_beat, next_title, words_files, lane_reports[, prior_handoff_struck, co_authored_by, claude_session] |
+| `## @words` | `- HH:MM — his line verbatim *(context)*`, or `- HH:MM — export `path`: what each call chose, quoted` (chat lines only; exports by path, limit 4) |
+| `## @rulings` | `- `sNNN-Dk` — his phrase, verbatim — gloss — RULED\|ENACTED\|RULED NOT ENACTED[, note]` (or `None this session.`) |
+| `## @summary` | `### decisions` / `### outputs` / `### problems`, 1–4 lines each in Dave's register (`s305-D63`); shown to him verbatim |
+| `## @did` | `### TITLE IN CAPS` + one paragraph, 3–6 blocks (the delta's paragraphs, the handoff's WHAT THE SESSION DID) |
+| `## @problems` | `- ⚠ sentence` (the delta's ⚠ paragraph; the banner's ③ takes the first) |
+| `## @owed` | `- MARK owner: **question?** — body`, owner ∈ mine/dave/future/found/standing; item 1 is the first beat; `(carried)` marks an item already in `_CARRIES.md` |
+| `## @new` | `- MARK **TITLE IN CAPS** [DAVE'S] — body` — the generator inserts `[NEW — 0]`; may be ABSENT (derived from `@owed`: ⬛ items owned mine/dave/future, not `(carried)`) |
+| `## @struck` | `- **TITLE AS IT STANDS IN _CARRIES.md** — ANSWERED\|BUILT\|DECIDED\|DROPPED\|SUPERSEDED — receipt sentence` |
+| `## @rows` | `- close\|note\|reopen W-id — text` (the four mints h/dh/w/wk are derived, never written) |
+| `## @cold` | `- ⛔★★ **LESSON.** sentence` — the session's own lines; the eleven standing lines are a constant in the tool |
+| `## @why` | `### k. title` + paragraphs; last block `### Resolved, and still open` — the dossier, verbatim |
+| `## @findings` `## @questions` `## @unproven` | the W report's § 3, its ruling-shaped questions, its UNPROVEN (`None.` allowed) |
+| `## @skips` `## @section_usage` | one paragraph each — the stratum's DECLARED SKIPS line and the seat's self-report |
+| `## @tally` | RESERVED for phase 6 (`s306-D9`); empty until then |
+
+**The command order (the PHASE 1 table from `_wrap_ops.py` on is unchanged; its inputs are read from `views/`):**
+
+1. `_wrap_facts.py --out <n>/W/FACTS.json --session N --rulings-base <opener sha> --since <last wrap sha> --transcript <conductor jsonl> --until <his word's ISO> --subagents-dir <dir> --exclude <own jsonl> --gate-log <n>/W/_gate-open.log [--ci-owed <the opener's saved _ci-runs file> | --ci-owed-typed SHA8:GREEN] [--ci-red SHA8:STEP:FIXED_BY …]` — the phase-3 keys (dates, commits, handoff number, CI, chain size, the gate verdict) are measured here; `--tz` defaults to Europe/London.
+2. Write `<n>/W/STORY.md` by hand (the worked example: `knowledge/_tests/wrap_views/310/STORY.md`).
+3. `_wrap_views.py --session N` (dry run: every view's size against its limit; a limit that BLOCKS refuses the write, naming the view and the longest bullet), then `--write`.
+4. The PHASE 1 table from `_wrap_ops.py` on, its files now `views/banner.md`, `views/stratum.md`, `views/delta.md`, `views/stamp.md` (`--date-split views/datesplit.md` on a split); carries from `views/new.txt` and `views/strike-<k>.txt` (see THE CARRIES PATH below); rows from `views/rows.json`; one regen; the commit with `--msg views/msg.txt` (the trailers come from the front block's `co_authored_by` / `claude_session`, or `_wrap_commit.py msg --trailer`).
+5. Push; `_ci_readback.py` (the `s306-D7` order above); the summary to Dave is `views/SUMMARY.md` — at the push, regenerated at step 7 with the push and CI line.
+6. `_wrap_facts.py --post --facts <n>/W/FACTS.json --wrap-sha S --seat-sha S --gate-wrap "N in scope · N fail · N warn" --push-range A..B --pushed-at ISO --launched-at ISO --ci-runs <n>/W/_ci-runs-<sha8>.txt --prepush-dir <n>/W --title-brief "<next title>"` — the `post` block, by addition (the pre-commit keys are checked byte-identical first).
+7. `_wrap_views.py --session N --stage post --write` — writes `views/5b.md` and `views/msg-5b.txt`, and regenerates handoff, report and memory hook WITH their post-wrap blocks, refusing if the pre-commit part on disk is not byte-identical to the stage-wrap text ("by addition, nothing above is rewritten", as a check). Then the 5b line by `_wrap_ops.py --fill-token … --fill-text views/5b.md`, one regen, the 5b commit with `--msg views/msg-5b.txt`.
+
+**The freshness arm (limit 7).** `_wrap_views.py --check` regenerates the NEWEST wrap's views (the newest `_HANDOFF-*.md` names it) and compares with disk — `views/` and the homes of handoff, dossier, report and memory hook — red on any hand edit, naming the file and the first differing line, and runs every limit. It is a check-only step of `_wrap_regen.py` (after the nine), so every regen runs it; a newest wrap without a `STORY.md` (the phase-1 path) is a declared skip. Its one call in `_capture_gate.py` (wrap mode, blocking) is the conductor's to land; until then the seat runs it by hand before the commit.
+
+**The carries path (`s306-D8`, phase 5, built at #312).** `_wrap_carries.py delta --from N --to N+1 --block views/carries-delta.md --write` APPENDS one small block (base, wrap date, new items, strikes with receipts) instead of a whole copied line; `render --section N+1` materialises the full line (ages +1, strikes in the `s183-D1` form, new first) and `count --section N+1` reads the rendered line; `rebase --section M --write` commits a FULL line every twenty wraps (picked). Proven at #312 on the real #309→#310, #310→#311 and #311→#312 lines, byte-identical. ⛔ **UNTIL `_capture_gate._resolve_residual_pointer` resolves a delta section by calling `_wrap_carries.resolve_line()` (one call, the conductor's), a wrap that writes ONLY a delta block fails the 2c carry gate** — so the wrap seat keeps the `roll --new views/new.txt` + `strike --note-file views/strike-<k>.txt` path of the PHASE 1 table, and may ALSO append the delta block (harmless; the full line is still the one the gate reads). The `[NEW — 0]` count defect (`_capture_gate._AGE_RE` never matches `[NEW — 0]`, so new items count from #N+2) is fixed in `_wrap_carries.AGE_RE`; `count` prints both readings and says which regex the gate's figure uses; the one-line gate change is the conductor's.
+
+**Which path the wrap seat takes, and why.** The phase-3 path when `_wrap_views.py --selftest` is green AND the replay (`notes/_lanes/312/E/replay/<n>/`, lane E-replay) is green on #309, #310 and #311 — the replay verdict, by session, is filed there with its residue explained; the PHASE 1 path otherwise, exactly as #309–#311 ran it, its hand-written views becoming the next replay fixture. Either way the phase-1 tools are the ones that move files, so a failure in phase 3 never leaves a wrap without a path. `W-305wr` stays open until a real wrap has run on phase 3 and its counts (hand-written files before and after; homes per figure) are measured.
+
+**The limits (`s306-D10`, lane U's eleven; the numbers marked picked are not his):**
+
+| # | limit | where it bites | number |
+|---|---|---|---|
+| 1 | the story draft is never on the boot chain | selftest bite on `_gen_chain.py`'s source; the name rule | — |
+| 2 | ceiling on the generated handoff | `_wrap_views.py` refuses the write; `--check` | warn 6,500 (picked) · block 8,106 cl100k |
+| 3 | the tally is one block, replaced | the parser refuses a second `## @tally` | (phase 6) |
+| 4 | his words verbatim with times; exports by path | `@words` grammar; warn over 3,000 cl100k; exports over 4 warn | 3,000 |
+| 5 | the seam prints one line | phase 6 | — |
+| 6 | the chain takes only banner and delta | by construction (`_gen_chain.py` untouched); banner ≤ 10 lines, ≤ 1,200; delta ≤ 1,513 | existing + 1,513 |
+| 7 | freshness checks the newest wrap only | `--check` reads the newest handoff's N and refuses another | — |
+| 8 | the opener's CI read prints the summary | phase 2, done | — |
+| 9 | one shared brief, one line per seat | phase 4 | — |
+| 10 | the full carried list is generated on read; `_CARRIES.md` ≤ 20,000 B a wrap | `_wrap_carries.py delta` refuses a larger block; `render` | 20,000 B |
+| 11 | one memory file per wrap | the memory hook is ONE file with the index line, front block and body under marked headings; description ≤ 800 B (picked) | — |
 
 ## ★ FILED SUB-REPORTS — what every sub brief must now say (`s218-D7`, 2026-08-25)
 

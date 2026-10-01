@@ -29,6 +29,30 @@ FIGURES:
   subs     from --subagents-dir: the final FILL of each sub transcript, summed. UNIT: real
            tokens, QUOTA not window FILL — never added to `fill`.
 
+★ PHASE 3 (#312 lane E-build, 2026-10-01, by addition; `s306-D4`, design `notes/_lanes/312/E/DESIGN.md` § 3):
+the keys the generated views (`_wrap_views.py`) read, each a small reader, none typed:
+  dates    from the transcript: `opened_at` (the first record), `wrap_at` (the `--until` record, else the
+           last usage record), both with a `_local` form (`Wed 2026-09-30 14:02 BST`, zone `--tz`,
+           default Europe/London); `ritual_date` from the clock at the seat, never the session's belief;
+           `split` = null when the ritual is the opening day, else {opened_day, ritual_day, resumed_at
+           (the first user record after a gap of more than 4 h, or null for a run that never paused),
+           ordinal = 1 + the `WRAP DATE SPLIT` lines in GOOD-MORNING.md + _GM-ARCHIVE.md}.
+  git      + `commits[]` = {sha8, at, subject} over `since.range` (git log) · `pushed_through` (origin/master, sha8)
+  handoff  `prev_no`, `prev_name` (the newest `_HANDOFF-*.md` by number), `no` = prev_no + 1
+  ci       `owed` parsed from `--ci-owed FILE` (a saved `_ci_readback.py` summary: run id, verdict, sha8);
+           `reds[]` from `--ci-red SHA8:STEP:FIXED_BY` (the story seat names them; each sha is checked
+           against `git.commits` and refused when absent)
+  chain    cl100k of `_CHAIN.md` by `_capture_gate.measure_tokens()` (IMPORTED, its method label travels),
+           with `warn`/`block` from `CHAIN_BUDGET_TK`
+  gate     `open` = the last `capture gate [wrap]: … in scope · … fail · … warn` line of `--gate-log`
+  post     `--post --facts F.json …` ADDS the post-commit block to an existing file: wrap_sha, seat_sha,
+           gate_wrap (from `--gate-log`), push_range, pushed_at, minutes_to_push (from `--launched-at`),
+           ci {run_id, verdict, jobs} (from `--ci-runs FILE`), prepush {pass, fail, advisory,
+           could_not_ask, tests} (summed from `--prepush-dir`'s `_prepush-survey-*.txt` SURVEY lines and
+           `_prepush-test-gates.txt`), chain_tk_after_regen (`_CHAIN.md` at `--wrap-sha`), titles
+           {brief from `--title-brief`, derived from `knowledge/_gen_titles_receipt.json`}. The pre-commit
+           keys are checked byte-identical before the file is saved: `post` is the only second write.
+
 ds-021 (C) DECLARATION. This file counts NO cl100k tokens: the fill is the API's own usage
 accounting, read off the transcript, the method `knowledge/_checkin.py` (MEASURERS: 'real')
 already owns. It is therefore NOT a counting site under `_capture_gate.unit_vocabulary_audit`'s
@@ -40,6 +64,10 @@ section-sizes line is `_gm_usage`'s, carrying `_capture_gate.measure_tokens()`'s
 Usage:
   python3 knowledge/_wrap_facts.py --out F.json [--at SHA] [--rulings-base SHA] [--since SHA]
       [--session N] [--transcript T.jsonl [--until ISO]] [--subagents-dir D [--exclude NAME]]
+      [--ci-owed FILE] [--ci-red SHA8:STEP:FIXED_BY ...] [--gate-log PATH] [--tz ZONE]
+  python3 knowledge/_wrap_facts.py --post --facts F.json --wrap-sha S --seat-sha S --gate-log P --push-range A..B
+      --pushed-at ISO --launched-at ISO --ci-runs FILE [--prepush-dir D] [--title-brief T]
+  python3 knowledge/_wrap_facts.py --extend --facts OLD.json --out NEW.json [--at SHA] [--transcript T] [--ritual-at ISO] …
   python3 knowledge/_wrap_facts.py --selftest
 """
 import argparse
@@ -209,8 +237,248 @@ def subs_facts(d, exclude=()):
             "excluded": list(exclude)}
 
 
+# ------------------------------------------------------------------------------ phase-3 readers
+SPLIT_GAP_S = 4 * 3600          # a resumed session: the first user record after a gap of more than 4 h
+SPLIT_FILES = ["GOOD-MORNING.md", "_GM-ARCHIVE.md"]
+HANDOFF_RE = re.compile(r"^_HANDOFF-(\d+)-(.+)\.md$")
+SPLIT_LINE_RE = re.compile(r"^> ⚠ \*\*WRAP DATE SPLIT", re.M)   # the LINE form; prose mentions do not count
+GATE_LINE_RE = re.compile(r"capture gate \[[^\]]*\]:\s*(\d+) in scope · (\d+) fail · (\d+) warn")
+SURVEY_RE = re.compile(r"SURVEY:\s*(\d+) pass · (\d+) FAIL · (\d+) ADVISORY-warn · (\d+) COULD-NOT-ASK")
+TESTS_RE = re.compile(r"(\d+) test\(s\), (\d+) failure\(s\)")
+CI_RUN_RE = re.compile(r"^RUN (\d+) \S+ \S+ \S+ sha ([0-9a-f]{7,40})")
+CI_JOB_RE = re.compile(r"^\s+job (\S+) (\S+)")
+CI_VERDICT_RE = re.compile(r"^VERDICT ([0-9a-f]{7,40}): (GREEN|RED)")
+
+
+def _tenths(x):
+    """Half-up to one decimal (21.65 → 21.7, the form the handoffs print), never float round's 21.6."""
+    from decimal import Decimal, ROUND_HALF_UP
+    return float(Decimal(repr(x)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
+
+
+def _iso(ts):
+    return datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+
+
+def _local(ts, tz):
+    """`Wed 2026-09-30 14:02 BST` — the form the handoffs and banners use."""
+    from zoneinfo import ZoneInfo
+    t = _iso(ts).astimezone(ZoneInfo(tz))
+    return t.strftime("%a %Y-%m-%d %H:%M ") + t.tzname()
+
+
+def _records(path):
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if rec.get("isSidechain") or not rec.get("timestamp"):
+                continue
+            yield rec
+
+
+def dates_facts(path, until=None, repo=REPO, tz="Europe/London", at=None, now=None):
+    from zoneinfo import ZoneInfo
+    zone = ZoneInfo(tz)
+    first, last_usage, users = None, None, []
+    for rec in _records(path):
+        ts = rec["timestamp"]
+        if until and ts > until:
+            continue
+        first = first or ts
+        if rec.get("type") == "user":
+            users.append(ts)
+        if isinstance((rec.get("message") or {}).get("usage"), dict):
+            last_usage = ts
+    if not first:
+        raise FactsError(f"no timestamped record in {path} — an ABSENCE, not a date")
+    wrap_at = until or last_usage or first
+    ritual = now or datetime.datetime.now(zone)
+    ritual = ritual.astimezone(zone)
+    opened_day = _iso(first).astimezone(zone).date()
+    out = {"tz": tz, "opened_at": first, "opened_local": _local(first, tz), "wrap_at": wrap_at,
+           "wrap_local": _local(wrap_at, tz), "ritual_date": ritual.date().isoformat(),
+           "ritual_local": ritual.strftime("%a %Y-%m-%d %H:%M ") + ritual.tzname(),
+           "unit": "ISO 8601 UTC, and the local form in `tz`; the ritual date is the clock at the seat"}
+    if opened_day == ritual.date():
+        out["split"] = None
+        return out
+    resumed = None
+    for a, b in zip(users, users[1:]):
+        if (_iso(b) - _iso(a)).total_seconds() > SPLIT_GAP_S:
+            resumed = b
+            break
+    n = 0
+    for rel in SPLIT_FILES:
+        try:
+            n += len(SPLIT_LINE_RE.findall(read(repo, rel, at)))
+        except (FactsError, FileNotFoundError):
+            pass
+    out["split"] = {"opened_day": opened_day.isoformat(), "ritual_day": ritual.date().isoformat(),
+                    "resumed_at": resumed, "resumed_local": _local(resumed, tz) if resumed else None,
+                    "ordinal": n + 1, "rule": f"resumed = first user record after a gap > {SPLIT_GAP_S // 3600} h; "
+                    f"ordinal = 1 + `> ⚠ **WRAP DATE SPLIT` lines in {' + '.join(SPLIT_FILES)}"}
+    return out
+
+
+def commits_facts(repo, rng, at=None):
+    rc, out = _git(repo, "log", "--reverse", "--no-merges", "--format=%h%x1f%aI%x1f%s", "--abbrev=8", rng)
+    if rc:
+        raise FactsError(f"git log {rng} failed — the range must be reachable (a shallow clone is refused, never guessed)")
+    rows = []
+    for ln in out.split("\n"):
+        if not ln.strip():
+            continue
+        sha, ts, subj = ln.split("\x1f", 2)
+        rows.append({"sha8": sha[:8], "at": ts, "subject": subj})
+    return rows
+
+
+def handoff_facts(repo, at=None):
+    if at:
+        rc, out = _git(repo, "ls-tree", "--name-only", at)
+        names = out.split("\n") if rc == 0 else []
+    else:
+        names = os.listdir(repo)
+    hs = sorted((int(m.group(1)), n) for n in names for m in [HANDOFF_RE.match(n)] if m)
+    if not hs:
+        raise FactsError("no `_HANDOFF-*.md` at the root — the handoff number cannot be derived")
+    no, name = hs[-1]
+    return {"prev_no": no, "prev_name": name, "no": no + 1, "unit": "the newest handoff by number, +1"}
+
+
+def ci_summary(path):
+    """{run_id, sha8, verdict, jobs{name: status}} from a saved `_ci_readback.py` summary."""
+    out = {"file": path, "run_id": None, "sha8": None, "verdict": None, "jobs": {}}
+    with open(path, encoding="utf-8") as fh:
+        for ln in fh:
+            m = CI_RUN_RE.match(ln)
+            if m and not out["run_id"]:
+                out["run_id"], out["sha8"] = m.group(1), m.group(2)[:8]
+            m = CI_JOB_RE.match(ln)
+            if m:
+                out["jobs"][m.group(1)] = m.group(2)
+            m = CI_VERDICT_RE.match(ln)
+            if m:
+                out["sha8"], out["verdict"] = m.group(1)[:8], m.group(2)
+    if not out["verdict"]:
+        raise FactsError(f"{path}: no `VERDICT <sha>: GREEN|RED` line — not a `_ci_readback.py` summary")
+    return out
+
+
+def ci_facts(owed_file=None, reds=(), commits=None, owed_typed=None):
+    owed = ci_summary(owed_file) if owed_file else None
+    if owed is None and owed_typed:
+        parts = owed_typed.split(":")
+        if len(parts) < 2 or parts[1] not in ("GREEN", "RED"):
+            raise FactsError(f"--ci-owed-typed wants SHA8:GREEN|RED[:RUN_ID], got {owed_typed!r}")
+        owed = {"sha8": parts[0][:8], "verdict": parts[1], "run_id": parts[2] if len(parts) > 2 else None,
+                "jobs": {}, "source": "typed by the seat (no saved summary)"}
+    out = {"owed": owed, "reds": [],
+           "unit": "the opener's owed read (parsed from its saved summary, or typed and marked so); reds typed by the seat, shas checked"}
+    known = {c["sha8"] for c in (commits or [])}
+    for r in reds:
+        parts = r.split(":", 2)
+        if len(parts) != 3:
+            raise FactsError(f"--ci-red wants SHA8:STEP:FIXED_BY, got {r!r}")
+        sha, step, fixed = parts
+        for x in (sha, fixed):
+            if commits is not None and x[:8] not in known:
+                raise FactsError(f"--ci-red names `{x}`, which is not in git.commits {len(known)} — refused")
+        out["reds"].append({"sha8": sha[:8], "step": step, "fixed_by": fixed[:8]})
+    return out
+
+
+def chain_facts(repo, at=None):
+    import _capture_gate as cg
+    n, method = cg.measure_tokens(read(repo, "_CHAIN.md", at))
+    warn, block = cg.CHAIN_BUDGET_TK
+    return {"tk": n, "method": method, "warn": warn, "block": block, "unit": "cl100k by `_capture_gate.measure_tokens`"}
+
+
+def gate_facts(gate_log):
+    last = None
+    with open(gate_log, encoding="utf-8") as fh:
+        for ln in fh:
+            m = GATE_LINE_RE.search(ln)
+            if m:
+                last = m
+    if not last:
+        raise FactsError(f"{gate_log}: no `capture gate [..]: N in scope · N fail · N warn` line")
+    return {"open": f"{last.group(1)} in scope · {last.group(2)} fail · {last.group(3)} warn",
+            "in_scope": int(last.group(1)), "fail": int(last.group(2)), "warn": int(last.group(3)), "log": gate_log}
+
+
+def prepush_facts(d):
+    tot = {"pass": 0, "fail": 0, "advisory": 0, "could_not_ask": 0, "tests": None, "test_failures": None, "surveys": 0}
+    for p in sorted(glob.glob(os.path.join(d, "_prepush-survey-*.txt"))):
+        for ln in open(p, encoding="utf-8"):
+            m = SURVEY_RE.search(ln)
+            if m:
+                tot["surveys"] += 1
+                for k, g in zip(("pass", "fail", "advisory", "could_not_ask"), m.groups()):
+                    tot[k] += int(g)
+    tg = os.path.join(d, "_prepush-test-gates.txt")
+    if os.path.exists(tg):
+        for ln in open(tg, encoding="utf-8"):
+            m = TESTS_RE.search(ln)
+            if m:
+                tot["tests"], tot["test_failures"] = int(m.group(1)), int(m.group(2))
+    if not tot["surveys"]:
+        raise FactsError(f"no SURVEY line under {d}/_prepush-survey-*.txt — the pre-push check is not on record")
+    return tot | {"dir": d, "unit": "summed SURVEY lines (pass · FAIL · ADVISORY · COULD-NOT-ASK) and the test count"}
+
+
+def post_facts(repo, facts, wrap_sha, seat_sha, gate_log, push_range, pushed_at, launched_at, ci_runs,
+               prepush_dir=None, title_brief=None, gate_wrap=None):
+    if "post" in facts:
+        raise FactsError("`post` is already in the file — it is written once, by addition")
+    post = {"wrap_sha": wrap_sha[:8], "seat_sha": (seat_sha or "")[:8] or None, "push_range": push_range,
+            "pushed_at": pushed_at, "launched_at": launched_at,
+            "minutes_to_push": _tenths((_iso(pushed_at) - _iso(launched_at)).total_seconds() / 60)
+            if pushed_at and launched_at else None}
+    post["gate_wrap"] = gate_facts(gate_log)["open"] if gate_log else gate_wrap
+    if gate_wrap and not GATE_LINE_RE.search("capture gate [wrap]: " + gate_wrap):
+        raise FactsError(f"--gate-wrap wants `N in scope · N fail · N warn`, got {gate_wrap!r}")
+    post["gate_wrap_source"] = "parsed from --gate-log" if gate_log else ("typed by the seat from the committer's log" if gate_wrap else None)
+    ci = ci_summary(ci_runs)
+    post["ci"] = {"run_id": ci["run_id"], "verdict": ci["verdict"], "jobs": ci["jobs"], "sha8": ci["sha8"]}
+    if prepush_dir:
+        post["prepush"] = prepush_facts(prepush_dir)
+    post["chain_tk_after_regen"] = chain_facts(repo, wrap_sha)["tk"]
+    post["chain_tk_after_5b"] = None      # not re-taken at this write (the #241 rule); declared
+    derived = None
+    try:
+        t = json.loads(read(repo, "knowledge/_gen_titles_receipt.json", wrap_sha)).get("next_title", "")
+        m = re.search(r"`([^`]+)`", t)
+        derived = m.group(1) if m else t
+    except (FactsError, FileNotFoundError, json.JSONDecodeError):
+        derived = None      # the receipt at the wrap sha, or nothing: never the working tree's
+    post["titles"] = {"brief": title_brief, "derived": derived}
+    post["unit"] = "post-commit facts, by addition; `chain_tk_after_5b` null = not re-taken"
+    return post
+
+
+def add_post(path, **kw):
+    """Add `post` to an existing FACTS.json; the pre-commit keys must survive byte-identical."""
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
+    facts = json.loads(raw)
+    before = json.dumps(facts, ensure_ascii=False, indent=1)
+    facts["post"] = post_facts(facts=facts, **kw)
+    again = dict(facts); again.pop("post")
+    if json.dumps(again, ensure_ascii=False, indent=1) != before:
+        raise FactsError("the pre-commit keys changed under the post write — refused")
+    return facts
+
+
 def measure(repo=REPO, at=None, rulings_base=None, since=None, session=None, transcript=None, until=None,
-            subagents_dir=None, exclude=()):
+            subagents_dir=None, exclude=(), ci_owed=None, ci_reds=(), gate_log=None, tz="Europe/London", ci_owed_typed=None):
     f = {"measured_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
          "tree": at or "working tree", "tool": "knowledge/_wrap_facts.py"}
     f["rulings"] = rulings_facts(json.loads(read(repo, "knowledge/_rulings.json", at)))
@@ -226,6 +494,25 @@ def measure(repo=REPO, at=None, rulings_base=None, since=None, session=None, tra
         f["fill"] = fill_facts(transcript, until)
     if subagents_dir:
         f["subs"] = subs_facts(subagents_dir, exclude)
+    return extend_facts(f, repo, at, transcript, until, ci_owed, ci_reds, gate_log, tz, None, ci_owed_typed)
+
+
+def extend_facts(f, repo=REPO, at=None, transcript=None, until=None, ci_owed=None, ci_reds=(), gate_log=None,
+                 tz="Europe/London", now=None, ci_owed_typed=None):
+    """★ phase 3, by addition: the keys the views read. Also the `--extend` path for a FACTS.json measured
+    before these readers existed (the #309–#311 fixtures): the old keys are kept byte-identical."""
+    if f["git"].get("since"):
+        f["git"]["commits"] = commits_facts(repo, f["git"]["since"]["range"], at)
+    if f["git"].get("origin_master"):
+        f["git"]["pushed_through"] = f["git"]["origin_master"][:8]
+    if transcript:
+        f["dates"] = dates_facts(transcript, until or f.get("fill", {}).get("until"), repo, tz, at, now)
+    f["handoff"] = handoff_facts(repo, at)
+    if ci_owed or ci_reds or ci_owed_typed:
+        f["ci"] = ci_facts(ci_owed, ci_reds, f["git"].get("commits"), ci_owed_typed)
+    f["chain"] = chain_facts(repo, at)
+    if gate_log:
+        f["gate"] = gate_facts(gate_log)
     return f
 
 
@@ -251,6 +538,18 @@ def lines(f):
     if "subs" in f:
         x = f["subs"]
         out.append(f"subs {x['total']:,} tokens (n={x['n']}) — real tokens, QUOTA not window FILL")
+    if "dates" in f:
+        d = f["dates"]
+        out.append(f"dates: opened {d['opened_local']} · wrap {d['wrap_local']} · ritual {d['ritual_date']} · "
+                   + ("no date split" if not d["split"] else f"DATE SPLIT (ordinal {d['split']['ordinal']}, resumed {d['split']['resumed_local']})"))
+    if "handoff" in f:
+        out.append(f"handoff: prev {f['handoff']['prev_no']} → {f['handoff']['no']}")
+    if "chain" in f:
+        out.append(f"chain: {f['chain']['tk']:,} ({f['chain']['method']}) · warn {f['chain']['warn']:,} · block {f['chain']['block']:,}")
+    if "gate" in f:
+        out.append("gate at open: " + f["gate"]["open"])
+    if "ci" in f and f["ci"].get("owed"):
+        out.append(f"ci owed: {f['ci']['owed']['sha8']} run {f['ci']['owed']['run_id']} {f['ci']['owed']['verdict']}")
     return out
 
 
@@ -311,6 +610,67 @@ def selftest():
         before = sorted(os.listdir(td))
         _ = size_facts(td)
         bite("a reader: measuring wrote nothing", sorted(os.listdir(td)) == before)
+        # ★ phase 3 readers
+        tr = os.path.join(td, "tr.jsonl")
+        recs = [{"timestamp": "2026-09-29T19:47:31Z", "type": "queue-operation"},
+                {"timestamp": "2026-09-29T19:47:40Z", "type": "user", "message": {"usage": u(1, 2, 3)}},
+                {"timestamp": "2026-09-29T21:02:00Z", "type": "user"},
+                {"timestamp": "2026-09-30T06:07:11Z", "type": "user", "message": {"usage": u(1, 2, 3)}},
+                {"timestamp": "2026-09-30T11:08:00Z", "type": "user", "message": {"usage": u(1, 2, 3)}}]
+        open(tr, "w").write("\n".join(json.dumps(r) for r in recs) + "\n")
+        open(os.path.join(td, "GOOD-MORNING.md"), "w").write("> ⚠ **WRAP DATE SPLIT** a\n> ⚠ **WRAP DATE SPLIT** b\nprose: a WRAP DATE SPLIT mention\n")
+        now = datetime.datetime(2026, 9, 30, 12, 0, tzinfo=datetime.timezone.utc)
+        d = dates_facts(tr, "2026-09-30T11:08:00Z", repo=td, now=now)
+        bite("dates: opened Tue 20:47 BST, wrap Wed 12:08 BST, ritual 09-30",
+             d["opened_local"] == "Tue 2026-09-29 20:47 BST" and d["wrap_local"] == "Wed 2026-09-30 12:08 BST"
+             and d["ritual_date"] == "2026-09-30")
+        bite("dates: a DATE SPLIT with the resumed record after the > 4 h gap and ordinal 3 (two LINES + 1; the prose mention not counted)",
+             d["split"] and d["split"]["resumed_at"] == "2026-09-30T06:07:11Z" and d["split"]["ordinal"] == 3)
+        d2 = dates_facts(tr, "2026-09-29T21:02:00Z", repo=td, now=datetime.datetime(2026, 9, 29, 22, 0, tzinfo=datetime.timezone.utc))
+        bite("dates: same-day ritual → split null", d2["split"] is None and d2["wrap_at"] == "2026-09-29T21:02:00Z")
+        for n in ("_HANDOFF-160-a.md", "_HANDOFF-9-z.md"):
+            open(os.path.join(td, n), "w").write("x")
+        h = handoff_facts(td)
+        bite("handoff: newest by NUMBER (160, not 9) → no 161", h["prev_no"] == 160 and h["no"] == 161 and h["prev_name"] == "_HANDOFF-160-a.md")
+        ci = os.path.join(td, "ci.txt")
+        open(ci, "w").write("RUN 36748452503 gates completed/success 2026-09-30T17:01:33Z sha 4ece47a5\n   job gates completed/success x\n"
+                            "   job render completed/success y\n   job release completed/success z\nVERDICT 4ece47a5: GREEN — every run completed and passed\n")
+        c = ci_summary(ci)
+        bite("ci: run id, sha8, GREEN and three jobs parsed", c["run_id"] == "36748452503" and c["sha8"] == "4ece47a5"
+             and c["verdict"] == "GREEN" and len(c["jobs"]) == 3)
+        try:
+            ci_facts(None, ("93cdb12a:88:7e4602db",), [{"sha8": "93cdb12a"}]); bite("ci: a red's fix sha not in git.commits is refused", False)
+        except FactsError:
+            bite("ci: a red's fix sha not in git.commits is refused", True)
+        r = ci_facts(None, ("93cdb12a:88:7e4602db",), [{"sha8": "93cdb12a"}, {"sha8": "7e4602db"}])
+        bite("ci: a red with both shas known is recorded", r["reds"] == [{"sha8": "93cdb12a", "step": "88", "fixed_by": "7e4602db"}])
+        gl = os.path.join(td, "g.log")
+        open(gl, "w").write("noise\ncapture gate [wrap]: 247 in scope · 0 fail · 33 warn\n")
+        bite("gate: the last verdict line parsed", gate_facts(gl)["open"] == "247 in scope · 0 fail · 33 warn")
+        pd = os.path.join(td, "pp"); os.makedirs(pd)
+        open(os.path.join(pd, "_prepush-survey-1.txt"), "w").write("SURVEY: 11 pass · 0 FAIL · 1 ADVISORY-warn · 2 COULD-NOT-ASK (x)\n")
+        open(os.path.join(pd, "_prepush-survey-2.txt"), "w").write("SURVEY: 42 pass · 1 FAIL · 2 ADVISORY-warn · 7 COULD-NOT-ASK (x)\n")
+        open(os.path.join(pd, "_prepush-test-gates.txt"), "w").write("32 test(s), 0 failure(s)\n")
+        pp = prepush_facts(pd)
+        bite("prepush: SURVEY lines summed (53 pass, 1 FAIL, 3 advisory, 9 could-not-ask) and 32 tests",
+             (pp["pass"], pp["fail"], pp["advisory"], pp["could_not_ask"], pp["tests"]) == (53, 1, 3, 9, 32))
+        fp = os.path.join(td, "F.json")
+        base = {"measured_at": "x", "git": {"head": "h"}, "fill": {"now": 5}}
+        json.dump(base, open(fp, "w"), ensure_ascii=False, indent=1)
+        g("init", "-q", td)
+        open(os.path.join(td, "_CHAIN.md"), "w").write("chain text here\n"); g("add", "_CHAIN.md"); g("commit", "-qm", "chain")
+        wsha = _git(td, "rev-parse", "HEAD")[1]
+        f2 = add_post(fp, repo=td, wrap_sha=wsha, seat_sha=None, gate_log=gl, push_range="a..b", pushed_at="2026-09-30T17:01:30Z",
+                      launched_at="2026-09-30T16:39:51Z", ci_runs=ci, prepush_dir=pd, title_brief="T")
+        bite("post: added by addition — minutes_to_push 21.7, gate_wrap, CI GREEN, chain tk measured, pre-commit keys kept",
+             f2["post"]["minutes_to_push"] == 21.7 and f2["post"]["gate_wrap"].startswith("247") and f2["post"]["ci"]["verdict"] == "GREEN"
+             and f2["post"]["chain_tk_after_regen"] > 0 and {k: f2[k] for k in base} == base)
+        json.dump(f2, open(fp, "w"))
+        try:
+            add_post(fp, repo=td, wrap_sha=wsha, seat_sha=None, gate_log=gl, push_range="a..b", pushed_at=None, launched_at=None, ci_runs=ci)
+            bite("post: a second post write is refused", False)
+        except FactsError:
+            bite("post: a second post write is refused", True)
     print("wrap-facts selftest:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
@@ -322,13 +682,55 @@ def main(argv=None):
     ap.add_argument("--session", type=int); ap.add_argument("--transcript"); ap.add_argument("--until")
     ap.add_argument("--subagents-dir"); ap.add_argument("--exclude", action="append", default=[])
     ap.add_argument("--repo", default=REPO)
+    ap.add_argument("--ci-owed"); ap.add_argument("--ci-red", action="append", default=[])
+    ap.add_argument("--ci-owed-typed", help="SHA8:GREEN|RED[:RUN_ID] when the opener's read was not saved (marked typed)")
+    ap.add_argument("--gate-log"); ap.add_argument("--tz", default="Europe/London")
+    ap.add_argument("--post", action="store_true", help="add the post-commit block to --facts (phase 3)")
+    ap.add_argument("--facts"); ap.add_argument("--wrap-sha"); ap.add_argument("--seat-sha"); ap.add_argument("--push-range")
+    ap.add_argument("--pushed-at"); ap.add_argument("--launched-at"); ap.add_argument("--ci-runs")
+    ap.add_argument("--prepush-dir"); ap.add_argument("--title-brief")
+    ap.add_argument("--gate-wrap", help="--post: the wrap commit's gate verdict `N in scope · N fail · N warn`, typed from the committer's log when no --gate-log was saved")
+    ap.add_argument("--extend", action="store_true", help="add the phase-3 keys to --facts (an older FACTS.json), written to --out")
+    ap.add_argument("--ritual-at", help="--extend only: the ritual's clock (ISO), for a fixture measured after the day")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
+    if a.post:
+        if not (a.facts and a.wrap_sha and a.ci_runs):
+            ap.error("--post needs --facts, --wrap-sha and --ci-runs")
+        try:
+            f = add_post(a.facts, repo=a.repo, wrap_sha=a.wrap_sha, seat_sha=a.seat_sha, gate_log=a.gate_log,
+                         push_range=a.push_range, pushed_at=a.pushed_at, launched_at=a.launched_at,
+                         ci_runs=a.ci_runs, prepush_dir=a.prepush_dir, title_brief=a.title_brief, gate_wrap=a.gate_wrap)
+        except FactsError as e:
+            print("⛔ REFUSED:", e); return 1
+        with open(a.facts, "w", encoding="utf-8") as fh:
+            json.dump(f, fh, ensure_ascii=False, indent=1)
+        p = f["post"]
+        print(f"post: wrap {p['wrap_sha']} · seat {p['seat_sha']} · CI {p['ci']['verdict']} run {p['ci']['run_id']} · "
+              f"chain {p['chain_tk_after_regen']:,} cl100k · pushed {p['push_range']} at {p['pushed_at']}")
+        print("→", a.facts, "(post added by addition)")
+        return 0
     if not a.out:
         ap.error("--out is required (the one file this reader writes)")
+    if a.extend:
+        if not a.facts:
+            ap.error("--extend needs --facts")
+        try:
+            now = _iso(a.ritual_at) if a.ritual_at else None
+            f = extend_facts(json.load(open(a.facts, encoding="utf-8")), a.repo, a.at, a.transcript, a.until,
+                             a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, now, a.ci_owed_typed)
+        except FactsError as e:
+            print("⛔ REFUSED:", e); return 1
+        with open(a.out, "w", encoding="utf-8") as fh:
+            json.dump(f, fh, ensure_ascii=False, indent=1)
+        for l in lines(f):
+            print(l)
+        print("→", a.out, "(extended by addition)")
+        return 0
     try:
-        f = measure(a.repo, a.at, a.rulings_base, a.since, a.session, a.transcript, a.until, a.subagents_dir, tuple(a.exclude))
+        f = measure(a.repo, a.at, a.rulings_base, a.since, a.session, a.transcript, a.until, a.subagents_dir,
+                    tuple(a.exclude), a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, a.ci_owed_typed)
     except FactsError as e:
         print("⛔ REFUSED:", e); return 1
     with open(a.out, "w", encoding="utf-8") as fh:

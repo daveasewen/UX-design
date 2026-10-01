@@ -34,6 +34,10 @@ THE ORDER, and why each position (the record: `_HANDOFF-156` § THINGS A COLD SE
                                              which is safe mid-session and stale at a wrap.
 Then the `--check` of every one of the nine. A write step that fails STOPS the serial (the later
 steps read its output); every check runs and each verdict is printed.
+★ #312 (phase 3, `s306-D4`, by addition): one CHECK-ONLY step after the nine — `_wrap_views.py --check`, the
+freshness arm (limit 7 of `s306-D10`): it regenerates the NEWEST wrap's views from its STORY.md + FACTS.json
+and compares them with disk, red on any hand edit; a newest wrap with no STORY.md (the phase-1 path) is a
+declared skip, not a red. It writes nothing, so it is not in the serial's write half.
 
 ⚠ `_memento_search.py` APPENDS to `knowledge/_graph-mark-observations.jsonl`, and the schematic
 reads it, so the two must be committed together or CI's schematic determinism step goes red
@@ -55,6 +59,11 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
+
+# check-only steps run after the serial's checks (phase 3, #312): (script, check-args)
+EXTRA_CHECKS = [
+    ("knowledge/_wrap_views.py", ["--check"]),
+]
 
 # (script, write-args, check-args, outputs it writes)
 SERIAL = [
@@ -139,7 +148,7 @@ def _run(repo, argv, log):
     return p.returncode
 
 
-def run(repo=REPO, serial=SERIAL, log=None, checks_only=False, paths_out=None, session=None):
+def run(repo=REPO, serial=SERIAL, log=None, checks_only=False, paths_out=None, session=None, extra_checks=None):
     bad = _order_ok(serial)
     if bad and serial is SERIAL:
         print("⛔ REFUSED — the serial's order is broken:", "; ".join(bad), flush=True); return 2
@@ -159,6 +168,10 @@ def run(repo=REPO, serial=SERIAL, log=None, checks_only=False, paths_out=None, s
     for script, _, cargs, _ in serial:
         if _run(repo, [script] + _bind(cargs, session), log) != 0:
             stale.append(script); rc_all = 1
+    extras = EXTRA_CHECKS if (extra_checks is None and serial is SERIAL) else (extra_checks or [])
+    for script, cargs in extras:
+        if _run(repo, [script] + _bind(cargs, session), log) != 0:
+            stale.append(script + " (check-only)"); rc_all = 1
     if any(s[0].endswith("_gen_titles.py") for s in serial) and session is not None:
         why = _receipt_stale(repo, session)
         if why:
@@ -248,6 +261,8 @@ def main(argv=None):
         bad = _order_ok(SERIAL)
         for i, (s, w, c, o) in enumerate(SERIAL):
             print(f"{i}. python3 {s} {' '.join(w)}".rstrip() + f"   → {', '.join(o)}   check: {' '.join(c)}")
+        for s, c in EXTRA_CHECKS:
+            print(f"+. python3 {s} {' '.join(c)}   (check-only, writes nothing — phase 3 freshness arm)")
         print("order:", "OK" if not bad else "; ".join(bad))
         return 0 if not bad else 2
     return run(log=a.log, checks_only=a.checks_only, paths_out=a.paths_out, session=a.session)

@@ -93,6 +93,7 @@ import json
 import os
 import re
 import sys
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(HERE, "tokens")
@@ -344,8 +345,8 @@ def load_corpus():
     if not palettes:
         raise GateError("zero palette files under tokens/palettes/ — an empty corpus is "
                         "not a pass (s157-D2 declares this tier exists)")
-    colour = load_json(os.path.join(TOK, "colour.json"))
-    base_rag = load_json(os.path.join(TOK, "semantic-colour.json")).get("rag") or {}
+    colour = _load_legacy(os.path.join(TOK, "colour.json"))        # s311-D8: pre-s311 view
+    base_rag = _load_legacy(os.path.join(TOK, "semantic-colour.json")).get("rag") or {}
     if not base_rag:
         raise GateError("tokens/semantic-colour.json has no rag/* family — cannot verify "
                         "the base theme's palette against anything")

@@ -66,6 +66,7 @@ SNIPPETS = os.path.join(ROOT, "snippets")
 
 sys.path.insert(0, ROOT)
 from _contrast_utils import contrast_ratio, is_sufficient_contrast
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 
 def read_json(path):
@@ -138,7 +139,8 @@ def snippet_ui_contrast_join(not_covered_components):
     """
     if not not_covered_components:
         return {}
-    sem = read_json(os.path.join(ROOT, "tokens", "semantic-colour.json"))
+    sem = _load_legacy(os.path.join(ROOT, "tokens", "semantic-colour.json")) \
+        if os.path.exists(os.path.join(ROOT, "tokens", "semantic-colour.json")) else None   # s311-D8 seam
     if sem is None:
         return {}
 

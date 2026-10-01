@@ -35,6 +35,7 @@ import json, glob, os, re, sys, copy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 from _helpgate import help_gate as _help_gate  # noqa: E402
 _help_gate(__doc__, __name__, __file__)
 OUT = '_standard_nodes.json'
@@ -67,9 +68,10 @@ def token_leaves(K):
     """{leaf path: {mode: target path}} for every token leaf carrying `$alias`, with its source file."""
     out = {}
     for f in sorted(glob.glob(os.path.join(K, 'tokens', '*.json'))):
-        if re.search(r'-pre-s\d+\.json$', f) or os.path.basename(f).startswith(('EXAMPLE', '_')):
+        if re.search(r'-pre-s\d+\.json$', f) or os.path.basename(f).startswith(('EXAMPLE', '_')) \
+                or f.endswith('.resolver.json'):
             continue
-        d = _load(f)
+        d = _load_legacy(f)   # s311-D8: the pre-s311 view ($alias restored from the {ref} / $extensions)
 
         def walk(x, p):
             if not isinstance(x, dict):

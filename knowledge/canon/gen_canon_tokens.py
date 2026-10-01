@@ -34,6 +34,7 @@ import json, os, sys, re
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from _dtcg_units import px_number, is_px_string   # s141-D1 (A) unit-strip seam
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 TOKENS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tokens")
 CANON_CSS  = os.path.join(os.path.dirname(os.path.abspath(__file__)), "canon.css")
@@ -186,7 +187,10 @@ SKIP_GROUPS = {("layout.json", "scale")}
 
 
 def collect(fname):
-    d = json.load(open(os.path.join(TOKENS_DIR, fname)))
+    # s311-D8 (#312 J): the files are DTCG 2025.10; this generator still walks the pre-s311
+    # shape (light/dark leaves, $alias, $webStack) through the ONE seam, _dtcg_load. The spine
+    # it emits is byte-equal by construction — _validate_tokens_dtcg.py re-proves it every run.
+    d = _load_legacy(os.path.join(TOKENS_DIR, fname))
     out = []
     for k, v in d.items():
         if k.startswith("$"):

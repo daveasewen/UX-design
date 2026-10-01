@@ -26,6 +26,14 @@ the same findings number (s305-D17/D18/D19/D58, Dave, #305):
   ROLE-UNKNOWN   a slot's `accepts.provides` must name roles in knowledge/roles.json `roles` (s305-D18).
 The schema itself refuses `ownText` on anything but a string, a number or an array (s305-D17).
 
+★ #312 lane L1 (s311-D4, Dave, 2026-10-01 — "In the meta: four new fields"): the schema gained `anatomy`,
+`states`, `emits`, `bindings` and the `$extracted` draft marker (optional, by addition, nothing renamed).
+The selftest plants five defects the new clauses must catch (an alias meta carrying anatomy — the s210-D5
+fence; a node without `part`; a transition without `to`; a binding written as a slash path instead of a
+`{group.token}` reference; the four fields without their marker — the `dependencies` clause) and then runs
+ONE POSITIVE CONTROL: the full draft shape `SPEC_DRAFT` (what extract_spec.py writes) on button.meta.json
+must validate with zero new findings, so the extraction (L2) has a proven shape to land on.
+
 ⛔ WHAT IT CANNOT SEE: whether the meta is TRUE. Schema conformance is a grammar check — a meta
 can name the wrong token, the wrong component or a nonexistent edge target and pass. It also
 cannot see a schema that is itself wrong; widening vs repairing is an OPEN QUESTION TO DAVE
@@ -54,6 +62,35 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 COMPONENTS = os.path.join(ROOT, "knowledge", "components")
 SCHEMA = os.path.join(COMPONENTS, "meta.schema.json")
 EXEMPT = ("EXAMPLE-button.meta.json",)
+
+# #312 L1 (s311-D4): the CANONICAL DRAFT SHAPE of the four neutral-spec fields — what extract_spec.py writes
+# and what the selftest's positive control proves the schema accepts. A button, minimal but complete.
+SPEC_DRAFT = {
+    "anatomy": {
+        "part": "button", "tag": "button",
+        "attrs": {"type": "button", "class": "btn btn--{props.variant}", "disabled": "{state.disabled}"},
+        "aria": {"aria-pressed": "{state.pressed}"},
+        "children": [
+            {"part": "icon", "tag": "span", "attrs": {"class": "btn__icon"}, "aria": {"aria-hidden": "true"}, "slot": "icon"},
+            {"part": "label", "tag": "span", "attrs": {"class": "btn__label"}, "text": "{props.label}"}
+        ]
+    },
+    "states": {
+        "states": ["idle", "hover", "pressed", "focus", "disabled"],
+        "initial": "idle",
+        "transitions": [
+            {"from": "idle", "on": "pointerenter", "to": "hover"},
+            {"from": "hover", "on": "pointerdown", "to": "pressed"},
+            {"from": "pressed", "on": "pointerup", "to": "hover"},
+            {"from": "*", "on": "props.disabled", "to": "disabled", "guard": "{props.disabled}"}
+        ],
+        "keys": {"Enter": "activate", "Space": "activate"}
+    },
+    "emits": [{"name": "apollo-press", "detail": {"variant": "string"}, "when": "the button is activated by pointer or key"}],
+    "bindings": {"--btn-ink": "{text.default}", "--btn-surface": "{primary.background.default}", "--focus-ring": "{focus.ring}"},
+    "$extracted": {"by": "extract_spec.py @ 312-L2", "date": "2026-10-01", "reviewed": False,
+                   "source": "knowledge/snippets/Button.reference.html", "fields": ["anatomy", "states", "emits", "bindings"]}
+}
 
 
 def sweep(directory=COMPONENTS, schema_path=None, exempt=EXEMPT, verbose=True):
@@ -224,6 +261,56 @@ def selftest():
             fails.append("PLANT NOT CAUGHT: %s planted in %s produced no new finding" % (label, fname))
     if base_rules:
         fails.append("CONTROL: the live tree carries %d rule-arm finding(s); the baseline must be 0" % len(base_rules))
+
+    # direction 2c — #312 L1 (s311-D4): the four neutral-spec fields + the $extracted marker.
+    # Five plants that must be caught, then ONE positive control: the full draft shape extract_spec.py
+    # writes must pass with ZERO new findings, or the extraction has no schema to land on.
+    def _spec(d, **drop):
+        d.update(json.loads(json.dumps(SPEC_DRAFT)))
+        for k in drop:
+            d.pop(k, None)
+
+    def _p_alias(d):         # the s210-D5 fence: an aliasOf meta draws none of the four
+        d["anatomy"] = SPEC_DRAFT["anatomy"]; d["$extracted"] = SPEC_DRAFT["$extracted"]
+
+    def _p_nopart(d):
+        _spec(d); del d["anatomy"]["children"][0]["part"]
+
+    def _p_noto(d):
+        _spec(d); del d["states"]["transitions"][0]["to"]
+
+    def _p_slash(d):         # today's manifest form is a slash path, not a DTCG reference
+        _spec(d); d["bindings"]["--btn-ink"] = "text/default"
+
+    def _p_nomarker(d):      # a drafted field with no $extracted: the dependencies clause
+        _spec(d, **{"$extracted": 1})
+
+    for label, fname, mut in (
+            ("ALIAS-FENCE anatomy on an aliasOf meta", "kpi-tile.meta.json", _p_alias),
+            ("anatomy node without `part`", "button.meta.json", _p_nopart),
+            ("states transition without `to`", "button.meta.json", _p_noto),
+            ("bindings value as a slash path, not {group.token}", "button.meta.json", _p_slash),
+            ("the four fields without $extracted", "button.meta.json", _p_nomarker)):
+        _fresh()
+        if not os.path.exists(os.path.join(work, fname)):
+            fails.append("PLANT %s: %s is not in the tree" % (label, fname))
+            continue
+        _plant(fname, mut)
+        s2, _, _ = sweep(work, verbose=False)
+        got = [f for f in s2 if f not in base and f[0] == fname]
+        if got:
+            print("  ✅ plant caught (s311-D4 %s): %s" % (label, " ".join(str(x) for x in got[0])[:160]))
+        else:
+            fails.append("PLANT NOT CAUGHT: %s planted in %s produced no new finding" % (label, fname))
+    _fresh()
+    _plant("button.meta.json", _spec)
+    s3, _, _ = sweep(work, verbose=False)
+    got = [f for f in s3 if f not in base and f[0] == "button.meta.json"]
+    if got:
+        fails.append("POSITIVE CONTROL FAILED: the full s311-D4 draft shape on button.meta.json raised %d finding(s): %s"
+                     % (len(got), "; ".join("%s %s" % (g[1], g[2]) for g in got[:3])))
+    else:
+        print("  ✅ positive control: the full s311-D4 draft (anatomy+states+emits+bindings+$extracted) on button.meta.json validates clean")
 
     # direction 3 — REMOVE the plant, the probe must go back to baseline (silence)
     shutil.rmtree(work)

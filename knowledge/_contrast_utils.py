@@ -18,6 +18,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
     _hg_d = _hg_os.path.dirname(_hg_d)
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 def hex_to_rgb(hex_str):
     """Convert #RRGGBB to (r, g, b) with values 0-1."""
@@ -381,11 +382,11 @@ def standard_dark_surfaces(tok_dir):
         return out
     default_dark = "#000000"
     try:
-        sem = json.load(open(os.path.join(tok_dir, "semantic-colour.json")))
+        sem = _load_legacy(os.path.join(tok_dir, "semantic-colour.json"))   # s311-D8 seam
         default_dark = sem["background"]["default"]["dark"]["$value"].upper()
     except Exception:
         pass
-    prims = leaves(json.load(open(os.path.join(tok_dir, "colour.json"))))
+    prims = leaves(_load_legacy(os.path.join(tok_dir, "colour.json")))
     raised = next((hx for p, hx in prims.items() if p.endswith("dark-mode/600")), "#1D1D1D")
     return default_dark, raised
 

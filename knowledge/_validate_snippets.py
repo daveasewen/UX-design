@@ -83,16 +83,17 @@ import json, os, re, sys, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from _contrast_utils import contrast_ratio, is_sufficient_contrast
 from _dtcg_units import px_number             # s141-D1 (A) unit-strip seam
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(ROOT, "snippets")
 TOK = os.path.join(ROOT, "tokens")
 
-sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
-layout = json.load(open(os.path.join(TOK, "layout.json")))
-spacing = json.load(open(os.path.join(TOK, "spacing.json")))   # #219: padding/* + gap/* manifest route
-motion_store = json.load(open(os.path.join(TOK, "motion.json")))
-opacity_store = json.load(open(os.path.join(TOK, "opacity.json")))  # #99-D1 alpha/* primitives
+sem = _load_legacy(os.path.join(TOK, "semantic-colour.json"))   # s311-D8: the pre-s311 view of the DTCG files
+layout = _load_legacy(os.path.join(TOK, "layout.json"))
+spacing = _load_legacy(os.path.join(TOK, "spacing.json"))   # #219: padding/* + gap/* manifest route
+motion_store = _load_legacy(os.path.join(TOK, "motion.json"))
+opacity_store = _load_legacy(os.path.join(TOK, "opacity.json"))  # #99-D1 alpha/* primitives
 ctypes_store = json.load(open(os.path.join(ROOT, "component-types.json")))  # ADR-0013 registry
 
 # Brand exemption (type26-019): uppercase is allowed for acronyms only. Runs made

@@ -204,6 +204,12 @@ SELFTEST_ARMS = [
      "_validate_theme_provenance.py"),
     ("wiring gate's own bites run (13, incl. the widened glob + the anti-laundering arm, #221)",
      "_validate_wiring.py"),
+    # s311-D8 (#312 J): the tokens are DTCG 2025.10; the generator and the five-proof gate each
+    # carry bites, and the proofs themselves (spine + snippet blocks byte-equal) run in STEPS.
+    ("tokens→DTCG generator's own bites run (9: fold, mismatch, extras, inverse, idempotence, #312)",
+     "tokens/gen_dtcg.py"),
+    ("tokens→DTCG gate's own bites run (5: receipt, stray $note, broken ref, resolver, live seam, #312)",
+     "_validate_tokens_dtcg.py"),
 ]
 
 
@@ -454,27 +460,46 @@ def mut_ghost_meta(k):
 
 
 def mut_flat_white_dark(k):
-    p = os.path.join(k, "tokens", "semantic-colour.json")
-    sem = json.load(open(p))
+    # s311-D8 (#312 J): the token files are DTCG 2025.10 — the dark value of a token lives in
+    # tokens/modes/dark/semantic-colour.json and its `$darkNote` exemption under the base
+    # token's `$extensions.apollo.darkNote`. The mutation plants the flat white where the
+    # resolver reads it, and strips the exemption where the gate (through _dtcg_load) finds it.
+    base_p = os.path.join(k, "tokens", "semantic-colour.json")
+    dark_p = os.path.join(k, "tokens", "modes", "dark", "semantic-colour.json")
+    base = json.load(open(base_p))
+    dark = json.load(open(dark_p))
 
-    def walk(node, path=""):
+    def dark_node(path):
+        node = dark
+        for seg in path:
+            node = node.get(seg) if isinstance(node, dict) else None
+            if node is None:
+                return None
+        return node if isinstance(node, dict) and "$value" in node else None
+
+    def walk(node, path):
         if not isinstance(node, dict):
             return False
-        if "light" in node and "dark" in node and isinstance(node.get("light"), dict):
-            name = path.strip("/")
-            if (any(c in name for c in ("background", "surface", "border", "divider"))
+        if "$value" in node:
+            name = "/".join(path)
+            dn = dark_node(path)
+            if (dn is not None
+                    and any(c in name for c in ("background", "surface", "border", "divider"))
                     and not any(x in name for x in ("reverse", "on-light", "on-dark"))):
-                node["dark"] = {"$value": "#FFFFFF"}
-                node.pop("$darkNote", None)
+                dn["$value"] = "#FFFFFF"
+                ext = node.get("$extensions", {}).get("apollo", {})
+                ext.pop("darkNote", None)
                 return True
+            return False
         for key, v in node.items():
-            if not key.startswith("$") and walk(v, path + "/" + key):
+            if not key.startswith("$") and walk(v, path + [key]):
                 return True
         return False
 
-    if not walk(sem):
+    if not walk(base, []):
         raise RuntimeError("no qualifying surface token found")
-    json.dump(sem, open(p, "w"), indent=2)
+    json.dump(base, open(base_p, "w"), indent=2, ensure_ascii=False)
+    json.dump(dark, open(dark_p, "w"), indent=2, ensure_ascii=False)
 
 
 def _first_canon_screen(k):

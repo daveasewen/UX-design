@@ -71,6 +71,27 @@ CHECKS (continued)
   DTCG-006  a $type:"number" token holding an integer px quantity (same conservative
             detector as before: named non-px exclusions only) is a FAILURE — s141-D1 (A).
 
+DTCG 2025.10 — s311-D8 (Dave, #311, 2026-10-01: "Now, one generator, extras under
+$extensions"), enacted #312 lane J by knowledge/tokens/gen_dtcg.py. The spine is now the
+STABLE format, not near it, and this gate reads it that way:
+  * the CORPUS gains tokens/modes/<context>/*.json (the Resolver Module contexts; today
+    modes/dark/semantic-colour.json) and skips *.resolver.json (the resolver document is
+    not a token file). A context file's tokens overlay the base paths; references in either
+    resolve against the union, as a resolver would.
+  * DTCG-005 dimension and duration: the 2025.10 VALUE OBJECT {"value": n, "unit": u}
+    (units px|rem, ms|s) is the legal shape for a token. The old "16px" string survives
+    only on the Figma scale-N leaves (DEF-FIGMA-MODES) and is reported there as
+    DEF-DIMENSION-STRING — a deferral, named, until a `scale` modifier is ruled.
+    cubicBezier is the spec's [x1, y1, x2, y2]; the {x1..y2} object form now fails.
+  * DTCG-007  a `$` key that is not one of $value $type $description $extensions
+    $deprecated on a token or group is a FAILURE. Apollo's annotations ($note, $contrast,
+    $confidence, $label, $alias, $darkNote, …) live under $extensions.apollo and nowhere
+    else; a stray one re-minted at the top level is what this check catches.
+  * a `$value` that is a pure reference needs no shape check (DTCG-003 proves the target);
+    typography sub-values may be references or dimension objects.
+  The four theme override sets and _themes.json are NOT in this corpus (unchanged shape,
+  owed as a `theme` modifier — see the J report).
+
 FAILURE STYLE
   Loud and NAMED: "FAIL <check-id>  <file> :: <token.path> :: <why>". A crash is not a
   fail — every helper raises a named DtcgError with the file and path in the message, so
@@ -111,6 +132,11 @@ HEX_RE = re.compile(r"^#(?:[0-9A-Fa-f]{3,4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
 DIMENSION_RE = re.compile(r"^-?\d+(?:\.\d+)?(px|rem|em|%|vh|vw|ch)$")
 DURATION_RE = re.compile(r"^-?\d+(?:\.\d+)?(ms|s)$")
 MODE_KEYS = {"scale-1", "scale-2", "scale-3", "scale-1-200", "light", "dark"}
+# DTCG 2025.10 (s311-D8): the value-object forms and the reserved property set.
+DIMENSION_UNITS = {"px", "rem"}
+DURATION_UNITS = {"ms", "s"}
+STANDARD_KEYS = {"$value", "$type", "$description", "$extensions", "$deprecated"}
+DEF_DIMENSION_STRING = "DEF-DIMENSION-STRING"
 
 # ---- named deferrals: (id, predicate on (file, path, node)) --------------------------
 DEF_COLOR_MISTYPE = "DEF-COLOR-MISTYPE"
@@ -119,16 +145,13 @@ DEF_FIGMA_MODES = "DEF-FIGMA-MODES"
 # DEF-LAYOUT-SCALE and DEF-NUMBER-DIMENSION were RULED AND ENACTED by s141-D1 and are
 # deliberately absent: see the module docstring. Do not re-add them as deferrals.
 
-DEFERRED_PATHS = {
-    ("semantic-colour.json", "blur.overlay.light"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "blur.overlay.dark"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "blur.background-surface.light"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "blur.background-surface.dark"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "image.opacity.default.light"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "image.opacity.default.dark"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "image.opacity.disabled.light"): DEF_COLOR_MISTYPE,
-    ("semantic-colour.json", "image.opacity.disabled.dark"): DEF_COLOR_MISTYPE,
-}
+# Since s311-D8 the light value is the base token and the dark value its modes/dark entry —
+# the same eight nodes, addressed the 2025.10 way (file key = path relative to tokens/).
+DEFERRED_PATHS = {}
+for _f in ("semantic-colour.json", "modes/dark/semantic-colour.json"):
+    for _p in ("blur.overlay", "blur.background-surface",
+               "image.opacity.default", "image.opacity.disabled"):
+        DEFERRED_PATHS[(_f, _p)] = DEF_COLOR_MISTYPE
 
 
 def corpus_files(root):
@@ -139,10 +162,15 @@ def corpus_files(root):
     inc, exc = [], []
     for p in sorted(glob.glob(os.path.join(tokdir, "*.json"))):
         b = os.path.basename(p)
-        if b.startswith("_") or b.startswith("EXAMPLE-") or b.endswith("-pre-s141.json"):
+        if (b.startswith("_") or b.startswith("EXAMPLE-") or b.endswith("-pre-s141.json")
+                or b.endswith(".resolver.json")):
             exc.append(b)
         else:
             inc.append(p)
+    # s311-D8: the Resolver Module contexts (tokens/modes/<context>/<base>.json) are part of
+    # the spine — gated for shape like any file, overlaying the base paths for references.
+    for p in sorted(glob.glob(os.path.join(tokdir, "modes", "*", "*.json"))):
+        inc.append(p)
     if not inc:
         raise DtcgError("token corpus is EMPTY after exclusions — refusing to report a clean run")
     return inc, exc
@@ -185,10 +213,19 @@ def walk(node, path, file_name, inherited_type, out_tokens, out_groups):
             out_tokens[".".join(path + [key])] = ({"$value": child, "$modeLeaf": True}, own)
 
 
+def _file_key(p):
+    """The file's key in reports: its path relative to tokens/ (a context file shares its
+    basename with its base file, so the basename alone is ambiguous since s311-D8)."""
+    parts = os.path.normpath(p).split(os.sep)
+    if "tokens" in parts:
+        return "/".join(parts[len(parts) - parts[::-1].index("tokens"):])
+    return os.path.basename(p)
+
+
 def build_spine(files):
     tokens, groups, per_file = {}, {}, {}
     for p in files:
-        b = os.path.basename(p)
+        b = _file_key(p)
         t, g = {}, {}
         walk(load(p), [], b, None, t, g)
         per_file[b] = (t, g)
@@ -222,10 +259,24 @@ def check(root, strict=False):
                 defer(DEF_FIGMA_MODES, f, path,
                       "mode-keyed node (%s) — Figma variable modes, no DTCG equivalent"
                       % ",".join(sorted(kids)))
+            # DTCG-007 on groups (s311-D8): no Apollo `$` key outside $extensions
+            for k in node:
+                if k.startswith("$") and k not in STANDARD_KEYS:
+                    fail("DTCG-007", f, path or "<root>",
+                         "non-standard property %s on a group — Apollo keys live under "
+                         "$extensions.apollo (s311-D8)" % k)
 
         for path, (node, eff_type) in toks.items():
             deferred_as = DEFERRED_PATHS.get((f, path))
             value = node.get("$value")
+            mode_leaf = bool(node.get("$modeLeaf"))
+
+            # ---- DTCG-007 : no Apollo `$` key outside $extensions (s311-D8)
+            for k in node:
+                if k.startswith("$") and k not in STANDARD_KEYS and k != "$modeLeaf":
+                    fail("DTCG-007", f, path,
+                         "non-standard property %s on a token — Apollo keys live under "
+                         "$extensions.apollo (s311-D8)" % k)
 
             # ---- DTCG-002 : a resolvable $type
             if eff_type is None:
@@ -278,22 +329,25 @@ def check(root, strict=False):
                         fail("DTCG-006", f, row_path,
                              'unitless $type:"number" holds a px quantity (%r) — s141-D1 (A) '
                              'requires $type:"dimension" with a "Npx" $value' % (value,))
-            elif eff_type == "dimension":
-                if not (isinstance(value, str) and DIMENSION_RE.match(value)):
-                    fail("DTCG-005", f, path, "dimension $value has no legal unit: %r" % (value,))
-            elif eff_type == "duration":
-                if not (isinstance(value, str) and DURATION_RE.match(value)):
-                    fail("DTCG-005", f, path, "duration $value has no ms/s unit: %r" % (value,))
+            elif eff_type in ("dimension", "duration"):
+                # DTCG 2025.10 (s311-D8): the value object is the legal shape for a TOKEN.
+                units = DIMENSION_UNITS if eff_type == "dimension" else DURATION_UNITS
+                legacy_re = DIMENSION_RE if eff_type == "dimension" else DURATION_RE
+                if _is_value_object(value, units):
+                    pass
+                elif isinstance(value, str) and legacy_re.match(value) and mode_leaf:
+                    defer(DEF_DIMENSION_STRING, f, path,
+                          '%s "%s" is the pre-2025.10 string form on a Figma scale leaf — '
+                          'owed with the `scale` modifier (s311-D8 remainder)' % (eff_type, value))
+                else:
+                    fail("DTCG-005", f, path, '%s $value is not a 2025.10 value object '
+                         '{"value": n, "unit": %s}: %r' % (eff_type, "|".join(sorted(units)), value))
             elif eff_type == "cubicBezier":
                 ok = isinstance(value, list) and len(value) == 4 and all(
                     isinstance(x, (int, float)) and not isinstance(x, bool) for x in value)
                 if not ok:
-                    # this spine stores cubicBezier as {x1,y1,x2,y2} — accept that shape too,
-                    # but only when all four are present and numeric.
-                    ok = isinstance(value, dict) and set(value) >= {"x1", "y1", "x2", "y2"} and all(
-                        isinstance(value[k], (int, float)) for k in ("x1", "y1", "x2", "y2"))
-                if not ok:
-                    fail("DTCG-005", f, path, "cubicBezier $value is not 4 numbers: %r" % (value,))
+                    fail("DTCG-005", f, path, "cubicBezier $value is not [x1, y1, x2, y2] "
+                         "(s311-D8: the {x1..y2} object form is retired): %r" % (value,))
             elif eff_type == "typography":
                 if not isinstance(value, dict):
                     fail("DTCG-005", f, path, "typography $value is not an object: %r" % (value,))
@@ -314,8 +368,9 @@ def check(root, strict=False):
             elif eff_type in ("fontFamily", "fontWeight", "strokeStyle"):
                 pass  # string/number/keyword forms all legal; nothing further to assert
 
-    notes.append("corpus: %d files gated, %d excluded (%s)"
-                 % (len(files), len(excluded), ", ".join(excluded) or "none"))
+    notes.append("corpus: %d files gated (%s), %d excluded (%s)"
+                 % (len(files), ", ".join(_file_key(p) for p in files),
+                    len(excluded), ", ".join(excluded) or "none"))
     notes.append("spine: %d tokens, %d groups" % (len(tokens), len(groups)))
 
     if strict:
@@ -326,6 +381,12 @@ def check(root, strict=False):
     return {"fails": fails, "deferrals": deferrals, "notes": notes,
             "numberDimensionRows": number_dimension_rows,
             "tokenCount": len(tokens), "files": [os.path.basename(f) for f in files]}
+
+
+def _is_value_object(value, units):
+    return (isinstance(value, dict) and set(value) == {"value", "unit"}
+            and isinstance(value["value"], (int, float)) and not isinstance(value["value"], bool)
+            and value["unit"] in units)
 
 
 def _alias_refs(value):

@@ -34,3 +34,24 @@ GTB brand system for the canonical values and their WCAG notes.
   }
 }
 ```
+
+## DTCG 2025.10 — the stable format (s311-D8, #312)
+
+Since s311-D8 the ten base files here are W3C DTCG **2025.10**, not near it. What that means
+on disk: an alias is the token's `$value` as a `{group.token}` reference (`"{color.neutral.15}"`);
+the dark value of a token lives in `modes/dark/<file>.json`, bound by the Resolver Module
+document `apollo.resolver.json` (set `base` = the ten files, modifier `color-scheme` = light |
+dark); a dimension or duration is a value object (`{"value": 16, "unit": "px"}`); a cubicBezier
+is `[x1, y1, x2, y2]`; and every Apollo annotation (`note`, `contrast`, `confidence`, `label`,
+`darkNote`, `webStack`, `metrics`, a kept `alias` whose target disagrees with the stored hex)
+lives under `$extensions.apollo`. `com.apollo.sds` (s141-D1 (B), s217-D4) and `apollo.state`
+(ADR-0009) are the older vendor keys and are untouched.
+
+The generator is `gen_dtcg.py` (dry run by default, `--write` to land, `--receipt DIR` to compare
+the inverse against pre-s311 files). Readers do not walk this shape yet: they read the pre-s311
+view through `knowledge/_dtcg_load.load_legacy(path)`, the one read-site seam (same idea as
+`_dtcg_units.py`). `knowledge/_validate_tokens_dtcg.py` proves on every build that the
+canon.css spine and all 137 snippet theme blocks re-render byte-equal and that every moved key
+comes back from `$extensions`. Not moved yet: the theme override sets under `themes/` (owed as
+a `theme` modifier of the resolver) and the Figma `scale-1/2/3/1-200` leaves (owed as a `scale`
+modifier); colours stay hex strings.

@@ -55,6 +55,7 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LAYOUT = os.path.join(HERE, "tokens", "layout.json")
@@ -135,8 +136,10 @@ def load_json(path, what):
     if not os.path.exists(path):
         refuse(what, "input file missing: %s" % path)
     try:
-        with open(path, "r", encoding="utf-8") as fh:
-            return json.load(fh)
+        # s311-D8 (#312 J): tokens/layout.json + spacing.json are DTCG 2025.10 on disk; this
+        # deriver reads the pre-s311 view through the one seam. Non-base files (the theme
+        # override sets, the proposal file) come back as a plain json.load.
+        return _load_legacy(path)
     except json.JSONDecodeError as exc:
         refuse(what, "input is not valid JSON (%s): %s" % (path, exc))
 

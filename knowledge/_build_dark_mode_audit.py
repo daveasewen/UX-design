@@ -28,6 +28,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, os, glob
 from collections import defaultdict
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
@@ -47,8 +48,8 @@ def mode_val(n, m):
     x = n.get(m)
     return (x.get("$value") or x.get("value")) if isinstance(x, dict) else x
 
-sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
-prim = set(leaves(json.load(open(os.path.join(TOK, "colour.json")))))
+sem = leaves(_load_legacy(os.path.join(TOK, "semantic-colour.json")))   # s311-D8 seam
+prim = set(leaves(_load_legacy(os.path.join(TOK, "colour.json"))))
 semantic = set(sem)
 flat = {p for p, n in sem.items() if "light" in n and "dark" in n and mode_val(n, "light") == mode_val(n, "dark")}
 colour_tokens = prim | semantic  # everything colour-ish; used to ignore non-colour tokens

@@ -26,7 +26,9 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import json, os, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-sem = json.load(open(os.path.join(ROOT, "tokens", "semantic-colour.json")))
+sys.path.insert(0, ROOT)
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
+sem = _load_legacy(os.path.join(ROOT, "tokens", "semantic-colour.json"))
 
 CATS = ("background", "surface", "border", "divider")
 fails, allowed = [], []

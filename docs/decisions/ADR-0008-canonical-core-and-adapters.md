@@ -42,6 +42,9 @@ different). "Don't follow" = never import a consumer's flaw. Consumers (Sutherla
 Common Toolkit, and others later) are bridged by **machine-runnable adapters**, not hand-ports.
 The seed already exists: `tokens/_manifests/sutherland-diffs.json` plus the hub-and-spoke
 `codeBindings` (Figma node ID = identity; per-namespace code names).
+**Cross-reference (2026-10-01, #312 lane L1):** `s311-D7` (Dave, #311) makes the adapter concrete — an
+`adapters/<lib-id>.json` manifest per client library (Code Connect in shape, a required `unmapped` list,
+`adapters/schema.json` + `_validate_adapter.py`); the four `codeBindings` spokes are rewritten as the first manifest.
 
 **4. Operating principle — diverge for quality, keep every divergence expressible as an
 automated transform.** *Mappable-by-machine* is the standing condition on every deliberate

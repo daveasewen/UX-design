@@ -115,6 +115,7 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 # own _MANIFEST.json marker, which only an unzipped pack has. Same bytes both sides.
 from _helpgate import pack_gate as _pack_gate; _pack_gate(__file__, name=__name__, what='the canon bento layer')
 import json, os, re, sys
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 HERE  = os.path.dirname(os.path.abspath(__file__))
 KNOW  = os.path.dirname(HERE)
@@ -132,7 +133,7 @@ class BentoStoreError(RuntimeError):
 def store():
     """The `layout/bento` group. Fails LOUD and NAMED — a missing group must not
     silently compile a bento with no parameters (a-crash-is-not-a-fail)."""
-    d = json.load(open(os.path.join(TOK, "layout.json")))
+    d = _load_legacy(os.path.join(TOK, "layout.json"))   # s311-D8: pre-s311 view of the DTCG file
     try:
         return d["layout"]["bento"]
     except KeyError as e:

@@ -61,6 +61,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))   # knowledge/_render
 REPO = os.path.dirname(HERE)                        # knowledge/
 ROOT = os.path.dirname(REPO)                        # repo root
 sys.path.insert(0, HERE)
+sys.path.insert(0, REPO)                            # knowledge/ — for _dtcg_load (s311-D8)
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 from cdp_matched_styles import parse_colour  # noqa: E402
 
 TOKENS = os.path.join(REPO, "tokens")
@@ -74,8 +76,7 @@ class ProbeError(RuntimeError):
 
 
 def _store(name):
-    with open(os.path.join(TOKENS, name)) as fh:
-        return json.load(fh)
+    return _load_legacy(os.path.join(TOKENS, name))   # s311-D8: pre-s311 view (light/dark, $alias)
 
 
 def _dig(obj, path):

@@ -36,6 +36,7 @@ _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, re, glob, os, sys
 from collections import Counter, defaultdict
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOK = os.path.join(ROOT, "tokens")
@@ -59,10 +60,10 @@ def compute():
                     continue
                 walk(v, (path + "/" + k).strip("/") if path else k)
     for f in glob.glob(os.path.join(TOK, "*.json")):
-        if os.path.basename(f).startswith("_"):
+        if os.path.basename(f).startswith("_") or f.endswith(".resolver.json"):
             continue
         try:
-            walk(json.load(open(f)))
+            walk(_load_legacy(f))   # s311-D8: pre-s311 view (light/dark leaves) of the DTCG files
         except Exception:
             pass
     store_paths = sorted(store, key=len, reverse=True)  # longest first

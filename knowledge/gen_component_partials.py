@@ -79,6 +79,7 @@ while _hg_d != "/" and not _hg_os.path.exists(_hg_os.path.join(_hg_d, "_helpgate
 _hg_sys.path.insert(0, _hg_d)
 from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import glob, json, os, re, sys
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
@@ -478,13 +479,13 @@ def run_behaviour_manifests(write):
 def _resolve_semantic(path):
     """Resolve a $alias target's $value from its store (modeless or light)."""
     if path.startswith("motion/"):
-        store = json.load(open(os.path.join(TOK, "motion.json")))
+        store = _load_legacy(os.path.join(TOK, "motion.json"))        # s311-D8: pre-s311 view
     elif path.startswith("color/"):
-        store = json.load(open(os.path.join(TOK, "colour.json")))
+        store = _load_legacy(os.path.join(TOK, "colour.json"))
     elif path.startswith(("border-radius/", "border-width/", "focus-ring/", "layout/", "breakpoint/", "target/")):
-        store = json.load(open(os.path.join(TOK, "layout.json")))
+        store = _load_legacy(os.path.join(TOK, "layout.json"))
     else:
-        store = json.load(open(os.path.join(TOK, "semantic-colour.json")))
+        store = _load_legacy(os.path.join(TOK, "semantic-colour.json"))
     node = store
     for k in path.split("/"):
         node = node[k]

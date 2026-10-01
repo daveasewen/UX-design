@@ -1,0 +1,65 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "name": "Apollo token spine",
+  "version": "2025.10",
+  "description": "DTCG Resolver Module for knowledge/tokens (s311-D8, #312). The base set is the ten gated files; the color-scheme modifier lays modes/dark/*.json over it for dark. Light is the default context and adds nothing. OWED, named in notes/_subreports/2026-10-01-312-J-tokens-dtcg.md: a `theme` modifier (console / legacy / supercharge from themes/*.overrides.json) and a `scale` modifier for the Figma scale-1/2/3/1-200 leaves.",
+  "sets": {
+    "base": {
+      "description": "The Apollo spine: primitives, semantic colour (light), typography, spacing, layout, elevation, motion, opacity, icon scale, composites.",
+      "sources": [
+        {
+          "$ref": "colour.json"
+        },
+        {
+          "$ref": "opacity.json"
+        },
+        {
+          "$ref": "semantic-colour.json"
+        },
+        {
+          "$ref": "typography.json"
+        },
+        {
+          "$ref": "spacing.json"
+        },
+        {
+          "$ref": "layout.json"
+        },
+        {
+          "$ref": "elevation.json"
+        },
+        {
+          "$ref": "motion.json"
+        },
+        {
+          "$ref": "icon-scale.json"
+        },
+        {
+          "$ref": "typography-composites.json"
+        }
+      ]
+    }
+  },
+  "modifiers": {
+    "color-scheme": {
+      "description": "light (default, no sources) or dark.",
+      "contexts": {
+        "light": [],
+        "dark": [
+          {
+            "$ref": "modes/dark/semantic-colour.json"
+          }
+        ]
+      },
+      "default": "light"
+    }
+  },
+  "resolutionOrder": [
+    {
+      "$ref": "#/sets/base"
+    },
+    {
+      "$ref": "#/modifiers/color-scheme"
+    }
+  ]
+}

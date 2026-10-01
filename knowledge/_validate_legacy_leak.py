@@ -45,7 +45,8 @@ LEGACY_ONLY_HEXES = {
 #    off the teal, so the seven previously-waived components now resolve green with no edit needed.
 WAIVERS = {}
 
-_stores = [json.load(open(os.path.join(TOK, f))) for f in ("colour.json", "semantic-colour.json")]
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
+_stores = [_load_legacy(os.path.join(TOK, f)) for f in ("colour.json", "semantic-colour.json")]
 
 
 def _node(path):

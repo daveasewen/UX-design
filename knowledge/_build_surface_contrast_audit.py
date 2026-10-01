@@ -62,6 +62,7 @@ from _contrast_utils import (
     minor_pair, ground_names_for,
     CONTRAST_ALLOWLIST,
 )
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 # --- s194-D1 (Dave, #194): the severity vocabulary this report speaks. --------
 # Three verdicts, applied CONSERVATIVELY. "minor" is reachable ONLY through
@@ -480,7 +481,7 @@ def _selftest():
         arms.append((arm, ok, detail))
         print("%s %s%s" % ("✓" if ok else "✗", arm, (" — " + detail) if detail else ""))
 
-    sem_l = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
+    sem_l = leaves(_load_legacy(os.path.join(TOK, "semantic-colour.json")))
     surf = load_dark_surfaces(sem_l)
     dd, rd = standard_dark_surfaces(TOK)
 
@@ -779,7 +780,7 @@ if "--selftest" in sys.argv[1:]:
     sys.exit(_selftest())
 
 
-sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
+sem = leaves(_load_legacy(os.path.join(TOK, "semantic-colour.json")))   # s311-D8 seam
 surfaces = load_dark_surfaces(sem)
 DEFAULT_DARK, RAISED_DARK = standard_dark_surfaces(TOK)
 

@@ -45,7 +45,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
 BRAND, WCAG = 4.5, 3.0
 
-sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
+sem = _load_legacy(os.path.join(TOK, "semantic-colour.json"))
 
 
 def leaves(node, path="", out=None):

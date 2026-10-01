@@ -112,8 +112,11 @@ MEASURE = """() => {
 }"""
 
 
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
+
+
 def store(name):
-    return json.load(open(os.path.join(TOK, name)))
+    return _load_legacy(os.path.join(TOK, name))   # s311-D8: pre-s311 view of the DTCG files
 
 
 def px(v):

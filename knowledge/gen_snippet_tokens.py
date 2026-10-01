@@ -45,6 +45,7 @@ TOK  = os.path.join(HERE, "tokens")
 SNIP = os.path.join(HERE, "snippets")
 sys.path.insert(0, HERE)
 from _dtcg_units import px_number             # s141-D1 (A) unit-strip seam
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 PROFORMA = os.path.join(HERE, "_proforma")
 CANON = os.path.join(HERE, "canon", "canon.css")
 SPINE_END = "AUTO-GENERATED TOKENS END ===== */"
@@ -53,7 +54,7 @@ THEMES_START = "/* ===== AUTO-THEMES START ===== */"
 _STORES = {}
 def store(fname):
     if fname not in _STORES:
-        _STORES[fname] = json.load(open(os.path.join(TOK, fname)))
+        _STORES[fname] = _load_legacy(os.path.join(TOK, fname))   # s311-D8: pre-s311 view
     return _STORES[fname]
 
 def _unitless(path):

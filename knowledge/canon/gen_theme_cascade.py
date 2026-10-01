@@ -68,6 +68,7 @@ TOK    = os.path.join(KNOW, "tokens")
 SNIP   = os.path.join(KNOW, "snippets")
 sys.path.insert(0, KNOW)
 from _dtcg_units import px_number            # s141-D1 (A) unit-strip seam
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 CANON  = os.path.join(HERE, "canon.css")
 START  = "/* ===== AUTO-THEMES START ===== */"
 END    = "/* ===== AUTO-THEMES END ===== */"
@@ -86,7 +87,7 @@ def _store(fname):
     if fname not in _STORES:
         # "../component-types.json" = the ADR-0013 registry at knowledge/ root — a token
         # store for its parameter halves ($members/$partials are structural, never walked).
-        _STORES[fname] = json.load(open(os.path.join(TOK, fname)))
+        _STORES[fname] = _load_legacy(os.path.join(TOK, fname))   # s311-D8: pre-s311 view
     return _STORES[fname]
 
 def _store_for(path):

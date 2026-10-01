@@ -61,6 +61,7 @@ import json
 import os
 import re
 import sys
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SNIP = os.path.join(HERE, "snippets")
@@ -103,7 +104,7 @@ def _load_store(rel):
         p = os.path.join(HERE, rel)
         if not os.path.exists(p):
             raise GateError(f"declared store missing: {rel}")
-        _store_cache[rel] = json.load(open(p))
+        _store_cache[rel] = _load_legacy(p)   # s311-D8: pre-s311 view of a DTCG token file
     return _store_cache[rel]
 
 

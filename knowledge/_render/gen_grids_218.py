@@ -83,6 +83,7 @@ LAYOUT_TOKENS = os.path.join(KNOW, "tokens", "layout.json")
 
 sys.path.insert(0, HERE)
 import gen_bento_matrix_217 as matrix        # ⛔ ONE data path — consumed, never copied
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 esc = matrix.esc
 
@@ -385,7 +386,7 @@ def layout_store():
     ⚠ Nothing is defaulted. A missing field is returned as UNKNOWN and printed as UNKNOWN — a
     measuring surface that guesses is worse than one that says it does not know.
     """
-    d = json.load(open(LAYOUT_TOKENS, encoding="utf-8"))
+    d = _load_legacy(LAYOUT_TOKENS)   # s311-D8: pre-s311 view of the DTCG file
     lay = d.get("layout", {})
     web, app = lay.get("web", {}), lay.get("app", {})
     scale = d.get("scale", {})

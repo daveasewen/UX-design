@@ -57,6 +57,7 @@ from _contrast_utils import (
     load_dark_surfaces, resolve_dark_surface, standard_dark_surfaces,
     CONTRAST_ALLOWLIST,
 )
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TOK = os.path.join(ROOT, "tokens")
@@ -88,7 +89,7 @@ def is_indicator_token(name):
     return has and not is_surface and not is_inactive
 
 
-sem = leaves(json.load(open(os.path.join(TOK, "semantic-colour.json"))))
+sem = leaves(_load_legacy(os.path.join(TOK, "semantic-colour.json")))   # s311-D8 seam
 surfaces = load_dark_surfaces(sem)
 DEFAULT_DARK, RAISED_DARK = standard_dark_surfaces(TOK)
 

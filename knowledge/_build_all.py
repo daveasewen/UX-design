@@ -385,6 +385,12 @@ STEPS = [
      "_validate_binds_ratchet.py"),
     ("DTCG spine conformance gate (s141-D1 axis A; built #141, wired #146)",
      "_validate_dtcg.py"),
+    # s311-D8 (#312 J): the token files are DTCG 2025.10. The five proofs that the move lost
+    # nothing and moved no pixel — spine byte-equal, 137 snippet theme blocks byte-equal, every
+    # moved key recoverable from $extensions.apollo, the resolver document, Style Dictionary.
+    ("tokens→DTCG 2025.10 — the five proofs of s311-D8 (built + wired #312)",
+     "_validate_tokens_dtcg.py"),
+    ("tokens→DTCG selftest — 5 bites (#312)", "_validate_tokens_dtcg.py", ["--selftest"]),
     ("binds-resolve gate — manifest presence + address→store resolution (#146)",
      "_validate_binds_resolve.py"),
     ("binds-resolve selftest — 5 bites incl. any-store clause (#146)",
@@ -1074,6 +1080,10 @@ ROUTE_ROWS = [
      "\n❌ binds ratchet failed (exit {code}) — meta-level binds coverage fell below the recorded floor (shrink-only debt). Never lower the floor; restore the binds or raise coverage. Run: python3 knowledge/_validate_binds_ratchet.py"),
     ("DTCG spine conformance gate (s141-D1 axis A; built #141, wired #146)", GATE,
      "\n❌ DTCG conformance failed (exit {code}) — a spine token breaks DTCG shape ($value/$type). Run: python3 knowledge/_validate_dtcg.py"),
+    ("tokens→DTCG 2025.10 — the five proofs of s311-D8 (built + wired #312)", GATE,
+     "\n❌ tokens→DTCG proofs failed (exit {code}) — the canon.css spine or a snippet theme block no longer re-renders byte-equal from the DTCG files, a moved key under $extensions.apollo is unrecoverable, or the resolver document drifted. Run: python3 knowledge/_validate_tokens_dtcg.py"),
+    ("tokens→DTCG selftest — 5 bites (#312)", GATE,
+     "\n❌ tokens→DTCG selftest failed (exit {code}) — python3 knowledge/_validate_tokens_dtcg.py --selftest"),
     ("binds-resolve gate — manifest presence + address→store resolution (#146)", GATE,
      "\n❌ binds-resolve gate failed (exit {code}) — a reference.html lost its token-manifest, a manifest var no longer resolves, or a meta binds address points at nothing (renamed rung / untaught store). Run: python3 knowledge/_validate_binds_resolve.py"),
     ("binds-resolve selftest — 5 bites incl. any-store clause (#146)", GATE,

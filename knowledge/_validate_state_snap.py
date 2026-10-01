@@ -40,6 +40,7 @@ import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "canon"))
 from gen_theme_cascade import load_themes, base_value  # noqa: E402  (single source for effective values)
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 TOK = os.path.join(HERE, "tokens")
 LUMA_TOL = 8.0          # /255 — see calibration note above
@@ -155,7 +156,7 @@ def _mode_pair(path, theme_ov):
 
 def run_gate():
     reg = json.load(open(os.path.join(TOK, "themes", "_themes.json")))
-    sem = json.load(open(os.path.join(TOK, "semantic-colour.json")))
+    sem = _load_legacy(os.path.join(TOK, "semantic-colour.json"))   # s311-D8: pre-s311 view
     themes = {t["key"]: t for t in load_themes()}
     fails, checked = [], 0
     # --- text-state AA floor: EVERY theme (stored colour is what renders somewhere);

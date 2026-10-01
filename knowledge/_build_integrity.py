@@ -23,6 +23,7 @@ from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __f
 import json, os, glob, re, sys
 from collections import defaultdict
 import jsonschema
+from _dtcg_load import load_legacy as _load_legacy  # s311-D8 DTCG 2025.10 read-site seam (#312 J)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 COMP = os.path.join(ROOT, "components")
@@ -59,8 +60,8 @@ def walk_store(node, path=""):
             if k.startswith("$"): continue
             walk_store(v, (path + "/" + k).strip("/") if path else k)
 for f in glob.glob(os.path.join(TOK, "*.json")):
-    if os.path.basename(f).startswith(("_", "EXAMPLE")): continue
-    try: walk_store(json.load(open(f)))
+    if os.path.basename(f).startswith(("_", "EXAMPLE")) or f.endswith(".resolver.json"): continue
+    try: walk_store(_load_legacy(f))   # s311-D8: pre-s311 view (light/dark leaves) of the DTCG files
     except Exception as e: err("tokens", f"{os.path.basename(f)} not parseable: {e}")
 store_groups = {p.split("/")[0] for p in store}
 
