@@ -2,7 +2,7 @@
   "name": "FAB",
   "category": "atom",
   "kind": "block",
-  "purpose": "A floating, high-emphasis icon-only action fixed to a mobile viewport (typically 'add' / 'compose' / the one decisive action of a screen). PROPOSED #209 (itinerary row 7, slug fab) — NOT GATED, NOT RULED. An Icon-button idiom, per the wave-3 brief: PRIMARY tier tokens, B-D7 press-physics and the glyph-presence discipline are all copied verbatim from Icon-button.reference; what is NEW is the larger 56px target, the drop shadow (a floating control needs a depth cue Icon-button never needed, since Icon-button never floats above content), and a fixed mobile placement.",
+  "purpose": "A floating, high-emphasis icon-only action fixed to the viewport — any viewport, per s272-D5 (Dave, 2026-09-15: 'Any viewport, with a rule that FAB and Back-to-top may never both be present.'; built as 'fixed to a mobile viewport' at #209) (typically 'add' / 'compose' / the one decisive action of a screen). PROPOSED #209 (itinerary row 7, slug fab) — NOT GATED, NOT RULED. An Icon-button idiom, per the wave-3 brief: PRIMARY tier tokens, B-D7 press-physics and the glyph-presence discipline are all copied verbatim from Icon-button.reference; what is NEW is the larger 56px target, the drop shadow (a floating control needs a depth cue Icon-button never needed, since Icon-button never floats above content), and a fixed mobile placement.",
   "provides": "action",
   "props": [
     { "name": "glyph", "type": "string", "binds": ["button.primary.icon.default", "text.on-disabled"], "$note": "Icon id from the assets/icons sprite; drives the accessible name unless aria-label overrides. Specimen uses global-controls/add.svg." },
@@ -28,12 +28,12 @@
     "tokens": ["component-type.button-family.press-travel", "component-type.button-family.press-darken"]
   },
   "responsive": {
-    "rule": "Fixed viewport placement (bottom-right, 24px offset) on mobile; does not reflow with its container the way Button's action-bar does. Whether a FAB should reposition or hide on very small viewports / when a keyboard is open is unspecified — see decisionsForDave.",
+    "rule": "Fixed viewport placement (bottom-right, 24px offset) on any viewport (s272-D5; was 'on mobile' at #209); does not reflow with its container the way Button's action-bar does. Whether a FAB should reposition or hide on very small viewports / when a keyboard is open is unspecified — see decisionsForDave.",
     "tokens": []
   },
   "relationships": {
     "livesInside": ["Mobile app shell (Layer 2)", "Page (fixed overlay, not a layout child)"],
-    "mustNotNeighbour": ["Back to top (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"],
+    "mustNotNeighbour": ["Back to top (never both present on one page — s272-D5, Dave 2026-09-15; was: both are fixed bottom-right floating controls, collision unresolved)"],
     "commonPatterns": ["single decisive mobile action (add / compose / new)"],
     "triggeredBy": []
   },
@@ -70,7 +70,7 @@
   "$decisionsForDave": [
     "Should the FAB deviate from the angular corner rule and render circular, the way most systems that ship a FAB do? Flagged, not taken.",
     "Should a fab/size (56px) and a floating-chrome offset (24px) token be minted, or is 56/24 acceptable as house-standard raw constants forever?",
-    "FAB vs Back-to-top collision: both are fixed bottom-right. When a screen could show both, which wins the corner, or do they stack?",
+    "ANSWERED s272-D5 (Dave, 2026-09-15), verbatim: 'Any viewport, with a rule that FAB and Back-to-top may never both be present.' — was: FAB vs Back-to-top collision: both are fixed bottom-right. When a screen could show both, which wins the corner, or do they stack?",
     "Is a non-primary-tier FAB ever legitimate, or is 'FAB = the one decisive primary action' a hard rule?"
   ],
   "edges": {
@@ -97,7 +97,7 @@
     "mustNotNeighbour": [
       {
         "ref": null,
-        "$note": "Back to top (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"
+        "$note": "Back to top (never both present on one page — s272-D5, Dave 2026-09-15; was: both are fixed bottom-right floating controls, collision unresolved)"
       }
     ],
     "providesRole": [

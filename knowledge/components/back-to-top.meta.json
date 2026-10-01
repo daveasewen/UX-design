@@ -8,7 +8,7 @@
     { "name": "glyph", "type": "string", "binds": ["button.secondary.label.default", "text.on-disabled"], "$note": "Icon id from the assets/icons sprite. Specimen uses arrows-and-chevrons/arrow-up.svg." },
     { "name": "label", "type": "string", "default": "Back to top", "$note": "REQUIRED accessible name (aria-label)." },
     { "name": "scrollTarget", "type": "string", "$note": "aria-controls id of the scrollable region this control acts on — the whole page, or a scoped scrollable panel." },
-    { "name": "threshold", "type": "number", "$note": "⛔ UNSPECIFIED store-wide. The scroll distance (px or viewport-heights) past which the control fades in is a UX-writing / Dave call, not resolved here. The demo uses an arbitrary 200px scrollTop for illustration only." },
+    { "name": "threshold", "type": "number", "default": 4, "$note": "In viewport-heights. RULED s272-D73 (Dave, 2026-09-15, harvest row R8, verbatim: 'ratify') — the lane's option 1, verbatim: 'Adopt NN/g wholesale: appears past 4 viewport-heights, one per page, bottom-end, labelled.' The reference demo reads it as four heights of its scroll frame (#313 B4; it was an arbitrary 200px scrollTop, 'UNSPECIFIED store-wide', before)." },
     { "name": "visible", "type": "boolean", "default": false, "$note": "Drives the is-hidden/is-visible fade; true once past `threshold`." }
   ],
   "variants": [
@@ -21,7 +21,7 @@
     "elevation": "elevation.functional (box-shadow) — a smaller shadow than FAB's, since this control never claims a screen's single decisive action; still needed because it floats above scrolled content.",
     "radius": "border-radius.control — flat/angular (B-D7), same as Icon-button. No corner-deviation question raised here (see Fab.meta for that discussion) — back-to-top is page chrome, not a mobile action-affordance convention.",
     "placement": "24px bottom/right offset (6 x 4px grid), mirrors FAB — a raw constant, not a token.",
-    "$note": "NO NEW TOKEN IS WANTED OR MINTED. --target/--glyph and the 24px placement offset are the only non-token values; the appearance threshold (`threshold` prop) has NO value proposed at all, flagged as an open UX question rather than a filled-in default."
+    "$note": "NO NEW TOKEN IS WANTED OR MINTED. --target/--glyph and the 24px placement offset are the only non-token values; the appearance threshold (`threshold` prop) is a rule, not a token: four viewport-heights, s272-D73 (#313 B4; this note said it had no value proposed at all before that ruling)."
   },
   "motion": {
     "hover": "scale(1 + press-travel/44) — B-D7 pixel-true, identical geometry to Icon-button (unscaled, unlike FAB).",
@@ -36,7 +36,7 @@
   },
   "relationships": {
     "livesInside": ["Page (fixed overlay, not a layout child)", "Long-form content pages", "Scrollable panel/table regions"],
-    "mustNotNeighbour": ["FAB (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"],
+    "mustNotNeighbour": ["FAB (never both present on one page — s272-D5, Dave 2026-09-15; was: both are fixed bottom-right floating controls, collision unresolved)"],
     "commonPatterns": ["long-page navigation utility", "scoped scrollable-region 'jump to top'"],
     "triggeredBy": []
   },
@@ -54,7 +54,7 @@
     "A disabled/hidden-state glyph bound to a token equal to its own surface (glyph-presence gate, inherited from Icon-button).",
     "display:none while hidden, leaving keyboard-focus users with no way to reach it below the threshold and no way to know it exists above the threshold — the reference uses opacity+pointer-events instead, flagged as the safer default, not proven exhaustively.",
     "Binding the control's scroll target ambiguously when a page has more than one scrollable region (must set aria-controls explicitly).",
-    "REVIEW (inferred): shipping WITHOUT ever naming a scroll threshold value, leaving every consuming team to invent its own (the meta deliberately does not propose one either — see decisionsForDave)."
+    "Inventing a page-local scroll threshold instead of the ruled four viewport-heights (s272-D73; this line was a REVIEW (inferred) warning about the unnamed threshold before that ruling)."
   ],
   "tokenValidation": {
     "date": "2026-08-20",
@@ -72,9 +72,9 @@
     "Fab": "Both float fixed bottom-right and share the collision question, but FAB is the PRIMARY tier / the one decisive mobile action; Back-to-top is SECONDARY-tier page chrome that can coexist with (or be superseded by) whatever the primary action of the screen is."
   },
   "$decisionsForDave": [
-    "The scroll-distance threshold that triggers appearance is entirely unspecified — a fixed px value, a viewport-height multiple, or something else?",
+    "ANSWERED s272-D73 (Dave, 2026-09-15, 'ratify' on harvest row R8): four viewport-heights, one per page, bottom-end, labelled — was: The scroll-distance threshold that triggers appearance is entirely unspecified — a fixed px value, a viewport-height multiple, or something else?",
     "Should the control become focus-reachable/visible whenever it receives programmatic focus, even below the scroll threshold, so keyboard users are never stuck?",
-    "FAB vs Back-to-top collision: both are fixed bottom-right. Should Back-to-top always defer (move up/left) when a FAB is present on the same screen?",
+    "ANSWERED s272-D5 (Dave, 2026-09-15), verbatim: 'Any viewport, with a rule that FAB and Back-to-top may never both be present.' — no deferring or stacking; was: FAB vs Back-to-top collision: both are fixed bottom-right. Should Back-to-top always defer (move up/left) when a FAB is present on the same screen?",
     "Should a lower-emphasis (tertiary/quaternary) tier exist for less content-heavy pages, or is SECONDARY the single canonical tier?"
   ],
   "edges": {
@@ -110,7 +110,7 @@
     "mustNotNeighbour": [
       {
         "ref": null,
-        "$note": "FAB (both are fixed bottom-right floating controls; collision unresolved, see decisionsForDave)"
+        "$note": "FAB (never both present on one page — s272-D5, Dave 2026-09-15; was: both are fixed bottom-right floating controls, collision unresolved)"
       }
     ],
     "providesRole": [

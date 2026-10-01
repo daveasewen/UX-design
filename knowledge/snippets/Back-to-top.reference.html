@@ -25,6 +25,11 @@
   ⛔ NOT SPECIFIED: the exact scroll-distance threshold (px or viewport-heights) that triggers
   the fade-in. Named as an open question in the meta — Dave's / a UX-writing call, not taken
   here. The demo uses an arbitrary 200px scrollTop threshold for the live illustration only.
+  ✎ #313 B4 — ANSWERED SINCE: s272-D73 (Dave, 2026-09-15, harvest row R8 'What makes a
+  Back-to-top control appear?', verbatim: 'ratify') ratified the lane's option 1, verbatim:
+  'Adopt NN/g wholesale: appears past 4 viewport-heights, one per page, bottom-end, labelled.'
+  The live demo now uses that rule, with the frame standing in for the viewport (four
+  frame-heights). The 200px value above is history.
 
   CORNERS — border-radius/control, same as Icon-button (flat/angular, B-D7). Unlike FAB this
   file does NOT raise a circular-corner question: back-to-top is page chrome, not a mobile
@@ -34,6 +39,9 @@
   back-to-top could appear on the same page, they must not collide — flagged as a
   mustNotNeighbour / stacking question in the meta, not resolved here (which one takes the
   corner? do they stack vertically? Dave's).
+  ✎ #313 B4 — ANSWERED SINCE: s272-D5 (Dave, 2026-09-15), verbatim: 'Any viewport, with a rule
+  that FAB and Back-to-top may never both be present.' No stacking: a page carries one or the
+  other, never both.
 -->
 <link rel="stylesheet" href="../canon/type.css">
 <style>
@@ -96,13 +104,14 @@
   h2{margin:1.75rem 0 .7rem;}
   .row{display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;}
   .cap{width:100%; margin-top:8px; color:var(--text-default); opacity:var(--alpha-44);}
+  .cap .note-ic{/* #313 B4: demo-note marker; .cap-first so the absorber drops it with the rest of the demo chrome */ width:1em; height:1em; display:inline-block; vertical-align:-0.15em; margin-right:.35em; fill:currentColor;}
 
   /* demo harness — internally-scrollable frame so the appearance threshold is reviewable
      without scrolling the whole page. NOT part of the component. */
   .btt-stage{ position:relative; width:320px; height:220px; overflow-y:auto; border:1px solid var(--rule); background:var(--stage); }
   .btt-content{ padding:16px; }
   .btt-content p{ margin:0 0 16px; color:var(--text-default); }
-  .btt-spacer{ height:520px; }
+  .btt-spacer{ height:1100px; } /* #313 B4: tall enough to cross four frame-heights (s272-D73) */
 
   /* the atom — 44x44 hit area, 20px glyph, Icon-button's exact geometry */
   .btt{
@@ -150,6 +159,8 @@
   <!-- real HSBC library glyph, byte-matched: assets/icons/arrows-and-chevrons/arrow-up.svg -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="btt-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
+    <!-- #313 B4 (s308-D11): the note's marker is the real library glyph, byte-matched: assets/icons/status-icons/warning-line.svg (was a U+26D4 emoji the house face does not carry, so it drew an empty box) -->
+    <symbol id="btt-note" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.03 0 9C0 13.97 4.03 18 9 18C13.97 18 18 13.97 18 9C18 4.03 13.97 0 9 0ZM9 16.8C4.7 16.8 1.2 13.3 1.2 9C1.2 4.7 4.7 1.2 9 1.2C13.3 1.2 16.8 4.7 16.8 9C16.8 13.3 13.3 16.8 9 16.8ZM8.1 3.75H9.9V9.75H8.1V3.75ZM9 14.25C8.31 14.25 7.75 13.69 7.75 13C7.75 12.31 8.31 11.75 9 11.75C9.69 11.75 10.25 12.31 10.25 13C10.25 13.69 9.69 14.25 9 14.25Z" fill="currentColor"/></symbol>
   </svg>
 
   <h2 class="t-cm-section-label">States</h2>
@@ -164,13 +175,13 @@
   <div class="row">
     <div class="btt-stage" id="bttStage">
       <div class="btt-content">
-        <p class="t-cm-body">Scroll this frame. The control fades in once you pass the threshold, and scrolls the frame back to the top on activation — never the whole page (aria-controls names the scrollable region it acts on).</p>
+        <p class="t-ed-body">Scroll this frame. The control fades in once you pass the threshold, and scrolls the frame back to the top on activation — never the whole page (aria-controls names the scrollable region it acts on).</p>
         <div class="btt-spacer" aria-hidden="true"></div>
-        <p class="t-cm-body">End of content.</p>
+        <p class="t-ed-body">End of content.</p>
       </div>
       <button class="btt secondary placed is-hidden" id="bttControl" aria-label="Back to top" aria-controls="bttStage"><svg><use href="#btt-up"/></svg></button>
     </div>
-    <span class="cap t-cm-legal">⛔ the exact scroll-distance threshold is UNSPECIFIED by this reference (demo uses an arbitrary 200px scrollTop) — named as an open question, Dave's/UX-writing call</span>
+    <span class="cap t-cm-legal"><svg class="note-ic" aria-hidden="true" focusable="false"><use href="#btt-note"/></svg>it appears once the reader is four viewport-heights down (ruled 15 September); in this frame, four frame-heights. One per page, never beside a floating add button.</span>
   </div>
 
   <script type="application/json" id="token-manifest">
@@ -210,7 +221,7 @@
     "aria-controls",
     "disabled"
   ],
-  "$note": "NO NEW TOKEN IS WANTED OR MINTED. The demo's 200px scrollTop trigger and the 24px placement offset are the only non-token raw values, both flagged in the header/meta."
+  "$note": "NO NEW TOKEN IS WANTED OR MINTED. The 24px placement offset is the only non-token raw value, flagged in the header/meta. The appearance threshold is a rule, not a token: four viewport-heights (s272-D73); the demo reads it as four frame-heights (#313 B4; was an arbitrary 200px scrollTop)."
 }
   </script>
 
@@ -218,7 +229,9 @@
     (function(){
       const stage=document.getElementById('bttStage'), ctl=document.getElementById('bttControl');
       if(!stage||!ctl) return;
-      const THRESHOLD=200; // ⚠ arbitrary demo value — see header/meta open question
+      // #313 B4 — s272-D73 (ratified R8 option 1): appears past 4 viewport-heights. The frame
+      // stands in for the viewport, so the demo threshold is four frame-heights.
+      const THRESHOLD=4*stage.clientHeight;
       stage.addEventListener('scroll', ()=>{
         const past = stage.scrollTop > THRESHOLD;
         ctl.classList.toggle('is-visible', past);

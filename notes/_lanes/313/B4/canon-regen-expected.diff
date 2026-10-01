@@ -1,0 +1,61 @@
+diff --git a/knowledge/canon/canon.css b/knowledge/canon/canon.css
+index f3e91b1..e6bd5fd 100644
+--- a/knowledge/canon/canon.css
++++ b/knowledge/canon/canon.css
+@@ -546,6 +546,7 @@
+   --border-radius-surface: var(--border-radius-default);
+   --border-radius-indicator: var(--border-radius-default);
+   --border-radius-container: var(--border-radius-default);
++  --border-radius-provisional-square: 0;
+   --border-radius-segmented-container-xs: 0;
+   --border-radius-segmented-container-s: 0;
+   --border-radius-segmented-container-m: 0;
+@@ -6615,7 +6616,8 @@
+ :where(.cn-back-to-top) .btt-stage{position:relative; width:320px; height:220px; overflow-y:auto; border:1px solid var(--rule); background:var(--stage);}
+ :where(.cn-back-to-top) .btt-content{padding:16px;}
+ :where(.cn-back-to-top) .btt-content p{margin:0 0 16px; color:var(--text-default);}
+-:where(.cn-back-to-top) .btt-spacer{height:520px;}
++:where(.cn-back-to-top) .btt-spacer{height:1100px;}
++/* #313 B4: tall enough to cross four frame-heights (s272-D73) */
+ /* the atom — 44x44 hit area, 20px glyph, Icon-button's exact geometry */
+ :where(.cn-back-to-top) .btt{width:var(--btt-target); height:var(--btt-target); min-width:var(--btt-target); min-height:var(--btt-target);
+     display:inline-flex; align-items:center; justify-content:center;
+@@ -15372,10 +15374,7 @@
+    enhancement; headings/body excluded. Added 2026-06-29. */
+ :where(.cn-section-heading-lockup) :where(button, :where(.cn-section-heading-lockup) a, :where(.cn-section-heading-lockup) label, :where(.cn-section-heading-lockup) span, :where(.cn-section-heading-lockup) small, :where(.cn-section-heading-lockup) strong, :where(.cn-section-heading-lockup) em, :where(.cn-section-heading-lockup) b, :where(.cn-section-heading-lockup) i, :where(.cn-section-heading-lockup) th, :where(.cn-section-heading-lockup) td, :where(.cn-section-heading-lockup) dt, :where(.cn-section-heading-lockup) dd, :where(.cn-section-heading-lockup) li, :where(.cn-section-heading-lockup) figcaption, :where(.cn-section-heading-lockup) legend, :where(.cn-section-heading-lockup) caption, :where(.cn-section-heading-lockup) summary, :where(.cn-section-heading-lockup) output, :where(.cn-section-heading-lockup) time, :where(.cn-section-heading-lockup) input[type=text], :where(.cn-section-heading-lockup) input[type=search], :where(.cn-section-heading-lockup) input[type=email], :where(.cn-section-heading-lockup) input[type=tel], :where(.cn-section-heading-lockup) input[type=url], :where(.cn-section-heading-lockup) input[type=password], :where(.cn-section-heading-lockup) input[type=number], :where(.cn-section-heading-lockup) input:not([type]), :where(.cn-section-heading-lockup) textarea):not(:has(svg)):not(:where(.cn-section-heading-lockup [class^="cn-"] *, .cn-section-heading-lockup [class*=" cn-"] *)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
+ /* NOTE: no raw font-family on body (TYPE-002/DEF-006) — every text element below carries its
+-     own .t-cm-*/
+-:where(.cn-section-heading-lockup) .t-ed-* composite class from canon/type.css, :where(.cn-section-heading-lockup) the Kpi-tile precedent. */
+-  body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
+-    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
++     own .t-cm-* or .t-ed-* composite class from canon/type.css, the Kpi-tile precedent. */
+ /* ---- borrowed verbatim: Layout-utilities l-row / l-stack ---- */
+ :where(.cn-section-heading-lockup) .l-stack{display:flex; flex-direction:column; gap:var(--l-gap-m);}
+ :where(.cn-section-heading-lockup) .l-stack[data-gap="xxs"]{gap:var(--l-gap-xxs);}
+@@ -16084,10 +16083,10 @@
+ /* the split-button ATOM — two adjoined <button>s sharing one visual boundary */
+ :where(.cn-split-button) .split-btn{position:relative; display:inline-flex; align-items:stretch; border-radius:var(--border-radius-control);}
+ :where(.cn-split-button) .sb-main{height:44px; padding:0 20px; border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+-    gap:8px; border-radius:var(--border-radius-control) 0 0 var(--border-radius-control);
++    gap:8px; border-radius:var(--border-radius-control) var(--border-radius-provisional-square) var(--border-radius-provisional-square) var(--border-radius-control); /* #313 B4 (s313-D43): the two inner corners take the square-corner token, not a plain 0; one shorthand, every corner a token (W-307qn). The token's name is provisional — Dave's to name. */
+     transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+ :where(.cn-split-button) .sb-caret{height:44px; width:44px; min-width:44px; padding:0; border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+-    border-top-right-radius:var(--border-radius-control); border-bottom-right-radius:var(--border-radius-control); border-top-left-radius:0; border-bottom-left-radius:0; /* conductor #209: corner-split spelt as longhands — same tokens, same render; the radius gate reads shorthand grammar only and a 0-first shorthand cannot satisfy it */
++    border-radius:var(--border-radius-provisional-square) var(--border-radius-control) var(--border-radius-control) var(--border-radius-provisional-square); /* #313 B4 (s313-D43): was four physical longhands with two plain 0s (the #209 route round the gate); now one shorthand, every corner a token */
+     transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
+ :where(.cn-split-button) .sb-main:focus-visible, :where(.cn-split-button) .sb-caret:focus-visible{outline:2px solid var(--focus); outline-offset:2px; z-index:1;}
+ :where(.cn-split-button) .sb-caret svg{width:16px; height:16px; display:block; fill:none; transition:transform var(--ease);}
+@@ -17679,12 +17678,9 @@
+      Every sibling snippet writes `body{font-family:var(--font)}`, which is a TYPE-002 raw
+      declaration and is part of the 1,097 declared debt. This file may not grow that debt, so
+      the FACE ARRIVES BY COMPOSITE: <body class="t-ed-body"> binds canon/type.css's own
+-     family+size+leading, and every element with its own .t-cm-*/
+-:where(.cn-template-create-edit) .t-ed-* class overrides it.
++     family+size+leading, and every element with its own .t-cm-* or .t-ed-* class overrides it.
+      `--font` stays declared (a custom-property DEFINITION is exempt) so the token address is
+      still readable in this file. */
+-  body{margin:0; background:var(--page); color:var(--text);
+-    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
+ :where(.cn-template-create-edit) .icn{width:18px; height:18px; display:block; flex-shrink:0;}
+ :where(.cn-template-create-edit) .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
+ /* ============================================================================

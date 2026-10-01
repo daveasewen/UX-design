@@ -166,6 +166,42 @@ RADIUS_PROP = (r'border-(?:(?:top|bottom)-(?:left|right)-|(?:start|end)-(?:start
 DECL_RE  = re.compile(r'(?<![-\w])(' + RADIUS_PROP + r')\s*:\s*([^;}]+)')
 OK_VALUE = re.compile(r'^(var\(.*\)|50%|999px|inherit)$')
 
+# ⛔ #313 B4 — THE SHORTHAND HOLE, AND W-307qn'S SETTLEMENT. `OK_VALUE` matched the WHOLE value
+# string, and `var\(.*\)` is greedy, so a multi-value corner shorthand that merely STARTED and
+# ENDED with a var() walked through with plain zeros in the middle:
+# `border-radius:var(--border-radius-control) 0 0 var(--border-radius-control)` read as ONE legal
+# token route. Census at cdf17a12: exactly one such declaration in the corpus (Split-button's main
+# half, and its absorbed copy in canon.css). Dave ruled at #313 that a square corner takes a
+# square-corner TOKEN, not a plain 0 (s313-D43, verbatim: 'A square-corner token'); and at #307
+# he handed how corners are written to Claude 'to settle within your rules' (s307-D46). SETTLED:
+# a corner may be written as ONE shorthand of up to four values, and EVERY value must itself be
+# legal — a token var(), or the 50% / 999px idioms; `inherit` only alone. The value is split on
+# whitespace OUTSIDE parentheses, so `var(--a, 4px)` stays one part.
+def _parts(v):
+    out, depth, cur = [], 0, ""
+    for ch in v:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch.isspace() and depth == 0:
+            if cur:
+                out.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    if cur:
+        out.append(cur)
+    return out
+
+def value_ok(v):
+    parts = _parts(v.strip())
+    if not parts or len(parts) > 4:
+        return False
+    if len(parts) > 1 and "inherit" in parts:
+        return False
+    return all(OK_VALUE.match(p) for p in parts)
+
 # ⛔ THE TIER SPLIT, AND WHY IT IS NOT A WEAKENING — MEASURED BEFORE IT WAS WRITTEN.
 # Widening the pattern makes the gate SEE two populations that behave differently on this tree:
 #   * the SHORTHAND and the four LOGICAL longhands — **zero occurrences anywhere in the
@@ -184,6 +220,16 @@ OK_VALUE = re.compile(r'^(var\(.*\)|50%|999px|inherit)$')
 # ⇒ Promotion to strict is one line (`STRICT_GRAMMAR |= PHYSICAL_CORNER`) plus Dave's word.
 # See `notes/_subreports/2026-08-27-221-laneA.md` § RULING-SHAPED QUESTIONS.
 PHYSICAL_CORNER = re.compile(r'^border-(?:top|bottom)-(?:left|right)-radius$')
+# ✅ #313 B4 — DAVE'S WORD ARRIVED, AND THE ARM IS NOW STRICT. s313-D43 (Thu 2026-10-01 17:49
+# BST, pictures page call 24) asked exactly the question above, on exactly this population — the
+# page, verbatim: 'The split button has two square corners where its halves meet. The corner check
+# refuses a plain 0 on purpose, because corners are token-bound, and no zero token exists. A token,
+# or allow a plain 0?' — and Dave chose, verbatim: 'A square-corner token' (the recommendation:
+# 'It keeps the check's teeth; allowing 0 blunts it.'). So a plain 0 on a physical corner is a
+# HARDCODE, and the one line is flipped. The population was the #209 corner-split alone; #313 B4
+# rewrote it onto the square-corner token in the same change, so this costs no red once canon.css
+# is regenerated. Revert = set this False (the arm falls back to DECLARED ADVISORY, printed in full).
+CORNER_ARM_STRICT = True
 
 def strip_comments(text):
     # ds-008 (fixed 2026-07-22, ADR-0013 session): HTML comments stripped TOO — snippet
@@ -200,7 +246,7 @@ def check_text(text):
     and the report line `border-radius:0` would have been a lie about four of them.
     """
     return [(p, v.strip()) for p, v in DECL_RE.findall(strip_comments(text))
-            if not OK_VALUE.match(v.strip())]
+            if not value_ok(v)]
 
 def split_tiers(found):
     """-> (strict_eligible, physical_corner_advisory) for a `check_text` result."""
@@ -220,6 +266,16 @@ def selftest():
         fails.append("hardcoded px NOT flagged")
     if not check_text(".x{border-radius:0 0 4px 4px;}"):
         fails.append("corner shorthand NOT flagged")
+    # #313 B4 — the shorthand hole, both directions (W-307qn, s313-D43)
+    if not check_text(".x{border-radius:var(--border-radius-control) 0 0 var(--border-radius-control);}"):
+        fails.append("MUTANT NOT CAUGHT — a var()-bracketed shorthand with plain 0s inside walked "
+                     "through (the greedy whole-string match, #313 B4)")
+    if check_text(".x{border-radius:var(--border-radius-control) var(--sq) var(--sq) var(--border-radius-control);}"):
+        fails.append("four-token shorthand flagged (must pass — the settled spelling, W-307qn)")
+    if check_text(".x{border-radius:var(--r, 4px) var(--sq);}"):
+        fails.append("a var() with a fallback split at its inner comma/space (must pass as one part)")
+    if not check_text(".x{border-radius:var(--r) inherit;}"):
+        fails.append("`inherit` inside a multi-value shorthand NOT flagged")
     if check_text("/* border-radius:0 in prose */ .x{border-radius:inherit;}"):
         fails.append("comment mention flagged (comments must be stripped)")
     if check_text("<!-- header prose: SQUARE corners, border-radius:0 by brand -->\n.x{border-radius:var(--border-radius-control);}"):
@@ -276,7 +332,10 @@ def main():
         s, c = split_tiers(check_text(open(p).read()))
         rel = os.path.relpath(p, HERE)
         strict_fails += [(rel, prop, v) for prop, v in s]
-        corner_advisory += [(rel, prop, v) for prop, v in c]
+        if CORNER_ARM_STRICT:
+            strict_fails += [(rel, prop, v) for prop, v in c]
+        else:
+            corner_advisory += [(rel, prop, v) for prop, v in c]
     snip_dir = os.path.join(HERE, "snippets")
     for pattern in ADVISORY_GLOBS:
         for p in sorted(glob.glob(pattern)):
@@ -286,7 +345,10 @@ def main():
             migrated = os.path.dirname(p) == snip_dir and name in MIGRATED_SNIPPETS
             if migrated:
                 strict_fails += [(f"snippets/{name}", prop, v) for prop, v in s]
-                corner_advisory += [(f"snippets/{name}", prop, v) for prop, v in c]
+                if CORNER_ARM_STRICT:
+                    strict_fails += [(f"snippets/{name}", prop, v) for prop, v in c]
+                else:
+                    corner_advisory += [(f"snippets/{name}", prop, v) for prop, v in c]
             elif s or c:
                 advisory.append((rel, len(s) + len(c)))
 
