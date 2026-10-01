@@ -30,8 +30,9 @@
    "s308-D21": "item 6 — `maker` per row, stamped on every edge; `authored` retired (#311 lane D1)",
    "s308-D22": "item 7 — `outside` per row (#311 lane D2)",
    "s308-D23": "item 8 — `$folded` + `$proposed` (#311 lane D2)",
-   "s308-D24": "item 9 — owed",
-   "s308-D27": "item 7 v2 — the neatest name wins; `outside.name` per row (#311 lane D2)"
+   "s308-D24": "item 9 — the four edges a-d (#311 lane D3, as extended by s308-D28)",
+   "s308-D27": "item 7 v2 — the neatest name wins; `outside.name` per row (#311 lane D2)",
+   "s308-D28": "item 9 v2 — five edges (aliasOf, providesCapability, ariaRole, replacedBy; defaultFor → theme) and the theme node kind (#311 lane D3)"
   }
  },
  "$doc": {
@@ -43,9 +44,7 @@
    "knowledge/_validate_kg.py (reads the schema’s edge types; holds no list of its own)"
   ],
   "not_yet": "Since s308-D18 (#308 lane E round 2) the explorer takes each type's two readings from this file (`reads` → its `read` block) and the meta schema, the verbs map and the explorer name the stored side of each pair as this file does. They still hold their own lists of types (schema edge keys, the verbs' reads, the explorer's FAMILY map); making every one READ its list from here is the rest of item 1 (row W-308ie). Until then the coverage check refuses any type one of them names that this file does not.",
-  "owed": {
-   "item 9 (s308-D24)": "token→token alias, providesCapability, a theme to point at, component→ARIA role: no rows until those edges exist."
-  }
+  "owed": {}
  },
  "$containers": {
   "what": "THE CONTAINER MODEL (#309 lane B, enacting s308-D39..D44). 'Container' is this register's UMBRELLA WORD for anything that accepts children - a layout, a housing or a record - and never a component name, except the layout utility's width container (s308-D41). Every component meta declares ONE kind (meta `kind`; an alias seat is its owner's kind). A container's slots say which kinds they accept (`slots.<name>.accepts.kind`); a container with no kind-bearing slot accepts what its kind accepts below. knowledge/_validate_edges.py --check reads this block and every containedBy line (ACCEPTS, advisory first - s308-D40).",
@@ -197,7 +196,7 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
-   "note": "only the accepts half exists; s308-D24 item 9b owes providesCapability",
+   "note": "the accepting half; its providing half is providesCapability (s308-D28 b, #311 lane D3)",
    "$measured": {
     "edges": 95,
     "nulls": 0,
@@ -314,6 +313,99 @@
      "carried": "0",
      "note": "no reason field today"
     }
+   }
+  },
+  {
+   "word": "aliasOf",
+   "plain": "is an alias of",
+   "verb": {
+    "reads": [],
+    "unread": "token:<group> → token:<group> — a token's `$alias` (per mode) at the graph's group grain, s308-D28 (a). Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "this register (#311 lane D3)"
+   },
+   "from": [
+    "token"
+   ],
+   "to": [
+    "token"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "gen_kg_standards.py lands no declared null for this type"
+   },
+   "opposite": {
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "takes its value from",
+    "back": "gives its value to"
+   },
+   "shape": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "the design-token format: circular references must be detected — gen_kg_standards.py refuses a cycle at LEAF grain before landing, and the shape check refuses one between groups; an alias inside one group is not drawn",
+    "measured": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    }
+   },
+   "count": {
+    "perStart": null,
+    "basis": "one target per leaf per mode is checked by the generator (dt:aliasOf, 'only one allowed'); a group carries many leaves, so no group count"
+   },
+   "maker": {
+    "made": "generated",
+    "by": "gen_kg_standards.py",
+    "value": "generated:gen_kg_standards.py",
+    "note": "knowledge/gen_kg_standards.py --land",
+    "store": [
+     "knowledge/_standard_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
+   },
+   "outside": {
+    "term": "dt:aliasOf",
+    "vocabulary": "Canonical dt:",
+    "grade": "exact",
+    "also": [
+     "DTCG alias (curly-brace reference)"
+    ],
+    "candidates": [],
+    "name": {
+     "word": "aliasOf",
+     "adopted": true,
+     "basis": "adopted: dt:aliasOf is the neatest name and is Apollo's word too (s308-D28 a names it) (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
+   },
+   "family": "tokens",
+   "note": "s308-D28 (a), #311 lane D3",
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure (s308-D20)",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "the line carries its source sentence or leaf pairs in `note`"
+    }
+   },
+   "$measured": {
+    "edges": 35,
+    "nulls": 0,
+    "from": {
+     "token": 35
+    },
+    "to": {
+     "token": 35
+    },
+    "at": "2026-10-01T02:29Z"
    }
   },
   {
@@ -507,6 +599,98 @@
      "carried": "0",
      "note": "no reason field today"
     }
+   }
+  },
+  {
+   "word": "ariaRole",
+   "plain": "takes the ARIA role",
+   "verb": {
+    "reads": [],
+    "unread": "component → aria:<role> — the WAI-ARIA roles the meta's own accessibility.role field names with role=<x>, s308-D28 (d). Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "this register (#311 lane D3)"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "aria"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "gen_kg_standards.py lands no declared null for this type"
+   },
+   "opposite": {
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "takes the role",
+    "back": "is the role of"
+   },
+   "shape": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    }
+   },
+   "count": {
+    "perStart": null,
+    "basis": "a component may use several roles in its markup (a chart: group and img)"
+   },
+   "maker": {
+    "made": "generated",
+    "by": "gen_kg_standards.py",
+    "value": "generated:gen_kg_standards.py",
+    "note": "knowledge/gen_kg_standards.py --land",
+    "store": [
+     "knowledge/_standard_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
+   },
+   "outside": {
+    "term": "role (the WAI-ARIA role attribute)",
+    "vocabulary": "WAI-ARIA 1.2",
+    "grade": "exact",
+    "also": [],
+    "note": "other (WAI-ARIA is the standard the edge points into)",
+    "candidates": [],
+    "name": {
+     "word": "ariaRole",
+     "adopted": false,
+     "basis": "kept: an exact match, and Apollo's word is the plainer label (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
+   },
+   "family": "guidelines",
+   "note": "s308-D28 (d), #311 lane D3. ARIA's required-context and required-owned checks against containedBy are not built here.",
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure (s308-D20)",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "the line carries its source sentence or leaf pairs in `note`"
+    }
+   },
+   "$measured": {
+    "edges": 84,
+    "nulls": 0,
+    "from": {
+     "component": 84
+    },
+    "to": {
+     "aria": 84
+    },
+    "at": "2026-10-01T02:29Z"
    }
   },
   {
@@ -1988,13 +2172,15 @@
    "plain": "is the default for (a theme)",
    "verb": {
     "reads": [],
-    "unread": "logo: → null ONLY — s230-D2 names the default lockup per theme but theme: is not a node kind; carried as a declared null with the theme on the edge. Not a reading.",
+    "unread": "logo: → theme: — s230-D2 names the default lockup per theme; the theme is a node (s308-D28 c). Not a reading.",
     "source": "knowledge/_kg_verbs.json unread"
    },
    "from": [
     "logo"
    ],
-   "to": [],
+   "to": [
+    "theme"
+   ],
    "nulls": {
     "allowed": true,
     "basis": "s277-D4..D7: declared nulls are landed as t:null + $note, never dropped"
@@ -2051,7 +2237,7 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
-   "note": "declared-null only: s230-D2 names the default lockup per theme, but theme is not a node kind (s308-D24 item 9c owes one)",
+   "note": "s308-D28 (c), #311 lane D3: theme is a node kind (theme:<id>, from knowledge/tokens/themes/_themes.json, and the two colour modes the records name as a theme); the explorer points each defaultFor line declared null with a `theme` qualifier at theme:<that>. Storage (knowledge/_logo_nodes.json) is unchanged.",
    "$measured": {
     "edges": 2,
     "nulls": 2,
@@ -4486,6 +4672,98 @@
    }
   },
   {
+   "word": "providesCapability",
+   "plain": "provides the capability",
+   "verb": {
+    "reads": [],
+    "unread": "component → capability: the other half of acceptsCapability, s308-D28 (b); by name match only. Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "this register (#311 lane D3)"
+   },
+   "from": [
+    "component"
+   ],
+   "to": [
+    "capability"
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "gen_kg_standards.py lands no declared null for this type"
+   },
+   "opposite": {
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "provides",
+    "back": "is provided by"
+   },
+   "shape": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": false,
+    "basis": "its two ends are different kinds, so it cannot point at itself or loop",
+    "measured": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    }
+   },
+   "count": {
+    "perStart": null,
+    "basis": "no count is declared for this type today"
+   },
+   "maker": {
+    "made": "generated",
+    "by": "gen_kg_standards.py",
+    "value": "generated:gen_kg_standards.py",
+    "note": "knowledge/gen_kg_standards.py --land",
+    "store": [
+     "knowledge/_standard_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
+   },
+   "outside": {
+    "term": "providesApi",
+    "vocabulary": "Backstage",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
+    "candidates": [],
+    "name": {
+     "word": "providesCapability",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
+   },
+   "family": "sources",
+   "note": "s308-D28 (b), #311 lane D3: a capability is provided by the component that carries its own name; the rest are listed `unprovided` in the store until a meta declares what it provides",
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure (s308-D20)",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "the line carries its source sentence or leaf pairs in `note`"
+    }
+   },
+   "$measured": {
+    "edges": 4,
+    "nulls": 0,
+    "from": {
+     "component": 4
+    },
+    "to": {
+     "capability": 4
+    },
+    "at": "2026-10-01T02:29Z"
+   }
+  },
+  {
    "word": "providesRole",
    "plain": "provides the role",
    "verb": {
@@ -4781,6 +5059,116 @@
      "carried": "0",
      "note": "no reason field today"
     }
+   }
+  },
+  {
+   "word": "replacedBy",
+   "plain": "is replaced by",
+   "verb": {
+    "reads": [],
+    "unread": "component → component, token → token, with the version it happened in, s308-D28 (e). Read by no verb: a verb for it is a ruling, not a default.",
+    "source": "this register (#311 lane D3)"
+   },
+   "from": [
+    "component",
+    "token"
+   ],
+   "to": [
+    "component",
+    "token"
+   ],
+   "pairs": [
+    [
+     "component",
+     "component"
+    ],
+    [
+     "token",
+     "token"
+    ]
+   ],
+   "nulls": {
+    "allowed": false,
+    "basis": "gen_kg_standards.py lands no declared null for this type"
+   },
+   "opposite": {
+    "type": null,
+    "stored": true,
+    "basis": "no opposite type; the backward reading is `reads.back`, derived by walking the graph, never stored"
+   },
+   "reads": {
+    "forward": "is replaced by",
+    "back": "replaces"
+   },
+   "shape": {
+    "self": false,
+    "loops": false,
+    "bothWays": false,
+    "chains": true,
+    "basis": "an order (a part, a partial, a variant, a replacement): never a loop",
+    "measured": {
+     "selfLoops": 0,
+     "twoCycles": 0,
+     "repeatedPairs": 0
+    }
+   },
+   "count": {
+    "perStart": {
+     "max": 1
+    },
+    "basis": "a thing is replaced by one thing (Spectrum replacedBy names one)"
+   },
+   "maker": {
+    "made": "ratified",
+    "by": "s308-D42",
+    "value": "ratified:s308-D42",
+    "note": "the ratified lines in knowledge/_replaced_by.json, each naming its ruling and version; the two lines today are s308-D42 (stat card and KPI tile replaced by Metric)",
+    "store": [
+     "knowledge/_replaced_by.json",
+     "knowledge/_standard_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
+   },
+   "outside": {
+    "term": "replacedBy",
+    "vocabulary": "Spectrum",
+    "grade": "exact",
+    "also": [
+     "DTCG $deprecated",
+     "Dublin Core isReplacedBy"
+    ],
+    "candidates": [],
+    "name": {
+     "word": "replacedBy",
+     "adopted": true,
+     "basis": "adopted: Spectrum's replacedBy is the neatest name and is Apollo's word too (s308-D28 e names it) (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
+   },
+   "family": "structure",
+   "note": "s308-D28 (e), #311 lane D3: each line carries `version` (and `released` false while that version is uncut) and `ruling`",
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "ruling",
+    "basis": "not required: every line names the ruling that replaced it, which serves (s308-D20)",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "the ruling and the version ride on the line"
+    }
+   },
+   "$measured": {
+    "edges": 2,
+    "nulls": 0,
+    "from": {
+     "component": 2
+    },
+    "to": {
+     "component": 2
+    },
+    "at": "2026-10-01T02:29Z"
    }
   },
   {

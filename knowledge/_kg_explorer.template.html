@@ -31,7 +31,7 @@
   /* #304 R3 s277-D12 — the tokens family: an ochre for the token: group node and its bindsToken lines. Not a red (s151-D1). */
   --c-token:#8A6A12;--f-tokens:#8A6A12;
   /* #305 B2 s305-D26 — step 5, the sources family: four node kinds and one family stroke. None is a red (s151-D1). */
-  --c-typestyle:#3F5AA8;--c-file:#5B6770;--c-figma:#6B5B95;--c-capability:#2F7A6B;--f-sources:#3F5AA8;
+  --c-typestyle:#3F5AA8;--c-file:#5B6770;--c-figma:#6B5B95;--c-capability:#2F7A6B;--c-theme:#8A5A1F;--c-aria:#2E6E8E;--f-sources:#3F5AA8;
   --mono:"SF Mono",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
@@ -43,7 +43,7 @@
     --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
     --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
     --c-token:#E2C263;--f-tokens:#E2C263;
-    --c-typestyle:#8FA4E8;--c-file:#A7B2BC;--c-figma:#B3A5DA;--c-capability:#7FCBB9;--f-sources:#8FA4E8;
+    --c-typestyle:#8FA4E8;--c-file:#A7B2BC;--c-figma:#B3A5DA;--c-capability:#7FCBB9;--c-theme:#D9A867;--c-aria:#86C1DD;--f-sources:#8FA4E8;
   }
 }
 :root[data-theme="dark"]{
@@ -54,7 +54,7 @@
   --c-ux:#E68ABF;--c-polarity:#F0B4D6;--c-family:#F4C2DF;--f-uxprinciples:#E68ABF;
   --c-icon:#4FC3D9;--c-iconGroup:#8BD3E3;--c-logo:#9AB4D1;--f-assets:#4FC3D9;
   --c-token:#E2C263;--f-tokens:#E2C263;
-  --c-typestyle:#8FA4E8;--c-file:#A7B2BC;--c-figma:#B3A5DA;--c-capability:#7FCBB9;--f-sources:#8FA4E8;
+  --c-typestyle:#8FA4E8;--c-file:#A7B2BC;--c-figma:#B3A5DA;--c-capability:#7FCBB9;--c-theme:#D9A867;--c-aria:#86C1DD;--f-sources:#8FA4E8;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -358,6 +358,9 @@ const FAMILY={containedBy:'structure',hasPart:'structure',composedOf:'structure'
   bindsToken:'tokens',
   // #305 B2 s305-D26 — step 5's four edge types, their own family and chip (OFF by default).
   setIn:'sources',behaviourFrom:'sources',capturedFrom:'sources',acceptsCapability:'sources',
+  // 1.37 (#311 lane D3, s308-D28) — the five edges the outside world has: token alias in Tokens, the providing
+  // half of a capability in Sources, a component's ARIA role beside the WCAG criteria, replacement in Structure.
+  aliasOf:'tokens',providesCapability:'sources',ariaRole:'guidelines',replacedBy:'structure',
   // #281 s281 lane CM — THE CHIP MAP. Six authored edge types reached storage and stopped here: they
   // were not keys of this map, so EON asked famOn[undefined] and no chip anywhere could draw them.
   // The five SYSTEM-view types join `rules`, the base wiring chip they already sit beside (ON by
@@ -450,7 +453,7 @@ const READ=Object.assign({bindsToken:['binds token','is bound by'],setIn:['is se
 const TYPES=['component','snippet','pattern','context','ruling','shape','intent','role','subcomponent'];  // 1.33 (s308-D26): the subcomponent kind
 // #281 s281-D1 — `family` joins the row for the same reason shape/intent/role did in 1.21: an edge
 // with a family draws nothing if the dot at its end has no type chip. 32 research-family hubs.
-const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','family','icon','iconGroup','logo','token','typestyle','file','figma','capability'];
+const TYPES2=['session','artefact','evidence','sc','guideline','principle','policy','standard','axe','rule','ux','polarity','family','icon','iconGroup','logo','token','typestyle','file','figma','capability','theme','aria'];
 const ALLTYPES=TYPES.concat(TYPES2);
 const adj=new Map(NODES.map(n=>[n.id,[]]));
 const unresolved=new Map();
