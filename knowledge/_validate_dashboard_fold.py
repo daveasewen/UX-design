@@ -34,6 +34,7 @@ mutants (signals over the cap, a repeated action under `never`, the same repeat 
 Renders run in the cloud with fallback fonts unless the seat's RENDER_SHELL is set: the seat render
 with the real font is the reading of record.
 """
+from _helpgate import help_gate as _help_gate; _help_gate(__doc__, __name__, __file__)
 import json, os, re, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
