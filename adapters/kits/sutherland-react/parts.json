@@ -1,0 +1,1599 @@
+{
+  "$model": "The Apollo parts to map, pulled from their metas by adapters/kits/_build_sutherland_kit.py (nothing typed by hand). Each part: its slug (the binding key), role, props with the hole each becomes, slots, states, events, and the meta file they came from. `allSlugs` is every Apollo part by slug so the checker can hold the unmapped list complete; `provides` is slug -> role for every part that has one; `roles` is the fenced role vocabulary (s252-D1).",
+  "written": "2026-10-01",
+  "order": "The first four once carried an empty codeBindings placeholder slot (2026-06-22, every field TODO, no Sutherland name); nothing about them is known on the Sutherland side. Then cohort one in Dave's order; `askedAs` records the name he used when it differs from the slug: 'menus' and 'select' both resolve to dropdown (the non-native family and the native variant of one meta), 'switch' to selection-controls (its switch variant), 'text input' to input-fields, 'dialog' to modals (its dialog variant), 'notification' to notifications.",
+  "roles": [
+    "action",
+    "arrangement",
+    "chart",
+    "feedback",
+    "headline-metric",
+    "input",
+    "overlay",
+    "page-frame",
+    "page-title",
+    "record-list",
+    "status-surface",
+    "wayfinding"
+  ],
+  "parts": [
+    {
+      "slug": "cards",
+      "name": "Cards",
+      "role": "arrangement",
+      "category": "molecule",
+      "kind": "record",
+      "purpose": "A family of container components that group related content (and optionally an action) into a bordered surface. Five types covering interactive and static use, with and without imagery.",
+      "variants": [
+        "actions",
+        "basic",
+        "basic-non-interactive",
+        "image-with-border",
+        "image-without-border"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "actions",
+            "basic",
+            "basic-non-interactive",
+            "image-with-border",
+            "image-without-border"
+          ],
+          "default": "basic"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed"
+          ],
+          "default": "default",
+          "note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only."
+        }
+      ],
+      "slots": [
+        {
+          "name": "content",
+          "required": true,
+          "use": "The grouped content the card surface frames.",
+          "accepts": {
+            "tier": [
+              "atom",
+              "molecule"
+            ],
+            "capability": [
+              "card-body-content"
+            ],
+            "kind": [
+              "block"
+            ]
+          }
+        }
+      ],
+      "states": {
+        "default": null,
+        "hover": null,
+        "pressed": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/cards.meta.json",
+      "why": "once carried an empty codeBindings placeholder slot (TODO, no Sutherland name)"
+    },
+    {
+      "slug": "list-items",
+      "name": "List items",
+      "role": "record-list",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image. TWO LEVELS (s274-D2): the CONTAINERS",
+      "variants": [
+        "account",
+        "badge",
+        "item",
+        "review",
+        "review-detail",
+        "transaction",
+        "simple-list",
+        "structured-list",
+        "card-list",
+        "bullets"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "account",
+            "badge",
+            "item",
+            "review",
+            "review-detail",
+            "transaction",
+            "bullets"
+          ],
+          "default": "item"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed",
+            "disabled",
+            "processing"
+          ],
+          "default": "default",
+          "note": "hover labelled 'hover (web)'. Bullets list has no interactive state."
+        },
+        {
+          "name": "visual",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "icon",
+            "avatar",
+            "image"
+          ],
+          "default": "icon",
+          "note": "Badge, Item, Transaction offer a leading visual."
+        },
+        {
+          "name": "detail",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "tag",
+            "status"
+          ],
+          "default": "tag",
+          "note": "List Transaction only."
+        },
+        {
+          "name": "bulletType",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "bullet",
+            "ordered",
+            "custom"
+          ],
+          "default": "bullet",
+          "note": "Bullets list only."
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "hole": "data",
+          "note": "The rows the list shows (reference snippet: 'Amazon · Pending · 22 Jun · Shopping · −1,234.00 HKD'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks th"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null,
+        "processing": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/list-items.meta.json",
+      "why": "once carried an empty codeBindings placeholder slot (TODO, no Sutherland name)"
+    },
+    {
+      "slug": "status-indicator",
+      "name": "Status indicator",
+      "role": "status-surface",
+      "category": "atom",
+      "kind": "block",
+      "purpose": "A small coloured dot + label giving a visual cue of a background update or state change, making the user aware of relevant activity. RAG-coded across approved / cancelled / declined / pending, with a disabled (muted) variant.",
+      "variants": [],
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "approved",
+            "cancelled",
+            "declined",
+            "pending"
+          ],
+          "default": "pending"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "disabled"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The words beside the dot (reference snippet: 'Approved', 'Pending review'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length,"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "disabled": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/status-indicator.meta.json",
+      "why": "once carried an empty codeBindings placeholder slot (TODO, no Sutherland name)"
+    },
+    {
+      "slug": "table",
+      "name": "Table",
+      "role": "record-list",
+      "category": "organism",
+      "kind": "block",
+      "purpose": "Data tables let users scan, analyse and compare data. Header / sub-header / data cells arranged with a first-row header, a first-column header, or both; cells can be left- or right-aligned (right for numeric).",
+      "variants": [],
+      "props": [
+        {
+          "name": "headerType",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "first-row",
+            "first-column",
+            "first-row-and-column"
+          ],
+          "default": "first-row"
+        },
+        {
+          "name": "orientation",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "horizontal"
+        },
+        {
+          "name": "cellAlign",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "left",
+            "right"
+          ],
+          "default": "left",
+          "note": "Right-aligned for numeric columns."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "hole": "string",
+          "note": "The table's caption (reference snippet: 'Account balances'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px"
+        },
+        {
+          "name": "rows",
+          "type": "array",
+          "hole": "data",
+          "note": "The rows under the header. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader "
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [],
+      "metaFile": "knowledge/components/table.meta.json",
+      "why": "once carried an empty codeBindings placeholder slot (TODO, no Sutherland name)",
+      "askedAs": [
+        "table"
+      ]
+    },
+    {
+      "slug": "button",
+      "name": "Button",
+      "role": "action",
+      "category": "atom",
+      "kind": "block",
+      "purpose": "A control that triggers an action. Four emphasis levels form a hierarchy — primary (highest emphasis, the main action), secondary, tertiary (outlined), and quaternary (lowest emphasis / borderless). Available on-light and on-dark, in a default and a Large size.",
+      "variants": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "quaternary"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "primary",
+            "secondary",
+            "tertiary",
+            "quaternary"
+          ],
+          "default": "primary"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed",
+            "disabled",
+            "processing",
+            "success"
+          ],
+          "default": "default",
+          "note": "processing + success seen on primary (rag/success); confirm which states apply to each type."
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "large"
+          ],
+          "default": "default",
+          "note": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height."
+        },
+        {
+          "name": "surface",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "on-light",
+            "on-dark"
+          ],
+          "default": "on-light"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The button's words (reference snippet: 'Example'; the action bar's 'Confirm payment'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the pa"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "disabled": null,
+        "processing": null,
+        "success": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/button.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "button"
+      ]
+    },
+    {
+      "slug": "tabs",
+      "name": "Tabs",
+      "role": "wayfinding",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Let users switch between peer views/panels within the same context. A horizontal tab bar with a selected indicator, a bottom track, and an overflow dropdown when tabs exceed the available width.",
+      "variants": [],
+      "props": [
+        {
+          "name": "tabState",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "unselected",
+            "unselected-hover",
+            "unselected-pressed",
+            "selected-first",
+            "selected-middle",
+            "selected-last"
+          ],
+          "default": "unselected"
+        },
+        {
+          "name": "track",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "flat",
+            "elevated"
+          ],
+          "default": "flat",
+          "note": ".Tab track elevation=false/true (adds elevation/functional shadow)."
+        },
+        {
+          "name": "overflow",
+          "type": "boolean",
+          "hole": "boolean",
+          "values": [
+            "false",
+            "true"
+          ],
+          "default": "false",
+          "note": "Overflow dropdown (with menu items) when tabs don't fit."
+        },
+        {
+          "name": "label",
+          "type": "boolean",
+          "hole": "boolean",
+          "values": [
+            "false",
+            "true"
+          ],
+          "default": "true",
+          "note": "Tabs can be label or icon-only."
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "hole": "data",
+          "note": "The tabs' labels (reference snippet: 'Overview', 'Transactions', 'Statements'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (len"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "unselected": null,
+        "unselected-hover": null,
+        "unselected-pressed": null,
+        "selected-first": null,
+        "selected-middle": null,
+        "selected-last": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/tabs.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "tabs"
+      ]
+    },
+    {
+      "slug": "date-picker",
+      "name": "Date picker",
+      "role": "input",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Core banking date input: an Input-fields boxed field (free typing, validates on blur) plus an anchored calendar panel opened from the tail button — month grid with full keyboard navigation, month/year paging, ink-knockout selection and a structural today ring. Itinerary row 14 (P1); built Phase-2 wave 2 (worker A continuation).",
+      "variants": [
+        "closed",
+        "open"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "hole": "string",
+          "default": "",
+          "note": "DD/MM/YYYY (en-GB). Typing is free text — validated on blur, never masked mid-entry (acd-019: no auto-anything)."
+        },
+        {
+          "name": "help",
+          "type": "boolean",
+          "hole": "boolean",
+          "default": true,
+          "note": "Format hint above the field — 'Format: DD/MM/YYYY.' (copy-040: placeholder carries the format only)."
+        },
+        {
+          "name": "minDate/maxDate",
+          "type": "date",
+          "hole": "string",
+          "default": "none",
+          "note": "Out-of-range days render disabled (kept out of the live demo; disabled cell treatment = text/disabled)."
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [
+        "blur",
+        "click",
+        "input",
+        "keydown",
+        "pointerdown"
+      ],
+      "metaFile": "knowledge/components/date-picker.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "date picker"
+      ]
+    },
+    {
+      "slug": "metric",
+      "name": "Metric",
+      "role": "headline-metric",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "One headline number as one block: label, value, delta and comparison period, with two optional slots - the TREND (the Chart-sparkline atom at its inline scale) and a hue-free target row. Without a series the trend slot is left out: that is the reading the stat card was. With a series the tile also shows HOW the number moved: the reading the KPI tile was. One tile, one claim; a board is a grid of t",
+      "variants": [
+        "default",
+        "compact",
+        "hero",
+        "with-sparkline",
+        "with-target",
+        "as-link",
+        "with-table-cta"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "hero",
+            "display",
+            "compact"
+          ],
+          "default": "display",
+          "note": "hero = .t-cm-figure-2 (40px) at span 6, one big number; display = .t-cm-figure-4 (32px) at span 3; compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5). Sizes are the only thing that changes with this prop — the a"
+        },
+        {
+          "name": "trend",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "up",
+            "down",
+            "flat"
+          ],
+          "default": "flat",
+          "note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and th"
+        },
+        {
+          "name": "delta",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "up",
+            "down",
+            "flat"
+          ],
+          "default": "flat",
+          "note": "REBOUND AT #261 K3 ON DAVE'S WORD, verbatim: 'We need to use the dark versions of the colours on the arrows.' The arrow left Stat-card's FILL seat and took the INK seat the spark stroke already wore, which CLOSES the two-seat question — see"
+        },
+        {
+          "name": "upIsBad",
+          "type": "boolean",
+          "hole": "boolean",
+          "default": false,
+          "note": "Say that a rise is bad for this figure (a cost, a risk, a count of failures). Set by the class up-is-bad on the tile (.metric.up-is-bad). A rise then takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow "
+        },
+        {
+          "name": "deltaGlyph",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "direction-rotated"
+          ],
+          "default": "direction-rotated",
+          "note": "RULED BY DAVE'S REVIEW at #261 K2, verbatim: \"please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle\". So the glyph is the LIBRARY direction a"
+        },
+        {
+          "name": "target",
+          "type": "object",
+          "hole": "data",
+          "default": null,
+          "note": "NEW #261. { value, target, pace } drives the optional progress row: a border/subtle track, a standing-ink fill, a one-pixel pace tick at alpha-60, and a caption that spells out every figure the bar draws. NO HUE AT ALL, deliberately: whethe"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "ready",
+            "loading",
+            "empty",
+            "error",
+            "stale"
+          ],
+          "default": "ready",
+          "note": "NEW #261 — see stateModel. Drawn, not described: loading is a skeleton with aria-busy and an opacity pulse that prefers-reduced-motion kills; empty renders an em-dash value plus a sentence saying why; error renders an em-dash, a rag/error-i"
+        },
+        {
+          "name": "affordance",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "none",
+            "link",
+            "tableCta"
+          ],
+          "default": "none",
+          "note": "link is NEW #261 and is the RIVAL to tableCta: the whole tile becomes the hit area via a stretched ::after on the label's anchor, the accessible name is the metric, and the focus ring lands on the tile rather than on four words of label. ta"
+        }
+      ],
+      "slots": [
+        {
+          "name": "spark",
+          "required": false,
+          "use": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Heights are 28 compact / 40 default / 56 hero. Baked static — this component is not regi",
+          "accepts": {
+            "capability": [
+              "trend-series"
+            ]
+          }
+        }
+      ],
+      "states": {
+        "ready": null,
+        "loading": "role=group + aria-busy=true, an sr-only sentence naming the metric, and four skeleton blocks at text/default alpha-08 with a 1.6s opacity pulse that prefers-reduced-motion kills. No spinner, no JS.",
+        "empty": "label + em-dash value at alpha-40 + a sentence saying WHY there is no figure ('The account opened in March'), with the neutral rule glyph. Never a zero — a zero is a measurement.",
+        "error": "label + em-dash value + role=status sentence + a 44px control whose label names what it will load ('Load settlement volume again'), never the bare word 'Retry'. The only coloured mark is the rag/error-ink glyph, whose inner marks take the tile surface.",
+        "stale": "the full, real tile PLUS a neutral marker chip ('Last updated 3 days ago') with the refresh glyph. The number is not dimmed — dimming a real figure to signal age costs contrast and says 'unimportant', which is the wrong word."
+      },
+      "events": [],
+      "metaFile": "knowledge/components/metric.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "metric"
+      ]
+    },
+    {
+      "slug": "dropdown",
+      "name": "Dropdown",
+      "role": "input",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Lets a user choose one or more options from a list. Comes in a non-native (custom, fully styled) family and a native (browser select) family. The trigger opens a list; items can be single-select, filterable single-select, or multi-select.",
+      "variants": [
+        "single-select (non-native)",
+        "filterable single-select (non-native)",
+        "multi-select (non-native)",
+        "native",
+        "grouped (non-native)"
+      ],
+      "props": [
+        {
+          "name": "family",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "non-native",
+            "native"
+          ],
+          "default": "non-native",
+          "note": "non-native = custom styled menu; native = OS/browser select control."
+        },
+        {
+          "name": "selection",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "single-select",
+            "filterable-single-select",
+            "multi-select"
+          ],
+          "default": "single-select",
+          "note": "filterable + multi-select are non-native only."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "hole": "boolean",
+          "values": [
+            "false",
+            "true"
+          ],
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "active",
+            "active-message",
+            "completed",
+            "disabled",
+            "error"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "itemSelection",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "unselected",
+            "selected"
+          ],
+          "default": "unselected",
+          "note": "list-item level"
+        },
+        {
+          "name": "itemState",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed"
+          ],
+          "default": "default",
+          "note": "list-item level"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The field's label (reference snippet: 'Country of residence'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44"
+        },
+        {
+          "name": "items",
+          "type": "array",
+          "hole": "data",
+          "note": "The options in the list. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader he"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "active": null,
+        "active-message": null,
+        "completed": null,
+        "disabled": null,
+        "error": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/dropdown.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "menus",
+        "select"
+      ]
+    },
+    {
+      "slug": "accordion",
+      "name": "Accordion",
+      "role": "arrangement",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "A disclosure control that collapses/expands a section of content behind a titled header. Used to reduce clutter and cognitive load on content-heavy pages or where a range of user needs must be covered (e.g. FAQs). For a single disclosure on its own, prefer an Expand link rather than a lone accordion.",
+      "variants": [
+        "standard",
+        "inline"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "standard",
+            "inline"
+          ],
+          "default": "standard"
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "hole": "boolean",
+          "values": [
+            "false",
+            "true"
+          ],
+          "default": "false"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "fontSize",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "4",
+            "5",
+            "6"
+          ],
+          "default": "4"
+        },
+        {
+          "name": "size",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "5",
+            "6"
+          ],
+          "default": "5"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "hole": "string",
+          "note": "The header's words: the question or section name the header button reads out (reference snippet: 'How do I set up a standing order?'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text par"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "pressed": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/accordion.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "accordion"
+      ]
+    },
+    {
+      "slug": "slider",
+      "name": "Slider",
+      "role": "input",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Lets users select a value (single) or a range (double) by sliding a handle along a predefined numerical track. Optional tick markers and value labels.",
+      "variants": [
+        "single",
+        "double"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "single",
+            "double"
+          ],
+          "default": "single",
+          "note": "Single = one handle/value; double = two handles for a range."
+        },
+        {
+          "name": "value",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "half",
+            "full"
+          ],
+          "default": "default",
+          "note": "Track fill position (single shows default/half/full; double shows default/half)."
+        },
+        {
+          "name": "handleState",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The slider's label (reference snippet: 'Monthly budget'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px ta"
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [],
+      "metaFile": "knowledge/components/slider.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "slider"
+      ]
+    },
+    {
+      "slug": "selection-controls",
+      "name": "Selection controls",
+      "role": "input",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Controls for choosing options: Checkbox (incl. indeterminate), Radio button, Chips (toggle / single-select / multi-select / delete) and Switch. Each available with a label. (The page also has selectable List/Card variants that compose these controls onto List items / Cards.)",
+      "variants": [
+        "checkbox",
+        "radio",
+        "chip",
+        "switch"
+      ],
+      "props": [
+        {
+          "name": "control",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "checkbox",
+            "radio",
+            "chip",
+            "switch"
+          ],
+          "default": "checkbox"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "pressed",
+            "selected",
+            "disabled",
+            "error"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "checkboxKind",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "checked",
+            "indeterminate"
+          ],
+          "default": "checked",
+          "note": "Checkbox supports an indeterminate (mixed) state."
+        },
+        {
+          "name": "chipType",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "toggle",
+            "single-selection",
+            "multiple-selection",
+            "delete"
+          ],
+          "default": "toggle"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The control's label (reference snippet: 'Email notifications'); absent means no visible label, as the old switch's false did (the control still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field "
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "pressed": null,
+        "selected": null,
+        "disabled": null,
+        "error": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/selection-controls.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "switch"
+      ]
+    },
+    {
+      "slug": "input-fields",
+      "name": "Input fields",
+      "role": "input",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Text-entry form controls and their label. Family: single-line input (standard + large), multi-line input, date-picker input (with calendar day cells, nav arrows, and a modal/dropdown calendar), and the input label. Full state set: default, hover, active, completed, disabled, error.",
+      "variants": [
+        "boxed",
+        "single-line (underline)",
+        "multi-line",
+        "date-picker",
+        "input-label"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "single-line",
+            "single-line-large",
+            "multi-line",
+            "date-picker",
+            "input-label"
+          ],
+          "default": "single-line"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "active",
+            "completed",
+            "disabled",
+            "error"
+          ],
+          "default": "default",
+          "note": "Date-picker input adds a 'date picker' (open) state. Input label: default/disabled only."
+        },
+        {
+          "name": "dateCellState",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "unselected",
+            "hover",
+            "pressed",
+            "selected",
+            "disabled",
+            "unavailable"
+          ],
+          "default": "unselected",
+          "note": ".Date calendar day cell."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "hole": "string",
+          "note": "The field's label. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). "
+        },
+        {
+          "name": "help",
+          "type": "string",
+          "hole": "string",
+          "note": "The optional help line under the label. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a s"
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "active": null,
+        "completed": null,
+        "disabled": null,
+        "error": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/input-fields.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "text input"
+      ]
+    },
+    {
+      "slug": "modals",
+      "name": "Modals",
+      "role": "overlay",
+      "category": "organism",
+      "kind": "housing",
+      "purpose": "Modals focus the user's attention on an important message or side-task without removing them from their journey. Family: Dialog (interrupts the view and requires an action/decision to continue), Video modal (responsive video overlay), and Partial modal / Drawer (app-only, anchored to the bottom of the screen, houses supplementary content/actions the user can view and interact with alongside the un",
+      "variants": [
+        "dialog",
+        "video",
+        "partial"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "dialog",
+            "video",
+            "partial"
+          ],
+          "default": "dialog"
+        },
+        {
+          "name": "buttons",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "two-buttons",
+            "stacked"
+          ],
+          "default": "default",
+          "note": "Dialog button layout (single / two side-by-side / stacked)."
+        },
+        {
+          "name": "breakpoint",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "xl",
+            "l",
+            "m",
+            "ms",
+            "s",
+            "xs"
+          ],
+          "default": "l",
+          "note": "Video modal is fully responsive (XL scale-3 → XS scale-1); S/XS use a dedicated layout."
+        },
+        {
+          "name": "module",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "scale-1",
+            "scale-2"
+          ],
+          "default": "scale-1",
+          "note": "Partial modal module scale."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "hole": "string",
+          "note": "The dialog's title (reference snippet: 'Confirm payment'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px t"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "hole": "string",
+          "note": "The message under the title (reference snippet: 'You're about to send …'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, "
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [],
+      "metaFile": "knowledge/components/modals.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "dialog"
+      ]
+    },
+    {
+      "slug": "tooltip",
+      "name": "Tooltip",
+      "role": "overlay",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Provides contextual help relating to an element or area of a page — a small floating panel with a directional tip (pointer) revealed on hover/focus of a trigger (often a help icon).",
+      "variants": [],
+      "props": [
+        {
+          "name": "tip",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "top",
+            "bottom"
+          ],
+          "default": "top",
+          "note": "Which edge the pointer sits on (tooltip above vs below the trigger)."
+        },
+        {
+          "name": "tipAlignment",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "centre",
+            "left",
+            "right"
+          ],
+          "default": "centre",
+          "note": "Horizontal position of the pointer along that edge."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "hole": "string",
+          "note": "The tip's words (reference snippet: 'The funds you can spend right now, after …'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part ("
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [],
+      "metaFile": "knowledge/components/tooltip.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "tooltip"
+      ]
+    },
+    {
+      "slug": "pagination",
+      "name": "Pagination",
+      "role": "wayfinding",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Breaks longer lists of content into digestible chunks and helps with content load times by letting users move between pages of results. Browser-only.",
+      "variants": [
+        "basic",
+        "dropdown",
+        "dropdown-stacked"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "basic",
+            "dropdown",
+            "dropdown-stacked"
+          ],
+          "default": "basic"
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "default",
+            "hover",
+            "completed",
+            "disabled"
+          ],
+          "default": "default",
+          "note": "Page buttons / dropdown trigger states; current page marked active."
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "hole": "number",
+          "note": "The current page (reference snippet: '1'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name "
+        },
+        {
+          "name": "pages",
+          "type": "number",
+          "hole": "number",
+          "note": "How many pages there are (reference snippet: '12'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, "
+        }
+      ],
+      "slots": [],
+      "states": {
+        "default": null,
+        "hover": null,
+        "completed": null,
+        "disabled": null
+      },
+      "events": [],
+      "metaFile": "knowledge/components/pagination.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "pagination"
+      ]
+    },
+    {
+      "slug": "notifications",
+      "name": "Notifications",
+      "role": "feedback",
+      "category": "molecule",
+      "kind": "block",
+      "purpose": "Communicate system status and feedback to the user. RAG-coded family in four placements: Contextual (attached to a field/section, incl. a form multi-link variant), Global (page-level banner), Inline (compact inline message), and Snackbar (transient toast). Each carries the standard variants error / warning / success / information (Snackbar omits error).",
+      "variants": [
+        "contextual",
+        "global",
+        "inline",
+        "snackbar"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "contextual",
+            "global",
+            "inline",
+            "snackbar"
+          ],
+          "default": "contextual"
+        },
+        {
+          "name": "variant",
+          "type": "enum",
+          "hole": "enum",
+          "values": [
+            "error",
+            "warning",
+            "success",
+            "information"
+          ],
+          "default": "information",
+          "note": "RAG status. Snackbar = warning/success/information only (no error)."
+        },
+        {
+          "name": "multiLink",
+          "type": "boolean",
+          "hole": "boolean",
+          "values": [
+            "false",
+            "true"
+          ],
+          "default": "false",
+          "note": "Contextual 'form multi-link' variant with action links."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "hole": "string",
+          "note": "The notification's title (reference snippet: 'Notification title.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, "
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "hole": "string",
+          "note": "The message under it (reference snippet: 'Message description.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the"
+        }
+      ],
+      "slots": [],
+      "states": {},
+      "events": [],
+      "metaFile": "knowledge/components/notifications.meta.json",
+      "why": "cohort one",
+      "askedAs": [
+        "notification"
+      ]
+    }
+  ],
+  "provides": {
+    "Chart-boxplot": "chart",
+    "Chart-bullet": "headline-metric",
+    "Chart-butterfly-h": "chart",
+    "Chart-butterfly-v": "chart",
+    "Chart-candlestick": "chart",
+    "Chart-histogram": "chart",
+    "Chart-scatter": "chart",
+    "accordion": "arrangement",
+    "account-selector": "input",
+    "action-bar": "action",
+    "alert": "feedback",
+    "amount-display": "input",
+    "amount-input": "input",
+    "anchor-nav": "wayfinding",
+    "app-shell-doormat": "page-frame",
+    "app-shell-focused": "page-frame",
+    "app-shell-multi-column": "page-frame",
+    "app-shell-nav-rail": "page-frame",
+    "app-shell-side-nav": "page-frame",
+    "app-shell-split": "page-frame",
+    "app-shell-top-nav": "page-frame",
+    "back-to-top": "wayfinding",
+    "badge": "status-surface",
+    "banner": "feedback",
+    "breadcrumbs": "wayfinding",
+    "button": "action",
+    "calendar": "input",
+    "cards": "arrangement",
+    "carousel": "arrangement",
+    "cascader": "input",
+    "chart-bar": "chart",
+    "chart-combo": "chart",
+    "chart-donut": "chart",
+    "chart-line": "chart",
+    "chart-pie": "chart",
+    "chart-stacked-area": "chart",
+    "combobox": "input",
+    "command-palette": "overlay",
+    "confirmation": "feedback",
+    "countdown-timer": "feedback",
+    "cta-lockup": "action",
+    "data-grid": "record-list",
+    "date-picker": "input",
+    "date-range-picker": "input",
+    "divider": "arrangement",
+    "document-row": "record-list",
+    "drawer": "overlay",
+    "dropdown": "input",
+    "empty-state": "feedback",
+    "eyebrow": "page-title",
+    "fab": "action",
+    "feature-grid-lockup": "arrangement",
+    "file-upload": "input",
+    "form-layout": "input",
+    "headers": "page-title",
+    "icon-button": "action",
+    "input-fields": "input",
+    "layout-utilities": "arrangement",
+    "links": "action",
+    "list-items": "record-list",
+    "loading-indicator": "feedback",
+    "meter": "status-surface",
+    "metric": "headline-metric",
+    "modal-lightbox": "overlay",
+    "modals": "overlay",
+    "multi-select": "input",
+    "navigations": "wayfinding",
+    "notifications": "feedback",
+    "page-header-lockup": "page-title",
+    "pagination": "wayfinding",
+    "popconfirm": "overlay",
+    "popover": "overlay",
+    "progress-bar": "feedback",
+    "progress-tracker": "feedback",
+    "quick-actions": "action",
+    "range-slider": "input",
+    "rating": "input",
+    "reorder": "input",
+    "runway-bar": "headline-metric",
+    "search-field": "input",
+    "section-heading-lockup": "page-title",
+    "secure-entry": "input",
+    "segmented-control": "input",
+    "selection-controls": "input",
+    "sidebar-nav": "wayfinding",
+    "skeleton-loader": "feedback",
+    "slider": "input",
+    "split-button": "action",
+    "splitter": "arrangement",
+    "standing-order-mandate-row": "record-list",
+    "stats-band-lockup": "arrangement",
+    "status-indicator": "status-surface",
+    "stepper": "input",
+    "summary": "status-surface",
+    "tab-bar": "wayfinding",
+    "table": "record-list",
+    "tabs": "wayfinding",
+    "tags-input": "input",
+    "textarea": "input",
+    "time-picker": "input",
+    "timeline": "record-list",
+    "toast": "feedback",
+    "tooltip": "overlay",
+    "transaction-row": "record-list",
+    "transfer-list": "input",
+    "tree": "record-list",
+    "view-options": "input"
+  },
+  "allSlugs": [
+    "Chart-boxplot",
+    "Chart-bullet",
+    "Chart-butterfly-h",
+    "Chart-butterfly-v",
+    "Chart-candlestick",
+    "Chart-histogram",
+    "Chart-scatter",
+    "accordion",
+    "account-card",
+    "account-selector",
+    "action-bar",
+    "alert",
+    "amount-display",
+    "amount-input",
+    "anchor-nav",
+    "app-shell-doormat",
+    "app-shell-focused",
+    "app-shell-multi-column",
+    "app-shell-nav-rail",
+    "app-shell-side-nav",
+    "app-shell-split",
+    "app-shell-top-nav",
+    "avatar",
+    "avatar-group",
+    "back-to-top",
+    "badge",
+    "banner",
+    "breadcrumbs",
+    "button",
+    "calendar",
+    "card-header-lockup",
+    "cards",
+    "carousel",
+    "cascader",
+    "chart-bar",
+    "chart-combo",
+    "chart-donut",
+    "chart-line",
+    "chart-pie",
+    "chart-sparkline",
+    "chart-stacked-area",
+    "combobox",
+    "command-palette",
+    "confirmation",
+    "countdown-timer",
+    "cta-lockup",
+    "data-grid",
+    "date-picker",
+    "date-range-picker",
+    "divider",
+    "document-row",
+    "drawer",
+    "dropdown",
+    "empty-state",
+    "eyebrow",
+    "fab",
+    "feature-grid-lockup",
+    "file-upload",
+    "filter-toolbar-bar",
+    "footer",
+    "footer-doormat-lockup",
+    "form-layout",
+    "headers",
+    "hero",
+    "hero-variants",
+    "icon-button",
+    "image-block",
+    "input-fields",
+    "kpi-tile",
+    "layout-utilities",
+    "legend",
+    "limits-meter",
+    "links",
+    "list-items",
+    "loading-indicator",
+    "meter",
+    "metric",
+    "modal-lightbox",
+    "modals",
+    "multi-select",
+    "navigations",
+    "notifications",
+    "page-header-lockup",
+    "pagination",
+    "payment-card-visual",
+    "popconfirm",
+    "popover",
+    "progress-bar",
+    "progress-tracker",
+    "qr-code",
+    "quick-actions",
+    "range-slider",
+    "rating",
+    "reorder",
+    "runway-bar",
+    "search-field",
+    "section-heading-lockup",
+    "secure-entry",
+    "segmented-control",
+    "selection-controls",
+    "sidebar-nav",
+    "skeleton-loader",
+    "slider",
+    "split-button",
+    "splitter",
+    "standing-order-mandate-row",
+    "stat-card",
+    "stats-band-lockup",
+    "status-indicator",
+    "stepper",
+    "summary",
+    "tab-bar",
+    "table",
+    "tabs",
+    "tags",
+    "tags-input",
+    "template-auth",
+    "template-confirmation",
+    "template-create-edit",
+    "template-dashboard",
+    "template-dashboard-bento",
+    "template-detail",
+    "template-empty",
+    "template-error",
+    "template-list-index",
+    "template-report",
+    "template-settings",
+    "template-wizard",
+    "textarea",
+    "time-picker",
+    "timeline",
+    "toast",
+    "tooltip",
+    "transaction-row",
+    "transfer-list",
+    "tree",
+    "video-player",
+    "view-options"
+  ]
+}

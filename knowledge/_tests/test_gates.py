@@ -210,6 +210,13 @@ SELFTEST_ARMS = [
      "tokens/gen_dtcg.py"),
     ("tokens→DTCG gate's own bites run (5: receipt, stray $note, broken ref, resolver, live seam, #312)",
      "_validate_tokens_dtcg.py"),
+    # #312 N1 (s311-D7): the adapter-manifest gate's own bites — no unmapped list, an unknown
+    # role, a status jump to accepted, and eight more, plus the kit checker driven outside the
+    # repo on a tempdir copy of adapters/kits/sutherland-react/. Wired here the day it was
+    # built so it has a reader [[instrument-without-a-consumer]]; the receipt-mint consumer
+    # is named as owed in its docstring, not built.
+    ("adapter-manifest gate's own bites run (11 bites + 4 controls + 4 kit arms, s311-D7 #312)",
+     "_validate_adapter.py"),
 ]
 
 

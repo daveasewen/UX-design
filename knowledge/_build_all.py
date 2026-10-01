@@ -413,6 +413,14 @@ STEPS = [
      "_validate_roles_resolve.py"),
     ("roles/answers resolve selftest — 15 bites incl. in-role priority ties, absent store, shape-known and when-fields-known (#253/#254)",
      "_validate_roles_resolve.py", ["--selftest"]),
+    # #312 N1 — s311-D7 (Dave, #311): an adapter manifest per client library, Apollo governs,
+    # theirs renders; the unmapped list is REQUIRED. The gate reads adapters/*.json against
+    # adapters/schema.json; its selftest plants the three bites the brief named (no unmapped
+    # list, unknown role, status jump) and eight more. ROUTE_ROWS rows land in this same edit.
+    ("adapter-manifest gate — adapters/*.json against adapters/schema.json; unmapped list required; status ladder on evidence (s311-D7, #312)",
+     "_validate_adapter.py"),
+    ("adapter-manifest selftest — 11 bites + 4 controls + 4 kit arms (s311-D7, #312)",
+     "_validate_adapter.py", ["--selftest"]),
     ("DataViz chart gate (semantic SVG + tokens + table spine)", "_validate_dataviz.py"),
     # WIRED 2026-07-27 (ds-014): this selftest already existed and ran only by hand, so nothing
     # proved dv-004 could fail — and it could not, on `stacked-column`. Exactly the rot the
@@ -1098,6 +1106,10 @@ ROUTE_ROWS = [
      "\n❌ roles/answers resolve gate failed (exit {code}) — a meta's `provides` is not one of the twelve roles in knowledge/roles.json, an `answers` word is not a key of chart-intents.json, a `not-with`/`with` slug resolves to neither a meta nor a role, two providers of one role claim the same `priority`, `intent` and `answers` disagree, a `span.cols` is inverted, a `shape` is not a key of knowledge/shapes.json, or a `when` gate names a field that is not a key of knowledge/when-fields.json (s254-D2 items 1 and 2 closed those two vocabularies). The role and answers vocabularies are ADOPTED (s252-D1 / s251-D11): a new word enters ONLY by Dave's ruling, never silently. Run: python3 knowledge/_validate_roles_resolve.py"),
     ("roles/answers resolve selftest — 15 bites incl. in-role priority ties, absent store, shape-known and when-fields-known (#253/#254)", GATE,
      "\n❌ roles/answers resolve selftest failed (exit {code}) — python3 knowledge/_validate_roles_resolve.py --selftest"),
+    ("adapter-manifest gate — adapters/*.json against adapters/schema.json; unmapped list required; status ladder on evidence (s311-D7, #312)", GATE,
+     "\n❌ adapter-manifest gate failed (exit {code}) — a manifest under adapters/ breaks adapters/schema.json, names an unknown meta or role, climbs the status ladder without evidence, maps a token onto a primitive, or its REQUIRED unmapped list misses a meta. Run: python3 knowledge/_validate_adapter.py"),
+    ("adapter-manifest selftest — 11 bites + 4 controls + 4 kit arms (s311-D7, #312)", GATE,
+     "\n❌ adapter-manifest selftest failed (exit {code}) — python3 knowledge/_validate_adapter.py --selftest"),
     # #196: the stale-queue pair. The row landed WITH the step, in the same edit — a STEPS
     # entry with no route aborts every full build above step 1 (the (a)-class omission
     # recorded three times above).

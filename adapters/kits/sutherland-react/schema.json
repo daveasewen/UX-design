@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://apollo.local/adapters/schema.json",
+  "title": "Apollo adapter manifest — one per client component library",
+  "description": "s311-D7 (Dave, #311, 2026-10-01): Apollo meets a client's library through an adapter manifest per library — Apollo governs, theirs renders. One file per library at adapters/<lib-id>.json. For each Apollo role or meta it records THEIR component and import, a prop map with typed holes, a slot map, a status that climbs only on evidence, and a token map from their variables onto Apollo's SEMANTIC tokens as a DTCG resolver set. The `unmapped` list is REQUIRED: a manifest without one is invalid, and an empty one must still be present and say why. The rules behind the shape: ADR-0008 (Apollo is the canonical core; consumers are reached by machine-runnable adapters; never inherit a flaw to match a consumer), knowledge/_RUNBOOK-onboard-code-library.md (never guess a code name; unverified means say so; never normalise names across libraries). Policed by knowledge/_validate_adapter.py. Schema written #312 lane N1. Apollo has no Sutherland mapping yet: before this file, four metas (cards, list-items, status-indicator, table) carried an empty `codeBindings.sutherland-react` placeholder slot from 2026-06-22 that names no Sutherland component, prop or import (every field reads TODO). Those slots stay in the metas until the first release whose gate reads this file, then come out.",
+  "type": "object",
+  "required": ["manifest", "library", "bindings", "tokens", "unmapped"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "$model": { "type": "string", "description": "Prose for the reader: what this file is and how it is filled. Never read by a gate." },
+    "manifest": {
+      "type": "object",
+      "required": ["schemaVersion", "written", "by"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "1.0" },
+        "written": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "ISO date the manifest was last written." },
+        "by": { "type": "string", "description": "Who or what wrote it (a lane, a person, a Copilot agent). A fill from a machine says so." },
+        "rulings": { "type": "array", "items": { "type": "string" }, "description": "The Apollo ruling ids this manifest enacts, e.g. s311-D7." },
+        "$notes": { "type": "string" }
+      }
+    },
+    "library": {
+      "type": "object",
+      "required": ["id", "name", "runtime", "package", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "The library id. Kebab-case, stable; equals the file stem (adapters/<id>.json) and the key of the old empty codeBindings placeholder slot." },
+        "name": { "type": "string" },
+        "runtime": { "enum": ["react", "angular", "html", "lit", "vue", "svelte", "other"] },
+        "package": { "type": ["string", "null"], "description": "The npm (or equivalent) package name their components import from. null only while unverified." },
+        "version": { "type": ["string", "null"], "description": "The library version the manifest was read against. null only while unverified." },
+        "source": {
+          "type": "object",
+          "required": ["repo"],
+          "additionalProperties": false,
+          "properties": {
+            "repo": { "type": ["string", "null"], "description": "Where their source was read: a repo URL or a local path on the machine that filled the manifest. null only while nothing has been read." },
+            "commit": { "type": ["string", "null"] },
+            "readOn": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+          }
+        },
+        "$notes": { "type": "string" }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "description": "One row per Apollo part (meta) or role that THEIR library renders. A row keyed by role covers every provider of that role unless a meta row for a provider sits beside it (the meta row wins).",
+      "items": { "$ref": "#/$defs/binding" }
+    },
+    "tokens": { "$ref": "#/$defs/tokenMap" },
+    "unmapped": { "$ref": "#/$defs/unmapped" }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9-]*$" },
+    "status": {
+      "enum": ["unverified", "rendered", "accepted"],
+      "description": "The ladder. unverified: written from a reading of their source, or not yet read at all. rendered: a side-by-side render of theirs beside Apollo's is on record (evidence.render names it). accepted: Dave has looked at that render and said so (evidence.accepted carries his word and the date). A status never climbs without its evidence; the validator refuses the jump."
+    },
+    "theirs": {
+      "type": "object",
+      "required": ["component", "import"],
+      "additionalProperties": false,
+      "properties": {
+        "component": { "type": ["string", "null"], "description": "THEIR component name as exported, e.g. Card. null only while the binding is unverified and nothing has been read." },
+        "import": { "type": ["string", "null"], "description": "The import specifier, e.g. @hsbc/sutherland-react or @hsbc/sutherland-react/Card. null only while unverified." },
+        "export": { "enum": ["named", "default"], "description": "How the component is exported. Omit while unverified." },
+        "file": { "type": ["string", "null"], "description": "Their source file, cited, relative to their repo root. The row's provenance." }
+      }
+    },
+    "propMap": {
+      "type": "object",
+      "required": ["apollo", "theirs", "hole"],
+      "additionalProperties": false,
+      "properties": {
+        "apollo": { "type": "string", "description": "The Apollo prop name from the meta's props list." },
+        "theirs": { "type": ["string", "null"], "description": "Their prop name. null means one of two things: not read yet (an OPEN hole, allowed only while the binding is unverified), or no counterpart in their library — then the same Apollo prop is ALSO listed under the binding's unmapped.props with a reason (a CLOSED gap, allowed at any status). The Apollo-side row stays either way." },
+        "hole": {
+          "enum": ["string", "number", "boolean", "enum", "data", "node", "handler"],
+          "description": "The typed hole the renderer fills. string / number: the value is passed through. boolean: TRUE renders their attribute (or prop) and FALSE renders NOTHING — never the string 'false'. enum: Apollo's value is looked up in `values` and their value is passed. data: a structured value (an array of rows, an object) passed through whole. node: a rendered child (markup), not a scalar. handler: a function for an event."
+        },
+        "values": {
+          "type": "object",
+          "description": "enum holes only: Apollo value → their value. An Apollo value their library cannot express is listed under the binding's unmapped.values, never silently dropped.",
+          "additionalProperties": { "type": ["string", "null"] }
+        },
+        "source": { "type": ["string", "null"], "description": "Their source file where this prop is declared, cited." },
+        "$notes": { "type": "string" }
+      }
+    },
+    "slotMap": {
+      "type": "object",
+      "required": ["apollo", "theirs", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "apollo": { "type": "string", "description": "The Apollo slot name from the meta's slots (or `children` when the meta has no named slot and the part takes content)." },
+        "theirs": { "type": ["string", "null"], "description": "Their slot: a prop name, a named slot, or `children`." },
+        "kind": { "enum": ["children", "prop", "slot", null], "description": "children: React children / default slot. prop: a render-prop or node-typed prop. slot: a named slot (web components, Vue, Angular ng-content select). null only while the binding is unverified and the slot has not been read." },
+        "source": { "type": ["string", "null"] },
+        "$notes": { "type": "string" }
+      }
+    },
+    "bindingUnmapped": {
+      "type": "object",
+      "description": "What on THIS part their library cannot express, with a reason each. Never silently dropped.",
+      "additionalProperties": false,
+      "properties": {
+        "props": { "type": "array", "items": { "type": "object", "required": ["apollo", "reason"], "additionalProperties": false, "properties": { "apollo": { "type": "string" }, "reason": { "type": "string", "minLength": 1 } } } },
+        "slots": { "type": "array", "items": { "type": "object", "required": ["apollo", "reason"], "additionalProperties": false, "properties": { "apollo": { "type": "string" }, "reason": { "type": "string", "minLength": 1 } } } },
+        "values": { "type": "array", "items": { "type": "object", "required": ["apollo", "value", "reason"], "additionalProperties": false, "properties": { "apollo": { "type": "string" }, "value": { "type": "string" }, "reason": { "type": "string", "minLength": 1 } } } },
+        "states": { "type": "array", "items": { "type": "object", "required": ["apollo", "reason"], "additionalProperties": false, "properties": { "apollo": { "type": "string" }, "reason": { "type": "string", "minLength": 1 } } } },
+        "events": { "type": "array", "items": { "type": "object", "required": ["apollo", "reason"], "additionalProperties": false, "properties": { "apollo": { "type": "string" }, "reason": { "type": "string", "minLength": 1 } } } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "render": { "type": "string", "description": "Path (repo-relative) of the side-by-side render record: theirs beside Apollo's, same props, same states. Required at status rendered and above." },
+        "accepted": {
+          "type": "object",
+          "required": ["by", "date"],
+          "additionalProperties": false,
+          "properties": {
+            "by": { "const": "Dave" },
+            "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+            "verbatim": { "type": "string", "description": "His words, when there were any." }
+          },
+          "description": "Required at status accepted. Only Dave's word moves a binding here."
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "required": ["apollo", "theirs", "props", "slots", "status", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "apollo": {
+          "type": "object",
+          "description": "Exactly ONE of meta or role (the validator refuses both or neither). meta: a slug of knowledge/components/<slug>.meta.json. role: a key of knowledge/roles.json — the binding then covers every provider of that role.",
+          "additionalProperties": false,
+          "properties": {
+            "meta": { "$ref": "#/$defs/slug" },
+            "role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+          }
+        },
+        "theirs": { "$ref": "#/$defs/theirs" },
+        "props": { "type": "array", "items": { "$ref": "#/$defs/propMap" } },
+        "slots": { "type": "array", "items": { "$ref": "#/$defs/slotMap" } },
+        "states": {
+          "type": "object",
+          "description": "Apollo state name → how their component shows it (a prop, an attribute, a class, or null when it has no such state; a null here must be echoed in unmapped.states with a reason).",
+          "additionalProperties": { "type": ["string", "null"] }
+        },
+        "events": {
+          "type": "object",
+          "description": "Apollo event or listener name → their event prop (e.g. onChange). Unmatched ones go to unmapped.events.",
+          "additionalProperties": { "type": ["string", "null"] }
+        },
+        "unmapped": { "$ref": "#/$defs/bindingUnmapped" },
+        "status": { "$ref": "#/$defs/status" },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "source": { "type": ["string", "null"], "description": "Their source file(s) read for this row, cited. null only when nothing has been read yet." },
+        "$legacy": { "type": "object", "description": "The empty codeBindings placeholder slot (2026-06-22, every field TODO, no Sutherland name in it) this row replaces, kept verbatim for the record. It carries no mapping." },
+        "$notes": { "type": "string" }
+      }
+    },
+    "tokenMap": {
+      "type": "object",
+      "required": ["resolver", "map"],
+      "additionalProperties": false,
+      "properties": {
+        "resolver": {
+          "type": "object",
+          "description": "A DTCG resolver document (Resolver Module, 2025 draft): named sets of token sources and the order they resolve in. Apollo's semantic set comes first; their set lays over it; the map below says which of their names land on which Apollo semantic token.",
+          "required": ["name", "sets", "resolutionOrder"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string" },
+            "version": { "type": "string" },
+            "description": { "type": "string" },
+            "sets": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": ["sources"],
+                "additionalProperties": false,
+                "properties": {
+                  "sources": { "type": "array", "items": { "type": "object", "required": ["$ref"], "additionalProperties": false, "properties": { "$ref": { "type": "string" } } } },
+                  "description": { "type": "string" }
+                }
+              }
+            },
+            "modifiers": { "type": "object" },
+            "resolutionOrder": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["$ref"], "additionalProperties": false, "properties": { "$ref": { "type": "string" } } } }
+          }
+        },
+        "map": {
+          "type": "array",
+          "description": "Their token → Apollo SEMANTIC token, as a DTCG alias reference. Primitive palette paths (color.*) are refused: map at the semantic tier (ADR-0008 — never import a consumer's overloaded primitive).",
+          "items": {
+            "type": "object",
+            "required": ["theirs", "apollo", "status", "source"],
+            "additionalProperties": false,
+            "properties": {
+              "theirs": { "type": "string", "minLength": 1, "description": "Their token or variable name as written in their source (a CSS custom property, a JS export, a Figma variable)." },
+              "apollo": { "type": "string", "pattern": "^\\{[a-z][a-z0-9-]*(\\.[a-z0-9-]+)*\\}$", "description": "A DTCG alias reference into Apollo's token spine, e.g. {text.default} or {gap.component.m}." },
+              "status": { "$ref": "#/$defs/status" },
+              "source": { "type": ["string", "null"], "description": "Their file where the token is defined, cited." },
+              "$notes": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "unmapped": {
+      "type": "object",
+      "description": "REQUIRED. Every Apollo meta this manifest does not bind, by slug, with a reason and a declared fallback. When the list is empty, `$why` must say that every meta is bound.",
+      "required": ["$why", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "$why": { "type": "string", "minLength": 1, "description": "One sentence on why these are unmapped (or why none are)." },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["apollo", "reason", "fallback"],
+            "additionalProperties": false,
+            "properties": {
+              "apollo": { "$ref": "#/$defs/slug" },
+              "reason": { "type": "string", "minLength": 1 },
+              "fallback": { "enum": ["apollo-native", "none"], "description": "apollo-native: a composed screen for this library renders Apollo's own part here (declared, so the screen gate lets it through). none: no fallback is declared; the screen gate refuses a screen that uses this part for this library." },
+              "$notes": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

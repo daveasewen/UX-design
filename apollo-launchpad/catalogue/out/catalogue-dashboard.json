@@ -1,0 +1,3448 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.0/catalog.json",
+ "title": "Apollo Launchpad — the dashboard parts",
+ "description": "Generated from knowledge/components/*.meta.json by apollo-launchpad/catalogue/gen_catalogue.py; the metas are the source, this file is the API. Per-entry Apollo data sits under x-apollo (an annotation keyword; A2UI ignores it). Beta parts carry x-apollo.proposal: true (s305-D20).",
+ "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.0/catalog.json",
+ "components": {
+  "AppShellTopNav": {
+   "type": "object",
+   "description": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99's sibling and row 97's own notes cell, 'Frame content lives in.' When: destinations <= 7 AND nav.levels <= 2",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "AppShellTopNav"
+      },
+      "form": {
+       "type": "string",
+       "enum": [
+        "inline",
+        "stacked"
+       ],
+       "default": "inline",
+       "description": "inline = the primary nav sits in the masthead row beside the brand (Navigations' own arrangement, unchanged; one 64px band of chrome). stacked = the masthead carries brand + utility only and the primary nav drops to its own 56px band beneath, with an optional 48px section tier under that. Stacking b"
+      },
+      "sectionTier": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "the third band — in-section destinations. Horizontally scrollable rather than wrapping, so a long section list never silently becomes two rows of chrome."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "inline",
+        "stacked"
+       ],
+       "default": "inline",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      },
+      "brand": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "the masthead identity — the official masterbrand asset, bound #230 (masterbrand-light-colour on light chrome, masterbrand-dark-colour on dark).",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "brand-mark"
+         ]
+        },
+        "multiple": false
+       }
+      },
+      "content": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "the page. Rendered here as neutral placeholder furniture, deliberately not as content — see $finding-skeleton-divergence.",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "anything"
+         ]
+        },
+        "multiple": false
+       }
+      },
+      "endMatter": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "Footer in its slim form; the doormat form fits the same slot",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "footer"
+         ]
+        },
+        "multiple": false
+       }
+      },
+      "primaryNav": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "the top-level destinations, one marked aria-current=\"page\"",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "navigation"
+         ]
+        },
+        "multiple": false
+       }
+      },
+      "trail": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "the ancestor path above the page title",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "breadcrumbs"
+         ]
+        },
+        "multiple": false
+       }
+      },
+      "utilityActions": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "search, profile, notifications — 44x44 icon buttons in the masthead's trailing group",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "icon-button"
+         ]
+        },
+        "multiple": false
+       }
+      }
+     },
+     "required": [
+      "component",
+      "brand",
+      "content",
+      "primaryNav"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "app-shell-top-nav",
+    "meta": "knowledge/components/app-shell-top-nav.meta.json",
+    "metaSha256": "6049c26e3ceae5b97f56e58a53d6a20e7ab2b0d5482b52993534025eaf4e6f1d",
+    "level": "shell",
+    "status": "beta",
+    "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
+    "proposal": true,
+    "provides": "page-frame",
+    "answers": "what-holds-the-page",
+    "shape": "no-data × page-regions",
+    "span": {
+     "cols": {
+      "min": 12,
+      "max": 12
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "destinations <= 7 AND nav.levels <= 2",
+     "prose": "the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+     "fields": [
+      "destinations",
+      "nav.levels"
+     ]
+    },
+    "variants": [
+     {
+      "name": "inline",
+      "use": "a product with five or fewer primary destinations and a brand short enough to share the row"
+     },
+     {
+      "name": "stacked",
+      "use": "a product whose primary nav does not fit beside the brand, or one that needs a section tier under it"
+     }
+    ],
+    "settings": [
+     "form",
+     "sectionTier"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": {
+     "brand": {
+      "accepts": {
+       "capability": [
+        "brand-mark"
+       ]
+      },
+      "required": true,
+      "multiple": false
+     },
+     "content": {
+      "accepts": {
+       "capability": [
+        "anything"
+       ]
+      },
+      "required": true,
+      "multiple": false
+     },
+     "endMatter": {
+      "accepts": {
+       "capability": [
+        "footer"
+       ]
+      },
+      "required": false,
+      "multiple": false
+     },
+     "primaryNav": {
+      "accepts": {
+       "capability": [
+        "navigation"
+       ]
+      },
+      "required": true,
+      "multiple": false
+     },
+     "trail": {
+      "accepts": {
+       "capability": [
+        "breadcrumbs"
+       ]
+      },
+      "required": false,
+      "multiple": false
+     },
+     "utilityActions": {
+      "accepts": {
+       "capability": [
+        "icon-button"
+       ]
+      },
+      "required": false,
+      "multiple": false
+     }
+    },
+    "states": {
+     "model": "simple"
+    },
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1",
+      "1.4.3",
+      "2.1.1",
+      "2.1.2",
+      "2.4.1",
+      "2.4.3",
+      "2.4.4",
+      "2.4.7",
+      "2.4.8",
+      "2.5.8",
+      "4.1.2"
+     ]
+    },
+    "snippet": "snippet:App-shell-top-nav.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s230-D2",
+      "ruling:s272-D70",
+      "ruling:s272-D72"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:nam-002"
+     ],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  },
+  "Breadcrumbs": {
+   "type": "object",
+   "description": "Secondary navigation showing the user's location within the site hierarchy and letting them step back to ancestor pages. A row of breadcrumb levels (links) separated by a divider, ending in the current page (a non-link). When: shape = ancestor-path × links AND depth >= 2",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Breadcrumbs"
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "default",
+        "hover-pressed",
+        "no-link"
+       ],
+       "default": "default",
+       "description": "Per .Breadcrumb level. 'no-link' = the current/last item (non-clickable). Hover and Pressed share a single combined state."
+      },
+      "trail": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "The ancestor path, root first; the last entry is the current page (reference snippet: 'Home / Accounts / Current account / Statements'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length",
+       "x-apollo": {
+        "ownText": true,
+        "items": "each entry {label, href}; the current page has no href"
+       }
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "hover-pressed",
+        "no-link"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "trail"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "breadcrumbs",
+    "meta": "knowledge/components/breadcrumbs.meta.json",
+    "metaSha256": "eb14d59869cbd04371db680b131a3c53fdfb21deeb221d163219284bb9aeec62",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "wayfinding",
+    "answers": "where-am-i",
+    "shape": "ancestor-path × links",
+    "span": {
+     "cols": {
+      "min": 6,
+      "max": 12
+     }
+    },
+    "priority": 40,
+    "when": {
+     "gate": "shape = ancestor-path × links AND depth >= 2",
+     "prose": "beats anchor-nav (roles.json when: \"in-page, long document\") when the trail is ancestry rather than in-page position; yields to navigations (when: \"global — masthead / main-nav family\") for global movement and to tabs (when: \"local — peer views in one context\") for peer views — it answers where-am-i, they answer where-can-i-go, so it complements rather than replaces them.",
+     "fields": [
+      "depth",
+      "shape"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "A clickable ancestor level (Small Print Link, font-6 regular)."
+     },
+     {
+      "name": "hover-pressed",
+      "use": "Interactive feedback for a level on hover/press. Shares text colour with default — differentiated by link styling (e.g. underline), not colour."
+     },
+     {
+      "name": "no-link",
+      "use": "The current page — the final crumb, rendered as plain Small Print (non-link)."
+     }
+    ],
+    "settings": [
+     "state",
+     "trail"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "trail"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "2.4.7 Focus Visible",
+      "2.4.8 Location",
+      "1.4.1 Use of Color",
+      "4.1.2 Name, Role, Value"
+     ]
+    },
+    "snippet": "snippet:Breadcrumbs.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s272-D68",
+      "ruling:s272-D72",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  },
+  "Button": {
+   "type": "object",
+   "description": "A control that triggers an action. Four emphasis levels form a hierarchy — primary (highest emphasis, the main action), secondary, tertiary (outlined), and quaternary (lowest emphasis / borderless). Available on-light and on-dark, in a default and a Large size. When: emphasis in (primary, secondary, tertiary, quaternary) AND label = text AND actions <= 1",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Button"
+      },
+      "type": {
+       "type": "string",
+       "enum": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "quaternary"
+       ],
+       "default": "primary"
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled",
+        "processing",
+        "success"
+       ],
+       "default": "default",
+       "description": "processing + success seen on primary (rag/success); confirm which states apply to each type."
+      },
+      "size": {
+       "type": "string",
+       "enum": [
+        "default",
+        "large"
+       ],
+       "default": "default",
+       "description": "default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height."
+      },
+      "surface": {
+       "type": "string",
+       "enum": [
+        "on-light",
+        "on-dark"
+       ],
+       "default": "on-light"
+      },
+      "label": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "The button's words (reference snippet: 'Example'; the action bar's 'Confirm payment'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader ",
+       "x-apollo": {
+        "ownText": true
+       }
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "quaternary"
+       ],
+       "default": "primary",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "label"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "button",
+    "meta": "knowledge/components/button.meta.json",
+    "metaSha256": "f7684bbf77e9b9801457625c154c95ab2f04bd01509af55de8a7ab1b7d3e7689",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "action",
+    "answers": "what-can-i-do",
+    "shape": "no-data × control",
+    "span": {
+     "cols": {
+      "min": 1,
+      "max": 4
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "emphasis in (primary, secondary, tertiary, quaternary) AND label = text AND actions <= 1",
+     "prose": "the default of the role; yields to icon-button (roles.json when: \"space is tight and the glyph is universal\") when label = glyph, to split-button (when: \"one main action plus a menu of related ones\") when a menu hangs off the action, and to links (when: \"the action is navigation inside running text\") when the action is navigation in prose.",
+     "fields": [
+      "actions",
+      "emphasis",
+      "label"
+     ]
+    },
+    "variants": [
+     {
+      "name": "primary",
+      "use": "Highest-emphasis main action. Solid brand-red fill."
+     },
+     {
+      "name": "secondary",
+      "use": "Alternative action. Solid black/near-black fill."
+     },
+     {
+      "name": "tertiary",
+      "use": "Lower-emphasis action. Outlined (border) on a white fill."
+     },
+     {
+      "name": "quaternary",
+      "use": "Lowest-emphasis / borderless (ghost) action; shares tertiary background tints on hover/press."
+     }
+    ],
+    "settings": [
+     "type",
+     "state",
+     "size",
+     "surface",
+     "label"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "label"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": "button (or link styled as button when it navigates)",
+     "sc": [
+      "2.1.1 Keyboard",
+      "2.4.7 Focus Visible",
+      "1.4.3 Contrast (Minimum)",
+      "1.4.11 Non-text Contrast",
+      "2.5.8 Target Size (Minimum)",
+      "4.1.2 Name, Role, Value"
+     ]
+    },
+    "snippet": "snippet:Button.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:ds-026",
+      "ruling:ds-032",
+      "ruling:s272-D1",
+      "ruling:s272-D2",
+      "ruling:s276-D3",
+      "ruling:s276-D4",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [
+      "rule:ctkb-002",
+      "rule:ctkb-003",
+      "rule:ctkb-004",
+      "rule:ctkb-005",
+      "rule:ctkb-006",
+      "rule:ctkb-007",
+      "rule:ctkb-008",
+      "rule:ctkb-009",
+      "rule:ctkb-010",
+      "rule:ctkb-011",
+      "rule:ctkb-012",
+      "rule:ctkb-013",
+      "rule:ctkb-014",
+      "rule:ctkb-015",
+      "ux:pr-fitts",
+      "ux:pr-hick",
+      "ux:pr-speed-accuracy"
+     ],
+     "obeysDerived": [],
+     "obeysRoutedCount": 41
+    },
+    "aliases": []
+   }
+  },
+  "ChartBar": {
+   "type": "object",
+   "description": "Categorical comparison as vertical columns or horizontal bars, single- or multi-series (grouped + stacked), with the full Layer-2 interaction layer restored to match the Chart-line exemplar (chart-revisit wave, 2026-07-24). Semantic SVG in the DOM, styled by tokens, animated by CSS, behaviour by the ONE generated dv-behaviour partial (ADR-0015), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 rounds, not signed off); kit geometry OBSERVED, Layer-2 + rulings receipted. When: answers = comparison AND axis.x = categorical",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "ChartBar"
+      },
+      "orientation": {
+       "type": "string",
+       "enum": [
+        "column",
+        "bar",
+        "grouped-column",
+        "stacked-column"
+       ],
+       "default": "column",
+       "description": "column = vertical single-series; bar = horizontal single-series (positives only, dv-bar-007); grouped-column + stacked-column = multi-series (D-Q3 promote)."
+      },
+      "series": {
+       "type": "string",
+       "enum": [
+        "categorical",
+        "status",
+        "multi"
+       ],
+       "default": "categorical",
+       "description": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter.",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "data-series"
+        ],
+        "shape": "categories × series"
+       }
+      },
+      "sort": {
+       "type": "string",
+       "enum": [
+        "orig",
+        "asc",
+        "desc"
+       ],
+       "default": "orig",
+       "description": "Menu 3/4 sort: BAKED VARIANT GROUPS (data-dv-view — geometry is generation-time), switched by a seg control that CONSUMES the Segmented-control atom; the table mirrors the active order via baked <tbody data-dv-view> variants."
+      },
+      "data": {
+       "oneOf": [
+        {
+         "type": "object"
+        },
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>.",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "chart-dataset",
+         "table-rows"
+        ],
+        "shape": "categories × series"
+       }
+      },
+      "empty": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "No-data state consumes the Empty-state pattern by reference."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "column categorical (sortable)",
+        "bar categorical",
+        "column status",
+        "grouped column",
+        "stacked column",
+        "no data"
+       ],
+       "default": "column categorical (sortable)",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "data"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "chart-bar",
+    "meta": "knowledge/components/chart-bar.meta.json",
+    "metaSha256": "e181d9ccacc138594331110323cddce322459f619fd579f5bd0eaf6e7d02d1f9",
+    "level": "pattern",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "chart",
+    "answers": "comparison",
+    "shape": "categories × series",
+    "span": {
+     "cols": {
+      "min": 4,
+      "max": 12
+     }
+    },
+    "priority": 92,
+    "when": {
+     "gate": "answers = comparison AND axis.x = categorical",
+     "prose": "beats chart-line (roles.json when: \"change-over-time\") when the x-dimension is categorical rather than a time continuum, and beats chart-pie (when: \"composition, no centre figure, ≤ 5 parts\") when the parts do not sum to a whole; the stacked variant takes composition across categories, where it yields to chart-stacked-area (when: \"composition over time\") if the axis is time.",
+     "fields": [
+      "answers",
+      "axis.x"
+     ]
+    },
+    "variants": [
+     {
+      "name": "column categorical (sortable)",
+      "use": "Compare categories; single series, ONE colour (dv-014); original/ascending/descending sort views."
+     },
+     {
+      "name": "bar categorical",
+      "use": "Long category names / many categories; DV-D09 default fill = data/series/3 (orientation-distinct from the column's series/1)."
+     },
+     {
+      "name": "column status",
+      "use": "Counts by state (R-D9 ramp, direct-labelled — colour never alone, R-D6 A′)."
+     },
+     {
+      "name": "grouped column",
+      "use": "Multi-series comparison side-by-side (D-Q3); legend-as-filter + isolate + highlight; shaped+lettered swatches mirror on-chart keys."
+     },
+     {
+      "name": "stacked column",
+      "use": "Part-to-whole per category (D-Q3); in-segment letter keys; legend-as-filter."
+     },
+     {
+      "name": "no data",
+      "use": "Empty-state pattern in the chart frame."
+     }
+    ],
+    "settings": [
+     "orientation",
+     "series",
+     "sort",
+     "data",
+     "empty"
+    ],
+    "dataSettings": [
+     "series",
+     "data"
+    ],
+    "ownWords": [],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\"/\"img\" with a full-sentence data aria-label.",
+     "sc": [
+      "1.4.1 Use of Color",
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover",
+      "2.1.1 Keyboard",
+      "4.1.2 Name, Role, Value"
+     ]
+    },
+    "snippet": "snippet:Chart-bar.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s116-D2",
+      "ruling:s184-D3",
+      "ruling:s218-D5",
+      "ruling:s245-D7",
+      "ruling:s248-D2",
+      "ruling:s249-D4",
+      "ruling:s276-D5",
+      "ruling:s277-D1",
+      "ruling:s277-D3",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [
+      "rule:dv-001",
+      "rule:dv-002",
+      "rule:dv-003",
+      "rule:dv-004",
+      "rule:dv-005",
+      "rule:dv-006",
+      "rule:dv-007",
+      "rule:dv-008",
+      "rule:dv-009",
+      "rule:dv-010",
+      "rule:dv-011",
+      "rule:dv-012",
+      "rule:dv-014",
+      "rule:dv-016",
+      "rule:dv-017",
+      "rule:dv-018",
+      "rule:dv-019",
+      "rule:dv-bar-001",
+      "rule:dv-bar-002",
+      "rule:dv-bar-003",
+      "rule:dv-bar-004",
+      "rule:dv-bar-005",
+      "rule:dv-bar-006",
+      "rule:dv-bar-007",
+      "rule:dv-bar-008",
+      "rule:dv-bar-009",
+      "rule:dv-bar-010"
+     ],
+     "obeysDerived": [],
+     "obeysRoutedCount": 41
+    },
+    "aliases": []
+   }
+  },
+  "ChartLine": {
+   "type": "object",
+   "description": "Trend over time as straight-segment polylines, single- or multi-series — the round-one dataviz kit's line family graduated into canon, LAYER-2 RESTORED (chart-revisit exemplar 2026-07-23: Dave ruled the proforma's interaction layer IS the bar). Semantic SVG styled by tokens, decorative motion by CSS, behaviour by the ADR-0015 generated JS partial (dv-behaviour), described by a real table. PROVISIONAL-AGENT: promoted from the PARKED kit (9 review rounds, not signed off); geometry, easing and marker cadence are OBSERVED kit values. When: answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 AND units = same AND shape = time-series × 1–5-series",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "ChartLine"
+      },
+      "series": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+       "description": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011).",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "data-series"
+        ],
+        "shape": "time-series × 1–5-series"
+       }
+      },
+      "data": {
+       "oneOf": [
+        {
+         "type": "object"
+        },
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source).",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "chart-dataset",
+         "table-rows"
+        ],
+        "shape": "time-series × 1–5-series"
+       }
+      },
+      "markers": {
+       "type": "string",
+       "enum": [
+        "background",
+        "white"
+       ],
+       "default": "background",
+       "description": "Promoted default = BACKGROUND mode (series-colour fill + page stroke at line width 2.5 — theme-adaptive, no absolute white on dark). The kit's White/Background comparison toggle is UNRESOLVED — receipted for Dave; flipping is a CSS pair swap."
+      },
+      "empty": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "No-data state = the Empty-state pattern by reference."
+      },
+      "title": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "OPTIONAL visible title slot (.dv-title, dv-006: reflects the main insight) — a type composite heading (t-cm-section-label); when absent the sr-only figcaption still names the chart."
+      },
+      "tablePopover": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Table-view POPOVER panel (Dave's mock 2026-07-23): floating card on surface ground + elevation border/shadow recipe, 'View as table' ⇄ 'Hide table' toggle top-right; aria-controls/expanded, labelled region, Esc-dismiss, focus-managed. Supersedes the native <details>."
+      },
+      "legendFilter": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Multi-series legend rows are FILTER buttons (data-series-toggle, aria-pressed; off = dim + line-through — never colour alone). QUIET utility state, deliberately NOT B-D7 press physics (chart-revisit Q5, standing)."
+      },
+      "highContrast": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "data-contrast=\"high\" remaps series onto data/series-high-contrast/* (token rebind only, kit pattern)."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "single series",
+        "multi-series",
+        "no data"
+       ],
+       "default": "single series",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "series",
+      "data"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "chart-line",
+    "meta": "knowledge/components/chart-line.meta.json",
+    "metaSha256": "44aa63845a4aa97b63d31e19cd976b5a4b07a62b31920f8853b1170f1f36dc2f",
+    "level": "pattern",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "chart",
+    "answers": "change-over-time",
+    "shape": "time-series × 1–5-series",
+    "span": {
+     "cols": {
+      "min": 6,
+      "max": 12
+     }
+    },
+    "priority": 88,
+    "when": {
+     "gate": "answers=change-over-time AND series 1–5 on ONE continuous time axis AND axes=present AND span.cols ≥ 6 AND units = same AND shape = time-series × 1–5-series",
+     "prose": "the role's default at this intent, and it beats every sibling whose own `when` adds a further condition; yields to chart-combo (56, \"two measures in different units over one axis\") when units differ, to Chart-candlestick (44, \"OHLC per period\") when all four price points per period are the claim, and to chart-sparkline (30, \"inline scale, no axes\") when span.cols < 6.",
+     "fields": [
+      "answers",
+      "axes",
+      "series",
+      "shape",
+      "span.cols",
+      "units"
+     ]
+    },
+    "variants": [
+     {
+      "name": "single series",
+      "use": "One measure over time; markers on every point, month labels along x."
+     },
+     {
+      "name": "multi-series",
+      "use": "2–5 measures; shapes + letters + legend names carry identity alongside colour."
+     },
+     {
+      "name": "no data",
+      "use": "Empty-state pattern in the chart frame."
+     }
+    ],
+    "settings": [
+     "series",
+     "data",
+     "markers",
+     "empty",
+     "title",
+     "tablePopover",
+     "legendFilter",
+     "highContrast"
+    ],
+    "dataSettings": [
+     "series",
+     "data"
+    ],
+    "ownWords": [],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": "figure role=\"group\" + aria-labelledby → sr-only figcaption; svg role=\"group\" + aria-label (interactive children — role img would hide the marker focus stops); table panel role=\"region\".",
+     "sc": [
+      "1.4.1 Use of Color",
+      "1.4.11 Non-text Contrast",
+      "1.3.1 Info and Relationships",
+      "1.4.13 Content on Hover"
+     ]
+    },
+    "snippet": "snippet:Chart-line.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s116-D2",
+      "ruling:s249-D4",
+      "ruling:s276-D5",
+      "ruling:s277-D1",
+      "ruling:s277-D3",
+      "ruling:s305-D21"
+     ],
+     "obeysAuthored": [
+      "rule:dv-001",
+      "rule:dv-002",
+      "rule:dv-003",
+      "rule:dv-005",
+      "rule:dv-006",
+      "rule:dv-007",
+      "rule:dv-008",
+      "rule:dv-009",
+      "rule:dv-010",
+      "rule:dv-011",
+      "rule:dv-012",
+      "rule:dv-014",
+      "rule:dv-016",
+      "rule:dv-017",
+      "rule:dv-018",
+      "rule:dv-line-001",
+      "rule:dv-line-002",
+      "rule:dv-line-003",
+      "rule:dv-line-004",
+      "rule:dv-line-005",
+      "rule:dv-line-006",
+      "rule:dv-line-007",
+      "rule:dv-line-008",
+      "rule:dv-line-011"
+     ],
+     "obeysDerived": [],
+     "obeysRoutedCount": 42
+    },
+    "aliases": []
+   }
+  },
+  "DataGrid": {
+   "type": "object",
+   "description": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid. When: records >= 2 AND needs in (sort, filter, select, edit)",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "DataGrid"
+      },
+      "columns": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite).",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "column-definitions"
+        ]
+       }
+      },
+      "selection": {
+       "type": "string",
+       "enum": [
+        "none",
+        "multi"
+       ],
+       "default": "multi",
+       "description": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial."
+      },
+      "terms": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns."
+      },
+      "pageSize": {
+       "type": "string",
+       "enum": [
+        "8",
+        "12",
+        "24"
+       ],
+       "default": "8",
+       "description": "Footer: range read-out · rows-per-page select · pagination (Pagination recipe: 44px targets, aria-current border)."
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "live",
+        "loading",
+        "empty"
+       ],
+       "default": "live",
+       "description": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action."
+      },
+      "density": {
+       "type": "string",
+       "enum": [
+        "comfortable",
+        "compact"
+       ],
+       "default": "comfortable",
+       "description": "#261: a real prop on .dg (data-density), not a demo dial. Compact drops --cell-py 10->4, the header row 44->32 and every control target 44->32 — above the 24px dial-down floor, never below (s116-D1). The switch mirrors Segmented-control (its group, not button-family: no press physics)."
+      },
+      "groupHeader": {
+       "type": "string",
+       "enum": [
+        "on",
+        "off"
+       ],
+       "default": "on",
+       "description": "#261: an OPTIONAL spanning row above the column row (th scope=colgroup), sticky at top:0 with the column row sticking below it at top:var(--grp-h). It counts as a header row: aria-rowcount and every aria-rowindex shift by one when it is on."
+      },
+      "columnFilters": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "#261: per-column filter menu behind a 24px header button. Committing writes a {key, term} filter, which renders as a chip that names its column ('Payee: acme'); the toolbar filter is the same shape with key null. Amount ships WITHOUT one — the affordance is optional per column, and a contains-filter"
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "compact",
+        "no-group-row",
+        "header-filters-off"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      },
+      "filters": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+       "description": "The filter controls mounted above the grid.",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "tier": [
+          "atom",
+          "molecule"
+         ],
+         "capability": [
+          "filter-control"
+         ]
+        },
+        "multiple": true
+       }
+      }
+     },
+     "required": [
+      "component",
+      "columns"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "data-grid",
+    "meta": "knowledge/components/data-grid.meta.json",
+    "metaSha256": "2e6531053c8be3ad89ac25846c26cb9c21541edd9c766ce34b7dede710d74f45",
+    "level": "pattern",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "record-list",
+    "answers": null,
+    "shape": null,
+    "span": null,
+    "priority": null,
+    "when": {
+     "gate": "records >= 2 AND needs in (sort, filter, select, edit)",
+     "prose": "the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) whenever sorting, filtering, selecting or editing is required, and yields to list-items when needs = none.",
+     "fields": [
+      "needs",
+      "records"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "group row on, comfortable density, a filter on every text column — the transactions board header"
+     },
+     {
+      "name": "compact",
+      "use": "data-density=compact: 32px header row, 32px targets, 4px cell padding; for a dense back-office console where the operator wants rows, not air"
+     },
+     {
+      "name": "no-group-row",
+      "use": "data-groups=off: the column row alone, sticky at top:0; aria-rowcount and every rowindex drop by one"
+     },
+     {
+      "name": "header-filters-off",
+      "use": "omit the .colf button per column (Amount ships this way): sort and resize stay, the toolbar filter still covers the text columns"
+     }
+    ],
+    "settings": [
+     "columns",
+     "selection",
+     "terms",
+     "pageSize",
+     "state",
+     "density",
+     "groupHeader",
+     "columnFilters"
+    ],
+    "dataSettings": [
+     "columns"
+    ],
+    "ownWords": [],
+    "slots": {
+     "filters": {
+      "accepts": {
+       "tier": [
+        "atom",
+        "molecule"
+       ],
+       "capability": [
+        "filter-control"
+       ]
+      },
+      "required": false,
+      "multiple": true
+     }
+    },
+    "states": {
+     "states": [
+      "rest",
+      "hover",
+      "focus-visible",
+      "sorted",
+      "filtered-active",
+      "menu-open",
+      "resizing",
+      "disabled",
+      "truncated"
+     ],
+     "sentences": {
+      "sorted": "aria-sort ascending|descending + the direction glyph + a ground shift to tertiary/background/hover + a 2px form/border/active UNDERLINE. Four channels; colour is never alone. #261 G2: the rule was 3px and Dave read it as a heavy black line — it is now 2px, and it is the ONLY edge the sorted state paints.",
+      "filtered-active": "data-filtered=true + the SOLID library glyph (filter-active.svg, a different glyph, not a recolour) + a held form/background/hover ground on the filter button + a chip in the bar that names the column. #261 G2: the 3px LEADING rule is REMOVED — sitting on a cell's start edge it read as the RIGHT-hand black line of the column before it (Dave, on the review specimen where Date was sorted and Payee filtered). Sorted and filtered still coexist on one column: they no longer share an edge because filtered no longer HAS one.",
+      "menu-open": "aria-expanded=true on the filter button, the menu shown under its own cell, the field focused and pre-filled with the term in force; Esc closes and returns focus to the header cell.",
+      "resizing": "data-resizing on the grid (col-resize cursor, hover suppressed) + data-active on the separator (full-height 2px form/border/default grip); aria-valuenow tracks the live width and the commit is announced. #261 G2: at REST the separator paints nothing — a 1px hairline appears on hover or focus-visible of the handle only.",
+      "disabled": "aria-disabled + a disabled button + an alpha mute and NO sort glyph. text/disabled is #E1E1E1 and illegible on the header ground, so the mute is alpha, not that token.",
+      "truncated": "the label ellipsises and takes a title ONLY when scrollWidth actually exceeds clientWidth — re-measured after every resize and density change, so no phantom tooltips."
+     }
+    },
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1 Info and Relationships",
+      "1.4.1 Use of Color",
+      "2.1.1 Keyboard",
+      "4.1.2 Name Role Value",
+      "1.4.11 Non-text Contrast"
+     ]
+    },
+    "snippet": "snippet:Data-grid.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s258-D4",
+      "ruling:s261-D5",
+      "ruling:s263-D2",
+      "ruling:s263-D3",
+      "ruling:s305-D16",
+      "ruling:s305-D23",
+      "ruling:s305-D58"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:axs-004",
+      "rule:icon-011"
+     ],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  },
+  "FilterToolbarBar": {
+   "type": "object",
+   "description": "The control bar that sits above a table, list, grid or chart and DRIVES it: a search field, an add-filter menu, a date-range trigger, a view switch, a results count, a removable applied-filter chip row with a +N overflow, a clear-all, and right-aligned actions (export, density). Composed ENTIRELY from existing gated atoms (Search-field, Dropdown, Segmented-control, Tags, Links) — no new visual vocabulary, only arrangement, state and wiring. Itinerary row 120 (Layer 2). #261 design pass, Dave's nomination: it is the thing that drives a dashboard, so it now carries a documented event/attribute contract instead of being a decorative row of controls. When: records >= 2 AND needs in (filter, sort)",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "FilterToolbarBar"
+      },
+      "density": {
+       "type": "string",
+       "enum": [
+        "full",
+        "compact"
+       ],
+       "default": "full",
+       "description": "A DIAL, not an assembly (changed at #261): `data-density` on the bar root moves the search/trigger height 48px→40px and the bar padding 12px→8px, both on the 4px grid, both clear of the 24px dial-down floor. The bar also HANDS the same value to its consumer as `data-apollo-density`, which is the poi"
+      },
+      "arrangement": {
+       "type": "string",
+       "enum": [
+        "dashboard",
+        "dense"
+       ],
+       "default": "dashboard",
+       "description": "Structural variance (a different assembly — the VARIANTS axis, the reading Tags' own `type` prop carries, s142-D1 class C6). dashboard = the full two-row bar. dense = underline search + one small segmented control, sitting directly above a table/list, no context row."
+      },
+      "filterCount": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+       "description": "0-N applied filters. Each is one dismissible Tags chip; the organism draws no new chip."
+      },
+      "chipOverflow": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+       "description": "How many chips stay visible before the rest collapse behind a `+N more` disclosure. The disclosure is a BUTTON carrying `.tag`, so it takes the chip paint and the chip's own hit floor rather than inventing a control."
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "no-filters",
+        "filtered",
+        "loading",
+        "empty",
+        "error"
+       ],
+       "default": "no-filters",
+       "description": "One attribute, `data-ftb-state`, on the bar root. Every state-scoped node declares the states it belongs to in `data-when`; nodes without `data-when` are always present. The bar does NOT set this from its own optimism — it reads it back off the consumer's `data-apollo-result-state` (see edges.drives"
+      },
+      "sticky": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "`position:sticky` under the page header, offset by `--ftb-top` (0 by default). The stuck shadow is EARNED, not permanent: an IntersectionObserver on a sentinel above the bar flips `data-stuck`."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "dashboard",
+        "dense"
+       ],
+       "default": "dashboard",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "filter-toolbar-bar",
+    "meta": "knowledge/components/filter-toolbar-bar.meta.json",
+    "metaSha256": "90f13ab96877c8ae8d73c929a9302aba64e479e50686b3dc55f5c538812abc2c",
+    "level": "block",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": null,
+    "answers": null,
+    "shape": null,
+    "span": null,
+    "priority": null,
+    "when": {
+     "gate": "records >= 2 AND needs in (filter, sort)",
+     "prose": "one row of controls that drives the record-list and the panels beside it (edges.drivesConsumer, s268-D5; the wiring is the author's, s258-D1); it is placed only above the thing it drives, never on its own.",
+     "fields": [
+      "needs",
+      "records"
+     ]
+    },
+    "variants": [
+     {
+      "name": "dashboard",
+      "use": "Two rows — controls (search · add filter · date range · view · density · export) and context (results count · applied-filter chips · clear all). The two rows collapse to ONE at a container width of 1180px and above."
+     },
+     {
+      "name": "dense",
+      "use": "A compact bar directly above a Table/List-items region — underline search + a small segmented control (sort/view), no context row."
+     }
+    ],
+    "settings": [
+     "density",
+     "arrangement",
+     "filterCount",
+     "chipOverflow",
+     "state",
+     "sticky"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": null,
+    "states": {
+     "states": [
+      "no-filters",
+      "filtered",
+      "loading",
+      "empty",
+      "error"
+     ],
+     "attribute": "data-ftb-state",
+     "sentences": {
+      "no-filters": "the total count and a `No filters applied` hint; no chip row, no clear-all.",
+      "filtered": "`N of M`, the chip row (with `+N more` past the overflow threshold), and clear-all.",
+      "loading": "a skeleton where the count sits — the count's POSITION is held so the row does not jump — plus the word `Updating results`, announced through `role=status`/`aria-live=polite`/`aria-busy`. Chips dim but stay interactive; the controls are never disabled, because a filter you cannot change while it is running is a trap.",
+      "empty": "`0 of M`, the chips that produced the zero (so the user can see what to remove), and a message block with a bell glyph, a title, a sentence and a `Clear all filters` action.",
+      "error": "an em-dash where the count would be — never a stale number presented as fresh — and a message block in rag/error-ink carrying an error triangle AND a text title AND a sentence saying nothing was changed, plus `Try again`. Colour is the third channel, never the only one (1.4.1)."
+     }
+    },
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.4.1 Use of Color",
+      "1.4.10 Reflow",
+      "2.4.3 Focus Order",
+      "2.5.8 Target Size (Minimum)",
+      "4.1.2 Name, Role, Value",
+      "4.1.3 Status Messages"
+     ]
+    },
+    "snippet": "snippet:Filter-toolbar-bar.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s246-D2",
+      "ruling:s261-D6",
+      "ruling:s263-D4",
+      "ruling:s263-D5",
+      "ruling:s268-D5",
+      "ruling:s272-D67",
+      "ruling:s272-D76",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 44
+    },
+    "aliases": []
+   }
+  },
+  "Footer": {
+   "type": "object",
+   "description": "The APP FOOTER: the contentinfo landmark at the bottom of an authenticated application's content column, carrying what an operator needs at the one moment they look down — WHAT AM I LOOKING AT, IS IT REAL, AND HOW OLD IS IT? Product and build identity, the environment badge, data freshness, system status, locale and time zone on the operator's side; privacy, terms, accessibility and support on the regulator's side. One row, inside the content column, never sticky by default. When: platform = app",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Footer"
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "sticky",
+        "minimal"
+       ],
+       "default": "default",
+       "description": "default = the full one-row app footer, in document flow at the end of the content column. sticky = the same row pinned to the bottom edge, for a dashboard whose grid genuinely never ends. minimal = version + legal only."
+      },
+      "environment": {
+       "type": "string",
+       "enum": [
+        "prod",
+        "uat",
+        "staging",
+        "dev"
+       ],
+       "default": "prod",
+       "description": "Set as data-env on the footer element; the paint is CSS, so a shell that switches environment cannot forget to restyle anything. prod is a QUIET outlined chip (border/strong + text/default) because production is the normal case and a permanent alarm is no alarm. Every other value takes rag/warning-b"
+      },
+      "systemStatus": {
+       "type": "string",
+       "enum": [
+        "ok",
+        "degraded"
+       ],
+       "default": "ok",
+       "description": "Set as data-system. Dot + label, never colour alone (1.4.1); wrapped in role=\"status\" so a degradation announced while the operator is elsewhere on the page is still heard. Only two values by intent: a footer that needs a third has outgrown a footer."
+      },
+      "dataFreshness": {
+       "oneOf": [
+        {
+         "type": "object"
+        },
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "data-updated (ISO timestamp) plus an optional data-now. Renders an absolute <time> ALWAYS and a relative age as progressive enhancement, with the relative string already present in the markup as the JS-off fallback (s245-D5). data-now is fixed rather than Date.now() so a driven screenshot is byte-de"
+      },
+      "locale": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "Language and time zone as one string ('en-GB · Europe/London (GMT+1)'). It belongs beside the freshness because a timestamp without a zone is not a timestamp — that is the whole reason this pair sits together."
+      },
+      "legalLinks": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "The regulator's row. The list is regulatory, it varies by market, and it is not this file's to fix — see $decisionsForDave 5."
+      },
+      "copyright": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "ADDED #261 Ft3 on Dave's word: 'Be more generous with the spacing and add the copyright notice.' The string is the repo's EXISTING one, unaltered — it already appears verbatim in 17 other snippets — and it is NOT re-typed per surface. It sits at the far right, the last item in the regulator's cluste"
+      },
+      "apolloVariant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "sticky",
+        "minimal",
+        "doormat"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "footer",
+    "meta": "knowledge/components/footer.meta.json",
+    "metaSha256": "402ec61aac7eef8628648714b1f5607d290b355c697d3964bd05ca13322d46c0",
+    "level": "pattern",
+    "status": "beta",
+    "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
+    "proposal": true,
+    "provides": null,
+    "answers": null,
+    "shape": null,
+    "span": null,
+    "priority": null,
+    "when": {
+     "gate": "platform = app",
+     "prose": "every app page shell ends in the app footer, the body-level sibling after the main region and never inside the bento wall (the meta's own $finding-site-footer, #258: \"the page shells should include the footer\").",
+     "fields": [
+      "platform"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "the end of an authenticated application screen — one row inside the content column, in document flow"
+     },
+     {
+      "name": "sticky",
+      "use": "a dashboard whose grid genuinely never ends, where the operator would otherwise never reach the footer. A VARIANT and never the default: a band that follows the operator down costs a row of data on every screen."
+     },
+     {
+      "name": "minimal",
+      "use": "an embedded, kiosk or single-purpose surface where the operator has no build to report and no data to age — version and legal only"
+     },
+     {
+      "name": "doormat",
+      "use": "the marketing / servicing MEGA-FOOTER: the end matter of a marketing or servicing PAGE, not of an authenticated app screen — a banded mat of four named link columns under a brand statement and a back-to-top link, with its own legal bar. PARKED BY s263-D7: it is not shipped in any app footer, and no app surface may reach for it. The full recipe is in `recipe` below, kept verbatim from the #261 retirement note."
+     }
+    ],
+    "settings": [
+     "variant",
+     "environment",
+     "systemStatus",
+     "dataFreshness",
+     "locale",
+     "legalLinks",
+     "copyright"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": null,
+    "states": {
+     "model": "simple"
+    },
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.10",
+      "1.4.11",
+      "2.4.1",
+      "2.4.4",
+      "2.4.7",
+      "2.5.8",
+      "4.1.3"
+     ]
+    },
+    "snippet": "snippet:Footer.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s261-D3",
+      "ruling:s261-D8",
+      "ruling:s263-D12",
+      "ruling:s263-D7",
+      "ruling:s272-D58",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:aca-004",
+      "rule:nam-002"
+     ],
+     "obeysRoutedCount": 39
+    },
+    "aliases": []
+   }
+  },
+  "Headers": {
+   "type": "object",
+   "description": "App-only header components that title and frame a screen or section. Three types: Header Content (a row with an optional action), Header Section Titles (a small section label, optionally with an index and amount), and Headers Display (a large display header with optional image and a processing state). When: level in (page, screen, section) AND platform = app AND lockup = none",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Headers"
+      },
+      "type": {
+       "type": "string",
+       "enum": [
+        "content",
+        "section-titles",
+        "display"
+       ],
+       "default": "content"
+      },
+      "action": {
+       "type": "string",
+       "enum": [
+        "button",
+        "close",
+        "none"
+       ],
+       "default": "none",
+       "description": "Header Content only."
+      },
+      "index": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Header Section Titles — show a leading index."
+      },
+      "amount": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Header Section Titles — show an amount/count."
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "default",
+        "processing"
+       ],
+       "default": "default",
+       "description": "Headers Display."
+      },
+      "image": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Headers Display — with/without an image."
+      },
+      "title": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "The header's title (reference snippet: 'Statements', 'Good morning, Jordan'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). A",
+       "x-apollo": {
+        "ownText": true
+       }
+      },
+      "subtitle": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "The optional line under the title (reference snippet: 'Here's a summary of your accounts.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen r",
+       "x-apollo": {
+        "ownText": true
+       }
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "content",
+        "section-titles",
+        "display"
+       ],
+       "default": "content",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "title",
+      "subtitle"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "headers",
+    "meta": "knowledge/components/headers.meta.json",
+    "metaSha256": "4b644886718f4890ab8514765b06e0f78b25684e59ca3ef62796dd1c25abae7c",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "page-title",
+    "answers": "what-is-this",
+    "shape": "no-data × title-and-optional-action",
+    "span": {
+     "cols": {
+      "min": 6,
+      "max": 12
+     }
+    },
+    "priority": 50,
+    "when": {
+     "gate": "level in (page, screen, section) AND platform = app AND lockup = none",
+     "prose": "yields to page-header-lockup (roles.json when: \"page level, with actions or tabs\") whenever actions or tabs ride the band; beats section-heading-lockup (when: \"section level, above one board / table / panel\") because the Header Section Titles type covers the section level app-side, and beats eyebrow (when: \"a kicker alone is enough (rare; normally a part of the above)\") whenever a title, not a kicker, is wanted.",
+     "fields": [
+      "level",
+      "lockup",
+      "platform"
+     ]
+    },
+    "variants": [
+     {
+      "name": "content",
+      "use": "Header row: title (font-4) + an optional trailing action — a Button (font-5 medium) or a Close icon."
+     },
+     {
+      "name": "section-titles",
+      "use": "Compact section label (font-6 medium), optionally with an index and/or amount."
+     },
+     {
+      "name": "display",
+      "use": "Large display header (font-1) with optional image; has a processing state."
+     }
+    ],
+    "settings": [
+     "type",
+     "action",
+     "index",
+     "amount",
+     "state",
+     "image",
+     "title",
+     "subtitle"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "title",
+     "subtitle"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1 Info and Relationships",
+      "2.4.6 Headings and Labels",
+      "4.1.3 Status Messages",
+      "2.5.8 Target Size (Minimum)"
+     ]
+    },
+    "snippet": "snippet:Headers.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s272-D59",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  },
+  "LayoutUtilities": {
+   "type": "object",
+   "description": "Seven content-agnostic layout primitives — container, stack, row, grid, twelve-column, split and measure — that arrange arbitrary blocks in space and then get out of the way. They paint nothing, size no type, and announce nothing. The class prefix is .l-. When: content = arbitrary-blocks AND surface = none",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "LayoutUtilities"
+      },
+      "gap": {
+       "type": "string",
+       "enum": [
+        "xxs",
+        "xs",
+        "s",
+        "m",
+        "l",
+        "xl",
+        "xxl"
+       ],
+       "default": "m",
+       "description": "Applied as data-gap on any of .l-stack / .l-row / .l-grid / .l-cols / .l-split. Steps map to tokens/spacing.json: xxs 2 (gap/fixed/content/xxsmall), xs 4 (xsmall), s 8 (small), m 12 (medium), l 24 (gap/fixed/subsection/xsmall), xl 32 (subsection/small), xxl 48 (subsection/large, which is also gap/fi"
+      },
+      "wrap": {
+       "type": "string",
+       "enum": [
+        "wrap",
+        "no"
+       ],
+       "default": "wrap",
+       "description": ".l-row only. Wrapping is the default and not wrapping is opt-in: a row that refuses to wrap is a decision about what happens when it runs out of room, and a default should never make that decision silently."
+      },
+      "align / justify": {
+       "type": "string",
+       "enum": [
+        "start",
+        "end",
+        "baseline",
+        "between"
+       ],
+       "description": ".l-row only."
+      },
+      "fit": {
+       "type": "string",
+       "enum": [
+        "fill",
+        "fit"
+       ],
+       "default": "fill",
+       "description": ".l-grid only. auto-fill keeps empty tracks; auto-fit collapses them and stretches the survivors. The default is auto-fill because eleven of the thirteen hand-rolled copies use it. ⛔ NOT A RULING — see $measuredGap."
+      },
+      "--l-min": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": ".l-grid's track floor, set by the consumer. Wrapped in min(var(--l-min), 100%) so a wide floor cannot overflow a narrow container — which several of the thirteen hand-rolled copies do not do. The 240px default is Stat-card's and Kpi-tile's value, copied."
+      },
+      "--l-max": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": ".l-container's maximum width. A specimen choice, not ruled; the store holds no page-width token."
+      },
+      "side": {
+       "type": "string",
+       "enum": [
+        "end",
+        "start"
+       ],
+       "default": "end",
+       "description": ".l-split only — which side the 280px rail sits on."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "l-container",
+        "l-stack",
+        "l-row",
+        "l-grid",
+        "l-cols",
+        "l-split",
+        "l-measure"
+       ],
+       "default": "l-container",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "layout-utilities",
+    "meta": "knowledge/components/layout-utilities.meta.json",
+    "metaSha256": "619ec6fd1e2fd23343b7744038b5d237db536c3f0b5bdfd28996f8e807d75f1c",
+    "level": "element",
+    "status": "beta",
+    "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
+    "proposal": true,
+    "provides": "arrangement",
+    "answers": "where-does-it-go",
+    "shape": "no-data × arbitrary-blocks",
+    "span": {
+     "cols": {
+      "min": 1,
+      "max": 12
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "content = arbitrary-blocks AND surface = none",
+     "prose": "the default of the role; beats cards (roles.json when: \"a bordered surface per item\") whenever the arrangement must paint nothing, and beats stats-band-lockup (when: \"3–6 headline-metrics in a labelled row\") whenever the blocks are not headline-metrics; yields to divider (when: \"a rule alone\") when a rule alone is the whole need.",
+     "fields": [
+      "content",
+      "surface"
+     ]
+    },
+    "variants": [
+     {
+      "name": "l-container",
+      "use": "the page's horizontal frame — max-width plus layout/app/margin as the inset"
+     },
+     {
+      "name": "l-stack",
+      "use": "the vertical primitive; one direction, one gap, and children are told not to add to the rhythm"
+     },
+     {
+      "name": "l-row",
+      "use": "the horizontal primitive; wraps by default"
+     },
+     {
+      "name": "l-grid",
+      "use": "the intrinsic responsive grid — the recipe thirteen gated snippets already hand-roll"
+     },
+     {
+      "name": "l-cols",
+      "use": "the explicit twelve-column grid; track count from layout/web/columns, column gap from layout/app/gutter"
+     },
+     {
+      "name": "l-split",
+      "use": "content plus a rail, collapsing on the CONTAINER rather than the viewport"
+     },
+     {
+      "name": "l-measure",
+      "use": "the reading-width primitive; 64ch, a specimen choice and not a ruled measure"
+     }
+    ],
+    "settings": [
+     "gap",
+     "wrap",
+     "align / justify",
+     "fit",
+     "--l-min",
+     "--l-max",
+     "side"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": null,
+    "states": {
+     "model": "simple"
+    },
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.2",
+      "1.4.10",
+      "1.4.12",
+      "2.5.8"
+     ]
+    },
+    "snippet": "snippet:Layout-utilities.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s272-D56",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:nam-002"
+     ],
+     "obeysRoutedCount": 34
+    },
+    "aliases": []
+   }
+  },
+  "Legend": {
+   "type": "object",
+   "description": "The series key as a component a composer can place on its own — swatch, key letter, label, optional value/percent/delta, and the show-hide / isolate toggles — so one legend can serve a row of small multiples instead of every chart drawing its own. It CONSUMES canon/dv-legend.js (registered behaviour, dataviz group); it contains no legend behaviour of its own. When: series ≥ 2 AND label = text",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Legend"
+      },
+      "orientation": {
+       "type": "string",
+       "enum": [
+        "horizontal",
+        "vertical"
+       ],
+       "default": "horizontal",
+       "description": "horizontal = the default row form; vertical = .vert, the column form (min-width 190px) that carries the numeric group in an aligned column."
+      },
+      "placement": {
+       "type": "string",
+       "enum": [
+        "top",
+        "right",
+        "bottom"
+       ],
+       "default": "top",
+       "description": "Declared by the HOST (data-leg-place on .leg-host), not by the legend — the legend fills the cell it is given. LEFT is deliberately absent: it puts the key before the thing it keys, and no registered chart draws one."
+      },
+      "overflow": {
+       "type": "string",
+       "enum": [
+        "wrap",
+        "scroll"
+       ],
+       "default": "wrap",
+       "description": "One is REQUIRED. A legend that neither wraps nor scrolls widens its own container, which is how a bento tile breaks (s248-D3)."
+      },
+      "swatchShape": {
+       "type": "string",
+       "enum": [
+        "square",
+        "triangle",
+        "diamond",
+        "bar",
+        "line",
+        "line-dashed",
+        "line-dotted"
+       ],
+       "default": "square",
+       "description": "The WCAG 1.4.1 second channel: colour is never the only carrier. Angular only — Badge and Avatar are the sole round components. The clip-path lands on the mark (::after), never on the 44px target (::before)."
+      },
+      "values": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Shows the trailing numeric group: value, share of total, and the period delta. Tabular figures (.t-cm-chart-value)."
+      },
+      "reset": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "The B-D4 pattern: rendered DISABLED while nothing is hidden, enabling on any ghost or isolate. dv-legend owns the disabled state."
+      },
+      "shared": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Shared mode. TODAY the mechanism is SCOPE: dv-legend resolves marks with host.closest('figure'), so one legend and N canvases inside one <figure> is a shared legend by construction. `data-dv-controls=\"<chart id> …\"` is a declared CONTRACT the engine does not read yet — see $sharedContract."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "horizontal / top",
+        "vertical / right",
+        "shared / bottom",
+        "non-colour swatches"
+       ],
+       "default": "horizontal / top",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      },
+      "rows": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+       "description": "One row per series: name, colour index, and optionally value, share and delta.",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "chart-dataset"
+         ]
+        },
+        "multiple": true
+       }
+      }
+     },
+     "required": [
+      "component",
+      "rows"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "legend",
+    "meta": "knowledge/components/legend.meta.json",
+    "metaSha256": "e1354fae8000693050c40ea18f42514ea04a3b81944b71643bb5505bb8b786d0",
+    "level": "element",
+    "status": "beta",
+    "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
+    "proposal": true,
+    "provides": null,
+    "answers": "what-is-this",
+    "shape": "no-data × control",
+    "span": {
+     "cols": {
+      "min": 2,
+      "max": 12
+     }
+    },
+    "priority": null,
+    "when": {
+     "gate": "series ≥ 2 AND label = text",
+     "prose": "a key is needed only where more than one series is drawn; a single-series chart names its series in the title (chart-sparkline's rule). Placed on its own only when the charts it keys are more than one (small multiples, a comparison row); a lone chart carries its legend inside its own figure, which is what every registered chart type already does.",
+     "fields": [
+      "label",
+      "series"
+     ]
+    },
+    "variants": [
+     {
+      "name": "horizontal / top",
+      "use": "The default. Above the canvas, wrapping onto a second row."
+     },
+     {
+      "name": "vertical / right",
+      "use": "Long series names, or a numeric group that has to align in a column. Folds under the canvas below 640px."
+     },
+     {
+      "name": "shared / bottom",
+      "use": "One key under a row of small multiples."
+     },
+     {
+      "name": "non-colour swatches",
+      "use": "Colourblind-safe: shape for area marks, line style for line series."
+     }
+    ],
+    "settings": [
+     "orientation",
+     "placement",
+     "overflow",
+     "swatchShape",
+     "values",
+     "reset",
+     "shared"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": {
+     "rows": {
+      "accepts": {
+       "capability": [
+        "chart-dataset"
+       ]
+      },
+      "required": true,
+      "multiple": true
+     }
+    },
+    "states": {
+     "states": [
+      "rest",
+      "check",
+      "isolate"
+     ],
+     "sentences": {
+      "rest": "every series shown; Reset disabled",
+      "check": "one or more swatches unchecked; the unchecked series ghost at 12% and the row's swatch is hollow",
+      "isolate": "a label is pressed; only that series (plus any swatch-added ones) reads active. DV-D19: the mode is LATCHED — a swatch click while isolated moves the whole set to check mode and never returns; a re-click on the seed label releases."
+     }
+    },
+    "a11y": {
+     "role": "The list is role=\"group\" with an aria-label naming both gestures. The swatch is role=\"checkbox\" + aria-checked (show/hide); the label is a native <button> + aria-pressed (isolate). One sr-only role=\"status\" aria-live=\"polite\" region per legend announces every state change.",
+     "sc": [
+      "1.4.1 Use of Colour",
+      "1.4.11 Non-text Contrast",
+      "2.5.5 Target Size",
+      "4.1.2 Name Role Value",
+      "1.3.1 Info and Relationships"
+     ]
+    },
+    "snippet": "snippet:Legend.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s263-D8",
+      "ruling:s305-D16",
+      "ruling:s305-D60",
+      "ruling:s308-D35"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:dv-016"
+     ],
+     "obeysRoutedCount": 37
+    },
+    "aliases": []
+   }
+  },
+  "ListItems": {
+   "type": "object",
+   "description": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image. TWO LEVELS (s274-D2): the CONTAINERS are the variants simple-list, structured-list and card-list; the record ROWS (account, badge, item, review, review-detail, transaction) are parts any container holds, and card-list-row = simple-list-row — no separate row shape. `bullets` is typeset, not a record row. When: records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "ListItems"
+      },
+      "type": {
+       "type": "string",
+       "enum": [
+        "account",
+        "badge",
+        "item",
+        "review",
+        "review-detail",
+        "transaction",
+        "bullets"
+       ],
+       "default": "item"
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled",
+        "processing"
+       ],
+       "default": "default",
+       "description": "hover labelled 'hover (web)'. Bullets list has no interactive state."
+      },
+      "visual": {
+       "type": "string",
+       "enum": [
+        "icon",
+        "avatar",
+        "image"
+       ],
+       "default": "icon",
+       "description": "Badge, Item, Transaction offer a leading visual."
+      },
+      "detail": {
+       "type": "string",
+       "enum": [
+        "tag",
+        "status"
+       ],
+       "default": "tag",
+       "description": "List Transaction only."
+      },
+      "bulletType": {
+       "type": "string",
+       "enum": [
+        "bullet",
+        "ordered",
+        "custom"
+       ],
+       "default": "bullet",
+       "description": "Bullets list only."
+      },
+      "items": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "The rows the list shows (reference snippet: 'Amazon · Pending · 22 Jun · Shopping · −1,234.00 HKD'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a ",
+       "x-apollo": {
+        "ownText": true,
+        "items": "each entry {title, detail, value}"
+       }
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "account",
+        "badge",
+        "item",
+        "review",
+        "review-detail",
+        "transaction",
+        "simple-list",
+        "structured-list",
+        "card-list",
+        "bullets"
+       ],
+       "default": "account",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "items"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "list-items",
+    "meta": "knowledge/components/list-items.meta.json",
+    "metaSha256": "d20ebe6e21d9a2329113211b9afdce6c9ac6cf1aafdebd8a1da20ddd981faaaa",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "record-list",
+    "answers": null,
+    "shape": null,
+    "span": null,
+    "priority": 60,
+    "when": {
+     "gate": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none",
+     "prose": "surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\").",
+     "fields": [
+      "needs",
+      "records",
+      "surface"
+     ]
+    },
+    "variants": [
+     {
+      "name": "account",
+      "use": "Account row (e.g. balance), font-3 amount + font-5/6 labels. MIGRATED to tertiary/background/* row states."
+     },
+     {
+      "name": "badge",
+      "use": "Row with a leading badge/visual. Least-migrated row — still on deprecated surface/border tokens."
+     },
+     {
+      "name": "item",
+      "use": "Base list item (icon/avatar/image). Most-deprecated row, incl on-dark surface/border blockers."
+     },
+     {
+      "name": "review",
+      "use": "Compact review row. Mostly migrated (tertiary/background/*); one deprecated pressed surface."
+     },
+     {
+      "name": "review-detail",
+      "use": "Review row with extra detail line. CLEAN."
+     },
+     {
+      "name": "transaction",
+      "use": "Transaction row with tag or status detail; uses rag/success(+tint) for status. Deprecated surface set."
+     },
+     {
+      "name": "simple-list",
+      "use": "CONTAINER (s274-D2): a stack of same-kind records on ONE unbordered surface, one record per row, divided by a rule. List-level heading optional (s274-D5)."
+     },
+     {
+      "name": "structured-list",
+      "use": "CONTAINER (s274-D2, Dave's name — replaces the proposal's 'column-list'): rows whose fields align across records, still on one unbordered surface. Heading optional — in banking a structured row is self-describing (s274-D5). If a field must be read DOWN a column across records it is a table, not this (s274-D4)."
+     },
+     {
+      "name": "card-list",
+      "use": "CONTAINER (s274-D2): the SAME rows, but the container draws a bordered surface around EACH record — that surface alone is what makes a record a card (s274-D1). card-list-row = simple-list-row; a per-card title is a ROW field, not the list heading (s274-D5)."
+     },
+     {
+      "name": "bullets",
+      "use": "Typeset unordered / ordered / custom lists. CLEAN. Bullets/numbers use the SAME font as the text; rag/success for custom tick."
+     }
+    ],
+    "settings": [
+     "type",
+     "state",
+     "visual",
+     "detail",
+     "bulletType",
+     "items"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "items"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1 Info and Relationships",
+      "4.1.2 Name Role Value",
+      "4.1.3 Status Messages",
+      "1.4.3 Contrast",
+      "2.5.8 Target Size (Minimum)",
+      "2.5.7 Dragging Movements (reorderable lists)"
+     ]
+    },
+    "snippet": "snippet:List-items.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s160-D2",
+      "ruling:s273-D3",
+      "ruling:s274-D1",
+      "ruling:s274-D2",
+      "ruling:s274-D3",
+      "ruling:s274-D4",
+      "ruling:s274-D5",
+      "ruling:s274-D6"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 45
+    },
+    "aliases": []
+   }
+  },
+  "Metric": {
+   "type": "object",
+   "description": "One headline number as one block: label, value, delta and comparison period, with two optional slots - the TREND (the Chart-sparkline atom at its inline scale) and a hue-free target row. Without a series the trend slot is left out: that is the reading the stat card was. With a series the tile also shows HOW the number moved: the reading the KPI tile was. One tile, one claim; a board is a grid of these. When: shape = one-measure × value-and-delta AND delta != none",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Metric"
+      },
+      "size": {
+       "type": "string",
+       "enum": [
+        "hero",
+        "display",
+        "compact"
+       ],
+       "default": "display",
+       "description": "hero = .t-cm-figure-2 (40px) at span 6, one big number; display = .t-cm-figure-4 (32px) at span 3; compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5). Sizes are the only thing that changes with this prop — the anatomy is identical."
+      },
+      "trend": {
+       "type": "string",
+       "enum": [
+        "up",
+        "down",
+        "flat"
+       ],
+       "default": "flat",
+       "description": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's own governs-list says the future trend card inhe"
+      },
+      "delta": {
+       "type": "string",
+       "enum": [
+        "up",
+        "down",
+        "flat"
+       ],
+       "default": "flat",
+       "description": "REBOUND AT #261 K3 ON DAVE'S WORD, verbatim: 'We need to use the dark versions of the colours on the arrows.' The arrow left Stat-card's FILL seat and took the INK seat the spark stroke already wore, which CLOSES the two-seat question — see $finding-two-seats. Flat deltas take the neutral rule glyph"
+      },
+      "upIsBad": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Say that a rise is bad for this figure (a cost, a risk, a count of failures). Set by the class up-is-bad on the tile (.metric.up-is-bad). A rise then takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow still points the way the number moved, and the sign and the "
+      },
+      "deltaGlyph": {
+       "type": "string",
+       "enum": [
+        "direction-rotated"
+       ],
+       "default": "direction-rotated",
+       "description": "RULED BY DAVE'S REVIEW at #261 K2, verbatim: \"please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle\". So the glyph is the LIBRARY direction arrow and the 45 degrees is a CSS transform on the icon, neve"
+      },
+      "target": {
+       "oneOf": [
+        {
+         "type": "object"
+        },
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "NEW #261. { value, target, pace } drives the optional progress row: a border/subtle track, a standing-ink fill, a one-pixel pace tick at alpha-60, and a caption that spells out every figure the bar draws. NO HUE AT ALL, deliberately: whether 48% against a 60% target is a problem is the reader's judg",
+       "x-apollo": {
+        "data": true,
+        "capability": [
+         "measure-against-target"
+        ],
+        "shape": "one-measure × value-and-delta"
+       }
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "ready",
+        "loading",
+        "empty",
+        "error",
+        "stale"
+       ],
+       "default": "ready",
+       "description": "NEW #261 — see stateModel. Drawn, not described: loading is a skeleton with aria-busy and an opacity pulse that prefers-reduced-motion kills; empty renders an em-dash value plus a sentence saying why; error renders an em-dash, a rag/error-ink glyph and a 44px retry control that names what it will lo"
+      },
+      "affordance": {
+       "type": "string",
+       "enum": [
+        "none",
+        "link",
+        "tableCta"
+       ],
+       "default": "none",
+       "description": "link is NEW #261 and is the RIVAL to tableCta: the whole tile becomes the hit area via a stretched ::after on the label's anchor, the accessible name is the metric, and the focus ring lands on the tile rather than on four words of label. tableCta is s182-D2's standing direction unchanged — opt-in ic"
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "compact",
+        "hero",
+        "with-sparkline",
+        "with-target",
+        "as-link",
+        "with-table-cta"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      },
+      "spark": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Heights are 28 compact / 40 default / 56 hero. Baked static — this component is not registered in component-types.json, so no dv-render-sparkline partial is injected and JS-off renders identically.",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "capability": [
+          "trend-series"
+         ]
+        },
+        "multiple": false
+       }
+      }
+     },
+     "required": [
+      "component"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "metric",
+    "meta": "knowledge/components/metric.meta.json",
+    "metaSha256": "4766b6c18fe21ce332f33203063e257a2245cb7c913e80963973fbd80134b6ea",
+    "level": "element",
+    "status": "beta",
+    "statusSource": "showroom/index.json",
+    "proposal": true,
+    "provides": "headline-metric",
+    "answers": [
+     "one-number",
+     "change-over-time"
+    ],
+    "shape": "one-measure × value-and-delta",
+    "span": {
+     "cols": {
+      "min": 2,
+      "max": 6
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "shape = one-measure × value-and-delta AND delta != none",
+     "prose": "the default of the role: label · value · delta · period, one block (s308-D42). The trend slot is filled only when a series exists to show (s247-D3 / DP-08: no series, no spark); yields to Chart-bullet (when: \"a target or performance band is the point, not the delta\") and to runway-bar (when: \"the number is 'money vs what is already scheduled'\").",
+     "fields": [
+      "delta",
+      "shape"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "the board tile — span 3, 32px value, 40px spark; ORIGINAL text layout (#261 K2, Dave: \"I prefer the text layout in the original\") — label above, big value, then ONE delta line reading \"▲ +12.4% up  vs February\" with the period inline"
+     },
+     {
+      "name": "compact",
+      "use": "the DP-06 four-tile row (s246-D5) — span 3, 12px label, 24px value, 4px gaps, period inline with the delta, spark optional at 28px"
+     },
+     {
+      "name": "hero",
+      "use": "one big number — span 6, 40px value, 24px padding, 12px gaps, 56px spark; for the one figure a board is actually about"
+     },
+     {
+      "name": "with-sparkline",
+      "use": "additive slot — the Chart-sparkline atom at inline scale with a low-alpha area under the line and NO end-point dot (#261 K2); the slot owns the width, the atom carries none (s184-D1)"
+     },
+     {
+      "name": "with-target",
+      "use": "additive slot — span 4, a hue-free progress track with a pace tick and a caption that spells out every figure"
+     },
+     {
+      "name": "as-link",
+      "use": "the whole tile is the affordance; stretched ::after on the label anchor, chevron at bottom-right, focus ring on the tile (NEW #261, rival to with-table-cta)"
+     },
+     {
+      "name": "with-table-cta",
+      "use": "the tile can hand off to a tabular view of the same series (s182-D2 standing direction) — opt-in 44x44 icon button, no label"
+     }
+    ],
+    "settings": [
+     "size",
+     "trend",
+     "delta",
+     "upIsBad",
+     "deltaGlyph",
+     "target",
+     "state",
+     "affordance"
+    ],
+    "dataSettings": [
+     "target"
+    ],
+    "ownWords": [],
+    "slots": {
+     "spark": {
+      "accepts": {
+       "capability": [
+        "trend-series"
+       ]
+      },
+      "required": false,
+      "multiple": false
+     }
+    },
+    "states": {
+     "states": [
+      "ready",
+      "loading",
+      "empty",
+      "error",
+      "stale"
+     ],
+     "sentences": {
+      "loading": "role=group + aria-busy=true, an sr-only sentence naming the metric, and four skeleton blocks at text/default alpha-08 with a 1.6s opacity pulse that prefers-reduced-motion kills. No spinner, no JS.",
+      "empty": "label + em-dash value at alpha-40 + a sentence saying WHY there is no figure ('The account opened in March'), with the neutral rule glyph. Never a zero — a zero is a measurement.",
+      "error": "label + em-dash value + role=status sentence + a 44px control whose label names what it will load ('Load settlement volume again'), never the bare word 'Retry'. The only coloured mark is the rag/error-ink glyph, whose inner marks take the tile surface.",
+      "stale": "the full, real tile PLUS a neutral marker chip ('Last updated 3 days ago') with the refresh glyph. The number is not dimmed — dimming a real figure to signal age costs contrast and says 'unimportant', which is the wrong word."
+     }
+    },
+    "a11y": {
+     "role": "Each tile is role=\"group\" with an aria-label naming the metric and its period. The loading tile adds aria-busy=\"true\"; the error tile carries role=\"status\" on its message; the target track is role=\"img\" with an aria-label that states the value, the target and the pace.",
+     "sc": [
+      "1.4.1",
+      "1.4.3",
+      "1.4.11",
+      "2.4.7",
+      "2.5.8",
+      "1.3.1"
+     ]
+    },
+    "snippet": "snippet:Metric.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s309-D3",
+      "ruling:s309-D5",
+      "ruling:s309-D6",
+      "ruling:s310-D1",
+      "ruling:s310-D2"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:col26-016",
+      "rule:dv-017",
+      "rule:nam-002"
+     ],
+     "obeysRoutedCount": 36
+    },
+    "aliases": [
+     "kpi-tile",
+     "stat-card"
+    ]
+   }
+  },
+  "Navigations": {
+   "type": "object",
+   "description": "The global and local navigation family: the web Masthead (logged out / logged in, with main-nav flyout, search flyout and user flyout), in-page Anchors, and the app-only Navigation bars (bottom tab bar and top bar). Lets users move around the site/app and access search and account. When: shape = destination-set × links AND scope = global",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Navigations"
+      },
+      "type": {
+       "type": "string",
+       "enum": [
+        "masthead",
+        "anchors",
+        "nav-bar-bottom",
+        "nav-bar-top"
+       ],
+       "default": "masthead"
+      },
+      "auth": {
+       "type": "string",
+       "enum": [
+        "logged-out",
+        "logged-in"
+       ],
+       "default": "logged-out",
+       "description": "Masthead only."
+      },
+      "flyout": {
+       "type": "string",
+       "enum": [
+        "none",
+        "main",
+        "search",
+        "user"
+       ],
+       "default": "none",
+       "description": "Masthead flyouts: main nav (closed/scroll/open), search, user."
+      },
+      "breakpoint": {
+       "type": "string",
+       "enum": [
+        "xl",
+        "l",
+        "m",
+        "ms",
+        "s",
+        "xs"
+       ],
+       "default": "l",
+       "description": "Masthead/Anchors fully responsive; app nav bars are mobile."
+      },
+      "count": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "Optional count chip on a destination or on the notifications action. On the action it is aria-hidden because the button's accessible name already carries the number — a count read twice is a count read wrong."
+      },
+      "account": {
+       "oneOf": [
+        {
+         "type": "object"
+        },
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "The signed-in trigger: avatar initials plus name, dropping to the avatar alone below 768px. Initials are a stand-in for a real product identity — PROPOSED."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "masthead",
+        "anchors",
+        "nav-bar-bottom",
+        "nav-bar-top",
+        "compact"
+       ],
+       "default": "masthead",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "navigations",
+    "meta": "knowledge/components/navigations.meta.json",
+    "metaSha256": "123cd59a44ad10591161c39baead72fe1a2487cfe7b194d243968ba17a6f2584",
+    "level": "pattern",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "wayfinding",
+    "answers": "where-can-i-go",
+    "shape": "destination-set × links",
+    "span": {
+     "cols": {
+      "min": 12,
+      "max": 12
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "shape = destination-set × links AND scope = global",
+     "prose": "the default of the role; beats breadcrumbs (roles.json when: \"ancestry, depth ≥ 2\") and tabs (when: \"local — peer views in one context\") because those are ancestry and local peers, not the global set; yields to sidebar-nav (when: \"global, desktop, persistent column (pairs with app-shell-side-nav)\") when the page-frame is app-shell-side-nav, and to tab-bar (when: \"mobile bottom, 3–5 destinations\") on mobile.",
+     "fields": [
+      "scope",
+      "shape"
+     ]
+    },
+    "variants": [
+     {
+      "name": "masthead",
+      "use": "Web global header. Logged-out & logged-in; opens a main-nav flyout (closed/scroll/open), a search flyout and a user flyout. Carries logo (color/primary), elevation/functional shadow."
+     },
+     {
+      "name": "anchors",
+      "use": "In-page anchor navigation; active anchor marked by a brand-red underline indicator."
+     },
+     {
+      "name": "nav-bar-bottom",
+      "use": "App-only bottom tab bar (.Nav Item × Nav Bar); icon + font-6 label."
+     },
+     {
+      "name": "nav-bar-top",
+      "use": "App-only top bar (iOS Nav Bar Top); title + actions, active indicator."
+     },
+     {
+      "name": "compact",
+      "use": "Below 768px the primary row is REPLACED (not shrunk) by a hamburger that discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids."
+     }
+    ],
+    "settings": [
+     "type",
+     "auth",
+     "flyout",
+     "breakpoint",
+     "count",
+     "account"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1",
+      "2.4.1 Bypass Blocks",
+      "2.4.5 Multiple Ways",
+      "1.4.1 Use of Color",
+      "4.1.2",
+      "2.1.2 No Keyboard Trap",
+      "2.5.8 Target Size (Minimum)",
+      "2.4.11 Focus Not Obscured (Minimum)"
+     ]
+    },
+    "snippet": "snippet:Navigations.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s230-D2",
+      "ruling:s261-D2",
+      "ruling:s261-D7",
+      "ruling:s262-D2",
+      "ruling:s262-D3",
+      "ruling:s272-D70",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  },
+  "StatusIndicator": {
+   "type": "object",
+   "description": "A small coloured dot + label giving a visual cue of a background update or state change, making the user aware of relevant activity. RAG-coded across approved / cancelled / declined / pending, with a disabled (muted) variant. When: shape = one-state × dot-and-label AND span.cols <= 4",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "StatusIndicator"
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "approved",
+        "cancelled",
+        "declined",
+        "pending"
+       ],
+       "default": "pending"
+      },
+      "state": {
+       "type": "string",
+       "enum": [
+        "default",
+        "disabled"
+       ],
+       "default": "default"
+      },
+      "label": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+       "description": "The words beside the dot (reference snippet: 'Approved', 'Pending review'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Add",
+       "x-apollo": {
+        "ownText": true
+       }
+      }
+     },
+     "required": [
+      "component",
+      "label"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "status-indicator",
+    "meta": "knowledge/components/status-indicator.meta.json",
+    "metaSha256": "aae896c2fc5e9e113eca83f6015b57fbc50e58081519ce45df12f605c3b3150b",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "status-surface",
+    "answers": "status-of-one",
+    "shape": "one-state × dot-and-label",
+    "span": {
+     "cols": {
+      "min": 2,
+      "max": 4
+     }
+    },
+    "priority": 60,
+    "when": {
+     "gate": "shape = one-state × dot-and-label AND span.cols <= 4",
+     "prose": "the default of the role; beats summary (roles.json when: \"n × count as a key/value list, 6–12 cols\") whenever exactly one state is read; yields to badge (when: \"inline, attached to another element, count only\") when the dot is attached to another element rather than standing alone.",
+     "fields": [
+      "label",
+      "shape",
+      "span.cols"
+     ]
+    },
+    "variants": [],
+    "settings": [
+     "variant",
+     "state",
+     "label"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "label"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.4.1 Use of Color",
+      "4.1.3 Status Messages",
+      "1.4.3 Contrast",
+      "1.4.11 Non-text Contrast"
+     ]
+    },
+    "snippet": "snippet:Status-indicator.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s246-D4",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:ctkt-018",
+      "rule:icon-013"
+     ],
+     "obeysRoutedCount": 34
+    },
+    "aliases": []
+   }
+  },
+  "Summary": {
+   "type": "object",
+   "description": "A key/value list for confirming details before or after an action (a payment review, a receipt). Name on the left (text/secondary), value on the right (text/default, tabular-nums), hairline dividers between rows, with an optional emphasised total row. Surfaced as a missing pattern by the journey gap report. When: shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "Summary"
+      },
+      "total": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+       "description": "Emphasise the final row as a total (heavier weight, larger size)."
+      },
+      "rows": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "The key/value rows (reference snippet: 'To · Jane Smith', 'Amount · £250.00'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). ",
+       "x-apollo": {
+        "ownText": true,
+        "items": "each entry {name, value}"
+       }
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "with-total"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      }
+     },
+     "required": [
+      "component",
+      "rows"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "summary",
+    "meta": "knowledge/components/summary.meta.json",
+    "metaSha256": "6ce3c1654a1438dca0dafbd3f591d75f7a2c7a25b0f46120b6ae7a51a84d16f0",
+    "level": "element",
+    "status": "stable",
+    "statusSource": "showroom/index.json",
+    "proposal": false,
+    "provides": "status-surface",
+    "answers": "details-before-commit",
+    "shape": "rows × name-value-pairs",
+    "span": {
+     "cols": {
+      "min": 6,
+      "max": 12
+     }
+    },
+    "priority": 40,
+    "when": {
+     "gate": "shape = rows × name-value-pairs AND rows >= 2 AND span.cols >= 6",
+     "prose": "beats status-indicator (roles.json when: \"one state, one dot + label, 2–4 cols\") whenever more than one row must be read at once; yields to meter (when: \"the threshold is a cap being spent against (limits-meter reading)\") when threshold = cap-spent-against, and to badge (when: \"inline, attached to another element, count only\") when the reading is inline.",
+     "fields": [
+      "rows",
+      "shape",
+      "span.cols"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "Plain name→value rows."
+     },
+     {
+      "name": "with-total",
+      "use": "Adds an emphasised total row as the last row."
+     }
+    ],
+    "settings": [
+     "total",
+     "rows"
+    ],
+    "dataSettings": [],
+    "ownWords": [
+     "rows"
+    ],
+    "slots": null,
+    "states": null,
+    "a11y": {
+     "role": "Semantic <dl>/<dt>/<dd> so assistive tech announces each name→value pair as a group (1.3.1). Each row wraps one dt+dd in a div.",
+     "sc": [
+      "1.3.1 Info and Relationships",
+      "1.4.3 Contrast (Minimum)",
+      "1.4.10 Reflow"
+     ]
+    },
+    "snippet": "snippet:Summary.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s246-D4",
+      "ruling:s305-D60"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [],
+     "obeysRoutedCount": 34
+    },
+    "aliases": []
+   }
+  },
+  "TemplateDashboardBento": {
+   "type": "object",
+   "description": "A PAGE-SCALE ORGANISM for an overview screen BUILT ON THE BENTO GRAMMAR: a masthead, a page header lock-up, and one dashboard-role bento wall whose tiles are themselves bentos - the bento-of-bentos s217-D2/D3 describe. It answers the same question as Template dashboard ('how are things, and what needs me?') and differs in ONE thing: its layout is canon's .c-bento structural component rather than a Layout-utilities grid. It exists because the #230 rehearsal measured that `grep -rl '\\.c-bento' knowledge/snippets/` returned ZERO files, so a cold builder told to copy component markup had nothing to copy for a bento dashboard. When: the question is 'how are things, and what needs me?' AND layout.grammar = bento",
+   "allOf": [
+    {
+     "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
+    },
+    {
+     "$ref": "#/$defs/CatalogComponentCommon"
+    },
+    {
+     "type": "object",
+     "properties": {
+      "component": {
+       "const": "TemplateDashboardBento"
+      },
+      "groups": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "PROPOSED. Three sub-bentos are drawn (KPI board, chart, position rail) because three is the smallest number that shows a full-width group AND a side-by-side pair. HOW MANY groups a dashboard has, and what belongs in each, is a product decision and is Dave's."
+      },
+      "mainSpacing": {
+       "type": "string",
+       "enum": [
+        "1",
+        "2",
+        "4",
+        "16",
+        "24",
+        "40"
+       ],
+       "default": "40",
+       "description": "The s219-D1(4) ruled spacing rail, six stops. 40 is mono's ruled dashboard default. The edit pass picks among stops; a free value is not reachable and widening the set is a ruling."
+      },
+      "subSpacing": {
+       "type": "string",
+       "enum": [
+        "1",
+        "2",
+        "4",
+        "16",
+        "24",
+        "40"
+       ],
+       "default": "4",
+       "description": "Same rail. 4 is mono's ruled dashboard sub default (s219-D1(5))."
+      },
+      "keylines": {
+       "type": "string",
+       "enum": [
+        "off",
+        "on"
+       ],
+       "default": "off",
+       "description": "s219-D2(4): OFF on every dashboard in every theme. The switch is available in edit mode per s219-D1(2), but the ON construction is not drawn here - see $bentoGrammar.keylines."
+      },
+      "chart": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+       "description": "PROPOSED. Chart-bar's COLUMN specimen, spliced. The chart is NOT made fluid: without Chart-bar's fit engine a width:100% SVG scales its own text and strokes, which is the banned physics _RUNBOOK-render-verify.md records. It scrolls inside its module."
+      },
+      "rail": {
+       "oneOf": [
+        {
+         "type": "array"
+        },
+        {
+         "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+        }
+       ],
+       "description": "PROPOSED. A Summary of balances plus a needs-attention list of Status-indicator chips, stacked inside their own sub-bento."
+      },
+      "variant": {
+       "type": "string",
+       "enum": [
+        "default",
+        "banded"
+       ],
+       "default": "default",
+       "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
+      },
+      "tiles": {
+       "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+       "description": "The tiles the wall holds side by side; the wall's own rules place them (spans 3 or 6 of 12, the gutters, no orphan).",
+       "x-apollo": {
+        "slot": true,
+        "accepts": {
+         "provides": [
+          "headline-metric",
+          "status-surface",
+          "chart",
+          "record-list"
+         ]
+        },
+        "multiple": true
+       }
+      }
+     },
+     "required": [
+      "component",
+      "tiles"
+     ]
+    }
+   ],
+   "unevaluatedProperties": false,
+   "x-apollo": {
+    "slug": "template-dashboard-bento",
+    "meta": "knowledge/components/template-dashboard-bento.meta.json",
+    "metaSha256": "d82e7dde21e2701da39e2181a832c6272ab0cc36e6dd890d76d47ab5e927ad4f",
+    "level": "template",
+    "status": "beta",
+    "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
+    "proposal": true,
+    "provides": null,
+    "answers": null,
+    "shape": null,
+    "span": null,
+    "priority": null,
+    "when": {
+     "gate": "the question is 'how are things, and what needs me?' AND layout.grammar = bento",
+     "prose": "the dashboard frame when the designer's answer to 'dashboard bento — is that right?' is yes (s230-D1 beat 2); its tiles are themselves bentos (s217-D2, s217-D3). A composer borrows its grammar ($bentoGrammar) and chooses every module from the graph; it yields to template-dashboard when layout.grammar = grid.",
+     "fields": [
+      "layout.grammar",
+      "needs"
+     ]
+    },
+    "variants": [
+     {
+      "name": "default",
+      "use": "The drawn page at six columns: one full-width KPI group of four modules, then a chart group beside a position group."
+     },
+     {
+      "name": "banded",
+      "use": "The wall's own container queries re-column it at 1100 / 820 / 520 CONTAINER px to 3 / 2 / 1. Every group becomes a single column and every module a full row. That is canon's compiled behaviour, not a variant this file declares."
+     }
+    ],
+    "settings": [
+     "groups",
+     "mainSpacing",
+     "subSpacing",
+     "keylines",
+     "chart",
+     "rail"
+    ],
+    "dataSettings": [],
+    "ownWords": [],
+    "slots": {
+     "tiles": {
+      "accepts": {
+       "provides": [
+        "headline-metric",
+        "status-surface",
+        "chart",
+        "record-list"
+       ]
+      },
+      "required": true,
+      "multiple": true
+     }
+    },
+    "states": null,
+    "a11y": {
+     "role": null,
+     "sc": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.1.1",
+      "2.3.3",
+      "2.4.3",
+      "2.4.6",
+      "2.5.8",
+      "4.1.2"
+     ]
+    },
+    "snippet": "snippet:Template-dashboard-bento.reference.html",
+    "rulings": {
+     "governs": [
+      "ruling:s231-D2",
+      "ruling:s232-D3",
+      "ruling:s245-D6",
+      "ruling:s245-D7",
+      "ruling:s245-D8",
+      "ruling:s245-D9",
+      "ruling:s246-D2",
+      "ruling:s246-D3",
+      "ruling:s246-D4",
+      "ruling:s246-D5",
+      "ruling:s246-D6",
+      "ruling:s247-D2",
+      "ruling:s247-D3",
+      "ruling:s247-D4",
+      "ruling:s247-D5",
+      "ruling:s248-D1",
+      "ruling:s248-D2",
+      "ruling:s248-D3",
+      "ruling:s248-D4",
+      "ruling:s249-D1",
+      "ruling:s249-D2",
+      "ruling:s249-D5",
+      "ruling:s251-D1",
+      "ruling:s251-D10",
+      "ruling:s251-D14",
+      "ruling:s251-D15",
+      "ruling:s251-D2",
+      "ruling:s252-D1",
+      "ruling:s255-D1",
+      "ruling:s272-D85",
+      "ruling:s305-D18",
+      "ruling:s305-D42",
+      "ruling:s305-D59",
+      "ruling:s305-D60",
+      "ruling:s305-D9"
+     ],
+     "obeysAuthored": [],
+     "obeysDerived": [
+      "rule:nam-002"
+     ],
+     "obeysRoutedCount": 40
+    },
+    "aliases": []
+   }
+  }
+ },
+ "functions": {},
+ "$defs": {
+  "anyFunction": {
+   "description": "This catalogue defines no functions (the PoC shows and prepares only, s305-D46); a FunctionCall in a setting value is therefore refused.",
+   "not": {}
+  },
+  "CatalogComponentCommon": {
+   "type": "object",
+   "properties": {
+    "weight": {
+     "type": "number"
+    }
+   }
+  },
+  "theme": {
+   "type": "object",
+   "properties": {
+    "apolloTheme": {
+     "type": "string",
+     "enum": [
+      "apollo-legacy",
+      "apollo-mono",
+      "apollo-console",
+      "apollo-supercharge"
+     ]
+    },
+    "mode": {
+     "type": "string",
+     "enum": [
+      "light",
+      "dark"
+     ]
+    }
+   },
+   "additionalProperties": false
+  },
+  "anyComponent": {
+   "oneOf": [
+    {
+     "$ref": "#/components/AppShellTopNav"
+    },
+    {
+     "$ref": "#/components/Breadcrumbs"
+    },
+    {
+     "$ref": "#/components/Button"
+    },
+    {
+     "$ref": "#/components/ChartBar"
+    },
+    {
+     "$ref": "#/components/ChartLine"
+    },
+    {
+     "$ref": "#/components/DataGrid"
+    },
+    {
+     "$ref": "#/components/FilterToolbarBar"
+    },
+    {
+     "$ref": "#/components/Footer"
+    },
+    {
+     "$ref": "#/components/Headers"
+    },
+    {
+     "$ref": "#/components/LayoutUtilities"
+    },
+    {
+     "$ref": "#/components/Legend"
+    },
+    {
+     "$ref": "#/components/ListItems"
+    },
+    {
+     "$ref": "#/components/Metric"
+    },
+    {
+     "$ref": "#/components/Navigations"
+    },
+    {
+     "$ref": "#/components/StatusIndicator"
+    },
+    {
+     "$ref": "#/components/Summary"
+    },
+    {
+     "$ref": "#/components/TemplateDashboardBento"
+    }
+   ],
+   "discriminator": {
+    "propertyName": "component"
+   }
+  }
+ },
+ "x-apollo": {
+  "catalogue": {
+   "name": "dashboard",
+   "version": "v0.1.0",
+   "sha256": "686f823d8da95b3b7a118370018319c61d1ea5d6f6844d1477a6661827869d7e",
+   "metas_sha": "c5663383",
+   "metas_sha256": "f233a30e2f1cf8099b38a63ed6e064f26e118790f8c26496d7eef02fc10615d3",
+   "parts": [
+    "app-shell-top-nav",
+    "breadcrumbs",
+    "button",
+    "chart-bar",
+    "chart-line",
+    "data-grid",
+    "filter-toolbar-bar",
+    "footer",
+    "headers",
+    "layout-utilities",
+    "legend",
+    "list-items",
+    "metric",
+    "navigations",
+    "status-indicator",
+    "summary",
+    "template-dashboard-bento"
+   ],
+   "previous": null
+  }
+ }
+}
