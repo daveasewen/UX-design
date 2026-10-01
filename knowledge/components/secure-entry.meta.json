@@ -8,7 +8,8 @@
   "props": [
     { "name": "length", "type": "enum", "values": ["4", "6"], "default": "6", "$note": "6-digit OTP (separator dot after 3) or 4-digit PIN." },
     { "name": "masked", "type": "boolean", "default": false, "$note": "PIN cells are type=password; OTP cells are visible text.", "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
-    { "name": "resend", "type": "boolean", "default": true, "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)." }
+    { "name": "resend", "type": "boolean", "default": true, "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)." },
+    { "name": "label", "type": "string", "ownText": true, "$note": "The field's label (reference snippet: 'One-time passcode'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0." }
   ],
   "$states": ["empty", "hover (cell)", "focus (cell — black border + page fill)", "filled", "done (verified — muted border + success message)", "error (border near-black; dark = red; roundel + ink message)", "disabled"],
   "tokens": {

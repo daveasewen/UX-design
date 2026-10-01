@@ -11,7 +11,26 @@
     {
       "name": "columns",
       "type": "array",
-      "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)."
+      "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite).",
+      "bindsData": {
+        "capability": [
+          "column-definitions"
+        ]
+      },
+      "$wasSlot": {
+        "$settled": "s305-D58 (Dave, #305, \"As recommended\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "column-definitions"
+            ]
+          },
+          "use": "The column contract: header, alignment, sort and edit affordances per column.",
+          "required": true,
+          "multiple": true,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "selection",
@@ -24,9 +43,10 @@
       "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial."
     },
     {
-      "name": "filters",
+      "name": "terms",
       "type": "array",
-      "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns."
+      "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns.",
+      "$renamedFrom": "filters — s305-D58 (Dave, \"As recommended\") made `filters` the slot and named the cost: the applied search terms need a name of their own. `terms` is this lane's plain word for them, Dave's to keep or rename. #311 lane C0."
     },
     {
       "name": "pageSize",
@@ -269,17 +289,6 @@
     "$261-G2": "#261 lane G2 — Dave's review of the header, ruled verbatim off notes/_lanes/261-G-grid-header-review.html: \"I like the new one, but can we remove the bars from the end of the column headers. and the odd (I assume selected state) black lines, bottom and right.\" Three changes, no others: (1) the resize handle's painted rule is invisible at rest — 1px hairline on hover/focus-visible of the handle only, 24px hit area and every resize behaviour kept; (2) the sorted rule 3px → 2px, the only edge sorted paints; (3) the filtered-active 3px LEADING rule removed (it read as the previous column's right edge). No state of this header paints a right-edge bar; the only trailing rule is the 1px table/border column hairline the sticky header carries as an inset shadow, and focus-visible is the canon focus/ring token."
   },
   "slots": {
-    "columns": {
-      "accepts": {
-        "capability": [
-          "column-definitions"
-        ]
-      },
-      "use": "The column contract: header, alignment, sort and edit affordances per column.",
-      "required": true,
-      "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    },
     "filters": {
       "accepts": {
         "tier": [
@@ -292,7 +301,8 @@
       },
       "use": "The filter controls mounted above the grid.",
       "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)",
+      "$settled": "s305-D58 (Dave, #305, \"As recommended\"): a slot only ever holds another part. This name's slot takes a kind of part (accepts.tier), so the name is a slot. The setting of the same name is renamed `terms`, not deleted. #311 lane C0."
     }
   },
   "edges": {

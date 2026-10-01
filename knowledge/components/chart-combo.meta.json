@@ -19,7 +19,27 @@
     {
       "name": "series",
       "type": "fixed",
-      "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3)."
+      "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3).",
+      "bindsData": {
+        "capability": [
+          "data-series"
+        ],
+        "shape": "shared-x × two-measures-different-units"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "data-series"
+            ]
+          },
+          "use": "The bar series on the primary axis plus the line series on the secondary axis.",
+          "required": true,
+          "multiple": true,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "secondaryAxis",
@@ -39,7 +59,29 @@
     {
       "name": "data",
       "type": "table",
-      "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target."
+      "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target.",
+      "bindsData": {
+        "capability": [
+          "chart-dataset",
+          "table-rows"
+        ],
+        "shape": "shared-x × two-measures-different-units"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "chart-dataset",
+              "table-rows"
+            ]
+          },
+          "use": "Carries the both measures over the shared x the chart renders, and the same rows the a11y data table exposes.",
+          "required": true,
+          "multiple": false,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "target",
@@ -145,31 +187,6 @@
     "source": "gap-report",
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-combo.reference.html"
-  },
-  "slots": {
-    "series": {
-      "accepts": {
-        "capability": [
-          "data-series"
-        ]
-      },
-      "use": "The bar series on the primary axis plus the line series on the secondary axis.",
-      "required": true,
-      "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    },
-    "data": {
-      "accepts": {
-        "capability": [
-          "chart-dataset",
-          "table-rows"
-        ]
-      },
-      "use": "Carries the both measures over the shared x the chart renders, and the same rows the a11y data table exposes.",
-      "required": true,
-      "multiple": false,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    }
   },
   "edges": {
     "renderedBy": [

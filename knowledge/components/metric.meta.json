@@ -99,7 +99,26 @@
       "type": "object",
       "default": null,
       "$note": "NEW #261. { value, target, pace } drives the optional progress row: a border/subtle track, a standing-ink fill, a one-pixel pace tick at alpha-60, and a caption that spells out every figure the bar draws. NO HUE AT ALL, deliberately: whether 48% against a 60% target is a problem is the reader's judgement, not the tile's, and a hue-free bar cannot be misread by a reader who separates colours poorly.",
-      "$status": "PROPOSED #261, Dave's eye owed"
+      "$status": "PROPOSED #261, Dave's eye owed",
+      "bindsData": {
+        "capability": [
+          "measure-against-target"
+        ],
+        "shape": "one-measure × value-and-delta"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "measure-against-target"
+            ]
+          },
+          "required": false,
+          "use": "holds the progress row: track (border/subtle), fill (text/default), pace tick (text/default at alpha-60), caption (.t-cm-legal). Carries no hue and no RAG rung.",
+          "$status": "optional; drawn #261, Dave's eye owed"
+        }
+      }
     },
     {
       "name": "state",
@@ -168,16 +187,6 @@
       "required": false,
       "use": "holds the Chart-sparkline atom at inline scale; the atom is enclosure-responsive by default (s184-D1) so the SLOT owns the width and the atom fills it. Heights are 28 compact / 40 default / 56 hero. Baked static — this component is not registered in component-types.json, so no dv-render-sparkline partial is injected and JS-off renders identically.",
       "$status": "THE TREND - an optional slot (s308-D42); heights 28 compact / 40 default / 56 hero (#261)"
-    },
-    "target": {
-      "accepts": {
-        "capability": [
-          "measure-against-target"
-        ]
-      },
-      "required": false,
-      "use": "holds the progress row: track (border/subtle), fill (text/default), pace tick (text/default at alpha-60), caption (.t-cm-legal). Carries no hue and no RAG rung.",
-      "$status": "optional; drawn #261, Dave's eye owed"
     }
   },
   "tokens": {

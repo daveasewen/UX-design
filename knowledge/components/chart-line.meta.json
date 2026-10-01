@@ -19,12 +19,54 @@
     {
       "name": "series",
       "type": "number",
-      "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011)."
+      "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011).",
+      "bindsData": {
+        "capability": [
+          "data-series"
+        ],
+        "shape": "time-series × 1–5-series"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "data-series"
+            ]
+          },
+          "use": "One polyline per series over the shared time axis.",
+          "required": true,
+          "multiple": true,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "data",
       "type": "table",
-      "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source)."
+      "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source).",
+      "bindsData": {
+        "capability": [
+          "chart-dataset",
+          "table-rows"
+        ],
+        "shape": "time-series × 1–5-series"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "chart-dataset",
+              "table-rows"
+            ]
+          },
+          "use": "Carries the values per point per series the chart renders, and the same rows the a11y data table exposes.",
+          "required": true,
+          "multiple": false,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "markers",
@@ -151,31 +193,6 @@
     "source": "proforma-promotion",
     "figma_node": "",
     "code_path": "knowledge/_proforma/DataViz-interactive.html"
-  },
-  "slots": {
-    "series": {
-      "accepts": {
-        "capability": [
-          "data-series"
-        ]
-      },
-      "use": "One polyline per series over the shared time axis.",
-      "required": true,
-      "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    },
-    "data": {
-      "accepts": {
-        "capability": [
-          "chart-dataset",
-          "table-rows"
-        ]
-      },
-      "use": "Carries the values per point per series the chart renders, and the same rows the a11y data table exposes.",
-      "required": true,
-      "multiple": false,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    }
   },
   "edges": {
     "obeys": [

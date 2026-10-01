@@ -10,7 +10,21 @@
     { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "selected", "disabled", "error"], "default": "default", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "checkboxKind", "type": "enum", "values": ["checked", "indeterminate"], "default": "checked", "$note": "Checkbox supports an indeterminate (mixed) state." },
     { "name": "chipType", "type": "enum", "values": ["toggle", "single-selection", "multiple-selection", "delete"], "default": "toggle" },
-    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true" }
+    {
+      "name": "label",
+      "type": "string",
+      "ownText": true,
+      "$note": "The control's label (reference snippet: 'Email notifications'); absent means no visible label, as the old switch's false did (the control still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+      "$wasSwitch": {
+        "name": "label",
+        "type": "boolean",
+        "values": [
+          "false",
+          "true"
+        ],
+        "default": "true"
+      }
+    }
   ],
   "variants": [
     { "name": "checkbox", "use": "Square box; checked/indeterminate fill with reverse check glyph. Supports error + disabled. CLEAN (form/*)." },

@@ -7,7 +7,22 @@
   "props": [
     { "name": "state", "type": "enum", "values": ["default", "hover", "active"], "default": "default", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "predictive", "type": "boolean", "values": ["false", "true"], "default": "false", "$note": "Predictive-search menu open below the field (single-select list, scrollable)." },
-    { "name": "label", "type": "boolean", "values": ["false", "true"], "default": "true", "$note": "Optional field label + help text + tooltip (Input label)." }
+    {
+      "name": "label",
+      "type": "string",
+      "ownText": true,
+      "$note": "The field's label; absent means no visible label, as the old switch's false did (the field still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+      "$wasSwitch": {
+        "name": "label",
+        "type": "boolean",
+        "values": [
+          "false",
+          "true"
+        ],
+        "default": "true",
+        "$note": "Optional field label + help text + tooltip (Input label)."
+      }
+    }
   ],
   "tokens": {
     "field-background": "form/background/default (transparent #ffffff00), hover form/background/hover (#f3f3f3); active field surface background/default (#ffffff)",

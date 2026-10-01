@@ -19,7 +19,27 @@
     {
       "name": "rows",
       "type": "array",
-      "$note": "One row per KPI: measure, target, and three qualitative range breakpoints."
+      "$note": "One row per KPI: measure, target, and three qualitative range breakpoints.",
+      "bindsData": {
+        "capability": [
+          "kpi-rows"
+        ],
+        "shape": "rows × measure-target-bands"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "kpi-rows"
+            ]
+          },
+          "use": "One measure/target row per KPI shown in the bullet stack.",
+          "required": true,
+          "multiple": true,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "measure",
@@ -34,12 +54,53 @@
     {
       "name": "ranges",
       "type": "array",
-      "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)."
+      "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order).",
+      "bindsData": {
+        "capability": [
+          "qualitative-ranges"
+        ],
+        "shape": "rows × measure-target-bands"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "qualitative-ranges"
+            ]
+          },
+          "use": "The banded qualitative ranges each measure bar is read against.",
+          "multiple": true,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "data",
       "type": "table",
-      "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)."
+      "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005).",
+      "bindsData": {
+        "capability": [
+          "chart-dataset",
+          "table-rows"
+        ],
+        "shape": "rows × measure-target-bands"
+      },
+      "$wasSlot": {
+        "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+        "slot": {
+          "accepts": {
+            "capability": [
+              "chart-dataset",
+              "table-rows"
+            ]
+          },
+          "use": "Carries the measure, target and range values the chart renders, and the same rows the a11y data table exposes.",
+          "required": true,
+          "multiple": false,
+          "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+        }
+      }
     },
     {
       "name": "empty",
@@ -128,41 +189,6 @@
     "source": "gap-report",
     "figma_node": "",
     "code_path": "knowledge/snippets/Chart-bullet.reference.html"
-  },
-  "slots": {
-    "rows": {
-      "accepts": {
-        "capability": [
-          "kpi-rows"
-        ]
-      },
-      "use": "One measure/target row per KPI shown in the bullet stack.",
-      "required": true,
-      "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    },
-    "ranges": {
-      "accepts": {
-        "capability": [
-          "qualitative-ranges"
-        ]
-      },
-      "use": "The banded qualitative ranges each measure bar is read against.",
-      "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    },
-    "data": {
-      "accepts": {
-        "capability": [
-          "chart-dataset",
-          "table-rows"
-        ]
-      },
-      "use": "Carries the measure, target and range values the chart renders, and the same rows the a11y data table exposes.",
-      "required": true,
-      "multiple": false,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
-    }
   },
   "edges": {
     "renderedBy": [

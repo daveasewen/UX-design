@@ -18,6 +18,14 @@ EXEMPT, declared not silent: `EXAMPLE-button.meta.json` — the pre-existing TEM
 verifier itself put out of scope (it fails `tokenValidation` required-property by design). It
 is printed as EXEMPT on every run, never hidden. `--no-exempt` removes the exemption.
 
+★ #311 lane C0 — THREE RULE ARMS the Draft 7 schema cannot express, run after the sweep and counted in
+the same findings number (s305-D17/D18/D19/D58, Dave, #305):
+  SAME-NAME      a name is a setting OR a slot, never both (s305-D19 + s305-D58): a `props[].name` equal to a
+                 `slots` key is refused. Draft 7 cannot compare keys across two members, so the rule lives here.
+  SHAPE-UNKNOWN  a setting's `bindsData.shape` must be an ADDRESS into knowledge/shapes.json (a closed store).
+  ROLE-UNKNOWN   a slot's `accepts.provides` must name roles in knowledge/roles.json `roles` (s305-D18).
+The schema itself refuses `ownText` on anything but a string, a number or an array (s305-D17).
+
 ⛔ WHAT IT CANNOT SEE: whether the meta is TRUE. Schema conformance is a grammar check — a meta
 can name the wrong token, the wrong component or a nonexistent edge target and pass. It also
 cannot see a schema that is itself wrong; widening vs repairing is an OPEN QUESTION TO DAVE
@@ -82,15 +90,57 @@ def sweep(directory=COMPONENTS, schema_path=None, exempt=EXEMPT, verbose=True):
     return findings, exempt_fails, checked
 
 
+def _stores(directory):
+    """the two closed stores the rule arms resolve against; they live beside the components directory."""
+    k = os.path.dirname(os.path.abspath(directory))
+    if not os.path.exists(os.path.join(k, "shapes.json")):   # a selftest copy of components/ alone: read the live stores
+        k = os.path.dirname(COMPONENTS)
+    shapes = set(json.load(open(os.path.join(k, "shapes.json"), encoding="utf-8"))["shapes"])
+    roles = set(json.load(open(os.path.join(k, "roles.json"), encoding="utf-8"))["roles"])
+    return shapes, roles
+
+
+def rules(directory=COMPONENTS, exempt=EXEMPT, verbose=True, stores=None):
+    """#311 C0 — the three rule arms (SAME-NAME, SHAPE-UNKNOWN, ROLE-UNKNOWN). Returns [(file, arm, message)]."""
+    shapes, roles = stores or _stores(directory)
+    out = []
+    for path in sorted(glob.glob(os.path.join(directory, "*.meta.json"))):
+        name = os.path.basename(path)
+        if name in exempt:
+            continue
+        try:
+            doc = json.load(open(path, encoding="utf-8"))
+        except Exception:
+            continue                      # the sweep already names a parse failure
+        props = [p for p in (doc.get("props") or []) if isinstance(p, dict)]
+        slots = {k: v for k, v in (doc.get("slots") or {}).items() if not k.startswith("$") and isinstance(v, dict)}
+        for p in props:
+            if p.get("name") in slots:
+                out.append((name, "SAME-NAME", "%r is both a setting and a slot (s305-D19/D58: one or the other)" % p["name"]))
+            sh = (p.get("bindsData") or {}).get("shape") if isinstance(p.get("bindsData"), dict) else None
+            if sh is not None and sh not in shapes:
+                out.append((name, "SHAPE-UNKNOWN", "setting %r binds shape %r, not in knowledge/shapes.json" % (p.get("name"), sh)))
+        for sn, sd in slots.items():
+            for r in ((sd.get("accepts") or {}).get("provides") or []):
+                if r not in roles:
+                    out.append((name, "ROLE-UNKNOWN", "slot %r accepts role %r, not in knowledge/roles.json" % (sn, r)))
+    if verbose:
+        for f, arm, msg in out:
+            print("  ⛔ %s [%s] %s" % (f, arm, msg))
+    return out
+
+
 def check(directory=COMPONENTS):
     findings, exempt_fails, checked = sweep(directory)
     if findings is None:
         print("PROBE P-1 — findings=UNKNOWN (dependency missing)")
         return 1
+    ruled = rules(directory)
     print("P-1 meta-schema sweep: %d meta(s) checked · %d finding(s) · %d exempt failure(s) "
           "(%s)" % (checked, len(findings), len(exempt_fails), ", ".join(EXEMPT)))
-    print("PROBE P-1 — findings=%d" % len(findings))
-    return 1 if findings else 0
+    print("P-1 rule arms (s305-D17/D18/D19/D58): SAME-NAME · SHAPE-UNKNOWN · ROLE-UNKNOWN — %d finding(s)" % len(ruled))
+    print("PROBE P-1 — findings=%d" % (len(findings) + len(ruled)))
+    return 1 if (findings or ruled) else 0
 
 
 def selftest():
@@ -127,10 +177,61 @@ def selftest():
     else:
         print("  ✅ plant caught: %s" % "; ".join("%s [%s] %s" % f for f in new[:2]))
 
+    # direction 2b — #311 C0: one plant per new clause, each on a fresh copy, each must be caught
+    base_rules = rules(work, verbose=False)
+    print("  · rule-arm baseline on the copy: %d finding(s)" % len(base_rules))
+
+    def _fresh():
+        shutil.rmtree(work)
+        shutil.copytree(COMPONENTS, work)
+
+    def _plant(fname, mutate):
+        pth = os.path.join(work, fname)
+        d = json.load(open(pth, encoding="utf-8"))
+        mutate(d)
+        json.dump(d, open(pth, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+
+    def _p_same(d):          # re-open the clash s305-D19 closed: chart-line's data setting gets its slot back
+        d.setdefault("slots", {})["data"] = {"accepts": {"capability": ["chart-dataset"]}, "use": "planted"}
+
+    def _p_shape(d):
+        next(p for p in d["props"] if p.get("bindsData"))["bindsData"]["shape"] = "planted × nothing"
+
+    def _p_role(d):
+        d["slots"]["tiles"]["accepts"]["provides"] = ["headline-metric", "planted-role"]
+
+    def _p_owntext(d):       # ownText on a boolean: the schema clause
+        next(p for p in d["props"] if p.get("type") == "boolean")["ownText"] = True
+
+    for label, fname, mut, arm in (
+            ("SAME-NAME", "chart-line.meta.json", _p_same, "SAME-NAME"),
+            ("SHAPE-UNKNOWN", "chart-line.meta.json", _p_shape, "SHAPE-UNKNOWN"),
+            ("ROLE-UNKNOWN", "template-dashboard-bento.meta.json", _p_role, "ROLE-UNKNOWN"),
+            ("ownText on a boolean (schema)", "accordion.meta.json", _p_owntext, None)):
+        _fresh()
+        if not os.path.exists(os.path.join(work, fname)):
+            fails.append("PLANT %s: %s is not in the tree" % (label, fname))
+            continue
+        _plant(fname, mut)
+        if arm:
+            got = [r for r in rules(work, verbose=False) if r not in base_rules and r[1] == arm]
+        else:
+            s2, _, _ = sweep(work, verbose=False)
+            got = [f for f in s2 if f not in base and f[0] == fname]
+        if got:
+            print("  ✅ plant caught (%s): %s" % (label, " ".join(str(x) for x in got[0])[:160]))
+        else:
+            fails.append("PLANT NOT CAUGHT: %s planted in %s produced no new finding" % (label, fname))
+    if base_rules:
+        fails.append("CONTROL: the live tree carries %d rule-arm finding(s); the baseline must be 0" % len(base_rules))
+
     # direction 3 — REMOVE the plant, the probe must go back to baseline (silence)
     shutil.rmtree(work)
     shutil.copytree(COMPONENTS, work)
     after, _, _ = sweep(work, verbose=False)
+    after_rules = rules(work, verbose=False)
+    if after_rules != base_rules:
+        fails.append("REMOVAL NOT GREEN (rule arms): restored tree gave %d, baseline was %d" % (len(after_rules), len(base_rules)))
     if after != base:
         fails.append("REMOVAL NOT GREEN: restored tree gave %d finding(s), baseline was %d"
                      % (len(after), len(base)))

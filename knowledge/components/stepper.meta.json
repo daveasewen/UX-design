@@ -6,7 +6,6 @@
   "purpose": "The interactive multi-step flow driver (Progress-tracker is display-only): step content panels, validation-gated Next, back-navigation on completed dots, and the same dots↔track responsive collapse. Back/Next ride the Mono button ladder as the journey's real actions. Itinerary row 34 (P1); built Phase-2 wave 2 (worker A continuation).",
   "provides": "input",
   "props": [
-    { "name": "steps", "type": "array", "default": "4 named steps", "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title." },
     { "name": "gate", "type": "function", "default": "per-step validators", "$note": "Next runs the current step's validator; failure = field error + focus, no advance (3.3.1)." },
     { "name": "backNavigation", "type": "boolean", "default": true, "$note": "Completed dots are real buttons; current and future steps are never clickable." }
   ],
@@ -84,7 +83,16 @@
       "use": "The per-step content panels the stepper drives.",
       "required": true,
       "multiple": true,
-      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+      "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)",
+      "$wasSetting": {
+        "$settled": "s305-D58 (Dave, #305, \"As recommended\"): a slot only ever holds another part. This name's slot takes a kind of part (accepts.tier), so the name is a slot. The setting of the same name is kept below, archived, not deleted. #311 lane C0.",
+        "prop": {
+          "name": "steps",
+          "type": "array",
+          "default": "4 named steps",
+          "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title."
+        }
+      }
     }
   },
   "edges": {
