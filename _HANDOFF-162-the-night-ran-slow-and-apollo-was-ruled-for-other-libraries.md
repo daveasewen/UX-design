@@ -131,3 +131,9 @@ status: observed
 9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ POST-WRAP ADDENDUM — HIS YES AT 12:35 BST, BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+⛔★ **#312's FIRST LANE, BEFORE WAVE 2 COMMITS ANYTHING BIG (one Opus seat lane):** (1) stop committing `_memento-index.json` (50.6 MB; GitHub refuses over 100 MB; every commit adds a copy to history) — build it at the opener and in CI, and make the determinism step compare two fresh builds; if the opener build is too slow, shrink it instead; no Git LFS. (2) move the eleven older wrap-date-split lines from the GOOD-MORNING header to the archive, one counting line left (`_CHAIN.md` 8,305 v the 7,700 warn). His words, verbatim: `notes/_lanes/311/DAVE-WORDS-2026-10-01-1235-index-and-chain.md` — "yes to both, I want our plan to run smoothly". Inscribe as rulings at the #312 opener, quoting that file.
