@@ -1,0 +1,37 @@
+{
+  "$comment": "The four mock banking roles of the proposal (notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html § Four mock roles), as the build spec fixes them (notes/_lanes/312/C/SPEC-launchpad-day-one.md § 6). Best guesses, mock only (s305-D46). A 'mock role' here is a banking role; it never mixes with a 'provides role' of knowledge/roles.json. Written by #313 lane C4.",
+  "limit": {"amount": 500000, "currency": "GBP", "above": "second-approver", "$source": "spec § 6: payments awaiting approval up to the mock limit of £500,000; anything above needs a second approver"},
+  "tools": ["dashboard", "positions", "payments_queue", "prepare_approval", "client_book", "exceptions", "audit_record"],
+  "roles": {
+    "corporate-treasurer": {
+      "side": "client",
+      "sees": "own company's accounts, all entities; payments awaiting approval up to the mock limit of £500,000; anything above needs a second approver",
+      "grants": {"dashboard": null, "positions": "all-entities", "payments_queue": "full", "prepare_approval": "up-to-limit"}
+    },
+    "relationship-manager": {
+      "side": "bank",
+      "sees": "own book of client companies, balances at summary level only; no payment detail; cannot prepare approvals",
+      "grants": {"dashboard": null, "positions": "summary", "client_book": "own-book"}
+    },
+    "operations-analyst": {
+      "side": "bank",
+      "sees": "payments in their region's queue, by stage; repairs and exceptions in full; no balances; cannot prepare approvals",
+      "grants": {"dashboard": null, "payments_queue": "status-only", "exceptions": "full"}
+    },
+    "auditor": {
+      "side": "read only",
+      "sees": "the records of screens sent and decisions made; no live balances or payments; cannot call anything that prepares or changes",
+      "grants": {"dashboard": null, "audit_record": "read"}
+    }
+  },
+  "supplies": {
+    "$comment": "[spec] § 7: which tool supplies which data shape. A data item's shape must be one its tool supplies (selftest T4.4b). `dashboard` supplying the one-state shape is this lane's [spec] addition: the cut-off status is derived by the server from the clock (spec § 6, 'time triggers act on what is shown'), so the only grant it needs is the dashboard call itself.",
+    "dashboard": ["one-state × dot-and-label", "ancestor-path × links"],
+    "positions": ["one-measure × value-and-delta", "time-series × 1–5-series", "rows × name-value-pairs"],
+    "payments_queue": ["records", "categories × series", "one-measure × value-and-delta"],
+    "prepare_approval": [],
+    "client_book": ["records"],
+    "exceptions": ["records"],
+    "audit_record": ["records"]
+  }
+}

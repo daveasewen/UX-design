@@ -1,0 +1,88 @@
+{
+  "$comment": "Mock company data behind the worked example (spec § 9; proposal § Worked example). The counts and shapes are the proposal's and must hold: three payments awaiting approval, exactly one above the £500,000 limit; five payments in repair; the cut-off two hours after 09:10 on month end. Every name, balance and amount is mock, typed by #313 lane C4. Each item is what one tool returns at one scope (spec § 6: payments_queue returns payments awaiting approval at `full`, the region's queue by stage at `status-only`). `facts` are the when-field values the data cannot say for itself (the question it answers, the axes, the tile's span); counts (records, series) and delta are derived from `data` by the chooser, never typed twice.",
+  "clock": {"date": "2026-09-30", "month_end": "2026-09-30", "cutoff": "2026-09-30T11:10:00+01:00", "$source": "spec § 9: 09:10 on month end, two hours before the payments cut-off, so the cut-off is 11:10"},
+  "company": "Northgate Holdings plc (mock)",
+  "region": "UK & Ireland (mock)",
+  "items": {
+    "cash-position": {
+      "tool": "positions", "scope": "all-entities", "shape": "one-measure × value-and-delta",
+      "title": "Cash position today",
+      "facts": {"answers": "one-number", "span.cols": 3},
+      "data": {"label": "Cash position", "value": 48250000, "currency": "GBP", "delta": 1320000, "period": "since yesterday"}
+    },
+    "balance-30d": {
+      "tool": "positions", "scope": "all-entities", "shape": "time-series × 1–5-series",
+      "title": "Balance over the last 30 days",
+      "facts": {"answers": "change-over-time", "axes": "present", "units": "same", "span.cols": 6},
+      "data": {"series": [{"name": "All entities", "unit": "GBP", "points": [
+        46.1, 46.4, 45.9, 46.8, 47.2, 47.0, 46.6, 46.9, 47.4, 47.8, 47.5, 47.1, 46.8, 47.3, 47.9,
+        48.4, 48.0, 47.6, 47.2, 47.5, 47.9, 48.3, 48.8, 48.5, 48.1, 47.7, 47.4, 46.9, 46.93, 48.25]}],
+        "x": {"from": "2026-09-01", "to": "2026-09-30", "step": "day"}, "unit_scale": "millions"}
+    },
+    "balances-by-client": {
+      "tool": "positions", "scope": "summary", "shape": "rows × name-value-pairs",
+      "title": "Client balances, summary",
+      "facts": {"answers": "details-before-commit", "span.cols": 6},
+      "data": {"rows": [{"name": "Northgate Holdings", "value": "£48.3m"}, {"name": "Harbour Foods", "value": "£12.9m"}, {"name": "Kestrel Logistics", "value": "£7.4m"}]}
+    },
+    "cut-off": {
+      "tool": "dashboard", "scope": null, "shape": "one-state × dot-and-label",
+      "title": "Payments cut-off",
+      "facts": {"answers": "status-of-one", "span.cols": 3},
+      "data": {"derived_from": "clock.cutoff and the request's asked_at", "variant": "pending"}
+    },
+    "payments-awaiting-approval": {
+      "tool": "payments_queue", "scope": "full", "shape": "records",
+      "title": "Payments awaiting your approval",
+      "actions": ["prepare_approval"],
+      "facts": {"surface": "none", "needs": "none"},
+      "data": {"records": [
+        {"id": "PAY-0931-01", "payee": "Aldwych Supplies Ltd", "amount": 184500, "currency": "GBP", "due": "2026-09-30"},
+        {"id": "PAY-0931-02", "payee": "Mersey Freight", "amount": 92300, "currency": "GBP", "due": "2026-09-30"},
+        {"id": "PAY-0931-03", "payee": "Calder Property Trust", "amount": 1250000, "currency": "GBP", "due": "2026-09-30"}
+      ]}
+    },
+    "payments-in-repair": {
+      "tool": "payments_queue", "scope": "status-only", "shape": "one-measure × value-and-delta",
+      "title": "Payments in repair",
+      "facts": {"answers": "one-number", "span.cols": 3},
+      "data": {"label": "Payments in repair", "value": 5, "delta": 2, "period": "since 08:00"}
+    },
+    "queue-by-stage": {
+      "tool": "payments_queue", "scope": "status-only", "shape": "categories × series",
+      "title": "Region's queue by stage",
+      "facts": {"answers": "comparison", "axis.x": "categorical", "span.cols": 6},
+      "data": {"categories": ["Received", "Screening", "Repair", "Awaiting release", "Sent"],
+               "series": [{"name": "Payments", "values": [42, 17, 5, 23, 118]}]}
+    },
+    "exceptions-to-clear": {
+      "tool": "exceptions", "scope": "full", "shape": "records",
+      "title": "Exceptions to clear, oldest first",
+      "facts": {"surface": "none", "needs": "none"},
+      "data": {"order": "oldest first", "records": [
+        {"id": "EXC-2207", "kind": "Beneficiary name mismatch", "opened": "2026-09-29T15:42:00+01:00"},
+        {"id": "EXC-2214", "kind": "Missing purpose code", "opened": "2026-09-30T07:58:00+01:00"},
+        {"id": "EXC-2219", "kind": "Sanctions screening hold", "opened": "2026-09-30T08:31:00+01:00"},
+        {"id": "EXC-2221", "kind": "IBAN check digit failure", "opened": "2026-09-30T08:47:00+01:00"}
+      ]}
+    },
+    "exceptions-search": {
+      "$comment": "Not the proposal's worked example: this lane's fixture for Dave's call 21 (s313-D40, 'Keep terms'). The applied search words of a grid are passed under the setting `terms`.",
+      "tool": "exceptions", "scope": "full", "shape": "records",
+      "title": "Exceptions mentioning Calder",
+      "facts": {"surface": "none", "needs": "filter"},
+      "settings": {"terms": ["Calder"]},
+      "data": {"records": [
+        {"id": "EXC-2207", "kind": "Beneficiary name mismatch", "party": "Calder Property Trust"},
+        {"id": "EXC-2230", "kind": "Duplicate payment suspected", "party": "Calder Property Trust"}
+      ]}
+    },
+    "where-am-i": {
+      "$comment": "This lane's fixture for Dave's call 22 (s313-D41, 'Keep the four'): a breadcrumb trail is data the wall's four kinds of tile do not take.",
+      "tool": "dashboard", "scope": null, "shape": "ancestor-path × links",
+      "title": "Where am I",
+      "facts": {"depth": 3},
+      "data": {"trail": ["Home", "Payments", "Exceptions"]}
+    }
+  }
+}

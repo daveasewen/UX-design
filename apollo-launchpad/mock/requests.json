@@ -1,0 +1,78 @@
+{
+  "$comment": "The worked example's two requests (spec § 9; proposal § Worked example), verbatim question and clock, one per mock role. `asks` is what the agent asks the server to put on the screen for that question (the agent's planning, mocked here); `context` is the screen-level intent context, keyed by knowledge/when-fields.json names. The per-tile intent contexts are derived by the chooser from each item's `facts` and its data. `expect` is this lane's reading of spec § 9 and § 6, written before the run; it is what selftest T4.3 checks. Written by #313 lane C4.",
+  "worked_example": [
+    {
+      "id": "treasurer-0910",
+      "role": "corporate-treasurer",
+      "question": "What needs my attention this morning?",
+      "asked_at": "2026-09-30T09:10:00+01:00",
+      "context": {"layout.grammar": "bento", "destinations": 5, "nav.levels": 1},
+      "asks": ["cash-position", "cut-off", "payments-awaiting-approval", "balance-30d"],
+      "expect": {
+        "tiles": ["metric", "status-indicator", "list-items", "chart-line"],
+        "metric_reading": "without trend",
+        "frame": {"shell": "app-shell-top-nav", "wall": "template-dashboard-bento"},
+        "not_chosen_refused": [],
+        "grants": [
+          {"tool": "dashboard", "scope": null, "allowed": true},
+          {"tool": "positions", "scope": "all-entities", "allowed": true},
+          {"tool": "payments_queue", "scope": "full", "allowed": true},
+          {"tool": "prepare_approval", "scope": "up-to-limit", "allowed": true}
+        ],
+        "payment_flags": ["within-limit", "within-limit", "second-approver"]
+      }
+    },
+    {
+      "id": "analyst-0910",
+      "role": "operations-analyst",
+      "question": "What needs my attention this morning?",
+      "asked_at": "2026-09-30T09:10:00+01:00",
+      "context": {"layout.grammar": "bento", "destinations": 5, "nav.levels": 1},
+      "asks": ["cash-position", "payments-in-repair", "cut-off", "exceptions-to-clear", "queue-by-stage"],
+      "expect": {
+        "tiles": ["metric", "status-indicator", "list-items", "chart-bar"],
+        "metric_reading": "without trend",
+        "frame": {"shell": "app-shell-top-nav", "wall": "template-dashboard-bento"},
+        "not_chosen_refused": [{"item": "cash-position", "part": "metric", "why": "positions refused for this role"}],
+        "grants": [
+          {"tool": "dashboard", "scope": null, "allowed": true},
+          {"tool": "positions", "scope": null, "allowed": false, "reason": "tool-not-granted"},
+          {"tool": "payments_queue", "scope": "status-only", "allowed": true},
+          {"tool": "exceptions", "scope": "full", "allowed": true}
+        ]
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "analyst-search-terms",
+      "$comment": "This lane's own fixture for Dave's call 21 (s313-D40): a grid's applied search words travel as `terms`.",
+      "role": "operations-analyst",
+      "question": "Which exceptions mention Calder?",
+      "asked_at": "2026-09-30T09:12:00+01:00",
+      "context": {"layout.grammar": "bento", "destinations": 5, "nav.levels": 1},
+      "asks": ["exceptions-search"],
+      "expect": {"tiles": ["data-grid"], "settings": {"terms": ["Calder"]}}
+    },
+    {
+      "id": "analyst-breadcrumb",
+      "$comment": "This lane's own fixture for Dave's call 22 (s313-D41): the wall keeps its four kinds of tile, so a breadcrumb trail is not a tile.",
+      "role": "operations-analyst",
+      "question": "Where am I?",
+      "asked_at": "2026-09-30T09:14:00+01:00",
+      "context": {"layout.grammar": "bento", "destinations": 5, "nav.levels": 1},
+      "asks": ["where-am-i", "cut-off"],
+      "expect": {"tiles": ["status-indicator"], "not_a_tile": [{"item": "where-am-i", "part": "breadcrumbs", "provides": "wayfinding"}]}
+    },
+    {
+      "id": "manager-scope",
+      "$comment": "A scope refusal: the relationship manager has positions at summary only, so the all-entities cash position is refused by scope, and the summary balances are not.",
+      "role": "relationship-manager",
+      "question": "How is my book this morning?",
+      "asked_at": "2026-09-30T09:10:00+01:00",
+      "context": {"layout.grammar": "bento", "destinations": 5, "nav.levels": 1},
+      "asks": ["cash-position", "balances-by-client", "cut-off"],
+      "expect": {"tiles": ["summary", "status-indicator"], "not_chosen_refused": [{"item": "cash-position", "part": "metric", "why": "positions at scope all-entities refused for this role"}]}
+    }
+  ]
+}
