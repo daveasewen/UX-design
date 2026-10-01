@@ -1,9 +1,9 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.0/catalog.json",
+ "$id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
  "title": "Apollo Launchpad — the dashboard parts",
  "description": "Generated from knowledge/components/*.meta.json by apollo-launchpad/catalogue/gen_catalogue.py; the metas are the source, this file is the API. Per-entry Apollo data sits under x-apollo (an annotation keyword; A2UI ignores it). Beta parts carry x-apollo.proposal: true (s305-D20).",
- "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.0/catalog.json",
+ "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
  "components": {
   "AppShellTopNav": {
    "type": "object",
@@ -481,7 +481,7 @@
    "x-apollo": {
     "slug": "button",
     "meta": "knowledge/components/button.meta.json",
-    "metaSha256": "f7684bbf77e9b9801457625c154c95ab2f04bd01509af55de8a7ab1b7d3e7689",
+    "metaSha256": "b369f783348e40bbe9476b93e1013de60e8cd741a3fea53ff95fe25ae8b94b5d",
     "level": "element",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -580,7 +580,166 @@
      "obeysDerived": [],
      "obeysRoutedCount": 41
     },
-    "aliases": []
+    "aliases": [],
+    "spec": {
+     "anatomy": {
+      "part": "btn",
+      "tag": "button",
+      "attrs": {
+       "class": "btn {props.type}",
+       "disabled": "{state.disabled}"
+      },
+      "text": "Loading",
+      "$stateClasses": [
+       "is-pressed",
+       "is-disabled",
+       "is-success"
+      ],
+      "$sel": "body > div.row > button.btn.primary",
+      "children": [
+       {
+        "part": "spin",
+        "tag": "span",
+        "attrs": {
+         "class": "spin"
+        },
+        "$sel": "body > div.row > button.btn.primary > span.spin"
+       }
+      ]
+     },
+     "states": {
+      "states": [
+       "default",
+       "hover",
+       "pressed",
+       "disabled",
+       "processing",
+       "success",
+       "focus"
+      ],
+      "initial": "default",
+      "transitions": [
+       {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+       },
+       {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+       },
+       {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "pressed"
+       },
+       {
+        "from": "pressed",
+        "on": "pointerup",
+        "to": "hover"
+       },
+       {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+       },
+       {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+       },
+       {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+       }
+      ],
+      "$sources": {
+       "focus": [
+        "style .btn:focus-visible"
+       ],
+       "hover": [
+        "style .actionbar .btn:hover",
+        "style .btn.full:hover",
+        "style .btn.is-disabled:hover",
+        "style .btn.primary:hover",
+        "style .btn.quaternary:hover",
+        "style .btn.secondary:hover"
+       ],
+       "disabled": [
+        "attribute disabled on a twin of body > div.row > button.btn.primary",
+        "class .is-disabled on a twin of body > div.row > button.btn.primary",
+        "style .btn.is-disabled:hover",
+        "style .btn.primary.is-disabled",
+        "style .btn.quaternary.is-disabled",
+        "style .btn.secondary.is-disabled"
+       ],
+       "pressed": [
+        "class .is-pressed on a twin of body > div.row > button.btn.primary",
+        "style .btn.primary.is-pressed",
+        "style .btn.quaternary.is-pressed",
+        "style .btn.secondary.is-pressed",
+        "style .btn.tertiary.is-pressed",
+        "style .btn:active"
+       ],
+       "success": [
+        "class .is-success on a twin of body > div.row > button.btn.primary",
+        "style .btn.primary.is-success"
+       ],
+       "$initial": "meta prop `state` enum; initial = its default"
+      }
+     },
+     "emits": [],
+     "bindings": {
+      "--alpha-68": "{alpha.68}",
+      "--pri-default": "{button.primary.background.default}",
+      "--pri-hover": "{button.primary.background.hover}",
+      "--pri-pressed": "{button.primary.background.pressed}",
+      "--pri-disabled": "{button.primary.background.disabled}",
+      "--pri-label": "{button.primary.label.default}",
+      "--pri-label-disabled": "{button.primary.label.disabled}",
+      "--pri-icon": "{button.primary.icon.default}",
+      "--sec-default": "{button.secondary.background.default}",
+      "--sec-hover": "{button.secondary.background.hover}",
+      "--sec-pressed": "{button.secondary.background.pressed}",
+      "--sec-disabled": "{button.secondary.background.disabled}",
+      "--sec-label": "{button.secondary.label.default}",
+      "--sec-label-disabled": "{button.secondary.label.disabled}",
+      "--ter-hover": "{button.tertiary.background.hover}",
+      "--ter-border": "{button.tertiary.border.default}",
+      "--ter-border-disabled": "{button.tertiary.border.disabled}",
+      "--ter-label": "{button.tertiary.label.default}",
+      "--ter-label-disabled": "{button.tertiary.label.disabled}",
+      "--quat-hover": "{button.quaternary.background.hover}",
+      "--quat-label": "{button.quaternary.label.default}",
+      "--quat-label-disabled": "{button.quaternary.label.disabled}",
+      "--success": "{rag.success-background}",
+      "--success-fg": "{text.on-success}",
+      "--page": "{background.default}",
+      "--surface": "{button.tertiary.background.hover}",
+      "--border-radius-control": "{border-radius.control}",
+      "--press-travel": "{component-type.button-family.press-travel}",
+      "--press-darken": "{component-type.button-family.press-darken}"
+     },
+     "$extracted": {
+      "by": "extract_spec.py @ 312-L2",
+      "date": "2026-10-01",
+      "reviewed": false,
+      "source": "knowledge/snippets/Button.reference.html",
+      "fields": [
+       "anatomy",
+       "states",
+       "emits",
+       "bindings"
+      ],
+      "$root": "name affinity 3 (button.btn.primary) → richest of 6 instances",
+      "$listeners": [],
+      "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+      "sha": "97c7793a"
+     }
+    }
    }
   },
   "ChartBar": {
@@ -2541,7 +2700,7 @@
    "x-apollo": {
     "slug": "metric",
     "meta": "knowledge/components/metric.meta.json",
-    "metaSha256": "4766b6c18fe21ce332f33203063e257a2245cb7c913e80963973fbd80134b6ea",
+    "metaSha256": "a77a9449be78e0fbb39881a3dd50ad22db283449817e01e8d143e06db571781e",
     "level": "element",
     "status": "beta",
     "statusSource": "showroom/index.json",
@@ -2668,7 +2827,240 @@
     "aliases": [
      "kpi-tile",
      "stat-card"
-    ]
+    ],
+    "spec": {
+     "anatomy": {
+      "part": "metric",
+      "tag": "div",
+      "attrs": {
+       "class": "metric"
+      },
+      "aria": {
+       "role": "group",
+       "aria-label": "Net cash flow, March",
+       "aria-busy": "{state.busy}"
+      },
+      "$stateClasses": [
+       "is-loading",
+       "is-empty",
+       "is-error",
+       "is-stale"
+      ],
+      "$sel": "body > div.board > div.metric",
+      "children": [
+       {
+        "part": "metric-lbl",
+        "tag": "p",
+        "attrs": {
+         "class": "metric-lbl t-cm-caption"
+        },
+        "text": "Net cash flow",
+        "$sel": "body > div.board > div.metric > p.metric-lbl.t-cm-caption"
+       },
+       {
+        "part": "metric-val",
+        "tag": "span",
+        "attrs": {
+         "class": "metric-val t-cm-figure-4"
+        },
+        "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4",
+        "children": [
+         {
+          "part": "unit",
+          "tag": "span",
+          "attrs": {
+           "class": "unit"
+          },
+          "text": "+£",
+          "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span.unit"
+         },
+         {
+          "part": "span",
+          "tag": "span",
+          "text": "2,450.00",
+          "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span"
+         }
+        ]
+       },
+       {
+        "part": "metric-delta",
+        "tag": "span",
+        "attrs": {
+         "class": "metric-delta {props.trend}",
+         "data-carries": "symbol label"
+        },
+        "$sel": "body > div.board > div.metric > span.metric-delta.up",
+        "children": [
+         {
+          "part": "glyph",
+          "tag": "span",
+          "attrs": {
+           "class": "glyph"
+          },
+          "aria": {
+           "aria-hidden": "true"
+          },
+          "$sel": "body > div.board > div.metric > span.metric-delta.up > span.glyph",
+          "children": [
+           {
+            "part": "icon",
+            "tag": "svg",
+            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.glyph > svg"
+           }
+          ]
+         },
+         {
+          "part": "span-2",
+          "tag": "span",
+          "attrs": {
+           "class": "t-cm-figure-6"
+          },
+          "text": "+12.4% up",
+          "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6"
+         },
+         {
+          "part": "metric-per",
+          "tag": "span",
+          "attrs": {
+           "class": "metric-per t-cm-legal"
+          },
+          "text": "vs February",
+          "$sel": "body > div.board > div.metric > span.metric-delta.up > span.metric-per.t-cm-legal"
+         }
+        ]
+       },
+       {
+        "part": "metric-spark",
+        "tag": "div",
+        "attrs": {
+         "class": "metric-spark"
+        },
+        "slot": "spark",
+        "$sel": "body > div.board > div.metric > div.metric-spark",
+        "children": [
+         {
+          "part": "spark-inline",
+          "tag": "svg",
+          "attrs": {
+           "class": "spark-inline",
+           "data-trend": "up",
+           "viewbox": "0 0 200 48",
+           "preserveaspectratio": "none",
+           "data-bespoke": "chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"
+          },
+          "aria": {
+           "aria-hidden": "true"
+          },
+          "$sel": "body > div.board > div.metric > div.metric-spark > svg.spark-inline"
+         }
+        ]
+       }
+      ]
+     },
+     "states": {
+      "states": [
+       "ready",
+       "loading",
+       "empty",
+       "error",
+       "stale",
+       "hover",
+       "focus",
+       "busy"
+      ],
+      "initial": "ready",
+      "transitions": [
+       {
+        "from": "ready",
+        "on": "pointerenter",
+        "to": "hover"
+       },
+       {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "ready"
+       },
+       {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+       },
+       {
+        "from": "focus",
+        "on": "blur",
+        "to": "ready"
+       }
+      ],
+      "$sources": {
+       "loading": [
+        "class .is-loading on a twin of body > div.board > div.metric",
+        "style .metric.is-loading .sk"
+       ],
+       "empty": [
+        "class .is-empty on a twin of body > div.board > div.metric",
+        "style .metric.is-empty .metric-val"
+       ],
+       "error": [
+        "class .is-error on a twin of body > div.board > div.metric",
+        "style .metric.is-error .metric-note",
+        "style .metric.is-error .metric-note .glyph",
+        "style .metric.is-error .metric-note .glyph .inner"
+       ],
+       "hover": [
+        "style .metric-cta:hover",
+        "style .metric-retry:hover",
+        "style .metric.as-link:hover"
+       ],
+       "focus": [
+        "style .metric-cta:focus-visible",
+        "style .metric-link:focus-visible",
+        "style .metric-panel-spec .scroll:focus-visible",
+        "style .metric-retry:focus-visible",
+        "style .metric.as-link:has(.metric-link:focus-visible)"
+       ],
+       "busy": [
+        "attribute aria-busy on a twin of body > div.board > div.metric"
+       ],
+       "stale": [
+        "class .is-stale on a twin of body > div.board > div.metric"
+       ],
+       "$initial": "meta.stateModel.states, in its order; initial = its first"
+      }
+     },
+     "emits": [],
+     "bindings": {
+      "--surface": "{tertiary.background.default}",
+      "--border": "{border.subtle}",
+      "--text": "{text.default}",
+      "--muted": "{text.secondary}",
+      "--page": "{background.default}",
+      "--focus": "{focus.ring}",
+      "--pos-ink": "{rag.success-ink}",
+      "--neg-ink": "{rag.error-ink}",
+      "--flat-ink": "{text.default}",
+      "--border-radius-surface": "{border-radius.surface}",
+      "--tbl-header": "{table.header.background}",
+      "--tbl-colhdr": "{table.column.background}",
+      "--tbl-cell": "{background.default}",
+      "--tbl-border": "{table.border}"
+     },
+     "$extracted": {
+      "by": "extract_spec.py @ 312-L2",
+      "date": "2026-10-01",
+      "reviewed": false,
+      "source": "knowledge/snippets/Metric.reference.html",
+      "fields": [
+       "anatomy",
+       "states",
+       "emits",
+       "bindings"
+      ],
+      "$root": "name affinity 3 (div.metric)",
+      "$listeners": [],
+      "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+      "sha": "97c7793a"
+     }
+    }
    }
   },
   "Navigations": {
@@ -3419,10 +3811,10 @@
  "x-apollo": {
   "catalogue": {
    "name": "dashboard",
-   "version": "v0.1.0",
-   "sha256": "686f823d8da95b3b7a118370018319c61d1ea5d6f6844d1477a6661827869d7e",
-   "metas_sha": "c5663383",
-   "metas_sha256": "f233a30e2f1cf8099b38a63ed6e064f26e118790f8c26496d7eef02fc10615d3",
+   "version": "v0.1.1",
+   "sha256": "87e4866c28eba307d1f039d276efb7ca273ba7f1b20c8aa077200140d98ca0d0",
+   "metas_sha": "827c59d0",
+   "metas_sha256": "4465b5940961db925a4e852085e4f0bc06d10a2e39217590f481a7f9f8a335af",
    "parts": [
     "app-shell-top-nav",
     "breadcrumbs",
@@ -3442,7 +3834,10 @@
     "summary",
     "template-dashboard-bento"
    ],
-   "previous": null
+   "previous": {
+    "version": "v0.1.0",
+    "sha256": "686f823d8da95b3b7a118370018319c61d1ea5d6f6844d1477a6661827869d7e"
+   }
   }
  }
 }
