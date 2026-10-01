@@ -441,7 +441,7 @@
     "aria": {
       "role": "group",
       "aria-label": "Net cash flow, March",
-      "aria-busy": "{state.busy}"
+      "aria-busy": "{state.loading}"
     },
     "$stateClasses": [
       "is-loading",
@@ -478,10 +478,11 @@
             "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span.unit"
           },
           {
-            "part": "span",
+            "part": "value",
             "tag": "span",
             "text": "2,450.00",
-            "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span"
+            "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span",
+            "$note": "the figure a tile is read for; the unit sits beside it"
           }
         ]
       },
@@ -513,13 +514,14 @@
             ]
           },
           {
-            "part": "span-2",
+            "part": "change",
             "tag": "span",
             "attrs": {
               "class": "t-cm-figure-6"
             },
             "text": "+12.4% up",
-            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6"
+            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6",
+            "$note": "the change figure; its direction is the delta's trend choice"
           },
           {
             "part": "metric-per",
@@ -568,8 +570,7 @@
       "error",
       "stale",
       "hover",
-      "focus",
-      "busy"
+      "focus"
     ],
     "initial": "ready",
     "transitions": [
@@ -597,7 +598,8 @@
     "$sources": {
       "loading": [
         "class .is-loading on a twin of body > div.board > div.metric",
-        "style .metric.is-loading .sk"
+        "style .metric.is-loading .sk",
+        "attribute aria-busy on a twin of body > div.board > div.metric (was a separate busy state; folded in)"
       ],
       "empty": [
         "class .is-empty on a twin of body > div.board > div.metric",
@@ -620,9 +622,6 @@
         "style .metric-panel-spec .scroll:focus-visible",
         "style .metric-retry:focus-visible",
         "style .metric.as-link:has(.metric-link:focus-visible)"
-      ],
-      "busy": [
-        "attribute aria-busy on a twin of body > div.board > div.metric"
       ],
       "stale": [
         "class .is-stale on a twin of body > div.board > div.metric"
@@ -648,7 +647,7 @@
     "--tbl-border": "{table.border}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Metric.reference.html",
@@ -661,6 +660,30 @@
     "$root": "name affinity 3 (div.metric)",
     "$listeners": [],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "part span renamed value",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+      },
+      {
+        "what": "part span-2 renamed change",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+      },
+      {
+        "what": "aria-busy now reads the loading state",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+      },
+      {
+        "what": "states busy taken out (and their arrows)",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+      },
+      {
+        "what": "the five declared states (ready, loading, empty, error, stale), the trend choice and the spark slot unchanged; rest stays ready, the metric's own word",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 7, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

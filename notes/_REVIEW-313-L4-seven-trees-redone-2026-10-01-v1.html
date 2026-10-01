@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seven trees redone</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+a{color:inherit}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+/* the count */
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0}
+.count div{background:var(--card);padding:var(--s2) var(--s3);min-width:0}
+.count b{display:block;font-size:40px;font-weight:200;line-height:1.1}
+.count span{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+/* the words */
+.words{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin:var(--s3) 0 0}
+.words h3{font-size:18px;font-weight:500;margin:0 0 var(--s1);line-height:1.3}
+.words p{font-size:15px;line-height:1.55;color:var(--g8)}
+/* picture beside tree */
+.part{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--s3);margin:var(--s3) 0 var(--s2);align-items:start}
+.pic figure{margin:0 0 var(--s2);background:var(--card);border:1px solid var(--g3);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1)}
+.pic img{display:block;max-width:100%;width:auto;height:auto;align-self:flex-start;background:#fff;border:1px solid var(--g2)}
+.pic figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pic .links{font-size:13px;color:var(--g7)}
+.tree{border-top:1px solid var(--fg);min-width:0}
+.tree h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;margin:var(--s2) 0 var(--s1);line-height:1.5}
+.tree h4 small{font-size:11px;letter-spacing:0;text-transform:none;color:var(--g6);font-weight:400;margin-left:.5em}
+.outline,.outline ul{list-style:none;margin:0;padding:0}
+.outline ul{padding-left:1.1rem;border-left:1px solid var(--g3);margin-left:.35rem}
+.outline li{font-size:14px;line-height:1.5;padding:2px 0;overflow-wrap:anywhere}
+.outline .pn{font-weight:500}
+.outline .tg{color:var(--g6);font-size:12px}
+.outline .tx{color:var(--g6);font-size:12px;margin-left:3px}
+.h{font-style:normal;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--g3);color:var(--g7);margin-left:3px;white-space:nowrap;vertical-align:1px}
+.h.st{border-color:var(--accent);color:var(--accent)}
+.h.prop{background:var(--g2)}
+.sts{display:flex;flex-wrap:wrap;gap:.3rem}
+.sc{font-size:12px;letter-spacing:.04em;padding:.25rem .55rem;border:1px solid var(--g3);color:var(--g8);line-height:1.35}
+.sc.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.keys,.ev{font-size:14px;line-height:1.55;margin:var(--s1) 0 0;color:var(--g8)}
+.keys .k,.ev .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);margin-right:.4em}
+.fires{margin:.3rem 0 0;padding-left:1.2em;font-size:14px;line-height:1.55;color:var(--g8)}
+.fires li{margin:0 0 3px}
+.binds{list-style:none;margin:0;padding:0;font-size:13px;line-height:1.5;color:var(--g8)}
+.binds li{overflow-wrap:anywhere}
+.binds .arr{color:var(--g5);margin:0 .3em}
+details.more summary{cursor:pointer;font-size:12px;color:var(--g6);padding:.3rem 0}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+/* calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s2)}
+.call .q .rw{font-weight:500}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:900px){
+  .count,.words{grid-template-columns:1fr 1fr}
+  .part{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .count,.words{grid-template-columns:1fr}
+  .count b{font-size:32px}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+.changed{font-size:17px;line-height:1.55;max-width:46em;margin:0 0 var(--s2);color:var(--g8)}.changed .k,.beside{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);margin-right:.5em}.beside{display:block;margin:.15rem 0 0 0;letter-spacing:.04em;text-transform:none;font-size:12px}.own{display:flex;flex-wrap:wrap;gap:.25rem;margin:.2rem 0 .1rem}.own .sc{font-size:11px;padding:.1rem .4rem}.h.vis{border-style:dashed}details.old{margin-top:var(--s2);font-size:13px;color:var(--g7)}details.old summary{cursor:pointer;font-size:12px;color:var(--g6);padding:.3rem 0}details.old .outline li{font-size:13px;color:var(--g7)}.why{color:var(--g6)}.split{margin:var(--s3) 0 0;padding:0;list-style:none}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#ruled">What you ruled</a>
+  <a href="#p-button">Button</a><a href="#p-table">Table</a><a href="#p-date-picker">Date picker</a><a href="#p-metric">Metric</a><a href="#p-slider">Slider</a><a href="#p-selection-controls">Switch</a><a href="#p-modals">Dialog</a>
+  <a href="#four">Four parts or one</a>
+  <a href="#else">Anything else</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 313 · re-look · Seven trees redone</p>
+      <h1>The seven trees you sent back tonight, redone the way the page recommended, for one more look.</h1>
+      <p class="sub">You took Change it on seven, each on the page's own recommendation and with no comment of your own, so each recommendation was the instruction. Every draft is still marked reviewed: false; nothing stands until you say.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>9 calls: one per redone part, the switch question you left open, and a note.</span>
+      <span>Yes means the redone tree stands as the part's spec. Change it means say how in the comment.</span>
+      <span>Pictures are the ones from last night's page; nothing was re-rendered.</span>
+    </div>
+  </div>
+</header>
+
+<section id="ruled">
+  <div class="wrap">
+    <p class="label">01 · What you ruled, and how it was applied</p>
+    <h2>Seven trees changed on the page's words, and two of your three rules on words applied to all seven.</h2>
+    <ul class="facts">
+      <li><span class="k">Plain words</span><span><b>Applied.</b> Where the markup gives a piece no name, the tree now uses a plain word set by hand: the table's row and cell, the dialog's title and body, the metric's value and change, the switch's knob. Where the markup has its own word (btn, spin, dp-box) it stays.</span></li>
+      <li><span class="k">Rest state</span><span><b>Applied.</b> Each part rests in its own word: the button and table in default, the metric in ready, the dialog in closed, the switch and chip in off, the checkbox and radio in unchecked.</span></li>
+      <li><span class="k">States per piece</span><span><b>Started where you named the piece.</b> The slider's track and thumb, the date picker's day, and the switch's knob and thumb now carry their own states. Every other piece waits for the later step you ruled; each tree says which.</span></li>
+      <li><span class="k">Parts with no element</span><span>The thumb, the track and the day have no element in the reference page (the browser draws the first two, the script builds the third). The tree marks them so, and the coverage check finds them through the element that draws or holds them. Everything else in every tree still points at a real element; every line to a token still resolves.</span></li>
+      <li><span class="k">Left as it was</span><span>The eight parts you said yes to are untouched. Nothing is inscribed and no reference page was edited.</span></li>
+    </ul>
+    <p class="record">Recommendation on the seven: Yes on 7, Change it on 0. One thing goes past your words and is said where it happens: the table's disabled state is taken out with pressed, because it came from the same demo switcher.</p>
+  </div>
+</section>
+
+<section id="p-button" class="grey">
+  <div class="wrap">
+    <p class="label">02 · Button · redone</p>
+    <h2>The button is now the button: its type, its words, and a spinner only while it is processing.</h2>
+    <p class="quote">What you took: “The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.”</p>
+    <p class="changed"><span class="k">What changed</span> Was the Loading specimen, with the fixed word Loading and a spinner always drawn. Now the default button: its type is the choice on it, its words are its label field, and the spinner is present only while processing. States and bindings unchanged.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/button.png" srcset="_lanes/312/L/img/button.png 2x" alt="Button from its reference page, light theme"><figcaption>Button · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/button.html">Showroom page</a> · <a href="../knowledge/snippets/Button.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">btn</span> <span class="tg">button</span> <i class="h prop">prop type</i> <i class="h st">state disabled</i> <i class="h prop">words: label field</i><ul><li><span class="pn">spin</span> <span class="tg">span</span> <i class="h st">only while processing</i></li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">disabled</span><span class="sc">processing</span><span class="sc">success</span><span class="sc">focus</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">btn</span> <span class="tg">button</span> <i class="h prop">prop type</i> <i class="h st">state disabled</i> <span class="tx">“Loading”</span><ul><li><span class="pn">spin</span> <span class="tg">span</span> </li></ul></li></ul>
+          <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">disabled</span><span class="sc">processing</span><span class="sc">success</span><span class="sc">focus</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The words</span><span>The label field fills the button. Nothing in the tree is the demo&#x27;s word any more.</span></li><li><span class="k">The spinner</span><span>Still the one child, now marked as shown only in the processing state. A button at rest has none.</span></li><li><span class="k">Kept</span><span>The seven states (rest, hover, pressed, disabled, processing, success, focus) and the 29 lines to tokens, as you said.</span></li></ul>
+    <div class="call" data-id="button" data-q="2. Button: does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> It is the button you described: type, words, and the spinner only while processing.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/button.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.row &gt; button.btn.primary</code> (name affinity 3 (button.btn.primary) → the first instance, the default button (hand-set 313-L4; the 312 draft took the richest of 6, the Loading one)). Old root: <code>body &gt; div.row &gt; button.btn.primary</code>.</li><li>Reference <code>knowledge/snippets/Button.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>the button&#x27;s words: the literal &quot;Loading&quot; replaced by the label field {props.label} <span class="why">— The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.</span></li><li>the spinner kept as the one child, marked present only while processing <span class="why">— The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.</span></li><li>root re-read as the default button, not the Loading specimen ($sel already names the first instance) <span class="why">— The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.</span></li><li>states (7, rest default) and bindings (29) unchanged <span class="why">— &quot;the states and bindings can stay&quot;</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-table">
+  <div class="wrap">
+    <p class="label">03 · Table · redone</p>
+    <h2>The table now starts at the table, its words come from its title and rows, and pressed is gone.</h2>
+    <p class="quote">What you took: “Start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.”</p>
+    <p class="changed"><span class="k">What changed</span> Was rooted at the scrolling box, carried the demo&#x27;s account names and balances, and listed pressed and disabled. Now rooted at the table with the scrolling box as an optional wrapper; the caption and every cell take the title and rows fields; pressed is out, and disabled with it; the rows and cells have plain names.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/table.png" srcset="_lanes/312/L/img/table.png 2x" alt="Table from its reference page, light theme"><figcaption>Table · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/table.html">Showroom page</a> · <a href="../knowledge/snippets/Table.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">scroll</span> <span class="tg">div</span> <i class="h">optional wrapper</i><ul><li><span class="pn">table</span> <span class="tg">table</span> <ul><li><span class="pn">caption</span> <span class="tg">caption</span> <i class="h prop">words: title field</i><ul><li><span class="pn">sub</span> <span class="tg">span</span> </li></ul></li><li><span class="pn">head</span> <span class="tg">thead</span> <ul><li><span class="pn">header-row</span> <span class="tg">tr</span> <ul><li><span class="pn">column-header</span> <span class="tg">th</span> <i class="h rep">×4</i> <i class="h prop">words: rows field</i></li><li><span class="pn">number-header</span> <span class="tg">th</span> <i class="h prop">words: rows field</i></li></ul></li></ul></li><li><span class="pn">body</span> <span class="tg">tbody</span> <ul><li><span class="pn">row</span> <span class="tg">tr</span> <i class="h rep">×4</i> <i class="h rep">one per row</i><ul><li><span class="pn">row-header</span> <span class="tg">th</span> <i class="h prop">prop rows</i><ul><li><span class="pn">row-header-value</span> <span class="tg">span</span> <i class="h prop">words: rows field</i></li></ul></li><li><span class="pn">cell</span> <span class="tg">td</span> <i class="h prop">prop rows</i> <i class="h rep">×3</i><ul><li><span class="pn">cell-value</span> <span class="tg">span</span> <i class="h prop">words: rows field</i></li></ul></li><li><span class="pn">number-cell</span> <span class="tg">td</span> <i class="h prop">prop rows</i><ul><li><span class="pn">number-value</span> <span class="tg">span</span> <i class="h prop">words: rows field</i></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>3, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">scroll</span> <span class="tg">div</span> <i class="h role">role region</i><ul><li><span class="pn">table</span> <span class="tg">table</span> <ul><li><span class="pn">caption</span> <span class="tg">caption</span> <span class="tx">“Account balances”</span><ul><li><span class="pn">sub</span> <span class="tg">span</span> <span class="tx">“As at 19 June 2026 · all figure…”</span></li></ul></li><li><span class="pn">thead</span> <span class="tg">thead</span> <ul><li><span class="pn">tr</span> <span class="tg">tr</span> <ul><li><span class="pn">th</span> <span class="tg">th</span> <i class="h rep">×4</i> <span class="tx">“Account”</span></li><li><span class="pn">num</span> <span class="tg">th</span> <span class="tx">“Available balance”</span></li></ul></li></ul></li><li><span class="pn">tbody</span> <span class="tg">tbody</span> <ul><li><span class="pn">tr-2</span> <span class="tg">tr</span> <i class="h rep">×4</i><ul><li><span class="pn">th-2</span> <span class="tg">th</span> <ul><li><span class="pn">v</span> <span class="tg">span</span> <span class="tx">“Current account”</span></li></ul></li><li><span class="pn">td</span> <span class="tg">td</span> <i class="h rep">×3</i><ul><li><span class="pn">v-2</span> <span class="tg">span</span> <span class="tx">“Personal”</span></li></ul></li><li><span class="pn">num-2</span> <span class="tg">td</span> <ul><li><span class="pn">v-3</span> <span class="tg">span</span> <span class="tx">“£2,140.50”</span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
+          <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">pressed</span><span class="sc">disabled</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Disabled, one step past your words</span><span>Disabled came from the same demo switcher as pressed (its greyed button), and from nothing else on the page. It is taken out for the same reason. If you want it kept, say so in the comment.</span></li><li><span class="k">The wrapper</span><span>The scrolling box is drawn above the tree as optional: it is the region a keyboard user tabs into to pan a wide table. Its name is now the table&#x27;s title.</span></li><li><span class="k">The words</span><span>Caption: the title field. Header cells, body cells and the card labels when the table collapses: the rows field. The body row repeats once per row. The caption&#x27;s second line (the demo&#x27;s date) is taken out; no setting carries a second line yet.</span></li><li><span class="k">The names</span><span>head, header row, column header, number header, body, row, row header, cell, number cell, and a value inside each cell. The markup has no class on these, so the names were set by hand, as you ruled.</span></li><li><span class="k">Listens</span><span>Nothing now. The page&#x27;s only click was the demo switcher&#x27;s.</span></li></ul>
+    <div class="call" data-id="table" data-q="3. Table: does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> All three changes are in, and the caption, header row, body rows and number cells are as they were.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/table.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.wrap &gt; div.scroll &gt; table</code> (name affinity 3 (table.table); the 312 draft climbed to div.scroll, now an optional $wrapper (hand-set 313-L4)). Old root: <code>body &gt; div.wrap &gt; div.scroll</code>.</li><li>Reference <code>knowledge/snippets/Table.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>the tree starts at the table; the scrolling box is an optional wrapper on it ($wrapper), named by the title <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li><li>caption&#x27;s words: &quot;Account balances&quot; replaced by the title field {props.title}; the sub-line&#x27;s demo date removed <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li><li>plain words for the tag names: thead → head, tr → header-row, th → column-header, num → number-header, tbody → body, tr-2 → row, th-2 → row-header, v → row-header-value, td → cell, v-2 → cell-value, num-2 → number-cell, v-3 → number-value <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part</span></li><li>every header cell, body cell and card label is a hole on the rows field {props.rows}; the body row repeats once per row ($each); the demo&#x27;s account names and balances removed <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li><li>states pressed taken out (and their arrows) <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li><li>states disabled taken out (and their arrows) <span class="why">— same reason as pressed: its only source was the demo switcher (style .seg button:disabled), not the table — flagged on the re-look page</span></li><li>hover and focus keep only the table&#x27;s own sources (the row highlight, the scroll region&#x27;s ring); the switcher&#x27;s lines removed <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li><li>listens: click removed (it was the demo switcher&#x27;s) <span class="why">— start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-date-picker" class="grey">
+  <div class="wrap">
+    <p class="label">04 · Date picker · redone</p>
+    <h2>The grid now holds its day: a day cell with today, selected, empty and disabled as its own states.</h2>
+    <p class="quote">What you took: “Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states.”</p>
+    <p class="changed"><span class="k">What changed</span> The grid was empty. Now it holds the day, with its four states on the day itself; today, selected and empty moved off the field&#x27;s list; three numbered names made plain (weekday, calendar icon, arrow icon).</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/date-picker.png" srcset="_lanes/312/L/img/date-picker.png 2x" alt="Date picker from its reference page, light theme"><figcaption>Date picker · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/date-picker.html">Showroom page</a> · <a href="../knowledge/snippets/Date-picker.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">dp</span> <span class="tg">div</span> <ul><li><span class="pn">dp-lblrow</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Payment date”</span></li></ul></li><li><span class="pn">dp-help</span> <span class="tg">p</span> <span class="tx">“Format: DD/MM/YYYY.”</span></li><li><span class="pn">dp-box</span> <span class="tg">div</span> <ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">tail-btn</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h st">state expanded</i><ul><li><span class="pn">calendar-icon</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">dp-msg</span> <span class="tg">div</span> </li><li><span class="pn">dp-panel</span> <span class="tg">div</span> <i class="h role">role dialog</i><ul><li><span class="pn">dp-head</span> <span class="tg">div</span> <ul><li><span class="pn">dp-nav</span> <span class="tg">button</span> <i class="h rep">×4</i><ul><li><span class="pn">arrow-icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">dp-title</span> <span class="tg">span</span> <span class="tx">“July 2026”</span></li></ul></li><li><span class="pn">dp-week</span> <span class="tg">div</span> <ul><li><span class="pn">weekday</span> <span class="tg">span</span> <i class="h rep">×7</i> <span class="tx">“Mo”</span></li></ul></li><li><span class="pn">dp-grid</span> <span class="tg">div</span> <i class="h role">role grid</i><ul><li><span class="pn">day</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h role">role gridcell</i> <i class="h st">state selected</i> <i class="h st">state today</i> <i class="h rep">one per day</i> <i class="h vis">built by the script</i><div class="own"><span class="sc">today</span><span class="sc">selected</span><span class="sc">empty</span><span class="sc">disabled</span></div></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>15, rest state marked; a piece's own states sit under it in the tree</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">expanded</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">invalid</span><span class="sc">error</span><span class="sc">completed</span><span class="sc">info</span><span class="sc">ok</span><span class="sc">static</span><span class="sc">success</span><span class="sc">warning</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">dp</span> <span class="tg">div</span> <ul><li><span class="pn">dp-lblrow</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Payment date”</span></li></ul></li><li><span class="pn">dp-help</span> <span class="tg">p</span> <span class="tx">“Format: DD/MM/YYYY.”</span></li><li><span class="pn">dp-box</span> <span class="tg">div</span> <ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">tail-btn</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h st">state expanded</i><ul><li><span class="pn">icn</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">dp-msg</span> <span class="tg">div</span> </li><li><span class="pn">dp-panel</span> <span class="tg">div</span> <i class="h role">role dialog</i><ul><li><span class="pn">dp-head</span> <span class="tg">div</span> <ul><li><span class="pn">dp-nav</span> <span class="tg">button</span> <i class="h rep">×4</i><ul><li><span class="pn">icn-2</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">dp-title</span> <span class="tg">span</span> <span class="tx">“July 2026”</span></li></ul></li><li><span class="pn">dp-week</span> <span class="tg">div</span> <ul><li><span class="pn">span</span> <span class="tg">span</span> <i class="h rep">×7</i> <span class="tx">“Mo”</span></li></ul></li><li><span class="pn">dp-grid</span> <span class="tg">div</span> <i class="h role">role grid</i></li></ul></li></ul></li></ul>
+          <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">selected</span><span class="sc">expanded</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">invalid</span><span class="sc">error</span><span class="sc">completed</span><span class="sc">empty</span><span class="sc">info</span><span class="sc">ok</span><span class="sc">static</span><span class="sc">success</span><span class="sc">today</span><span class="sc">warning</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Built when it opens</span><span>The reference page builds the days with its script when the calendar opens, so there is no day in the static page. The tree marks the day as built, and checks it through the grid that holds it.</span></li><li><span class="k">Its own states</span><span>Today, selected, empty and disabled sit on the day, not on the field. A plain day carries none of them. Disabled stays on the field&#x27;s list too, because the field has its own.</span></li><li><span class="k">Still on the field</span><span>The message&#x27;s words (ok, info, warning, success) and the panel&#x27;s (open, static) stay on the field&#x27;s list until every piece carries its own states, the later step you ruled. The styles also draw hover and focus on a day; those stay on the field&#x27;s list for now.</span></li></ul>
+    <div class="call" data-id="date-picker" data-q="4. Date picker: does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> The day is in the grid with exactly the four states you named.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/date-picker.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.dp</code> (name affinity 2 (div.dp)). Old root: <code>body &gt; div.dp</code>.</li><li>Reference <code>knowledge/snippets/Date-picker.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>the day part added inside the grid (button.dp-day, role gridcell) with its own states today, selected, empty, disabled; marked $visual (built by the script) and resolved through the grid <span class="why">— Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states.</span></li><li>today, selected and empty moved off the field&#x27;s list onto the day (the piece the instruction names); disabled stays on both <span class="why">— 18c, Dave took the recommendation: each piece carries its own states (phase 2)</span></li><li>plain words: span → weekday, icn → calendar-icon, icn-2 → arrow-icon (the extractor&#x27;s count) <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part</span></li><li>rest state stays default (no word of its own in the meta) <span class="why">— 18b, Dave took the recommendation: the rest state takes each part&#x27;s own word, initial names it</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-metric">
+  <div class="wrap">
+    <p class="label">05 · Metric · redone</p>
+    <h2>The two figures are named, value and change, and busy is gone.</h2>
+    <p class="quote">What you took: “Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.”</p>
+    <p class="changed"><span class="k">What changed</span> span became value and span-2 became change. Busy is out; the busy attribute now reads the loading state. The five declared states, the trend choice and the spark slot are untouched.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/metric.png" srcset="_lanes/312/L/img/metric.png 2x" alt="Metric from its reference page, light theme"><figcaption>Metric · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/metric.html">Showroom page</a> · <a href="../knowledge/snippets/Metric.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">metric</span> <span class="tg">div</span> <i class="h role">role group</i> <i class="h st">state loading</i><ul><li><span class="pn">metric-lbl</span> <span class="tg">p</span> <span class="tx">“Net cash flow”</span></li><li><span class="pn">metric-val</span> <span class="tg">span</span> <ul><li><span class="pn">unit</span> <span class="tg">span</span> <span class="tx">“+£”</span></li><li><span class="pn">value</span> <span class="tg">span</span> <span class="tx">“2,450.00”</span></li></ul></li><li><span class="pn">metric-delta</span> <span class="tg">span</span> <i class="h prop">prop trend</i><ul><li><span class="pn">glyph</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">change</span> <span class="tg">span</span> <span class="tx">“+12.4% up”</span></li><li><span class="pn">metric-per</span> <span class="tg">span</span> <span class="tx">“vs February”</span></li></ul></li><li><span class="pn">metric-spark</span> <span class="tg">div</span> <i class="h slot">slot spark</i><ul><li><span class="pn">spark-inline</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">ready · rest</span><span class="sc">loading</span><span class="sc">empty</span><span class="sc">error</span><span class="sc">stale</span><span class="sc">hover</span><span class="sc">focus</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">metric</span> <span class="tg">div</span> <i class="h role">role group</i> <i class="h st">state busy</i><ul><li><span class="pn">metric-lbl</span> <span class="tg">p</span> <span class="tx">“Net cash flow”</span></li><li><span class="pn">metric-val</span> <span class="tg">span</span> <ul><li><span class="pn">unit</span> <span class="tg">span</span> <span class="tx">“+£”</span></li><li><span class="pn">span</span> <span class="tg">span</span> <span class="tx">“2,450.00”</span></li></ul></li><li><span class="pn">metric-delta</span> <span class="tg">span</span> <i class="h prop">prop trend</i><ul><li><span class="pn">glyph</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">span-2</span> <span class="tg">span</span> <span class="tx">“+12.4% up”</span></li><li><span class="pn">metric-per</span> <span class="tg">span</span> <span class="tx">“vs February”</span></li></ul></li><li><span class="pn">metric-spark</span> <span class="tg">div</span> <i class="h slot">slot spark</i><ul><li><span class="pn">spark-inline</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul>
+          <div class="sts"><span class="sc on">ready · rest</span><span class="sc">loading</span><span class="sc">empty</span><span class="sc">error</span><span class="sc">stale</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">busy</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Value</span><span>The figure the tile is read for, with its unit beside it.</span></li><li><span class="k">Change</span><span>The change figure on the delta line; its direction is still the trend choice on the delta.</span></li><li><span class="k">Rest</span><span>Still ready, the metric&#x27;s own word.</span></li></ul>
+    <div class="call" data-id="metric" data-q="5. Metric: does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> Both figures are named and busy is folded into loading; nothing else moved.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/metric.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.board &gt; div.metric</code> (name affinity 3 (div.metric)). Old root: <code>body &gt; div.board &gt; div.metric</code>.</li><li>Reference <code>knowledge/snippets/Metric.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>part span renamed value <span class="why">— Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.</span></li><li>part span-2 renamed change <span class="why">— Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.</span></li><li>aria-busy now reads the loading state <span class="why">— Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.</span></li><li>states busy taken out (and their arrows) <span class="why">— Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.</span></li><li>the five declared states (ready, loading, empty, error, stale), the trend choice and the spark slot unchanged; rest stays ready, the metric&#x27;s own word <span class="why">— 18b, Dave took the recommendation: the rest state takes each part&#x27;s own word, initial names it</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-slider" class="grey">
+  <div class="wrap">
+    <p class="label">06 · Slider · redone</p>
+    <h2>The slider names its track and thumb, each with hover, active and disabled.</h2>
+    <p class="quote">What you took: “Name the thumb and the track as parts, with hover, active and disabled, even though the markup has no element for them.”</p>
+    <p class="changed"><span class="k">What changed</span> Was a field, a label, a readout and the range input. Now the track sits inside the input and the thumb on the track, each with its own states: rest, hover, active, disabled. The field keeps rest and focus.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/slider.png" srcset="_lanes/312/L/img/slider.png 2x" alt="Slider from its reference page, light theme"><figcaption>Slider · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/slider.html">Showroom page</a> · <a href="../knowledge/snippets/Slider.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">field</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Monthly budget”</span><ul><li><span class="pn">val</span> <span class="tg">span</span> <span class="tx">“£600”</span></li></ul></li><li><span class="pn">input</span> <span class="tg">input</span> <ul><li><span class="pn">track</span> <span class="tg">span</span> <i class="h vis">drawn by the browser, no element</i><div class="own"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">disabled</span></div><ul><li><span class="pn">thumb</span> <span class="tg">span</span> <i class="h vis">drawn by the browser, no element</i><div class="own"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">disabled</span></div></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>2, rest state marked; a piece's own states sit under it in the tree</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">focus</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">field</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Monthly budget”</span><ul><li><span class="pn">val</span> <span class="tg">span</span> <span class="tx">“£600”</span></li></ul></li><li><span class="pn">input</span> <span class="tg">input</span> </li></ul></li></ul>
+          <div class="sts"><span class="sc on">default · rest</span><span class="sc">focus</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">No element</span><span>The browser draws both from the range input. The tree marks them so and checks them through the input. The element type written for them is a stand-in for a library that draws them as elements.</span></li><li><span class="k">Active</span><span>The meta&#x27;s handle setting already calls this look pressed. The tree uses your word, active; the two are the same look.</span></li><li><span class="k">Not drawn yet</span><span>The reference page styles no hover, active or disabled on the thumb or track. These states come from your word, not from the page, so the picture cannot show them.</span></li><li><span class="k">The range</span><span>The double slider has two thumbs on one track.</span></li></ul>
+    <div class="call" data-id="slider" data-q="6. Slider: does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> Both pieces are named with the three states you asked for, and marked as having no element.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/slider.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.field</code> (name affinity 3 (input.slider) → climbed to div.field). Old root: <code>body &gt; div.field</code>.</li><li>Reference <code>knowledge/snippets/Slider.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>track and thumb named as parts inside the range input, each with its own states default, hover, active, disabled; both marked $visual (browser-drawn) and resolved through the input <span class="why">— Name the thumb and the track as parts, with hover, active and disabled, even though the markup has no element for them.</span></li><li>the pieces&#x27; rest word is default, the meta&#x27;s own handleState default <span class="why">— 18b, Dave took the recommendation: the rest state takes each part&#x27;s own word, initial names it</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-selection-controls">
+  <div class="wrap">
+    <p class="label">07 · Switch (drafted as the selection-controls family) · redone</p>
+    <h2>The family is now four trees, one per control: switch, checkbox, radio and chip, each with its own states.</h2>
+    <p class="quote">What you took: “Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave.”</p>
+    <p class="changed"><span class="k">What changed</span> One 29-part tree for four controls became four trees under the family. The switch: switch, input, label, knob, thumb, with off, on, disabled and error. The checkbox with its box and tick; the radio with its ring and dot inside its group; the chip with its star or its remove button.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/selection-controls-switch.png" srcset="_lanes/312/L/img/selection-controls-switch.png 2x" alt="The four switch rows"><figcaption>The switch rows · off, on, disabled, error</figcaption></figure><figure><img src="_lanes/312/L/img/selection-controls.png" srcset="_lanes/312/L/img/selection-controls.png 2x" alt="The whole selection-controls family"><figcaption>The family · checkbox, radio, switch, chips</figcaption></figure><p class="links"><a href="../showroom/selection-controls.html">Showroom page</a> · <a href="../knowledge/snippets/Selection-controls.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">selection-controls</span> <span class="tg">div</span> <ul><li><span class="pn">switch</span> <span class="tg">div</span> <div class="own"><span class="sc on">off · rest</span><span class="sc">on</span><span class="sc">disabled</span><span class="sc">error</span></div><div class="beside">beside it: <b>message</b> p, shown only in error</div><ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state on</i> <i class="h st">state disabled</i> <i class="h role">role switch</i> <i class="h st">state error</i></li><li><span class="pn">label</span> <span class="tg">label</span> <i class="h prop">words: label field</i><ul><li><span class="pn">knob</span> <span class="tg">span</span> <div class="own"><span class="sc on">off · rest</span><span class="sc">on</span><span class="sc">disabled</span><span class="sc">error</span></div><ul><li><span class="pn">thumb</span> <span class="tg">span</span> <div class="own"><span class="sc on">off · rest</span><span class="sc">on</span><span class="sc">disabled</span><span class="sc">error</span></div></li></ul></li></ul></li></ul></li><li><span class="pn">checkbox</span> <span class="tg">div</span> <div class="own"><span class="sc on">unchecked · rest</span><span class="sc">checked</span><span class="sc">indeterminate</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">focus</span><span class="sc">disabled</span><span class="sc">error</span></div><div class="beside">beside it: <b>message</b> p, shown only in error</div><ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state indeterminate</i> <i class="h st">state error</i></li><li><span class="pn">label</span> <span class="tg">label</span> <i class="h prop">words: label field</i><ul><li><span class="pn">box</span> <span class="tg">span</span> <ul><li><span class="pn">tick</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul></li><li><span class="pn">radio-group</span> <span class="tg">fieldset</span> <i class="h">group</i><ul><li><span class="pn">radio</span> <span class="tg">div</span> <div class="own"><span class="sc on">unchecked · rest</span><span class="sc">checked</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">focus</span><span class="sc">disabled</span><span class="sc">error</span></div><div class="beside">beside it: <b>message</b> p, shown only in error</div><ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state error</i></li><li><span class="pn">label</span> <span class="tg">label</span> <i class="h prop">words: label field</i><ul><li><span class="pn">ring</span> <span class="tg">span</span> <ul><li><span class="pn">dot</span> <span class="tg">span</span> </li></ul></li></ul></li></ul></li></ul></li><li><span class="pn">chip-group</span> <span class="tg">div</span> <i class="h">group</i><ul><li><span class="pn">chip</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h st">state on</i> <i class="h prop">words: label field</i><div class="own"><span class="sc on">off · rest</span><span class="sc">on</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">focus</span><span class="sc">disabled</span></div><ul><li><span class="pn">icon</span> <span class="tg">svg</span> <i class="h">toggle kind, optional</i></li><li><span class="pn">remove</span> <span class="tg">button</span> <i class="h prop">prop label</i> <i class="h">delete kind only</i></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>10, rest state marked; a piece's own states sit under it in the tree</small></h4>
+        <div class="sts"><span class="sc on">off · rest</span><span class="sc">on</span><span class="sc">disabled</span><span class="sc">error</span><span class="sc">unchecked</span><span class="sc">checked</span><span class="sc">indeterminate</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">focus</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">sc</span> <span class="tg">div</span> <ul><li><span class="pn">field</span> <span class="tg">div</span> <i class="h rep">×6</i><ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Email notifications”</span><ul><li><span class="pn">box</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul></li><li><span class="pn">err-msg</span> <span class="tg">p</span> <i class="h rep">×3</i> <span class="tx">“⚠ You must accept the terms to …”</span></li><li><span class="pn">fieldset</span> <span class="tg">fieldset</span> <ul><li><span class="pn">legend</span> <span class="tg">legend</span> <span class="tx">“Delivery speed”</span></li><li><span class="pn">field-2</span> <span class="tg">div</span> <i class="h rep">×4</i><ul><li><span class="pn">input-2</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">label-2</span> <span class="tg">label</span> <span class="tx">“Standard delivery”</span><ul><li><span class="pn">span</span> <span class="tg">span</span> <i class="h prop">prop control</i><ul><li><span class="pn">dot</span> <span class="tg">span</span> </li></ul></li></ul></li></ul></li><li><span class="pn">err-msg-2</span> <span class="tg">p</span> <span class="tx">“⚠ This option is unavailable fo…”</span></li></ul></li><li><span class="pn">field-3</span> <span class="tg">div</span> <i class="h rep">×4</i><ul><li><span class="pn">switch</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h role">role switch</i> <i class="h st">state invalid</i></li><li><span class="pn">label-3</span> <span class="tg">label</span> <span class="tx">“Marketing emails”</span><ul><li><span class="pn">span-2</span> <span class="tg">span</span> <i class="h prop">prop control</i><ul><li><span class="pn">thumb</span> <span class="tg">span</span> </li></ul></li></ul></li></ul></li><li><span class="pn">chips</span> <span class="tg">div</span> <i class="h role">role group</i><ul><li><span class="pn">button</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h st">state pressed</i> <i class="h rep">×2</i> <span class="tx">“Current”</span><ul><li><span class="pn">icon-2</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">button-2</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h st">state disabled</i> <i class="h st">state pressed</i> <i class="h rep">×2</i> <span class="tx">“Credit card”</span></li></ul></li><li><span class="pn">chips-2</span> <span class="tg">div</span> <i class="h role">role radiogroup</i><ul><li><span class="pn">radio</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h role">role radio</i> <i class="h st">state checked</i> <i class="h rep">×4</i> <span class="tx">“30 days”</span></li></ul></li><li><span class="pn">chips-3</span> <span class="tg">div</span> <ul><li><span class="pn">chip-del</span> <span class="tg">span</span> <i class="h prop">prop control</i> <i class="h rep">×3</i> <span class="tx">“GBP”</span><ul><li><span class="pn">x</span> <span class="tg">button</span> <span class="tx">“✕”</span></li></ul></li></ul></li></ul></li></ul>
+          <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">selected</span><span class="sc">disabled</span><span class="sc">error</span><span class="sc">focus</span><span class="sc">checked</span><span class="sc">indeterminate</span><span class="sc">invalid</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The switch&#x27;s fifth part</span><span>Inside the switch row sits a hidden native input that carries on and off and the name a screen reader hears. The four you named are the row (switch), the label, the knob and the thumb; the input is written beside them, not instead of one.</span></li><li><span class="k">Knob and thumb</span><span>Both carry the switch&#x27;s four states themselves, so a library knows which piece changes.</span></li><li><span class="k">Rest words</span><span>Off for the switch and the chip, unchecked for the checkbox and the radio: each control&#x27;s own word.</span></li><li><span class="k">Words</span><span>Every label takes the label field, as the button does. The demo&#x27;s sentences are gone.</span></li><li><span class="k">The error line</span><span>Each control&#x27;s message sits after its row and shows only in error. It is written beside the tree, not inside it, because the page places it outside the row.</span></li><li><span class="k">The chip</span><span>The page draws three kinds: a toggle (pressed on or off, with a star), a single choice in a group (arrow keys move it), and a removable chip with a remove button. The tree is the chip with its star and remove button, each marked for the kind that has it.</span></li><li><span class="k">Not in the four</span><span>The styles also draw hover and a focus ring on the switch. They are not in the four states you named and are left out.</span></li></ul>
+    <div class="call" data-id="selection-controls" data-q="7. Switch (drafted as the selection-controls family): does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> The switch has its own tree with exactly your four parts&#x27; names and four states, and checkbox, radio and chip have theirs.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/selection-controls.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.sc</code> (name affinity 2 (div.sc) — the family wrapper; four control trees under it, hand-set 313-L4). Old root: <code>body &gt; div.sc</code>.</li><li>Reference <code>knowledge/snippets/Selection-controls.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>the family&#x27;s 29-node tree replaced by four trees, one per control (switch, checkbox, radio, chip), each a root under the family wrapper <span class="why">— Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave.</span></li><li>the switch&#x27;s tree: switch (the row), input (role switch), label, knob, thumb; states off, on, disabled, error on the switch and on knob and thumb <span class="why">— Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave. · 18c, Dave took the recommendation: each piece carries its own states (phase 2)</span></li><li>plain words for the numbered names (field-3, label-3, span-2, input-2, button-2, chips-2 …): knob, ring, tick, remove, chip-group, radio-group <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part</span></li><li>each control rests in its own word: off (switch, chip), unchecked (checkbox, radio) <span class="why">— 18b, Dave took the recommendation: the rest state takes each part&#x27;s own word, initial names it</span></li><li>every label&#x27;s words are the label field {props.label}; the demo&#x27;s sentences removed <span class="why">— s305-D17 (a part&#x27;s own words are a field on the part), as on the button</span></li><li>the family&#x27;s one state list replaced by the union of the four, each control&#x27;s own machine on its root <span class="why">— 18c, Dave took the recommendation: each piece carries its own states (phase 2)</span></li><li>bindings unchanged (15); a $by-member list says which control reads each, for the split <span class="why">— Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave.</span></li></ol></li></ol></details>
+  </div>
+</section>
+<section id="p-modals" class="grey">
+  <div class="wrap">
+    <p class="label">08 · Dialog (drafted as the modals family) · redone</p>
+    <h2>The dialog&#x27;s states are its own: inert and disabled are gone.</h2>
+    <p class="quote">What you took: “Take inert and disabled out of the dialog&#x27;s states; they belong to the page. The parts are right.”</p>
+    <p class="changed"><span class="k">What changed</span> Inert and disabled are out, with the arrows to and from them. Title and body take the title and body fields; the two action buttons are named confirm and cancel, the markup&#x27;s own words for them.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/modals.png" srcset="_lanes/312/L/img/modals.png 2x" alt="Dialog (drafted as the modals family) from its reference page, light theme"><figcaption>Dialog · light · from its reference page</figcaption></figure><p class="links"><a href="../showroom/modals.html">Showroom page</a> · <a href="../knowledge/snippets/Modals.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy, redone <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">overlay</span> <span class="tg">div</span> <ul><li><span class="pn">dialog</span> <span class="tg">div</span> <i class="h prop">prop type</i> <i class="h role">role dialog</i><ul><li><span class="pn">close</span> <span class="tg">button</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">title</span> <span class="tg">h2</span> <i class="h prop">words: title field</i></li><li><span class="pn">body</span> <span class="tg">p</span> <i class="h prop">words: body field</i></li><li><span class="pn">actions</span> <span class="tg">div</span> <ul><li><span class="pn">confirm</span> <span class="tg">button</span> <span class="tx">“Confirm payment”</span></li><li><span class="pn">cancel</span> <span class="tg">button</span> <span class="tx">“Cancel”</span></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>5, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">closed · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">open</span></div>
+        <details class="old"><summary>The tree you sent back</summary>
+          <ul class="outline"><li><span class="pn">overlay</span> <span class="tg">div</span> <ul><li><span class="pn">dialog</span> <span class="tg">div</span> <i class="h prop">prop type</i> <i class="h role">role dialog</i><ul><li><span class="pn">close</span> <span class="tg">button</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">h2</span> <span class="tg">h2</span> <span class="tx">“Confirm payment”</span></li><li><span class="pn">p</span> <span class="tg">p</span> <span class="tx">“You&#x27;re about to send £250.00 to…”</span></li><li><span class="pn">actions</span> <span class="tg">div</span> <ul><li><span class="pn">btn</span> <span class="tg">button</span> <span class="tx">“Confirm payment”</span></li><li><span class="pn">btn-2</span> <span class="tg">button</span> <span class="tx">“Cancel”</span></li></ul></li></ul></li></ul></li></ul>
+          <div class="sts"><span class="sc on">closed · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">inert</span></div>
+        </details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Where they went</span><span>Inert is what the open dialog does to the page behind it; disabled is what it does to the button that opened it. Both belong to the page, as you said.</span></li><li><span class="k">States now</span><span>Closed (rest, its own word), open, hover, focus, active.</span></li><li><span class="k">Names</span><span>h2 and p became title and body; btn and btn-2 became confirm and cancel. The action buttons&#x27; words are still the demo&#x27;s; they are buttons with their own label field.</span></li></ul>
+    <div class="call" data-id="modals" data-q="8. Dialog (drafted as the modals family): does the redone tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does the redone tree describe the part? <span class="rw">Recommendation: Yes.</span> Inert and disabled are out and the parts are as they were, with plain names.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Meta <code>knowledge/components/modals.meta.json</code>, set by hand by <code>notes/_lanes/313/L4/redo_seven.py</code> from the draft at <code>e5e0f355</code>; <code>reviewed: false</code>; the extractor now refuses to overwrite a hand-set draft without <code>--force</code>.</li><li>Root: <code>body &gt; div.overlay</code> (hint: the meta is the Modals family, the snippet&#x27;s root class is `overlay` &gt; `dialog`; no class or role shares a token with &#x27;modals&#x27; (aria-modal is an attribute)). Old root: <code>body &gt; div.overlay</code>.</li><li>Reference <code>knowledge/snippets/Modals.reference.html</code>; picture from <code>_lanes/312/L/img/</code> (lane L3, seat render, not re-rendered).</li><li>Every change, with its reason:<ol><li>states inert, disabled taken out (and their arrows) <span class="why">— Take inert and disabled out of the dialog&#x27;s states; they belong to the page. The parts are right.</span></li><li>title and body take their words from the title and body fields; the demo&#x27;s payment sentence removed <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part (and s305-D17: a part&#x27;s own words are a field on the part)</span></li><li>part btn renamed confirm <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part — the markup&#x27;s own ids, confirm and cancel; btn-2 was the extractor&#x27;s count</span></li><li>part btn-2 renamed cancel <span class="why">— 18a, Dave took the recommendation: plain words where the markup has none, set by hand per part — the markup&#x27;s own ids</span></li><li>rest state stays closed, the dialog&#x27;s own word <span class="why">— 18b, Dave took the recommendation: the rest state takes each part&#x27;s own word, initial names it</span></li></ol></li></ol></details>
+  </div>
+</section>
+
+<section id="four" class="grey">
+  <div class="wrap">
+    <p class="label">09 · The switch and its family · four parts, or four trees in one part?</p>
+    <h2>You left this one open. The four trees are drawn so that either answer works without redrawing them.</h2>
+    <p class="lead">Today they sit as four trees inside the one selection-controls part. Four parts would make the switch, the checkbox, the radio and the chip each a part of its own, looked up by its own name.</p>
+    <ul class="facts">
+      <li><span class="k">What a split moves</span><span>Each tree becomes its part's tree; the states on its root become that part's states; its lines to tokens come from the list already written of which control reads which colour; the label field and the kind setting go with each. The family part keeps only what is shared, or becomes a pointer to the four.</span></li>
+      <li><span class="k">What stays the same</span><span>The four trees as drawn above, their names and their states. Names are unique within each tree, so nothing is renamed by a split.</span></li>
+      <li><span class="k">What it costs</span><span>Four new parts in the library instead of one, each needing its own showroom page in time.</span></li>
+    </ul>
+    <div class="call" data-id="four" data-q="9. Switch, checkbox, radio and chip: four parts, or four trees in one part?" data-rec="Four parts">
+      <p class="q">Four parts, or four trees in one part? <span class="rw">Recommendation: four parts.</span> A client library looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Four parts">Four parts<em>recommended</em></button><button type="button" class="chip" data-v="Four trees in one part">Four trees in one part</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>On disk the four trees are the children of the family root in <code>knowledge/components/selection-controls.meta.json</code>; each member carries <code>$states</code>, <code>$initial</code>, <code>$transitions</code> on its root; the family's top-level <code>states</code> is the union; <code>bindings.$by-member</code> lists which control reads each variable. The split note on disk: if the four become four metas (switch, checkbox, radio, chip): each child here becomes that meta&#x27;s anatomy; its $states/$initial/$transitions become the meta&#x27;s states; its bindings are the $by-member list; the shared label prop and the control setting go with each; this family meta would keep only what is shared or become an alias seat</li><li>No meta was created; a four-meta split would add four and re-base the meta count check in the same change.</li></ol></details>
+  </div>
+</section>
+
+<section id="else">
+  <div class="wrap">
+    <p class="label">10 · Anything else</p>
+    <h2>Anything you want changed or looked at again.</h2>
+    <div class="call" data-id="page" data-q="10. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · re-look page · Seven trees redone · v1 · 2026-10-01 · session 313 lane L4</span>
+  <span>No draft stands until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 9 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-313-L4-seven-trees-v1';
+  var PATH='notes/_REVIEW-313-L4-seven-trees-redone-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 313 · Seven trees redone · decisions','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('10. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-313-L4-seven-trees-redone.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

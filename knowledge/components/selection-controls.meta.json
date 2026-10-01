@@ -167,16 +167,17 @@
     ]
   },
   "anatomy": {
-    "part": "sc",
+    "part": "selection-controls",
     "tag": "div",
     "attrs": {
-      "class": "sc",
-      "id": "sc"
+      "class": "sc"
     },
     "$sel": "body > div.sc",
+    "$members": "four trees in one part, one per control, switch first (your word). Each carries its own states ($states, $initial, $transitions) on its own root. Part names are unique within each tree, so a four-meta split renames nothing.",
+    "$split": "if the four become four metas (switch, checkbox, radio, chip): each child here becomes that meta's anatomy; its $states/$initial/$transitions become the meta's states; its bindings are the $by-member list; the shared label prop and the control setting go with each; this family meta would keep only what is shared or become an alias seat",
     "children": [
       {
-        "part": "field",
+        "part": "switch",
         "tag": "div",
         "attrs": {
           "class": "field"
@@ -186,28 +187,233 @@
           "is-error"
         ],
         "$sel": "body > div.sc > div.field",
+        "$states": [
+          "off",
+          "on",
+          "disabled",
+          "error"
+        ],
+        "$initial": "off",
+        "$transitions": [
+          {
+            "from": "off",
+            "on": "change",
+            "to": "on"
+          },
+          {
+            "from": "on",
+            "on": "change",
+            "to": "off"
+          }
+        ],
+        "$sources": {
+          "on": [
+            "attribute checked on a twin input[role=switch]",
+            "style input:checked + label .switch"
+          ],
+          "disabled": [
+            "class .is-disabled on a twin row",
+            "attribute disabled on its input",
+            "style input:disabled + label .switch"
+          ],
+          "error": [
+            "class .is-error on a twin row (.field.is-error)",
+            "attribute aria-invalid=\"true\" on its input",
+            "style .field.is-error .switch"
+          ]
+        },
+        "$note": "the styles also draw hover and a focus ring on the knob (label:hover .switch, input:focus-visible + label .switch); not in the ruled four",
+        "$message": {
+          "part": "message",
+          "tag": "p",
+          "attrs": {
+            "class": "err-msg",
+            "id": "s4e"
+          },
+          "$sel": "body > div.sc > p.err-msg",
+          "$when": "{state.error}",
+          "$note": "a sibling after the row, tied to the control by aria-describedby"
+        },
         "children": [
           {
             "part": "input",
             "tag": "input",
             "attrs": {
               "type": "checkbox",
-              "id": "c1",
-              "checked": "{state.checked}",
+              "checked": "{state.on}",
               "disabled": "{state.disabled}"
             },
             "aria": {
-              "aria-invalid": "{state.invalid}"
+              "role": "switch",
+              "aria-invalid": "{state.error}"
             },
-            "$sel": "body > div.sc > div.field > input"
+            "$sel": "body > div.sc > div.field > input[role=switch]",
+            "$note": "the native checkbox under the drawing: hidden, it carries the state and the name for a screen reader"
           },
           {
             "part": "label",
             "tag": "label",
+            "text": "{props.label}",
+            "$sel": "body > div.sc > div.field > label",
+            "children": [
+              {
+                "part": "knob",
+                "tag": "span",
+                "attrs": {
+                  "class": "switch"
+                },
+                "$sel": "body > div.sc > div.field > label > span.switch",
+                "$states": [
+                  "off",
+                  "on",
+                  "disabled",
+                  "error"
+                ],
+                "$initial": "off",
+                "$sources": {
+                  "on": [
+                    "style input:checked + label .switch"
+                  ],
+                  "disabled": [
+                    "style input:disabled + label .switch"
+                  ],
+                  "error": [
+                    "style .field.is-error .switch",
+                    "style .field.is-error input:checked + label .switch"
+                  ]
+                },
+                "children": [
+                  {
+                    "part": "thumb",
+                    "tag": "span",
+                    "attrs": {
+                      "class": "thumb"
+                    },
+                    "$sel": "body > div.sc > div.field > label > span.switch > span.thumb",
+                    "$states": [
+                      "off",
+                      "on",
+                      "disabled",
+                      "error"
+                    ],
+                    "$initial": "off",
+                    "$sources": {
+                      "on": [
+                        "style input:checked + label .switch .thumb"
+                      ],
+                      "disabled": [
+                        "style input:disabled + label .switch .thumb"
+                      ],
+                      "error": [
+                        "style .field.is-error .switch .thumb"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "part": "checkbox",
+        "tag": "div",
+        "attrs": {
+          "class": "field"
+        },
+        "$stateClasses": [
+          "is-disabled",
+          "is-error"
+        ],
+        "$sel": "body > div.sc > div.field",
+        "$states": [
+          "unchecked",
+          "checked",
+          "indeterminate",
+          "hover",
+          "active",
+          "focus",
+          "disabled",
+          "error"
+        ],
+        "$initial": "unchecked",
+        "$transitions": [
+          {
+            "from": "unchecked",
+            "on": "change",
+            "to": "checked"
+          },
+          {
+            "from": "checked",
+            "on": "change",
+            "to": "unchecked"
+          },
+          {
+            "from": "indeterminate",
+            "on": "change",
+            "to": "checked"
+          }
+        ],
+        "$sources": {
+          "checked": [
+            "attribute checked on a twin input",
+            "style input:checked + label .box"
+          ],
+          "indeterminate": [
+            "script: input.indeterminate = true, aria-checked mixed",
+            "style input:indeterminate + label .box"
+          ],
+          "hover": [
+            "style label:hover .box"
+          ],
+          "active": [
+            "style input:active + label .box"
+          ],
+          "focus": [
+            "style input:focus-visible + label .box"
+          ],
+          "disabled": [
+            "class .is-disabled on a twin row",
+            "attribute disabled on its input"
+          ],
+          "error": [
+            "class .is-error on a twin row (.field.is-error)",
+            "attribute aria-invalid=\"true\" on its input",
+            "style .field.is-error .box"
+          ]
+        },
+        "$message": {
+          "part": "message",
+          "tag": "p",
+          "attrs": {
+            "class": "err-msg",
+            "id": "c5e"
+          },
+          "$sel": "body > div.sc > p.err-msg",
+          "$when": "{state.error}",
+          "$note": "a sibling after the row, tied to the control by aria-describedby"
+        },
+        "children": [
+          {
+            "part": "input",
+            "tag": "input",
             "attrs": {
-              "for": "c1"
+              "type": "checkbox",
+              "checked": "{state.checked}",
+              "disabled": "{state.disabled}"
             },
-            "text": "Email notifications",
+            "aria": {
+              "aria-checked": "{state.indeterminate}",
+              "aria-invalid": "{state.error}"
+            },
+            "$sel": "body > div.sc > div.field > input",
+            "$aria-checked": "the value is the word mixed while indeterminate, set by the script",
+            "$note": "the native checkbox under the drawing: hidden, it carries the state and the name"
+          },
+          {
+            "part": "label",
+            "tag": "label",
+            "text": "{props.label}",
             "$sel": "body > div.sc > div.field > label",
             "children": [
               {
@@ -219,116 +425,22 @@
                 "$sel": "body > div.sc > div.field > label > span.box",
                 "children": [
                   {
-                    "part": "icon",
+                    "part": "tick",
                     "tag": "svg",
                     "attrs": {
-                      "data-bespoke": "checkbox tick, animated stroke-draw control glyph",
                       "viewbox": "0 0 18 18"
                     },
-                    "$sel": "body > div.sc > div.field > label > span.box > svg"
+                    "$sel": "body > div.sc > div.field > label > span.box > svg",
+                    "$note": "the tick path, or the dash when indeterminate (checkboxKind); drawn by stroke"
                   }
                 ]
               }
             ]
           }
-        ],
-        "$repeat": 6
-      },
-      {
-        "part": "err-msg",
-        "tag": "p",
-        "attrs": {
-          "class": "err-msg",
-          "id": "c5e"
-        },
-        "text": "⚠ You must accept the terms to continue",
-        "$sel": "body > div.sc > p.err-msg",
-        "$repeat": 3
-      },
-      {
-        "part": "fieldset",
-        "tag": "fieldset",
-        "$sel": "body > div.sc > fieldset",
-        "children": [
-          {
-            "part": "legend",
-            "tag": "legend",
-            "text": "Delivery speed",
-            "$sel": "body > div.sc > fieldset > legend"
-          },
-          {
-            "part": "field-2",
-            "tag": "div",
-            "attrs": {
-              "class": "field"
-            },
-            "$stateClasses": [
-              "is-disabled",
-              "is-error"
-            ],
-            "$sel": "body > div.sc > fieldset > div.field",
-            "children": [
-              {
-                "part": "input-2",
-                "tag": "input",
-                "attrs": {
-                  "type": "radio",
-                  "name": "r",
-                  "id": "r1",
-                  "checked": "{state.checked}",
-                  "disabled": "{state.disabled}"
-                },
-                "aria": {
-                  "aria-invalid": "{state.invalid}"
-                },
-                "$sel": "body > div.sc > fieldset > div.field > input"
-              },
-              {
-                "part": "label-2",
-                "tag": "label",
-                "attrs": {
-                  "for": "r1"
-                },
-                "text": "Standard delivery",
-                "$sel": "body > div.sc > fieldset > div.field > label",
-                "children": [
-                  {
-                    "part": "span",
-                    "tag": "span",
-                    "attrs": {
-                      "class": "{props.control}"
-                    },
-                    "$sel": "body > div.sc > fieldset > div.field > label > span.radio",
-                    "children": [
-                      {
-                        "part": "dot",
-                        "tag": "span",
-                        "attrs": {
-                          "class": "dot"
-                        },
-                        "$sel": "body > div.sc > fieldset > div.field > label > span.radio > span.dot"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "$repeat": 4
-          },
-          {
-            "part": "err-msg-2",
-            "tag": "p",
-            "attrs": {
-              "class": "err-msg",
-              "id": "r4e"
-            },
-            "text": "⚠ This option is unavailable for your address",
-            "$sel": "body > div.sc > fieldset > p.err-msg"
-          }
         ]
       },
       {
-        "part": "field-3",
+        "part": "radio",
         "tag": "div",
         "attrs": {
           "class": "field"
@@ -337,179 +449,224 @@
           "is-disabled",
           "is-error"
         ],
-        "$sel": "body > div.sc > div.field",
+        "$sel": "body > div.sc > fieldset > div.field",
+        "$wrapper": {
+          "part": "radio-group",
+          "tag": "fieldset",
+          "$sel": "body > div.sc > fieldset",
+          "$legend": {
+            "part": "legend",
+            "tag": "legend",
+            "$sel": "body > div.sc > fieldset > legend"
+          },
+          "$note": "radios always come in a group: the fieldset and its legend wrap the rows; arrow keys move within it (the browser's own)"
+        },
+        "$states": [
+          "unchecked",
+          "checked",
+          "hover",
+          "active",
+          "focus",
+          "disabled",
+          "error"
+        ],
+        "$initial": "unchecked",
+        "$transitions": [
+          {
+            "from": "unchecked",
+            "on": "change",
+            "to": "checked"
+          }
+        ],
+        "$sources": {
+          "checked": [
+            "attribute checked on a twin input",
+            "style input:checked + label .radio"
+          ],
+          "hover": [
+            "style label:hover .radio"
+          ],
+          "active": [
+            "style input:active + label .radio"
+          ],
+          "focus": [
+            "style input:focus-visible + label .radio"
+          ],
+          "disabled": [
+            "class .is-disabled on a twin row",
+            "attribute disabled on its input"
+          ],
+          "error": [
+            "class .is-error on a twin row (.field.is-error)",
+            "attribute aria-invalid=\"true\" on its input",
+            "style .field.is-error .radio"
+          ]
+        },
+        "$message": {
+          "part": "message",
+          "tag": "p",
+          "attrs": {
+            "class": "err-msg",
+            "id": "r4e"
+          },
+          "$sel": "body > div.sc > fieldset > p.err-msg",
+          "$when": "{state.error}",
+          "$note": "a sibling after the row, tied to the control by aria-describedby"
+        },
         "children": [
           {
-            "part": "switch",
+            "part": "input",
             "tag": "input",
             "attrs": {
-              "type": "checkbox",
-              "id": "s1",
+              "type": "radio",
               "checked": "{state.checked}",
               "disabled": "{state.disabled}"
             },
             "aria": {
-              "role": "switch",
-              "aria-invalid": "{state.invalid}"
+              "aria-invalid": "{state.error}"
             },
-            "$sel": "body > div.sc > div.field > input"
+            "$sel": "body > div.sc > fieldset > div.field > input",
+            "$note": "the native radio under the drawing: hidden, it carries the state, the group and the name"
           },
           {
-            "part": "label-3",
+            "part": "label",
             "tag": "label",
-            "attrs": {
-              "for": "s1"
-            },
-            "text": "Marketing emails",
-            "$sel": "body > div.sc > div.field > label",
+            "text": "{props.label}",
+            "$sel": "body > div.sc > fieldset > div.field > label",
             "children": [
               {
-                "part": "span-2",
+                "part": "ring",
                 "tag": "span",
                 "attrs": {
-                  "class": "{props.control}"
+                  "class": "radio"
                 },
-                "$sel": "body > div.sc > div.field > label > span.switch",
+                "$sel": "body > div.sc > fieldset > div.field > label > span.radio",
+                "$name": "ring, the stylesheet's own word for it (\"radio ring+dot\"); the class radio would repeat the part's name",
                 "children": [
                   {
-                    "part": "thumb",
+                    "part": "dot",
                     "tag": "span",
                     "attrs": {
-                      "class": "thumb"
+                      "class": "dot"
                     },
-                    "$sel": "body > div.sc > div.field > label > span.switch > span.thumb"
+                    "$sel": "body > div.sc > fieldset > div.field > label > span.radio > span.dot"
                   }
                 ]
               }
             ]
           }
-        ],
-        "$repeat": 4
+        ]
       },
       {
-        "part": "chips",
-        "tag": "div",
+        "part": "chip",
+        "tag": "button",
         "attrs": {
-          "class": "chips"
+          "type": "button",
+          "class": "chip",
+          "disabled": "{state.disabled}"
         },
         "aria": {
-          "role": "group",
-          "aria-label": "Filter by account type"
+          "aria-pressed": "{state.on}"
         },
-        "$sel": "body > div.sc > div.chips",
-        "children": [
+        "text": "{props.label}",
+        "$sel": "body > div.sc > div.chips > button.chip",
+        "$wrapper": {
+          "part": "chip-group",
+          "tag": "div",
+          "attrs": {
+            "class": "chips"
+          },
+          "$sel": "body > div.sc > div.chips",
+          "$role-by-kind": {
+            "toggle": "group",
+            "single-selection": "radiogroup",
+            "delete": "none (named by aria-label only)"
+          }
+        },
+        "$kinds": {
+          "toggle": "a button whose aria-pressed carries on and off; an optional star icon",
+          "single-selection": "a button with role radio whose aria-checked carries on and off, in a radiogroup with roving arrow keys",
+          "delete": "a span.chip.chip-del holding the words and a remove button (the root is a span, not a button, so the remove button is not nested in a button)",
+          "multiple-selection": "named by the chipType setting; not drawn on the reference page"
+        },
+        "$states": [
+          "off",
+          "on",
+          "hover",
+          "active",
+          "focus",
+          "disabled"
+        ],
+        "$initial": "off",
+        "$transitions": [
           {
-            "part": "button",
-            "tag": "button",
-            "attrs": {
-              "type": "button",
-              "class": "{props.control}"
-            },
-            "aria": {
-              "aria-pressed": "{state.pressed}"
-            },
-            "text": "Current",
-            "$sel": "body > div.sc > div.chips > button.chip",
-            "children": [
-              {
-                "part": "icon-2",
-                "tag": "svg",
-                "attrs": {
-                  "data-bespoke": "favourite star, outline-to-filled toggle (library favourite-star is fill-only)",
-                  "viewbox": "0 0 24 24"
-                },
-                "aria": {
-                  "aria-hidden": "true"
-                },
-                "$sel": "body > div.sc > div.chips > button.chip > svg"
-              }
-            ],
-            "$repeat": 2
+            "from": "off",
+            "on": "click",
+            "to": "on"
           },
           {
-            "part": "button-2",
+            "from": "on",
+            "on": "click",
+            "to": "off",
+            "guard": "toggle kind"
+          }
+        ],
+        "$keys": {
+          "ArrowRight": "next",
+          "ArrowDown": "next",
+          "ArrowLeft": "previous",
+          "ArrowUp": "previous",
+          "Home": "first",
+          "End": "last"
+        },
+        "$keys-source": "single-selection kind only; read from the snippet's keydown handler",
+        "$sources": {
+          "on": [
+            "attribute aria-pressed=\"true\" (toggle)",
+            "attribute aria-checked=\"true\" (single selection)",
+            "style .chip[aria-pressed=\"true\"], .chip[aria-checked=\"true\"]"
+          ],
+          "hover": [
+            "style .chip:hover"
+          ],
+          "active": [
+            "style .chip:active"
+          ],
+          "focus": [
+            "style .chip:focus-visible"
+          ],
+          "disabled": [
+            "attribute disabled on a twin chip",
+            "style .chip:disabled"
+          ]
+        },
+        "children": [
+          {
+            "part": "icon",
+            "tag": "svg",
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "attrs": {
+              "viewbox": "0 0 24 24"
+            },
+            "$sel": "body > div.sc > div.chips > button.chip > svg",
+            "$when": "toggle kind, optional",
+            "$note": "the star, outline at off, filled at on"
+          },
+          {
+            "part": "remove",
             "tag": "button",
             "attrs": {
               "type": "button",
-              "class": "{props.control}",
-              "disabled": "{state.disabled}"
+              "class": "x"
             },
             "aria": {
-              "aria-pressed": "{state.pressed}"
+              "aria-label": "{props.label}"
             },
-            "text": "Credit card",
-            "$sel": "body > div.sc > div.chips > button.chip",
-            "$repeat": 2
-          }
-        ]
-      },
-      {
-        "part": "chips-2",
-        "tag": "div",
-        "attrs": {
-          "class": "chips",
-          "id": "period"
-        },
-        "aria": {
-          "role": "radiogroup",
-          "aria-label": "Statement period"
-        },
-        "$sel": "body > div.sc > div.chips",
-        "children": [
-          {
-            "part": "radio",
-            "tag": "button",
-            "attrs": {
-              "type": "button",
-              "class": "{props.control}",
-              "tabindex": "0"
-            },
-            "aria": {
-              "role": "radio",
-              "aria-checked": "{state.checked}"
-            },
-            "text": "30 days",
-            "$sel": "body > div.sc > div.chips > button.chip",
-            "$repeat": 4
-          }
-        ]
-      },
-      {
-        "part": "chips-3",
-        "tag": "div",
-        "attrs": {
-          "class": "chips",
-          "id": "filters"
-        },
-        "aria": {
-          "aria-label": "Active filters"
-        },
-        "$sel": "body > div.sc > div.chips",
-        "children": [
-          {
-            "part": "chip-del",
-            "tag": "span",
-            "attrs": {
-              "class": "{props.control} chip-del"
-            },
-            "text": "GBP",
-            "$sel": "body > div.sc > div.chips > span.chip.chip-del",
-            "children": [
-              {
-                "part": "x",
-                "tag": "button",
-                "attrs": {
-                  "type": "button",
-                  "class": "x"
-                },
-                "aria": {
-                  "aria-label": "Remove GBP filter"
-                },
-                "text": "✕",
-                "$sel": "body > div.sc > div.chips > span.chip.chip-del > button.x"
-              }
-            ],
-            "$repeat": 3
+            "$sel": "body > div.sc > div.chips > span.chip.chip-del > button.x",
+            "$when": "delete kind only",
+            "$aria-label": "the demo reads 'Remove GBP filter': the word Remove before the chip's label"
           }
         ]
       }
@@ -517,71 +674,18 @@
   },
   "states": {
     "states": [
-      "default",
-      "hover",
-      "pressed",
-      "selected",
+      "off",
+      "on",
       "disabled",
       "error",
-      "focus",
+      "unchecked",
       "checked",
       "indeterminate",
-      "invalid"
+      "hover",
+      "active",
+      "focus"
     ],
-    "initial": "default",
-    "transitions": [
-      {
-        "from": "default",
-        "on": "pointerenter",
-        "to": "hover"
-      },
-      {
-        "from": "hover",
-        "on": "pointerleave",
-        "to": "default"
-      },
-      {
-        "from": "hover",
-        "on": "pointerdown",
-        "to": "pressed"
-      },
-      {
-        "from": "pressed",
-        "on": "pointerup",
-        "to": "hover"
-      },
-      {
-        "from": "*",
-        "on": "focus",
-        "to": "focus"
-      },
-      {
-        "from": "focus",
-        "on": "blur",
-        "to": "default"
-      },
-      {
-        "from": "*",
-        "on": "props.disabled",
-        "to": "disabled",
-        "guard": "{props.disabled}"
-      },
-      {
-        "from": "checked",
-        "on": "change",
-        "to": "default"
-      },
-      {
-        "from": "indeterminate",
-        "on": "change",
-        "to": "default"
-      },
-      {
-        "from": "*",
-        "on": "click",
-        "to": "pressed"
-      }
-    ],
+    "initial": "off",
     "keys": {
       "ArrowDown": "next",
       "ArrowLeft": "previous",
@@ -590,66 +694,9 @@
       "End": "last",
       "Home": "first"
     },
-    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
-    "$sources": {
-      "disabled": [
-        "attribute disabled on a twin of body > div.sc > div.chips > button.chip",
-        "attribute disabled on a twin of body > div.sc > div.field > input",
-        "attribute disabled on a twin of body > div.sc > fieldset > div.field > input",
-        "class .is-disabled on a twin of body > div.sc > div.field",
-        "class .is-disabled on a twin of body > div.sc > fieldset > div.field",
-        "style .chip:disabled"
-      ],
-      "hover": [
-        "style .chip .x:hover",
-        "style .chip:disabled:hover",
-        "style .chip:hover",
-        "style .chip[aria-checked=\"true\"]:hover",
-        "style .chip[aria-pressed=\"true\"]:hover",
-        "style label:hover .box"
-      ],
-      "checked": [
-        "attribute aria-checked on body > div.sc > div.chips > button.chip",
-        "attribute checked on a twin of body > div.sc > div.field > input",
-        "attribute checked on a twin of body > div.sc > fieldset > div.field > input",
-        "style .chip[aria-checked=\"true\"]",
-        "style .chip[aria-checked=\"true\"] .star",
-        "style .chip[aria-checked=\"true\"]:active"
-      ],
-      "indeterminate": [
-        "style .field.is-error input:indeterminate + label .box",
-        "style input:indeterminate + label .box",
-        "style input:indeterminate + label .box .mixed"
-      ],
-      "focus": [
-        "style .chip .x:focus-visible",
-        "style .chip:focus-visible",
-        "style input:focus-visible + label .box",
-        "style input:focus-visible + label .radio",
-        "style input:focus-visible + label .switch"
-      ],
-      "error": [
-        "class .is-error on a twin of body > div.sc > div.field",
-        "class .is-error on a twin of body > div.sc > fieldset > div.field",
-        "style .field.is-error .box",
-        "style .field.is-error .box path",
-        "style .field.is-error .box rect",
-        "style .field.is-error .radio"
-      ],
-      "pressed": [
-        "attribute aria-pressed on body > div.sc > div.chips > button.chip",
-        "script click handler",
-        "style .chip:active",
-        "style .chip[aria-checked=\"true\"]:active",
-        "style .chip[aria-pressed=\"true\"]",
-        "style .chip[aria-pressed=\"true\"] .star"
-      ],
-      "invalid": [
-        "attribute aria-invalid on a twin of body > div.sc > div.field > input",
-        "attribute aria-invalid on a twin of body > div.sc > fieldset > div.field > input"
-      ],
-      "$initial": "meta prop `state` enum; initial = its default"
-    }
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet; they are the single-selection chip group's (also on chip › $keys)",
+    "$initial": "the family has no rest of its own: each control's is on its own root (off for switch and chip, unchecked for checkbox and radio). off is written here because the schema asks for one and the switch is drafted first; a four-meta split removes this union.",
+    "$members": "this list is the union of the four controls' own lists; read each control's machine on its root"
   },
   "emits": [],
   "bindings": {
@@ -667,10 +714,66 @@
     "--chip-hover": "{form.background.hover}",
     "--chip-pressed": "{form.background.pressed}",
     "--reverse": "{text.reverse}",
-    "--border-radius-control": "{border-radius.control}"
+    "--border-radius-control": "{border-radius.control}",
+    "$by-member": {
+      "switch": [
+        "--ctrl-border",
+        "--ctrl-border-active",
+        "--ctrl-border-disabled",
+        "--checked",
+        "--glyph",
+        "--error-atom",
+        "--focus",
+        "--label",
+        "--label-disabled"
+      ],
+      "checkbox": [
+        "--ctrl-border",
+        "--ctrl-border-active",
+        "--ctrl-border-disabled",
+        "--checked",
+        "--glyph",
+        "--chip-hover",
+        "--error-atom",
+        "--focus",
+        "--label",
+        "--label-disabled",
+        "--border-radius-control"
+      ],
+      "radio": [
+        "--ctrl-border",
+        "--ctrl-border-active",
+        "--ctrl-border-disabled",
+        "--checked",
+        "--error-atom",
+        "--focus",
+        "--label",
+        "--label-disabled"
+      ],
+      "chip": [
+        "--ctrl-border",
+        "--ctrl-border-disabled",
+        "--checked",
+        "--glyph",
+        "--chip-hover",
+        "--chip-pressed",
+        "--focus",
+        "--label",
+        "--label-disabled",
+        "--border-radius-control"
+      ],
+      "message": [
+        "--error"
+      ],
+      "page": [
+        "--page"
+      ],
+      "$unused": "--reverse is in the manifest and the light/dark blocks but no rule in the snippet reads it",
+      "$source": "which rules read each var, from the snippet's <style> (313-L4, by hand)"
+    }
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Selection-controls.reference.html",
@@ -680,13 +783,45 @@
       "emits",
       "bindings"
     ],
-    "$root": "name affinity 2 (div.sc)",
+    "$root": "name affinity 2 (div.sc) — the family wrapper; four control trees under it, hand-set 313-L4",
     "$listeners": [
       "change",
       "click",
       "keydown"
     ],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "the family's 29-node tree replaced by four trees, one per control (switch, checkbox, radio, chip), each a root under the family wrapper",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave."
+      },
+      {
+        "what": "the switch's tree: switch (the row), input (role switch), label, knob, thumb; states off, on, disabled, error on the switch and on knob and thumb",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave. · 18c, Dave took the recommendation: each piece carries its own states (phase 2)"
+      },
+      {
+        "what": "plain words for the numbered names (field-3, label-3, span-2, input-2, button-2, chips-2 …): knob, ring, tick, remove, chip-group, radio-group",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part"
+      },
+      {
+        "what": "each control rests in its own word: off (switch, chip), unchecked (checkbox, radio)",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      },
+      {
+        "what": "every label's words are the label field {props.label}; the demo's sentences removed",
+        "why": "s305-D17 (a part's own words are a field on the part), as on the button"
+      },
+      {
+        "what": "the family's one state list replaced by the union of the four, each control's own machine on its root",
+        "why": "18c, Dave took the recommendation: each piece carries its own states (phase 2)"
+      },
+      {
+        "what": "bindings unchanged (15); a $by-member list says which control reads each, for the split",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave."
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 11, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

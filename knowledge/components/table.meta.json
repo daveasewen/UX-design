@@ -120,165 +120,172 @@
     ]
   },
   "anatomy": {
-    "part": "scroll",
-    "tag": "div",
+    "part": "table",
+    "tag": "table",
     "attrs": {
-      "class": "scroll",
-      "tabindex": "0"
+      "id": "tbl",
+      "data-headers": "both"
     },
-    "aria": {
-      "role": "region",
-      "aria-label": "Account balances at 19 June 2026, scrollable"
-    },
-    "$sel": "body > div.wrap > div.scroll",
+    "$sel": "body > div.wrap > div.scroll > table",
     "children": [
       {
-        "part": "table",
-        "tag": "table",
-        "attrs": {
-          "id": "tbl",
-          "data-headers": "both"
-        },
-        "$sel": "body > div.wrap > div.scroll > table",
+        "part": "caption",
+        "tag": "caption",
+        "text": "{props.title}",
+        "$sel": "body > div.wrap > div.scroll > table > caption",
         "children": [
           {
-            "part": "caption",
-            "tag": "caption",
-            "text": "Account balances",
-            "$sel": "body > div.wrap > div.scroll > table > caption",
+            "part": "sub",
+            "tag": "span",
+            "attrs": {
+              "class": "sub"
+            },
+            "$sel": "body > div.wrap > div.scroll > table > caption > span.sub",
+            "$note": "the caption's second line; no setting carries it yet, so the demo's date line is taken out, not kept"
+          }
+        ]
+      },
+      {
+        "part": "head",
+        "tag": "thead",
+        "$sel": "body > div.wrap > div.scroll > table > thead",
+        "children": [
+          {
+            "part": "header-row",
+            "tag": "tr",
+            "$sel": "body > div.wrap > div.scroll > table > thead > tr",
             "children": [
               {
-                "part": "sub",
-                "tag": "span",
+                "part": "column-header",
+                "tag": "th",
                 "attrs": {
-                  "class": "sub"
+                  "scope": "col"
                 },
-                "text": "As at 19 June 2026 · all figures in GBP",
-                "$sel": "body > div.wrap > div.scroll > table > caption > span.sub"
-              }
-            ]
-          },
-          {
-            "part": "thead",
-            "tag": "thead",
-            "$sel": "body > div.wrap > div.scroll > table > thead",
-            "children": [
+                "text": "{props.rows}",
+                "$sel": "body > div.wrap > div.scroll > table > thead > tr > th",
+                "$repeat": 4,
+                "$hole": "the column's heading, from the rows setting (its first entry when headers run along the top, headerType)"
+              },
               {
-                "part": "tr",
-                "tag": "tr",
-                "$sel": "body > div.wrap > div.scroll > table > thead > tr",
-                "children": [
-                  {
-                    "part": "th",
-                    "tag": "th",
-                    "attrs": {
-                      "scope": "col"
-                    },
-                    "text": "Account",
-                    "$sel": "body > div.wrap > div.scroll > table > thead > tr > th",
-                    "$repeat": 4
-                  },
-                  {
-                    "part": "num",
-                    "tag": "th",
-                    "attrs": {
-                      "scope": "col",
-                      "class": "num"
-                    },
-                    "text": "Available balance",
-                    "$sel": "body > div.wrap > div.scroll > table > thead > tr > th.num"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "part": "tbody",
-            "tag": "tbody",
-            "$sel": "body > div.wrap > div.scroll > table > tbody",
-            "children": [
-              {
-                "part": "tr-2",
-                "tag": "tr",
-                "$sel": "body > div.wrap > div.scroll > table > tbody > tr",
-                "children": [
-                  {
-                    "part": "th-2",
-                    "tag": "th",
-                    "attrs": {
-                      "scope": "row",
-                      "data-first": "",
-                      "data-label": "Account"
-                    },
-                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th",
-                    "children": [
-                      {
-                        "part": "v",
-                        "tag": "span",
-                        "attrs": {
-                          "class": "v"
-                        },
-                        "text": "Current account",
-                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th > span.v"
-                      }
-                    ]
-                  },
-                  {
-                    "part": "td",
-                    "tag": "td",
-                    "attrs": {
-                      "data-label": "Type"
-                    },
-                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td",
-                    "children": [
-                      {
-                        "part": "v-2",
-                        "tag": "span",
-                        "attrs": {
-                          "class": "v"
-                        },
-                        "text": "Personal",
-                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td > span.v"
-                      }
-                    ],
-                    "$repeat": 3
-                  },
-                  {
-                    "part": "num-2",
-                    "tag": "td",
-                    "attrs": {
-                      "data-label": "Available balance",
-                      "class": "num"
-                    },
-                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num",
-                    "children": [
-                      {
-                        "part": "v-3",
-                        "tag": "span",
-                        "attrs": {
-                          "class": "v"
-                        },
-                        "text": "£2,140.50",
-                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num > span.v"
-                      }
-                    ]
-                  }
-                ],
-                "$repeat": 4
+                "part": "number-header",
+                "tag": "th",
+                "attrs": {
+                  "scope": "col",
+                  "class": "num"
+                },
+                "text": "{props.rows}",
+                "$sel": "body > div.wrap > div.scroll > table > thead > tr > th.num",
+                "$hole": "the column's heading, from the rows setting (its first entry when headers run along the top, headerType)"
               }
             ]
           }
         ]
+      },
+      {
+        "part": "body",
+        "tag": "tbody",
+        "$sel": "body > div.wrap > div.scroll > table > tbody",
+        "children": [
+          {
+            "part": "row",
+            "tag": "tr",
+            "$sel": "body > div.wrap > div.scroll > table > tbody > tr",
+            "children": [
+              {
+                "part": "row-header",
+                "tag": "th",
+                "attrs": {
+                  "scope": "row",
+                  "data-first": "",
+                  "data-label": "{props.rows}"
+                },
+                "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th",
+                "children": [
+                  {
+                    "part": "row-header-value",
+                    "tag": "span",
+                    "attrs": {
+                      "class": "v"
+                    },
+                    "text": "{props.rows}",
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th > span.v",
+                    "$hole": "this cell's value, from its row in the rows setting"
+                  }
+                ],
+                "$hole-data-label": "the column's heading again, shown as the card label when the table collapses"
+              },
+              {
+                "part": "cell",
+                "tag": "td",
+                "attrs": {
+                  "data-label": "{props.rows}"
+                },
+                "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td",
+                "children": [
+                  {
+                    "part": "cell-value",
+                    "tag": "span",
+                    "attrs": {
+                      "class": "v"
+                    },
+                    "text": "{props.rows}",
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td > span.v",
+                    "$hole": "this cell's value, from its row in the rows setting"
+                  }
+                ],
+                "$repeat": 3,
+                "$hole-data-label": "the column's heading again, shown as the card label when the table collapses"
+              },
+              {
+                "part": "number-cell",
+                "tag": "td",
+                "attrs": {
+                  "data-label": "{props.rows}",
+                  "class": "num"
+                },
+                "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num",
+                "children": [
+                  {
+                    "part": "number-value",
+                    "tag": "span",
+                    "attrs": {
+                      "class": "v"
+                    },
+                    "text": "{props.rows}",
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num > span.v",
+                    "$hole": "this cell's value, from its row in the rows setting"
+                  }
+                ],
+                "$hole-data-label": "the column's heading again, shown as the card label when the table collapses"
+              }
+            ],
+            "$repeat": 4,
+            "$each": "{props.rows}"
+          }
+        ]
       }
-    ]
+    ],
+    "$wrapper": {
+      "part": "scroll",
+      "tag": "div",
+      "attrs": {
+        "class": "scroll",
+        "tabindex": "0"
+      },
+      "aria": {
+        "role": "region",
+        "aria-label": "{props.title}"
+      },
+      "$sel": "body > div.wrap > div.scroll",
+      "$optional": true,
+      "$note": "an optional wrapper, not the part: a focusable region you can tab into and pan when the table is wider than its box. Its name is the table's title (the demo's words were the caption plus the date and ', scrollable')."
+    }
   },
   "states": {
     "states": [
       "default",
       "hover",
-      "focus",
-      "pressed",
-      "disabled"
+      "focus"
     ],
     "initial": "default",
     "transitions": [
@@ -293,16 +300,6 @@
         "to": "default"
       },
       {
-        "from": "hover",
-        "on": "pointerdown",
-        "to": "pressed"
-      },
-      {
-        "from": "pressed",
-        "on": "pointerup",
-        "to": "hover"
-      },
-      {
         "from": "*",
         "on": "focus",
         "to": "focus"
@@ -311,32 +308,19 @@
         "from": "focus",
         "on": "blur",
         "to": "default"
-      },
-      {
-        "from": "*",
-        "on": "props.disabled",
-        "to": "disabled",
-        "guard": "{props.disabled}"
       }
     ],
     "$sources": {
       "hover": [
-        "style .seg button:hover",
         "style tbody tr:hover td",
         "style tbody tr:hover th[scope=\"row\"]"
       ],
       "focus": [
-        "style .scroll:focus-visible",
-        "style .seg button:focus-visible"
+        "style .scroll:focus-visible"
       ],
-      "pressed": [
-        "style .seg button:active",
-        "style .seg button[aria-pressed=\"true\"]"
-      ],
-      "disabled": [
-        "style .seg button:disabled"
-      ],
-      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default",
+      "$removed": "pressed and disabled were read only from the demo's header-type switcher (.seg), which sits above the table and is not part of it",
+      "$pieces": "hover is the body row's highlight, focus the wrapper's ring; giving each its own piece is phase 2 (18c, Dave took the recommendation: each piece carries its own states (phase 2))"
     }
   },
   "emits": [],
@@ -355,7 +339,7 @@
     "--border-radius-indicator": "{border-radius.indicator}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Table.reference.html",
@@ -365,11 +349,46 @@
       "emits",
       "bindings"
     ],
-    "$root": "name affinity 3 (table.table) → climbed to div.scroll",
-    "$listeners": [
-      "click"
-    ],
+    "$root": "name affinity 3 (table.table); the 312 draft climbed to div.scroll, now an optional $wrapper (hand-set 313-L4)",
+    "$listeners": [],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$listeners-note": "the page's only click listener is the demo switcher's; the table itself listens to nothing",
+    "$hand": [
+      {
+        "what": "the tree starts at the table; the scrolling box is an optional wrapper on it ($wrapper), named by the title",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      },
+      {
+        "what": "caption's words: \"Account balances\" replaced by the title field {props.title}; the sub-line's demo date removed",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      },
+      {
+        "what": "plain words for the tag names: thead → head, tr → header-row, th → column-header, num → number-header, tbody → body, tr-2 → row, th-2 → row-header, v → row-header-value, td → cell, v-2 → cell-value, num-2 → number-cell, v-3 → number-value",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part"
+      },
+      {
+        "what": "every header cell, body cell and card label is a hole on the rows field {props.rows}; the body row repeats once per row ($each); the demo's account names and balances removed",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      },
+      {
+        "what": "states pressed taken out (and their arrows)",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      },
+      {
+        "what": "states disabled taken out (and their arrows)",
+        "why": "same reason as pressed: its only source was the demo switcher (style .seg button:disabled), not the table — flagged on the re-look page"
+      },
+      {
+        "what": "hover and focus keep only the table's own sources (the row highlight, the scroll region's ring); the switcher's lines removed",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      },
+      {
+        "what": "listens: click removed (it was the demo switcher's)",
+        "why": "start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right."
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 5, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo's account names and balances. The caption, header row, body rows and number cells are right.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

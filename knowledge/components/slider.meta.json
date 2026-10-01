@@ -201,7 +201,66 @@
         "aria": {
           "aria-label": "Monthly budget in pounds"
         },
-        "$sel": "body > div.field > input"
+        "$sel": "body > div.field > input",
+        "children": [
+          {
+            "part": "track",
+            "tag": "span",
+            "$visual": "drawn by the browser from the range input (::-webkit-slider-runnable-track, ::-moz-range-track); no element in the markup",
+            "$host": "body > div.field > input",
+            "$tag": "span is a placeholder for a library that draws the track as an element; the reference page has none",
+            "$states": [
+              "default",
+              "hover",
+              "active",
+              "disabled"
+            ],
+            "$initial": "default",
+            "$sources": {
+              "hover": [
+                "Dave's ruling (review 312 call 10)"
+              ],
+              "active": [
+                "Dave's ruling (review 312 call 10)"
+              ],
+              "disabled": [
+                "Dave's ruling (review 312 call 10)"
+              ]
+            },
+            "$note": "the filled length is the track's own background up to --pct, which the script sets on input (filled scrollbar/foreground, unfilled scrollbar/background)",
+            "children": [
+              {
+                "part": "thumb",
+                "tag": "span",
+                "$visual": "drawn by the browser from the range input (::-webkit-slider-thumb, ::-moz-range-thumb); no element in the markup",
+                "$host": "body > div.field > input",
+                "$tag": "span is a placeholder for a library that draws the thumb as an element; the reference page has none",
+                "$states": [
+                  "default",
+                  "hover",
+                  "active",
+                  "disabled"
+                ],
+                "$initial": "default",
+                "$sources": {
+                  "hover": [
+                    "Dave's ruling (review 312 call 10); the snippet styles no :hover on the thumb — the meta's handleState names it"
+                  ],
+                  "active": [
+                    "Dave's ruling (review 312 call 10); the meta's handleState calls this look pressed"
+                  ],
+                  "disabled": [
+                    "Dave's ruling (review 312 call 10); the snippet styles no disabled slider"
+                  ],
+                  "focus-ring": [
+                    "style input[type=range]:focus-visible::-webkit-slider-thumb (the ring is drawn on the thumb; focus stays the field's state until phase 2)"
+                  ]
+                },
+                "$note": "the double type has two thumbs on one track"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -229,7 +288,8 @@
         "style input[type=range]:focus-visible::-moz-range-thumb",
         "style input[type=range]:focus-visible::-webkit-slider-thumb"
       ],
-      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default",
+      "$pieces": "the thumb's and the track's states sit on those pieces (anatomy › input › track › thumb); the field keeps default and focus"
     }
   },
   "emits": [],
@@ -244,7 +304,7 @@
     "--border-radius-indicator": "{border-radius.indicator}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Slider.reference.html",
@@ -259,6 +319,18 @@
       "input"
     ],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "track and thumb named as parts inside the range input, each with its own states default, hover, active, disabled; both marked $visual (browser-drawn) and resolved through the input",
+        "why": "Name the thumb and the track as parts, with hover, active and disabled, even though the markup has no element for them."
+      },
+      {
+        "what": "the pieces' rest word is default, the meta's own handleState default",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 10, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Name the thumb and the track as parts, with hover, active and disabled, even though the markup has no element for them.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

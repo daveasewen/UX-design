@@ -222,7 +222,7 @@
             "$sel": "body > div.dp > div.dp-box > button.tail-btn",
             "children": [
               {
-                "part": "icn",
+                "part": "calendar-icon",
                 "tag": "svg",
                 "attrs": {
                   "class": "icn",
@@ -285,7 +285,7 @@
                 "$sel": "body > div.dp > div.dp-panel > div.dp-head > button.dp-nav",
                 "children": [
                   {
-                    "part": "icn-2",
+                    "part": "arrow-icon",
                     "tag": "svg",
                     "attrs": {
                       "class": "icn",
@@ -326,7 +326,7 @@
             "$sel": "body > div.dp > div.dp-panel > div.dp-week",
             "children": [
               {
-                "part": "span",
+                "part": "weekday",
                 "tag": "span",
                 "attrs": {
                   "class": "t-cm-caption"
@@ -348,7 +348,55 @@
               "role": "grid",
               "aria-label": "Days"
             },
-            "$sel": "body > div.dp > div.dp-panel > div.dp-grid"
+            "$sel": "body > div.dp > div.dp-panel > div.dp-grid",
+            "children": [
+              {
+                "part": "day",
+                "tag": "button",
+                "attrs": {
+                  "type": "button",
+                  "class": "dp-day t-cm-figure-5",
+                  "disabled": "{state.disabled}"
+                },
+                "aria": {
+                  "role": "gridcell",
+                  "aria-selected": "{state.selected}",
+                  "aria-current": "{state.today}"
+                },
+                "$stateClasses": [
+                  "is-today",
+                  "is-empty"
+                ],
+                "$visual": "built by the snippet's script, not in the static markup: build() makes one button.dp-day per cell of the month (35 or 42), role gridcell, seven to a div role=row (display: contents)",
+                "$host": "body > div.dp > div.dp-panel > div.dp-grid",
+                "$each": "one per cell of the month grid; an empty cell pads the first and last week",
+                "$states": [
+                  "today",
+                  "selected",
+                  "empty",
+                  "disabled"
+                ],
+                "$sources": {
+                  "today": [
+                    "style .dp-day.is-today",
+                    "style .dp-day.is-today[aria-selected=\"true\"]"
+                  ],
+                  "selected": [
+                    "style .dp-day.is-today[aria-selected=\"true\"]",
+                    "style .dp-day[aria-selected=\"true\"]"
+                  ],
+                  "empty": [
+                    "style .dp-day.is-empty"
+                  ],
+                  "disabled": [
+                    "style .dp-day:disabled (a day outside minDate/maxDate)"
+                  ]
+                },
+                "$rest": "a plain day carries none of the four",
+                "$aria-current": "the value is the word date when the day is today",
+                "$note": "the styles also draw hover and focus on a day (.dp-day:hover, .dp-day:focus-visible); they stay in the field's list until phase 2 (18c, Dave took the recommendation: each piece carries its own states (phase 2))"
+              }
+            ]
           }
         ]
       }
@@ -360,19 +408,16 @@
       "hover",
       "focus",
       "active",
-      "selected",
       "expanded",
       "open",
       "disabled",
       "invalid",
       "error",
       "completed",
-      "empty",
       "info",
       "ok",
       "static",
       "success",
-      "today",
       "warning"
     ],
     "initial": "default",
@@ -487,24 +532,15 @@
       "active": [
         "style .dp-nav:active"
       ],
-      "today": [
-        "style .dp-day.is-today",
-        "style .dp-day.is-today[aria-selected=\"true\"]"
-      ],
-      "selected": [
-        "style .dp-day.is-today[aria-selected=\"true\"]",
-        "style .dp-day[aria-selected=\"true\"]"
-      ],
-      "empty": [
-        "style .dp-day.is-empty"
-      ],
       "invalid": [
         "attribute aria-invalid on a twin of body > div.dp > div.dp-box > input"
       ],
       "expanded": [
         "attribute aria-expanded on body > div.dp > div.dp-box > button.tail-btn"
       ],
-      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default",
+      "$moved": "today, selected and empty moved to the day's own list (anatomy › day › $states)",
+      "$pieces": "the message's words (ok, info, warning, success) and the panel's (open, static) still sit in the field's list; per piece in phase 2 (18c, Dave took the recommendation: each piece carries its own states (phase 2))"
     }
   },
   "emits": [],
@@ -530,7 +566,7 @@
     "--press-darken": "{component-type.button-family.press-darken}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Date-picker.reference.html",
@@ -551,6 +587,26 @@
       "touchstart"
     ],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "the day part added inside the grid (button.dp-day, role gridcell) with its own states today, selected, empty, disabled; marked $visual (built by the script) and resolved through the grid",
+        "why": "Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states."
+      },
+      {
+        "what": "today, selected and empty moved off the field's list onto the day (the piece the instruction names); disabled stays on both",
+        "why": "18c, Dave took the recommendation: each piece carries its own states (phase 2)"
+      },
+      {
+        "what": "plain words: span → weekday, icn → calendar-icon, icn-2 → arrow-icon (the extractor's count)",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part"
+      },
+      {
+        "what": "rest state stays default (no word of its own in the meta)",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 6, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

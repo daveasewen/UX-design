@@ -54,8 +54,14 @@ json.dumps, so the five keys are appended before the file's closing brace as an 
 the file is then re-parsed and every pre-existing key is proven EQUAL to the original (a changed
 field refuses the write). A re-run finds its own block (`\\n  "anatomy":` at top level) and
 replaces it, so a second run is byte-identical. A meta whose `$extracted.reviewed` is true is
-never overwritten without `--force`. An `aliasOf` meta is refused (s210-D5 fence). The snippet
-is NEVER edited.
+never overwritten without `--force`; nor is a meta whose `$extracted` carries `$hand` (a draft set
+by hand on Dave's ruling, #313 lane L4 — a re-run would put the extractor's guess back over his
+answer). An `aliasOf` meta is refused (s210-D5 fence). The snippet is NEVER edited.
+
+PARTS WITH NO ELEMENT (#313 L4, on Dave's 2026-10-01 rulings: the slider's thumb and track, the date
+picker's day cell): a node marked `$visual` (why it has no element in the static markup) resolves
+through `$host`, the element that draws or builds it; the coverage reader checks `$host` instead of
+`$sel`. A `$visual` node without a resolving `$host` is refused like any unresolved part.
 
 USAGE
   python3 knowledge/components/extract_spec.py --only button tabs …          # dry run: drafts + coverage to stdout
@@ -1041,6 +1047,14 @@ def write_meta(meta_path, block):
 
 
 # ─────────────────────────────── report ───────────────────────────────
+def _node_resolves(body, n):
+    """A part resolves when its `$sel` finds an element; a `$visual` part (no element in the static
+    markup — drawn by the browser or built by the script) resolves through its `$host` instead."""
+    if n.get("$visual"):
+        return bool(n.get("$host")) and resolve_sel(body, n["$host"]) is not None
+    return bool(n.get("$sel")) and resolve_sel(body, n["$sel"]) is not None
+
+
 def coverage_of_meta(meta_path):
     """Re-check a meta ON DISK: full | partial(reasons) | undrafted | fenced."""
     meta = json.load(open(meta_path, encoding="utf-8"))
@@ -1059,7 +1073,7 @@ def coverage_of_meta(meta_path):
     else:
         body = parse_body(open(snip, encoding="utf-8").read())
         if isinstance(meta.get("anatomy"), dict):
-            bad = [n.get("part") for n in _walk_tree(meta["anatomy"]) if not n.get("$sel") or resolve_sel(body, n["$sel"]) is None]
+            bad = [n.get("part") for n in _walk_tree(meta["anatomy"]) if not _node_resolves(body, n)]
             if bad:
                 reasons.append("%d part(s) unresolved: %s" % (len(bad), ", ".join(map(str, bad[:6]))))
     for var, ref in (meta.get("bindings") or {}).items():
@@ -1119,9 +1133,12 @@ def selftest():
             errs = list(validator.iter_errors(json.loads(raw1)))
             check("%s: written meta validates against meta.schema.json (%d findings)" % (mid, len(errs)), not errs)
             before, after = json.loads(raw0), json.loads(raw1)
-            check("%s: every pre-existing field reads back equal" % mid, all(after.get(k) == v for k, v in before.items()))
-            check("%s: the original text is a prefix-preserved head of the new file" % mid,
-                  raw1.startswith(raw0.rstrip()[:-1].rstrip()))
+            # the live meta may already carry a draft (or a hand-set one, #313 L4): "pre-existing" means
+            # every field outside the spec block, and the "original text" is the head before that block
+            check("%s: every pre-existing field reads back equal" % mid,
+                  all(after.get(k) == v for k, v in before.items() if k not in FIELDS + (MARK,)))
+            head0, _ = split_block(raw0)
+            check("%s: the original text is a prefix-preserved head of the new file" % mid, raw1.startswith(head0))
             write_meta(dst, block)
             raw2 = open(dst, encoding="utf-8").read()
             check("%s: second write is byte-identical" % mid, raw1 == raw2)
@@ -1139,6 +1156,16 @@ def selftest():
             open(dst, "w", encoding="utf-8").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
             kind, reasons = coverage_of_meta(dst)
             check("%s: planted unresolvable part is REFUSED by name" % mid, kind == "partial" and any("unresolved" in r for r in reasons))
+            # a `$visual` part (no element) resolves through its `$host`; without one it is refused (#313 L4)
+            d = json.loads(raw1)
+            d["anatomy"].setdefault("children", []).append({"part": "planted-visual", "tag": "span", "$visual": "planted", "$host": d["anatomy"]["$sel"]})
+            open(dst, "w", encoding="utf-8").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
+            kind, reasons = coverage_of_meta(dst)
+            check("%s: a $visual part with a resolving $host reads full (%s)" % (mid, reasons or "-"), kind == "full")
+            d["anatomy"]["children"][-1]["$host"] = "body > div.no-such-host"
+            open(dst, "w", encoding="utf-8").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
+            kind, reasons = coverage_of_meta(dst)
+            check("%s: a $visual part whose $host resolves to nothing is REFUSED by name" % mid, kind == "partial" and any("planted-visual" in r for r in reasons))
             # the alias fence
         alias = next((p for p in glob.glob(os.path.join(HERE, "*.meta.json")) if json.load(open(p)).get("aliasOf")), None)
         if alias:
@@ -1211,6 +1238,10 @@ def main(argv=None):
             ex = meta.get(MARK)
             if isinstance(ex, dict) and ex.get("reviewed") is True and not a.force:
                 print("   ⛔ %s: $extracted.reviewed is true — not overwritten without --force" % mid)
+                rc = 1
+                continue
+            if isinstance(ex, dict) and ex.get("$hand") and not a.force:
+                print("   ⛔ %s: $extracted.$hand — set by hand on Dave's ruling; not overwritten without --force" % mid)
                 rc = 1
                 continue
             try:

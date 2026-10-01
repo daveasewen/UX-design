@@ -246,21 +246,21 @@
             ]
           },
           {
-            "part": "h2",
+            "part": "title",
             "tag": "h2",
             "attrs": {
               "id": "dtitle"
             },
-            "text": "Confirm payment",
+            "text": "{props.title}",
             "$sel": "body > div.overlay > div.dialog > h2"
           },
           {
-            "part": "p",
+            "part": "body",
             "tag": "p",
             "attrs": {
               "id": "dbody"
             },
-            "text": "You're about to send £250.00 to Jordan Lee. This can't be undone once confirmed.",
+            "text": "{props.body}",
             "$sel": "body > div.overlay > div.dialog > p"
           },
           {
@@ -272,7 +272,7 @@
             "$sel": "body > div.overlay > div.dialog > div.actions",
             "children": [
               {
-                "part": "btn",
+                "part": "confirm",
                 "tag": "button",
                 "attrs": {
                   "class": "btn primary",
@@ -283,7 +283,7 @@
                 "$sel": "body > div.overlay > div.dialog > div.actions > button.btn.primary"
               },
               {
-                "part": "btn-2",
+                "part": "cancel",
                 "tag": "button",
                 "attrs": {
                   "class": "btn secondary",
@@ -305,9 +305,7 @@
       "hover",
       "focus",
       "active",
-      "open",
-      "disabled",
-      "inert"
+      "open"
     ],
     "initial": "closed",
     "transitions": [
@@ -343,37 +341,11 @@
       },
       {
         "from": "*",
-        "on": "props.disabled",
-        "to": "disabled",
-        "guard": "{props.disabled}"
-      },
-      {
-        "from": "*",
         "on": "click",
         "to": "open"
       },
       {
-        "from": "*",
-        "on": "click",
-        "to": "inert"
-      },
-      {
-        "from": "*",
-        "on": "click",
-        "to": "disabled"
-      },
-      {
         "from": "open",
-        "on": "click",
-        "to": "closed"
-      },
-      {
-        "from": "inert",
-        "on": "click",
-        "to": "closed"
-      },
-      {
-        "from": "disabled",
         "on": "click",
         "to": "closed"
       }
@@ -397,11 +369,6 @@
         "style .close:active",
         "style .dialog .close:active"
       ],
-      "disabled": [
-        "script click handler",
-        "style .btn.is-disabled:hover",
-        "style .btn:disabled:hover"
-      ],
       "focus": [
         "style .btn:focus-visible",
         "style .dialog .close:focus-visible"
@@ -411,10 +378,8 @@
         "style .overlay.open",
         "style .overlay.open .dialog"
       ],
-      "inert": [
-        "script click handler"
-      ],
-      "$initial": "the root element itself carries an open/expanded state, so the rest state is closed"
+      "$initial": "the root element itself carries an open/expanded state, so the rest state is closed",
+      "$removed": "inert is what the open dialog does to the page behind it, and disabled is what it does to the button that opened it; both read from the script's click handler, neither is a look of the dialog"
     }
   },
   "emits": [],
@@ -439,7 +404,7 @@
     "--press-darken": "{component-type.button-family.press-darken}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Modals.reference.html",
@@ -455,6 +420,30 @@
       "keydown"
     ],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "states inert, disabled taken out (and their arrows)",
+        "why": "Take inert and disabled out of the dialog's states; they belong to the page. The parts are right."
+      },
+      {
+        "what": "title and body take their words from the title and body fields; the demo's payment sentence removed",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part (and s305-D17: a part's own words are a field on the part)"
+      },
+      {
+        "what": "part btn renamed confirm",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part — the markup's own ids, confirm and cancel; btn-2 was the extractor's count"
+      },
+      {
+        "what": "part btn-2 renamed cancel",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part — the markup's own ids"
+      },
+      {
+        "what": "rest state stays closed, the dialog's own word",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 14, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Take inert and disabled out of the dialog's states; they belong to the page. The parts are right.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }

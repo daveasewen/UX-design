@@ -400,7 +400,7 @@
       "class": "btn {props.type}",
       "disabled": "{state.disabled}"
     },
-    "text": "Loading",
+    "text": "{props.label}",
     "$stateClasses": [
       "is-pressed",
       "is-disabled",
@@ -414,9 +414,12 @@
         "attrs": {
           "class": "spin"
         },
-        "$sel": "body > div.row > button.btn.primary > span.spin"
+        "$sel": "body > div.row > button.btn.primary > span.spin",
+        "$when": "{state.processing}",
+        "$note": "present only while processing; a button at rest has no spinner"
       }
-    ]
+    ],
+    "$note": "the button, read from its first instance (the default primary); its type is the class hole {props.type}, its words the label field (s305-D17). The 312 draft took the richest of six instances, the Loading specimen."
   },
   "states": {
     "states": [
@@ -535,7 +538,7 @@
     "--press-darken": "{component-type.button-family.press-darken}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Button.reference.html",
@@ -545,9 +548,29 @@
       "emits",
       "bindings"
     ],
-    "$root": "name affinity 3 (button.btn.primary) → richest of 6 instances",
+    "$root": "name affinity 3 (button.btn.primary) → the first instance, the default button (hand-set 313-L4; the 312 draft took the richest of 6, the Loading one)",
     "$listeners": [],
     "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-    "sha": "97c7793a"
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "the button's words: the literal \"Loading\" replaced by the label field {props.label}",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+      },
+      {
+        "what": "the spinner kept as the one child, marked present only while processing",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+      },
+      {
+        "what": "root re-read as the default button, not the Loading specimen ($sel already names the first instance)",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+      },
+      {
+        "what": "states (7, rest default) and bindings (29) unchanged",
+        "why": "\"the states and bindings can stay\""
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 3, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.\"",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
   }
 }
