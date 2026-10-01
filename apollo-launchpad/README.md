@@ -100,3 +100,15 @@ parts with their reasons, every grant and refusal, and the ranker's record. Stdl
 The record per screen (`records/`) and the worked example end to end are the verifier's (CV); step two (the
 renderer) is superseded by `s311-D9`: the renderer that draws an A2UI screen is the HTML emitter of the new
 architecture.
+
+## The worked example end to end (`verify/`, `records/`, #313 lane CV)
+
+The two requests of the worked example (`mock/requests.json`) run through choose → compose → gate → record:
+the chooser picks the parts, `verify/worked_example.py` composes the A2UI surface from the picks and the mock
+data (a stand-in for the agent, not a renderer), the gate refuses or passes it in memory and again over stdio,
+and the record of § 8 of the spec is written. Then five bad screens and one bad page go through the same gate.
+
+    PYTHONDONTWRITEBYTECODE=1 $HOME/.launchpad-venv/bin/python apollo-launchpad/verify/worked_example.py           # prints, writes nothing
+    PYTHONDONTWRITEBYTECODE=1 $HOME/.launchpad-venv/bin/python apollo-launchpad/verify/worked_example.py --write   # also writes records/
+
+`BLKD` lines are steps the chain cannot take yet (data bound to the data model); they are neither a pass nor a fail.
