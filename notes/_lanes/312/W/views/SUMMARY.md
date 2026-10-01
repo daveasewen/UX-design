@@ -9,6 +9,7 @@
 - Two commit waves, both green on CI: tokens to the DTCG standard with no pixel moved, the four spec fields in the meta schema, the adapter schema and the Sutherland kit, wrap phase 3, the Launchpad catalogue, and cohort one's fifteen drafts.
 - Two pages for you in "Apollo 304 review": the pictures you are owed (29 calls) and cohort one's trees (20 calls, rule Friday).
 - The Sutherland kit is zipped for your work machine at `outputs/sutherland-react-kit-312-at-5017f3b8.zip` in the project folder.
+- The wrap is committed and pushed (`d9fb861c`, plus `7aef86f4` for the wrap seat's files). The full pre-push check ran on the wrap first and came back clean. CI is green on all three jobs.
 - Next chat: `Apollo - #313: the fourteen lanes on the fresh week, and his cohort-one trees`.
 
 ## Problems

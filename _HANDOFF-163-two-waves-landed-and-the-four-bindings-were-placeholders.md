@@ -102,3 +102,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-10-01-312-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-10-01-312-two-waves-landed-and-the-four-bindings-were-placeholders.md`. Memory hook: `notes/_lanes/312/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/312/W/FACTS.json`. Story: `notes/_lanes/312/W/STORY.md`.*
 
 *Title the next chat:* `Apollo - #313: the fourteen lanes on the fresh week, and his cohort-one trees`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **865, newest `s312-D7`**.
+
+1. ✅ **CI IS GREEN.** `7aef86f4` run `36884644793`, render completed/success, release completed/success, gates completed/success, read by `_ci_readback.py` (`notes/_lanes/312/W/_ci-runs-7aef86f4.txt`).
+2. ✅ **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST, IN TWO HALVES** (Worker checklist step 5): first the committed tree as CI's gates job runs it, no mutating steps, 83 pass, 0 FAIL, 2 advisory, 4 could-not-ask over 3 chunks; then the writer gates with `--include-mutating`, the survey over 171 steps in 5 chunks, 158 pass, 0 FAIL, 4 advisory (144, 154, 167, 168), 9 could-not-ask; `test_gates` 39 with 0 failure(s). Logs: `notes/_lanes/312/W/_prepush-*.txt`.
+3. ⛔ **THE WRAP COMMIT IS `d9fb861c`, ON THE `--wrap` PATH** (gate `250 in scope · 0 fail · 81 warn`); **`7aef86f4` carries the seat's files.**
+4. **THE PUSH: `5017f3b8..7aef86f4`** at 2026-10-01T15:29:15Z, **31.6 minutes from the launch** (2026-10-01T14:57:42Z).
+5. **Phase-3 counts:** hand-written files **2** (`STORY.md`, and nothing else; `FACTS.json` is measured) · views generated **15** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b**.
+6. ✅ **`_CHAIN.md` IS 6,030 cl100k** at the wrap's regen, under the 7,700 warn, under the 10,000 fail (`CHAIN_BUDGET_TK`, `s212-D11`). The figure after this addendum's own regen is not re-taken (the #241 rule).
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the story's `Apollo - #313: the fourteen lanes on the fresh week, and his cohort-one trees`. `_gen_titles.py` derived `Apollo - #313: friday 07`. Declared, not reconciled.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** The one hook file is `notes/_lanes/312/WRAP-MEMORY-HOOK.md` (the index line, the front block and the body, each once).
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

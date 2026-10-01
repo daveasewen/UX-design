@@ -1,0 +1,67 @@
+— 171 steps read from _build_all.STEPS by ast (never imported) · 22 ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast · per-step timeout 60s · ALL steps (mutating included)
+
+  ✅ [64] token-tier gate (_STANDARDS.md §1)
+  ✅ [65] icon-source gate
+  ✅ [66] a11y gate
+  ✅ [67] a11y target-measurement selftest (s114-D5)
+  ⊘ [68] hit-area gate — 44px minimum, rendered geometry (ADVISORY, bui  COULD-NOT-ASK
+  ✅ [69] wiring gate — no orphaned validators (#118 seam)
+  ✅ [70] wiring gate selftest — 4 bites
+  ✅ [71] compose gate (orphan wired #119)
+  ✅ [72] screen gate — compose+icons+a11y over fitness fixtures (re-wir
+  ⊘ [73] state-contrast gate — driven hover/pressed, light+dark (un-exe  COULD-NOT-ASK
+  ⊘ [74] state-contrast gate selftest — paint stack, report arithmetic,  COULD-NOT-ASK
+  ✅ [75] type-composites ratchet — tier (b), debt 1101 shrink-only (Dav
+  ✅ [76] type-composites selftest
+  ✅ [77] coverage gate
+  ✅ [78] pro-forma universal gate
+  ✅ [79] pro-forma CSS-governed motion gate (DEF-003)
+  ✅ [80] pro-forma no-hardcode styling gate (DEF-004)
+  ✅ [81] 4px-grid gate (DEF-005)
+  ✅ [82] type-binding blast-radius gate (canon/type.css)
+  ✅ [83] descender-clip gate (ds-005) — truncating labels stay descende
+  ✅ [84] KG edge parse-gate + s135-D4 resolutions-consumed check
+  ✅ [85] KG edge gate selftest (6 bites)
+  ✅ [86] KG token-group generator drift check — _token_nodes.json vs th
+  ✅ [87] KG token-group generator selftest — 8 bites (s277-D12)
+  ✅ [88] KG node-title generator drift check — _node_titles.json vs the
+  ✅ [89] KG node-title generator selftest — 15 bites (#304 W5c; +3 #305
+  ✅ [90] KG sources generator in sync — s305-D26 step 5
+  ✅ [91] KG sources generator selftest — 9 bites (s305-D26)
+  ✅ [92] Token fork-ban gate — undeclared same-scope forks (s136-D1 lan
+  ✅ [93] Token fork-ban selftest (2-direction)
+  ✅ [94] binds shrink-only ratchet (s136-D1 axis A; built #141, wired #
+  ✅ [95] DTCG spine conformance gate (s141-D1 axis A; built #141, wired
+  ✅ [96] tokens→DTCG 2025.10 — the five proofs of s311-D8 (built + wire
+  ✅ [97] tokens→DTCG selftest — 5 bites (#312)
+  ✅ [98] binds-resolve gate — manifest presence + address→store resolut
+  ✅ [99] binds-resolve selftest — 5 bites incl. any-store clause (#146)
+  ✅ [100] chart-intent resolve gate — meta intent address → chart-intent
+
+==============================================================================
+SURVEY: 34 pass · 0 FAIL · 0 ADVISORY-warn · 3 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 0 not asked (mutating) · 134 outside --range 64:100 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (3) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [68] hit-area gate — 44px minimum, rendered geometry (ADVISORY, built #203, wired #209)
+      python3 knowledge/_validate_hit_area.py --all   (exit 77)
+      COULD-NOT-ASK: HIT-AREA: HARNESS UNAVAILABLE — playwright not importable (No module named 'playwright'). Install it with `pip install playwright && playwright install chromium`. (Inside this repo's sandbox, stage it per knowledge/_RUNBOOK-render-verify.md instead.) This is NOT a pass.
+
+  [73] state-contrast gate — driven hover/pressed, light+dark (un-exempted #125)
+      python3 knowledge/_validate_state_contrast.py    (exit 77)
+      COULD-NOT-ASK: _validate_state_contrast.py — the 'playwright' module is not installed (ModuleNotFoundError("No module named 'playwright'")) — this gate cannot be proven without it; run `pip install playwright && playwright install chromium` ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run BLOCKING in the `render` job of .github/workflows/gates.yml, which installs chromium — that job is where this gate's proof of record lives. Nothing here is claimed green; the question was unaskable on this box.
+
+  [74] state-contrast gate selftest — paint stack, report arithmetic, named args
+      python3 knowledge/_validate_state_contrast.py --selftest   (exit 77)
+      COULD-NOT-ASK: _validate_state_contrast.py — the 'playwright' module is not installed (ModuleNotFoundError("No module named 'playwright'")) — this gate cannot be proven without it; run `pip install playwright && playwright install chromium` ⇒ THIS IS NOT A SKIP: these arms (including the s152-D1 mutation control) run BLOCKING in the `render` job of .github/workflows/gates.yml, which installs chromium — that job is where this gate's proof of record lives. Nothing here is claimed green; the question was unaskable on this box.
+
+⚠ --no-record: this run is NOT in the verdict ledger, so nothing downstream can quote it. The chain's green count keeps saying whatever the last recorded run said.

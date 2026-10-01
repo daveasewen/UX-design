@@ -56,3 +56,6 @@ provenance: 312 · 2026-10-01 · status: observed · repo record: `_HANDOFF-163-
 3. **Dave's:** the pictures you are owed: will he answer the 29 calls?
 4. **Dave's:** will he take the Sutherland kit to his work machine?
 5. **Mine:** can `s311-D8`'s last two proofs be shown: the four theme files resolving to today's CSS, and Style Dictionary at zero warnings?
+
+### After the wrap
+- Wrap commit `d9fb861c`, seat files `7aef86f4`; CI on `7aef86f4` GREEN (run `36884644793`).

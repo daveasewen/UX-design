@@ -60,3 +60,12 @@ None new from this seat. The OWED list in `_HANDOFF-163` carries his.
 - The proposed rule for cloud lanes (patches against the cut sha, `git apply --3way`) is a proposal, not built or measured.
 
 REPLAY-THESE: `python3 knowledge/_wrap_views.py --check --session 312` · `python3 knowledge/_wrap_carries.py count --section 313` · `python3 knowledge/_wrap_facts.py --selftest` · `python3 knowledge/_wrap_views.py --selftest`
+
+## POST-COMMIT (by addition, 5b)
+
+- **The wrap commit is `d9fb861c`**, on the `--wrap` path, gate `250 in scope · 0 fail · 81 warn`, the named paths plus `notes/_REHEARSAL-LOG.jsonl` auto-staged; **`7aef86f4`** carries the seat's files.
+- **The pre-push check, before the push, in two halves:** the committed tree first, 83 pass · 0 FAIL · 2 advisory · 4 could-not-ask; then the writer gates, 158 pass · 0 FAIL · 4 advisory (144, 154, 167, 168) · 9 could-not-ask over 5 chunks of 171 steps; `test_gates` 39 (0 failures). Logs `notes/_lanes/312/W/_prepush-*.txt`.
+- **The push:** `5017f3b8..7aef86f4` at 2026-10-01T15:29:15Z, 31.6 minutes from the launch.
+- **CI:** `7aef86f4`, run `36884644793`, GREEN (render completed/success, release completed/success, gates completed/success). 
+- **`_CHAIN.md` 6,030 cl100k** at the wrap's regen, under the 7,700 warn (fail 10,000). Declared.
+- **Title:** the story's `Apollo - #313: the fourteen lanes on the fresh week, and his cohort-one trees`; `_gen_titles.py` derived `Apollo - #313: friday 07`. Declared.
