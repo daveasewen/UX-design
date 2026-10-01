@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo for other libraries</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.record{font-size:12px;color:var(--g6);line-height:1.5;margin:var(--s2) 0 0}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:170px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0}
+.nums div{background:var(--card);padding:var(--s2) var(--s3)}
+.nums .n{font-size:34px;font-weight:200;line-height:1.1;font-variant-numeric:tabular-nums}
+.nums .t{font-size:12px;color:var(--g7);line-height:1.5;margin-top:4px}
+/* diagrams */
+.diag{margin:var(--s3) 0 var(--s2);background:var(--card);border:1px solid var(--g3);padding:var(--s3)}
+.diag .scroll{overflow-x:auto;max-width:100%}
+.diag svg{display:block;width:100%;height:auto}
+.diag svg.wide{min-width:760px}
+.diag svg text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+.diag .tall{display:none;max-width:420px;margin:0 auto}
+.diag-cap{font-size:13px;color:var(--g7);margin-top:var(--s2);max-width:60em}
+/* options grid */
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0}
+.opts.two{grid-template-columns:repeat(2,1fr)}
+.opt{background:var(--card);padding:var(--s3);font-size:15px;line-height:1.55;color:var(--g8)}
+.opt .letter{font-size:40px;font-weight:200;line-height:1.1;color:var(--g6);display:block}
+.opt h3{margin:6px 0 10px;font-size:19px;font-weight:400;line-height:1.3;color:var(--fg)}
+.opt .k{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);margin:var(--s2) 0 2px;line-height:1.5}
+.opt .verdict{margin-top:var(--s2);padding-top:var(--s2);border-top:1px solid var(--g2);color:var(--fg)}
+.opt.rec{outline:2px solid var(--accent);outline-offset:-2px}
+.opt.rec .verdict::before{content:"The recommendation · ";color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+/* phases */
+.phase{display:grid;grid-template-columns:170px 1fr;gap:var(--s3);padding:var(--s3) 0;border-top:1px solid var(--g3)}
+.phase:last-of-type{border-bottom:1px solid var(--g3)}
+.phase .hd .no{font-size:34px;font-weight:200;line-height:1.1;color:var(--g6)}
+.phase .hd .when{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:4px;line-height:1.5}
+.phase .hd .size{font-size:12px;color:var(--g7);margin-top:4px;line-height:1.5}
+.phase h3{font-size:21px;font-weight:300;line-height:1.3;margin:0 0 var(--s1)}
+.phase p{font-size:15px;line-height:1.6;color:var(--g8)}
+.phase .gate{font-size:14px;line-height:1.55;color:var(--g8);background:var(--g1);padding:var(--s2) var(--s3);margin-top:var(--s1);border-left:2px solid var(--fg)}
+section.grey .phase .gate{background:var(--bg)}
+.phase .gate b{font-weight:500;color:var(--fg)}
+/* calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2);line-height:1.55}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35;max-width:100%}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s3)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol,details.tech ul{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab tr.rec td{background:var(--g1)}
+.scroll{overflow-x:auto;max-width:100%}
+.src{margin:0;padding:0;list-style:none;font-size:13px;line-height:1.6;color:var(--g7)}
+.src li{padding:.35rem 0;border-top:1px solid var(--g2);overflow-wrap:anywhere}
+.src li:last-child{border-bottom:1px solid var(--g2)}
+.src b{font-weight:500;color:var(--fg);display:inline-block;min-width:3.2em}
+.src a{color:var(--g7)}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:820px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .nums{grid-template-columns:1fr 1fr}
+  .nums .n{font-size:27px}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .opts,.opts.two{grid-template-columns:1fr}
+  .phase{grid-template-columns:1fr;gap:var(--s1)}
+  .phase .hd{display:flex;gap:var(--s2);align-items:baseline;flex-wrap:wrap}
+  .phase .hd .no{font-size:27px}
+  .diag{padding:var(--s2)}
+  .diag .wide.has-tall{display:none}
+  .diag .tall{display:block}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#answer">01 The answer</a>
+  <a href="#today">02 Today</a>
+  <a href="#field">03 The field</a>
+  <a href="#options">04 The options</a>
+  <a href="#arch">05 The architecture</a>
+  <a href="#plan">06 The plan</a>
+  <a href="#calls">07 The calls</a>
+  <a href="#sources">08 Sources</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 311 · proposal · Apollo for other libraries · v1</p>
+      <h1>Make the meta the spec, make the snippet the proof, and emit every target from the same source.</h1>
+      <p class="sub">Your instinct is half right. The snippets should not be what the compiler reads. They should stay, as the fixture every emitter has to match, because they are the only framework-neutral test Apollo has and the only thing you rule on by eye.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>Lane M3 (Fable), on M1's desk research (38 sources) and M2's read-only measurement of the repo at the seat.</span>
+      <span>Nothing here is ruled until you say. Seven calls at the end.</span>
+    </div>
+  </div>
+</header>
+
+<section id="answer">
+  <div class="wrap">
+    <p class="label">01 · The answer on one screen</p>
+    <h2>Not halfway. The half Apollo has is the half that governs. The half it lacks is the half that renders.</h2>
+    <p class="quote">"is it right that relying on the way the compiler works now, might make this easy to implement, you can switch out the snippets and tokens for another library and you are half way there???"</p>
+    <p class="lead">No. Today the compiler's input is the snippets, so switching them out switches out the whole of what it reads: 95% of the shared stylesheet, every line of component markup, and about 5,800 lines of behaviour that live nowhere else. What would be left is the metas, and the metas hold what a component is, when to use it and what it takes, not how it is drawn. Swapping in another library's HTML would make canon.css a theme of that library. That is placement C, not a shortcut to placement A.</p>
+    <ul class="facts">
+      <li><span class="k">Two questions, not one</span><span><b>Your words hold two different jobs.</b> S1: Apollo's own components delivered into a React, Angular or plain HTML stack. S2: Apollo working with a library a client already has, where Apollo governs and composes but does not own the components. They need different machinery and this page answers both.</span></li>
+      <li><span class="k">S1, the answer</span><span><b>Do it at source.</b> The meta becomes the declared spec (it gains an anatomy tree, states and transitions as data, the events a part emits, and token bindings as references). Per-component CSS and behaviour modules move out of the snippets. The compiler becomes a set of emitters: the HTML+CSS one you have today, then Lit custom elements, then generated React and Angular wrappers. Tokens go to the W3C DTCG format under all of it.</span></li>
+      <li><span class="k">S2, the answer</span><span><b>A layer between Apollo and their library, but a manifest, not a code transform.</b> One file per library maps Apollo roles and metas to their components, props to props, slots to slots, and their tokens onto Apollo's semantic tokens. Apollo's when-rules, gates and composition run unchanged; their components render. ADR-0008 already asks for this and four unverified bindings already exist.</span></li>
+      <li><span class="k">The snippets</span><span><b>Keep them, change their job.</b> From source to fixture. Each snippet becomes the HTML emitter's output for a documented example, committed, viewed in the showroom, read by the 35 gates that read it today, and ruled on by your eye. A round-trip gate refuses any emitter whose output does not match the committed snippet. This is what GOV.UK Frontend does with its fixtures.json and it has lasted ten years.</span></li>
+      <li><span class="k">Where you are challenged</span><span><b>Three places.</b> First, "the snippets are for the user to view" undersells them: they are the acceptance test and the thing designers rule on, and the research says drop them from the pipeline only as input, never as oracle. Second, the compiler as it stands does not make this easy; it is a loop through the snippets with hand-written manifests in the middle, and the reversal you are proposing undoes ADR-0013 ruling 4, which says the snippets stay the source of truth. Third, "switch out the tokens" is the one part that is easy, and it is easy because the tokens are already close to a standard, not because of how the compiler works.</span></li>
+      <li><span class="k">What the field says</span><span><b>Nobody at design-system scale compiles React or Angular from compiled HTML.</b> The two systems that compile once to many (Deutsche Bahn via Mitosis, Chakra via Zag) do it from a neutral spec. The big corporates (Carbon, Spectrum, Fluent, Nord, Shoelace) ship web components as the one runtime with thin generated wrappers and shared tokens underneath. React 19, Angular, Vue, Svelte and Solid all score 100% on Custom Elements Everywhere now, which removes the old objection.</span></li>
+      <li><span class="k">Next step</span><span><b>Rule the seven calls in 07.</b> Phase 0 (tokens to DTCG) and phase 1 (extract the spec from the snippets into the metas) can start this weekend without touching the pipeline. Phase 2 reverses ADR-0013 ruling 4 and waits for your word.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="today" class="grey">
+  <div class="wrap">
+    <p class="label">02 · What Apollo depends on today · measured by M2 at the seat</p>
+    <h2>The build is a loop through the snippets. The metas sit beside the loop, not inside it.</h2>
+    <p class="lead">The Python build does not build a component from anything but its snippet. The snippet is the declared source of three things: the CSS, the markup and most of the behaviour. The meta is read for what a part is and when it is allowed, never for how it is drawn.</p>
+    <div class="nums">
+      <div><div class="n">95%</div><div class="t">of canon.css is downstream of the snippets: 82.8% from their <code>&lt;style&gt;</code> blocks, 12.3% from their token manifests. The token spine from tokens JSON is 34 KB.</div></div>
+      <div><div class="n">0 of 139</div><div class="t">metas carry an anatomy or template. Every route that puts a part on a page copies the snippet's markup.</div></div>
+      <div><div class="n">~5,800</div><div class="t">lines of per-component behaviour exist only inside snippets (date picker, tabs, menus). 17 shared canon/*.js files hold another 3,156.</div></div>
+      <div><div class="n">~90 / 47 / 7</div><div class="t">files read snippets; about 47 run on every build; 7 write output the product depends on.</div></div>
+    </div>
+    <div class="diag">
+      <div class="scroll">
+      <svg class="wide" viewBox="0 0 1040 360" role="img" aria-labelledby="d1-t d1-d">
+        <title id="d1-t">How Apollo builds today</title>
+        <desc id="d1-d">Tokens JSON feeds gen_snippet_tokens, which writes theme blocks into each snippet. The snippet holds the token manifest, the style, the markup and the script. gen_canon_components and gen_theme_cascade read the snippets and write 95 percent of canon.css. Composition copies markup from the snippets and the receipt mint splices it. The meta sits beside the loop and is read for props, variants, roles and when-rules only.</desc>
+        <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <!-- tokens -->
+        <rect x="0" y="120" width="140" height="110" fill="#F3F3F3"/>
+        <text x="14" y="145" font-size="11" letter-spacing="1.3" fill="#545454">TOKENS JSON</text>
+        <text x="14" y="172" font-size="15" font-weight="500" fill="#000">940 tokens</text>
+        <text x="14" y="194" font-size="12" fill="#545454">$value · $type</text>
+        <text x="14" y="210" font-size="12" fill="#545454">near DTCG, four gaps</text>
+        <line x1="140" y1="175" x2="228" y2="175" stroke="#000" stroke-width="1.2" marker-end="url(#ah1)"/>
+        <text x="186" y="164" text-anchor="middle" font-size="9.5" fill="#333">gen_snippet_tokens</text>
+        <!-- snippet -->
+        <rect x="230" y="40" width="300" height="280" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="244" y="68" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">THE SNIPPET · 137 · THE SOURCE TODAY</text>
+        <rect x="244" y="90" width="132" height="92" fill="#F3F3F3"/>
+        <text x="254" y="114" font-size="14" font-weight="500" fill="#000">#token-manifest</text>
+        <text x="254" y="134" font-size="12" fill="#333">var to token map,</text>
+        <text x="254" y="150" font-size="12" fill="#333">hand-written 137/137</text>
+        <text x="254" y="166" font-size="12" fill="#333">themes written in</text>
+        <rect x="384" y="90" width="132" height="92" fill="#F3F3F3"/>
+        <text x="394" y="114" font-size="14" font-weight="500" fill="#000">&lt;style&gt;</text>
+        <text x="394" y="134" font-size="12" fill="#333">states as selectors:</text>
+        <text x="394" y="150" font-size="12" fill="#333">1,556 pseudo-classes,</text>
+        <text x="394" y="166" font-size="12" fill="#333">502 .is-*, 209 [aria-*]</text>
+        <rect x="244" y="198" width="132" height="92" fill="#F3F3F3"/>
+        <text x="254" y="222" font-size="14" font-weight="500" fill="#000">markup</text>
+        <text x="254" y="242" font-size="12" fill="#333">the only copy;</text>
+        <text x="254" y="258" font-size="12" fill="#333">4,174 aria-* attrs;</text>
+        <text x="254" y="274" font-size="12" fill="#333">no meta has a tree</text>
+        <rect x="384" y="198" width="132" height="92" fill="#F3F3F3"/>
+        <text x="394" y="222" font-size="14" font-weight="500" fill="#000">&lt;script&gt;</text>
+        <text x="394" y="242" font-size="12" fill="#333">~5,800 lines with no</text>
+        <text x="394" y="258" font-size="12" fill="#333">other home, + copies</text>
+        <text x="394" y="274" font-size="12" fill="#333">of 17 canon/*.js</text>
+        <!-- outputs -->
+        <line x1="530" y1="136" x2="640" y2="136" stroke="#000" stroke-width="1.2" marker-end="url(#ah1)"/>
+        <text x="588" y="125" text-anchor="middle" font-size="9.5" fill="#333">gen_canon_components</text>
+        <text x="585" y="150" text-anchor="middle" font-size="10" fill="#333">gen_theme_cascade</text>
+        <rect x="642" y="96" width="170" height="80" fill="#F3F3F3"/>
+        <text x="656" y="120" font-size="11" letter-spacing="1.3" fill="#545454">CANON.CSS</text>
+        <text x="656" y="144" font-size="15" font-weight="500" fill="#000">2.09 MB</text>
+        <text x="656" y="164" font-size="12" fill="#545454">95% from the snippets</text>
+        <line x1="530" y1="244" x2="640" y2="244" stroke="#000" stroke-width="1.2" marker-end="url(#ah1)"/>
+        <text x="585" y="233" text-anchor="middle" font-size="10" fill="#333">copy, or the mint</text>
+        <text x="585" y="258" text-anchor="middle" font-size="10" fill="#333">splices exact bytes</text>
+        <rect x="642" y="204" width="170" height="80" fill="#F3F3F3"/>
+        <text x="656" y="228" font-size="11" letter-spacing="1.3" fill="#545454">A COMPOSED SCREEN</text>
+        <text x="656" y="252" font-size="15" font-weight="500" fill="#000">links canon.css</text>
+        <text x="656" y="272" font-size="12" fill="#545454">markup pasted from snippets</text>
+        <!-- meta beside -->
+        <rect x="850" y="40" width="190" height="280" fill="#fff" stroke="#767676" stroke-width="1" stroke-dasharray="5 4"/>
+        <text x="864" y="68" font-size="11" letter-spacing="1.3" fill="#545454">THE META · 139 · BESIDE</text>
+        <text x="864" y="100" font-size="13" fill="#000">props 135 · 594 typed</text>
+        <text x="864" y="120" font-size="13" fill="#000">variants 125</text>
+        <text x="864" y="140" font-size="13" fill="#000">provides (role) 107</text>
+        <text x="864" y="160" font-size="13" fill="#000">when 45</text>
+        <text x="864" y="180" font-size="13" fill="#000">aria contract 135, prose</text>
+        <text x="864" y="200" font-size="13" fill="#000">stateModel 27, no transitions</text>
+        <text x="864" y="220" font-size="13" fill="#000">tokens 239 paths / 727 prose</text>
+        <text x="864" y="248" font-size="13" fill="#DA1A00">anatomy 0</text>
+        <text x="864" y="268" font-size="13" fill="#DA1A00">emitted events 0</text>
+        <text x="864" y="288" font-size="13" fill="#DA1A00">codeBindings 4, unverified</text>
+        <text x="864" y="312" font-size="11" fill="#767676">read for what and when, not how</text>
+        <text x="0" y="350" font-size="11" fill="#767676">Measured 2026-10-01 by lane M2 (read-only). Sources: gen_canon_components.py:3-7 and :422, gen_theme_cascade.py:341-344, _build_all.py:215-216, meta.schema.json.</text>
+      </svg>
+      </div>
+      <p class="diag-cap">The loop reads left to right. Tokens are written into the snippets, the snippets are read back out into canon.css, and a composed screen gets its markup by copying a snippet. The meta is to the right, outside the loop: it is what the compose skill and the knowledge graph read, and it is where your rulings about what and when are kept.</p>
+    </div>
+    <ul class="facts">
+      <li><span class="k">The declared design</span><span><b>This is on purpose, and on record.</b> <code>gen_canon_components.py</code> lines 3 to 7 say "The snippets are the source of truth (they are the final reviewed components); canon regenerates from them". ADR-0013 ruling 4 and <code>gen_component_partials.py</code> lines 9 to 11 say the same. Your instinct is a reversal of a ruled design, not a tidy-up.</span></li>
+      <li><span class="k">What the meta holds</span><span><b>About half of a neutral spec, and it is the governing half.</b> Props with types on 135 metas (594 props, every one typed, 393 with a default), variants on 125, the 12-role vocabulary on 107, when-rules on 45, an aria contract on 135. Typed slots on 20, a state list on 27. These are the fields your rulings land in.</span></li>
+      <li><span class="k">What the meta lacks</span><span><b>Everything an emitter needs to draw.</b> No anatomy tree on any meta. No transitions, only state names. No emitted events (the 24 <code>behaviour.events</code> are DOM listeners, not what the part fires). Of 1,013 token entries, 239 are paths a machine can bind; 727 are prose. The real binding is the snippet's hand-written <code>#token-manifest</code>.</span></li>
+      <li><span class="k">The prior record</span><span><b>Multi-framework output was decided, never built.</b> ADR-0008 (accepted 2026-07-20): Apollo is the canonical core and consumers such as Sutherland React are reached "by machine-runnable adapters, not hand-ports". The onboarding runbook names <code>codeBindings.&lt;lib-id&gt;</code> as the spoke and lists <code>web-components</code> as an example library id. The designer skill says "React (preferred)" and there is no React component in the repo to wire to, and no <code>customElements.define</code> anywhere.</span></li>
+      <li><span class="k">Tokens</span><span><b>Close to the standard; one generator away.</b> <code>$value</code>, <code>$type</code> and <code>$description</code> everywhere. Four gaps: no <code>{group.token}</code> aliases (the alias sits in a non-standard <code>$alias</code>), light and dark encoded as path leaves, 150-odd non-standard <code>$</code> keys that belong in <code>$extensions</code>, and dimensions as strings. M2's estimate is one generator with no information lost.</span></li>
+    </ul>
+    <details class="tech"><summary>Technical · the numbers behind this section</summary><ol>
+      <li>canon.css measured at 2,087,030 bytes: AUTO-COMPONENTS 1,728,813 (82.8%) harvested verbatim from each snippet's <code>&lt;style&gt;</code> by <code>knowledge/canon/gen_canon_components.py</code>; AUTO-THEMES 256,389 (12.3%) derived by <code>gen_theme_cascade.py</code> from each snippet's <code>#token-manifest</code>. Not downstream of snippets: the 34 KB token spine (<code>gen_canon_tokens.py</code>), the bento block, hand-written <code>.c-*</code> utilities.</li>
+      <li>Seven files make product output from snippets: <code>gen_canon_components</code>, <code>gen_theme_cascade</code> (A); <code>gen_snippet_tokens</code>, <code>gen_component_partials</code>, <code>gen_token_ramp</code> (B, write into snippets); <code>gen_provenance_receipt</code> (C, splices markup); <code>gen_showroom</code> (D). About 35 <code>_validate_*.py</code> read snippets as gates; the rest index, probe or report.</li>
+      <li>Behaviour: 102 of 137 snippets carry script, 22,765 lines; about 16,750 are AUTO-BEHAVIOUR copies of the 17 <code>canon/*.js</code> files (3,156 lines) in 18 chart snippets; about 170 are APOLLO-DEMO harness; about 5,800 are per-component and inline only. 18 metas point <code>behaviour.script</code> into a snippet's <code>#script</code>; 15 into <code>canon/*.js</code>.</li>
+      <li>States live in CSS selectors: 1,556 pseudo-class uses in 122 snippets, 502 <code>.is-*</code>/<code>.has-*</code> in 75, 209 <code>[aria-*]</code> in 59, 17 <code>[data-state]</code> in 13, 16 bare <code>.selected</code>/<code>.open</code>/<code>.loading</code> in 9. The meta's <code>stateModel</code> names states on 27 metas and drives none of them.</li>
+      <li>Markup routes, all from snippets: <code>_RUNBOOK-compose-from-canon.md:46-48</code> ("its scope class + the snippet's own markup"), <code>gen_provenance_receipt.py:45-46</code> (splices exact bytes of the first <code>select</code> element in the body), <code>SPEC-launchpad-day-one.md:62, 200</code> (stand-in is the splice; the planned renderer emits the snippets' classes). s307-D74 "link, don't paste" (enacted by #311 A1, 50159e7a) moved the CSS half only; markup is still spliced.</li>
+      <li>Token gaps: <code>$alias</code> 24 (slash paths, light/dark object), <code>$note</code> 67, <code>$contrast</code> 50, <code>$confidence</code> 8, <code>$label</code> 6; 101 dimension strings, 78 bare numbers; <code>$type</code> counts color 743, dimension 96, number 70, typography 20, duration 6, cubicBezier 4, fontFamily 1.</li>
+      <li>Full measurement: <code>notes/_lanes/311/M/M2-COMPILER-DEPENDENCIES.md</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="field">
+  <div class="wrap">
+    <p class="label">03 · What the field does · M1, sourced</p>
+    <h2>The systems that serve many frameworks share tokens and CSS underneath, and ship one runtime or compile from one neutral spec. None of them compiles from HTML.</h2>
+    <p class="lead">Eight systems read, all current as of 1 October 2026 unless dated. The pattern is consistent enough that the three placements you named can each be matched to someone who tried it.</p>
+    <ul class="facts">
+      <li><span class="k">IBM Carbon</span><span><b>Two hand-written flagships, one styles layer, parity by policy.</b> <code>@carbon/react</code> and <code>@carbon/web-components</code> on a shared <code>@carbon/styles</code>; its contributor guidance says "Visual and functional parity are paramount, though the implementations themselves are allowed to diverge as necessary" [S4]. The vanilla HTML+JS library, the nearest thing to Apollo's snippets being the shipped artefact, was deprecated in 2023 and ended with v10 in September 2024 [S6, S26]. The cost is two teams; the drift is accepted in writing.</span></li>
+      <li><span class="k">Adobe Spectrum</span><span><b>One CSS source, two consumers, no shared component code.</b> Spectrum CSS depends on <code>@spectrum-css/tokens</code>; Spectrum Web Components import it directly, and moving to Spectrum 2 was a theme swap not a rewrite [S2, S3]. React Spectrum is a separate stack whose premise is "The main difference between design systems is styling" [S1]. What is shared is tokens and CSS.</span></li>
+      <li><span class="k">Salesforce Lightning</span><span><b>Reference HTML as the spec, at scale, for a decade, and their own warning.</b> Blueprints are "framework-agnostic HTML or CSS"; the developer guide says "If SLDS updates the related blueprint, your component code isn't updated automatically" and tells you to look for any other route first [S27, S28]. SLDS 2 moved the visual contract to CSS custom properties that cross the Shadow DOM boundary.</span></li>
+      <li><span class="k">Material</span><span><b>Three parallel implementations and the one Google did not need was dropped.</b> Material Web Components went to maintenance mode on 10 June 2024 because the engineers were reassigned [S9]; Angular Material carried on with Material 3 as CSS custom properties [S10]; MUI is a third codebase [S29]. If Google cannot fund parallel hand-written ports, Apollo cannot.</span></li>
+      <li><span class="k">Fluent, Nord, Shoelace</span><span><b>Web components as the one runtime, custom properties as the theme bridge.</b> Fluent "do not create their own separate component model" [S11]; Nord pierces Shadow DOM with inherited custom properties [S13]; Shoelace ships React wrappers because React "treats all JSX properties as HTML attributes", which is why <code>@lit/react</code> exists [S17]. Stencil generalises wrappers into configured output targets for React, Angular and Vue [S15].</span></li>
+      <li><span class="k">Deutsche Bahn DB UX</span><span><b>The purest compile-once-to-many in production.</b> Components written once in Mitosis, emitted as React, Angular, Vue and Stencil packages on top of a CSS-only foundations package [S12]. The caveat: Mitosis is a Builder.io side project whose README is "actively looking for folks interested in becoming contributors" [S30]. Whatever emitter Apollo adopts, Apollo owns.</span></li>
+      <li><span class="k">Zag and Ark</span><span><b>Behaviour as the neutral source.</b> State machines "that connects machine output to DOM semantics in a WAI-ARIA compliant way", with thin adapters for React, Vue, Solid and Svelte [S7, S8]. The machine is plain data; this is the model for the states-and-transitions field the metas lack.</span></li>
+      <li><span class="k">GOV.UK Frontend</span><span><b>The fixture pattern Apollo's snippets should copy.</b> Per-component <code>fixtures.json</code> holds options in and expected HTML out; porters are told to "pass options into your own macro and check the generated HTML matches html", ignoring known whitespace differences [S14]. GDS does not support the community ports [S37]. The reference is the oracle, not the source, and it has held since 2016 [S36].</span></li>
+      <li><span class="k">Figma Code Connect</span><span><b>The model for the S2 manifest.</b> A small typed file that maps a design component to code components, one-to-many across frameworks, with typed holes so a boolean renders as the attribute or nothing [S31, S32]. That is what a per-library adapter needs from a meta.</span></li>
+      <li><span class="k">The standards</span><span><b>Tokens are solved; anatomy and behaviour are not.</b> DTCG Format Module 2025.10 and the Resolver Module are stable since 28 October 2025, read by Style Dictionary since v4 and by Tokens Studio [S20 to S24]. Open UI's anatomy research gives part names but is not normative [S33]. The ARIA Authoring Practices' own front matter is the strongest argument against HTML as the spec: "A role is a promise" and "ARIA roles do not cause browsers to provide keyboard behaviors or styling" [S35]. React 19, Angular, Vue, Svelte, Solid and Preact all score 100% on Custom Elements Everywhere [S18, S19]; SSR of Shadow DOM and form participation were still caveats in late 2024 and no 2026 source was found closing them [S25].</span></li>
+    </ul>
+    <p class="record">Full research with every claim sourced: <code>notes/_lanes/311/M/M1-FINDINGS.md</code>. Pages that could not be fetched are listed there rather than filled in.</p>
+  </div>
+</section>
+
+<section id="options" class="grey">
+  <div class="wrap">
+    <p class="label">04 · The options · judged against solid, flexible, standards</p>
+    <h2>Your three placements, for S1. Then three shapes for S2.</h2>
+    <p class="lead">You asked whether to do it at source, to put a transform between the compiler and the output, or to put a layer between the prototype and the framework. For S1 those are placements A, B and C below. For S2 the "layer between" is right, but it is a manifest, not a transform.</p>
+    <div class="diag">
+      <div class="scroll">
+      <svg class="wide" viewBox="0 0 1040 330" role="img" aria-labelledby="d2-t d2-d">
+        <title id="d2-t">The three placements for S1</title>
+        <desc id="d2-d">A: a neutral spec at source feeds per-target emitters for HTML, web components, React and Angular, with tokens under all of them. B: compiled HTML is transformed into framework code; nobody at scale does this. C: Apollo tokens theme a third-party library such as MUI or Angular Material, which owns the components.</desc>
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <!-- A -->
+        <text x="0" y="22" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">A · AT SOURCE · THE RECOMMENDATION</text>
+        <rect x="0" y="40" width="140" height="150" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="12" y="64" font-size="14" font-weight="500" fill="#000">The meta</text>
+        <text x="12" y="84" font-size="11.5" fill="#333">anatomy · states</text>
+        <text x="12" y="100" font-size="11.5" fill="#333">events · props · slots</text>
+        <text x="12" y="116" font-size="11.5" fill="#333">aria · token bindings</text>
+        <text x="12" y="140" font-size="11.5" fill="#333">+ component CSS</text>
+        <text x="12" y="156" font-size="11.5" fill="#333">+ behaviour module</text>
+        <text x="12" y="178" font-size="11.5" fill="#333">+ DTCG tokens</text>
+        <line x1="140" y1="70" x2="194" y2="70" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <line x1="140" y1="115" x2="194" y2="115" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <line x1="140" y1="160" x2="194" y2="160" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <rect x="196" y="52" width="144" height="36" fill="#F3F3F3"/><text x="206" y="75" font-size="12.5" fill="#000">HTML + CSS emitter</text>
+        <rect x="196" y="97" width="144" height="36" fill="#F3F3F3"/><text x="206" y="120" font-size="12.5" fill="#000">Lit custom elements</text>
+        <rect x="196" y="142" width="144" height="36" fill="#F3F3F3"/><text x="206" y="165" font-size="12.5" fill="#000">React, Angular wraps</text>
+        <text x="0" y="222" font-size="12" fill="#333">One source, N emitters you own.</text>
+        <text x="0" y="240" font-size="12" fill="#333">DB UX, Zag, Stencil, GOV.UK in spirit.</text>
+        <text x="0" y="266" font-size="12" fill="#545454">Fails when the emitter is unowned</text>
+        <text x="0" y="282" font-size="12" fill="#545454">(Mitosis seeks maintainers) or when</text>
+        <text x="0" y="298" font-size="12" fill="#545454">the source is only markup, then A is B.</text>
+        <!-- B -->
+        <text x="360" y="22" font-size="11" letter-spacing="1.3" font-weight="500" fill="#767676">B · TRANSFORM AFTER THE COMPILER</text>
+        <rect x="360" y="40" width="130" height="80" fill="#F3F3F3"/>
+        <text x="372" y="64" font-size="14" font-weight="500" fill="#000">Compiled HTML</text>
+        <text x="372" y="84" font-size="11.5" fill="#333">one frame of one state</text>
+        <text x="372" y="100" font-size="11.5" fill="#333">roles without behaviour</text>
+        <line x1="490" y1="80" x2="544" y2="80" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <rect x="546" y="40" width="150" height="80" fill="#fff" stroke="#767676" stroke-width="1" stroke-dasharray="5 4"/>
+        <text x="558" y="64" font-size="14" font-weight="500" fill="#767676">A transform</text>
+        <text x="558" y="84" font-size="11.5" fill="#767676">guesses props, slots,</text>
+        <text x="558" y="100" font-size="11.5" fill="#767676">states, events from text</text>
+        <line x1="621" y1="120" x2="621" y2="150" stroke="#767676" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <rect x="546" y="152" width="150" height="36" fill="#F3F3F3"/><text x="558" y="175" font-size="12.5" fill="#000">React, Angular code</text>
+        <text x="360" y="222" font-size="12" fill="#333">Nobody at design-system scale does this.</text>
+        <text x="360" y="240" font-size="12" fill="#333">Bootstrap's data-API is the nearest, and</text>
+        <text x="360" y="256" font-size="12" fill="#333">Bootstrap says it fights React and Angular</text>
+        <text x="360" y="272" font-size="12" fill="#333">for the same DOM nodes. Salesforce:</text>
+        <text x="360" y="288" font-size="12" fill="#333">copied blueprints never update.</text>
+        <text x="360" y="312" font-size="12" fill="#DA1A00">Ruled out, by the evidence and your instinct.</text>
+        <!-- C -->
+        <text x="720" y="22" font-size="11" letter-spacing="1.3" font-weight="500" fill="#767676">C · ADAPT ONTO A THIRD-PARTY LIBRARY</text>
+        <rect x="720" y="40" width="130" height="60" fill="#F3F3F3"/>
+        <text x="732" y="64" font-size="14" font-weight="500" fill="#000">Apollo tokens</text>
+        <text x="732" y="84" font-size="11.5" fill="#333">as their theme</text>
+        <line x1="850" y1="70" x2="904" y2="70" stroke="#000" stroke-width="1.2" marker-end="url(#ah2)"/>
+        <rect x="906" y="40" width="134" height="150" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="918" y="64" font-size="14" font-weight="500" fill="#000">MUI or Material</text>
+        <text x="918" y="84" font-size="11.5" fill="#333">owns the components,</text>
+        <text x="918" y="100" font-size="11.5" fill="#333">the anatomy, the aria,</text>
+        <text x="918" y="116" font-size="11.5" fill="#333">the DOM, the release</text>
+        <text x="918" y="132" font-size="11.5" fill="#333">cadence</text>
+        <text x="918" y="160" font-size="11.5" fill="#DA1A00">Apollo's gates stop at</text>
+        <text x="918" y="176" font-size="11.5" fill="#DA1A00">the boundary</text>
+        <text x="720" y="222" font-size="12" fill="#333">Every in-house "design system" that is</text>
+        <text x="720" y="240" font-size="12" fill="#333">a MUI theme. Bounded by the host's set.</text>
+        <text x="720" y="256" font-size="12" fill="#333">Material Web lost its funding while</text>
+        <text x="720" y="272" font-size="12" fill="#333">first-party; a third-party adapter</text>
+        <text x="720" y="288" font-size="12" fill="#333">inherits that twice.</text>
+        <text x="720" y="312" font-size="12" fill="#333">Fine as a convenience export. Not the architecture.</text>
+      </svg>
+      </div>
+      <p class="diag-cap">A is what the systems that compile once to many actually do. B is unoccupied; the nearest relative warns against itself. C is what most corporate "design systems" quietly are, and it hands the DOM to someone else.</p>
+    </div>
+
+    <div class="opts">
+      <div class="opt rec">
+        <span class="letter">A</span>
+        <h3>At source: the meta is the spec, each target is an emitter</h3>
+        <span class="k">Solid</span>One truth, every target regenerated from it, drift impossible by construction. The snippets become fixtures the emitters must match.
+        <span class="k">Flexible</span>Add a target by adding an emitter. The HTML+CSS emitter you have today is target one.
+        <span class="k">Standards</span>DTCG tokens; custom elements for the runtime; APG patterns as the behaviour checklist; Open UI names for parts.
+        <span class="k">Cost</span>The emitters are yours forever. The missing half of the spec has to be written or extracted, 137 times.
+        <div class="verdict">Strong fit because the neutral spec already exists in part and because ADR-0008 already asked for machine-runnable adapters.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">B</span>
+        <h3>Transform the compiled HTML into framework code</h3>
+        <span class="k">Solid</span>No. HTML fixes one state; a transform has to guess props, slots, states and events from a string. Roles in the markup are promises with no keyboard behaviour behind them.
+        <span class="k">Flexible</span>Looks flexible (any HTML in) and is brittle (every guess breaks on the next snippet).
+        <span class="k">Standards</span>None. Nobody has written one down because nobody does it.
+        <span class="k">Cost</span>Low to start, unbounded to keep.
+        <div class="verdict">Ruled out. This is the placement your instinct rejects and the research agrees.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">C</span>
+        <h3>Adapt Apollo onto MUI, Angular Material or similar</h3>
+        <span class="k">Solid</span>Solid as long as the host is funded and does not move. Material Web lost its engineers in June 2024 while first-party.
+        <span class="k">Flexible</span>Bounded by the host's component set, anatomy and ARIA choices. Theming bounded by what the host exposes.
+        <span class="k">Standards</span>Their standards, not yours. Apollo's gates stop where the host owns the DOM.
+        <span class="k">Cost</span>Cheap to start. Apollo stops being Apollo at the boundary.
+        <div class="verdict">A convenience export (a MUI theme generated from Apollo tokens), never the integration.</div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:var(--s5)">S2: a client already has a library. Three shapes.</h2>
+    <p class="lead">Here Apollo does not own the components and should not try to. What Apollo brings is the governing half: roles, when-rules, props and slots as a contract, the gates, the composition. What it needs is a binding to their parts and a mapping of their tokens onto its semantic layer.</p>
+    <div class="opts">
+      <div class="opt rec">
+        <span class="letter">i</span>
+        <h3>An adapter manifest per library</h3>
+        <span class="k">What</span>One file, <code>adapters/&lt;lib-id&gt;.json</code>, Code Connect in shape: Apollo role or meta to their component; prop to prop with typed holes; slot to slot; their tokens to Apollo's semantic tokens as DTCG resolver sets; an explicit list of what is unmapped.
+        <span class="k">Solid</span>Apollo's when-rules, gates and composition run unchanged. A gate refuses a composed screen whose parts have no binding and no declared fallback.
+        <span class="k">Flexible</span>One manifest per library; React, Angular and plain HTML libraries are the same shape, only the target names differ.
+        <span class="k">Standards</span>DTCG for the token half; the manifest schema is Apollo's, documented, small.
+        <div class="verdict">This is the hub-and-spoke the onboarding runbook already describes, with <code>codeBindings.&lt;lib-id&gt;</code> as the spoke. Four spokes exist today, all unverified; that is the gap, not the design.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">ii</span>
+        <h3>Theme only: Apollo tokens onto their library</h3>
+        <span class="k">What</span>Generate their theme file (MUI <code>createTheme</code>, Angular Material <code>define-theme</code>) from Apollo's tokens and stop there.
+        <span class="k">Solid</span>Solid for colour and type, silent on roles, when-rules, anatomy and gates.
+        <span class="k">Flexible</span>Only as flexible as their theme API.
+        <span class="k">Standards</span>DTCG in, their format out. Style Dictionary does most of it.
+        <div class="verdict">Worth doing as the first deliverable of option i, because it is a day's work and buys trust. Not sufficient on its own: it is placement C from the other side.</div>
+      </div>
+      <div class="opt">
+        <span class="letter">iii</span>
+        <h3>Replace their library with Apollo's emitters</h3>
+        <span class="k">What</span>Ship Apollo's React or Angular output and retire theirs.
+        <span class="k">Solid</span>Yes, but it is not "working with" their library; it is S1 wearing a different coat.
+        <span class="k">Flexible</span>Only if the client agrees to move. Many will not.
+        <span class="k">Standards</span>Same as A.
+        <div class="verdict">Keep it as the end state a client can choose once S1 exists. Do not lead with it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="arch">
+  <div class="wrap">
+    <p class="label">05 · The recommended architecture</p>
+    <h2>Four sources, five emitters, one manifest shape for the outside world.</h2>
+    <p class="lead">The source of truth becomes the meta plus three siblings that move out of the snippet: a CSS file per component, a behaviour module per interactive component, and the tokens in DTCG form. Everything to the right of the sources is generated, including the snippets.</p>
+    <div class="diag">
+      <div class="scroll">
+      <svg class="wide has-tall" viewBox="0 0 1040 520" role="img" aria-labelledby="d3-t d3-d">
+        <title id="d3-t">The recommended target architecture</title>
+        <desc id="d3-d">Four sources on the left: the meta as spec, a CSS file per component, a behaviour module per interactive component, and DTCG tokens. Five emitters in the middle: HTML plus CSS, which produces canon.css, the snippets as fixtures and the showroom; Lit custom elements; generated React and Angular wrappers; token exports; and the A2UI catalogue for Launchpad. On the right, a round-trip gate compares emitter output with the committed snippet, and an adapter manifest per client library maps Apollo roles and tokens onto their components for S2.</desc>
+        <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <!-- sources -->
+        <text x="0" y="22" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">SOURCES · YOUR RULINGS LAND HERE</text>
+        <rect x="0" y="40" width="250" height="140" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="14" y="66" font-size="15" font-weight="500" fill="#000">The meta · the spec</text>
+        <text x="14" y="88" font-size="12" fill="#333">props · variants · slots · provides</text>
+        <text x="14" y="104" font-size="12" fill="#333">when · aria contract (have)</text>
+        <text x="14" y="126" font-size="12" fill="#DA1A00">+ anatomy tree: parts, slots, aria,</text>
+        <text x="14" y="142" font-size="12" fill="#DA1A00">   state attributes</text>
+        <text x="14" y="158" font-size="12" fill="#DA1A00">+ states, transitions, keyboard map</text>
+        <text x="14" y="174" font-size="12" fill="#DA1A00">+ emitted events · + token bindings</text>
+        <rect x="0" y="196" width="250" height="60" fill="#F3F3F3"/>
+        <text x="14" y="220" font-size="14" font-weight="500" fill="#000">components/&lt;slug&gt;.css</text>
+        <text x="14" y="240" font-size="12" fill="#333">the snippet's &lt;style&gt;, moved out, same bytes</text>
+        <rect x="0" y="272" width="250" height="60" fill="#F3F3F3"/>
+        <text x="14" y="296" font-size="14" font-weight="500" fill="#000">behaviour/&lt;slug&gt;.js</text>
+        <text x="14" y="316" font-size="12" fill="#333">~5,800 lines, with a declared event surface</text>
+        <rect x="0" y="348" width="250" height="60" fill="#F3F3F3"/>
+        <text x="14" y="372" font-size="14" font-weight="500" fill="#000">tokens/*.json · DTCG 2025.10</text>
+        <text x="14" y="392" font-size="12" fill="#333">aliases as {refs}, modes as resolver sets</text>
+        <!-- arrows to emitters -->
+        <line x1="250" y1="110" x2="300" y2="110" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <line x1="250" y1="226" x2="300" y2="226" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <line x1="250" y1="302" x2="300" y2="302" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <line x1="250" y1="378" x2="300" y2="378" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <!-- emitters -->
+        <text x="302" y="22" font-size="11" letter-spacing="1.3" font-weight="500" fill="#545454">EMITTERS · GENERATED</text>
+        <rect x="302" y="40" width="250" height="400" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <rect x="316" y="56" width="222" height="86" fill="#F3F3F3"/>
+        <text x="328" y="78" font-size="13" font-weight="500" fill="#000">E1 · HTML + CSS (today's compiler)</text>
+        <text x="328" y="96" font-size="11.5" fill="#333">canon.css (same 95% block, new origin)</text>
+        <text x="328" y="112" font-size="11.5" fill="#333">the snippets, now as fixtures</text>
+        <text x="328" y="128" font-size="11.5" fill="#333">showroom · receipts · composed screens</text>
+        <rect x="316" y="152" width="222" height="60" fill="#F3F3F3"/>
+        <text x="328" y="174" font-size="13" font-weight="500" fill="#000">E2 · Lit custom elements</text>
+        <text x="328" y="192" font-size="11.5" fill="#333">&lt;apollo-tabs&gt;, light DOM, styled by canon.css</text>
+        <rect x="316" y="222" width="222" height="60" fill="#F3F3F3"/>
+        <text x="328" y="244" font-size="13" font-weight="500" fill="#000">E3 · React + Angular wrappers</text>
+        <text x="328" y="262" font-size="11.5" fill="#333">over E2, generated (@lit/react)</text>
+        <rect x="316" y="292" width="222" height="60" fill="#F3F3F3"/>
+        <text x="328" y="314" font-size="13" font-weight="500" fill="#000">E4 · token exports</text>
+        <text x="328" y="332" font-size="11.5" fill="#333">CSS vars (have) · SCSS · JS · MUI theme</text>
+        <rect x="316" y="362" width="222" height="60" fill="#F3F3F3"/>
+        <text x="328" y="384" font-size="13" font-weight="500" fill="#000">E5 · A2UI catalogue (Launchpad, route B)</text>
+        <text x="328" y="402" font-size="11.5" fill="#333">specced: props→settings · slots→ComponentId</text>
+        <!-- right column -->
+        <line x1="552" y1="100" x2="622" y2="100" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <rect x="624" y="56" width="200" height="90" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+        <text x="636" y="78" font-size="11" letter-spacing="1.3" font-weight="500" fill="#DA1A00">THE ROUND-TRIP GATE</text>
+        <text x="636" y="100" font-size="12" fill="#000">E1(meta, css, module)</text>
+        <text x="636" y="116" font-size="12" fill="#000">must equal the committed snippet,</text>
+        <text x="636" y="132" font-size="12" fill="#000">byte for byte, or the build is red</text>
+        <line x1="552" y1="252" x2="622" y2="252" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <rect x="624" y="196" width="200" height="110" fill="#F3F3F3"/>
+        <text x="636" y="218" font-size="11" letter-spacing="1.3" fill="#545454">S1 · APOLLO'S OWN PARTS</text>
+        <text x="636" y="242" font-size="12" fill="#000">plain HTML stack: E1</text>
+        <text x="636" y="260" font-size="12" fill="#000">any framework: E2 (100% on CEE)</text>
+        <text x="636" y="278" font-size="12" fill="#000">React, Angular idiom: E3</text>
+        <text x="636" y="296" font-size="12" fill="#000">agents: E5 over MCP</text>
+        <line x1="552" y1="392" x2="622" y2="392" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <rect x="624" y="340" width="200" height="100" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="636" y="362" font-size="11" letter-spacing="1.3" font-weight="500" fill="#000">S2 · ADAPTER MANIFEST</text>
+        <text x="636" y="384" font-size="12" fill="#000">adapters/&lt;lib-id&gt;.json</text>
+        <text x="636" y="400" font-size="12" fill="#333">role or meta → their component</text>
+        <text x="636" y="416" font-size="12" fill="#333">prop → prop · slot → slot · unmapped list</text>
+        <text x="636" y="432" font-size="12" fill="#333">their tokens → Apollo semantic</text>
+        <line x1="824" y1="390" x2="894" y2="390" stroke="#000" stroke-width="1.2" marker-end="url(#ah3)"/>
+        <rect x="896" y="340" width="144" height="100" fill="#F3F3F3"/>
+        <text x="908" y="362" font-size="11" letter-spacing="1.3" fill="#545454">THEIR LIBRARY</text>
+        <text x="908" y="386" font-size="12" fill="#000">React, Angular or HTML.</text>
+        <text x="908" y="404" font-size="12" fill="#333">They own the parts.</text>
+        <text x="908" y="420" font-size="12" fill="#333">Apollo governs what,</text>
+        <text x="908" y="436" font-size="12" fill="#333">when and whether.</text>
+        <!-- what you rule on -->
+        <rect x="624" y="460" width="416" height="44" fill="#fff" stroke="#767676" stroke-width="1" stroke-dasharray="5 4"/>
+        <text x="636" y="480" font-size="12" fill="#000">What you rule on by eye does not change: the snippet, the screen, the deck.</text>
+        <text x="636" y="496" font-size="12" fill="#000">They are now outputs, and every emitter has to agree with them.</text>
+        <text x="0" y="470" font-size="11" fill="#767676">Red text = the fields the meta gains. The 35 gates that read snippets</text>
+        <text x="0" y="486" font-size="11" fill="#767676">today keep working unchanged: they read generated snippets.</text>
+      </svg>
+      <svg class="tall" viewBox="0 0 360 1010" role="img" aria-labelledby="d3t-t">
+        <title id="d3t-t">The recommended target architecture, stacked for a narrow screen</title>
+        <defs><marker id="ah3t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000"/></marker></defs>
+        <text x="0" y="18" font-size="10" letter-spacing="1.2" font-weight="500" fill="#DA1A00">SOURCES · HAND-WRITTEN</text>
+        <rect x="0" y="30" width="360" height="118" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="12" y="54" font-size="14" font-weight="500" fill="#000">The meta · the spec</text>
+        <text x="12" y="74" font-size="11.5" fill="#333">props · variants · slots · provides · when · aria</text>
+        <text x="12" y="94" font-size="11.5" fill="#DA1A00">+ anatomy tree · + states, transitions, keys</text>
+        <text x="12" y="110" font-size="11.5" fill="#DA1A00">+ emitted events · + token bindings</text>
+        <text x="12" y="134" font-size="11" fill="#767676">red = the fields the meta gains</text>
+        <rect x="0" y="158" width="360" height="40" fill="#F3F3F3"/><text x="12" y="183" font-size="13" fill="#000">components/&lt;slug&gt;.css · the &lt;style&gt;, moved out</text>
+        <rect x="0" y="206" width="360" height="40" fill="#F3F3F3"/><text x="12" y="231" font-size="13" fill="#000">behaviour/&lt;slug&gt;.js · ~5,800 lines, events declared</text>
+        <rect x="0" y="254" width="360" height="40" fill="#F3F3F3"/><text x="12" y="279" font-size="13" fill="#000">tokens/*.json · DTCG 2025.10 + resolver</text>
+        <line x1="180" y1="294" x2="180" y2="326" stroke="#000" stroke-width="1.2" marker-end="url(#ah3t)"/>
+        <text x="0" y="348" font-size="10" letter-spacing="1.2" font-weight="500" fill="#545454">EMITTERS · GENERATED · APOLLO OWNS THEM</text>
+        <rect x="0" y="360" width="360" height="300" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <rect x="12" y="372" width="336" height="60" fill="#F3F3F3"/>
+        <text x="22" y="392" font-size="13" font-weight="500" fill="#000">E1 · HTML + CSS (today's compiler, re-fed)</text>
+        <text x="22" y="410" font-size="11.5" fill="#333">canon.css · the snippets as fixtures · showroom</text>
+        <text x="22" y="425" font-size="11.5" fill="#333">receipts · composed screens</text>
+        <rect x="12" y="440" width="336" height="44" fill="#F3F3F3"/>
+        <text x="22" y="460" font-size="13" font-weight="500" fill="#000">E2 · Lit custom elements</text>
+        <text x="22" y="477" font-size="11.5" fill="#333">&lt;apollo-tabs&gt;, light DOM, styled by canon.css</text>
+        <rect x="12" y="492" width="336" height="44" fill="#F3F3F3"/>
+        <text x="22" y="512" font-size="13" font-weight="500" fill="#000">E3 · React + Angular wrappers</text>
+        <text x="22" y="529" font-size="11.5" fill="#333">generated from the meta over E2</text>
+        <rect x="12" y="544" width="336" height="44" fill="#F3F3F3"/>
+        <text x="22" y="564" font-size="13" font-weight="500" fill="#000">E4 · token exports</text>
+        <text x="22" y="581" font-size="11.5" fill="#333">CSS vars · SCSS · JS · MUI and Material themes</text>
+        <rect x="12" y="596" width="336" height="52" fill="#F3F3F3"/>
+        <text x="22" y="616" font-size="13" font-weight="500" fill="#000">E5 · A2UI catalogue (Launchpad, route B)</text>
+        <text x="22" y="633" font-size="11.5" fill="#333">props to settings, slots to ComponentId</text>
+        <line x1="180" y1="660" x2="180" y2="692" stroke="#000" stroke-width="1.2" marker-end="url(#ah3t)"/>
+        <rect x="0" y="694" width="360" height="72" fill="#fff" stroke="#DA1A00" stroke-width="1.5"/>
+        <text x="12" y="716" font-size="10" letter-spacing="1.2" font-weight="500" fill="#DA1A00">THE ROUND-TRIP GATE</text>
+        <text x="12" y="738" font-size="12" fill="#000">E1(meta, css, module) must equal the committed</text>
+        <text x="12" y="754" font-size="12" fill="#000">snippet, byte for byte, or the build is red</text>
+        <rect x="0" y="780" width="172" height="110" fill="#F3F3F3"/>
+        <text x="12" y="800" font-size="10" letter-spacing="1.2" fill="#545454">S1 · OWN PARTS</text>
+        <text x="12" y="822" font-size="11.5" fill="#000">HTML stack: E1</text>
+        <text x="12" y="838" font-size="11.5" fill="#000">any framework: E2</text>
+        <text x="12" y="854" font-size="11.5" fill="#000">React, Angular: E3</text>
+        <text x="12" y="870" font-size="11.5" fill="#000">agents: E5 over MCP</text>
+        <rect x="188" y="780" width="172" height="110" fill="#fff" stroke="#000" stroke-width="1.5"/>
+        <text x="200" y="800" font-size="10" letter-spacing="1.2" font-weight="500" fill="#000">S2 · ADAPTER MANIFEST</text>
+        <text x="200" y="822" font-size="11.5" fill="#000">adapters/&lt;lib-id&gt;.json</text>
+        <text x="200" y="838" font-size="11.5" fill="#333">role → their component</text>
+        <text x="200" y="854" font-size="11.5" fill="#333">prop → prop · slot → slot</text>
+        <text x="200" y="870" font-size="11.5" fill="#333">their tokens → Apollo semantic</text>
+        <line x1="274" y1="890" x2="274" y2="918" stroke="#000" stroke-width="1.2" marker-end="url(#ah3t)"/>
+        <rect x="188" y="920" width="172" height="60" fill="#F3F3F3"/>
+        <text x="200" y="940" font-size="10" letter-spacing="1.2" fill="#545454">THEIR LIBRARY</text>
+        <text x="200" y="958" font-size="11.5" fill="#000">They own the parts. Apollo</text>
+        <text x="200" y="974" font-size="11.5" fill="#000">governs what, when, whether.</text>
+        <text x="0" y="1000" font-size="10.5" fill="#767676">What you rule on by eye does not change; it becomes an output.</text>
+      </svg>
+      </div>
+      <p class="diag-cap">Left to right: hand-written sources, generated emitters, the gate that keeps them honest, and the two kinds of consumer. The snippet moves from the far left of today's diagram to the output of E1. Your eye still rules on it; the emitters now have to agree with your eye.</p>
+    </div>
+    <ul class="facts">
+      <li><span class="k">The source of truth</span><span><b>The meta, plus three files beside it.</b> The meta gains four fields in <code>meta.schema.json</code>: <code>anatomy</code> (an element tree naming parts, slots, aria and the attributes each state sets), <code>states</code> (states, transitions and the keyboard map as data, Zag-shaped), <code>emits</code> (the events a part fires, with payload types), and <code>bindings</code> (the token manifest, moved in, as DTCG references). The 727 prose token entries are replaced by the manifest's real bindings.</span></li>
+      <li><span class="k">What the snippets become</span><span><b>Fixtures, generated and committed.</b> The HTML emitter renders the meta's documented examples through <code>components/&lt;slug&gt;.css</code> and the behaviour module into the same self-contained snippet file you have now, with a fenced header recording the options that produced it. The showroom, the 35 gates and your eye read the generated file exactly as they read the hand-written one today. The difference is that a snippet can no longer drift from the spec, because it is made from it.</span></li>
+      <li><span class="k">Tokens</span><span><b>DTCG 2025.10 with the Resolver Module for light, dark and the four themes.</b> <code>$alias</code> becomes <code>{group.token}</code> references; light and dark leave the path and become resolver sets; <code>$note</code>, <code>$contrast</code>, <code>$confidence</code> and friends move under <code>$extensions.apollo</code> so no tool drops them; dimensions become value objects. <code>gen_canon_tokens.py</code> is re-fed and its output is byte-equal. Style Dictionary reads the files as the proof that the format is real.</span></li>
+      <li><span class="k">The emitters</span><span><b>Five, in order of existence.</b> E1 HTML+CSS exists and is re-fed from the new sources. E4 token exports exist for CSS variables and gain SCSS, JS and theme files for MUI and Angular Material as convenience outputs. E5 the A2UI catalogue is specced (s305-D45 route B) and is a reader of the same metas. E2 Lit custom elements is new: one <code>&lt;apollo-*&gt;</code> element per interactive meta, light DOM so canon.css styles it and the geometry gates still see it, behaviour from the module, events from <code>emits</code>. E3 React and Angular wrappers are generated over E2 from the meta's props and emits, <code>@lit/react</code> style, so the designer skill's "React (preferred)" finally has something to wire.</span></li>
+      <li><span class="k">The S2 manifest</span><span><b><code>adapters/&lt;lib-id&gt;.json</code>, one per client library, Code Connect in shape.</b> For each Apollo role or meta: their component name and import; a prop map with typed holes (a boolean renders the attribute or nothing); a slot map; a status (<code>unverified</code>, <code>rendered</code>, <code>accepted</code>); and a token map from their variables onto Apollo's semantic tokens as a DTCG resolver set. An unmapped list is required, not optional. A gate refuses a composed screen whose parts have no binding and no declared Apollo-native fallback. This replaces the four <code>codeBindings</code> spokes with something a machine can check.</span></li>
+      <li><span class="k">What does not change</span><span><b>Your rulings and the knowledge graph.</b> Rulings land in the meta as they do now. The graph's <code>renderedBy</code> edges keep pointing at snippet files, which still exist at the same paths. The dashboard, the gates and the release pack keep their inputs.</span></li>
+    </ul>
+    <details class="tech"><summary>Technical · schema sketch, light DOM, and the gates by name</summary><ol>
+      <li><b>Anatomy field.</b> A tree of <code>{part, tag, attrs, aria, slot?, children[]}</code> nodes, with state attributes written as <code>attrs["aria-selected"]: "{state.selected}"</code> and prop holes as <code>"{props.label}"</code>. Part names checked against Open UI's anatomy research where a page exists [S33]. The tree is extracted from today's snippet markup once by a script, then reviewed per cohort; 137 to do.</li>
+      <li><b>States field.</b> <code>{states:[...], initial, transitions:[{from,on,to,guard?}], keys:{ArrowRight:"next", Home:"first", ...}}</code>, the shape Zag machines take [S7]. Extracted from the <code>&lt;style&gt;</code> state selectors (1,556 pseudo, 502 <code>.is-*</code>, 209 <code>[aria-*]</code>) and the inline script; the APG pattern for the role is the checklist [S34].</li>
+      <li><b>Emits field.</b> <code>[{name:"apollo-change", detail:{value:"string"}}]</code>. Today <code>behaviour.events</code> lists listeners (blur, click, keydown); that field stays and <code>emits</code> is added beside it.</li>
+      <li><b>Bindings field.</b> The snippet's <code>#token-manifest</code> moved into the meta as <code>{"--tab-ink": "{color.text.default}"}</code>. <code>gen_snippet_tokens</code> and <code>gen_theme_cascade</code> read the meta instead of the snippet; the AUTO-THEMES block (12.3%) is regenerated byte-equal.</li>
+      <li><b>Light DOM for E2.</b> Recommended because canon.css already exists and 35 gates measure rendered geometry through it; Shadow DOM would need a custom-property bridge per component (Nord's pattern [S13]) and still carries the SSR and form caveats [S25]. Light DOM custom elements lose encapsulation but gain every existing gate. Call 4 puts this to you.</li>
+      <li><b>Wrappers for E3.</b> React via <code>@lit/react</code> <code>createComponent</code> with the events map generated from <code>emits</code> [S17]. Angular via a generated module declaring <code>CUSTOM_ELEMENTS_SCHEMA</code> plus a thin directive per element for typed inputs and outputs; Stencil's Angular output target is the model [S15]. Both generated, never hand-edited; a gate diffs the generated files against the tree.</li>
+      <li><b>Gates by name.</b> <code>_validate_roundtrip.py</code> (E1 output equals committed snippet; byte-level first, falling back to declaration-level where a generator sorts, per the rename-proofs lesson); <code>_validate_spec_coverage.py</code> (anatomy, states, emits, bindings present on every meta an emitter is asked to render, and the emitter refuses below coverage, so the count has a consumer); <code>_validate_tokens_dtcg.py</code> (schema-valid against 2025.10, Style Dictionary parses with zero warnings, token spine byte-equal); <code>_validate_apg_keys.py</code> (each E2 element answers its APG keyboard map in Playwright); <code>_validate_wrappers.py</code> (attributes, properties and events round-trip per wrapper, Custom Elements Everywhere style [S19]); <code>_validate_adapter.py</code> (every part on a composed screen has a binding or a declared fallback; status recorded).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="plan" class="grey">
+  <div class="wrap">
+    <p class="label">06 · The phased plan</p>
+    <h2>Two phases can start now and touch nothing you depend on. The third is the reversal and waits for your word.</h2>
+    <p class="lead">Each phase says what it delivers, what it proves, and the gate that keeps it honest. Lane sizes are rough, in Opus lanes, from M2's counts. The S2 track runs beside the S1 phases and does not wait on them.</p>
+
+    <div class="phase">
+      <div class="hd"><div class="no">0</div><div class="when">Can start now</div><div class="size">1 lane, one sitting</div></div>
+      <div>
+        <h3>Tokens to DTCG 2025.10</h3>
+        <p>Delivers: one generator that rewrites <code>tokens/*.json</code> into the stable format (aliases as references, modes as resolver sets, extra keys under <code>$extensions.apollo</code>, dimensions as value objects), and re-feeds <code>gen_canon_tokens.py</code>. Proves: that Apollo's tokens are the standard, not near it, and that no information is lost.</p>
+        <div class="gate"><b>Gate.</b> canon.css token spine byte-equal before and after. Style Dictionary v4 parses the files with zero warnings. Every <code>$alias</code>, <code>$note</code>, <code>$contrast</code> and <code>$confidence</code> value is recoverable from <code>$extensions</code>. The four theme override files resolve to the same CSS through the resolver as through <code>gen_theme_cascade</code> today.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="hd"><div class="no">1</div><div class="when">Can start now</div><div class="size">2 to 3 lanes; a weekend run</div></div>
+      <div>
+        <h3>Extract the spec from the snippets into the metas</h3>
+        <p>Delivers: <code>meta.schema.json</code> gains <code>anatomy</code>, <code>states</code>, <code>emits</code> and <code>bindings</code>; an extraction script reads each snippet's markup, state selectors, script and token manifest and writes a first draft of all four fields into its meta, with a <code>$extracted</code> marker; a review page per cohort of about 15 so the drafts can be ruled on. Nothing in the pipeline changes; the snippets are not edited. Proves: that the spec was in the snippets all along and can be lifted out.</p>
+        <div class="gate"><b>Gate.</b> Coverage counts on the dashboard: anatomy, states, emits, bindings present on n of 139, with a consumer from day one (the extraction report refuses to mark a meta done below full coverage, so the number is not an instrument without a reader). Every part name in an anatomy tree resolves to an element in the snippet. Every binding resolves to a token.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="hd"><div class="no">2</div><div class="when">After your ruling on call 1</div><div class="size">1 lane per cohort of ~15, about 9 cohorts, plus 1 for behaviour</div></div>
+      <div>
+        <h3>Re-feed the compiler and regenerate the snippets</h3>
+        <p>Delivers: <code>components/&lt;slug&gt;.css</code> and <code>behaviour/&lt;slug&gt;.js</code> moved out of each snippet in the cohort; the HTML emitter renders the snippet from meta plus CSS plus module; <code>gen_canon_components</code> and <code>gen_theme_cascade</code> read the new sources; the committed snippet is now a generated file. This is the phase that reverses ADR-0013 ruling 4 and the docstring in <code>gen_canon_components.py</code>. Proves: that the regenerated snippet is the snippet, so nothing you have ruled on has moved. Start with the five M2 sampled: button, tabs, table, date-picker, metric, because they span every gap.</p>
+        <div class="gate"><b>Gate.</b> The round-trip: emitter output equals the committed snippet byte for byte for every component in the cohort, or the build is red. canon.css AUTO-COMPONENTS block byte-equal before and after each cohort. The 35 snippet gates stay green on the generated files. Behaviour modules: every event in <code>emits</code> is fired at least once in a Playwright run, every listener in <code>behaviour.events</code> is attached. A mutation test on one clause per module, because a mutation test proves the clause, not the feature.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="hd"><div class="no">3</div><div class="when">Later; after phase 2's first three cohorts</div><div class="size">3 to 4 lanes for the first 10 interactive parts</div></div>
+      <div>
+        <h3>The second runtime: Lit custom elements</h3>
+        <p>Delivers: an E2 emitter that writes one <code>&lt;apollo-*&gt;</code> element per interactive meta from anatomy, states, emits and the behaviour module; light DOM; a demo page per element. Proves: that one spec renders two runtimes and that the second obeys the same APG pattern the first does.</p>
+        <div class="gate"><b>Gate.</b> Rendered light-DOM markup of each element equals the E1 fixture for the same options (whitespace ignored, GOV.UK style). Each element answers its APG keyboard map in Playwright. Each element scores 100% on a Custom Elements Everywhere style attribute, property and event check. Contrast and hit-area gates run on the element as they do on the snippet.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="hd"><div class="no">4</div><div class="when">Later; after phase 3</div><div class="size">2 lanes</div></div>
+      <div>
+        <h3>React and Angular wrappers, generated</h3>
+        <p>Delivers: E3 writes <code>@apollo/react</code> and <code>@apollo/angular</code> packages from the metas over the E2 elements; a sample screen in each framework composed from Apollo parts; the designer skill's "React (preferred)" line finally points at something. Proves: idiomatic entry points without a second hand-written implementation.</p>
+        <div class="gate"><b>Gate.</b> Wrapper files are generated, never edited: a diff against the tree is part of the build. Props, events and slots round-trip in each framework's test runner. The sample screens pass the compose gates and mint a receipt like any canon page.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="hd"><div class="no">S2</div><div class="when">Can start now, beside S1</div><div class="size">1 lane for the schema, 1 per library</div></div>
+      <div>
+        <h3>The adapter manifest, and the first real library</h3>
+        <p>Delivers: <code>adapters/schema.json</code> and <code>_validate_adapter.py</code>; the four existing <code>codeBindings</code> rewritten as the first manifest (Sutherland React, status <code>unverified</code> as today); a token map generated as that library's theme file (the theme-only shape as a first win); a review page showing an Apollo composed screen beside the same screen rendered through their parts. Proves: that Apollo can govern a screen it does not render.</p>
+        <div class="gate"><b>Gate.</b> Every part on the composed screen has a binding or a declared fallback, or the receipt refuses. Each binding's status moves from <code>unverified</code> to <code>rendered</code> only when a side-by-side render exists, and to <code>accepted</code> only when you say so. The unmapped list is never empty by omission: a manifest with no unmapped list is invalid.</div>
+      </div>
+    </div>
+
+    <ul class="facts">
+      <li><span class="k">Launchpad</span><span><b>Route B gets stronger, not displaced.</b> The A2UI catalogue (s305-D45) is generated from metas: props become settings, slots become ComponentId. Phase 1's anatomy and typed slots make that catalogue richer, and the renderer that route B calls "step two, a stretch nothing depends on" becomes the E1 emitter rather than something grown from <code>dv-render.js</code>. For a host that has its own library, the S2 manifest is how it renders the catalogue with its own parts.</span></li>
+      <li><span class="k">The metas work already enacted</span><span><b>Everything from #252 to #276 is kept and used.</b> The 12-role <code>provides</code> vocabulary is the key the S2 manifest maps on. The <code>when</code> predicates and the typed <code>accepts</code> on slots are what E5 reads. The meta tags from #253 (provides, answers, shape, span, priority, when) are untouched. Phase 1 adds four fields; it renames none.</span></li>
+      <li><span class="k">What can start this weekend</span><span><b>Phase 0, phase 1 and the S2 schema.</b> None of them edits a snippet, changes a generator's output, or needs a ruling beyond "yes, extract". They fit the roadmap's weekend-run shape from #304. Phase 2 is the reversal and waits for call 1.</span></li>
+      <li><span class="k">What is not promised</span><span><b>Shadow DOM, SSR and form participation.</b> The research could not find a 2026 source closing the SSR and form caveats for Shadow DOM web components [S25]. Light DOM sidesteps both; if you choose Shadow DOM in call 4, those caveats come with it and the plan grows a phase.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="calls">
+  <div class="wrap">
+    <p class="label">07 · The calls · seven, recommendation first</p>
+    <h2>Rule these in plain words. The bar at the bottom collects them.</h2>
+
+    <div class="call" data-id="c1" data-q="1. The snippets' job" data-rec="Fixture, generated from the spec">
+      <p class="q">1. What is a snippet from now on?</p>
+      <p class="rec">The recommendation: a fixture generated from the spec. Keeps everything you rule on by eye, keeps the 35 gates, and makes drift impossible. This reverses ADR-0013 ruling 4, so it needs your word, not a lane's.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Fixture, generated from the spec">Fixture, generated from the spec<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Source of truth, as today (ADR-0013 r4 stands)">Source of truth, as today (ADR-0013 ruling 4 stands)</button>
+        <button type="button" class="chip" data-v="View only, out of the pipeline and the gates">View only, out of the pipeline and the gates</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c2" data-q="2. Where the spec lives" data-rec="In the meta: four new fields">
+      <p class="q">2. Where does the neutral spec live?</p>
+      <p class="rec">The recommendation: in the meta, as four new fields in <code>meta.schema.json</code>. The meta is already where your rulings land and what the graph, the compose skill and Launchpad read. A separate file per component splits the record; a third-party DSL (Mitosis, Stencil) hands the source format to someone else.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="In the meta: four new fields">In the meta: anatomy, states, emits, bindings<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="A separate spec file beside each meta">A separate spec file beside each meta</button>
+        <button type="button" class="chip" data-v="A third-party source format (Mitosis or Stencil)">A third-party source format (Mitosis or Stencil)</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c3" data-q="3. The second runtime" data-rec="Lit custom elements, wrappers generated">
+      <p class="q">3. What is the second runtime after HTML+CSS?</p>
+      <p class="rec">The recommendation: Lit custom elements, with React and Angular wrappers generated over them. One runtime for every host, idiom by generation, and every framework scores 100% on interop now. Hand-written React and Angular packages are the Carbon model and cost two teams. Mitosis is seeking maintainers. HTML-only with fixtures for porters is the GOV.UK model and inherits its disclaimer.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Lit custom elements, wrappers generated">Lit custom elements, React and Angular wrappers generated<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Hand-written React and Angular packages">Hand-written React and Angular packages (Carbon)</button>
+        <button type="button" class="chip" data-v="Compile to many with Mitosis">Compile to many with Mitosis (DB UX)</button>
+        <button type="button" class="chip" data-v="HTML+CSS only, fixtures for porters">HTML+CSS only, fixtures for porters (GOV.UK)</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c4" data-q="4. Light DOM or Shadow DOM" data-rec="Light DOM, styled by canon.css">
+      <p class="q">4. Do the custom elements use light DOM or Shadow DOM?</p>
+      <p class="rec">The recommendation: light DOM. canon.css already styles everything and 35 gates measure rendered geometry through it; Shadow DOM needs a custom-property bridge per component and still carries the SSR and form-participation caveats nobody has closed in print. Encapsulation is the trade.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Light DOM, styled by canon.css">Light DOM, styled by canon.css<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Shadow DOM with a custom-property bridge">Shadow DOM with a custom-property bridge (Nord)</button>
+        <button type="button" class="chip" data-v="Decide after phase 3's first element">Decide after phase 3's first element is built both ways</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c5" data-q="5. How Apollo meets a client's library (S2)" data-rec="Adapter manifest per library, Apollo governs, theirs renders">
+      <p class="q">5. How does Apollo work with a library a client already has?</p>
+      <p class="rec">The recommendation: an adapter manifest per library. Apollo keeps the governing half (roles, when-rules, gates, composition), their components render, a gate refuses unbound parts, and the token half is generated as their theme file on day one. Theme-only is placement C from the other side. Replacing their library is S1, not S2.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Adapter manifest per library, Apollo governs, theirs renders">Adapter manifest per library; Apollo governs, theirs renders<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Theme only: Apollo tokens onto their library">Theme only: Apollo tokens onto their library</button>
+        <button type="button" class="chip" data-v="Replace their library with Apollo's emitters">Replace their library with Apollo's emitters</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c6" data-q="6. Tokens to DTCG" data-rec="Now, one generator, extras under $extensions">
+      <p class="q">6. When do the tokens move to DTCG 2025.10?</p>
+      <p class="rec">The recommendation: now. One generator, no information lost, the token spine byte-equal, Style Dictionary as the proof. It is the one part of "switch out the tokens" that is as easy as you hoped, and every downstream tool reads the result.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Now, one generator, extras under $extensions">Now: one generator, extras under $extensions<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="After phase 2">After phase 2, when the bindings have moved</button>
+        <button type="button" class="chip" data-v="Stay as is">Stay as is; the current shape works</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c7" data-q="7. Order and start" data-rec="Phases 0, 1 and the S2 schema now; 2 after call 1; 3 and 4 later">
+      <p class="q">7. What starts, and when?</p>
+      <p class="rec">The recommendation: phases 0 and 1 and the S2 schema this weekend, because none of them edits a snippet or changes an output; phase 2 after your ruling on call 1, cohort by cohort behind the round-trip gate; phases 3 and 4 later. Everything at once over one weekend run would put the reversal and the extraction in the same diff, and the round-trip gate cannot tell you which one broke.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Phases 0, 1 and the S2 schema now; 2 after call 1; 3 and 4 later">Phases 0, 1 and the S2 schema now; 2 after call 1; 3 and 4 later<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="All phases in one weekend run">All phases in one weekend run</button>
+        <button type="button" class="chip" data-v="Wait until a client asks">Wait until a client asks</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="page" data-q="8. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources" class="grey">
+  <div class="wrap">
+    <p class="label">08 · Sources</p>
+    <h2>Where each claim comes from.</h2>
+    <p class="lead">The repo numbers are M2's, measured read-only at the seat on 2026-10-01 (<code>notes/_lanes/311/M/M2-COMPILER-DEPENDENCIES.md</code>). The field claims are M1's, with the full list and the pages that could not be fetched in <code>notes/_lanes/311/M/M1-FINDINGS.md</code>. Those cited on this page:</p>
+    <ul class="src">
+      <li><b>S1</b> Adobe, "Introducing React Spectrum", 15 July 2020. react-aria.adobe.com/blog/introducing-react-spectrum</li>
+      <li><b>S2</b> adobe/spectrum-css README, fetched 2026-10-01. github.com/adobe/spectrum-css</li>
+      <li><b>S3</b> Spectrum Web Components, "Migrating to Spectrum 2", fetched 2026-10-01. opensource.adobe.com/spectrum-web-components/migrating-to-spectrum2</li>
+      <li><b>S4</b> carbon-design-system/carbon AGENTS.md, fetched 2026-10-01.</li>
+      <li><b>S6</b> Carbon, "Moving forward: On deprecating carbon-components and carbon-components-react", 16 May 2023.</li>
+      <li><b>S7</b> Zag.js, fetched 2026-10-01. zagjs.com</li>
+      <li><b>S8</b> Ark UI, "Welcome to Ark UI", fetched 2026-10-01.</li>
+      <li><b>S9</b> material-components/material-web discussion #5642, "MWC is in maintenance mode", 10 June 2024.</li>
+      <li><b>S10</b> Angular Blog, "Material 3 Experimental Support in Angular 17.2", 15 February 2024.</li>
+      <li><b>S11</b> Microsoft Learn, "Fluent UI Web Components", fetched 2026-10-01.</li>
+      <li><b>S12</b> db-ux-design-system/core-web README, fetched 2026-10-01.</li>
+      <li><b>S13</b> web.dev, "How Nordhealth uses Custom Properties in Web Components", 17 August 2022.</li>
+      <li><b>S14</b> GOV.UK Frontend, "Testing your HTML", fetched 2026-10-01. frontend.design-system.service.gov.uk/testing-your-html</li>
+      <li><b>S15</b> ionic-team/stencil-ds-output-targets README, fetched 2026-10-01.</li>
+      <li><b>S16</b> Bootstrap 5.3 docs, "JavaScript", fetched 2026-10-01.</li>
+      <li><b>S17</b> Lit docs, "React" (@lit/react createComponent), fetched 2026-10-01. lit.dev/docs/frameworks/react</li>
+      <li><b>S18</b> React, "React 19" release post, 5 December 2024.</li>
+      <li><b>S19</b> Custom Elements Everywhere, fetched 2026-10-01. custom-elements-everywhere.com</li>
+      <li><b>S20</b> W3C DTCG, "Design Tokens specification reaches first stable version", 28 October 2025.</li>
+      <li><b>S21</b> W3C DTCG, "Design Tokens Format Module 2025.10", Final CG Report, 28 October 2025.</li>
+      <li><b>S22</b> W3C DTCG, "Design Tokens Resolver Module 2025.10", Final CG Report, 28 October 2025.</li>
+      <li><b>S23</b> style-dictionary v4.0.0 release, 28 June 2024.</li>
+      <li><b>S24</b> Tokens Studio docs, "Token format", fetched 2026-10-01.</li>
+      <li><b>S25</b> The New Stack, "The Pros and Cons of Web Components via Lit and Shoelace", 29 September 2024.</li>
+      <li><b>S26</b> Carbon, "Vanilla" framework page, fetched 2026-10-01.</li>
+      <li><b>S27</b> Salesforce Trailhead, "Explore Salesforce Lightning Design System 2", fetched 2026-10-01.</li>
+      <li><b>S28</b> Salesforce LWC guide, "Create a Component from an SLDS Blueprint", fetched 2026-10-01.</li>
+      <li><b>S29</b> MUI, "2026 and beyond", 1 January 2026.</li>
+      <li><b>S30</b> BuilderIO/mitosis README, fetched 2026-10-01.</li>
+      <li><b>S31</b> Figma Help, "Code Connect", fetched 2026-10-01.</li>
+      <li><b>S32</b> Figma Developers, "Code Connect for HTML", fetched 2026-10-01.</li>
+      <li><b>S33</b> Open UI, "Tabs research: parts", fetched 2026-10-01.</li>
+      <li><b>S34</b> W3C WAI, "ARIA Authoring Practices Guide: Patterns", fetched 2026-10-01.</li>
+      <li><b>S35</b> W3C WAI, APG "Read Me First", fetched 2026-10-01.</li>
+      <li><b>S36</b> GDS Design Notes, "Introducing GOV.UK Frontend alpha", 14 October 2016.</li>
+      <li><b>S37</b> GOV.UK Design System, "Resources and tools" (community), fetched 2026-10-01.</li>
+      <li><b>Repo</b> ADR-0008 (<code>docs/decisions/ADR-0008-canonical-core-and-adapters.md</code>, accepted 2026-07-20); ADR-0013 ruling 4; <code>knowledge/canon/gen_canon_components.py</code> 3-7, 337, 348, 422; <code>knowledge/canon/gen_theme_cascade.py</code> 341-344; <code>knowledge/_build_all.py</code> 215-216; <code>knowledge/gen_component_partials.py</code> 9-12; <code>knowledge/gen_provenance_receipt.py</code> 5-6, 12-20, 45-46; <code>knowledge/_RUNBOOK-compose-from-canon.md</code> 46-62; <code>knowledge/_RUNBOOK-onboard-code-library.md</code>; <code>notes/_lanes/312/C/SPEC-launchpad-day-one.md</code> 62, 84-95, 200; <code>designer-skills-v2/generate-from-canon/SKILL.md</code> 45-47, 73-75; <code>knowledge/meta.schema.json</code>; s305-D45; s307-D74 (enacted 50159e7a).</li>
+    </ul>
+    <details class="tech"><summary>Technical · this page</summary><ol>
+      <li>Lane M3 of #311, Fable, written in the cloud workspace from M1 and M2, committed to the seat. Shell copied from <code>notes/_REVIEW-311-B-icons-and-supercharge-page-2026-09-30-v1.html</code>; diagram conventions from <code>notes/_PROPOSAL-apollo-mcp-2026-09-26-v2.html</code>. Decisions saved in this browser under the key <code>proposal-311-apollo-for-other-libraries-v1</code>; Copy as text returns every call with its choice and comment and marks the recommendation.</li>
+      <li>Verified at 1440 and 390 with <code>notes/_lanes/311/M/verify_page.py</code> (no side scroll, Copy as text returns eight entries, screenshots at <code>notes/_lanes/311/M/shots/</code>). Report: <code>notes/_subreports/2026-10-01-311-M3-apollo-for-other-libraries.md</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · proposal · Apollo for other libraries · v1 · 2026-10-01 · session 311 lane M3</span>
+  <span>Nothing here is ruled until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 8 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='proposal-311-apollo-for-other-libraries-v1';
+  var PATH='notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 311 · Apollo for other libraries · proposal v1 · decisions','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('8. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='proposal-311-apollo-for-other-libraries.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
