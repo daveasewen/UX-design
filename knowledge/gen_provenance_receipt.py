@@ -38,14 +38,18 @@ THE SPEC (JSON):
   {"title": "...", "pack": "1.0.5", "theme": "light",
    "regions": [
      {"snippet": "Stat-card", "select": ".stat-card", "kind": "markup", "props": {...}},
-     {"snippet": "Stat-card", "kind": "style"},
      {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-behaviour"}
    ]}
 
 `kind`:
   markup     the first element in the snippet's <body> carrying `select`, extracted by a
              BALANCED tag scan — the exact source bytes, opening tag to matching close.
-  style      the snippet's <style> inner text, verbatim.
+  style      ⛔ REFUSED since s307-D74 (Dave, #307, by click: "Link, don't paste; make both
+             checks agree"). The page LINKS knowledge/canon/canon.css (+ type.css), which
+             carries every part's rules; `--compose` writes that link and wraps each markup
+             region in its part's `.cn-<slug>` scope (outside the marker, so the hashed bytes
+             are still the snippet's own). The receipt gate refuses a kind=style region as
+             STYLE-PASTED and a page with no canon.css link as CANON-NOT-LINKED.
   behaviour  one whole `AUTO-BEHAVIOUR <name>` block, markers included, so the page inlines
              the behaviour the way a snippet does and `_validate_receipt.behaviour_loaded`
              can see it.
@@ -234,9 +238,8 @@ PAGE_TMPL = """<!DOCTYPE html>
   knowledge/_validate_receipt.py re-hashes them.
 -->
 <script type="application/json" id="token-manifest">%(manifest)s</script>
-<style>
-%(styles)s
-</style>
+<link rel="stylesheet" href="%(canon_href)s">
+<link rel="stylesheet" href="%(type_href)s">
 </head>
 <body data-theme="%(theme)s">
 %(markup)s
@@ -248,7 +251,7 @@ PAGE_TMPL = """<!DOCTYPE html>
 
 def compose(spec_path, out_path):
     spec = json.load(open(spec_path, encoding="utf-8"))
-    styles, markup, behaviours = [], [], []
+    markup, behaviours = [], []
     vars_union = {}
     for i, r in enumerate(spec["regions"], 1):
         name = r["snippet"]
@@ -259,11 +262,9 @@ def compose(spec_path, out_path):
         if kind == "markup":
             text, _off = extract_element(html, r["select"])
         elif kind == "style":
-            text, _off = extract_style(html)
-            # s258-D3: APOLLO-DEMO fenced CSS is showroom harness, never spliced - the same span
-            # gen_canon_components.py drops from canon (#309 D: Metric's style carries one).
-            text = re.sub(r"/\* ===== APOLLO-DEMO[^\n]*?START.*?APOLLO-DEMO[^\n]*?END ===== \*/", "",
-                          text, flags=re.S)
+            raise SystemExit("REFUSED: kind=style (%s) — link, don't paste (s307-D74): the page "
+                             "links knowledge/canon/canon.css, which already carries %s's rules"
+                             % (name, name))
         elif kind == "behaviour":
             text, _off = extract_behaviour(html, r["behaviour"])
         else:
@@ -271,12 +272,17 @@ def compose(spec_path, out_path):
         region = r.get("region") or "%s#%d" % (name, i)
         block = "%s\n%s\n%s" % (VR.splice_marker_start(region, src_rel, kind), text,
                                 VR.splice_marker_end(region))
-        (styles if kind == "style" else behaviours if kind == "behaviour" else markup).append(block)
+        if kind == "markup":                 # the part's scope, OUTSIDE the hashed bytes
+            block = '<div class="cn-%s">\n%s\n</div>' % (
+                re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-"), block)
+        (behaviours if kind == "behaviour" else markup).append(block)
+    here = os.path.dirname(os.path.abspath(out_path))
     page = PAGE_TMPL % {
+        "canon_href": os.path.relpath(os.path.join(HERE, "canon", "canon.css"), here),
+        "type_href": os.path.relpath(os.path.join(HERE, "canon", "type.css"), here),
         "title": spec.get("title", "Composed page"),
         "spec": os.path.relpath(spec_path, REPO),
         "manifest": json.dumps({"vars": vars_union}, indent=1),
-        "styles": "\n".join(styles),
         "markup": "\n".join(markup),
         "behaviours": "\n".join(behaviours),
         "theme": spec.get("theme", "light"),
@@ -411,8 +417,7 @@ def selftest():
     ok = True
     d = tempfile.mkdtemp()
     spec = {"title": "selftest", "pack": "selftest", "regions": [
-        {"snippet": "Metric", "select": ".metric", "kind": "markup"},
-        {"snippet": "Metric", "kind": "style"}]}
+        {"snippet": "Metric", "select": ".metric", "kind": "markup"}]}
     sp = os.path.join(d, "spec.json")
     json.dump(spec, open(sp, "w"))
     out = os.path.join(d, "page.html")
@@ -470,6 +475,24 @@ def selftest():
     except SystemExit as e:
         f, detail = False, "compose refused: %s" % e
     ok &= f; print(("  ✅ " if f else "  ❌ ") + "F  chart region's script is the meta's -> " + detail)
+
+    # G — s307-D74: the mint never pastes a stylesheet — a kind=style spec REFUSES, and the page it
+    #     does write links canon.css and passes the COMPOSE gate's link/paste check too.
+    spec3 = {"title": "selftest-style", "pack": "selftest", "regions": [
+        {"snippet": "Metric", "kind": "style"}]}
+    sp3 = os.path.join(d, "spec3.json"); json.dump(spec3, open(sp3, "w"))
+    try:
+        compose(sp3, os.path.join(d, "style.html"))
+        g1 = False
+    except SystemExit:
+        g1 = True
+    import _validate_compose as VC
+    cfails, _n = VC.check_screen(out)
+    g2 = VR.canon_linked(page) and not any(("STYLE-PASTED" in f or "CANON-NOT-LINKED" in f)
+                                           for f in cfails)
+    g = g1 and g2
+    ok &= g; print(("  ✅ " if g else "  ❌ ") + "G  kind=style REFUSED (%s); minted page links canon.css "
+                   "and the compose gate agrees (%s)" % (g1, "; ".join(cfails) or "no compose fails"))
 
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1

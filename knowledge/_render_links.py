@@ -29,7 +29,7 @@ with sync_playwright() as p:
         pg.goto(SRC)
         pg.evaluate(f"document.body.setAttribute('data-theme','{theme}')")
         if narrow:
-            pg.evaluate("document.getElementById('related').style.setProperty('--demo-width','320px')")
+            pg.evaluate("document.getElementById('related').style.maxWidth='320px'")  # s307-D75: no demo dial
         pg.wait_for_timeout(200)
         overflow = pg.evaluate(
             "Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth)")

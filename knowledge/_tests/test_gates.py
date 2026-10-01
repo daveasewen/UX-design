@@ -503,6 +503,32 @@ def mut_redefine_class(k):
     write(p, html.replace("</head>", "<style>.cn-button{opacity:.5}</style></head>", 1))
 
 
+# s307-D75 / s307-D74 (#311 A1): the compose gate's checks 9, 10 and 11.
+def mut_sized_part(k):
+    p = _first_canon_screen(k)      # a ledger-pinned screen: one NEW sized part must still red it
+    html = read(p)
+    write(p, html.replace("</head>", "<style>.zz-host .cn-button[data-zz]{width:999px}</style></head>", 1))
+
+
+def mut_pasted_style(k):
+    p = _first_canon_screen(k)
+    html = read(p)
+    write(p, html.replace("</head>", "<style>\n<!-- ===== APOLLO-SPLICE Zz#css START (source=knowledge/"
+                          "snippets/Button.reference.html kind=style) ===== -->\n.zz{opacity:1}\n"
+                          "<!-- ===== APOLLO-SPLICE Zz#css END ===== -->\n</style></head>", 1))
+
+
+def mut_unlinked_canon(k):
+    p = _first_canon_screen(k)
+    html = read(p)
+    write(p, re.sub(r'<link\b[^>]*canon\.css[^>]*>', "", html))
+
+
+def mut_demo_width_in_canon(k):
+    p = os.path.join(k, "canon", "canon.css")
+    write(p, read(p) + "\n:where(.cn-zz) .zz{width:var(--demo-width, 1px);}\n")
+
+
 CASES = [
     ("snippet gate bites on token drift",        "drift",    "_validate_snippets.py",     mut_token_drift,     "DRIFT"),
     # ("snippet gate bites on missing ARIA", …) — REMOVED s263-D11; see mut_missing_aria's note above.
@@ -529,6 +555,10 @@ CASES = [
     ("compose gate bites on undefined class",    "undef",    "_validate_compose.py",      mut_undefined_class, "used but undefined"),
     ("compose gate bites on class redefinition", "redef",    "_validate_compose.py",      mut_redefine_class,  "redefines canon class"),
     ("compose gate bites on duplicate title",    "duptitle", "_validate_compose.py",      mut_duplicate_title, "duplicate <title>"),
+    ("compose gate bites on a page sizing a part","sized",   "_validate_compose.py",      mut_sized_part,      "sizes a part"),
+    ("compose gate bites on a pasted stylesheet","pasted",   "_validate_compose.py",      mut_pasted_style,    "STYLE-PASTED"),
+    ("compose gate bites on canon.css unlinked", "unlinked", "_validate_compose.py",      mut_unlinked_canon,  "CANON-NOT-LINKED"),
+    ("compose gate bites on a demo width in canon","demow",  "_validate_compose.py",      mut_demo_width_in_canon, "--demo-width"),
 ]
 
 

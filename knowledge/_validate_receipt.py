@@ -46,7 +46,8 @@ A generated page carries, in `<head>`, BESIDE `#token-manifest` and never inside
 and marks each spliced region in its own bytes, in the HTML-comment marker grammar
 `gen_component_partials.py` already uses for AUTO-BEHAVIOUR blocks:
 
-    <!-- ===== APOLLO-SPLICE <region> START (source=<path> kind=<markup|style>) ===== -->
+    <!-- ===== APOLLO-SPLICE <region> START (source=<path> kind=<markup|behaviour>) ===== -->
+    (kind=style is REFUSED since s307-D74 — step 3c: a page LINKS canon.css, never pastes CSS.)
     …the spliced bytes…
     <!-- ===== APOLLO-SPLICE <region> END ===== -->
 
@@ -84,6 +85,11 @@ remedy: one parse, in the consumer's grammar, shared.
                                  GENERATED page must carry none — a marker in the page is proof
                                  the harness was copied along with the component. The check is
                                  the MARKER STRING, not a parse: `APOLLO-DEMO … START|END`.
+  3c. LINK, DON'T PASTE (s307-D74)             ⇒ FAIL:STYLE-PASTED when a region is spliced
+                                 with kind=style (a part's stylesheet copied in), and
+                                 FAIL:CANON-NOT-LINKED when no live <link rel=stylesheet> names
+                                 canon.css. `link_or_paste()` is the ONE definition; the compose
+                                 gate's check_screen calls it too, so the two checks agree.
   4. the declared behaviour address is LOADED        ⇒ FAIL:BEHAVIOUR-NOT-LOADED when the
                                  receipt names a `script` the page neither inlines (an
                                  AUTO-BEHAVIOUR block of that name) nor pulls in via
@@ -266,6 +272,66 @@ def marked_regions(html):
     """Every region NAME the page marks, in document order (duplicates preserved so an
     accidental double-splice of one id is visible rather than silently deduped)."""
     return [m.group("region") for m in SPLICE_START_RE.finditer(html)]
+
+
+# ------------------------------------------------ link, don't paste (s307-D74, #311 A1)
+# Dave, #307, by click 2026-09-28 21:17 BST, verbatim: "Link, don't paste; make both checks
+# agree" — to the card: "Two checks disagree: one rewards pasting a part's code into the page,
+# the other fails it. Link or paste?" (#246 lane B finding 2: this gate PASSED a page that
+# spliced every part's <style> in, and the compose gate FAILED the same page on the pasted
+# CSS's own hex and its `.c-bento` redefinition.)
+# ONE DEFINITION, TWO READERS: this function is called by `check()` below AND by
+# `_validate_compose.check_screen` (so `_validate_screen.py` runs it through both steps). The
+# two gates cannot disagree on link-versus-paste because there is only one answer to read.
+#   STYLE-PASTED      the page carries an APOLLO-SPLICE region of kind=style — a part's
+#                     stylesheet copied into the page. The part's rules come from the one
+#                     shared stylesheet, knowledge/canon/canon.css, which the page LINKS.
+#   CANON-NOT-LINKED  the page has no <link rel="stylesheet"> to canon.css, so the parts on it
+#                     carry no rules from the one source (comments masked: a link written in a
+#                     comment links nothing).
+# Markup is still spliced (a static page cannot link markup) and scripts keep their own
+# address rules (step 4/4b, s258-D1); this is the STYLE half of the question the card asked.
+CANON_LINK_RE = re.compile(r'<link\b[^>]*>', re.I)
+SPLICE_KIND_RE = re.compile(r'kind=(?P<kind>[\w-]+)')
+
+
+def canon_linked(html):
+    """True when a live (uncommented) <link rel=stylesheet> points at a file named canon.css."""
+    for m in CANON_LINK_RE.finditer(mask_comments(html)):
+        tag = m.group(0)
+        href = re.search(r'\bhref\s*=\s*["\']([^"\']+)["\']', tag, re.I)
+        rel = re.search(r'\brel\s*=\s*["\']?([^"\'\s>]+)', tag, re.I)
+        if href and rel and rel.group(1).lower() == "stylesheet" and \
+                re.search(r'(?:^|/)canon\.css(?:[?#].*)?$', href.group(1)):
+            return True
+    return False
+
+
+def pasted_style_regions(html):
+    """Region ids the page marks as APOLLO-SPLICE kind=style, in document order."""
+    out = []
+    for m in SPLICE_START_RE.finditer(html):
+        k = SPLICE_KIND_RE.search(m.group("attrs") or "")
+        if k and k.group("kind") == "style":
+            out.append(m.group("region"))
+    return out
+
+
+def link_or_paste(html):
+    """-> [(code, message)]; empty = the page links the shared stylesheet and pastes none.
+    s307-D74. Read by THIS gate and by _validate_compose.check_screen — the one home."""
+    out = []
+    pasted = pasted_style_regions(html)
+    if pasted:
+        out.append(("STYLE-PASTED",
+                    "%d part stylesheet(s) pasted into the page (%s) — link, don't paste "
+                    "(s307-D74): drop the kind=style region(s) and link knowledge/canon/canon.css, "
+                    "which carries every part's rules" % (len(pasted), ", ".join(pasted[:6]))))
+    if not canon_linked(html):
+        out.append(("CANON-NOT-LINKED",
+                    "the page has no <link rel=\"stylesheet\" href=\"…/canon.css\"> — the parts' "
+                    "rules come from the one shared stylesheet, linked, never pasted (s307-D74)"))
+    return out
 
 
 def parse_receipt(html):
@@ -796,6 +862,11 @@ def check(path):
             lines.append("FAIL:REGION-UNRECEIPTED — the page splices `%s` and the receipt "
                          "does not mention it" % rid)
 
+    # 3c (s307-D74): link, don't paste — the SAME function _validate_compose.check_screen reads.
+    for code, msg in link_or_paste(html):
+        fails.append(code)
+        lines.append("FAIL:%s — %s" % (code, msg))
+
     # 3b (s258-D3): the showroom harness was copied in with the component. Marker-string only.
     if DEMO_FENCE_RE.search(html):
         whats = []
@@ -872,6 +943,7 @@ def selftest():
                 print("       " + ln)
 
     body = '<p class="x">hello</p>'
+    CANON_LINK_TAG = '<link rel="stylesheet" href="../canon/canon.css">'   # s307-D74: pages link
     def page(region_body, hsh, extra_head="", extra_body="", script=None, pack="1.0.5",
              retrieval=None, snippet="Demo"):
         rec = {"$schema": SCHEMA, "pack": pack, "retrievalSet": retrieval,
@@ -880,9 +952,9 @@ def selftest():
                             "hash": hsh, "bytes": len(region_body), "script": script}]}
         return ("<!DOCTYPE html><html><head>"
                 '<script type="application/json" id="token-manifest">{"vars":{}}</script>'
-                '<script type="application/json" id="%s">%s</script>%s</head><body>%s\n%s\n%s%s'
+                '<script type="application/json" id="%s">%s</script>%s%s</head><body>%s\n%s\n%s%s'
                 "</body></html>"
-                % (RECEIPT_ID, json.dumps(rec), extra_head,
+                % (RECEIPT_ID, json.dumps(rec), CANON_LINK_TAG, extra_head,
                    splice_marker_start("Demo#1", "knowledge/snippets/Demo.reference.html",
                                        "markup"),
                    region_body, splice_marker_end("Demo#1"), extra_body))
@@ -898,10 +970,10 @@ def selftest():
         '<html><head><script type="application/json" id="%s">{not json</script></head>'
         "<body></body></html>" % RECEIPT_ID, "RECEIPT-UNPARSEABLE")
     arm("E  receipted region absent from the page",
-        '<html><head><script type="application/json" id="%s">%s</script></head><body></body>'
+        '<html><head><script type="application/json" id="%s">%s</script>%s</head><body></body>'
         "</html>" % (RECEIPT_ID, json.dumps(
             {"$schema": SCHEMA, "pack": "1.0.5", "regions": [
-                {"region": "Ghost#1", "hash": "sha256:0", "kind": "markup"}]})),
+                {"region": "Ghost#1", "hash": "sha256:0", "kind": "markup"}]}), CANON_LINK_TAG),
         "REGION-MISSING")
     arm("F  page splices a region the receipt never mentions",
         page(body, sha256_of("\n" + body + "\n"),
@@ -1130,6 +1202,39 @@ def selftest():
         print("  ❌ AJ nested/unclosed APOLLO-DEMO fences mis-read: %r" % inline_scripts(_nd))
     else:
         print("  ✅ AJ nested fences skip both inner scripts; an unclosed START fences nothing")
+    # ---- AK–AP (s307-D74): link, don't paste — and the compose gate reads the SAME answer.
+    arm("AK page links canon.css and pastes no stylesheet — PASS", page(body, gh), "PASS")
+    styled = ("\n" + splice_marker_start("Demo#css", "knowledge/snippets/Demo.reference.html", "style")
+              + "\n.x{color:red}\n" + splice_marker_end("Demo#css"))
+    _rec_style = page(body, gh, extra_head="<style>" + styled + "</style>")
+    _rec_style = _rec_style.replace('"regions": [{', '"regions": [{"region": "Demo#css", "snippet": "Demo", '
+                                    '"kind": "style", "hash": "%s"}, {' % sha256_of("\n.x{color:red}\n"), 1)
+    arm("AL a part's stylesheet PASTED (receipted kind=style region) — STYLE-PASTED", _rec_style,
+        "STYLE-PASTED")
+    arm("AM no canon.css link at all — CANON-NOT-LINKED",
+        page(body, gh).replace(CANON_LINK_TAG, ""), "CANON-NOT-LINKED")
+    arm("AN a canon.css link written inside an HTML comment links nothing — CANON-NOT-LINKED",
+        page(body, gh).replace(CANON_LINK_TAG, "<!-- " + CANON_LINK_TAG + " -->"), "CANON-NOT-LINKED")
+    arm("AO a stylesheet that is NOT canon.css does not count (mycanon.css) — CANON-NOT-LINKED",
+        page(body, gh).replace("canon/canon.css", "canon/mycanon.css"), "CANON-NOT-LINKED")
+    try:
+        import _validate_compose as _VC
+        _agree = []
+        for _lab, _h in (("linked", page(body, gh)), ("pasted", _rec_style),
+                         ("unlinked", page(body, gh).replace(CANON_LINK_TAG, ""))):
+            _d = tempfile.mkdtemp(); _p = os.path.join(_d, "agree.html")
+            open(_p, "w", encoding="utf-8").write(_h)
+            _cf, _n = _VC.check_screen(_p)
+            _rl, _rf, _ru = check(_p)
+            _c = sorted({c for c in ("STYLE-PASTED", "CANON-NOT-LINKED") if any(c in f for f in _cf)})
+            _r = sorted({c for c in ("STYLE-PASTED", "CANON-NOT-LINKED") if c in _rf})
+            _agree.append((_lab, _c, _r))
+        _good = all(c == r for _l, c, r in _agree) and _agree[0][1] == [] and _agree[1][1] and _agree[2][1]
+    except Exception as _e:                                # [[a-crash-is-not-a-fail]]
+        _good, _agree = False, [("crash", str(_e)[:120], "")]
+    ok = ok and _good
+    print(("  ✅ " if _good else "  ❌ ") + "AP the compose gate reads the SAME link/paste verdict "
+          "on linked, pasted and unlinked pages -> %s" % "; ".join("%s c=%s r=%s" % a for a in _agree))
     ROOT = saved_root
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1
