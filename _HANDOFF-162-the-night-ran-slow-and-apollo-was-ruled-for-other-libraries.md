@@ -113,3 +113,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-10-01-311-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-09-30-311-the-night-ran-slow-and-apollo-was-ruled-for-other-libraries.md`. Memory hook: `notes/_lanes/311/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/311/W/FACTS.json`.*
 
 *Title the next chat:* `Apollo - #312: the three pages put to him, then wave 2 on two seat lanes`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **858, newest `s311-D9`**.
+
+1. ✅ **CI IS GREEN.** `5dcd4be0` run `36853236510`, all three jobs (release, gates, render), read by `_ci_readback.py` at 11:21 UTC (`notes/_lanes/311/W/_ci-runs-5dcd4be0.txt`). The gates job's step 119, red overnight on `69848bbe`, passed. The wrap commit `46ff0905` and the conductor's four have no run of their own: CI runs on a push's tip.
+2. ✅ **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST, IN TWO HALVES** (a `/tmp` clone at `5dcd4be0`): first the survey as CI's gates job runs it, committed tree, no mutating steps: 81 pass, 0 FAIL, 2 advisory, 4 could-not-ask, step 119 green; then the writer gates with `--include-mutating`: 154 pass, 0 FAIL, 4 advisory (140, 150, 163 as before, and 164, the edge register, new since #310), 9 could-not-ask, 0 timed out; `test_gates` 36 of 36; the evidence gate PASS. No snippet or `canon.css` changed since `efd0e89f`, so no state-contrast sweep. Logs: `notes/_lanes/311/W/_prepush-*.txt`.
+3. ⛔ **THE WRAP COMMIT IS `46ff0905`, ON THE `--wrap` PATH** (gate `249 in scope · 0 fail · 101 warn`), 21 paths plus the auto-staged rehearsal log. **`5dcd4be0` carries the seat's files** (33 paths). Both passed first time.
+4. **THE PUSH: `efd0e89f..5dcd4be0`**, plain `git push origin master`, fast-forward checked first, `git ls-remote` = local HEAD, at 11:05:59 UTC, **30.3 minutes from the launch** (10:35:43 UTC); the summary went at the CI read, **45.7 minutes**. ⚠ GitHub warned that `knowledge/_memento-index.json` is 50.60 MB, over its recommended 50 MB (the hard limit is 100 MB).
+5. **Phase-1 counts:** scripts written **0** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b** · hand steps **2** (the stamp's `date` and the handoff's title, each a `sed`) · commits **2 for the wrap**.
+6. ⚠ **`_CHAIN.md` IS 8,305 cl100k, OVER THE 7,700 WARN** (`CHAIN_BUDGET_TK`, `s212-D11`) by 605, under the 10,000 fail, at the wrap's regen. Stated, not trimmed.
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries `Apollo - #312: the three pages put to him, then wave 2 on two seat lanes`. `_gen_titles.py` derived `Apollo - #312: put him the three unanswered pages, then launch the revised wave 2`. Declared, not reconciled. The retrospective rename it derived for this chat: `Apollo - #311: the night ran slow, and apollo was ruled for other libraries`.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** Payloads are in `notes/_lanes/311/W/_work/` (one optional area file, `areas/apollo-other-libraries.md`); the note is at `notes/_lanes/311/WRAP-MEMORY-HOOK.md`.
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

@@ -99,7 +99,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **133,882** (under the 135,000 ceiling by 1,118; the conductor reported 159,486 at the opener, the fill after the reads) · 160,000 at 19:24 · 250,513 at his 22:05 go · **300,000 at 05:45 Thu** · 320,000 at 08:55 · **341,969 at his "wrap"** (11:22), under the hard 350,000 by 8,031 · 349,888 at this seat's launch. subs 7,569,686 (n=33).
 
-> ⛔★ **5b —** PLACEHOLDER-311W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`46ff0905`** (`--wrap`, gate `249 in scope · 0 fail · 101 warn`) and **`5dcd4be0`** (the seat's files); the pre-push check on the wrap's tree first, the committed-tree survey as CI runs it (81 pass, 0 FAIL, step 119 green), then the writer gates (154 pass, 0 FAIL), 36 tests; pushed `efd0e89f..5dcd4be0` at 11:05:59 UTC, carrying the conductor's four. **CI on `5dcd4be0`, run `36853236510`: GREEN, all three jobs.** `_CHAIN.md` 8,305 cl100k after the wrap's regen, over the 7,700 warn by 605. This addendum's CI is owed to #312.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-09-30-311-the-night-ran-slow-and-apollo-was-ruled-for-other-libraries.md`. Handoff: `_HANDOFF-162-the-night-ran-slow-and-apollo-was-ruled-for-other-libraries.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/311/DAVE-*.md`. Lane reports: `notes/_subreports/2026-09-30-311-*.md`, `notes/_subreports/2026-10-01-311-*.md`. Wrap: `notes/_subreports/2026-10-01-311-W-wrap.md`.**
 

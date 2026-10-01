@@ -1,0 +1,91 @@
+— 167 steps read from _build_all.STEPS by ast (never imported) · 22 ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast · per-step timeout 60s · non-mutating steps only
+
+  ✅ [91] KG sources generator selftest — 9 bites (s305-D26)
+  ✅ [93] Token fork-ban selftest (2-direction)
+  ✅ [97] binds-resolve selftest — 5 bites incl. any-store clause (#146)
+  ✅ [99] chart-intent resolve selftest — 4 bites incl. list case + abse
+  ✅ [101] roles/answers resolve selftest — 15 bites incl. in-role priori
+  ✅ [103] DataViz gate selftest — bite-tests dv-004 + the dtype vocabula
+  ✅ [105] property-resolves gate C2 selftest — 4 bites + a bite-the-bite
+  ✅ [107] dataviz var-resolution gate selftest — 8 arms incl. alias chai
+  ✅ [109] minted-consumption selftest — 10 arms incl. both false-positiv
+  ✅ [111] hidden-attr display selftest — 16 bites incl. the real #218 mu
+  ✅ [116] consult tool selftest (advisory)
+  ✅ [117] search core selftest — two-stage engine + receipt format (O2′ 
+  ✅ [119] memento index determinism check (O2′ #25)
+  ✅ [120] memento index selftest — contract refusals + determinism (O2′ 
+  ✅ [121] memento search selftest — known-answer retrieval + fetch refus
+  ✅ [123] graph mention map determinism check (#115 step 0)
+  ✅ [124] graph mention map selftest — hit/miss/refusal bites (#115 step
+  ✅ [126] read chain determinism check — stale _CHAIN.md serves a PREVIO
+  ✅ [127] read chain selftest — verbatim terms + the CUT + refusal on a 
+  ✅ [128] GM size stamp check — a TYPED `size:` figure / drift past the 
+  ✅ [129] GM size stamp selftest — the fixed point, the 2-cycle refusal,
+  ✅ [131] memento schematic determinism check — a stale diagram publishe
+  ✅ [132] memento schematic selftest — figure provenance, caption geomet
+  ✅ [134] memento-package delta-audit selftest — mutation-tested, all 4 
+  ✅ [136] instrument-fit selftest (advisory, ds-015)
+  ✅ [139] could-not-ask convention selftest (#193 — the third verdict's 
+  ⊘ [142] governs matcher selftest — the [12]/[13] trigger-index arm, na  COULD-NOT-ASK
+  ✅ [143] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [144] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [145] pack ship-list audit — the manifest is byte-identical to a fre
+  ✅ [146] release-audit selftest — manifest compare + the pack arm's res
+  ✅ [147] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [148] pack-side CI template selftest — 10 mutants incl. a smuggled c
+  ✅ [151] polarity gate — five refusals + content-fresh derived status/e
+  ✅ [152] polarity gate selftest — control + every refusal arm on a copy
+  ✅ [155] CI read-back selftest — canned API JSON, no network; the token
+  ✅ [156] wrap facts selftest — fixture transcript and git, the fill han
+  ✅ [157] wrap move-file builder selftest — the real mover on a fixture 
+  ✅ [158] wrap carries selftest — count via _carry_items, the s183-D1 st
+  ✅ [159] wrap state-row writer selftest — mint born closed, close / reo
+  ✅ [160] wrap regen runner selftest — the serial's fixed order and stop
+  ✅ [161] wrap commit door selftest — unchanged paths refused, T3 prefix
+  ✅ [162] canon components ds-039 harvest-guard selftest — four bites on
+  ⚠ [163] itinerary register in sync — the frozen snapshot vs a fresh de  ADVISORY exit 1
+  ⚠ [164] KG edge register — every edge's two ends against its row in kn  ADVISORY exit 1
+  ✅ [166] KG edge register selftest — control on the real graph + one pl
+  ✅ [167] foundations pages sync — the eight showroom/_foundations/ page
+
+==============================================================================
+SURVEY: 44 pass · 0 FAIL · 2 ADVISORY-warn · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 30 not asked (mutating) · 90 outside --range 91:167 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+ADVISORY-WARN (2) — routed ADVISORY in _build_all.ROUTE_ROWS, so the build reports and continues;
+the survey does the same. NOT passing, NOT failing — each one is a finding to read:
+
+  [163] itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)
+      python3 knowledge/gen_itinerary_status.py --check   (exit 1)
+      ITINERARY-STATUS --check FAIL: reviews/ITINERARY-STATUS-2026-08-25-v4.html OUT OF SYNC; reviews/ITINERARY-STATUS-2026-08-25-v4.json OUT OF SYNC
+
+  [164] KG edge register — every edge's two ends against its row in knowledge/_edge_register.json (ADVISORY, s308-D17, built #308)
+      python3 knowledge/_validate_edges.py --check   (exit 1)
+      ✗ WHY-MISSING      mustNotNeighbour   component:Chart-boxplot → None   a required reason is missing (s308-D20)
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [142] governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)
+      python3 knowledge/_governs.py --selftest   (exit 77)
+      COULD-NOT-ASK: _governs.py --selftest — 4 evidence pointer(s) name paths this checkout cannot hold: ruling ds-034's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-034's evidence `outputs/_PARTITION-button-primary-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-035's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling s245-D6's evidence `knowledge/_tmp/l3-245/rename-plan.json` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer
+
+NOT ASKED (30 mutating steps) — run --include-mutating on a clean tree to include them:
+  [92] Token fork-ban gate — undeclared same-scope forks (s136-D1 lane, #
+  [94] binds shrink-only ratchet (s136-D1 axis A; built #141, wired #146)
+  [95] DTCG spine conformance gate (s141-D1 axis A; built #141, wired #14
+  [96] binds-resolve gate — manifest presence + address→store resolution 
+  [98] chart-intent resolve gate — meta intent address → chart-intents.js
+  [100] roles/answers resolve gate — meta provides/answers/not-with addres
+  [102] DataViz chart gate (semantic SVG + tokens + table spine)
+  [104] property-resolves gate C2 — silent-lookup class (BLOCKING, ds-018,
+  … and 22 more
+
+⚠ --no-record: this run is NOT in the verdict ledger, so nothing downstream can quote it. The chain's green count keeps saying whatever the last recorded run said.
