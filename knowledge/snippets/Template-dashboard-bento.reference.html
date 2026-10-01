@@ -913,6 +913,31 @@
            colour change — the affordance is the pointer and the focus ring, because a RAG chip
            that also carried link ink would read as a second status. */
   .tpl-strip-link{ text-decoration:none; color:var(--text); }
+  /* 11 · THE GROUP HEADER — s313-D29 (#313 call 10, Dave by click: 'B, a band inside the group';
+         his comment: 'B as the default, A as an option for the designer'). Each group's FIRST
+         child is the Section-heading-lockup (Arrangement A, label only; Arrangement B when the
+         group has an action of its own) inside a band that wears the TILE surface, full width of
+         the group, on its own auto-height row. The lock-up paints nothing (its meta's `placement`
+         prop, band | wall, default band, N1nav #313); the band is the tile it sits in.
+         11a · the band spans the whole group at every band of columns, including the lead group's
+               four-across pin (rule 10a), and its row is `max-content` — the group's row floor (rule 6)
+               belongs to the tiles below it, never to the header, and when the wall stretches a
+               group to its row-mate's height the stretch goes to the tiles (an `auto` row took
+               half of it: the Spending band measured 108px against Position's 52, cloud, #313).
+         11b · OPTION A, `data-group-header="wall"` on the group: the same lock-up on the wall
+               above the tiles — no surface, no padding, the group's own sub gutter below it.
+               The designer's option, not the default.
+         11c · the no-repeat rule (a group action and a tile action never repeat) is NOT a CSS
+               matter: it is `data-action-repeat` on the wall, read by
+               knowledge/_validate_dashboard_fold.py. Whether it holds under the band is Dave's open
+               question; flipping the answer is that one attribute. */
+  .tpl-page .tpl-group:has(> .c-bento__grid > .tpl-group-band) > .c-bento__grid{ grid-template-rows:max-content; }   /* 11a */
+  .tpl-page .tpl-group > .c-bento__grid > .tpl-group-band{ grid-column:1 / -1; background:var(--surface);
+    border-radius:var(--border-radius-surface); padding:16px 24px; }                                          /* 11a */
+  .tpl-group-band .l-row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  .tpl-group-band h2{ margin:0; }
+  .tpl-page .tpl-group[data-group-header="wall"] > .c-bento__grid > .tpl-group-band{ background:transparent;
+    padding:0 0 8px; }                                                                       /* 11b */
   .tpl-strip-link:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
   /* 10d · the plain legal item carries NO chip: Undrawn facilities is a state with no RAG
            meaning, and painting one would say "act on this" (DP-10 grammar, s251-D1). The 1px
@@ -1040,7 +1065,7 @@
        ========================================================================================== -->
   <main class="tpl-page" id="tplMain">
     <div class="tpl-bento-stack">
-      <div class="c-bento tpl-wall" data-bento-role="dashboard" aria-label="Account overview">
+      <div class="c-bento tpl-wall" data-bento-role="dashboard" data-action-repeat="never" aria-label="Account overview">
         <div class="c-bento__grid">
 
           <!-- GROUP 1 · the headline row (DP-06, #247 W1; re-cut at #251 for s251-D1). FOUR
@@ -1058,6 +1083,13 @@
           <section class="c-bento__tile c-bento tpl-group tpl-group-lead" data-bento-role="dashboard"
                    data-c="6" data-r="1" aria-label="This month">
             <div class="c-bento__grid">
+              <!-- 11 · THE GROUP HEADER, band (s313-D29, the default). No action: this group has
+                   none of its own, and a tile's action is never lifted into the header. -->
+              <div class="c-bento__tile tpl-group-band" data-c="6" data-r="1">
+                <div class="l-row" data-justify="between" data-align="baseline">
+                  <h2 id="tpl-gh-month" class="t-cm-section-label">This month</h2>
+                </div>
+              </div>
 
         <div class="c-bento__tile kpi-tile has-cta" role="group" aria-label="Closing balance" data-c="1" data-r="1">
         <p class="lbl16 t-cm-caption">Closing balance</p>
@@ -1137,6 +1169,13 @@
           <section class="c-bento__tile c-bento tpl-group tpl-group-evidence" data-bento-role="dashboard"
                    data-c="4" data-r="1" aria-label="Spending analysis">
             <div class="c-bento__grid">
+              <!-- 11 · THE GROUP HEADER, band (s313-D29, the default). No action: this group has
+                   none of its own, and a tile's action is never lifted into the header. -->
+              <div class="c-bento__tile tpl-group-band" data-c="6" data-r="1">
+                <div class="l-row" data-justify="between" data-align="baseline">
+                  <h2 id="tpl-gh-spending" class="t-cm-section-label">Spending analysis</h2>
+                </div>
+              </div>
               <div class="c-bento__tile stat-card" data-c="6" data-r="1">
                 <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="tpl-cb-h" data-lockup-title="Where the money went">
                 <figcaption id="tpl-cb-h" class="sr-only">Spend by category this month, pounds</figcaption>
@@ -1195,6 +1234,13 @@
           <section class="c-bento__tile c-bento tpl-group tpl-group-context" data-bento-role="dashboard"
                    data-c="2" data-r="1" aria-label="Position">
             <div class="c-bento__grid">
+              <!-- 11 · THE GROUP HEADER, band (s313-D29, the default). No action: this group has
+                   none of its own, and a tile's action is never lifted into the header. -->
+              <div class="c-bento__tile tpl-group-band" data-c="6" data-r="1">
+                <div class="l-row" data-justify="between" data-align="baseline">
+                  <h2 id="tpl-gh-position" class="t-cm-section-label">Position</h2>
+                </div>
+              </div>
               <!-- NEEDS ATTENTION IS FIRST IN THE RAIL as of #251 (s251-D1). It is the strip's
                    referent, so it is what the chip arrives at, and at 1440 the swap is what puts
                    it inside the first screen (#251 probe P2 measured y 678.6 first vs y 913.7

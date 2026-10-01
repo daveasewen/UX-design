@@ -241,7 +241,19 @@ SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
 GROUND_RAMP = [("grey", "Lightest grey", "--surface-subtle"),
                ("white", "White", "--surface-raised"),
                ("darkgrey", "Dark grey", "--surface-digital-black"),
-               ("transparent", "Transparent", "(none)")]
+               ("transparent", "Transparent", "(none)"),
+               # ⬛ s313-D33 / s313-D34 — THE FIFTH GROUND WORD, `section`, BOUND TO THE SECTION
+               # GROUND canon already paints under the dashboard wall (s305-D10, `--wall-ground:
+               # var(--surface-section)`). Dave, by click: 'Yes, called section' (call 14) and
+               # 'Every bento wall' (call 15) — so it is a ramp member, not a dashboard-only word,
+               # and every role that carries the bento-ground dial offers it. In light it paints
+               # what `grey` paints (#F0F0F0; Supercharge #DFDEDC); in dark it is one step darker
+               # than grey and equals the dark page, so the wall meets the page with no edge.
+               ("section", "Section", "--surface-section")]
+# ⚠ `section` IS A WALL GROUND, NOT A CAPTION GROUND. Calls 14 and 15 asked about the bento
+# editor's ground under the wall; nobody asked whether a caption may sit on it, so the caption dial
+# (`capBg`) does not offer it. Widening the caption ramp to it is Dave's call, not this lane's.
+WALL_ONLY_GROUNDS = ("section",)
 # The historical name every consumer already addresses (`gen_foundations_217.ruled_words`,
 # `bg_decl`, `verify_photography_218`). Kept pointing at the ramp so widening the ramp is what
 # widens them — one home, addressed, never a second list (ADR-0017).
@@ -510,6 +522,9 @@ INK_FOR_GROUND = {
     "white": "--text-secondary",
     "grey": "--text-secondary",
     "page": "--text-secondary",
+    # `section` flips with the mode like the light grounds (#F0F0F0 light, #1A1A1A dark in mono),
+    # so it takes the same flipping ink. s313-D33.
+    "section": "--text-secondary",
     "darkgrey": "--text-reverse",
     # `transparent` has no ink of its own: the ink follows whatever ground actually paints, which
     # is what `effective_ground_word()` answers.
@@ -1082,7 +1097,8 @@ def capbg_for(type_, theme):
         return []
     scoped = _chord_ground_scope("capBg", "darkgrey")
     return [w for w, _l, _t in GROUND_RAMP
-            if w != "darkgrey" or (theme, type_) in scoped]
+            if w not in WALL_ONLY_GROUNDS
+            and (w != "darkgrey" or (theme, type_) in scoped)]
 
 
 def ink_violation(state):
@@ -1533,7 +1549,9 @@ def option_space():
                         "a caption's ink is measured against the EFFECTIVE ground, which is this "
                         "one whenever the caption is transparent.",
                         tokens=bg_tokens, ink_rule=dict(INK_FOR_GROUND)),
-        "capBg": dial("enum", bg, bg_labels, ["gallery"], "segmented",
+        "capBg": dial("enum", [w for w in bg if w not in WALL_ONLY_GROUNDS],
+                      {w: t for w, t in bg_labels.items() if w not in WALL_ONLY_GROUNDS},
+                      ["gallery"], "segmented",
                       "s217-D5 · s219-D2(1) · s219-D3(3)",
                       "Caption ground. s219-D2(1) supersedes s218-D6(1) for the DEFAULT: mono "
                       "gallery captions resolve light grey. s219-D3(3) returns the dark ground as "
@@ -3423,15 +3441,18 @@ def selftest():
     # ⛔ RE-COMPUTED FOR s219-D3, AND THE TWO CHANGES ARE NAMED RATHER THAN ABSORBED:
     #   (4) pageBg LEAVES the bento grammar — the ×3 page factor is GONE from every line.
     #   (5) bentoBg widens to the FULL light-and-dark ramp — the bento factor is 4, not 3.
+    # ⛔ AND RE-COMPUTED FOR s313-D33/D34: the fifth ground word, `section`, joins the bento ramp
+    #   on every bento wall — the bento factor is 5, not 4. The caption ramp does NOT widen
+    #   (WALL_ONLY_GROUNDS), so the caption words below stay three.
     bite("6 · the reachable matrix is the hand-computed one (s219-D3(4) drops the page factor, "
-         "s219-D3(5) widens the section ground to four)",
+         "s219-D3(5) widens the section ground to four, s313-D33 adds `section` as the fifth)",
          (counts["display"], counts["dashboard"]),
-         (6 * 2 * 4, 6 * 6 * 2 * 4))
+         (6 * 2 * 5, 6 * 6 * 2 * 5))
     # gallery, computed by hand from the ruling: 6 spacing x 2 keylines x 3 modes x
     # (rounding x caption/bento pairs, minus the two refusals). MONO's caption ramp is three words:
     # s219-D3(3) scopes `darkgrey` to the console chord, which is why console is counted apart.
     _mono_caps = ("grey", "white", "transparent")
-    _grounds = ("grey", "white", "darkgrey", "transparent")
+    _grounds = ("grey", "white", "darkgrey", "transparent", "section")   # s313-D33: five
     legal_pairs = sum(1 for cb in _mono_caps for bb in _grounds if caption_legal(cb, bb))
     illegal_capsule = sum(1 for kl in ("on", "off")
                           for cb in _mono_caps for bb in _grounds
@@ -3866,7 +3887,7 @@ def selftest():
         SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
         _mut = (tuple(SPACING_STOPS) == RULED_SPACING_RAIL,
                 f.validate_settings({t: dict(_base, spacing="8") for t in THEMES}),
-                matrix_counts("mono")["display"] == 7 * 2 * 4)
+                matrix_counts("mono")["display"] == 7 * 2 * 5)   # bento factor 5 (s313-D33)
     finally:
         SPACING_STOPS = _saved_rail
         SPACINGS, DASH_MAIN, SUB_STOPS = _rails()
@@ -4196,7 +4217,7 @@ def selftest():
          "ground — the whole effective-ground chain — four themes, light and dark. A reading under "
          "the floor is a FAILURE, not a note",
          (_under, len(_sweep), min(min(r.values()) for *_x, r in _sweep) >= CONTRAST_FLOOR),
-         ([], 3 + 12 + 12, True))
+         ([], 3 + 12 + 16, True))   # section-ground rows: 3 -> 4 painted words per theme, 12 -> 16 (s313-D33)
     bite("C4b · the sweep's own worst reading is the one lane B measured live — legacy dark, "
          "5.93:1 — so the gate and the browser agree about where the floor is nearest",
          min(min(r.values()) for *_x, r in _sweep), 5.93)
