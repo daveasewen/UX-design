@@ -69,7 +69,7 @@
      floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
      — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
      centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
-     (an explicit attribute is RSQ, #249). H_MIN_DEFAULT is PROVISIONAL-AWAITING-DAVE. */
+     (settled #313, s307-D60). H_MIN_DEFAULT 200 is RULED: s307-D60 keeps the floor. */
   /* #304 W5a — THE RIGHT-HAND TWIN OF ds-012(b). A label placed on a fraction of the plot and
      growing rightward (centred category labels, the last value tick, start-anchored end labels)
      ran up to 19px past the svg's right edge in every cold-run set ("Middle East and Afric",

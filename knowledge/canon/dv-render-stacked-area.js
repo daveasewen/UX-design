@@ -46,7 +46,12 @@
      s248-D2   responsive in BOTH axes: y is authored in the data-h coordinate space and cached by
                fitY as a plot fraction, so a taller tile re-scales the stack instead of clipping.
      §04.3     ≥2 series ⇒ an in-fill LETTER key per band, so colour is never the only channel.
-     DEF-003   entry motion is CSS only (.dv-animate .dv-band → the canon dvFade keyframes). This
+     s307-D58  the stacked area GROWS, it no longer fades (DV-D16b: every stacked chart behaves the
+               same): every band and its top edge carry --lift (joins below × GAP) and --pb, and the
+               canon rule scales the stack up from the baseline; see area().
+     DV-D16c   the stacked cap (s307-D59): at most 6 bands, the sixth "Other" — the core applies it
+               to every stacked-* type (dv-render.js capped()); nothing here declares it.
+     DEF-003   entry motion is CSS only (one @property number --dvfa on the svg; markers + letters fade). This
                file writes no transform, no scale, no timing — every number it emits is an SVG
                geometry attribute derived from the data. */
 (function () {
@@ -141,17 +146,26 @@
          directions, which is why data-fxs is the forward list followed by its reverse. */
       var bx = px.concat(px.slice().reverse()), by = top.concat(foot.slice().reverse());
       var bf = fx.concat(fx.slice().reverse()), p = pts(bx, by);
+      var lift = '; --lift:' + n1(si * ctx.GAP) + 'px; --pb:' + ctx.PB + 'px';   /* s307-D58, see below */
       ctx.push('<path class="dv-band dv-series" data-series-group="' + (si + 1) +
-        '" data-series-i="' + (si + 1) + '" style="--sc:' + ctx.fill(si) +
+        '" data-series-i="' + (si + 1) + '" style="--sc:' + ctx.fill(si) + lift +
         '" data-fxs="' + bf.join(' ') + '" data-ys="' + by.map(n1).join(' ') +
         '" d="M' + p.join(' L') + ' Z" tabindex="0" role="img" aria-label="' +
         esc(KEYS[si % 26] + ', ' + ctx.series[si].name + ', total ' + ctx.fmt(tot)) +
         '" data-tip="' + esc(KEYS[si % 26] + ' · ' + ctx.series[si].name + ' · total ' +
         ctx.fmt(tot)) + '"></path>');
-      lines.push('<polyline class="dv-band-line" style="--sc:' + ctx.fill(si) +
+      lines.push('<polyline class="dv-band-line" style="--sc:' + ctx.fill(si) + lift +
         '" data-fxs="' + fx.join(' ') + '" data-ys="' + edge.map(n1).join(' ') +
         '" points="' + pts(px, edge).join(' ') + '"/>');
     }
+    /* ★ s307-D58 — THE STACK GROWS FROM THE BASELINE ON ONE NUMBER. Every band and its top edge
+       carry --lift = its joins below × GAP and --pb = the plot's foot; the canon rule scales each
+       about the baseline (view-box origin at 100% − pb) by the svg's one @property number --dvfa,
+       and lifts it by lift · (1 − dvfa), so the ruled GAP join stays GAP at EVERY frame, as on
+       the column. ⚠ NOT the column's positional cadence: an area band's thickness differs at
+       every vertex, so a per-band curve needs a per-VERTEX translate, which no CSS transform has;
+       contiguity forces one scale for the whole stack (lane A2 #313). Markers and letters wait
+       one growth and fade in on settled bands (s218-D5 (2)). */
     for (i = 0; i < lines.length; i++) { ctx.push(lines[i]); }   /* edges above every fill */
     for (i = 0; i < mks.length; i++) { ctx.push(mks[i]); }
     for (i = 0; i < keys.length; i++) { ctx.push(keys[i]); }

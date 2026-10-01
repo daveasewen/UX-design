@@ -51,6 +51,14 @@
   },
   "responsive": {
     "rule": "DV-D02 excluded donuts from width-compression (compressing a circle distorts) — fixed geometry; .dv-stage scrolls if the container is narrower.",
+    "sizeBands": {
+      "rule": "s313-D31 + s313-D32 (Dave by click, 2026-10-01): the ring is SIZED, not stretched — on the 4px grid, between a lower and an upper band, the best size computed at build time (his W-305n2 sketch; edit mode may step it by 4px within the bands). The legend sits beside the ring when it fits, else it drops under it.",
+      "upper": "280px — s313-D31, verbatim '280px, as drawn' (the recommendation). Beyond it the ring stops growing and the tile gives the room to the legend.",
+      "stackedCap": "s313-D32, verbatim 'The cap: never bigger than one step wider with the legend beside' (the recommendation): a ring whose legend dropped under it is never bigger than it would be one step wider with the legend beside, so rings only grow as tiles grow (the drawn sketch sized backwards at 440 — ring 280 stacked against 192 beside at 560; notes/_subreports/2026-10-01-312-F-renders.md, Found 3).",
+      "source": "his 17:49 BST export, notes/_lanes/313/DAVE-RULINGS-2026-10-01-1749-pictures-you-are-owed.md, calls 12 and 13",
+      "lower": "148px — MEASURED, not chosen: the centre figure and its label are 72px of text, + 16px of air, ÷ 0.6 because the hole is six-tenths of the ring (ri = 0.6·ro, dv-render-donut.js), ceil to the 4px grid (notes/_lanes/312/F/F4/render_F4.py at f8eedc96, img/F4-facts.json).",
+      "enacted": "NOT YET (lane A2, #313). dv-render-donut.js still draws ds-030's fixed diameter, ro = (data-h − 60)/2 — the 'does not stretch' of s305-D9/s305-D59 that these two rulings replace. The sizer needs the tile's width and its width steps at build time, which the composer knows and the engine does not; it is owed as its own row."
+    },
     "tokens": []
   },
   "behaviour": {
@@ -100,47 +108,47 @@
     "obeys": [
       {
         "ref": "rule:dv-pie-001",
-        "$why": "Start at 12 o'clock and order slices largest to smallest unless the categories carry their own order: the angles are fixed at generation time here - segments bake the sweep contract (data-cx/-cy/-ro/-ri/-a1/-a2) - and the antiPattern against recomputing arc geometry at runtime is what keeps that order from drifting."
+        "why": "Start at 12 o'clock and order slices largest to smallest unless the categories carry their own order: the angles are fixed at generation time here - segments bake the sweep contract (data-cx/-cy/-ro/-ri/-a1/-a2) - and the antiPattern against recomputing arc geometry at runtime is what keeps that order from drifting."
       },
       {
         "ref": "rule:dv-pie-002",
-        "$why": "Label plus exact proportional value on every slice, indicator lines where segments crowd, a key when the labels are letters: the meta's default `labelling` = spider is all three at once - a letter on a short leader outside the ring plus a vertical legend of swatch, letter and name - the leader IS the indicator line and the legend IS the key."
+        "why": "Label plus exact proportional value on every slice, indicator lines where segments crowd, a key when the labels are letters: the meta's default `labelling` = spider is all three at once - a letter on a short leader outside the ring plus a vertical legend of swatch, letter and name - the leader IS the indicator line and the legend IS the key."
       },
       {
         "ref": "rule:dv-pie-003",
-        "$why": "The centre must carry the total value AND its descriptor, never a descriptor without the value: this is the only component in the family with a `total` prop - the centre total typed .t-cm-figure-3 - and its `when` makes that printed centre figure the very thing that beats chart-pie. The rule binds here and nowhere else (s277-D2)."
+        "why": "The centre must carry the total value AND its descriptor, never a descriptor without the value: this is the only component in the family with a `total` prop - the centre total typed .t-cm-figure-3 - and its `when` makes that printed centre figure the very thing that beats chart-pie. The rule binds here and nowhere else (s277-D2)."
       },
       {
         "ref": "rule:dv-pie-004",
-        "$why": "Direct labelling adjacent to segments is this meta's second declared variant: name + value + % on each leader, in place, rather than in a legend across the card."
+        "why": "Direct labelling adjacent to segments is this meta's second declared variant: name + value + % on each leader, in place, rather than in a legend across the card."
       },
       {
         "ref": "rule:dv-pie-005",
-        "$why": "Labels sit inside a slice only where they stay readable, and this meta answers by taking them off the fills entirely - spider letters and direct labels never sit ON the fills - with the kit's letters-on-segments variant HELD rather than promoted, for the same reason."
+        "why": "Labels sit inside a slice only where they stay readable, and this meta answers by taking them off the fills entirely - spider letters and direct labels never sit ON the fills - with the kit's letters-on-segments variant HELD rather than promoted, for the same reason."
       },
       {
         "ref": "rule:dv-pie-006",
-        "$why": "The direction slices are ordered in must be checked against assistive technology, and this meta makes that order audible: segments are focus stops that raise dvTip on focus, and every segment's aria-label == data-tip == table, so the sweep order IS the reading order."
+        "why": "The direction slices are ordered in must be checked against assistive technology, and this meta makes that order audible: segments are focus stops that raise dvTip on focus, and every segment's aria-label == data-tip == table, so the sweep order IS the reading order."
       },
       {
         "ref": "rule:dv-pie-007",
-        "$why": "Never enlarge or pull out a slice for emphasis: this meta has no exploded variant and structurally cannot grow one - geometry is generation-time; behaviour only toggles baked variants - and its emphasis channel is a brightness lift that dims the OTHER groups, not displacement."
+        "why": "Never enlarge or pull out a slice for emphasis: this meta has no exploded variant and structurally cannot grow one - geometry is generation-time; behaviour only toggles baked variants - and its emphasis channel is a brightness lift that dims the OTHER groups, not displacement."
       },
       {
         "ref": "rule:dv-pie-008",
-        "$why": "A ring shows a part's size relative to the whole and never compares one group to another: this meta's `when` demands answers=composition AND parts sum to a whole, which is the rule's usage gate stated from the routing side."
+        "why": "A ring shows a part's size relative to the whole and never compares one group to another: this meta's `when` demands answers=composition AND parts sum to a whole, which is the rule's usage gate stated from the routing side."
       },
       {
         "ref": "rule:dv-pie-009",
-        "$why": "Maximum 6 slices for pie and doughnut alike: the meta's `slices` prop cites this rule by id and carries its remedy - more, and the smallest combine into 'Other' - and the antiPatterns repeat it, so the edge records a binding the file already states twice."
+        "why": "Maximum 6 slices for pie and doughnut alike: the meta's `slices` prop cites this rule by id and carries its remedy - more, and the smallest combine into 'Other' - and the antiPatterns repeat it, so the edge records a binding the file already states twice."
       },
       {
         "ref": "rule:dv-pie-010",
-        "$why": "Values must add up to the total, and the value indicators must be there: here the total is ON SCREEN, so the arithmetic is checkable by eye - values must sum to the displayed centre total (dv-pie-010, data-total attr) - and tokenValidation records the measured proof, sum 2320 = data-total."
+        "why": "Values must add up to the total, and the value indicators must be there: here the total is ON SCREEN, so the arithmetic is checkable by eye - values must sum to the displayed centre total (dv-pie-010, data-total attr) - and tokenValidation records the measured proof, sum 2320 = data-total."
       },
       {
         "ref": "rule:dv-pie-011",
-        "$why": "Always indicate when values are rounded: the percent arm of this meta's `valueMode` is where rounded readings appear, and the meta's answer is that the exact one is never lost - tips/aria carry both readings always, and the centre total, the direct labels and the table column all mirror the active mode together."
+        "why": "Always indicate when values are rounded: the percent arm of this meta's `valueMode` is where rounded readings appear, and the meta's answer is that the exact one is never lost - tips/aria carry both readings always, and the centre total, the direct labels and the table column all mirror the active mode together."
       }
     ],
     "renderedBy": [

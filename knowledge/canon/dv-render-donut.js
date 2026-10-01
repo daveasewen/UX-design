@@ -35,8 +35,9 @@
                a slice cut by GAP/ri radians is ≥GAP px apart everywhere on the ring, and wider
                (ro/ri = 1.67×) at the outside. ⚠ The static dataviz gate cannot measure an arc
                and falls back to demanding the stroke — reported, not worked around.
-     dv-pie-009 ≤6 slices. This is the reason a donut spec carries 6 categories where the other
-               types carry 8+: the type does not allow more, and the gate counts table rows.
+     dv-pie-009 ≤6 slices. Since s307-D59 (DV-D16c, the cap shipped in the engine) a 7th part no
+               longer throws: dv-render.js capped() draws the first five as authored and sums the
+               rest into "Other"; the <table> keeps every authored row. The throw below is a guard.
      §04.3     letters A–F on SPIDER LEADERS, never on the segments (letters-on-segments stays
                HELD — type26-013, white type on series fills). Colour is never the only channel.
      DV-D13    the centre readout follows the legend selection: `<g data-dv-view="value">` and
@@ -157,4 +158,5 @@
 
   window.dvRender.types.donut = function (ctx) { ring(ctx, true); };
   window.dvRender.types.pie = function (ctx) { ring(ctx, false); };
+  window.dvRender.types.donut.cap = window.dvRender.types.pie.cap = { of: 'categories', max: 6 };
 }());
