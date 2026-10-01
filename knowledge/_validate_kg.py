@@ -180,8 +180,8 @@ def load_schema_edge_types(schema_path=None):
     """(known edge-type keys, props, required) — props/required are DICTS KEYED BY EDGE TYPE
     so an edge type carrying its own item definition is checked against THAT definition, not
     against the shared `edge` one. s276-D3 minted the first such type: `obeys` items are
-    `definitions/obeysEdge` — {ref, $why, $note?} with $why REQUIRED — and checking them
-    against `definitions/edge` would have called every $why an unknown key. A type with no
+    `definitions/obeysEdge` — {ref, why, $note?} with why REQUIRED (spelled $why until #313 D4) — and checking them
+    against `definitions/edge` would have called every why an unknown key. A type with no
     resolvable items.$ref falls back to `edge`, so nothing else changes shape."""
     schema_path = schema_path or SCHEMA
     schema = json.loads(schema_path.read_text(encoding="utf-8"))

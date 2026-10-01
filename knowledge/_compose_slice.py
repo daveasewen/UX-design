@@ -559,7 +559,7 @@ def load_live(root=HERE):
                 if not isinstance(e, dict):
                     continue
                 ref = e.get("ref")
-                note = e.get("$note") or e.get("note") or e.get("$why") or ""
+                note = e.get("$note") or e.get("note") or e.get("why") or e.get("$why") or ""   # s308-D20 (#313 D4): `why`; `$why` until no store spells it
                 if ref:
                     add(ref)
                     if et == "renderedBy":
@@ -1179,7 +1179,8 @@ def obeys_for(chosen, g, task):
             authored.add(ref)
             row = out.setdefault(ref, _obeys_row(ref, g))
             row["class"] = "authored"
-            row["why"].append("edges.obeys on %s%s" % (base, (" — " + (e.get("$why") or "")[:160]) if e.get("$why") else ""))
+            why = e.get("why") or e.get("$why") or ""   # s308-D20 (#313 D4): the metas spell it `why`
+            row["why"].append("edges.obeys on %s%s" % (base, (" — " + why[:160]) if why else ""))
         txt = _read(os.path.join(os.path.dirname(g["$root"]), m["$path"]))
         for rid in sorted(set(RULE_ID_RX.findall(txt))):
             ref = "rule:" + rid

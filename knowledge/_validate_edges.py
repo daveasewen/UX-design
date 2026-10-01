@@ -63,6 +63,12 @@ TWO CHECKS, TWO TIERS.
                 PROPOSED-HAS-EDGES an edge in the graph of a type that is only a `$proposed` entry (make it a row)
                 REGISTER-SHAPE    a row missing a checked field (incl. opposite / reads / shape), or two rows
                                   with one word
+                COPY-DRIFT        a consumer that keeps a copy of the register no longer agrees with it
+                                  (W-308ie, #313 lane D4): the meta schema's `edges` keys and item shapes
+                                  (the `meta` column), the twelve verbs' `reads` and the `unread` block of
+                                  knowledge/_kg_verbs.json (the `verb` column), or a literal FAMILY / READ map
+                                  back in the explorer template (the page reads KG.fam / KG.read). The
+                                  remedy is one command: python3 knowledge/gen_edge_copies.py --write
                 SKIPPED-UNDECLARED an edge the explorer READ from storage and did not link, whose
                                   "<pass> <type>" is not named in the builder's SKIP_DECLARED
                                   (#308 lane L — the class that hid 14 of Dave's defaultActive
@@ -92,7 +98,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REGISTER = os.path.join(HERE, '_edge_register.json')
 ENDS_CLASSES = ('UNKNOWN-TYPE', 'WRONG-FROM', 'WRONG-TO', 'WRONG-PAIR', 'NULL-NOT-ALLOWED', 'OVER-COUNT')
 COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE',
-                 'SKIPPED-UNDECLARED', 'FOLD-MISSING', 'FOLD-DANGLING', 'PROPOSED-HAS-EDGES')   # FOLD/PROPOSED: s308-D23 (#311 D2)
+                 'SKIPPED-UNDECLARED', 'FOLD-MISSING', 'FOLD-DANGLING', 'PROPOSED-HAS-EDGES',   # FOLD/PROPOSED: s308-D23 (#311 D2)
+                 'COPY-DRIFT')   # W-308ie (#313 lane D4): the three consumers read the register
 GRADES = ('exact', 'close', 'loose')                               # s308-D22: SKOS's three grades (#311 lane D2)
 DECISION_GRAPH = os.path.join(HERE, '_decision-graph.json')       # s308-D23: the older ruling vocabulary
 ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape', 'why', 'maker', 'outside')   # why/maker: s308-D20/D21; outside: s308-D22/D27
@@ -183,7 +190,9 @@ def register_rows(reg):
 
 
 def named_types(K=HERE):
-    """{type: {where it is named}} across the files that each hold a partial definition today."""
+    """{type: {where it is named}} across the files that held a partial definition. Since W-308ie (#313 lane D4) the
+    schema's keys and the verbs' lists are WRITTEN from the register and the template holds no FAMILY map (COPY-DRIFT
+    refuses one), so this is a second, older guard on the same files."""
     out = defaultdict(set)
     try:
         s = json.load(open(os.path.join(K, 'components', 'meta.schema.json'), encoding='utf-8'))
@@ -458,7 +467,18 @@ def _cycles(P):
     return out
 
 
-def check_coverage(edges, reg, names, skips=None):
+def copy_drift(**kw):
+    """W-308ie (#313 lane D4): [(class, detail)] from knowledge/gen_edge_copies.py — where the meta schema, the verbs
+    map or the explorer template no longer agrees with the register. A copy that cannot be read is itself a drift."""
+    try:
+        sys.path.insert(0, HERE)
+        import gen_edge_copies
+        return gen_edge_copies.drift(**kw)
+    except Exception as ex:   # never a silent pass
+        return [('UNREADABLE', f'gen_edge_copies.drift() could not run: {type(ex).__name__}: {ex}')]
+
+
+def check_coverage(edges, reg, names, skips=None, copies=None):
     rows, probs = register_rows(reg)
     live = Counter(e.get('type') for e in edges)
     absent = reg.get('$absent') or {}
@@ -482,6 +502,7 @@ def check_coverage(edges, reg, names, skips=None):
     out += [('SKIPPED-UNDECLARED', f"{k} ({n} edge(s) read from storage and not linked) — draw it, or name it in "
              f"_build_kg_explorer.SKIP_DECLARED with the reason")
             for k, n in sorted((sk.get('by') or {}).items()) if k not in (sk.get('declared') or {})]
+    out += [('COPY-DRIFT', f'{c}: {d} — run python3 knowledge/gen_edge_copies.py --write') for c, d in (copies or [])]
     return out
 
 
@@ -535,7 +556,7 @@ def main(argv):
     reg = load_register()
     rows, _ = register_rows(reg)
     if '--coverage' in argv:
-        probs = check_coverage(edges, reg, named_types(), skips)
+        probs = check_coverage(edges, reg, named_types(), skips, copy_drift(reg=reg))
         print(f"COUNTS: rows {len(rows)} · graph types {len(set(e.get('type') for e in edges))} · declared absent "
               f"{len(reg.get('$absent') or {})} · skipped on read {sum((skips.get('by') or {}).values())}"
               f" (declared {len(skips.get('declared') or {})}) · refusals {len(probs)}")
@@ -760,6 +781,21 @@ def selftest():
     bite(53, f"CONTROL (theme kind): every defaultFor line points at a theme: node ({sum(1 for e in df if kind_of(e.get('t') or '') == 'theme')} of {len(df)}), "
              "and one ending on a logo goes red", lambda: df and all(kind_of(e.get('t') or '') == 'theme' for e in df)
          and planted('WRONG-TO', {'s': df[0]['s'], 't': logo, 'type': 'defaultFor'}))
+    # — W-308ie (#313 lane D4): the meta schema, the verbs map and the explorer read the register
+    cd0 = copy_drift(reg=reg)
+
+    def copy_red(**kw):
+        n0 = sum(1 for k, _ in check_coverage(edges, reg, names, skips, cd0) if k == 'COPY-DRIFT')
+        return sum(1 for k, _ in check_coverage(edges, reg, names, skips, copy_drift(reg=reg, **kw)) if k == 'COPY-DRIFT') == n0 + 1
+    bite(54, f'CONTROL (copies): the schema, the verbs map and the template agree with the register ({len(cd0)} drift)',
+         lambda: not cd0)
+    sch = json.load(open(os.path.join(HERE, 'components', 'meta.schema.json'), encoding='utf-8'))
+    sch['properties']['edges']['properties']['plantedEdgeKey'] = {'type': 'array', 'items': {'$ref': '#/definitions/edge'}}
+    bite(55, 'COPY-DRIFT: a meta schema edge key with no register row goes red', lambda: copy_red(schema=sch))
+    vb = json.load(open(os.path.join(HERE, '_kg_verbs.json'), encoding='utf-8')); vb['unread'].pop(sorted(vb['unread'])[0])
+    bite(56, 'COPY-DRIFT: the verbs map missing an unread type the register carries goes red', lambda: copy_red(verbs=vb))
+    tp = open(os.path.join(HERE, '_kg_explorer.template.html'), encoding='utf-8').read() + "\nconst FAMILY={containedBy:'structure'};\n"
+    bite(57, 'COPY-DRIFT: a literal FAMILY map put back in the explorer template goes red', lambda: copy_red(template=tp))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 
