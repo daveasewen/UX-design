@@ -164,10 +164,12 @@
 
   /* the flyout menu — Dropdown.reference's `.menu`/`.opt` shell, verbatim, role swapped to menu/menuitem */
   .sb-menu{ position:absolute; left:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20; min-width:200px;
-    background:var(--menu-surface); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only (Dropdown precedent) */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
   .sb-menu[data-open="true"]{ opacity:1; transform:none; pointer-events:auto; }
+  /* #313 BVF: the forced-open specimen reserves the flyout's height so it no longer sits on the row below (page layout only, not the component) */
+  .row-open{ margin-bottom:164px; }
   .sb-item{ display:flex; align-items:center; min-height:44px; padding:0 12px; color:var(--text); cursor:pointer; }
   .sb-item:hover{ background:var(--item-hover); }
   .sb-item:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
@@ -198,7 +200,7 @@
   </div>
 
   <h2 class="t-cm-section-label">Primary — open (specimen, for review)</h2>
-  <div class="row">
+  <div class="row row-open">
     <div class="split-btn primary">
       <button class="sb-main t-cm-button" type="button">Send payment</button>
       <button class="sb-caret" type="button" aria-haspopup="menu" aria-expanded="true" aria-controls="sbMenu2" aria-label="More payment actions">

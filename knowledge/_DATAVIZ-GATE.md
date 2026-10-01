@@ -187,39 +187,21 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ stacked-area — requiredAria [driven]: PASSED — all 6 declared string(s) present in the RENDERED DOM across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 
 ## Chart-engine test pages — every rule (s307-D63)
-- ✗ _tests/chart-engine/bar.html — 3 charts, 3 failing, 24 advisory
-  - ✗ **column#fig-column** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 9 marks, 15 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **bar#fig-bar** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 9 marks, 15 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **grouped-column#fig-grouped** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 24 marks, 13 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/boxplot.html — 2 charts, 2 failing, 16 advisory
-  - ✗ **boxplot#fig-boxplot** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 6 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **boxplot#fig-boxplot-plain** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 4 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/bullet.html — 1 charts, 1 failing, 0 advisory
-  - ✗ **bullet#fig-bullet** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 4 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/butterfly-h.html — 1 charts, 1 failing, 0 advisory
-  - ✗ **butterfly-h#fig-butterfly-h** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 8 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/butterfly-v.html — 1 charts, 1 failing, 1 advisory
-  - ✗ **butterfly-v#fig-butterfly-v** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 7 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/candlestick.html — 1 charts, 1 failing, 0 advisory
-  - ✗ **candlestick#fig-candlestick** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 40 marks, 8 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/combo.html — 2 charts, 2 failing, 16 advisory
-  - ✗ **combo#fig-combo** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 13 marks, 23 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **combo#fig-shared** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 25 marks, 18 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✓ _tests/chart-engine/bar.html — 3 charts, 0 failing, 27 advisory
+- ✓ _tests/chart-engine/boxplot.html — 2 charts, 0 failing, 18 advisory
+- ✓ _tests/chart-engine/bullet.html — 1 charts, 0 failing, 1 advisory
+- ✓ _tests/chart-engine/butterfly-h.html — 1 charts, 0 failing, 1 advisory
+- ✓ _tests/chart-engine/butterfly-v.html — 1 charts, 0 failing, 2 advisory
+- ✓ _tests/chart-engine/candlestick.html — 1 charts, 0 failing, 1 advisory
+- ✓ _tests/chart-engine/combo.html — 2 charts, 0 failing, 18 advisory
 - ✗ _tests/chart-engine/donut.html — 2 charts, 1 failing, 4 advisory
   - ✗ **pie#fig-pie** — dv-pie-010: slice sum 950.00 != displayed total 2320.00.
-- ✗ _tests/chart-engine/histogram.html — 2 charts, 2 failing, 0 advisory
-  - ✗ **histogram#fig-histogram** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 8 marks, 13 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **histogram#fig-fine** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 20 marks, 17 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/line.html — 2 charts, 2 failing, 16 advisory
-  - ✗ **line#fig-line** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 1 marks, 17 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **multiline#fig-multi** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 17 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/scatter.html — 2 charts, 2 failing, 16 advisory
-  - ✗ **scatter#fig-scatter** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 12 axis/label paints, 8 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
-  - ✗ **scatter#fig-segments** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 21 marks, 12 axis/label paints, 9 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✓ _tests/chart-engine/histogram.html — 2 charts, 0 failing, 2 advisory
+- ✓ _tests/chart-engine/line.html — 2 charts, 0 failing, 18 advisory
+- ✓ _tests/chart-engine/scatter.html — 2 charts, 0 failing, 18 advisory
 - ✗ _tests/chart-engine/sparkline.html — 4 charts, 1 failing, 3 advisory
   - ✗ **spark#fig-role** — dv-016 [driven, series]: worst drawn series contrast is 2.80:1 (<3.0:1) in supercharge/light — 2 marks, 0 axis/label paints, 0 gridline paints, over surface rgb(247,246,244). Source: knowledge/_tests/chart-engine/_receipts.json
-- ✗ _tests/chart-engine/stacked-area.html — 1 charts, 1 failing, 8 advisory
-  - ✗ **stacked-area#fig-stack** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 15 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✓ _tests/chart-engine/stacked-area.html — 1 charts, 0 failing, 9 advisory
 
 ## Every chart page x every rule (s307-D63)
 

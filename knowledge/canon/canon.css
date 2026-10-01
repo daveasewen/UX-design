@@ -3786,7 +3786,7 @@
   --font: "Univers Next for HSBC","Helvetica Neue",Arial,Helvetica,sans-serif;
   --ease: 140ms ease;
   --filled: var(--scrollbar-foreground);
-  --unfilled: var(--scrollbar-background);
+  --unfilled: var(--progress-incomplete);
   --handle: var(--tertiary-background-default);
   --handle-bd: var(--form-border-default);
   --text: var(--text-default);
@@ -15248,7 +15248,7 @@
 .cn-range-slider{
   --ease: 140ms ease;
   --filled: var(--scrollbar-foreground);
-  --unfilled: var(--scrollbar-background);
+  --unfilled: var(--progress-incomplete);
   --handle: var(--tertiary-background-default);
   --handle-bd: var(--form-border-default);
   --text: var(--text-default);
@@ -16230,10 +16230,12 @@
 :where(.cn-split-button) .split-btn.tertiary .sb-main.is-disabled, :where(.cn-split-button) .split-btn.tertiary .sb-caret.is-disabled{background:transparent; color:var(--ter-label-disabled); border-color:var(--ter-border-disabled); cursor:not-allowed;}
 /* the flyout menu — Dropdown.reference's `.menu`/`.opt` shell, verbatim, role swapped to menu/menuitem */
 :where(.cn-split-button) .sb-menu{position:absolute; left:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20; min-width:200px;
-    background:var(--menu-surface); border:1px solid var(--menu-border); border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only (Dropdown precedent) */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-split-button) .sb-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
+/* #313 BVF: the forced-open specimen reserves the flyout's height so it no longer sits on the row below (page layout only, not the component) */
+:where(.cn-split-button) .row-open{margin-bottom:164px;}
 :where(.cn-split-button) .sb-item{display:flex; align-items:center; min-height:44px; padding:0 12px; color:var(--text); cursor:pointer;}
 :where(.cn-split-button) .sb-item:hover{background:var(--item-hover);}
 :where(.cn-split-button) .sb-item:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
@@ -22605,7 +22607,7 @@
   --button-primary-background-default: #DB0011;
   --button-primary-background-disabled: #484848;
   --button-primary-background-hover: #BA1110;
-  --button-primary-background-pressed: #FFFFFF;
+  --button-primary-background-pressed: #000000;
   --button-primary-icon-default: #FFFFFF;
   --button-primary-label-default: #FFFFFF;
   --button-quaternary-label-default: #E1E1E1;
@@ -22995,7 +22997,7 @@
   --pri-hover: #BA1110;
   --pri-icon: #FFFFFF;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --success: #00847F;
   --success-fg: #FFFFFF;
@@ -23507,7 +23509,7 @@
   --pri-disabled: #484848;
   --pri-glyph: #FFFFFF;
   --pri-hover: #BA1110;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --text-default: #E1E1E1;
 }
 [data-apollo-theme="legacy"] .cn-feature-grid-lockup,
@@ -23605,7 +23607,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --success: #00847F;
   --text: #E1E1E1;
@@ -23682,7 +23684,7 @@
   --pri-disabled: #484848;
   --pri-glyph: #FFFFFF;
   --pri-hover: #BA1110;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-glyph: #E1E1E1;
   --ter-border-disabled: #404040;
   --ter-glyph: #E1E1E1;
@@ -24003,7 +24005,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --tabs-active: #DB0011;
   --ter-label: #E1E1E1;
@@ -24335,7 +24337,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --ter-border-disabled: #404040;
   --ter-label: #E1E1E1;
   --text: #E1E1E1;
@@ -24483,7 +24485,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --step-fill: #FFFFFF;
   --text: #E1E1E1;
@@ -24593,7 +24595,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --success: #00847F;
   --text: #E1E1E1;
@@ -24671,7 +24673,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --success: #00847F;
   --text: #E1E1E1;
@@ -25063,7 +25065,7 @@
   --pri-disabled: #484848;
   --pri-hover: #BA1110;
   --pri-label: #FFFFFF;
-  --pri-pressed: #FFFFFF;
+  --pri-pressed: #000000;
   --quat-label: #E1E1E1;
   --step-fill: #FFFFFF;
   --success: #00847F;
@@ -27065,7 +27067,7 @@
   --button-tertiary-border-disabled: #524842;
   --button-tertiary-label-default: #F7F6F4;
   --button-tertiary-label-disabled: #524842;
-  --data-axis-color: #635750;
+  --data-axis-color: #AA9B92;
   --data-control-label-disabled-color: #524842;
   --data-grid-color: #413934;
   --data-target-color: #806E65;
@@ -27894,7 +27896,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bar,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bar{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -27914,7 +27916,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-boxplot,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-boxplot{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -27932,7 +27934,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-bullet,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-bullet{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
@@ -27951,7 +27953,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-butterfly-h,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-butterfly-h{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -27972,7 +27974,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-butterfly-v,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-butterfly-v{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -27991,7 +27993,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-candlestick,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-candlestick{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
@@ -28011,7 +28013,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-combo,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-combo{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --data-target: #806E65;
@@ -28030,7 +28032,7 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-donut,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-donut{
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
@@ -28048,7 +28050,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-histogram,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-histogram{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --ink: #F7F6F4;
   --line: #524842;
   --page: #25211C;
@@ -28068,7 +28070,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-line,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-line{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --data-target: #806E65;
@@ -28087,7 +28089,7 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-pie,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-pie{
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
@@ -28106,7 +28108,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-scatter,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-scatter{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -28143,7 +28145,7 @@
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-chart-stacked-area,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-chart-stacked-area{
   --baseline: #FFFFFF;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --data-grid: #413934;
   --ink: #F7F6F4;
@@ -28883,7 +28885,7 @@
 }
 [data-apollo-theme="supercharge"][data-theme="dark"] .cn-legend,
 [data-apollo-theme="supercharge"] [data-theme="dark"] .cn-legend{
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-control-label-disabled: #524842;
   --ink: #F7F6F4;
   --line: #524842;
@@ -29443,7 +29445,7 @@
   --muted: #F7F6F4;
   --page: #25211C;
   --text: #F7F6F4;
-  --unfilled: #2A2621;
+  --unfilled: #413934;
 }
 [data-apollo-theme="supercharge"] .cn-rating{
   --muted: #13110E;
@@ -29680,7 +29682,7 @@
   --handle-bd: #524842;
   --page: #25211C;
   --text: #F7F6F4;
-  --unfilled: #2A2621;
+  --unfilled: #413934;
 }
 [data-apollo-theme="supercharge"] .cn-split-button{
   --divider: #CDC8C6;
@@ -30276,7 +30278,7 @@
   --border: #524842;
   --cell: #25211C;
   --currentbd: #524842;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-grid: #413934;
   --disabled: #524842;
   --divider: #524842;
@@ -30371,7 +30373,7 @@
   --border: #524842;
   --cell: #25211C;
   --currentbd: #524842;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-grid: #413934;
   --disabled: #524842;
   --divider: #524842;
@@ -30688,7 +30690,7 @@
   --border: #524842;
   --cell: #25211C;
   --currentbd: #524842;
-  --data-axis: #635750;
+  --data-axis: #AA9B92;
   --data-grid: #413934;
   --disabled: #524842;
   --divider: #524842;
@@ -31280,7 +31282,6 @@
 [data-theme="dark"][data-dark-tiles="grey"] .cn-range-slider,
 [data-dark-tiles="grey"] [data-theme="dark"] .cn-range-slider{
   --handle: #1F1F1F;
-  --unfilled: #000000;
 }
 [data-theme="dark"][data-dark-tiles="grey"] .cn-reorder,
 [data-dark-tiles="grey"] [data-theme="dark"] .cn-reorder{
@@ -31297,7 +31298,6 @@
 [data-theme="dark"][data-dark-tiles="grey"] .cn-slider,
 [data-dark-tiles="grey"] [data-theme="dark"] .cn-slider{
   --handle: #1F1F1F;
-  --unfilled: #000000;
 }
 [data-theme="dark"][data-dark-tiles="grey"] .cn-splitter,
 [data-dark-tiles="grey"] [data-theme="dark"] .cn-splitter{
@@ -31653,7 +31653,6 @@
 [data-apollo-theme="supercharge"][data-dark-tiles="grey"] [data-theme="dark"] .cn-range-slider,
 [data-apollo-theme="supercharge"] [data-dark-tiles="grey"] [data-theme="dark"] .cn-range-slider{
   --handle: #2A2621;
-  --unfilled: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"][data-dark-tiles="grey"] .cn-reorder,
 [data-apollo-theme="supercharge"] [data-theme="dark"][data-dark-tiles="grey"] .cn-reorder,
@@ -31678,7 +31677,6 @@
 [data-apollo-theme="supercharge"][data-dark-tiles="grey"] [data-theme="dark"] .cn-slider,
 [data-apollo-theme="supercharge"] [data-dark-tiles="grey"] [data-theme="dark"] .cn-slider{
   --handle: #2A2621;
-  --unfilled: #13110E;
 }
 [data-apollo-theme="supercharge"][data-theme="dark"][data-dark-tiles="grey"] .cn-splitter,
 [data-apollo-theme="supercharge"] [data-theme="dark"][data-dark-tiles="grey"] .cn-splitter,
