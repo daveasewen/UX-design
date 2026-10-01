@@ -1,0 +1,45 @@
+— 171 steps read from _build_all.STEPS by ast (never imported) · 22 ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast · per-step timeout 60s · ALL steps (mutating included)
+
+  ✅ [41] token-set distribution selftest (s121-D1)
+  ✅ [42] Behaviour contract gate — dv-behaviour size + banned patterns 
+  ✅ [43] Behaviour contract selftest (ADR-0015)
+  ✅ [44] canon components — regenerate from snippets (ADR-0013 ruling 4
+  ✅ [45] canon components determinism check (ADR-0013 ruling 4)
+  ✅ [46] partial re-implementation ratchet (ADR-0013)
+  ✅ [47] partial-ratchet selftest (ADR-0013)
+  ✅ [48] token projection sync — snippets/tranches/canon literals (gen_
+  ✅ [49] snippet gate
+  ✅ [50] theme cascade sync — [data-apollo-theme] layer (ADR-0011)
+  ✅ [51] theme cascade selftest (ADR-0014)
+  ✅ [52] state-snap gate — opacity states snap to the active theme's ra
+  ✅ [53] state-snap selftest (ADR-0014)
+  ✅ [54] stale-queue gate — §C·1 qprobe claims re-measured vs disk + gi
+  ✅ [55] stale-queue selftest — 13 bites incl. both mutation directions
+  ✅ [56] palette-tier gate — every theme names a palette per family, no
+  ✅ [57] palette-tier selftest — 10 mutation bites (s157-D2)
+  ✅ [58] radius gate — no hardcoded border-radius; shape is a theme fle
+  ✅ [59] showroom sync — generated component library (RULED 2026-07-21)
+  ✅ [60] showroom URL-rebase selftest — the srcdoc base-URL trap (2026-
+  ⊘ [61] dashboard sync — generated progress dashboard (RULED #164, bui  COULD-NOT-ASK
+  ✅ [62] Legacy-colour leakage gate (Mono) — no Legacy-only colour in a
+  ✅ [63] theme-provenance gate (ADR-0011/R-D19) — no foreign-theme hex 
+
+==============================================================================
+SURVEY: 22 pass · 0 FAIL · 0 ADVISORY-warn · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 0 not asked (mutating) · 148 outside --range 41:63 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [61] dashboard sync — generated progress dashboard (RULED #164, built #165)
+      python3 knowledge/gen_dashboard.py --check   (exit 77)
+      COULD-NOT-ASK: dashboard/index.html — the page differs, but a live gate baked into it is reading INPUTS OUTSIDE THE COMMITTED TREE, so its verdict — and therefore this page — cannot be reproduced here: provenance names `knowledge/_tmp/l3-245/rename-plan.json`; provenance names `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md`; provenance names `outputs/_PARTITION-button-primary-2026-08-06-v1.md`. Every one of those paths is untracked, so an environment that has them and one that does not will render different prose from the SAME commit. This is a REFUSAL, not a staleness verdict in either direction: the page's agreement with the stores is UNKNOWN here and is reported as unknown. Ask it where those inputs are present (a working tree that holds them), or commit them.
+
+— recorded → /tmp/ac2c/notes/_BUILD-VERDICT-LOG.jsonl

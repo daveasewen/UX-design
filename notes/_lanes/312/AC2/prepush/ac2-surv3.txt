@@ -1,0 +1,90 @@
+— 171 steps read from _build_all.STEPS by ast (never imported) · 22 ADVISORY route(s) read from _build_all.ROUTE_ROWS by ast · per-step timeout 60s · non-mutating steps only
+
+  ✅ [121] search core selftest — two-stage engine + receipt format (O2′ 
+  ✅ [123] memento index determinism check (O2′ #25)
+  ✅ [124] memento index selftest — contract refusals + determinism (O2′ 
+  ✅ [125] memento search selftest — known-answer retrieval + fetch refus
+  ✅ [127] graph mention map determinism check (#115 step 0)
+  ✅ [128] graph mention map selftest — hit/miss/refusal bites (#115 step
+  ❌ [130] read chain determinism check — stale _CHAIN.md serves a PREVIO  exit 1
+  ✅ [131] read chain selftest — verbatim terms + the CUT + refusal on a 
+  ✅ [132] GM size stamp check — a TYPED `size:` figure / drift past the 
+  ✅ [133] GM size stamp selftest — the fixed point, the 2-cycle refusal,
+  ❌ [135] memento schematic determinism check — a stale diagram publishe  exit 1
+  ✅ [136] memento schematic selftest — figure provenance, caption geomet
+  ✅ [138] memento-package delta-audit selftest — mutation-tested, all 4 
+  ✅ [140] instrument-fit selftest (advisory, ds-015)
+  ✅ [143] could-not-ask convention selftest (#193 — the third verdict's 
+  ⊘ [146] governs matcher selftest — the [12]/[13] trigger-index arm, na  COULD-NOT-ASK
+  ✅ [147] frozen-release gate — v1/v2 and any baked Spider surface may n
+  ✅ [148] frozen-release selftest — 11 bites on a fixture repo incl. the
+  ✅ [149] pack ship-list audit — the manifest is byte-identical to a fre
+  ✅ [150] release-audit selftest — manifest compare + the pack arm's res
+  ✅ [151] pack-side CI template — parses, ships what it calls, hides not
+  ✅ [152] pack-side CI template selftest — 10 mutants incl. a smuggled c
+  ✅ [155] polarity gate — five refusals + content-fresh derived status/e
+  ✅ [156] polarity gate selftest — control + every refusal arm on a copy
+  ✅ [159] CI read-back selftest — canned API JSON, no network; the token
+  ✅ [160] wrap facts selftest — fixture transcript and git, the fill han
+  ✅ [161] wrap move-file builder selftest — the real mover on a fixture 
+  ✅ [162] wrap carries selftest — count via _carry_items, the s183-D1 st
+  ✅ [163] wrap state-row writer selftest — mint born closed, close / reo
+  ✅ [164] wrap regen runner selftest — the serial's fixed order and stop
+  ✅ [165] wrap commit door selftest — unchanged paths refused, T3 prefix
+  ✅ [166] canon components ds-039 harvest-guard selftest — four bites on
+  ⚠ [167] itinerary register in sync — the frozen snapshot vs a fresh de  ADVISORY exit 1
+  ⚠ [168] KG edge register — every edge's two ends against its row in kn  ADVISORY exit 1
+  ✅ [170] KG edge register selftest — control on the real graph + one pl
+  ✅ [171] foundations pages sync — the eight showroom/_foundations/ page
+
+==============================================================================
+SURVEY: 31 pass · 2 FAIL · 2 ADVISORY-warn · 1 COULD-NOT-ASK (self-declared refusals) · 0 unaskable (missing/timed out) · 15 not asked (mutating) · 120 outside --range 121:171 (not asked)
+⚠ 'not asked' is NOT 'passing' — it is excluded from the exit code, deliberately.
+⚠ 'COULD-NOT-ASK' is NOT 'passing' either. It is a step that named the input it could
+  not reach, so the job does not go red for an ENVIRONMENT fact dressed as an artefact
+  verdict (#173/#183, generalised #193). Every one is printed in full below. A step
+  that timed out or is MISSING is a different thing and still fails: nobody asked it
+  and it never said why.
+⚠ A RANGED SURVEY IS A PARTIAL VERDICT: only a full pass over all steps, or consecutive ranges covering them, says anything about the build.
+
+THE FULL FAILURE SET (2) — this is the number no single `_build_all.py` run can tell you:
+
+  [130] read chain determinism check — stale _CHAIN.md serves a PREVIOUS session's record (#41)
+      python3 knowledge/_gen_chain.py --check   (exit 1)
+      ✗ _CHAIN.md is STALE — it does not match GOOD-MORNING.md / _LIVE-STATE.md as they now stand, so a cold session would read a PREVIOUS session's record 
+
+  [135] memento schematic determinism check — a stale diagram publishes a PREVIOUS tree (#127)
+      python3 knowledge/_gen_schematic.py --check   (exit 1)
+      ✗ reviews/MEMENTO-SCHEMATIC-2026-08-07-v2.html is STALE — a figure in it no longer matches disk, so the page is asserting something that has gone fals
+
+ADVISORY-WARN (2) — routed ADVISORY in _build_all.ROUTE_ROWS, so the build reports and continues;
+the survey does the same. NOT passing, NOT failing — each one is a finding to read:
+
+  [167] itinerary register in sync — the frozen snapshot vs a fresh derivation (ADVISORY, W-307q6, #218 cA Q3)
+      python3 knowledge/gen_itinerary_status.py --check   (exit 1)
+      ITINERARY-STATUS --check FAIL: reviews/ITINERARY-STATUS-2026-08-25-v4.html OUT OF SYNC; reviews/ITINERARY-STATUS-2026-08-25-v4.json OUT OF SYNC
+
+  [168] KG edge register — every edge's two ends against its row in knowledge/_edge_register.json (ADVISORY, s308-D17, built #308)
+      python3 knowledge/_validate_edges.py --check   (exit 1)
+      ✗ WHY-MISSING      mustNotNeighbour   component:Chart-boxplot → None   a required reason is missing (s308-D20)
+
+COULD-NOT-ASK (1) — each step's OWN words about the input it could not reach.
+These do NOT fail the survey; they also do not pass. If one of them is here because the
+environment is wrong rather than because the input is genuinely unreachable, FIX THE ENVIRONMENT:
+
+  [146] governs matcher selftest — the [12]/[13] trigger-index arm, named (#208 legibility)
+      python3 knowledge/_governs.py --selftest   (exit 77)
+      COULD-NOT-ASK: _governs.py --selftest — 4 evidence pointer(s) name paths this checkout cannot hold: ruling ds-034's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-034's evidence `outputs/_PARTITION-button-primary-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling ds-035's evidence `outputs/_FINDING-canon-pri-hover-brand-mono-fork-2026-08-06-v1.md` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer · ruling s245-D6's evidence `knowledge/_tmp/l3-245/rename-plan.json` is excluded by this repo's own .gitignore — no checkout can hold it, so whether it has rotted is UNASKABLE here; the machine that wrote it is where that question has an answer
+
+NOT ASKED (15 mutating steps) — run --include-mutating on a clean tree to include them:
+  [122] memento index — the Memento door's corpus (O2′ #25)
+  [126] graph mention map — the decision-graph/memento-index join (#115 st
+  [129] read chain file — _CHAIN.md, the cold-start door (#41)
+  [134] memento schematic — the six subsystems, generated from the file in
+  [137] memento-package delta-audit — #64 boundary enforcement (#79)
+  [139] enactment register — is each ruling IN FORCE? (advisory, ADR-0016)
+  [141] instrument fit — can the gate SEE the property? (advisory, ds-015)
+  [142] integrity lint (gate)
+  … and 7 more
+
+— recorded → /tmp/ac2c/notes/_BUILD-VERDICT-LOG.jsonl
