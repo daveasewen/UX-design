@@ -15,7 +15,7 @@
    "count": "how many targets one start may have (distinct targets). CHECKED where `perStart.max` is set, and set only where a definition says one; `basis` names it.",
    "why": "s308-D20: the ONE name for an edge's reason is `why`. `required` says whether every edge of the type must carry one (true on the nine hand-made judgements s308-D20 names), `floor` its minimum length in characters (40 on obeys, kept), `servedBy` where another field serves (the ruling-to-ruling types' evidence), `today` how it is spelled and carried in storage. CHECKED by _validate_edges.py --check: WHY-MISSING, WHY-SHORT.",
    "maker": "s308-D21: who made the type's edges, one of three — `hand` (by: whose/ruling), `generated` (by: which script) or `ratified` (by: which ruling); `none` only on a read-side row that stores nothing. `value` is the string every edge of the type carries as its `maker` (`<made>:<by>`), stamped by knowledge/_build_kg_explorer.py; `cases` override it by the edge's family (`fam`) or start kind (`from`); a stored line carrying its own `maker` keeps it. It replaces the `authored` flag, which is retired from the graph. CHECKED by _validate_edges.py --check: NO-MAKER, AUTHORED-FLAG.",
-   "outside": "candidate outside terms from lane O's v2 word map (Canonical ds:/dt:, Adobe Spectrum, then SKOS / Dublin Core / PROV / Kruchten / IBIS / ARIA). CANDIDATES ONLY: the choice and the grade are owed to item 7 (s308-D22).",
+   "outside": "s308-D22 + s308-D27: the nearest outside term (`term`, its `vocabulary`), graded `exact`, `close` or `loose` (SKOS's three), pointing first at a design-system vocabulary (Canonical ds:/dt:, Spectrum), then SKOS, Dublin Core or PROV; `also` other near terms; `note` where only another vocabulary fits; `name` the neatest-name decision (s308-D27: the outside term adopted outright where neater, `adopted` true). CHECKED by _validate_edges.py: a row without `outside`, or with a grade outside the three, is REGISTER-SHAPE.",
    "family": "the explorer's storage family for the edge (fam), as built",
    "$measured": "live tallies when this row was written; drift is reported by the check, never a failure"
   },
@@ -28,9 +28,10 @@
    "s308-D26": "item 4 as changed in v2 — the part names become a subcomponent kind",
    "s308-D20": "item 5 — `why` per row (#311 lane D1)",
    "s308-D21": "item 6 — `maker` per row, stamped on every edge; `authored` retired (#311 lane D1)",
-   "s308-D22": "item 7 — owed",
-   "s308-D23": "item 8 — owed",
-   "s308-D24": "item 9 — owed"
+   "s308-D22": "item 7 — `outside` per row (#311 lane D2)",
+   "s308-D23": "item 8 — `$folded` + `$proposed` (#311 lane D2)",
+   "s308-D24": "item 9 — owed",
+   "s308-D27": "item 7 v2 — the neatest name wins; `outside.name` per row (#311 lane D2)"
   }
  },
  "$doc": {
@@ -43,7 +44,6 @@
   ],
   "not_yet": "Since s308-D18 (#308 lane E round 2) the explorer takes each type's two readings from this file (`reads` → its `read` block) and the meta schema, the verbs map and the explorer name the stored side of each pair as this file does. They still hold their own lists of types (schema edge keys, the verbs' reads, the explorer's FAMILY map); making every one READ its list from here is the rest of item 1 (row W-308ie). Until then the coverage check refuses any type one of them names that this file does not.",
   "owed": {
-   "item 8 (s308-D23)": "knowledge/_decision-graph.json's nine types are not graph edges and have no row; folding them into the ten ruling→ruling rows is item 8's.",
    "item 9 (s308-D24)": "token→token alias, providesCapability, a theme to point at, component→ARIA role: no rows until those edges exist."
   }
  },
@@ -181,11 +181,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "consumesApi",
+    "vocabulary": "Backstage",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Backstage consumesApi"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "acceptsCapability",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
    "note": "only the accepts half exists; s308-D24 item 9b owes providesCapability",
@@ -266,12 +275,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:variantOf",
+    "vocabulary": "Canonical ds:",
+    "grade": "close",
+    "also": [
+     "Dublin Core isVersionOf"
+    ],
     "candidates": [
      "Canonical ds:variantOf",
      "Dublin Core isVersionOf"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "activeVariantOf",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "$measured": {
@@ -355,11 +374,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "responds-to",
+    "vocabulary": "IBIS",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS responds-to"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "answersIntent",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -443,11 +471,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:conformsTo, walked back",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "Dublin Core conformsTo (walked back)"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "appliesTo",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -528,12 +564,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "prov:wasDerivedFrom",
+    "vocabulary": "PROV",
+    "grade": "close",
+    "also": [
+     "prov:hadPrimarySource"
+    ],
     "candidates": [
      "PROV prov:hadPrimarySource",
      "PROV prov:wasDerivedFrom"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "behaviourFrom",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
    "$measured": {
@@ -614,12 +660,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:hasTokenBinding",
+    "vocabulary": "Canonical ds:",
+    "grade": "close",
+    "also": [
+     "Spectrum tokenBindings"
+    ],
     "candidates": [
      "Canonical ds:hasTokenBinding",
      "Spectrum tokenBindings"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "bindsToken",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "tokens",
    "$measured": {
@@ -701,12 +757,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:conformsTo",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [
+     "dcterms:source"
+    ],
     "candidates": [
      "Dublin Core conformsTo",
      "Dublin Core source"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "boundBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -790,12 +856,21 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "overrides / subsumes",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten overrides",
      "Kruchten subsumes"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "bounds",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -879,12 +954,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "prov:hadPrimarySource",
+    "vocabulary": "PROV",
+    "grade": "close",
+    "also": [
+     "prov:wasDerivedFrom"
+    ],
     "candidates": [
      "PROV prov:hadPrimarySource",
      "PROV prov:wasDerivedFrom"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "capturedFrom",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
    "$measured": {
@@ -966,11 +1051,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "objects-to",
+    "vocabulary": "IBIS",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS objects-to"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "challengedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -1050,11 +1144,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "a SHACL shape or W3C ACT rule that checks it",
+    "vocabulary": "SHACL / ACT",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "SHACL shape / W3C ACT rule that checks it"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "checkedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -1134,11 +1237,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:references",
+    "vocabulary": "Dublin Core",
+    "grade": "exact",
+    "also": [],
     "candidates": [
      "Dublin Core references"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "cites",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what dcterms:references says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
    "$measured": {
@@ -1222,11 +1333,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:related (a pattern language’s related patterns)",
+    "vocabulary": "SKOS",
+    "grade": "loose",
+    "also": [],
     "candidates": [
      "pattern-language related patterns"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "commonPattern",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -1310,12 +1429,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:hasPart",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [
+     "Atomic Design composition"
+    ],
     "candidates": [
      "Atomic Design composition",
      "Dublin Core hasPart"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "composedOf",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -1399,12 +1528,23 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "enables",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [
+     "IBIS supports"
+    ],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten enables",
      "IBIS supports"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "confirms",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -1490,12 +1630,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:requires",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [
+     "Backstage consumesApi"
+    ],
     "candidates": [
      "Backstage consumesApi",
      "Dublin Core requires"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "consumes",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -1598,12 +1748,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:parentComponent",
+    "vocabulary": "Canonical ds:",
+    "grade": "exact",
+    "also": [
+     "dcterms:isPartOf"
+    ],
     "candidates": [
      "Canonical ds:parentComponent",
      "Dublin Core isPartOf"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "containedBy",
+     "adopted": false,
+     "basis": "kept: an exact match, and Apollo's word is the plainer label (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -1688,11 +1848,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "replaces",
+    "vocabulary": "IBIS",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS replaces"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "corrects",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -1774,11 +1943,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "a Wikidata qualifier (the theme)",
+    "vocabulary": "Wikidata",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Wikidata qualifier (the theme)"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "defaultActive",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "note": "drawn since explorer 1.32 (#308 lane L): 14 of Dave's answers as lines, jade-lifestyle ('open') a declared null",
@@ -1857,11 +2035,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "a Wikidata qualifier (the theme)",
+    "vocabulary": "Wikidata",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Wikidata qualifier (the theme)"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "defaultFor",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "note": "declared-null only: s230-D2 names the default lockup per theme, but theme is not a node kind (s308-D24 item 9c owes one)",
@@ -1942,11 +2129,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "rdfs:isDefinedBy",
+    "vocabulary": "RDFS",
+    "grade": "exact",
+    "also": [],
     "candidates": [
      "RDFS rdfs:isDefinedBy"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "definedIn",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what rdfs:isDefinedBy says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
    "$measured": {
@@ -2030,12 +2225,21 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "aria-controls / aria-haspopup",
+    "vocabulary": "WAI-ARIA",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "ARIA aria-controls",
      "ARIA aria-haspopup"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "delegatesTo",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -2119,11 +2323,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "aria-controls",
+    "vocabulary": "WAI-ARIA",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "ARIA aria-controls"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "drivesConsumer",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -2207,12 +2420,21 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "enables / comprises",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten enables",
      "Kruchten comprises"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "enacts",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -2296,12 +2518,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:source",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [
+     "dcterms:conformsTo"
+    ],
     "candidates": [
      "Dublin Core conformsTo",
      "Dublin Core source"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "enClause",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -2381,11 +2613,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "a SHACL shape or W3C ACT rule that checks it",
+    "vocabulary": "SHACL / ACT",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "SHACL shape / W3C ACT rule that checks it"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "enforcedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
    "$measured": {
@@ -2492,11 +2733,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "prov:hadPrimarySource",
+    "vocabulary": "PROV",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "PROV prov:hadPrimarySource"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "evidencedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance · uxprinciples",
    "$measured": {
@@ -2577,11 +2826,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "supports",
+    "vocabulary": "IBIS",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS supports"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "explainedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -2665,13 +2923,24 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "enables / comprises",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [
+     "IBIS replaces"
+    ],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten enables",
      "Kruchten comprises",
      "IBIS replaces"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "extends",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -2757,11 +3026,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:related",
+    "vocabulary": "SKOS",
+    "grade": "loose",
+    "also": [],
     "candidates": [
      "SKOS related"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "family",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -2841,9 +3118,18 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
-    "candidates": [],
+    "term": null,
+    "vocabulary": null,
     "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "also": [],
+    "note": "none found: the page’s word map names no outside term (Apollo’s own)",
+    "candidates": [],
+    "name": {
+     "word": "flaggedBy",
+     "adopted": false,
+     "basis": "kept: no outside term exists; the word is Apollo's own (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
    "$measured": {
@@ -2955,11 +3241,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "traces to, walked back",
+    "vocabulary": "Kruchten",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "governs walked back (Apollo)"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "governedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "note": "s308-D17: governedBy is kept for rulings only (the 12 logo→rule lines moved to obeys). s308-D18: it is the READ side of governs. s308-D35: the six lines Dave kept are the only ones stored (opposite.kept); legend's three hand-written lines and Banner ← s125-D1 were dropped",
@@ -3053,11 +3348,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "traces to",
+    "vocabulary": "Kruchten",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten traces to"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "governs",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "$measured": {
@@ -3143,11 +3447,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:related",
+    "vocabulary": "SKOS",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "SKOS related"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "groupsWith",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -3231,9 +3543,18 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
-    "candidates": [],
+    "term": null,
+    "vocabulary": null,
     "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "also": [],
+    "note": "none found: the page’s word map names no outside term (Apollo’s own)",
+    "candidates": [],
+    "name": {
+     "word": "hasDataShape",
+     "adopted": false,
+     "basis": "kept: no outside term exists; the word is Apollo's own (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -3315,12 +3636,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:hasSubcomponent",
+    "vocabulary": "Canonical ds:",
+    "grade": "exact",
+    "also": [
+     "dcterms:hasPart"
+    ],
     "candidates": [
      "Canonical ds:hasSubcomponent",
      "Dublin Core hasPart"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "hasPart",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what dcterms:hasPart / ds:hasSubcomponent says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -3397,11 +3728,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "n-ary relation, pattern 1",
+    "vocabulary": "W3C n-ary relations note",
+    "grade": "exact",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "W3C n-ary relations, pattern 1"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "hasParty",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what the n-ary pattern’s own word says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -3484,12 +3824,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:broader",
+    "vocabulary": "SKOS",
+    "grade": "close",
+    "also": [
+     "skos:inScheme"
+    ],
     "candidates": [
      "SKOS broader",
      "SKOS inScheme"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "inFamily",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -3571,11 +3921,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:inScheme",
+    "vocabulary": "SKOS",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "SKOS inScheme"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "inGroup",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "$measured": {
@@ -3655,11 +4013,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:references",
+    "vocabulary": "Dublin Core",
+    "grade": "exact",
+    "also": [],
     "candidates": [
      "Dublin Core references"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "mentions",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what dcterms:references says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "$measured": {
@@ -3743,12 +4109,23 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "sh:disjoint",
+    "vocabulary": "SHACL",
+    "grade": "loose",
+    "also": [
+     "Kruchten forbids"
+    ],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten forbids",
      "SHACL sh:disjoint"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "mustNotNeighbour",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -3832,12 +4209,21 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "overrides / subsumes",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten overrides",
      "Kruchten subsumes"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "narrows",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -3960,11 +4346,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:conformsTo",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "Dublin Core conformsTo"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "obeys",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base (metas) · assets (logos)",
    "$measured": {
@@ -4050,12 +4444,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:inheritsFrom",
+    "vocabulary": "Canonical ds:",
+    "grade": "close",
+    "also": [
+     "dcterms:isVersionOf"
+    ],
     "candidates": [
      "Canonical ds:inheritsFrom",
      "Dublin Core isVersionOf"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "partial",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -4139,11 +4543,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "providesApi",
+    "vocabulary": "Backstage",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Backstage providesApi"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "providesRole",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -4227,12 +4640,21 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "overrides / subsumes",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten overrides",
      "Kruchten subsumes"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "refines",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -4320,12 +4742,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "ds:implementsBlock, walked back",
+    "vocabulary": "Canonical ds:",
+    "grade": "close",
+    "also": [
+     "UI ontology realizes"
+    ],
     "candidates": [
      "Canonical ds:implementsBlock (walked back)",
      "UI ontology realizes"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "renderedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -4405,11 +4837,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "responds-to",
+    "vocabulary": "IBIS",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS responds-to"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "resolvedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -4493,11 +4934,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "supports",
+    "vocabulary": "IBIS",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS supports"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "restsOn",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
    "$measured": {
@@ -4581,12 +5031,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:replaces",
+    "vocabulary": "Dublin Core",
+    "grade": "loose",
+    "also": [
+     "IBIS replaces"
+    ],
     "candidates": [
      "IBIS replaces",
      "Dublin Core replaces"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "retires",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -4672,11 +5132,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:requires",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "Dublin Core requires"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "reuses",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -4762,11 +5230,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "prov:wasGeneratedBy",
+    "vocabulary": "PROV",
+    "grade": "exact",
+    "also": [],
     "candidates": [
      "PROV prov:wasGeneratedBy"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "ruledIn",
+     "adopted": false,
+     "basis": "kept: an exact match, and Apollo's word is the plainer label (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "$measured": {
@@ -4846,11 +5322,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "the design-token typography composite",
+    "vocabulary": "DTCG design tokens",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "DTCG typography composite"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "setIn",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
    "$measured": {
@@ -4934,12 +5418,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:replaces",
+    "vocabulary": "Dublin Core",
+    "grade": "exact",
+    "also": [
+     "ADR superseded"
+    ],
     "candidates": [
      "Dublin Core replaces",
      "ADR superseded"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "supersedes",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what ADR superseded / dcterms:replaces says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -5025,12 +5519,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:replaces (one clause)",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [
+     "ADR superseded"
+    ],
     "candidates": [
      "Dublin Core replaces",
      "ADR superseded"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "supersedesClause",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
@@ -5116,12 +5620,22 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:related",
+    "vocabulary": "SKOS",
+    "grade": "loose",
+    "also": [
+     "QOC trade-off"
+    ],
     "candidates": [
      "SKOS related",
      "QOC trade-off"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "tensionWith",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -5201,11 +5715,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "responds-to",
+    "vocabulary": "IBIS",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "IBIS responds-to"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "touches",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
    "$measured": {
@@ -5285,11 +5808,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "aria-controls, walked back",
+    "vocabulary": "WAI-ARIA",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "delegatesTo read backwards (Apollo)"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "triggeredBy",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -5383,11 +5915,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "skos:broader",
+    "vocabulary": "SKOS",
+    "grade": "exact",
+    "also": [],
     "candidates": [
      "SKOS broader"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "under",
+     "adopted": false,
+     "basis": "kept: Apollo's word already says what skos:broader says, as a plain word; adopting the prefixed term would rename storage for no gain in meaning (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -5473,11 +6013,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "required context",
+    "vocabulary": "WAI-ARIA",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "ARIA required context"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "usedInContext",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -5557,11 +6106,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:requires",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "Dublin Core requires"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "usesIcon",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "$measured": {
@@ -5641,11 +6198,19 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "dcterms:requires",
+    "vocabulary": "Dublin Core",
+    "grade": "close",
+    "also": [],
     "candidates": [
      "Dublin Core requires"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "usesLogo",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
    "$measured": {
@@ -5725,11 +6290,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "a SHACL shape or W3C ACT rule that checks it",
+    "vocabulary": "SHACL / ACT",
+    "grade": "close",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "SHACL shape / W3C ACT rule that checks it"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "verifiedBy",
+     "adopted": false,
+     "basis": "kept: the outside term is close, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
    "$measured": {
@@ -5813,11 +6387,20 @@
     "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
+    "term": "is an alternative to (with precedence)",
+    "vocabulary": "Kruchten",
+    "grade": "loose",
+    "also": [],
+    "note": "other (none of the design-system vocabularies, SKOS, Dublin Core or PROV covers it)",
     "candidates": [
      "Kruchten 'is an alternative to'"
     ],
-    "grade": null,
-    "owed": "item 7 (s308-D22): choose and grade exact / close / loose"
+    "name": {
+     "word": "yieldsTo",
+     "adopted": false,
+     "basis": "kept: the outside term is loose, not the same relation, so adopting it as the name would say something the edge does not; the term is written beside it (s308-D27 (Dave 2026-09-29 12:13 BST, 'Lets do what is neatest, and if changes my answer thats fine, I don't like patches more than my preference for ango-saxon'))."
+    },
+    "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
    "$measured": {
@@ -5850,6 +6433,124 @@
     "_kg_explorer.template.html FAMILY"
    ],
    "why": "a key in the template's FAMILY map (governance) and a mention-verb stem in the builder; no edge of this type exists in knowledge/_ruling_edges.json or anywhere else in the graph"
+  }
+ },
+ "$folded": {
+  "what": "s308-D23 (Dave 2026-09-29 09:26 BST, '8. Fold the two ruling-to-ruling vocabularies into one — Take it'). knowledge/_decision-graph.json (the older decision graph: ADR, R-D, dv-, icon-, DEF- records) spelled its ruling-to-ruling links in nine types; knowledge/_ruling_edges.json spells them in ten. ONE vocabulary is read: each older type is mapped here onto a register row (with `reverse` when the older spelling points the other way), retired into one, or — where no match exists — brought forward as a proposal in `$proposed`. knowledge/_validate_edges.py --coverage refuses an older type this map does not name (FOLD-MISSING) and a map target with no register row or proposal (FOLD-DANGLING).",
+  "source": "knowledge/_decision-graph.json edges[].type",
+  "types": {
+   "refines": {
+    "to": "refines",
+    "grade": "exact",
+    "basis": "the same word, the same direction"
+   },
+   "supersedes": {
+    "to": "supersedes",
+    "grade": "exact",
+    "basis": "the same word, the same direction"
+   },
+   "bounds": {
+    "to": "bounds",
+    "grade": "exact",
+    "basis": "the same word, the same direction"
+   },
+   "enacted-by": {
+    "to": "enacts",
+    "reverse": true,
+    "grade": "exact",
+    "basis": "two spellings of one idea (the ruling's own example): A enacted-by B is B enacts A"
+   },
+   "relates": {
+    "to": "mentions",
+    "grade": "close",
+    "basis": "an untyped pointer from one record to another, which is what mentions carries"
+   },
+   "subsumes": {
+    "to": "extends",
+    "grade": "close",
+    "basis": "its one line (R-D6.A2 subsumes icon-015's amber exemption) takes the older claim into the later ruling, which is what extends says"
+   },
+   "verified-by": {
+    "to": "verifiedBy",
+    "grade": "close",
+    "basis": "a record checked by a gate or another record; the register row verifiedBy says it for a criterion, so this widens its start if these lines ever enter the graph"
+   },
+   "conflicts-with": {
+    "to": "conflictsWith",
+    "proposal": true,
+    "grade": null,
+    "basis": "no match in the ten: brought forward as a proposal (s308-D23 names it, 8 older lines use it, Kruchten names it too)"
+   },
+   "diverges-from": {
+    "to": "divergesFrom",
+    "proposal": true,
+    "grade": null,
+    "basis": "no match in the ten: brought forward as a proposal (1 older line, DEF-006 from DEF-005: a deliberate difference, ruled \"do not reconcile\")"
+   }
+  },
+  "later": "'depends on' (Kruchten's constrains: if this ruling is retired the other falls with it) is noted for later, not built (s308-D23: 'A second one is worth considering later')."
+ },
+ "$proposed": {
+  "what": "Edge types brought forward as PROPOSALS (s308-D23: 'Where no match exists, bring the older type forward as a proposal'). Not rows: no edge of them is in the graph, the ends check does not read them, and _validate_edges.py --coverage refuses any edge that uses one (PROPOSED-HAS-EDGES) until it is made a row.",
+  "types": {
+   "conflictsWith": {
+    "from": [
+     "ruling"
+    ],
+    "to": [
+     "ruling"
+    ],
+    "plain": "conflicts with",
+    "shape": {
+     "self": false,
+     "loops": true,
+     "bothWays": true,
+     "chains": false
+    },
+    "why": {
+     "required": true,
+     "floor": null
+    },
+    "outside": {
+     "term": "conflicts with",
+     "vocabulary": "Kruchten",
+     "grade": "exact"
+    },
+    "older": {
+     "type": "conflicts-with",
+     "lines": 8,
+     "file": "knowledge/_decision-graph.json"
+    }
+   },
+   "divergesFrom": {
+    "from": [
+     "ruling"
+    ],
+    "to": [
+     "ruling"
+    ],
+    "plain": "deliberately differs from",
+    "shape": {
+     "self": false,
+     "loops": true,
+     "bothWays": true,
+     "chains": false
+    },
+    "why": {
+     "required": true,
+     "floor": null
+    },
+    "outside": {
+     "term": null,
+     "vocabulary": null,
+     "grade": null
+    },
+    "older": {
+     "type": "diverges-from",
+     "lines": 1,
+     "file": "knowledge/_decision-graph.json"
+    }
+   }
   }
  }
 }

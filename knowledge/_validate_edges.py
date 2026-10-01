@@ -57,6 +57,10 @@ TWO CHECKS, TWO TIERS.
                 UNREGISTERED-NAME a type named by the meta schema, the verbs map or the explorer's
                                   FAMILY map that is neither a row nor declared in `$absent`
                 ABSENT-HAS-EDGES  a `$absent` entry that now carries edges (it needs a row)
+                FOLD-MISSING      a type of the older decision graph (knowledge/_decision-graph.json) that the
+                                  register's `$folded` map does not name (s308-D23, #311 lane D2)
+                FOLD-DANGLING     a `$folded` target that is neither a row nor a `$proposed` type
+                PROPOSED-HAS-EDGES an edge in the graph of a type that is only a `$proposed` entry (make it a row)
                 REGISTER-SHAPE    a row missing a checked field (incl. opposite / reads / shape), or two rows
                                   with one word
                 SKIPPED-UNDECLARED an edge the explorer READ from storage and did not link, whose
@@ -88,8 +92,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REGISTER = os.path.join(HERE, '_edge_register.json')
 ENDS_CLASSES = ('UNKNOWN-TYPE', 'WRONG-FROM', 'WRONG-TO', 'WRONG-PAIR', 'NULL-NOT-ALLOWED', 'OVER-COUNT')
 COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE',
-                 'SKIPPED-UNDECLARED')
-ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape', 'why', 'maker')   # why/maker: s308-D20/D21
+                 'SKIPPED-UNDECLARED', 'FOLD-MISSING', 'FOLD-DANGLING', 'PROPOSED-HAS-EDGES')   # FOLD/PROPOSED: s308-D23 (#311 D2)
+GRADES = ('exact', 'close', 'loose')                               # s308-D22: SKOS's three grades (#311 lane D2)
+DECISION_GRAPH = os.path.join(HERE, '_decision-graph.json')       # s308-D23: the older ruling vocabulary
+ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape', 'why', 'maker', 'outside')   # why/maker: s308-D20/D21; outside: s308-D22/D27
 WHY_CLASSES = ('WHY-MISSING', 'WHY-SHORT')                         # s308-D20 (#311 lane D1)
 MAKER_CLASSES = ('NO-MAKER', 'BAD-MAKER', 'AUTHORED-FLAG')         # s308-D21 (#311 lane D1)
 MAKER_KINDS = ('hand', 'generated', 'ratified')                    # s308-D21: 'There are three values'
@@ -167,6 +173,11 @@ def register_rows(reg):
                   and mk.get('value') == mk['made'] + ':' + mk['by']
                   and all(isinstance(c, dict) and MAKER_RX.match(str(c.get('value') or '')) for c in mk.get('cases') or [])):
             probs.append(f"row {r['word']!r}: maker must say made (one of {list(MAKER_KINDS)}), by, and value = made:by (s308-D21)"); continue
+        ou = r.get('outside')
+        if not (isinstance(ou, dict) and ou.get('grade') in GRADES + (None,) and (ou.get('term') is None) == (ou.get('grade') is None)
+                and isinstance(ou.get('name'), dict) and isinstance(ou['name'].get('adopted'), bool)):
+            probs.append(f"row {r['word']!r}: outside must carry a term graded one of {list(GRADES)} (or both null) and a "
+                         f"`name` with a boolean `adopted` (s308-D22/D27)"); continue
         rows[r['word']] = r
     return rows, probs
 
@@ -458,11 +469,29 @@ def check_coverage(edges, reg, names, skips=None):
     out += [('UNREGISTERED-NAME', f"{t} (named in {sorted(w)})") for t, w in sorted(names.items())
             if t not in rows and t not in absent]
     out += [('ABSENT-HAS-EDGES', f'{t} ({live[t]} edges)') for t in sorted(absent) if live.get(t)]
+    # s308-D23 (#311 lane D2): ONE ruling-to-ruling vocabulary — every older type folded, every target real
+    folded = ((reg.get('$folded') or {}).get('types')) or {}
+    proposed = ((reg.get('$proposed') or {}).get('types')) or {}
+    out += [('FOLD-MISSING', f'{t} (used by the older decision graph; name it in $folded)') for t in sorted(older_types())
+            if t not in folded]
+    out += [('FOLD-DANGLING', f"{t} → {(v or {}).get('to')!r} (no row and no $proposed entry)") for t, v in sorted(folded.items())
+            if (v or {}).get('to') not in rows and (v or {}).get('to') not in proposed]
+    out += [('PROPOSED-HAS-EDGES', f'{t} ({live[t]} edges; a proposal carrying edges needs a row)') for t in sorted(proposed)
+            if live.get(t)]
     sk = skips or {}
     out += [('SKIPPED-UNDECLARED', f"{k} ({n} edge(s) read from storage and not linked) — draw it, or name it in "
              f"_build_kg_explorer.SKIP_DECLARED with the reason")
             for k, n in sorted((sk.get('by') or {}).items()) if k not in (sk.get('declared') or {})]
     return out
+
+
+def older_types(path=DECISION_GRAPH):
+    """The edge types the older decision graph spells (s308-D23). A missing file is an empty set."""
+    try:
+        d = json.load(open(path, encoding='utf-8'))
+    except (OSError, ValueError):
+        return set()
+    return {e.get('type') for e in d.get('edges') or [] if isinstance(e, dict) and e.get('type')}
 
 
 def drift(edges, rows):
@@ -702,6 +731,20 @@ def selftest():
     bite(42, 'REGISTER-SHAPE: a row without `why` goes red', lambda: cov_red('REGISTER-SHAPE', reg2=r42))
     r43 = copy.deepcopy(reg); r43['types'][6]['maker'] = dict(r43['types'][6]['maker'], made='solid')
     bite(43, "REGISTER-SHAPE: a row whose maker is 'solid' (not one of the three) goes red", lambda: cov_red('REGISTER-SHAPE', reg2=r43))
+    # — s308-D22/D27 + s308-D23 (#311 overnight lane D2): the outside column and the fold
+    r44 = copy.deepcopy(reg); r44['types'][3]['outside'] = dict(r44['types'][3]['outside'], grade='near')
+    bite(44, "REGISTER-SHAPE: a row whose outside grade is 'near' (not exact / close / loose) goes red", lambda: cov_red('REGISTER-SHAPE', reg2=r44))
+    r45 = copy.deepcopy(reg); r45['types'][4].pop('outside')
+    bite(45, 'REGISTER-SHAPE: a row without `outside` goes red', lambda: cov_red('REGISTER-SHAPE', reg2=r45))
+    r46 = copy.deepcopy(reg); f46 = (r46.get('$folded') or {}).get('types') or {}; k46 = sorted(f46)[0] if f46 else None
+    if k46: f46.pop(k46)
+    bite(46, f"FOLD-MISSING: the fold map without the older type {k46!r} goes red", lambda: k46 and cov_red('FOLD-MISSING', reg2=r46))
+    r47 = copy.deepcopy(reg); r47.setdefault('$folded', {}).setdefault('types', {})['relates'] = {'to': 'noSuchRow'}
+    bite(47, 'FOLD-DANGLING: an older type folded onto a word with no row and no proposal goes red', lambda: cov_red('FOLD-DANGLING', reg2=r47))
+    bite(48, 'PROPOSED-HAS-EDGES: a conflictsWith line drawn while conflictsWith is only a proposal goes red',
+         lambda: cov_red('PROPOSED-HAS-EDGES', e2=edges + [{'s': rul, 't': rul, 'type': 'conflictsWith'}]))
+    bite(49, 'CONTROL (fold): every older decision-graph type is folded and every target is a row or a proposal on the real register',
+         lambda: older_types() and not any(k in ('FOLD-MISSING', 'FOLD-DANGLING', 'PROPOSED-HAS-EDGES') for k, _ in cov))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 
