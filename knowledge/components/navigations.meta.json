@@ -51,6 +51,18 @@
       "$note": "Masthead flyouts: main nav (closed/scroll/open), search, user."
     },
     {
+      "name": "menu",
+      "type": "enum",
+      "values": [
+        "none",
+        "flyout",
+        "mega"
+      ],
+      "default": "none",
+      "$note": "WHAT A PRIMARY DESTINATION OPENS (#313). s313-D23 (Dave by click, verbatim: 'Yes'): SIX LINKS IN ONE COLUMN IS THE LINE between a flyout and a mega menu, and links grouped under headings are always the mega menu. none: the destination is a link. flyout: up to six links, one column, no headings, a panel under its trigger. mega: over six links, or any links grouped under headings — a full-width panel under the masthead, up to four columns, the second level is a column's heading and the third its links, a column never over six (s272-D70; six is the column ceiling ratified in September). s313-D22 (verbatim: 'Yes, as drawn'): the mega menu is how the top nav carries multiple levels.",
+      "$status": "s313-D22 + s313-D23, RULED #313. Built #313 lane N1nav in the reference (Payments: mega, ten links in three groups; Cards: flyout, three links)."
+    },
+    {
       "name": "breakpoint",
       "type": "enum",
       "values": [
@@ -97,6 +109,16 @@
       "use": "App-only top bar (iOS Nav Bar Top); title + actions, active indicator."
     },
     {
+      "name": "flyout",
+      "use": "A destination with up to six links and no headings (s313-D23): a one-column panel under its trigger. The trigger is a disclosure button, never a link.",
+      "$since": "#313"
+    },
+    {
+      "name": "mega-menu",
+      "use": "A destination with more than six links, or links grouped under headings (s313-D23): a full-width panel under the masthead, up to four columns, heading = level 2, link = level 3. How the top nav carries multiple levels (s313-D22). Below the compact breakpoint it becomes an accordion in the sheet — NOT YET BUILT.",
+      "$since": "#313"
+    },
+    {
       "name": "compact",
       "use": "Below 768px the primary row is REPLACED (not shrunk) by a hamburger that discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.",
       "$since": "#261"
@@ -111,6 +133,7 @@
     "divider/border": "border/subtle, divider/border/subsection [bound via deprecated neutral-2/3 — see tokenValidation]",
     "active-indicator (anchors/top-bar)": "brand red underline — bound to interactive (depricate)/on-light/border/brand-1/default (#db0011) → primary/border/default | color/primary",
     "elevation": "elevation/functional (DROP_SHADOW blur 16) — masthead/flyout/anchor/top-bar shadow",
+    "floating-edge": "elevation/border — the account menu, the flyout and the mega menu carry it on the BOTTOM EDGE ONLY. s313-D26 (Dave by click, verbatim: 'Yes', with his comment, verbatim: 'it needs an edge but only a bottom edge'): invisible in light, where the shadow carries the lift; a grey line in dark, where a black shadow on black does not read. Snippet var --nav-elev-border.",
     "flyout-overlay": "overlay/version1 (#00000080) + blur/overlay (12) BACKGROUND_BLUR (search & user flyouts)",
     "layout": "layout/web/margin+gutter 16 (masthead) / 40 (search field grid), columns 12; padding/responsive + padding/fixed/large 20",
     "$finding": "(2026-06-20) BASELINE flagged for review: a web masthead only. Full family (logged-in/out, mega-menu, mobile drawer, app tab-bar) + the deprecated surface tokens not covered. Design decision, not derivable from canon."
@@ -134,14 +157,16 @@
     "partial": null,
     "events": [
       "click",
+      "focusin",
       "keydown"
     ],
-    "fallback": "Every destination is a native <a> and stays focusable; the authored aria-current=\"page\" stands and the 3px underline follows it, because the carrier is bound to the attribute in CSS. What goes: clicking another destination never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the search bar and the compact drawer stay in the hidden state the markup authors, and the account menu cannot be opened.",
+    "fallback": "Every link destination is a native <a> and stays focusable; the authored aria-current=\"page\" stands and the 3px underline follows it, because the carrier is bound to the attribute in CSS. What goes: clicking another destination never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the search bar and the compact drawer stay in the hidden state the markup authors, and the account menu cannot be opened. #313: the flyout and the mega menu cannot be opened either — their triggers are disclosure buttons and their links stay hidden.",
     "$r1_304": "typed #304 R1 from the #behaviour-manifest block #261 N hand-authored in the snippet at c0225a0e (s234-D5: the meta is the one home, so the block's four address fields are carried here verbatim and the block is re-derived). events match the snippet's own addEventListener set."
   },
   "accessibility": {
     "landmarks": "Use <nav> landmarks with accessible names (primary, account, etc.); masthead logo links home",
     "flyout": "Flyouts/menus must be keyboard-operable, trap focus while open, close on Esc, and expose aria-expanded on the trigger",
+    "destinationDisclosure": "#313 (s313-D22/D23): a destination's flyout or mega menu is the APG DISCLOSURE NAVIGATION pattern, not role=menu and with NO focus trap — its contents are links in the Primary nav landmark, so every one stays reachable by Tab. The trigger is a <button aria-expanded aria-controls>; the panel follows it in the DOM; Escape closes and returns focus to the trigger; a click or focus outside closes; opening one closes the others. Mega-menu headings are text labelling each column's list (aria-labelledby), not heading elements, so the page's heading outline is not interrupted by navigation. The trigger never takes aria-current; when its panel holds the current page it wears the 3px block-end rule through CSS.",
     "activeState": "Active anchor/tab must not rely on the red underline colour alone (1.4.1) — expose aria-current",
     "search": "Search field needs a label; results/overlay announced",
     "targetArea": "Tab/nav items min 44px target",
@@ -321,7 +346,7 @@
     ],
     "grade": "same-answer (s251-D4 ladder). The three surfaces answer the same question — where am I and where can I go — in different shapes for different viewports. They are NOT drop-in and NOT same-shape: a masthead cannot be pasted where a rail was.",
     "sharedAnatomy": ".nv-item (icon / label / count / chevron), .nv-ic, .nv-label, .nv-count, .nv-chev — one class grammar, one meaning, in all three snippets. Hover, :active, :focus-visible, [aria-current=page] and [aria-disabled=true] are declared once in a SHARED ITEM block that is byte-identical in all three files.",
-    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY TWO extra vars (--field-border, --field-active) for the search field it alone contains. That is checkable by diff — the family claim is mechanical, not rhetorical.",
+    "sharedTokens": "One NAV FAMILY TOKEN SET block: --nav-page --nav-surface --nav-text --nav-muted --nav-icon --nav-rule --nav-sub-rule --nav-hover --nav-pressed --nav-indicator --nav-focus --nav-disabled --nav-count-bg --nav-count-fg --nav-shadow --nav-scrim --nav-radius, plus the geometry vars --nav-w (248px) --nav-w-rail (64px) --nav-h (64px) --nav-row (44px). The block is byte-identical in Sidebar-nav and Tab-bar; Navigations carries it plus EXACTLY THREE extra vars: --field-border and --field-active for the search field it alone contains, and (#313, s313-D26) --nav-elev-border for the floating panels it alone owns. That is checkable by diff — the family claim is mechanical, not rhetorical.",
     "indicatorRule": "The 3px current-location bar sits on the EDGE THE NAV TOUCHES THE CONTENT. Sidebar: inline-start. Masthead: block-end. Tab bar: block-start. Masthead compact drawer: inline-start, because a stacked panel hangs beside its content. The RULE is what the three share, not the pixel.",
     "currentLocationCarriers": "Three, and colour is always last. (1) aria-current='page'. (2) A SHAPE: the 3px indicator bar's presence or absence — and in Tab-bar the filled (-active) glyph swap as well. (3) A WEIGHT step on the label (400 -> 500). #261 N4, Dave verbatim: \"remove the background grey on the selected state\" — the current row's surface fill is REMOVED on all three surfaces. It was the hover state's own signal worn permanently, which left hover nothing of its own to say; the grey now means hover and only hover. Measured at #261 N4: the current row computes background rgba(0,0,0,0) on all three surfaces, 4 themes × 2 modes.",
     "openItems": [

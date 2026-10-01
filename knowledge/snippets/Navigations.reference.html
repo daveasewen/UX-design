@@ -29,6 +29,12 @@
      with the bottom of its container" (the bar's bottom padding is zero, so the field's
      baseline rule IS the container's bottom edge instead of floating above it).
 
+     ⬛ #313 — THE FLYOUT AND THE MEGA MENU (s313-D22 'Yes, as drawn'; s313-D23 'Yes': six links in
+     one column is the line; links grouped under headings are always the mega menu) and THE ONE
+     EDGE (s313-D26, Dave verbatim: 'it needs an edge but only a bottom edge'). Payments opens the
+     mega menu, Cards a flyout; the account menu's all-round divider rule became the elevation
+     border on the bottom edge. The compact sheet's accordion is NOT built yet.
+
      CARRIED FORWARD (s218-D4, unchanged in substance): SEARCH is a disclosure revealing
      Search-field's underline form; ACCOUNT is the APG menu-button pattern in Dropdown's panel
      skin. Item copy is INVENTED and is Dave's. -->
@@ -75,8 +81,9 @@
 
   /* ===== NAV FAMILY TOKEN SET — ONE SET, THREE SURFACES (#261) =========================
      This block is BYTE-IDENTICAL in Sidebar-nav and Tab-bar; Navigations carries it plus
-     exactly two extra vars (--field-border, --field-active) for the search field it alone
-     contains, and nothing else. That is the
+     exactly three extra vars — --field-border and --field-active for the search field it alone
+     contains, and (#313, s313-D26) --nav-elev-border for the floating panels it alone owns
+     (the account menu, the flyout, the mega menu) — and nothing else. That is the
      family claim made mechanical: if the three surfaces drift, this block stops matching
      and the drift is visible in a diff rather than in a demo. Every value is a resolved
      SEMANTIC token (see the manifest below), never an invented hex. */
@@ -89,14 +96,17 @@
     --nav-disabled:#B7B7B7; --nav-count-bg:#000000; --nav-count-fg:#FFFFFF;
     --nav-shadow:#00000033; --nav-scrim:#00000033; --nav-radius:0;
     /* the two Search-field form-border seats, verbatim (s218-D4) */
-    --field-border:#808080; --field-active:#000000; }
+    --field-border:#808080; --field-active:#000000;
+    /* s313-D26: the floating panels' one edge (elevation/border — invisible in light) */
+    --nav-elev-border:#FFFFFF00; }
   [data-theme="dark"]{
     --nav-page:#1A1A1A; --nav-surface:#000000; --nav-text:#E1E1E1; --nav-muted:#E1E1E1;
     --nav-icon:#E1E1E1; --nav-rule:#808080; --nav-sub-rule:#808080; --nav-hover:#232323;
     --nav-pressed:#484848; --nav-indicator:#DB0011; --nav-focus:#4587A7;
     --nav-disabled:#808080; --nav-count-bg:#FFFFFF; --nav-count-fg:#333333;
     --nav-shadow:#000000D9; --nav-scrim:#000000D9; --nav-radius:0;
-    --field-border:#808080; --field-active:#FFFFFF; }
+    --field-border:#808080; --field-active:#FFFFFF;
+    --nav-elev-border:#808080; }
 
   /* ===== THE SHARED ITEM — icon / label / count / chevron ==============================
      One anatomy, three surfaces. The same class names carry the same meaning in all three
@@ -159,7 +169,7 @@
        -webkit-font-smoothing:antialiased; transition:background var(--nav-ease), color var(--nav-ease);}
 
   /* ---- the masthead ---- */
-  .masthead{display:flex; align-items:center; gap:24px; min-height:var(--nav-h); padding:0 2rem;
+  .masthead{position:relative; display:flex; align-items:center; gap:24px; min-height:var(--nav-h); padding:0 2rem;
             background:var(--nav-surface); border-bottom:1px solid var(--nav-rule);}
   /* the mark — #230, Dave twice: the masterbrand SVG IS the default, never type set to look
      like a logo. The <img> idiom is copied from Template-auth, not invented: _validate_icons.py
@@ -201,13 +211,53 @@
 
   /* ---- account menu (APG menu button; Dropdown's panel skin) ---- */
   .nav-menuwrap{position:relative; display:inline-flex;}
+  /* s313-D26 (#313, Dave by click, verbatim: 'Yes', with his comment, verbatim: 'it needs an edge
+     but only a bottom edge'): a surface that floats over the page carries the ELEVATION BORDER on
+     its BOTTOM EDGE ONLY — invisible in light, where the shadow carries the lift; a grey line in
+     dark, where a black shadow on black reads as nothing. Was a 1px divider rule on all four. */
   .nav-menu{position:absolute; right:0; top:calc(100% + 4px); z-index:20; min-width:220px;
-    margin:0; padding:4px 0; background:var(--nav-surface); border:1px solid var(--nav-rule);
+    margin:0; padding:4px 0; background:var(--nav-surface); border:0; border-bottom:1px solid var(--nav-elev-border);
     box-shadow:0 4px 16px var(--nav-shadow); opacity:0; transform:translateY(-4px);
     pointer-events:none; transition:opacity var(--nav-ease), transform var(--nav-ease);}
   .nav-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
   .nav-menu .nv-item{width:100%; white-space:nowrap;}
   .nav-menu .sep{height:1px; margin:4px 0; background:var(--nav-rule);}
+
+  /* ---- DESTINATION DISCLOSURES: the FLYOUT and the MEGA MENU (#313, s313-D22 + s313-D23) ----
+     s313-D22 (Dave by click, verbatim: 'Yes, as drawn'): the top nav is the default frame for an
+     app whatever the count of destinations or levels, with the mega menu for multiple levels.
+     s313-D23 (verbatim: 'Yes'): SIX LINKS IN ONE COLUMN IS THE LINE — a destination with up to six
+     links and no headings opens a FLYOUT (one column, under its trigger); over six, or links grouped
+     under headings, always the MEGA MENU (full width under the masthead, up to four columns, the
+     second level is a column's heading and the third its links, a column never over six — s272-D70).
+     Pattern: the APG DISCLOSURE NAVIGATION menu, not role=menu — these are links in a nav landmark,
+     so every one stays reachable by Tab, the trigger is a <button aria-expanded aria-controls>, and
+     the panel FOLLOWS its trigger in the DOM so Tab walks from one into the other. Escape closes and
+     returns focus; a click or focus outside closes; opening one closes the others.
+     The panel skin is the account menu's: the nav surface, the elevation shadow, and s313-D26's one
+     edge — the elevation border on the BOTTOM only. */
+  .nv-dest{display:flex;}
+  .nv-dest.is-flyout{position:relative;}
+  .nv-panel[hidden]{display:none;}
+  .nv-panel{position:absolute; z-index:20; background:var(--nav-surface); border:0;
+    border-bottom:1px solid var(--nav-elev-border); box-shadow:0 4px 16px var(--nav-shadow);}
+  .nv-panel ul{list-style:none; margin:0; padding:0;}
+  /* the li is a flex box so the trimmed list item cannot collapse under its 44px link (the
+     .sh-legal li{display:flex} repair, App-shell-top-nav) — measured: 10.5px li, 64px links
+     overlapping, the next link intercepting the click */
+  .nv-panel li{display:flex;}
+  /* a panel link is the shared ROW item, not the 64px masthead destination it sits inside */
+  nav.main .nv-panel .nv-item{width:100%; min-height:var(--nav-row); padding:0 16px; gap:12px;}
+  nav.main .nv-panel .nv-label{flex:1;}
+  /* the third carrier in a stacked panel follows the family rule: inline-start, as in the drawer */
+  .nv-panel .nv-item[aria-current="page"]{box-shadow:inset 3px 0 0 var(--nav-indicator);}
+  /* a destination whose panel holds the current page wears the masthead's own block-end rule */
+  nav.main .nv-dest:has(.nv-panel [aria-current="page"]) > .nv-item{box-shadow:inset 0 -3px 0 var(--nav-indicator);}
+  .nav-flyout{left:0; top:100%; min-width:240px; padding:4px 0;}
+  .nav-mega{left:0; right:0; top:100%; padding:16px 2rem 24px;}
+  .nav-mega-cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0 24px;}
+  .nav-mega-h{margin:0; padding:0 16px; min-height:var(--nav-row); display:flex; align-items:center;
+    color:var(--nav-muted); border-bottom:1px solid var(--nav-sub-rule);}
 
   /* ---- search disclosure ----
      ⚠ THE EXPLICIT [hidden] RULE IS LOAD-BEARING — #218 W3 finding F1: an author `display:`
@@ -289,7 +339,15 @@
     <button class="nv-btn nv-burger" id="navBurger" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="navDrawer"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#nv-menu"/></svg></button>
     <span class="logo"><img class="logo-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="logo-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
     <nav class="main" aria-label="Primary">
-      <a class="nv-item t-cm-button" href="#" aria-current="page"><span class="nv-label">Accounts</span></a><a class="nv-item t-cm-button" href="#"><span class="nv-label">Payments</span><span class="nv-count t-cm-legal">12</span></a><a class="nv-item t-cm-button" href="#"><span class="nv-label">Cards</span></a><a class="nv-item t-cm-button" href="#"><span class="nv-label">Insights</span></a><a class="nv-item t-cm-button" href="#" aria-disabled="true" tabindex="-1"><span class="nv-label">Support</span></a>
+      <a class="nv-item t-cm-button" href="#" aria-current="page"><span class="nv-label">Accounts</span></a><div class="nv-dest"><button class="nv-item t-cm-button" type="button" aria-expanded="false" aria-controls="navMegaPayments"><span class="nv-label">Payments</span><span class="nv-count t-cm-legal">12</span><span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span></button>
+        <div class="nv-panel nav-mega" id="navMegaPayments" hidden>
+          <div class="nav-mega-cols">
+            <div class="nav-mega-col"><p class="nav-mega-h t-cm-ctl-14" id="nmPayMake">Make a payment</p><ul aria-labelledby="nmPayMake"><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Single payment</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Bulk payment</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">International payment</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Standing orders</span></a></li></ul></div>
+            <div class="nav-mega-col"><p class="nav-mega-h t-cm-ctl-14" id="nmPayTrack">Track</p><ul aria-labelledby="nmPayTrack"><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Payments in flight</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Payment history</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Returned payments</span></a></li></ul></div>
+            <div class="nav-mega-col"><p class="nav-mega-h t-cm-ctl-14" id="nmPayManage">Manage</p><ul aria-labelledby="nmPayManage"><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Payees</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Templates</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Approvals</span></a></li></ul></div>
+          </div>
+        </div></div><div class="nv-dest is-flyout"><button class="nv-item t-cm-button" type="button" aria-expanded="false" aria-controls="navFlyCards"><span class="nv-label">Cards</span><span class="nv-chev" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-down"/></svg></span></button>
+        <div class="nv-panel nav-flyout" id="navFlyCards" hidden><ul aria-label="Cards"><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Your cards</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Spending limits</span></a></li><li><a class="nv-item t-cm-label" href="#"><span class="nv-label">Lost or stolen</span></a></li></ul></div></div><a class="nv-item t-cm-button" href="#"><span class="nv-label">Insights</span></a><a class="nv-item t-cm-button" href="#" aria-disabled="true" tabindex="-1"><span class="nv-label">Support</span></a>
     </nav>
     <div class="actions">
       <button id="navSearchTrig" class="nv-btn" type="button" aria-label="Search" aria-expanded="false" aria-controls="navSearch"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#nv-search"/></svg></button>
@@ -349,7 +407,8 @@
     "--nav-scrim": "elevation/functional",
     "--nav-radius": "border-radius/surface",
     "--field-border": "form/border/default",
-    "--field-active": "form/border/active"
+    "--field-active": "form/border/active",
+    "--nav-elev-border": "elevation/border"
   },
   "contrastPairs": [
     {
@@ -395,6 +454,7 @@
   ],
   "knownFindings": [
     "#261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). This masthead is now the TOP-NAV member of a three-surface family with Sidebar-nav and Tab-bar. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. The masthead's primary row is literally the sidebar's row laid horizontally.",
+    "#313 (s313-D22, s313-D23, s313-D26): a destination with children is a DISCLOSURE — the APG disclosure navigation menu, a <button aria-expanded aria-controls> whose panel follows it in the DOM. Up to six links in one column with no headings opens a FLYOUT under its trigger (Cards, three links); over six, or grouped under headings, the MEGA MENU, full width under the masthead, up to four columns, heading = level 2, link = level 3, a column never over six (Payments, ten links in three groups — the page's own example; item copy INVENTED, Dave's). Every floating panel (account menu, flyout, mega menu) carries elevation/border on its BOTTOM EDGE ONLY ('it needs an edge but only a bottom edge'). NOT YET BUILT: the compact sheet's accordion form of the mega menu (below 768px the drawer still lists the destinations flat), and the mega menu's driven receipt and four-theme render at the seat.",
     "THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.",
     "COLLAPSE AT 768px is a REPLACEMENT, not a shrink: the primary row is hidden and a hamburger discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.",
     "COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button's own accessible name already carries the number — a count read twice is a count read wrong.",
@@ -429,9 +489,10 @@
     "partial": null,
     "events": [
       "click",
+      "focusin",
       "keydown"
     ],
-    "fallback": "Every destination is a native <a> and stays focusable; the authored aria-current=\"page\" stands and the 3px underline follows it, because the carrier is bound to the attribute in CSS. What goes: clicking another destination never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the search bar and the compact drawer stay in the hidden state the markup authors, and the account menu cannot be opened."
+    "fallback": "Every link destination is a native <a> and stays focusable; the authored aria-current=\"page\" stands and the 3px underline follows it, because the carrier is bound to the attribute in CSS. What goes: clicking another destination never moves aria-current, Space does not activate, the arrow/Home/End focus walk is gone, the search bar and the compact drawer stay in the hidden state the markup authors, and the account menu cannot be opened. #313: the flyout and the mega menu cannot be opened either — their triggers are disclosure buttons and their links stay hidden."
   }
   </script>
 
@@ -442,7 +503,10 @@
     // destinations, so both rows are one selection scope — picking in one moves the other.
     (function(){
       var rows = function(){
-        return Array.prototype.slice.call(document.querySelectorAll('nav.main .nv-item, .nav-drawer .nv-item'));
+        // LINKS only (#313): a destination that opens a flyout or a mega menu is a <button>, a
+        // disclosure and not a page, so it never takes aria-current — it wears the rule through
+        // CSS when its panel holds the current page.
+        return Array.prototype.slice.call(document.querySelectorAll('nav.main a.nv-item, .nav-drawer a.nv-item'));
       };
       function labelOf(a){ var l = a.querySelector('.nv-label'); return l ? l.textContent.trim() : ''; }
       function setCurrent(a){
@@ -453,7 +517,7 @@
         });
       }
       document.addEventListener('click', function(e){
-        var a = e.target.closest && e.target.closest('nav.main .nv-item, .nav-drawer .nv-item');
+        var a = e.target.closest && e.target.closest('nav.main a.nv-item, .nav-drawer a.nv-item');
         if (!a || a.getAttribute('aria-disabled') === 'true') return;
         e.preventDefault();            // href="#" is a specimen stub, not a destination
         setCurrent(a);
@@ -461,20 +525,62 @@
       document.addEventListener('keydown', function(e){
         var a = e.target.closest && e.target.closest('nav.main .nv-item, .nav-drawer .nv-item');
         if (!a) return;
-        // Enter activates natively. Space does not, so it is added by hand.
-        if (e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); setCurrent(a); return; }
+        // Enter activates natively. Space does not on a link, so it is added by hand — a disclosure
+        // <button> keeps its native Space (#313).
+        if ((e.key === ' ' || e.key === 'Spacebar') && a.tagName === 'A'){ e.preventDefault(); setCurrent(a); return; }
         // Arrow keys walk the row — FOCUS ONLY, no roving tabindex: these are links in a nav
         // landmark and every one of them must stay reachable by Tab. Disabled rows are skipped.
-        var scope = a.closest('nav');
+        // #313: inside an open flyout or mega menu the walk is that panel's links, top to bottom;
+        // on the row it is the row's own items, never the links inside a closed panel.
+        var panel = a.closest('.nv-panel');
+        var scope = panel || a.closest('nav');
         var items = Array.prototype.slice.call(scope.querySelectorAll('.nv-item'))
-          .filter(function(x){ return x.getAttribute('aria-disabled') !== 'true'; });
-        var horiz = scope.classList.contains('main');
+          .filter(function(x){ return x.getAttribute('aria-disabled') !== 'true'
+                                     && (panel || !x.closest('.nv-panel')); });
+        var horiz = !panel && scope.classList.contains('main');
         var i = items.indexOf(a), n = null;
         if (e.key === (horiz ? 'ArrowRight' : 'ArrowDown')) n = (i + 1) % items.length;
         else if (e.key === (horiz ? 'ArrowLeft' : 'ArrowUp')) n = (i - 1 + items.length) % items.length;
         else if (e.key === 'Home') n = 0;
         else if (e.key === 'End') n = items.length - 1;
         if (n !== null && items.length){ e.preventDefault(); items[n].focus(); }
+      });
+    })();
+
+    // THE DESTINATION DISCLOSURES (#313, s313-D22/D23) — the APG disclosure navigation menu.
+    // `hidden` carries the state and aria-expanded mirrors it; focus stays on the trigger on open
+    // (a disclosure, not a menu: Tab walks on into the panel). Escape closes and returns focus; a
+    // click or focus outside closes; opening one closes the others; picking a link closes its panel.
+    (function(){
+      var trigs = Array.prototype.slice.call(document.querySelectorAll('nav.main .nv-dest > button[aria-controls]'));
+      function panelOf(t){ return document.getElementById(t.getAttribute('aria-controls')); }
+      function setOpen(t, open){
+        var p = panelOf(t); if (!p) return;
+        p.hidden = !open;
+        t.setAttribute('aria-expanded', String(open));
+      }
+      function closeAll(except){ trigs.forEach(function(t){ if (t !== except) setOpen(t, false); }); }
+      trigs.forEach(function(t){
+        var p = panelOf(t); if (!p) return;
+        t.addEventListener('click', function(e){
+          e.stopPropagation();
+          var open = t.getAttribute('aria-expanded') !== 'true';
+          closeAll(t); setOpen(t, open);
+        });
+        t.addEventListener('keydown', function(e){ if (e.key === 'Escape') setOpen(t, false); });
+        p.addEventListener('keydown', function(e){
+          if (e.key === 'Escape'){ setOpen(t, false); t.focus(); }
+        });
+        p.addEventListener('click', function(e){
+          if (e.target.closest('a.nv-item')){ setOpen(t, false); t.focus(); }
+        });
+      });
+      document.addEventListener('click', function(e){
+        if (!(e.target.closest && e.target.closest('.nv-dest'))) closeAll(null);
+      });
+      document.addEventListener('focusin', function(e){
+        var d = e.target.closest && e.target.closest('.nv-dest');
+        trigs.forEach(function(t){ if (!d || !d.contains(t)) setOpen(t, false); });
       });
     })();
 

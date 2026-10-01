@@ -16,7 +16,7 @@
     }
   },
   "priority": 60,
-  "when": "destinations <= 7 AND nav.levels <= 2 — the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+  "when": "primaryNavigation = present AND platform = app — THE DEFAULT FRAME FOR AN APPLICATION, WHATEVER THE COUNT of destinations or levels (s313-D22, Dave by click, #313, verbatim: 'Yes, as drawn'); the primaries sit in one 64px row, the stacked form only when they do not fit the row at the product's floor width; a destination with children opens a flyout (up to six links, one column) or, over six or grouped under headings, the mega menu (s313-D23, verbatim: 'Yes'; Navigations `menu`); the third level is tabs in the page-header lock-up's foot, never a third band of chrome (s313-D24, inscribed for now at his word, pending his nav strategy doc, W-313d1). Beats app-shell-side-nav at any count, and yields to it only on the workbench test (roles.json when: \"the workbench only: the second level must stay on screen while the person works; chosen by the job, never by a count (s313-D25)\"); yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored. Superseded #313: the count rule 'destinations <= 7 AND nav.levels <= 2' (W-305e2; Dave, #305: 'Not quite, this is an IA question and the preference in general is a top nav, if there are multiple levels we use a mega menu').",
   "$status": "PROPOSED #210, 2026-08-20 (Wave 5, Lane A). Dave's eye owed on every judgment. NOT GATED, NOT PROMOTED, NOT RULED. Nothing in this file is a ruling. No registry, CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, _rulings.json or git operation was touched — this lane created NEW FILES ONLY.",
   "$cardinalRule": "★★ COMPOSE, NEVER RE-DRAW. Every visible atom traces to an existing reference file and is named in $copiedFrom with a diff-proof in the receipt. The only new CSS in the snippet is the .sh-* frame: it positions parts, it styles none of them.",
   "props": [
@@ -33,12 +33,12 @@
       "type": "boolean",
       "default": false,
       "$note": "the third band — in-section destinations. Horizontally scrollable rather than wrapping, so a long section list never silently becomes two rows of chrome.",
-      "$status": "PROPOSED #210"
+      "$status": "PROPOSED #210. ⚠ NOT THE THIRD LEVEL'S HOME FOR NOW — s313-D24 (#313) inscribes, at Dave's word and not by click, that the third level lives in TABS IN THE PAGE-HEADER LOCK-UP (its foot, s313-D28), never a third band of chrome. His comment, verbatim: 'I think this can get is fairly complicated, but would probably have a preference for introducing a simple side nav at this point. lets leave this as it is now, but I do have a nav strategy worked out in a sigma file, inscribe for now but I will revist if this doesnt match with the doc.' The prop is NOT deleted: he revisits it against his doc (W-313d1). Nothing new is built for the third level."
     }
   ],
   "variants": [
-    { "name": "inline", "use": "a product with five or fewer primary destinations and a brand short enough to share the row" },
-    { "name": "stacked", "use": "a product whose primary nav does not fit beside the brand, or one that needs a section tier under it" }
+    { "name": "inline", "use": "THE DEFAULT (s313-D22, 'Yes, as drawn'): the primaries fit one 64px row beside the brand at the product's floor width — a fit test, not a count (the #312 F1 run measured it: at 1024 five destinations fit with 131px spare and seven overflow by 36px; at 1440 nine fit with 215px spare). Levels below go into flyouts and the mega menu, never into more rows." },
+    { "name": "stacked", "use": "only when the primaries do not fit the row at the product's floor width (s313-D22). The section tier under it is NOT the third level's home for now (s313-D24: tabs in the page-header lock-up)." }
   ],
   "slots": {
     "brand": {
@@ -144,7 +144,7 @@
   "interactive": true,
   "stateModel": "simple",
   "$decisionsForDave": [
-    "1 · WHICH FORM IS THE PRODUCT'S DEFAULT — inline or stacked? Both are drawn so the trade is visible rather than described: stacked buys horizontal room and spends a whole 56px band of vertical. Not settled by construction.",
+    "1 · WHICH FORM IS THE PRODUCT'S DEFAULT — inline or stacked? Both are drawn so the trade is visible rather than described: stacked buys horizontal room and spends a whole 56px band of vertical. Not settled by construction. ⬛ ANSWERED #313 by s313-D22 ('Yes, as drawn'): the drawn rule keeps the primaries in one 64px row — INLINE is the default — and takes the stacked form only when they do not fit the row at the product's floor width.",
     "2 · THE BRAND MARK — ANSWERED #230, and the answer is Dave's, not derived. He ruled the DEFAULT twice, minutes apart: \"use this as teh default logo 'masterbrand-light-colour'\" and \"use this for dark mode masterbrand-dark-colour\". Every masthead in the library now <img>-references those two files from knowledge/assets/logos/, so the question 'component or direct embed?' is settled AS DIRECT EMBED FOR NOW. ⬛ WHAT IS STILL OPEN, and it is a smaller question than it was: whether a brand-mark COMPONENT (row 86, P1) should wrap the embed so the clear space, minimum size and the other ten lockups get a contract of their own. Nothing carries a text stand-in any more, so that is a tidiness question, not a defect.",
     "3 · IS `template` THE RIGHT CATEGORY FOR A SHELL? The schema enum has no `shell` value and additionalProperties is false, so `template` was chosen as the closest legal word and `$layer` carries the real answer. Widening the schema is a schema change and is yours.",
     "4 · THE BREAKPOINT SCALE. 900cqi and 600cqi here, 1040/720 in the side-nav shell, 1200/840 in the multi-column shell — three shells built in one wave, three sets of numbers, none of them ruled. knowledge/tokens/layout.json has no breakpoint scale. This is the single most consequential open item in the three files.",
@@ -152,6 +152,15 @@
     "6 · THE PLACEHOLDER CONVENTION. Static aria-hidden bones for a frame, the real announcing Skeleton-loader only where something is genuinely loading. Two approved artefacts disagreed (Skeleton-loader announces, Sidebar-nav's canvas does not) and the gated one won. Confirm or overturn.",
     "7 · DOES A SHELL BELONG IN knowledge/snippets/ AT ALL? The brief proposed it so the existing gates watch these files for free, and that has already paid — the descender-clip gate caught a real defect in the multi-column shell during this build. But a shell is a page, not a component, and the showroom, the KG and component-types.json all assume components. Yours."
   ],
+  "$navStrategy313": {
+    "$ruled": "#313, Dave by click on notes/_REVIEW-312-F-the-pictures-you-are-owed-2026-10-01-v1.html, calls 3–6; his export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1749-pictures-you-are-owed.md. Closes W-305e2 (his #305 words: 'Not quite, this is an IA question and the preference in general is a top nav, if there are multiple levels we use a mega menu').",
+    "s313-D22": "THE TOP NAV IS THE DEFAULT FRAME FOR AN APP, whatever the count of destinations or levels, with the mega menu for multiple levels — 'Yes, as drawn'.",
+    "s313-D23": "SIX LINKS IN ONE COLUMN IS THE LINE between a flyout and a mega menu; links grouped under headings are always the mega menu — 'Yes'. Home: navigations.meta.json prop `menu`; built in Navigations.reference.html.",
+    "s313-D24": "THE THIRD LEVEL: tabs in the page-header lock-up (its foot, s313-D28), never a third band of chrome — INSCRIBED FOR NOW AT HIS WORD, not by click; he revisits it against his nav strategy doc (W-313d1). Nothing new is built for it.",
+    "s313-D25": "THE SIDE NAV IS KEPT FOR THE WORKBENCH ONLY, chosen by the job, never by a count — 'Yes'. Home: app-shell-side-nav.meta.json `when`.",
+    "s313-D26": "Every floating surface (the mega menu, the account menu, dropdowns) carries the elevation border on the BOTTOM EDGE ONLY — 'Yes', with 'it needs an edge but only a bottom edge'.",
+    "owed": "The mega menu's compact form — below 600px the page drew it as an accordion in the sheet — is NOT built: the reference's drawer still lists the destinations flat. This shell's own snippet still composes the pre-#313 Navigations row (no flyout, no mega menu); it re-splices when the shell is next rebuilt. when-fields.json has no field for 'links under one destination', so the six-link line is prose inside the gate until one is added by the s273-D4 route."
+  },
   "edges": {
     "renderedBy": [
       {

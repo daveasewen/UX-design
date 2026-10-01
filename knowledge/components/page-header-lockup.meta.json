@@ -3,21 +3,22 @@
   "category": "organism",
   "kind": "block",
   "$layer": "2 Lock-up",
-  "purpose": "The page-header region: an eyebrow/breadcrumb, the page title, an optional Tabs row and a right-aligned action pair, arranged so the title stays legible and the actions collapse to their own row on a narrow container. Composed ENTIRELY from existing gated/proposed atoms (Breadcrumbs, Eyebrow, Tabs, Button, Badge) — no new visual vocabulary, only arrangement. Itinerary row 115 (Layer 2, class NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
+  "purpose": "The page-header region: an eyebrow or a breadcrumb, the page title, an optional meta line, a right-aligned action pair on the title row, and an optional tab strip on its bottom edge (the FOOT), arranged so the title stays legible and the actions collapse to their own row on a narrow container. ONE lock-up with three optional parts (s313-D28), not a set of arrangements. Composed ENTIRELY from existing gated/proposed atoms (Breadcrumbs, Eyebrow, Tabs, Button, Badge) — no new visual vocabulary, only arrangement. Itinerary row 115 (Layer 2, class NO-ARTEFACT-CLASS at mint; PROPOSED here, not ruled).",
   "provides": "page-title",
   "props": [
-    { "name": "arrangement", "type": "enum", "values": ["simple", "breadcrumb-tabs", "meta-badge"], "default": "simple",
-      "$note": "Three arrangement variants drawn in the reference: A simple (eyebrow+title+actions), B breadcrumb+title+tabs, C eyebrow+title+badge+meta-line+actions. Structural variance, not a colour/size parameter — this is a VARIANTS-axis prop, following the same class-C6 reading Tags' own `type` prop carries (s142-D1)." },
     { "name": "actions", "type": "slot", "values": ["none", "one", "two"], "default": "two",
-      "$note": "0-2 Button instances (any tier). The organism does not draw a new button style." },
-    { "name": "showBreadcrumb", "type": "boolean", "default": "false" },
-    { "name": "showTabs", "type": "boolean", "default": "false" },
-    { "name": "showBadge", "type": "boolean", "default": "false" }
+      "$note": "0-2 Button instances (any tier), ALWAYS ON THE TITLE ROW (s313-D28). The organism does not draw a new button style." },
+    { "name": "showBreadcrumb", "type": "boolean", "default": "false",
+      "$note": "The crumb-or-eyebrow switch: on a drill-down the breadcrumb REPLACES the eyebrow — never both (s313-D28)." },
+    { "name": "showMeta", "type": "boolean", "default": "false",
+      "$note": "The meta line under the title (a timestamp, a scope such as 'Consolidated position · GBP equivalent'). Replaces showBadge (s313-D28): the badge-count arrangement goes — a count belongs in a tab label or the content, not beside the title." },
+    { "name": "showTabs", "type": "boolean", "default": "false",
+      "$note": "THE FOOT: on a page with sub-views the Tabs strip sits on the lock-up's bottom edge, where the page's views begin (s313-D28). Tabs keeps its own overflow script — a tab foot on a real page needs that script beside it (#312 F2: at 390 the demo's foot ran off the right edge without it)." }
   ],
+  "$s313D28": "THE LOCK-UP'S SHAPE, RULED FOR NOW. s313-D28 (#313, Dave by click on the pictures page, call 9, verbatim: 'Option 2, a foot for the tab strip' — the recommendation) with his comment, verbatim: 'Lets have this for now, but this is one component that I want to work on in the future its quite fussy at the moment' (W-313d3 — his future work, not redesigned here). The arrangement choice (simple / breadcrumb-tabs / meta-badge, #210) is REPLACED by the three switches the lock-up already carried — crumb or eyebrow (showBreadcrumb), meta line (showMeta), tab foot (showTabs) — with the actions always on the title row. The badge-count arrangement goes. Heights the #312 F2 run measured at 1440: as built 126px, with the foot 198px. Closes W-305e3.",
   "variants": [
-    { "name": "simple", "use": "Eyebrow + title + a right-aligned action pair. The default — most page headers need nothing more." },
-    { "name": "breadcrumb-tabs", "use": "A drill-down page (e.g. an account detail) that also switches between sub-views via Tabs." },
-    { "name": "meta-badge", "use": "A page whose title carries a live count (e.g. unread messages) and a short meta line (e.g. a timestamp)." }
+    { "name": "simple", "use": "Eyebrow + title + a right-aligned action pair, every switch off. The default — most page headers need nothing more." },
+    { "name": "with-foot", "use": "All three parts on (s313-D28): breadcrumb in place of the eyebrow on a drill-down, title + meta line + actions on one row, and the Tabs strip on the bottom edge for the page's sub-views. The shape the pictures page drew as option 2." }
   ],
   "tokens": {
     "title": "borrowed from canon/type.css .t-cm-heading composite (32px/400) — never a raw declaration",
@@ -25,7 +26,6 @@
     "breadcrumb": "text/default + the '/' or chevron separator via Breadcrumbs.reference.html, unmodified",
     "tabs": "the full tabs/* token set via Tabs.reference.html, unmodified, including its own responsive overflow",
     "actions": "button/{primary,secondary,tertiary,quaternary}/* via Button.reference.html, unmodified",
-    "badge": "badge/background + rag/text/on-light via Badge.reference.html's standalone form",
     "$note": "Every token above resolves through the ATOM's own manifest; this organism binds nothing new. The lock-up's own CSS (`.ph-*`) is flex arrangement only — no colour, no type-size, no radius declaration of its own."
   },
   "responsive": {

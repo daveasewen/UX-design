@@ -4,7 +4,7 @@
   "fields": {
    "word": "Apollo's storage type — the word on the edge. Never renamed here (s308-D22 keeps Apollo's words).",
    "plain": "how the line reads, s → t, in plain words",
-   "verb": "which of the twelve verbs in knowledge/_kg_verbs.json reads this type, with its force (must / should / is); `unread` or `missing` where none does. Read from that file when this register was written.",
+   "verb": "which of the twelve verbs in knowledge/_kg_verbs.json reads this type, with its force (must / should / is); `unread` or `missing` where none does. Read from that file when this register was written. SINCE W-308ie (#313 lane D4) THIS COLUMN IS THE RECORD: the twelve verbs' `reads` lists and the `unread` block in knowledge/_kg_verbs.json are WRITTEN from it by knowledge/gen_edge_copies.py (each verb's force, direction and definition stay the map's own), and _validate_edges.py --coverage refuses drift (COPY-DRIFT). `source` names where the row's reading was first taken from.",
    "from": "the node kinds (id prefix before the colon) an edge of this type may START from. CHECKED.",
    "to": "the node kinds it may END at. CHECKED. An empty list means the type exists only as declared nulls.",
    "pairs": "optional: where `from` × `to` would admit a wrong combination, the legal (from, to) pairs. CHECKED when present.",
@@ -17,6 +17,8 @@
    "maker": "s308-D21: who made the type's edges, one of three — `hand` (by: whose/ruling), `generated` (by: which script) or `ratified` (by: which ruling); `none` only on a read-side row that stores nothing. `value` is the string every edge of the type carries as its `maker` (`<made>:<by>`), stamped by knowledge/_build_kg_explorer.py; `cases` override it by the edge's family (`fam`) or start kind (`from`); a stored line carrying its own `maker` keeps it. It replaces the `authored` flag, which is retired from the graph. CHECKED by _validate_edges.py --check: NO-MAKER, AUTHORED-FLAG.",
    "outside": "s308-D22 + s308-D27: the nearest outside term (`term`, its `vocabulary`), graded `exact`, `close` or `loose` (SKOS's three), pointing first at a design-system vocabulary (Canonical ds:/dt:, Spectrum), then SKOS, Dublin Core or PROV; `also` other near terms; `note` where only another vocabulary fits; `name` the neatest-name decision (s308-D27: the outside term adopted outright where neater, `adopted` true). CHECKED by _validate_edges.py: a row without `outside`, or with a grade outside the three, is REGISTER-SHAPE.",
    "family": "the explorer's storage family for the edge (fam), as built",
+   "meta": "W-308ie (#313 lane D4): the `definitions` entry a component meta's `edges.<word>` list takes its items from (\"edge\" or \"obeysEdge\"), or null when the type is not stored on a meta. knowledge/components/meta.schema.json's `edges` keys are WRITTEN from this column by knowledge/gen_edge_copies.py (the $-prefixed annotation keys and each key's description stay the schema's own); _validate_edges.py --coverage refuses drift (COPY-DRIFT).",
+   "chip": "W-308ie (#313 lane D4): the explorer's chip family the type is drawn under (the page's `FAMILY[type]`), or null when the type has no chip of its own and its edges carry `fam`. Not the same as `family` (the storage family the builder stamps). The builder bakes this column into the page as KG.fam; the template holds no copy. The map's comments, as they stood, are kept verbatim in `$chips.history`.",
    "$measured": "live tallies when this row was written; drift is reported by the check, never a failure"
   },
   "kinds": "a node's kind is its id's prefix before the first colon (component:, rule:, ux:, …) — the grammar _validate_kg.py enforces.",
@@ -43,7 +45,7 @@
    "knowledge/_kg_explorer.template.html (FAMILY map) + knowledge/_build_kg_explorer.py (the graph)",
    "knowledge/_validate_kg.py (reads the schema’s edge types; holds no list of its own)"
   ],
-  "not_yet": "Since s308-D18 (#308 lane E round 2) the explorer takes each type's two readings from this file (`reads` → its `read` block) and the meta schema, the verbs map and the explorer name the stored side of each pair as this file does. They still hold their own lists of types (schema edge keys, the verbs' reads, the explorer's FAMILY map); making every one READ its list from here is the rest of item 1 (row W-308ie). Until then the coverage check refuses any type one of them names that this file does not.",
+  "not_yet": "DONE (W-308ie, #313 lane D4): the three consumers read this file. The meta schema's `edges` keys and their item shape are written from the `meta` column, and the twelve verbs' `reads` lists and the `unread` block of knowledge/_kg_verbs.json from the `verb` column, both by knowledge/gen_edge_copies.py (--write; --check refuses drift, and _validate_edges.py --coverage carries the same refusal as COPY-DRIFT); the explorer's chip map is baked from the `chip` column (KG.fam) and its two readings from `reads` (KG.read) — the template holds neither map. History: since s308-D18 (#308 lane E round 2) the explorer took each type's two readings from here and the three named the stored side of each pair as this file does; until #313 they held their own lists of types.",
   "owed": {}
  },
  "$containers": {
@@ -53,7 +55,8 @@
    "s308-D40": "Dave, by click, verbatim: 'By kind through accepts, advisory first like every new check'",
    "s308-D41": "Dave, by click, verbatim: 'All three as proposed, including renaming the chart-panel role to chart'",
    "s308-D43": "Dave, by click, verbatim: 'All four limits: the first three refuse, and the lone-card rule warns'",
-   "s308-D44": "Dave, 19:01 BST, verbatim: 'yes to both' - the kind the research page called 'holder' is HOUSING; 'cell' is the grid position only"
+   "s308-D44": "Dave, 19:01 BST, verbatim: 'yes to both' - the kind the research page called 'holder' is HOUSING; 'cell' is the grid position only",
+   "s313-D20": "Dave, by click, #313 pictures page call 1, verbatim: 'Section and panel; drop division and sector'"
   },
   "terms": {
    "card": "one of a set of like records (s308-D39). A record; bounded by its border (surface: border). A lone card is a tile (s308-D43, warns).",
@@ -61,7 +64,9 @@
    "cell": "the grid position only - where something sits in a bento and what it spans; it has no surface and is not a part. A tile is the surfaced thing that occupies a cell (s308-D44).",
    "container": "the umbrella word for a layout, a housing or a record - never a component name, except the layout utility's width container (s308-D41).",
    "surface": "a PROPERTY, never a type: ground, border or none (s308-D41; meta `surface`).",
-   "panel": "a region of the screen frame only - a side panel, a drawer, a splitter pane (s308-D41). Not a content box; the role once called chart-panel is `chart` (knowledge/roles.json)."
+   "panel": "a region of the screen frame only - a side panel, a drawer, a splitter pane (s308-D41). Not a content box; the role once called chart-panel is `chart` (knowledge/roles.json).",
+   "section": "a named region of the page that a screen reader lists, so a person can jump to it (s313-D20) - an HTML <section> with an accessible name, which makes it a region landmark. On a dashboard: the page header and each bento group. Never a tile: a tile is a housing, named as a group, not a landmark.",
+   "$dropped": "division and sector are NOT container words (s313-D20). A division is any box, which every part already is; a sector is a section by another name - two words with nothing to do of their own. The container words that stand are section and panel."
   },
   "kinds": {
    "layout": {
@@ -196,6 +201,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
+   "meta": null,
+   "chip": "sources",
    "note": "the accepting half; its providing half is providesCapability (s308-D28 b, #311 lane D3)",
    "$measured": {
     "edges": 95,
@@ -292,6 +299,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "assets",
    "$measured": {
     "edges": 234,
     "nulls": 2,
@@ -384,6 +393,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
    },
    "family": "tokens",
+   "meta": null,
+   "chip": "tokens",
    "note": "s308-D28 (a), #311 lane D3",
    "why": {
     "field": "why",
@@ -482,6 +493,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 28,
     "nulls": 0,
@@ -578,6 +591,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 826,
     "nulls": 0,
@@ -669,6 +684,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "note": "s308-D28 (d), #311 lane D3. ARIA's required-context and required-owned checks against containedBy are not built here.",
    "why": {
     "field": "why",
@@ -766,6 +783,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
+   "meta": null,
+   "chip": "sources",
    "$measured": {
     "edges": 73,
     "nulls": 0,
@@ -795,7 +814,7 @@
    "plain": "binds the token group",
    "verb": {
     "reads": [],
-    "unread": "component → token: group — landed #304 R3 under s277-D12 (tokens at group grain with their tier, bindsToken from the metas' typed tokens block). The same join the slice's `tokens` field (Q9) reads from the meta; the explorer draws it under its own Tokens chip (off by default). No verb of the twelve ",
+    "unread": "component → token: group — landed #304 R3 under s277-D12 (tokens at group grain with their tier, bindsToken from the metas' typed tokens block). The same join the slice's `tokens` field (Q9) reads from the meta; the explorer draws it under its own Tokens chip (off by default). No verb of the twelve names it — which verb reads it (the usesIcon note's own candidate is a thirteenth, 'uses') is Dave's to ratify, not this lane's to pad.",
     "source": "knowledge/_kg_verbs.json unread"
    },
    "from": [
@@ -862,6 +881,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "tokens",
+   "meta": null,
+   "chip": "tokens",
    "$measured": {
     "edges": 835,
     "nulls": 0,
@@ -959,6 +980,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 55,
     "nulls": 0,
@@ -1057,6 +1080,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 1,
@@ -1156,6 +1181,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
+   "meta": null,
+   "chip": "sources",
    "$measured": {
     "edges": 80,
     "nulls": 0,
@@ -1251,6 +1278,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 4,
     "nulls": 0,
@@ -1344,6 +1373,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 68,
     "nulls": 0,
@@ -1436,6 +1467,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
+   "meta": null,
+   "chip": "guidelinerules",
    "$measured": {
     "edges": 51,
     "nulls": 0,
@@ -1532,6 +1565,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "usage",
    "$measured": {
     "edges": 421,
     "nulls": 0,
@@ -1631,6 +1666,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 5,
     "nulls": 0,
@@ -1731,6 +1768,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 5,
@@ -1832,6 +1871,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 70,
     "nulls": 0,
@@ -1950,6 +1991,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 109,
     "nulls": 0,
@@ -2048,6 +2091,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 1,
@@ -2078,7 +2123,7 @@
    "plain": "has as its default active twin",
    "verb": {
     "reads": [],
-    "unread": "icon: → icon: — Dave's named active twin of a multi-active base (s277-D6, his #279 sheet); 14 resolved and DRAWN since explorer 1.32 (#308 lane L), 1 declared null (jade-lifestyle, answered 'open'). Unread: no verb reads it yet. Was: 'null ONLY — declared-null, never drawn' — true of the graph only ",
+    "unread": "icon: → icon: — Dave's named active twin of a multi-active base (s277-D6, his #279 sheet); 14 resolved and DRAWN since explorer 1.32 (#308 lane L), 1 declared null (jade-lifestyle, answered 'open'). Unread: no verb reads it yet. Was: 'null ONLY — declared-null, never drawn' — true of the graph only because the asset pass skipped the 14 in silence.",
     "source": "knowledge/_kg_verbs.json unread"
    },
    "from": [
@@ -2143,6 +2188,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "rules",
    "note": "drawn since explorer 1.32 (#308 lane L): 14 of Dave's answers as lines, jade-lifestyle ('open') a declared null",
    "$measured": {
     "edges": 15,
@@ -2237,6 +2284,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "assets",
    "note": "s308-D28 (c), #311 lane D3: theme is a node kind (theme:<id>, from knowledge/tokens/themes/_themes.json, and the two colour modes the records name as a theme); the explorer points each defaultFor line declared null with a `theme` qualifier at theme:<that>. Storage (knowledge/_logo_nodes.json) is unchanged.",
    "$measured": {
     "edges": 2,
@@ -2330,6 +2379,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
+   "meta": null,
+   "chip": "guidelinerules",
    "$measured": {
     "edges": 474,
     "nulls": 0,
@@ -2428,6 +2479,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 1,
     "nulls": 0,
@@ -2525,6 +2578,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 5,
     "nulls": 0,
@@ -2623,6 +2678,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 6,
@@ -2722,6 +2779,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 55,
     "nulls": 0,
@@ -2815,6 +2874,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
+   "meta": null,
+   "chip": "guidelinerules",
    "$measured": {
     "edges": 64,
     "nulls": 0,
@@ -2934,6 +2995,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance · uxprinciples",
+   "meta": null,
+   "chip": "governance",
    "$measured": {
     "edges": 2739,
     "nulls": 11,
@@ -3028,6 +3091,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 1,
     "nulls": 0,
@@ -3129,6 +3194,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 16,
@@ -3227,6 +3294,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 3,
     "nulls": 2,
@@ -3318,6 +3387,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
+   "meta": null,
+   "chip": "guidelinerules",
    "$measured": {
     "edges": 50,
     "nulls": 0,
@@ -3443,6 +3514,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "note": "s308-D17: governedBy is kept for rulings only (the 12 logo→rule lines moved to obeys). s308-D18: it is the READ side of governs. s308-D35: the six lines Dave kept are the only ones stored (opposite.kept); legend's three hand-written lines and Banner ← s125-D1 were dropped",
    "$measured": {
     "edges": 6,
@@ -3550,6 +3623,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "$measured": {
     "edges": 2057,
     "nulls": 0,
@@ -3648,6 +3723,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 6,
     "nulls": 4,
@@ -3743,6 +3820,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 26,
     "nulls": 0,
@@ -3840,6 +3919,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": null,
+   "chip": "structure",
    "$measured": {
     "edges": 0,
     "nulls": 0,
@@ -3930,6 +4011,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 68,
     "nulls": 15,
@@ -3959,8 +4042,9 @@
    "plain": "is in the research family",
    "verb": {
     "reads": [],
-    "missing": "named by neither the twelve verbs nor `unread` in knowledge/_kg_verbs.json (the map's own $measured.$drift names this gap)",
-    "source": null
+    "unread": "ux:<principle> → family:<research family> — the THEORY view's own lines (s281-D1). Read by no verb: a verb for it is a ruling, not a default.",
+    "was": "missing from #281 to #313: named by neither the twelve verbs nor `unread` in knowledge/_kg_verbs.json (the map's own $measured.$drift names this gap); carried as unread by #313 lane D4, 2026-10-01",
+    "source": "this register (#313 lane D4, 2026-10-01)"
    },
    "from": [
     "ux"
@@ -4028,6 +4112,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 145,
     "nulls": 0,
@@ -4122,6 +4208,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "assets",
    "$measured": {
     "edges": 666,
     "nulls": 0,
@@ -4214,6 +4302,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "$measured": {
     "edges": 246,
     "nulls": 0,
@@ -4314,6 +4404,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 63,
     "nulls": 51,
@@ -4412,6 +4504,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 2,
@@ -4547,6 +4641,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base (metas) · assets (logos)",
+   "meta": "obeysEdge",
+   "chip": "guidelinerules",
    "$measured": {
     "edges": 180,
     "nulls": 0,
@@ -4566,9 +4662,9 @@
     "floor": 40,
     "basis": "required: a hand-made judgement named in s308-D20; the 40-character floor is kept (s308-D20, meta.schema.json definitions.obeysEdge)",
     "today": {
-     "spelled": "$why in the metas (the one name `why` is owed there: the metas were lane C0's on the night #311 lane D1 ran); `why` in _logo_nodes.json; the explorer carries it as `why` on the edge",
+     "spelled": "why — in the metas since #313 lane D4 (168 obeys lines on 10 metas renamed from `$why`; meta.schema.json definitions.obeysEdge now requires `why`), in _logo_nodes.json, and on the explorer's edge",
      "carried": "180 of 180",
-     "note": "meta.schema.json definitions.obeysEdge: $why required, minLength 40, for the metas' obeys; the 12 logo lines carry `why` in _logo_nodes.json, which no schema checks"
+     "note": "meta.schema.json definitions.obeysEdge: `why` required, minLength 40, for the metas' obeys; the 12 logo lines carry `why` in _logo_nodes.json, which no schema checks. Was: `$why` in the metas (s276-D3 to #313)."
     }
    }
   },
@@ -4648,6 +4744,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 6,
     "nulls": 1,
@@ -4739,6 +4837,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
    },
    "family": "sources",
+   "meta": null,
+   "chip": "sources",
    "note": "s308-D28 (b), #311 lane D3: a capability is provided by the component that carries its own name; the rest are listed `unprovided` in the store until a meta declares what it provides",
    "why": {
     "field": "why",
@@ -4837,6 +4937,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 108,
     "nulls": 0,
@@ -4935,6 +5037,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 4,
@@ -5038,6 +5142,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "render",
    "$measured": {
     "edges": 137,
     "nulls": 0,
@@ -5146,6 +5252,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D3): graded on the outside definition the research page names for the edge (notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html item 9)"
    },
    "family": "structure",
+   "meta": null,
+   "chip": "structure",
    "note": "s308-D28 (e), #311 lane D3: each line carries `version` (and `released` false while that version is uncut) and `ruling`",
    "why": {
     "field": "why",
@@ -5241,6 +5349,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 7,
     "nulls": 0,
@@ -5338,6 +5448,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelinerules",
+   "meta": null,
+   "chip": null,
    "$measured": {
     "edges": 75,
     "nulls": 8,
@@ -5437,6 +5549,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 1,
@@ -5535,6 +5649,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "structure",
    "$measured": {
     "edges": 2,
     "nulls": 0,
@@ -5633,6 +5749,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "$measured": {
     "edges": 199,
     "nulls": 0,
@@ -5725,6 +5843,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "sources",
+   "meta": null,
+   "chip": "sources",
    "$measured": {
     "edges": 155,
     "nulls": 0,
@@ -5824,6 +5944,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 3,
@@ -5925,6 +6047,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "governance",
+   "meta": null,
+   "chip": "governance",
    "owedAlso": "s308-D23 (item 8) folds knowledge/_decision-graph.json's older nine types into this vocabulary — owed",
    "$measured": {
     "edges": 9,
@@ -6026,6 +6150,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 22,
     "nulls": 0,
@@ -6119,6 +6245,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "uxprinciples",
+   "meta": null,
+   "chip": "uxprinciples",
    "$measured": {
     "edges": 9,
     "nulls": 0,
@@ -6212,6 +6340,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 25,
     "nulls": 22,
@@ -6318,6 +6448,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 110,
     "nulls": 0,
@@ -6417,6 +6549,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "usage",
    "$measured": {
     "edges": 367,
     "nulls": 0,
@@ -6509,6 +6643,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "assets",
    "$measured": {
     "edges": 371,
     "nulls": 0,
@@ -6601,6 +6737,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "assets",
+   "meta": null,
+   "chip": "assets",
    "$measured": {
     "edges": 19,
     "nulls": 1,
@@ -6694,6 +6832,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "guidelines",
+   "meta": null,
+   "chip": "guidelines",
    "$measured": {
     "edges": 6,
     "nulls": 0,
@@ -6791,6 +6931,8 @@
     "basis": "s308-D22 + s308-D27 (#311 lane D2): the word map's grade on notes/_RESEARCH-308-design-system-ontologies-2026-09-29-v2.html §05, re-pointed design-system vocabulary first, then SKOS, Dublin Core or PROV"
    },
    "family": "base",
+   "meta": "edge",
+   "chip": "rules",
    "$measured": {
     "edges": 51,
     "nulls": 2,
@@ -6818,7 +6960,7 @@
  "$absent": {
   "overrides": {
    "namedIn": [
-    "_kg_explorer.template.html FAMILY"
+    "_build_kg_explorer.py VERB_STEMS (a mention-verb stem; the page's FAMILY map no longer names it, #313 D4)"
    ],
    "why": "a key in the template's FAMILY map (governance) and a mention-verb stem in the builder; no edge of this type exists in knowledge/_ruling_edges.json or anywhere else in the graph"
   }
@@ -6940,5 +7082,43 @@
     }
    }
   }
+ },
+ "$chips": {
+  "what": "THE CHIP MAP (W-308ie, #313 lane D4). The explorer page drew each edge type under the chip its literal FAMILY map named (knowledge/_kg_explorer.template.html, to 1.37). That map is now the `chip` column of each row, baked into the page by knowledge/_build_kg_explorer.py as KG.fam. The map's own comments are kept here VERBATIM, in the order they stood, because they are the reasons each chip was chosen.",
+  "from": "knowledge/_kg_explorer.template.html const FAMILY at cdf17a12",
+  "notInRows": {
+   "overrides": "governance"
+  },
+  "notInRowsNote": "keys the map carried that are not rows: `overrides` is in `$absent` (no edge of it exists), so the page no longer lists a chip for it; nothing else is dropped.",
+  "history": [
+   "#267 s267-D3 — AUTHORED ruling->ruling edges. Same governance red as `mentions`; they are",
+   "SOLID because they are authored (dashed stays reserved for derived), and `supersedesClause`",
+   "(supersession of ONE CLAUSE) is drawn in the same red DOTTED, so it reads as a lighter",
+   "supersedes without inventing a colour or breaking the TWO-RED LAW (s151-D1).",
+   "#274 s274-D8 — the four ratified guideline-rule edge types, their own family and chip.",
+   "#275 s275-D2 — the six ratified UX-principle edge types, their own family and chip.",
+   "#281 s281-D1 — inFamily joins them: the 145 ux→family: lines are the THEORY view's own (the",
+   "view s281-D5 renamed from Explanation; the view id `explain` and this fam key are untouched).",
+   "`evidencedBy` is NOT added here — it is already a key (governance: a ruling and its evidence).",
+   "Its 134 new ux→evidence: lines carry fam 'uxprinciples' on the edge, and EON reads that first.",
+   "#279 s277-D4 — the six ratified asset edge types, their own family and chip (OFF by default).",
+   "defaultActive (s277-D6) and the logos' governedBy (s277-D7) are DECLARED-NULL ONLY: never drawn,",
+   "so they need no family here — they are counted and listed as declared nulls.",
+   "#304 R3 s277-D12 — the tokens family's one edge type, its own family and chip (OFF by default).",
+   "#305 B2 s305-D26 — step 5's four edge types, their own family and chip (OFF by default).",
+   "1.37 (#311 lane D3, s308-D28) — the five edges the outside world has: token alias in Tokens, the providing",
+   "half of a capability in Sources, a component's ARIA role beside the WCAG criteria, replacement in Structure.",
+   "#281 s281 lane CM — THE CHIP MAP. Six authored edge types reached storage and stopped here: they",
+   "were not keys of this map, so EON asked famOn[undefined] and no chip anywhere could draw them.",
+   "The five SYSTEM-view types join `rules`, the base wiring chip they already sit beside (ON by",
+   "default: the 23 shape:, 14 intent: and 12 role: dots light, and the 43 component→component",
+   "yieldsTo lines are drawn for the first time; yieldsTo's 2 declared nulls and defaultActive's 1",
+   "are carried and never drawn, the s270-D2 shape — defaultActive has a home here for its TYPE, not",
+   "for a line, since its only edge is that null). `obeys` joins `guidelinerules`: a component",
+   "obeying an HSBC rule is the rule family's own line, and that chip loads OFF, so the 154",
+   "component→rule lines change no default. The 14 component→ux lines carry `held:true` from the",
+   "builder and are drawn by NOTHING at any chip setting — where an obligation on a UX principle is",
+   "drawn is Dave's word, and until it is ruled the line is carried, counted and readable, not lost."
+  ]
  }
 }

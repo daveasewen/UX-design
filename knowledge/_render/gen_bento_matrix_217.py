@@ -915,7 +915,10 @@ def caption_mint_rules():
     a block that emitted only the difference would read as "console is the special one" and a
     per-theme probe would have no per-theme rule to read.
     ⛔ EVERY var() CARRIES A LITERAL FALLBACK MINTED FROM canon.css — a dangling ground var renders
-    SILENT BLACK and no gate sees it ([[dangling-dataviz-var-renders-silent-black]]).
+    SILENT BLACK and no gate sees it ([[dangling-dataviz-var-renders-silent-black]]). ⛔ s313-D48
+    (Dave 2026-10-01, "The base theme, light"): the fallback is canon's BASE-THEME LIGHT answer, one
+    answer for every page — until #313 each theme's row carried its own dark value (supercharge's
+    warm #312C26), which the fallback-drift gate now refuses.
     ⛔ LIGHT MINTS ARE REFUSED BY NAME: light carries no `data-theme` attribute, so a light mint
     would compile to a selector that matches nothing and would look enacted while painting
     nothing ([[instrument-without-a-consumer]])."""
@@ -941,18 +944,18 @@ def caption_mint_rules():
             if m:
                 L.append('[data-apollo-theme="%s"]{%s:var(%s,%s);}  /* %s · %s · %s */'
                          % (theme, slot, m["css_var"],
-                            resolve_token(m["css_var"], theme, "dark"),
+                            resolve_token(m["css_var"], "mono", "light"),             # s313-D48
                             m["primitive"], m["status"].upper(), m["from"]))
             else:
                 L.append('[data-apollo-theme="%s"]{%s:var(%s,%s);}  /* unchanged — the ramp step */'
-                         % (theme, slot, token, resolve_token(token, theme, "dark")))
+                         % (theme, slot, token, resolve_token(token, "mono", "light")))  # s313-D48
         L.append("/* ⛔ DARK IS THE ONLY CONSUMER. In light there is no `[data-theme]` to match, so "
                  "the\n   canonical caption rule above governs and light mode is untouched — which "
                  "is the\n   whole reason this is a mint and not a repointed token (mode-inverted "
                  "ramp, #220). */")
         L.append('[data-theme="dark"] .bm-stage[data-cap-bg="%s"] .bm-cap{background:var(%s,var(%s,'
                  '%s));}' % (word, slot, GROUND_TOKEN[word],
-                             resolve_token(GROUND_TOKEN[word], "mono", "dark")))
+                             resolve_token(GROUND_TOKEN[word], "mono", "light")))     # s313-D48
     return "\n".join(L)
 
 
@@ -1360,6 +1363,9 @@ def _defaults_block():
     return block
 
 
+FRAME_ROLES = ("page-frame", "wayfinding")   # s313-D21: the frame is never a tile group
+
+
 def grouping_dial(template_stem="template-dashboard-bento"):
     """-> the DERIVED `grouping` dial (s245-D7, #245 L3 → L5). s234-D4: grouping lives ONCE in the
     KG — `edges.groupsWith` in the member metas — and every consumer DERIVES it. This dial is such a
@@ -1374,12 +1380,31 @@ def grouping_dial(template_stem="template-dashboard-bento"):
         return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else {}
     tpl = meta(template_stem)
     members = [c.split(":", 1)[1] for c in tpl.get("$composes", []) if c.startswith("component:")]
+    # ⬛ s313-D21 (#313, Dave by click, pictures page call 2, verbatim: 'Frame, not a tile group'):
+    # THE NAV FAMILY IS THE PAGE'S FRAME, NOT A TILE GROUP — a dashboard counts the groups on its
+    # wall, and the navs are not on the wall. Read off the KG, never a hand list: a member whose
+    # `provides` is a FRAME role (page-frame, wayfinding) is skipped, and so is any groupsWith edge
+    # that lands on one. That is what took the #261 family edge (navigations -> sidebar-nav,
+    # tab-bar) out of the count; R6e was red on it from #305 to #313.
+    def is_frame(stem):
+        return meta(stem).get("provides") in FRAME_ROLES
+    # ⬛ s313-D21's mechanical half (the page: 'That is a mechanical fix, not a question'): since
+    # #309 (879f9aae) kpi-tile and stat-card are ALIAS SEATS of metric (s308-D42); the seat holds
+    # no spec and its per-group counts live in metric.meta.json, which the template's $composes
+    # does not name. The dial FOLLOWS `aliasOf` to the owner, so the group is read where the fact is.
+    def owner(stem):
+        a = meta(stem).get("aliasOf")
+        ref = a.get("component") if isinstance(a, dict) else None
+        return ref.split(":", 1)[1] if isinstance(ref, str) and ref.startswith("component:") else stem
+    members = list(dict.fromkeys(owner(s) for s in members if not is_frame(s)))
     edges, declared = [], []
     for stem in members:
         m = meta(stem)
         for e in m.get("edges", {}).get("groupsWith", []):
             if e.get("ref") is None:
                 declared.append({"on": "component:" + stem, "$note": e.get("$note", "")})
+            elif str(e["ref"]).startswith("component:") and is_frame(e["ref"].split(":", 1)[1]):
+                continue
             else:
                 edges.append(("component:" + stem, e["ref"]))
         # ⬛ s308-D19 (#308, Dave: "move the 22 self-lines to the fields they mean — Take it"): a
@@ -1984,8 +2009,8 @@ CSS = """
    it paints a colour nobody chose. Bite 12's new drift arm now asserts EVERY fallback literal on
    this page against canon's own answers, so the class cannot come back quietly. Two sibling sites
    in gen_foundations_217.py carried the same literal and are corrected with it. */
-.bm{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#808080);
-  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
+.bm{--bm-line:var(--border-subtle,#E1E1E1); --bm-line-2:var(--border-strong,#808080);
+  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#1A1A1A);
   --bm-page:var(--background-default,#FFFFFF);
   --bm-grey:var(--surface-subtle,#F0F0F0);
   --bm-white:var(--surface-raised,#FFFFFF);
@@ -1997,23 +2022,23 @@ CSS = """
   --bm-container-radius:var(--border-radius-container,0px);}
 
 /* ---- controller chrome. NEUTRAL HUES ONLY — no red, no yellow, no green. ---- */
-.bm-controls{border:1px solid var(--bm-line,#D7D8D6); padding:var(--sp-4,16px);
+.bm-controls{border:1px solid var(--bm-line,#E1E1E1); padding:var(--sp-4,16px);
   display:flex; flex-wrap:wrap; gap:var(--sp-5,24px); align-items:flex-start;
   background:var(--bm-page,#FFFFFF); position:sticky; top:0; z-index:9;}
 .bm-group{display:flex; flex-direction:column; gap:6px; min-width:0;}
 .bm-group[hidden]{display:none;}
-.bm-glabel{color:var(--bm-ink-2,#545454); text-transform:uppercase; letter-spacing:0.12em;}
-.bm-why{color:var(--bm-ink-2,#545454); max-width:34ch; min-height:1.2em;}
+.bm-glabel{color:var(--bm-ink-2,#1A1A1A); text-transform:uppercase; letter-spacing:0.12em;}
+.bm-why{color:var(--bm-ink-2,#1A1A1A); max-width:34ch; min-height:1.2em;}
 .bm-seg{display:inline-flex; border:1px solid var(--bm-ink,#1A1A1A);
   color:var(--bm-ink,#1A1A1A); border-radius:var(--bm-radius-ctl,0px); overflow:hidden;}
 .bm-seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
   text-transform:uppercase; padding:7px 12px; border:0; background:transparent; color:inherit;
-  cursor:pointer; border-right:1px solid var(--bm-line,#D7D8D6); min-height:32px;}
+  cursor:pointer; border-right:1px solid var(--bm-line,#E1E1E1); min-height:32px;}
 .bm-seg button:last-child{border-right:0;}
 .bm-seg button[aria-pressed="true"]{background:var(--bm-ink,#1A1A1A); color:var(--bm-page,#FFFFFF);}
 /* a REFUSED option: visibly out, with its reason printed beside the group. Neutral only —
    the refusal is carried by weight and a strike, never by a hue. */
-.bm-seg button[disabled]{color:var(--bm-ink-2,#545454); opacity:.45; cursor:not-allowed;
+.bm-seg button[disabled]{color:var(--bm-ink-2,#1A1A1A); opacity:.45; cursor:not-allowed;
   text-decoration:line-through;}
 .bm-seg button[disabled][aria-pressed="true"]{background:transparent;}
 /* ---- ⬛ s217-D6 THE SNAP SLIDER. NEUTRAL HUES ONLY — the track, the thumb, the ticks and the
@@ -2033,10 +2058,10 @@ CSS = """
   border-radius:var(--bm-radius-ctl,0px);}
 .bm-out{min-width:5ch; color:var(--bm-ink,#1A1A1A); font-variant-numeric:tabular-nums;
   border:1px solid var(--bm-line-2,#808080); padding:3px 8px; text-align:center;}
-.bm-stops{display:flex; gap:6px; color:var(--bm-ink-2,#545454); letter-spacing:0.06em;}
+.bm-stops{display:flex; gap:6px; color:var(--bm-ink-2,#1A1A1A); letter-spacing:0.06em;}
 
 /* ---- the stage ---- */
-.bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
+.bm-stage{border:1px solid var(--bm-line,#E1E1E1); margin-top:var(--sp-4,16px);}
 .bm-page-ground{padding:var(--sp-5,24px);}
 /* ⬛ s219-D3(4) — THE PAGE-LEVEL RAIL, three members. `page` REPLACES the old `transparent`:
    the stage had no ground of its own, so a transparent page ground already fell through to the
@@ -2048,7 +2073,7 @@ CSS = """
 .bm-stage[data-type="display"] .bm-pane[data-pane="display"],
 .bm-stage[data-type="gallery"] .bm-pane[data-pane="gallery"],
 .bm-stage[data-type="dashboard"] .bm-pane[data-pane="dashboard"]{display:block;}
-.bm-capt{color:var(--bm-ink-2,#545454); margin:0 0 var(--sp-2,8px);}
+.bm-capt{color:var(--bm-ink-2,#1A1A1A); margin:0 0 var(--sp-2,8px);}
 
 /* ---- the WALL grounds. `.c-bento` in the selector so a bento background beats nothing but
    still reads at the same weight as a role rule. ---- */
@@ -2080,14 +2105,14 @@ __SPACING_RULES__
    carrying a 1px border from a rule about a different wall. A wall's keylines belong to the tiles
    of ITS OWN grid. */
 .bm-stage[data-spacing="1"][data-keylines="on"] .bm-wall > .c-bento__grid > .bm-tile{
-  box-shadow:inset -1px 0 0 0 var(--bm-line,#D7D8D6),
-             inset 0 -1px 0 0 var(--bm-line,#D7D8D6);}
+  box-shadow:inset -1px 0 0 0 var(--bm-line,#E1E1E1),
+             inset 0 -1px 0 0 var(--bm-line,#E1E1E1);}
 .bm-stage[data-spacing="1"][data-keylines="on"] .c-bento.bm-wall{
-  border-top:1px solid var(--bm-line,#D7D8D6);
-  border-left:1px solid var(--bm-line,#D7D8D6);}
+  border-top:1px solid var(--bm-line,#E1E1E1);
+  border-left:1px solid var(--bm-line,#E1E1E1);}
 /* keylines at the two open spacings: a plain 1px tile border. */
 .bm-stage[data-keylines="on"]:not([data-spacing="1"]) .bm-wall > .c-bento__grid > .bm-tile{
-  border:1px solid var(--bm-line,#D7D8D6);}
+  border:1px solid var(--bm-line,#E1E1E1);}
 /* keylines OFF at tight is the RULED behaviour: the 1px gap shows the ground through. */
 
 /* ---- DASHBOARD spacing: main on the outer wall, sub on the inner ones. The outer selector
@@ -2141,7 +2166,7 @@ __SUB_SPACING_RULES__
        interiors of the live wall. An absence asserted only on the node would pass a page that
        painted the retired line with a background. */
 .bm-stage[data-keylines="on"][data-sub-spacing="1"] .bm-inner.c-bento[data-bento-role="dashboard"]{
-  border:1px solid var(--bm-line,#D7D8D6); --bento-outer-padding:0px;}
+  border:1px solid var(--bm-line,#E1E1E1); --bento-outer-padding:0px;}
 /* ⛔ THE SUPPRESSION IS DECLARED, NOT LEFT AS AN ABSENCE. `.bm-outer` also carries `.bm-wall`, so
    the wall's own keyline rules above reach these tiles by descent; a tile that paints no edge here
    must be SAID to paint none. `overflow:visible` is what lets the line leave the tile at all —
@@ -2157,7 +2182,7 @@ __SUB_SPACING_RULES__
   border:0; --bento-outer-padding:0px;}
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
   > .c-bento__grid > .bm-tile{
-  border:1px solid var(--bm-line,#D7D8D6); box-shadow:none; overflow:hidden; position:relative;}
+  border:1px solid var(--bm-line,#E1E1E1); box-shadow:none; overflow:hidden; position:relative;}
 /* ⛔ AND THE RETIRED LINE IS SAID TO BE GONE, not left to be absent. The hairline pair is minted on
    every card tile (one mint, three consumers historically); above 1px it renders nowhere. */
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner
@@ -2194,14 +2219,14 @@ __CORNER_RULES__
 .bm-imgbox{display:block; flex:1 1 auto; min-height:0; overflow:hidden;}
 .bm-img{display:block; width:100%; height:100%; object-fit:cover;
   background:var(--surface-subtle,#F0F0F0);}
-.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#545454); display:flex;
+.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#1A1A1A); display:flex;
   flex-direction:column; gap:2px; justify-content:center;}
 .bm-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
   -webkit-box-orient:vertical; overflow:hidden;}
 .bm-panel,.bm-card{padding:var(--sp-4,16px); gap:var(--sp-2,8px); justify-content:flex-end;}
-.bm-eyebrow{color:var(--bm-ink-2,#545454); text-transform:uppercase; letter-spacing:0.12em;}
+.bm-eyebrow{color:var(--bm-ink-2,#1A1A1A); text-transform:uppercase; letter-spacing:0.12em;}
 .bm-body,.bm-fig{color:var(--bm-ink,#1A1A1A);}
-.bm-sub{color:var(--bm-ink-2,#545454);}
+.bm-sub{color:var(--bm-ink-2,#1A1A1A);}
 
 /* ---- CAPTION GROUNDS (P2's subject). The caption's IMMEDIATE ground is the tile, which takes
    the bento background — so these two are what the legality rule compares. ---- */
@@ -2214,7 +2239,7 @@ __CORNER_RULES__
 .bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
   color:var(--bm-ink-rev,#FFFFFF);}
 .bm-stage[data-cap-bg="grey"] .bm-cap,
-.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#1A1A1A);}
 /* ⬛ #220 PROPOSED — THE DARK-MODE CAPTION GROUND MINT. Generated from CAPTION_GROUND_MINTS, so
    the value, the primitive it comes from and the themes it does NOT touch are all one table.
    ⛔ The ink is NOT restated: `ink_follows` is the rule above and the mint moves a GROUND, not a
@@ -2274,7 +2299,7 @@ __CAPTION_MINT_RULES__
 /* THE WIDOWS — Flickr's rule and gen_gallery_compare_217's: whatever is left over is NOT blown
    up to justify. Each keeps its own aspect at the target row height. */
 .bm-widow{flex:0 0 auto; width:calc(var(--layout-bento-row-unit,320px) * var(--bm-ar,1.5));}
-.bm-stage[data-keylines="on"] .bm-jtile{border:1px solid var(--bm-line,#D7D8D6);}
+.bm-stage[data-keylines="on"] .bm-jtile{border:1px solid var(--bm-line,#E1E1E1);}
 __JUST_SPACING_RULES__
 .bm-stage[data-rounding="capsule"] .bm-jtile{border-radius:var(--bm-container-radius,0px);}
 .bm-stage[data-rounding="corners"] .bm-jbox{border-radius:var(--bm-container-radius,0px);}
@@ -2282,7 +2307,7 @@ __JUST_SPACING_RULES__
 /* ---- export + matrix table ---- */
 .bm-export{border:1px solid var(--bm-line-2,#808080); margin-top:var(--sp-5,24px);}
 .bm-exhead{display:flex; flex-wrap:wrap; gap:var(--sp-3,12px); align-items:center;
-  padding:var(--sp-3,12px) var(--sp-4,16px); border-bottom:1px solid var(--bm-line,#D7D8D6);}
+  padding:var(--sp-3,12px) var(--sp-4,16px); border-bottom:1px solid var(--bm-line,#E1E1E1);}
 .bm-export pre{margin:0; padding:var(--sp-4,16px); overflow-x:auto;
   background:var(--bm-page,#FFFFFF); color:var(--bm-ink,#1A1A1A);}
 .bm-tag{display:inline-block; border:1px solid var(--bm-line-2,#808080);
@@ -2307,14 +2332,14 @@ __JUST_SPACING_RULES__
                                the hairline, stopped along the curve by the container's own clip.
    ============================================================================================ */
 .bm-sp-strip{display:none; margin-top:var(--sp-6,32px);
-  border-top:1px solid var(--bm-line,#D7D8D6); padding-top:var(--sp-5,24px);}
+  border-top:1px solid var(--bm-line,#E1E1E1); padding-top:var(--sp-5,24px);}
 .bm-stage[data-type="dashboard"][data-keylines="on"] .bm-sp-strip{display:block;}
 .bm-sp-intro{display:flex; flex-direction:column; gap:var(--sp-2,8px);}
-.bm-sp-intro p{margin:0; color:var(--bm-ink-2,#545454); max-width:88ch;}
+.bm-sp-intro p{margin:0; color:var(--bm-ink-2,#1A1A1A); max-width:88ch;}
 .bm-sp-title{margin:0; color:var(--bm-ink,#1A1A1A); display:flex; flex-wrap:wrap;
   gap:var(--sp-3,12px); align-items:baseline;}
 /* the two ruled-behaviour notes, one per regime. Exactly one is on screen whenever the strip is. */
-.bm-sp-open, .bm-sp-note{display:none; color:var(--bm-ink-2,#545454); margin:var(--sp-3,12px) 0 0;
+.bm-sp-open, .bm-sp-note{display:none; color:var(--bm-ink-2,#1A1A1A); margin:var(--sp-3,12px) 0 0;
   border-left:2px solid var(--bm-line-2,#808080); padding:var(--sp-3,12px) var(--sp-4,16px);}
 .bm-stage[data-sub-spacing="1"] .bm-sp-note{display:block;}
 .bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-sp-open{display:block;}
@@ -2329,7 +2354,7 @@ __JUST_SPACING_RULES__
    rule and it renders a DEFECT: a group whose tiles do not fill its tracks shows the ground
    through the orphan cell as a solid block (MEASURED #217, mono, third group). */
 .bm-gapline{display:none; position:absolute; pointer-events:none;
-  background:var(--bm-line,#D7D8D6);}
+  background:var(--bm-line,#E1E1E1);}
 .bm-gapline[data-axis="v"]{
   width:1px; right:calc((var(--bento-gutter,24px) + 1px) / -2);
   top:calc((var(--bento-gutter,24px) + 1px) / -2);
@@ -2351,12 +2376,12 @@ __JUST_SPACING_RULES__
    RESPONSIVE BANDS while claiming to answer one about spacing.
    ============================================================================================ */
 .bm-sweep{display:none; margin-top:var(--sp-6,32px);
-  border-top:1px solid var(--bm-line,#D7D8D6); padding-top:var(--sp-5,24px);}
+  border-top:1px solid var(--bm-line,#E1E1E1); padding-top:var(--sp-5,24px);}
 .bm-stage[data-type="dashboard"][data-keylines="on"] .bm-sweep{display:block;}
 .bm-sw-strip{display:flex; flex-direction:column; gap:var(--sp-5,24px);
   margin-top:var(--sp-5,24px);}
 .bm-sw-row{display:flex; flex-direction:column; gap:var(--sp-2,8px);}
-.bm-sw-label{color:var(--bm-ink-2,#545454);}
+.bm-sw-label{color:var(--bm-ink-2,#1A1A1A);}
 .bm-sw-label b{color:var(--bm-ink,#1A1A1A); font-variant-numeric:tabular-nums;}
 .bm-sw-ground{background:var(--bm-grey,#F0F0F0); padding:var(--sp-4,16px);}
 .bm-stage[data-page-bg="white"] .bm-sw-ground{background:var(--bm-white,#FFFFFF);}
@@ -2371,10 +2396,10 @@ __JUST_SPACING_RULES__
   --bento-outer-padding:var(--bento-gutter,24px);
   background:var(--bm-white,#FFFFFF); border:0;}
 .bm-sw-inner > .c-bento__grid > .bm-tile{
-  border:1px solid var(--bm-line,#D7D8D6); box-shadow:none; overflow:hidden; position:relative;}
+  border:1px solid var(--bm-line,#E1E1E1); box-shadow:none; overflow:hidden; position:relative;}
 .bm-sw-inner > .c-bento__grid > .bm-tile > .bm-gapline{display:none;}
 .bm-sw-row[data-stop="1"] .bm-sw-inner.c-bento[data-bento-role="dashboard"]{
-  --bento-outer-padding:0px; border:1px solid var(--bm-line,#D7D8D6);}
+  --bento-outer-padding:0px; border:1px solid var(--bm-line,#E1E1E1);}
 .bm-sw-row[data-stop="1"] .bm-sw-inner > .c-bento__grid > .bm-tile{
   border:0; box-shadow:none; overflow:visible;}
 .bm-sw-row[data-stop="1"] .bm-sw-inner > .c-bento__grid > .bm-tile > .bm-gapline{display:block;}
@@ -2403,7 +2428,7 @@ __SWEEP_STOP_RULES__
   --bento-outer-padding:var(--bento-gutter,8px); width:100%;
   background:var(--bm-white,#FFFFFF); border:0;}
 .bm-mw-group > .c-bento__grid > .bm-tile{
-  border:1px solid var(--bm-line,#D7D8D6); box-shadow:none; overflow:hidden; position:relative;}
+  border:1px solid var(--bm-line,#E1E1E1); box-shadow:none; overflow:hidden; position:relative;}
 .bm-mw-group > .c-bento__grid > .bm-tile > .bm-gapline{display:none;}
 
 @media (prefers-reduced-motion: reduce){
@@ -3260,13 +3285,13 @@ def page(shell, c=None):
                 '.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"])'
                 ' .bm-inner.c-bento[data-bento-role="dashboard"]{--bento-outer-padding:0px;}\n'
                 '.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner'
-                " > .c-bento__grid > .bm-tile{border:1px solid var(--bm-line,#D7D8D6);}\n"
+                " > .c-bento__grid > .bm-tile{border:1px solid var(--bm-line,#E1E1E1);}\n"
                 '.bm-stage[data-sub-spacing="1"][data-keylines="on"]'
                 ' .bm-inner.c-bento[data-bento-role="dashboard"]{--bento-gutter:0px;}\n'
                 '.bm-stage[data-sub-spacing="1"][data-keylines="on"] .bm-inner'
                 " > .c-bento__grid > .bm-tile{"
-                "box-shadow:inset -1px 0 0 0 var(--bm-line,#D7D8D6),"
-                "inset 0 -1px 0 0 var(--bm-line,#D7D8D6);}\n")
+                "box-shadow:inset -1px 0 0 0 var(--bm-line,#E1E1E1),"
+                "inset 0 -1px 0 0 var(--bm-line,#E1E1E1);}\n")
         # ⬛ ARM, FIFTH SYMPTOM: THE KEYLINE NOTE IS UNGATED (#217, second pass; the ruled note
         # inherits the arm the retired spread had). The strip is shown whatever the dials say, and
         # BOTH regime notes stand at the 1px stop — so the page describes two constructions at
@@ -3288,7 +3313,7 @@ def page(shell, c=None):
         css += ("\n/* ⬛ MUTATION ARM — the RETIRED centred-gutter construction, restored. */\n"
                 '.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"])'
                 ' .bm-inner.c-bento[data-bento-role="dashboard"]'
-                "{border:1px solid var(--bm-line,#D7D8D6); --bento-outer-padding:0px;}\n"
+                "{border:1px solid var(--bm-line,#E1E1E1); --bento-outer-padding:0px;}\n"
                 '.bm-stage[data-keylines="on"]:not([data-sub-spacing="1"]) .bm-inner'
                 " > .c-bento__grid > .bm-tile"
                 "{border:0; box-shadow:none; overflow:visible; position:relative;}\n"
@@ -3513,7 +3538,15 @@ def selftest():
                     pass
         return out
 
-    drifted = sorted([(t, h) for t, h in _fb if _canon_answers(t) and h not in _canon_answers(t)])
+    # ⛔ s313-D48 (Dave 2026-10-01, "The base theme, light"): ONE answer per token — canon's base
+    # theme in light — not any of canon's theme x mode answers; so the warm fallback is gone too.
+    def _base_answer(tok):
+        try:
+            return resolve_token(tok, "mono", "light")
+        except KeyError:
+            return None
+
+    drifted = sorted([(t, h) for t, h in _fb if _base_answer(t) and h != _base_answer(t)])
     chromatic_fb = sorted([(t, h) for t, h in _fb if _spread(h) > 8])
     # ⛔ AND THE SECOND LEVEL, WHICH THE FIRST ARM CANNOT SEE. A page-local alias is declared as
     # `--bm-line-2: var(--border-strong,#808080)` and then CONSUMED as `var(--bm-line-2,#808080)`.
@@ -3527,11 +3560,12 @@ def selftest():
     local_drift = sorted({(t, h.upper(), _local[t].upper()) for t, h in _fb
                           if t in _local and h.upper() != _local[t].upper()})
     bite("12 · every AUTHORED colour is a NEUTRAL — no red, no yellow, no green in the chrome; "
-         "every var() FALLBACK literal on a CANON token is canon's own answer for it (so the one "
-         "chromatic fallback here is supercharge's RULED warm ramp and nothing else can be); and "
-         "every fallback on a PAGE-LOCAL alias is the literal that alias itself declares",
+         "every var() FALLBACK literal on a CANON token is canon's base-theme LIGHT answer for it "
+         "(s313-D48 — so no fallback is chromatic any more: supercharge's warm #312C26, legal here "
+         "until #313, is gone); and every fallback on a PAGE-LOCAL alias is the literal that alias "
+         "itself declares",
          (chromatic, "#000000" in hexes, drifted, chromatic_fb, local_drift),
-         ([], False, [], [("--color-neutral-5", "#312C26")], []))
+         ([], False, [], [], []))
     # the page must not re-declare bento STRUCTURE (s217-D2 owns it)
     structure = [sel.strip() for sel, decls in _re.findall(r"([^{}]+)\{([^{}]*)\}", rules)
                  if "c-bento" in sel
@@ -3949,16 +3983,33 @@ def selftest():
           _rails_doc["dials"]["subSpacing"]["options"] ==
           [str(s) for s in SPACING_STOPS]),
          (["bentoBg", "grouping", "keylines", "mainSpacing", "subSpacing"], True))
-    # s245-D7 — the grouping dial is DERIVED from the KG, never authored here: it names the three
-    # drawn groups of the template (kpi-tile self, stat-card self) and lists every ref:null edge as
-    # DECLARED with its reason, and it has NO control.
+    # s245-D7 — the grouping dial is DERIVED from the KG, never authored here: it names the
+    # drawn groups of the template and lists every ref:null edge as DECLARED with its reason, and
+    # it has NO control. ⬛ RE-BASED #313 on s313-D21 ('Frame, not a tile group'): the nav family
+    # is skipped as frame, and the two #245 self-groups (kpi-tile, stat-card) are read through
+    # their alias seats to their owner, metric (s308-D42, #309) — so the resolved answer is ONE
+    # metric group. ⚠ metric carries TWO `count{per:"group"}` facts (This month, Position); the
+    # union reads them as one option, which is what the page drew ('[metric]'), not two.
     _g = _rails_doc["dials"]["grouping"]
     bite("R6e · the grouping dial is DERIVED from edges.groupsWith (s245-D7): derived kind, no "
-         "control, 2 resolved groups (self-edges), 4 declared ref:null edges, role words ruled",
+         "control, ONE resolved group (metric, through its alias seats), 4 declared ref:null "
+         "edges, role words ruled — and the nav family is frame, never a group (s313-D21)",
          (_g["kind"], _g["control"].startswith("none"), [x["members"] for x in _g["groups"]],
           len(_g["declared"]), _g["role_names"]["ruled"]),
-         ("derived", True, [["component:kpi-tile"], ["component:stat-card"]], 4,
+         ("derived", True, [["component:metric"]], 4,
           ["tpl-group-lead", "tpl-group-evidence", "tpl-group-context"]))
+    # ⬛ s313-D21 BITE — the planted arm: put the #261 family edge back in front of the dial and it
+    # must still not count. A dial that only passes because the edge happens to be absent proves
+    # nothing (invariant-cannot-discriminate-reversal: assert what CHANGED).
+    _nav_edges = [e.get("ref") for e in json.load(open(os.path.join(
+        KNOW, "components", "navigations.meta.json"), encoding="utf-8")).get(
+        "edges", {}).get("groupsWith", [])]
+    bite("R6f · s313-D21 — the nav family is FRAME: navigations still carries its family edges "
+         "(sidebar-nav, tab-bar) and is in the template's $composes, yet no group names a nav",
+         (sorted(r for r in _nav_edges if r) == ["component:sidebar-nav", "component:tab-bar"],
+          any(m.split(":", 1)[1] in ("navigations", "sidebar-nav", "tab-bar")
+              for x in _g["groups"] for m in x["members"])),
+         (True, False))
     bite("R6c · the defaults are ADDRESSED, never copied — this module owns the option space and "
          "says so when lane B's table is not there to read",
          (_rails_doc["defaults"]["$owner"].startswith("knowledge/_render/gen_foundations_217.py"),
@@ -4256,14 +4307,14 @@ def selftest():
          ({th: [] for th in THEMES}, [], {"light": 15.27, "dark": 16.48}))
     bite("C4g · ⛔ THE STYLESHEET SAYS WHAT THE TABLE SAYS — one declared value per theme (so a "
          "PINNED specimen answers with its own and never inherits the page switcher's), ONE "
-         "ADDRESS in all four with FOUR different literal fallbacks minted from canon (the warm "
-         "one is supercharge's DNA-tier rebind, not a typo), and DARK is the only consumer: light "
+         "ADDRESS in all four with ONE literal fallback, canon's base theme in light (s313-D48 — "
+         "until #313 supercharge's row carried its warm DNA-tier #312C26), and DARK is the only consumer: light "
          "carries no `[data-theme]` to match, which is why light mode cannot be reached from here",
          (_mint_css.count("--bm-cap-dark-darkgrey:"),
           '[data-apollo-theme="console"]{--bm-cap-dark-darkgrey:var(--color-neutral-5,#313131);}'
           in _mint_css,
           '[data-apollo-theme="supercharge"]{--bm-cap-dark-darkgrey:'
-          'var(--color-neutral-5,#312C26);}' in _mint_css,
+          'var(--color-neutral-5,#313131);}' in _mint_css and "#312C26);" not in _mint_css,
           _mint_css.count("var(--surface-digital-black,"),
           _mint_css.count("var(--color-neutral-5,"),
           '[data-theme="dark"] .bm-stage[data-cap-bg="darkgrey"] .bm-cap{' in _mint_css,
