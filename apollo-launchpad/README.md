@@ -54,6 +54,49 @@ an API. The metas are the source; `catalogue/out/catalogue-dashboard.json` is th
 - The gate: `gen_catalogue.py --check` refuses when the committed `out/` no longer matches the metas; `selftest.py`
   refuses when any of T1.0–T1.9 fails. Both exit non-zero; neither writes under the repo.
 
-Steps three (gates as a service, `gates/`), four (the chooser, `chooser/`), the mock fixtures (`mock/`) and the
-record per screen (`records/`) are Friday's lanes (C3, C4, CV); step two (the renderer) is superseded by `s311-D9`:
-the renderer that draws an A2UI screen is the HTML emitter of the new architecture.
+## Step three · gates as a service (`gates/`, #313 lane C3)
+
+One screen in memory in, one verdict out, served as MCP tools over stdio. The surface layer needs the venv's
+jsonschema (as the catalogue harness does); the page layer is the repo's own gates under `knowledge/`, called on
+the string. Nothing under `knowledge/` is edited from here.
+
+    PYTHONDONTWRITEBYTECODE=1 $HOME/.launchpad-venv/bin/python apollo-launchpad/gates/gate_mem.py <surface.json> [--splice]   # or <page.html>
+    PYTHONDONTWRITEBYTECODE=1 $HOME/.launchpad-venv/bin/python apollo-launchpad/gates/server.py                               # the MCP server (a client spawns it)
+    PYTHONDONTWRITEBYTECODE=1 $HOME/.launchpad-venv/bin/python apollo-launchpad/gates/selftest.py [--json]                    # T3.1–T3.6, writes nothing under the repo
+
+- Tools: `gate_surface {surface, splice?}` and `gate_page {html}`; both return the spec's verdict object
+  `{verdict, checks: [{id, name, result, reasons}], timing_ms, catalogue}`. Only a `fail` fails the verdict;
+  `unmeasured` is said, never rounded. A refused screen is a successful call; a call that cannot run is `isError`.
+- Surface layer S1–S9: messages against A2UI v0.9.1 with this catalogue; each part against its own entry; one root;
+  unique ids; references resolve; a slot's children provide what the slot accepts (the wall's four kinds of tile,
+  kept by `s313-D41`; a tier; a capability no registry can answer is UNMEASURED); no deprecated part; states; data
+  within its shape's series count (a binding is resolved through the surface's own `updateDataModel`).
+- Page layer P0–P4: receipt, accessibility (motion judged per part, `s305-D54`), composition, icon source, compose.
+  Receipt and compose take a path today, so each page is written once to `/dev/shm` and removed: the one write.
+- `gate_surface` with `splice` gates the page the surface stands for, made by splicing each part's reference markup
+  (canon.css linked, behaviour loaded by address). It is a stand-in, not a renderer.
+- Warm-up reads the catalogue, the spec, the snippets and the icon library once and builds the compose gate's
+  canon memo (seconds, paid once per process); after it, `gate_surface` reads and writes no file.
+- `gates/fixtures/` holds the worked example's two surfaces (treasurer, operations analyst) the selftest gates.
+
+## Step four · the chooser (`chooser/`, #313 lane C4)
+
+Given a mock role, a question, a clock and the items the agent asks to show, the chooser returns the screen's
+parts with their reasons, every grant and refusal, and the ranker's record. Stdlib only; reads the catalogue,
+`knowledge/` and `mock/`; writes nothing; no clock, no socket, no Jev.
+
+    PYTHONDONTWRITEBYTECODE=1 python3 apollo-launchpad/chooser/choose.py treasurer-0910 --brief   # or analyst-0910; full JSON without --brief
+    PYTHONDONTWRITEBYTECODE=1 python3 apollo-launchpad/chooser/entitle.py                         # the 4 × 7 grant matrix
+    PYTHONDONTWRITEBYTECODE=1 python3 apollo-launchpad/chooser/selftest.py                        # T4.1–T4.8
+
+- Order: entitle (role × tool × scope, before any data is read; a refused item is a `not_chosen` row naming the
+  part it would have taken) → fetch (mock) → the item's intent context → the when-rules, variant B (`s305-D22`)
+  → the ranker seam (off by default, `s305-D47`; never imports `knowledge/_jev.py`, `s294-D10`) → place: the
+  part is a tile only if it provides one of the kinds the bento wall's `tiles` slot accepts (`s305-D18`; the
+  four kept by `s313-D41`).
+- `mock/roles.json` the four mock roles and grants (£500,000 limit); `mock/data.json` the worked example's data;
+  `mock/requests.json` the two requests and three fixtures, with expectations written before the run.
+
+The record per screen (`records/`) and the worked example end to end are the verifier's (CV); step two (the
+renderer) is superseded by `s311-D9`: the renderer that draws an A2UI screen is the HTML emitter of the new
+architecture.

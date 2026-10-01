@@ -1,0 +1,101 @@
+[
+ {
+  "version": "v0.9.1",
+  "createSurface": {
+   "surfaceId": "operations-analyst",
+   "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json"
+  }
+ },
+ {
+  "version": "v0.9.1",
+  "updateComponents": {
+   "surfaceId": "operations-analyst",
+   "components": [
+    {
+     "id": "root",
+     "component": "AppShellTopNav",
+     "brand": "title",
+     "primaryNav": "nav",
+     "content": "wall"
+    },
+    {
+     "id": "title",
+     "component": "Headers",
+     "title": "Good morning",
+     "subtitle": "Month end · Thursday 09:10"
+    },
+    {
+     "id": "nav",
+     "component": "Navigations"
+    },
+    {
+     "id": "wall",
+     "component": "TemplateDashboardBento",
+     "tiles": [
+      "repairs",
+      "cutoff",
+      "exceptions",
+      "queue"
+     ]
+    },
+    {
+     "id": "repairs",
+     "component": "Metric",
+     "state": "ready"
+    },
+    {
+     "id": "cutoff",
+     "component": "StatusIndicator",
+     "variant": "pending",
+     "label": "Cut-off in 2 hours"
+    },
+    {
+     "id": "exceptions",
+     "component": "ListItems",
+     "items": [
+      {
+       "title": "Exception 4471 · beneficiary name mismatch",
+       "detail": "opened 07:02",
+       "value": "oldest"
+      },
+      {
+       "title": "Exception 4475 · sanctions screening hold",
+       "detail": "opened 07:40",
+       "value": ""
+      },
+      {
+       "title": "Exception 4480 · missing purpose code",
+       "detail": "opened 08:15",
+       "value": ""
+      }
+     ]
+    },
+    {
+     "id": "queue",
+     "component": "ChartBar",
+     "data": {
+      "categories": [
+       "Received",
+       "Screening",
+       "Repair",
+       "Approved",
+       "Released"
+      ],
+      "series": [
+       {
+        "name": "Payments",
+        "values": [
+         42,
+         17,
+         5,
+         63,
+         120
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+]
