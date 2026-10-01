@@ -120,3 +120,10 @@ status: observed
 9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.** ⚠ The clone `/tmp/pp310w` was left in place (this seat runs no `rm`); it lives outside the mount.
 
 CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed
+
+---
+
+## ⬛ STRUCK AT THE #311 WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+- ~~OWED item 1, build the soft white and the tab strip and show him~~ ⛔ **STRUCK #311 2026-10-01 BY THE WRAP SEAT** — lane A built `s310-D7` and `s310-D8` (`6faaca8d`..`ac779ad3`); his 20:30 export chose *"Yes, it stands"* on both; both stamped enacted.
+- ~~OWED item 2, Supercharge's dark page~~ ⛔ **STRUCK #311 2026-10-01 BY THE WRAP SEAT** — his 20:30 call 3 is `s311-D2` (warm/4 #25211C, one step up from the tile); lane B unlocked `_expand_aliases` and built it (`76ac038e`). His look at it is `_HANDOFF-162`'s item 2. Items 3 to 8 stand; `_HANDOFF-162` carries them.
