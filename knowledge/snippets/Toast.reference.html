@@ -12,7 +12,12 @@
   NO ERROR VARIANT — deliberate, inherited from the Legacy snackbar family ("Snackbar omits error"):
   errors demand persistent attention and route to Alert (role="alert"); a toast that vanishes cannot
   satisfy that. Statuses here: success · information · warning · plain (statusless message, e.g.
-  "Copied"). All toasts are role="status" (polite) — never assertive (4.1.3).
+  "Copied"). All toasts are announced POLITELY — never assertive (4.1.3). RULED s307-D54, Dave by click 2026-09-28, verbatim: 'Announce politely for news, at once only for errors; Claude settles the six'.
+  A toast is news, so it is polite; the error half of the ruling is carried by Alert's role="alert".
+  THE LIVE REGION IS THE CONTAINER, PRESENT AT LOAD (#313 A5, the #218 lane-beta finding): the region
+  carries role="status" aria-live="polite" before anything arrives, and a spawned toast carries NO
+  role of its own — a live region that arrives already populated is the shape screen readers skip,
+  and a role on both levels risks a double announcement (the APG shape).
 
   CHROME (distinct from Alert's tinted callout): ELEVATED raised surface — tertiary/background/default
   + elevation/border (dark-mode hairline; transparent in light, where elevation/functional shadow
@@ -183,7 +188,7 @@
   </div>
 
   <h2>Live region — spawn from the controls above; hover pauses the 6s timer</h2>
-  <div class="toast-region" id="toastRegion"></div>
+  <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
 
   <!-- s151-D2 MIGRATION: this component's rag-on-neutral contrastPair(s) were REMOVED from the
        contrastPairs list below and moved to the RENDERING gate (_validate_state_contrast.py),
@@ -208,7 +213,7 @@
     const region=document.getElementById('toastRegion');
     const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
     function spawn(status, msg, glyph, origin){
-      const t=document.createElement('div'); t.className='toast '+status; t.setAttribute('role','status');
+      const t=document.createElement('div'); t.className='toast '+status;   /* no role: the region announces (s307-D54) */
       t.innerHTML=(glyph?'<span class="ic"><svg aria-hidden="true"><use href="#'+glyph+'"/></svg></span>':'')+
         '<p class="msg t-ed-body">'+msg+'</p>'+
         '<button class="x" type="button" aria-label="Dismiss message"><svg aria-hidden="true"><use href="#to-close"/></svg></button>';

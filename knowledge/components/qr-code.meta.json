@@ -28,11 +28,10 @@
       "name": "theme",
       "type": "enum",
       "values": [
-        "fixed-plate",
-        "follows-theme"
+        "fixed-plate"
       ],
       "default": "fixed-plate",
-      "$status": "PROPOSED #210, Dave's eye owed — see accessibility.$openQuestion. Both are drawn side by side in section 4 of the snippet so the difference can be seen rather than argued about."
+      "$status": "RULED s307-D50 (Dave, 2026-09-28, verbatim: 'QR codes stay dark on light in every mode'). The theme-following value drawn at #210 was removed at #313 A5; the measured reason is in accessibility.$ruled and $render-verification."
     },
     {
       "name": "errorCorrection",
@@ -57,17 +56,11 @@
     {
       "name": "fixed-plate",
       "use": "The symbol keeps a white plate and dark modules in every theme, because it binds mode-invariant tokens (surface/digital-black on text/reverse — the same hex in light and dark). Dark-on-light is what ISO/IEC 18004 specifies and what every reader handles."
-    },
-    {
-      "name": "follows-theme",
-      "use": "The symbol binds the page's own text and background, so it inverts in dark mode: light modules on a dark field. Visually calmer inside a dark surface; tolerated by many modern scanners and not by all of them."
     }
   ],
   "tokens": {
     "module-fixed": "surface/digital-black — #1A1A1A in BOTH modes, which is the point",
     "plate-fixed": "text/reverse — #FFFFFF in BOTH modes",
-    "module-theme": "text/default",
-    "plate-theme": "background/default",
     "caption": "text/default",
     "link": "text/default",
     "focus": "focus/ring",
@@ -97,7 +90,7 @@
     "announcements": "None. A QR code that announces its own module count is noise.",
     "states": "None. This is a static artefact.",
     "textAlternative": "MANDATORY, not a nicety. A QR code is a sighted-and-has-a-second-device channel. Every specimen carries a figcaption stating the encoded string, and every URL payload also appears as a working link. A code with no text equivalent excludes the reader who cannot see it, the reader with one device, and the reader whose camera will not focus.",
-    "$openQuestion": "WHAT SHOULD A QR CODE DO IN DARK MODE? Both answers are drawn, and #210 MEASURED the difference rather than arguing it: as rendered in dark mode, the fixed-plate variant decoded and the theme-following variant did not (see $render-verification). Fixed plate keeps a white plate in every theme - always readable, but a bright square inside a dark surface. Theme-following is visually calmer and is what a dark UI wants to look like. This is a product-risk decision as much as a visual one, and it is Dave's.",
+    "$ruled": "DARK ON LIGHT IN EVERY MODE — s307-D50, Dave by click 2026-09-28, verbatim: 'Keep both; the splitter reports a percentage; QR codes stay dark on light in every mode'. #210 measured the difference rather than arguing it: as rendered in dark mode, the fixed-plate symbol decoded and the theme-following one did not (see $render-verification). The theme-following variant is removed from the part (#313 A5).",
     "$secondOpenQuestion": "WHICH PAYMENT-QR STANDARD, IF ANY? Symbol B in the snippet is a PLAIN-TEXT DEMONSTRATION STRING and is deliberately NOT an EPC/SEPA payload. Which standard a payment QR carries is a real product question and was not this lane's to pick.",
     "relatedSC": [
       "1.1.1",
@@ -107,6 +100,7 @@
     ]
   },
   "antiPatterns": [
+    "Letting the symbol follow the theme into dark mode (light modules on a dark field). #210 measured an inverted symbol failing a real decoder; s307-D50 rules dark on light in every mode.",
     "Inventing the matrix. A QR code that is a plausible texture rather than a real encoding is worse than no QR code: it looks finished, it passes every visual review, and it fails silently in the reader's hand.",
     "Cropping the quiet zone. Four modules of clear margin are part of the symbol. Putting the matrix flush inside a padded card, or letting a container tighten around it, is the most common way a design-system QR code stops working.",
     "Fixing the outer pixel box across payloads. A longer string means more modules; at a fixed box the modules shrink until the camera cannot resolve them. Size the MODULE, let the box follow.",

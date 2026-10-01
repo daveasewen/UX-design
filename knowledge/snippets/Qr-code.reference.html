@@ -35,13 +35,12 @@
   inside the viewBox, so it can never be cropped off by a layout that tightens its padding.
   This is the single most common way a QR code in a design system stops scanning.
 
-  TWO THEME VARIANTS, BOTH KEPT, NEITHER RULED:
-    A · FIXED PLATE (drawn as the default) — the symbol keeps a white plate and dark modules in
-        every theme, because it binds MODE-INVARIANT tokens: surface/digital-black on
-        text/reverse. Both resolve to the same hex in light and dark.
-    B · THEME-FOLLOWING — the symbol binds text/default on background/default, so it INVERTS in
-        dark mode: light modules on a dark field. Drawn so the difference can be SEEN rather than
-        argued about. Dave's call.
+  ONE THEME ANSWER, RULED — DARK ON LIGHT IN EVERY MODE (s307-D50, Dave, 2026-09-28: 'QR codes
+  stay dark on light in every mode'). The symbol keeps a white plate and dark modules in every
+  theme, because it binds MODE-INVARIANT tokens: surface/digital-black on text/reverse. Both
+  resolve to the same hex in light and dark. The theme-following variant (text/default on
+  background/default, inverting in dark mode) was drawn at #210 so the difference could be seen;
+  it is REMOVED from the part by that ruling (#313 A5), for the measured reason below.
   ⛔ AND IT IS NO LONGER AN ARGUMENT — IT WAS MEASURED. #210 screenshotted every specimen as the
   browser painted it and fed the pixels back to a real decoder (OpenCV 5.0.0 QRCodeDetector).
   In LIGHT, all six sampled specimens decoded to their stated payload. In DARK, five of six
@@ -49,7 +48,7 @@
   and the identical image decodes perfectly, so the CONTENT is intact and it is the POLARITY that
   defeats the reader. One widely deployed decoder is not every decoder, and plenty of phone
   cameras will read an inverted symbol; but "some readers cope" is a weaker thing to ship than
-  "every reader copes", and that is the trade Dave is being asked to make.
+  "every reader copes", and Dave chose every reader.
 
   ACCESSIBILITY: a QR code is a picture of a string. It carries role="img" and an aria-label
   that says what it is FOR, and every specimen also carries the same destination as real text —
@@ -103,8 +102,6 @@
     --divider:#E1E1E1;              /* divider/border/section */
     --qr-plate-fixed:#FFFFFF;       /* text/reverse — SAME hex in both modes, on purpose */
     --qr-module-fixed:#1A1A1A;      /* surface/digital-black — SAME hex in both modes */
-    --qr-plate-theme:#FFFFFF;       /* background/default */
-    --qr-module-theme:#1A1A1A;      /* text/default */
     --border-radius-container:0;    /* border-radius/container */
   }
   [data-theme="dark"]{
@@ -115,8 +112,6 @@
     --divider:#808080;
     --qr-plate-fixed:#FFFFFF;       /* text/reverse — unchanged, that is the whole point */
     --qr-module-fixed:#1A1A1A;      /* surface/digital-black — unchanged */
-    --qr-plate-theme:#1A1A1A;       /* background/default */
-    --qr-module-theme:#E1E1E1;      /* text/default */
     --border-radius-container:0;
   }
 
@@ -143,7 +138,6 @@
      reach inside a <use> shadow tree, but custom properties DO inherit into it. This is why the
      symbol carries fill="var(--qr-plate)" / fill="var(--qr-module)" on its own face. */
   .qr{--qr-plate:var(--qr-plate-fixed); --qr-module:var(--qr-module-fixed);}
-  .qr.follows-theme{--qr-plate:var(--qr-plate-theme); --qr-module:var(--qr-module-theme);}
 
   /* SIZE: a module measurement. The pixel box is derived, never typed. */
   .qr{--qr-mod:8px;}
@@ -647,9 +641,9 @@
   </div>
 
   <h2 class="sec t-cm-label">4 — What happens in dark mode</h2>
-  <p class="note t-ed-body-small">Two answers, both drawn. Toggle the page theme and watch the pair: the left
-    symbol does not move, because it binds tokens whose value is the same in both modes. The right one
-    inverts, because it binds the page's own text and background. Neither is ruled.</p>
+  <p class="note t-ed-body-small">Nothing moves. Toggle the page theme: the symbol keeps its white plate and dark
+    modules, because it binds tokens whose value is the same in both modes. A QR code stays dark on light in
+    every mode; an inverted symbol was measured not to scan.</p>
 
   <div class="row">
     <figure class="qr size-m units-a">
@@ -657,16 +651,8 @@
            aria-label="QR code linking to www.hsbc.co.uk, fixed plate variant">
         <use href="#qr-symbol-a"/>
       </svg>
-      <figcaption class="qr-caption t-cm-caption">A — fixed plate. <code>surface/digital-black</code> on
+      <figcaption class="qr-caption t-cm-caption">Fixed plate. <code>surface/digital-black</code> on
         <code>text/reverse</code>; both are the same hex in light and dark.</figcaption>
-    </figure>
-    <figure class="qr size-m units-a follows-theme">
-      <svg viewBox="0 0 33 33" shape-rendering="crispEdges" role="img"
-           aria-label="QR code linking to www.hsbc.co.uk, theme-following variant">
-        <use href="#qr-symbol-a"/>
-      </svg>
-      <figcaption class="qr-caption t-cm-caption">B — theme-following. <code>text/default</code> on
-        <code>background/default</code>; inverts in dark mode.</figcaption>
     </figure>
   </div>
 
@@ -707,8 +693,6 @@
       "--divider": "divider/border/section",
       "--qr-plate-fixed": "text/reverse",
       "--qr-module-fixed": "surface/digital-black",
-      "--qr-plate-theme": "background/default",
-      "--qr-module-theme": "text/default",
       "--border-radius-container": "border-radius/container"
     },
     "contrastPairs": [
@@ -717,7 +701,7 @@
     ],
     "knownFindings": [
       "EVERY MATRIX IS A REAL ISO/IEC 18004 SYMBOL, decode-verified with OpenCV's QRCodeDetector before the file was written. Symbol A encodes 'https://www.hsbc.co.uk/' (version 2, ECC M). Symbol B encodes 'Pay 250.00 GBP to Acme Ltd ref INV-2291' (version 3, ECC M). Both strings are printed in the page.",
-      "TWO DARK-MODE ANSWERS ARE DRAWN AND NEITHER IS RULED. Fixed plate (mode-invariant tokens, always dark-on-light) vs theme-following (inverts). PROPOSED #210, Dave's.",
+      "RULED s307-D50 (Dave, 2026-09-28): QR codes stay dark on light in every mode. The fixed plate (mode-invariant tokens) is the only theme answer; the theme-following variant drawn at #210 was removed at #313 A5.",
       "MEASURED, NOT ASSERTED: every specimen was screenshotted AS THE BROWSER PAINTED IT and decoded with OpenCV 5.0.0's QRCodeDetector. LIGHT: 6 of 6 sampled specimens decoded to their stated payload. DARK: 5 of 6 decoded; the theme-following variant returned an EMPTY STRING. Inverting those same pixels back to dark-on-light decodes them perfectly, so the failure is polarity, not content. One decoder is not every decoder - but this is a real reader failing a real render, not a caveat.",
       "The quiet zone is four modules and lives INSIDE the viewBox, so a container cannot crop it. This is the most common way a design-system QR code stops scanning.",
       "Error correction level M is used throughout. L, Q and H are all legal and the choice is a trade between symbol size and damage tolerance — unruled. A centre logo/lockup would REQUIRE level H and is NOT drawn here; that is a separate design decision (see the dv-lockup work).",

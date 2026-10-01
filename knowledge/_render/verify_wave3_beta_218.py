@@ -127,6 +127,15 @@ MUTANTS = {
         [("clearTimeout(timer); leave(); handOff();", "clearTimeout(timer); leave();")],
         ["toast/dismiss-moves-focus"],
     ),
+    # #313 A5 — s307-D54: the toast is announced politely BY THE REGION, present at load; a
+    # spawned toast carries no role of its own. The mutant puts the #218 shape back (an empty,
+    # role-less region and a role on each toast as it is built).
+    "toast-live-region": (
+        "Toast.reference.html",
+        [('id="toastRegion" role="status" aria-live="polite"', 'id="toastRegion"'),
+         ("t.className='toast '+status;", "t.className='toast '+status; t.setAttribute('role','status');")],
+        ["toast/spawn-lands-in-polite-region-present-at-load", "toast/spawned-toast-carries-no-own-role"],
+    ),
     "popover-track": (
         "Popover.reference.html",
         [("openWrap=w; startTracking(place);", "openWrap=w;")],
@@ -240,8 +249,17 @@ def run_arm(pw, snips, label):
     r.check("control/toast-page-loaded",
             pg.eval_on_selector_all(".toast", "e=>e.length") == 6 and pg.query_selector("#spawnOk") is not None,
             "6 specimen toasts + the spawn controls")
+    # s307-D54 (#313 A5): read the region's politeness BEFORE the spawn, then drive the spawn and
+    # assert the toast count MOVED inside that region — a load assertion alone is banned above.
+    live0 = pg.eval_on_selector("#toastRegion", "e=>(e.getAttribute('aria-live')||'')+'|'+(e.getAttribute('role')||'')")
     pg.click("#spawnOk"); pg.wait_for_timeout(300)
     r.check("control/toast-spawns", pg.eval_on_selector_all("#toastRegion .toast", "e=>e.length") == 1)
+    r.check("toast/spawn-lands-in-polite-region-present-at-load",
+            live0 == "polite|status" and pg.eval_on_selector_all("#toastRegion .toast", "e=>e.length") == 1,
+            f"region before the spawn = {live0!r} (expected 'polite|status'); 0 -> 1 toasts inside it")
+    own = pg.eval_on_selector("#toastRegion .toast", "e=>e.getAttribute('role')")
+    r.check("toast/spawned-toast-carries-no-own-role", own is None,
+            f"spawned toast role = {own!r} (a role on both levels risks a double announcement)")
     r.check("toast/dismiss-is-type-button",
             pg.eval_on_selector_all(".toast .x", "els=>els.every(e=>e.getAttribute('type')==='button')"))
     pg.eval_on_selector("#toastRegion .toast .x", "el=>el.focus()")

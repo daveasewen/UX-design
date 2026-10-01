@@ -21,8 +21,7 @@
   },
   "props": [
     { "name": "variant", "type": "enum", "values": ["standard", "peek"], "default": "standard", "$note": "standard = one slide fills the viewport, transform/hidden-driven, JS owns every position change. peek = native CSS scroll-snap-type:x mandatory, neighbour slides visible at both edges; JS only mirrors dot state via IntersectionObserver so direct swipe/scroll and the buttons never disagree." },
-    { "name": "slideCount", "type": "number", "$note": "Drives the dot row and the aria-label \"N of M\" on each slide; authoring-time, not user-facing." },
-    { "name": "autoplay", "type": "boolean", "default": false, "$note": "PROPOSED DEFAULT OFF, not built as an option in this snippet. Dave's — see the receipt's $decisionsForDave: does an opt-in autoplay variant belong in the library at all, given WCAG 2.2.2 timing-adjustable and the mixed UX record of autoplaying carousels." }
+    { "name": "slideCount", "type": "number", "$note": "Drives the dot row and the aria-label \"N of M\" on each slide; authoring-time, not user-facing." }
   ],
   "variants": [
     { "name": "standard", "use": "One slide fills the viewport; prev/next arrows swap the visible slide, dots show position." },
@@ -58,7 +57,7 @@
     "relatedSC": ["2.2.2 Pause, Stop, Hide", "2.1.1 Keyboard", "4.1.3 Status Messages", "2.3.3 Animation from Interactions"]
   },
   "antiPatterns": [
-    "Autoplay with no pause control (WCAG 2.2.2) — not built here, and PROPOSED default is autoplay OFF entirely",
+    "Autoplay of any kind — ruled out with no option (s307-D52, Dave by click 2026-09-28, verbatim: 'Promote image block; no autoplay; carousel stays as it is'); WCAG 2.2.2",
     "Modelling slides as role=tab/tabpanel (a slide is not an independent view)",
     "Colour-only dot state (dot uses aria-current + a visible scale/fill change, not hue alone)",
     "Real photography or drawn icons standing in for placeholder imagery — SVG rect placeholders only, per the wave-4 DO-NOT-RULE",

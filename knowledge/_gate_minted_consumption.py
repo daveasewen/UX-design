@@ -68,7 +68,7 @@ CONSUMER GLOB — this gate rules only as wide as this list [[gate-glob-scope-ru
 CONSUMER: `_build_all.py` gate chain, ADVISORY tier. Run standalone:
     python3 knowledge/_gate_minted_consumption.py             # inventory (always exit 0)
     python3 knowledge/_gate_minted_consumption.py --orphans   # + the full ORPHAN listing
-    python3 knowledge/_gate_minted_consumption.py --selftest  # 10 arms, both directions + mutants
+    python3 knowledge/_gate_minted_consumption.py --selftest  # 11 arms, both directions + mutants
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
 _hg_d = _hg_os.path.dirname(_hg_os.path.abspath(__file__))
@@ -109,6 +109,44 @@ GENERATOR_PREFIXES = ("knowledge/canon/gen_", "knowledge/gen_", "knowledge/_rend
 # as consumed — which is exactly the "instrument that measures itself" defect it exists to avoid.
 # Caught on the first real run: `--color-neutral-15` came back consumed, by this file.
 SELF = os.path.join("knowledge", os.path.basename(os.path.abspath(__file__)))
+
+# W-307qj (s307-D42, Dave 2026-09-28 by click: 'Hand it to Claude to settle within your rules') — every
+# PER-THEME orphan carries a DISPOSITION here: wired, retired or declared. #219 lane 5 found six; #313 A5
+# found a seventh (s310-D5's interim value). All seven are DECLARED: none is wired (each wire changes what a
+# theme shows, or has no consumer a ruling names) and none is retired (each was minted on Dave's word or is a
+# reserved rung by ADR-0014). A per-theme orphan NOT in this table is printed as UNDISPOSED, by name, so a new
+# one cannot hide in the count. A row whose var is no longer a per-theme orphan is printed as SPENT. Still
+# ADVISORY: this table answers "which reading is it", it does not promote the gate (that is lane 5's Q4, Dave's).
+# Full reasons and the measurements: notes/_subreports/2026-10-01-313-A5.md (W-307qj).
+DISPOSED = {
+    "--tabs-inactive": ("declared",
+        "the inactive tab keeps its fade (alpha-72) in every theme; wiring the per-theme colour (R-D23, ADR-0014 cl.4) "
+        "would change legacy and supercharge and drop supercharge dark 7.93 to 5.59 (#219 lane 5, row A). Status quo."),
+    "--padding-card-internal": ("declared",
+        "console-only mint (s200-D3) with no base declaration and no card surface named by a ruling; a consumer would "
+        "render padding 0 in mono, legacy and supercharge (#219 lane 5, row B). Reserved."),
+    "--size-segmented-control-min-hit-area": ("declared",
+        "the hit zone binds target/min (the one name, s201-D2/D3: max(44, visual height)); this is the segmented "
+        "floor's own name for the same 44, minted by Dave (s200-D4), kept as a documented twin (W-307qk)."),
+    "--color-neutral-2": ("declared",
+        "reserved DNA rung: a theme swaps its whole neutral substrate (ADR-0014 cl.1); a rung no alias points at is "
+        "the design working."),
+    "--color-neutral-3": ("declared",
+        "reserved DNA rung (ADR-0014 cl.1), as --color-neutral-2."),
+    "--color-neutral-raise-3": ("declared",
+        "reserved DNA rung: ADR-0014 cl.3 calls the supercharge raise-1..3 set provisional; raise-1/2 are alias "
+        "targets, raise-3 is not."),
+    "--tertiary-background-active": ("declared",
+        "s310-D5 INTERIM (Dave, #310: 'lets do that for now, I have some proper specs for this'); the supercharge "
+        "active value waits on his Figma specs, and no part reads tertiary/background/active today."),
+}
+
+
+def per_theme_dispositions(classed):
+    """(disposed, undisposed, spent) over the PER-THEME orphans. A crash-free read: never raises."""
+    pt = {n for n, (c, r, _t) in classed.items() if c == ORPHAN and r["themes"]}
+    return (sorted(pt & set(DISPOSED)), sorted(pt - set(DISPOSED)), sorted(set(DISPOSED) - pt))
+
 
 DECL_RE = re.compile(r"(--[A-Za-z0-9_-]+)\s*:")
 USE_RE = re.compile(r"var\(\s*(--[A-Za-z0-9_-]+)")
@@ -320,6 +358,14 @@ def report(classed, stats, listing=False):
     print("    ├─ %-12s (alias expansion) ..... %d" % (ALIAS_SHADOW, stats[ALIAS_SHADOW]))
     print("    └─ %-12s (declared, never read) %d   [%d of them minted per-theme]"
           % (ORPHAN, stats[ORPHAN], stats["orphan_theme_tier"]))
+    disposed, undisposed, spent = per_theme_dispositions(classed)
+    print("  per-theme orphans: %d disposed (W-307qj) · %d UNDISPOSED%s"
+          % (len(disposed), len(undisposed), (" — " + ", ".join(undisposed)) if undisposed else ""))
+    if spent:
+        print("  SPENT dispositions (no longer a per-theme orphan — drop the row): %s" % ", ".join(spent))
+    if listing:
+        for name in disposed:
+            print("    %-40s %s — %s" % (name, DISPOSED[name][0], DISPOSED[name][1]))
     if listing:
         print("\nORPHANS — declared in canon.css, named by no var() in the glob:")
         for name, rec in orphans(classed):
@@ -387,6 +433,14 @@ def _selftest():
         got = classed.get("--gate-selftest-orphan")
         bite("plant --gate-selftest-orphan in a console block -> ORPHAN",
              bool(got) and got[0] == ORPHAN, got[0] if got else "NOT DETECTED")
+
+        # ARM 3b (#313 A5, W-307qj) — the planted per-theme orphan has NO disposition, so it MUST be
+        # named UNDISPOSED; and the seven disposed names must not be (the table is read, not decorative).
+        dsp, und, _sp = per_theme_dispositions(classed)
+        bite("planted orphan -> UNDISPOSED by name; the disposed stay disposed",
+             "--gate-selftest-orphan" in und and "--tabs-inactive" in dsp
+             and not (set(und) & set(DISPOSED)),
+             "undisposed=%s · disposed=%d" % (",".join(und), len(dsp)))
 
         # ARM 4 — same name, now CONSUMED from inside the glob. MUST NOT be flagged.
         consumer_dir = os.path.join(tmp, "knowledge", "snippets")
