@@ -34,6 +34,9 @@ Usage:  python3 knowledge/gen_kg_standards.py [--check | --land | --selftest]
 import json, glob, os, re, sys, copy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from _helpgate import help_gate as _help_gate  # noqa: E402
+_help_gate(__doc__, __name__, __file__)
 OUT = '_standard_nodes.json'
 REPLACED = '_replaced_by.json'
 ME = 'gen_kg_standards.py'
