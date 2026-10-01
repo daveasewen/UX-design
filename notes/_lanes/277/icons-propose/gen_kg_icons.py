@@ -61,7 +61,7 @@ field on an existing kind is neither a new node kind nor a new edge type, so the
 door below is NOT opened and RATIFIES is unchanged.
 
 `--land` MERGES, IT NO LONGER CLOBBERS (#286 lane R2). It reads the landed file first
-and keeps what a human put there: every edge marked `authored: "hand"`, the
+and keeps what a human put there: every edge marked `maker: "hand:…"` (s308-D21; the retired `authored: "hand"` is still honoured), the
 `edge_types` line for a type such an edge draws, and every top-level key this script
 does not generate (`$s282-D5` and its kin). The generated null it would otherwise
 re-declare beside a hand edge is suppressed, and the file's own `generatorVerdict` is
@@ -1181,8 +1181,10 @@ def merge_landed(prev, pay):
     """
     if not isinstance(prev, dict):
         return pay, {"merged": False, "why": "the landed file is not a JSON object"}
+    # s308-D21 (#311 lane D1): the hand marker is the edge's one `maker` field ("hand:<whose>/<ruling>");
+    # the retired `authored: "hand"` is still honoured so an older landed file is never destroyed.
     hand = [e for e in prev.get("edges") or [] if isinstance(e, dict)
-            and e.get("authored") == "hand"]
+            and (str(e.get("maker") or "").startswith("hand:") or e.get("authored") == "hand")]
     spoken = {(e.get("s"), e.get("type")) for e in hand}
     gen_edges = pay.get("edges") or []
     kept_gen = [e for e in gen_edges if (e.get("s"), e.get("type")) not in spoken]
@@ -1345,11 +1347,11 @@ def land(corpus=None, ratified=None, **kw):
         if receipt.get("merged") and receipt["hand_edges_kept"]:
             pay["$description"] += (
                 " HAND-AUTHORED STATE IS PRESERVED: this run read the file first and kept "
-                f"{receipt['hand_edges_kept']} edge(s) marked `authored: \"hand\"` "
+                f"{receipt['hand_edges_kept']} edge(s) marked `maker: \"hand:…\"` "
                 f"({', '.join(receipt['hand_edge_types'])}) and the "
                 f"{len(receipt['top_level_fields_carried'])} top-level field(s) the generator "
                 "does not produce. Hand-authoring an edge here is therefore SAFE ACROSS A "
-                "REGENERATE — mark it `authored: \"hand\"` and it survives.")
+                "REGENERATE — mark it `maker: \"hand:<whose>/<ruling>\"` (s308-D21) and it survives.")
         receipt["verdict_blocks_extended"] = extend_verdict(pay, receipt)
         merges[name] = receipt
         target.write_text(json.dumps(pay, indent=2, ensure_ascii=False) + "\n",
@@ -1952,7 +1954,7 @@ def selftest():
             _p["edges"] = [e for e in _p["edges"] if not (e["type"] == "obeys"
                                                           and e["s"] == "logo:mark-light-colour")]
             _p["edges"].append({"s": "logo:mark-light-colour", "t": "rule:made-up-001",
-                                "type": "obeys", "fam": FAMILY, "authored": "hand",
+                                "type": "obeys", "fam": FAMILY, "maker": "hand:planted/s277-D4",
                                 "why": "a human ruled this, and no corpus can say it"})
             _p["edge_types"]["obeys"] = "RESOLVED BY HAND — 1 edge drawn"
             _p["$hand-block"] = {"ruled": "a lane's own record",
@@ -1960,7 +1962,7 @@ def selftest():
             (k24 / LANDED_LOGOS).write_text(json.dumps(_p, indent=2) + "\n", encoding="utf-8")
             land(k24, "s277-D4")                       # the run that used to destroy it
             _a = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
-            _h1 = [e for e in _a["edges"] if e.get("authored") == "hand"]
+            _h1 = [e for e in _a["edges"] if str(e.get("maker") or "").startswith("hand:")]
             _renull = [e for e in _a["edges"] if e["type"] == "obeys" and e["t"] is None
                        and e["s"] == "logo:mark-light-colour"]
             _reun = [u for u in _a["unresolved"] if u["type"] == "obeys"
@@ -1969,7 +1971,7 @@ def selftest():
             _desc = _a["$description"]
             land(k24, "s277-D4")                       # and a SECOND run is idempotent
             _b = json.loads((k24 / LANDED_LOGOS).read_text(encoding="utf-8"))
-            _h2 = [e for e in _b["edges"] if e.get("authored") == "hand"]
+            _h2 = [e for e in _b["edges"] if str(e.get("maker") or "").startswith("hand:")]
             _v2 = _b.get("$hand-block", {}).get(VERDICT_KEY, "")
             _m24msg = "ok"
         except Exception as e:

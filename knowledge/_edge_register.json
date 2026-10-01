@@ -13,8 +13,8 @@
    "reads": "s308-D18: the two readings — `forward` s→t and `back` t←s. The explorer reads an incoming edge with `back` (its `read` block is built from this field), so the opposite is derived here, never stored as a second edge.",
    "shape": "s308-D19: may it point at itself (`self`), may a chain of it return to its start (`loops`), does it hold both ways so it is stored once (`bothWays`), is it read transitively (`chains`); `basis` says why, `measured` what the graph holds. CHECKED: SELF-LINE, LOOP, BOTH-WAYS-STORED.",
    "count": "how many targets one start may have (distinct targets). CHECKED where `perStart.max` is set, and set only where a definition says one; `basis` names it.",
-   "reason": "the field carrying the reason for the line today, and whether any schema requires it; the one field `why` is owed to item 5 (s308-D20).",
-   "maker": "where the edges are made — authored by hand (and where), generated (by which script), or ratified (by which ruling's verdicts) — plus the `authored` flag as measured; the one maker field is owed to item 6 (s308-D21).",
+   "why": "s308-D20: the ONE name for an edge's reason is `why`. `required` says whether every edge of the type must carry one (true on the nine hand-made judgements s308-D20 names), `floor` its minimum length in characters (40 on obeys, kept), `servedBy` where another field serves (the ruling-to-ruling types' evidence), `today` how it is spelled and carried in storage. CHECKED by _validate_edges.py --check: WHY-MISSING, WHY-SHORT.",
+   "maker": "s308-D21: who made the type's edges, one of three — `hand` (by: whose/ruling), `generated` (by: which script) or `ratified` (by: which ruling); `none` only on a read-side row that stores nothing. `value` is the string every edge of the type carries as its `maker` (`<made>:<by>`), stamped by knowledge/_build_kg_explorer.py; `cases` override it by the edge's family (`fam`) or start kind (`from`); a stored line carrying its own `maker` keeps it. It replaces the `authored` flag, which is retired from the graph. CHECKED by _validate_edges.py --check: NO-MAKER, AUTHORED-FLAG.",
    "outside": "candidate outside terms from lane O's v2 word map (Canonical ds:/dt:, Adobe Spectrum, then SKOS / Dublin Core / PROV / Kruchten / IBIS / ARIA). CANDIDATES ONLY: the choice and the grade are owed to item 7 (s308-D22).",
    "family": "the explorer's storage family for the edge (fam), as built",
    "$measured": "live tallies when this row was written; drift is reported by the check, never a failure"
@@ -26,8 +26,8 @@
    "s308-D18": "item 3 — one direction stored, the other read (`opposite`, `reads`)",
    "s308-D19": "item 4 — each type's shape (`shape`); the self-lines moved to count / covers / the subcomponent kind",
    "s308-D26": "item 4 as changed in v2 — the part names become a subcomponent kind",
-   "s308-D20": "item 5 — owed",
-   "s308-D21": "item 6 — owed",
+   "s308-D20": "item 5 — `why` per row (#311 lane D1)",
+   "s308-D21": "item 6 — `maker` per row, stamped on every edge; `authored` retired (#311 lane D1)",
    "s308-D22": "item 7 — owed",
    "s308-D23": "item 8 — owed",
    "s308-D24": "item 9 — owed"
@@ -170,29 +170,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
-     "note": null,
-     "store": [
-      "knowledge/_source_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 95
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_sources.py",
+    "value": "generated:gen_kg_sources.py",
+    "note": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+    "store": [
+     "knowledge/_source_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -213,6 +199,17 @@
      "capability": 95
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -258,29 +255,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_icon_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 234
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_icon_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -301,6 +284,17 @@
      "icon": 232
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -350,29 +344,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_roles_desk.py from the meta `answers` field (s270-D2)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.answersIntent"
-     ],
-     "authoredFlag": {
-      "None": 28
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_roles_desk.py",
+    "value": "generated:gen_kg_roles_desk.py",
+    "note": "knowledge/gen_kg_roles_desk.py from the meta `answers` field (s270-D2)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.answersIntent"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -392,6 +372,17 @@
      "intent": 28
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -441,29 +432,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from the rule's applies_to names, matched to meta `name`",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 826
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from the rule's applies_to names, matched to meta `name`",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -483,6 +460,17 @@
      "component": 826
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -529,29 +517,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
-     "note": null,
-     "store": [
-      "knowledge/_source_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 73
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_sources.py",
+    "value": "generated:gen_kg_sources.py",
+    "note": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+    "store": [
+     "knowledge/_source_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -573,6 +547,17 @@
      "snippet": 18
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -618,29 +603,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_tokens.py (--land --ratified s277-D12) from the metas' typed tokens block",
-     "note": null,
-     "store": [
-      "knowledge/_token_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 835
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_tokens.py",
+    "value": "generated:gen_kg_tokens.py",
+    "note": "knowledge/gen_kg_tokens.py (--land --ratified s277-D12) from the metas' typed tokens block",
+    "store": [
+     "knowledge/_token_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -661,6 +632,17 @@
      "token": 835
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -708,29 +690,15 @@
     },
     "basis": "one policy node, one internal_policy_ref field per rule"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from sources.internal_policy_ref",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 55
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from sources.internal_policy_ref",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -751,6 +719,17 @@
      "policy": 55
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -800,29 +779,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 1
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -844,6 +809,18 @@
      "ruling": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -891,29 +868,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
-     "note": null,
-     "store": [
-      "knowledge/_source_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 80
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_sources.py",
+    "value": "generated:gen_kg_sources.py",
+    "note": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+    "store": [
+     "knowledge/_source_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -936,6 +899,17 @@
      "file": 5
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -981,29 +955,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 4
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1023,6 +983,17 @@
      "ruling": 4
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1068,29 +1039,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from external_automatable_refs",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 68
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from external_automatable_refs",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1110,6 +1067,17 @@
      "axe": 68
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1155,29 +1123,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
-     "note": null,
-     "store": [
-      "knowledge/_rule_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 51
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_rules.py",
+    "value": "generated:gen_kg_rules.py",
+    "note": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+    "store": [
+     "knowledge/_rule_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1197,6 +1151,17 @@
      "sc": 51
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1246,29 +1211,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from relationships.commonPatterns",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.commonPattern"
-     ],
-     "authoredFlag": {
-      "None": 421
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from relationships.commonPatterns",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.commonPattern"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1288,6 +1239,17 @@
      "pattern": 421
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1337,29 +1299,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "authored in the meta (s268-D5); carried verbatim through a gen_kg_edges.py rebuild (s268-D6)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.composedOf"
-     ],
-     "authoredFlag": {
-      "None": 5
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "hand",
+    "by": "claude/s268-D5",
+    "value": "hand:claude/s268-D5",
+    "note": "a Claude lane wrote the line into the meta under s268-D5; carried verbatim through a gen_kg_edges.py rebuild (s268-D6)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.composedOf"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1380,6 +1328,17 @@
      "component": 5
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1429,29 +1388,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 5
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1473,6 +1418,18 @@
      "ruling": 5
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -1522,29 +1479,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from $consumes prose, name-matched; resolutions PROMOTE (s135-D4)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.consumes"
-     ],
-     "authoredFlag": {
-      "None": 70
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from $consumes prose, name-matched; resolutions PROMOTE (s135-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.consumes"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1565,11 +1508,27 @@
      "component": 70
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
    "word": "containedBy",
-   "accepts": {"by": "kind", "home": "$containers", "check": "knowledge/_validate_edges.py --check, the ACCEPTS classes (advisory first, s308-D40)", "basis": "s308-D40: each component declares one kind and each container's slots say which kinds they accept; the check refuses any containedBy line the parent does not accept"},
+   "accepts": {
+    "by": "kind",
+    "home": "$containers",
+    "check": "knowledge/_validate_edges.py --check, the ACCEPTS classes (advisory first, s308-D40)",
+    "basis": "s308-D40: each component declares one kind and each container's slots say which kinds they accept; the check refuses any containedBy line the parent does not accept"
+   },
    "plain": "is contained by",
    "verb": {
     "reads": [
@@ -1617,29 +1576,26 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from relationships.livesInside, name-matched (resolutions MERGE, s135-D4), and from a container's subComponents where a ruled PROMOTE names the part as this component (the line carries `part`, s308-D18); a subcomponent's line is derived by knowledge/_build_kg_explorer.py from its container's subComponents (s308-D26)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.containedBy"
-     ],
-     "authoredFlag": {
-      "None": 109
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from relationships.livesInside, name-matched (resolutions MERGE, s135-D4), and from a container's subComponents where a ruled PROMOTE names the part as this component (the line carries `part`, s308-D18); a subcomponent's line is derived by knowledge/_build_kg_explorer.py from its container's subComponents (s308-D26)",
+    "cases": [
+     {
+      "when": {
+       "from": "subcomponent"
+      },
+      "made": "generated",
+      "by": "_build_kg_explorer.py",
+      "note": "a subcomponent's line, derived from its container's own subComponents entry (s308-D26)",
+      "value": "generated:_build_kg_explorer.py"
      }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    ],
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.containedBy"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1661,6 +1617,17 @@
      "component": 109
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1710,29 +1677,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 1
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1753,6 +1706,18 @@
      "ruling": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -1798,29 +1763,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_icon_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 15
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_icon_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1841,6 +1792,17 @@
      "icon": 14
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1884,29 +1846,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_logo_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 2
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_logo_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -1925,6 +1873,17 @@
     },
     "to": {},
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -1972,29 +1931,15 @@
     },
     "basis": "one `file` per row of knowledge/guidelines/_rules-index.json"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
-     "note": null,
-     "store": [
-      "knowledge/_rule_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 474
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_rules.py",
+    "value": "generated:gen_kg_rules.py",
+    "note": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+    "store": [
+     "knowledge/_rule_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2014,6 +1959,17 @@
      "artefact": 474
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2063,29 +2019,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "authored in the meta (s268-D5)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.delegatesTo"
-     ],
-     "authoredFlag": {
-      "None": 1
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "hand",
+    "by": "claude/s268-D5",
+    "value": "hand:claude/s268-D5",
+    "note": "a Claude lane wrote the line into the meta under s268-D5",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.delegatesTo"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2106,6 +2048,17 @@
      "component": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2155,29 +2108,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "authored in the meta from its $contract (s268-D5, s263-D4)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.drivesConsumer"
-     ],
-     "authoredFlag": {
-      "None": 5
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "hand",
+    "by": "claude/s268-D5",
+    "value": "hand:claude/s268-D5",
+    "note": "a Claude lane wrote the line into the meta from its $contract under s268-D5 (s263-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.drivesConsumer"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2197,6 +2136,17 @@
      "component": 5
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2246,29 +2196,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 6
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2290,6 +2226,18 @@
      "ruling": 6
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -2337,29 +2285,15 @@
     },
     "basis": "one standard node, one clause field per rule"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from sources.en301549_clause",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 55
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from sources.en301549_clause",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2380,6 +2314,17 @@
      "standard": 55
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2425,29 +2370,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
-     "note": null,
-     "store": [
-      "knowledge/_rule_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 64
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_rules.py",
+    "value": "generated:gen_kg_rules.py",
+    "note": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+    "store": [
+     "knowledge/_rule_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2467,6 +2398,17 @@
      "artefact": 64
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2527,30 +2469,27 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass A (rulings) · knowledge/gen_kg_principles.py (principles, s281-D1)",
-     "note": null,
-     "store": [
-      "knowledge/_rulings.json evidence[] (pass A)",
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 2739
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass A (rulings) · knowledge/gen_kg_principles.py (principles, s281-D1)",
+    "cases": [
+     {
+      "when": {
+       "fam": "uxprinciples"
+      },
+      "made": "generated",
+      "by": "gen_kg_principles.py",
+      "note": "a principle's sources (s281-D1)",
+      "value": "generated:gen_kg_principles.py"
      }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    ],
+    "store": [
+     "knowledge/_rulings.json evidence[] (pass A)",
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2571,6 +2510,17 @@
      "evidence": 2728
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2616,29 +2566,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 1
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2658,6 +2594,17 @@
      "ruling": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2707,29 +2654,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 16
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2752,6 +2685,18 @@
      "ruling": 16
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -2801,29 +2746,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from $family prose (null) with resolutions PROMOTE (s135-D4)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.family"
-     ],
-     "authoredFlag": {
-      "None": 3
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from $family prose (null) with resolutions PROMOTE (s135-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.family"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -2843,6 +2774,17 @@
      "component": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -2888,29 +2830,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
-     "note": null,
-     "store": [
-      "knowledge/_rule_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 50
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_rules.py",
+    "value": "generated:gen_kg_rules.py",
+    "note": "knowledge/gen_kg_rules.py (--land --ratified s274-D8)",
+    "store": [
+     "knowledge/_rule_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [],
@@ -2928,6 +2856,17 @@
      "rule": 50
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3005,29 +2944,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/gen_kg_edges.py from the s135-D4 ATTACH verdicts the ruling's own governs[] does not carry (s308-D18) and that Dave kept (s308-D35)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.governedBy"
-     ],
-     "authoredFlag": {
-      "None": 6
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s135-D4",
+    "value": "ratified:s135-D4",
+    "note": "the s135-D4 ATTACH verdicts the ruling's own governs[] does not carry (s308-D18), kept by Dave (s308-D35); written by knowledge/gen_kg_edges.py",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.governedBy"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3048,6 +2973,17 @@
      "ruling": 6
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3106,29 +3042,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass A from each ruling's governs[] (gov_target(): a meta path → component, a snippet path → its component or snippet, else artefact); since 1.34 (s308-D36) an entry naming an icon .svg ends on the icon (pass E1b), replacing the retired ruledBy",
-     "note": null,
-     "store": [
-      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
-     ],
-     "authoredFlag": {
-      "True": 2057
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass A from each ruling's governs[] (gov_target(): a meta path → component, a snippet path → its component or snippet, else artefact); since 1.34 (s308-D36) an entry naming an icon .svg ends on the icon (pass E1b), replacing the retired ruledBy",
+    "store": [
+     "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3150,6 +3072,17 @@
      "icon": 8
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3199,29 +3132,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "authored in the meta (s245-D7)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.groupsWith"
-     ],
-     "authoredFlag": {
-      "None": 6
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "hand",
+    "by": "claude/s245-D7",
+    "value": "hand:claude/s245-D7",
+    "note": "a Claude lane wrote the line into the meta under s245-D7",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.groupsWith"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3241,6 +3160,17 @@
      "component": 2
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3290,29 +3220,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_roles_desk.py from the meta `shape` field (s270-D2)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.hasDataShape"
-     ],
-     "authoredFlag": {
-      "None": 26
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_roles_desk.py",
+    "value": "generated:gen_kg_roles_desk.py",
+    "note": "knowledge/gen_kg_roles_desk.py from the meta `shape` field (s270-D2)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.hasDataShape"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [],
@@ -3330,6 +3246,17 @@
      "shape": 26
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3377,27 +3304,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "never stored",
-     "script": null,
-     "note": "s308-D18: READ ONLY — containedBy walked backwards. Until #308 gen_kg_edges.py wrote it from subComponents; the parts that are registered components now carry a containedBy line naming the part, the rest are subcomponent nodes (s308-D26)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.hasPart"
-     ],
-     "authoredFlag": {}
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "none",
+    "by": null,
+    "value": null,
+    "note": "never stored — the read side of its opposite (s308-D18); no edge of it carries a maker",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.hasPart"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3414,6 +3329,17 @@
     "from": {},
     "to": {},
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3460,29 +3386,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 68
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3503,6 +3415,17 @@
      "ruling": 2
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3550,29 +3473,15 @@
     },
     "basis": "s281-D1: the principle's one `family` attribute became this edge"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (s281-D1)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 145
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (s281-D1)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3593,6 +3502,17 @@
      "family": 145
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3640,29 +3560,15 @@
     },
     "basis": "gen_kg_icons.py: the manifest key the record sits under — one per icon"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_icon_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 666
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_icon_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3682,6 +3588,17 @@
      "iconGroup": 666
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3727,29 +3644,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass A — DERIVED by regex over `says`, unratified (authored: false)",
-     "note": null,
-     "store": [
-      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
-     ],
-     "authoredFlag": {
-      "False": 246
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass A — DERIVED by regex over `says`, unratified (authored: false)",
+    "store": [
+     "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3769,6 +3672,17 @@
      "ruling": 246
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3818,29 +3732,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.mustNotNeighbour"
-     ],
-     "authoredFlag": {
-      "None": 63
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.mustNotNeighbour"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3861,6 +3761,17 @@
      "component": 12
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -3910,29 +3821,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 2
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -3954,6 +3851,18 @@
      "ruling": 2
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -4028,31 +3937,27 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "$why",
-     "carried": "180 of 180",
-     "required": true,
-     "floor": 40,
-     "basis": "meta.schema.json definitions.obeysEdge: $why required, minLength 40, for the metas' obeys; the 12 logo lines carry `why` in _logo_nodes.json, which no schema checks"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "authored in the meta (s276-D3); the 12 logo lines hand-authored in _logo_nodes.json under s282-D5 and moved here from governedBy by s308-D17 (#308 lane E)",
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.obeys",
-      "knowledge/_logo_nodes.json edges (type obeys, authored: \"hand\")"
-     ],
-     "authoredFlag": {
-      "None": 168,
-      "True": 12
+    "made": "hand",
+    "by": "claude/s276-D3",
+    "value": "hand:claude/s276-D3",
+    "note": "the metas' lines: a Claude lane wrote each line and its reason into the meta under s276-D3 (s277-D1..D3 for the four chart metas)",
+    "cases": [
+     {
+      "when": {
+       "fam": "assets"
+      },
+      "made": "hand",
+      "by": "Dave/s282-D5",
+      "note": "the 12 logo lines: Dave's own export of the logo-review page (s282-D5), keyed into _logo_nodes.json by #282 lane LL; each stored line carries this maker itself",
+      "value": "hand:Dave/s282-D5"
      }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    ],
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.obeys",
+     "knowledge/_logo_nodes.json edges (type obeys, authored: \"hand\")"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4074,6 +3979,17 @@
      "ux": 14
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": 40,
+    "basis": "required: a hand-made judgement named in s308-D20; the 40-character floor is kept (s308-D20, meta.schema.json definitions.obeysEdge)",
+    "today": {
+     "spelled": "$why in the metas (the one name `why` is owed there: the metas were lane C0's on the night #311 lane D1 ran); `why` in _logo_nodes.json; the explorer carries it as `why` on the edge",
+     "carried": "180 of 180",
+     "note": "meta.schema.json definitions.obeysEdge: $why required, minLength 40, for the metas' obeys; the 12 logo lines carry `why` in _logo_nodes.json, which no schema checks"
+    }
    }
   },
   {
@@ -4123,29 +4039,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from $partials prose (null) with resolutions PROMOTE (s135-D4)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.partial"
-     ],
-     "authoredFlag": {
-      "None": 6
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from $partials prose (null) with resolutions PROMOTE (s135-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.partial"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4166,6 +4068,17 @@
      "component": 5
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4215,29 +4128,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_roles_desk.py from the meta `provides` field (s270-D2)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.providesRole"
-     ],
-     "authoredFlag": {
-      "None": 108
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_roles_desk.py",
+    "value": "generated:gen_kg_roles_desk.py",
+    "note": "knowledge/gen_kg_roles_desk.py from the meta `provides` field (s270-D2)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.providesRole"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4257,6 +4156,17 @@
      "role": 108
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4306,29 +4216,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 4
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4350,6 +4246,18 @@
      "ruling": 4
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -4401,29 +4309,15 @@
     },
     "basis": "_kg_verbs.json renders-as: 'The component's one reference rendering'"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from knowledge/snippets/<Stem>.reference.html if it exists",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.renderedBy"
-     ],
-     "authoredFlag": {
-      "None": 137
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from knowledge/snippets/<Stem>.reference.html if it exists",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.renderedBy"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4444,6 +4338,17 @@
      "snippet": 137
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4489,29 +4394,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 7
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4531,6 +4422,17 @@
      "ruling": 7
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4580,29 +4482,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "why",
-     "carried": "75 of 75",
-     "required": false,
-     "floor": null,
-     "basis": "carried on every line, required by no schema"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "hand",
-     "script": null,
-     "note": "hand-authored from Dave's export of the 59-card page (s281-D3 authorised, s281-D6 landed, #281 lane RL); stored in _rule_nodes.json",
-     "store": [
-      "knowledge/_rule_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 75
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "hand",
+    "by": "Dave/s281-D6",
+    "value": "hand:Dave/s281-D6",
+    "note": "Dave's own answers — his export of the 59-card page (s281-D3 authorised, s281-D6 landed); #281 lane RL keyed them into _rule_nodes.json",
+    "store": [
+     "knowledge/_rule_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4622,6 +4510,17 @@
      "ux": 67
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": "why",
+     "carried": "75 of 75",
+     "note": "carried on every line, required by no schema"
+    }
    }
   },
   {
@@ -4671,29 +4570,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 1
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4715,6 +4600,18 @@
      "ruling": 1
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -4764,29 +4661,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from $reuses prose, name-matched",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.reuses"
-     ],
-     "authoredFlag": {
-      "None": 2
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from $reuses prose, name-matched",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.reuses"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4806,6 +4689,17 @@
      "component": 2
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4857,29 +4751,15 @@
     },
     "basis": "one `ruled` field per ruling, one leading #N (SESSION_RX)"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass A from the ruling's `ruled` field (#N)",
-     "note": null,
-     "store": [
-      "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
-     ],
-     "authoredFlag": {
-      "True": 199
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass A from the ruling's `ruled` field (#N)",
+    "store": [
+     "knowledge/_rulings.json (read by knowledge/_build_kg_explorer.py pass A)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4899,6 +4779,17 @@
      "session": 199
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -4944,29 +4835,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
-     "note": null,
-     "store": [
-      "knowledge/_source_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 155
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_sources.py",
+    "value": "generated:gen_kg_sources.py",
+    "note": "knowledge/gen_kg_sources.py (--land --ratified s305-D26)",
+    "store": [
+     "knowledge/_source_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -4986,6 +4863,17 @@
      "typestyle": 155
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5035,29 +4923,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 3
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5079,6 +4953,18 @@
      "ruling": 3
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -5128,29 +5014,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": "evidence",
-     "carried": "in storage, every edge",
-     "required": false,
-     "floor": null,
-     "basis": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "ratified",
-     "script": "knowledge/_gen_ruling_edges_from_recs.py (lane E #267 recs, ratified s267-D3)",
-     "note": null,
-     "store": [
-      "knowledge/_ruling_edges.json"
-     ],
-     "authoredFlag": {
-      "True": 9
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "ratified",
+    "by": "s267-D3",
+    "value": "ratified:s267-D3",
+    "note": "lane E's #267 judgements, ratified by s267-D3, written by knowledge/_gen_ruling_edges_from_recs.py",
+    "store": [
+     "knowledge/_ruling_edges.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5172,6 +5044,18 @@
      "ruling": 9
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "servedBy": "evidence",
+    "basis": "not required: the ruling-to-ruling types already carry evidence that serves (s308-D20); _ruling_edges.json carries evidence[] on every line and the graph folds it into the note",
+    "today": {
+     "spelled": "evidence",
+     "carried": "in storage, every edge",
+     "note": "_ruling_edges.json carries evidence[] on every line; the graph folds it into the note"
+    }
    }
   },
   {
@@ -5221,29 +5105,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 22
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5264,6 +5134,17 @@
      "ux": 22
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5309,29 +5190,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
-     "note": null,
-     "store": [
-      "knowledge/_ux_principle_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 9
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_principles.py",
+    "value": "generated:gen_kg_principles.py",
+    "note": "knowledge/gen_kg_principles.py (--land --ratified s275-D2; polarities from knowledge/brain/polarities.json)",
+    "store": [
+     "knowledge/_ux_principle_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5351,6 +5218,17 @@
      "ruling": 9
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5396,29 +5274,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.triggeredBy"
-     ],
-     "authoredFlag": {
-      "None": 25
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py as null + $note from prose; resolutions PROMOTE (s135-D4)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.triggeredBy"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5438,6 +5302,17 @@
      "component": 3
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5497,29 +5372,15 @@
     },
     "basis": "an sc sits under one guideline and a guideline under one principle — both derived from the sc number"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from the sc number (WCAG hierarchy)",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 110
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from the sc number (WCAG hierarchy)",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5541,6 +5402,17 @@
      "principle": 55
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5590,29 +5462,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_edges.py from relationships.livesInside targets that are not components",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.usedInContext"
-     ],
-     "authoredFlag": {
-      "None": 367
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_edges.py",
+    "value": "generated:gen_kg_edges.py",
+    "note": "knowledge/gen_kg_edges.py from relationships.livesInside targets that are not components",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.usedInContext"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5632,6 +5490,17 @@
      "context": 367
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5677,29 +5546,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_icon_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 371
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_icon_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5719,6 +5574,17 @@
      "icon": 371
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5764,29 +5630,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
-     "note": null,
-     "store": [
-      "knowledge/_logo_nodes.json"
-     ],
-     "authoredFlag": {
-      "True": 19
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_icons.py",
+    "value": "generated:gen_kg_icons.py",
+    "note": "notes/_lanes/277/icons-propose/gen_kg_icons.py (--land --ratified s277-D4)",
+    "store": [
+     "knowledge/_logo_nodes.json"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5806,6 +5658,17 @@
      "logo": 18
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5851,29 +5714,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/_build_kg_explorer.py pass B from compliance/graph-index.json verification.by_sc",
-     "note": null,
-     "store": [
-      "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
-     ],
-     "authoredFlag": {
-      "True": 6
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "_build_kg_explorer.py",
+    "value": "generated:_build_kg_explorer.py",
+    "note": "knowledge/_build_kg_explorer.py pass B from compliance/graph-index.json verification.by_sc",
+    "store": [
+     "knowledge/compliance/rules/*.json (read by knowledge/_build_kg_explorer.py pass B)"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5893,6 +5742,17 @@
      "artefact": 6
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": false,
+    "floor": null,
+    "basis": "not required: generated structure or a type s308-D20 does not name",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   },
   {
@@ -5942,29 +5802,15 @@
     "perStart": null,
     "basis": "no count is declared for this type today"
    },
-   "reason": {
-    "today": {
-     "field": null,
-     "carried": "0",
-     "required": false,
-     "floor": null,
-     "basis": "no reason field today"
-    },
-    "owed": "item 5 (s308-D20): one field `why`, required by type, 40-character floor"
-   },
    "maker": {
-    "today": {
-     "made": "generated",
-     "script": "knowledge/gen_kg_roles_desk.py from the prose half of the meta `when` (s270-D2)",
-     "note": null,
-     "store": [
-      "knowledge/components/<slug>.meta.json edges.yieldsTo"
-     ],
-     "authoredFlag": {
-      "None": 51
-     }
-    },
-    "owed": "item 6 (s308-D21): one maker field on every edge — hand / generated (script) / ratified (ruling)"
+    "made": "generated",
+    "by": "gen_kg_roles_desk.py",
+    "value": "generated:gen_kg_roles_desk.py",
+    "note": "knowledge/gen_kg_roles_desk.py from the prose half of the meta `when` (s270-D2)",
+    "store": [
+     "knowledge/components/<slug>.meta.json edges.yieldsTo"
+    ],
+    "basis": "s308-D21 (Dave 2026-09-29 09:26 BST, '6. One maker field on every edge — Take it') — one rule per type, stamped on every edge by knowledge/_build_kg_explorer.py; a stored line that carries its own `maker` keeps it"
    },
    "outside": {
     "candidates": [
@@ -5984,6 +5830,17 @@
      "component": 49
     },
     "at": "2026-09-29T16:44Z"
+   },
+   "why": {
+    "field": "why",
+    "required": true,
+    "floor": null,
+    "basis": "required: a hand-made judgement named in s308-D20",
+    "today": {
+     "spelled": null,
+     "carried": "0",
+     "note": "no reason field today"
+    }
    }
   }
  ],

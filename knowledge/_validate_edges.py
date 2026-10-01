@@ -40,6 +40,12 @@ TWO CHECKS, TWO TIERS.
                 NO-KIND           a component meta with no kind (an alias seat excepted)
                 LONE-CARD         WARNS only: a record accepted by a housing through no multiple slot
                                   (a lone card is a tile) — never turns the exit red
+              and THE WHY AND THE MAKER (s308-D20 + s308-D21, #311 overnight lane D1), same tier:
+                WHY-MISSING       an edge of a type whose row says why.required, carrying no `why`
+                WHY-SHORT         a `why` shorter than the row's why.floor (40 on obeys, kept by s308-D20)
+                NO-MAKER          an edge with no `maker` (the explorer stamps one from the row's maker rule)
+                BAD-MAKER         a `maker` that is not `<hand|generated|ratified>:<by>`
+                AUTHORED-FLAG     an edge still carrying the retired `authored` flag (s308-D21 replaces it)
               A node's kind is its id's prefix before the first colon. Prints COUNTS first, then every
               failure by name. Exit 1 on any failure, 0 on none — routed ADVISORY in _build_all.py, so
               the build warns and goes on.
@@ -83,7 +89,11 @@ REGISTER = os.path.join(HERE, '_edge_register.json')
 ENDS_CLASSES = ('UNKNOWN-TYPE', 'WRONG-FROM', 'WRONG-TO', 'WRONG-PAIR', 'NULL-NOT-ALLOWED', 'OVER-COUNT')
 COVER_CLASSES = ('NO-ROW', 'ROW-WITHOUT-EDGES', 'UNREGISTERED-NAME', 'ABSENT-HAS-EDGES', 'REGISTER-SHAPE',
                  'SKIPPED-UNDECLARED')
-ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape')
+ROW_FIELDS = ('word', 'from', 'to', 'nulls', 'count', 'opposite', 'reads', 'shape', 'why', 'maker')   # why/maker: s308-D20/D21
+WHY_CLASSES = ('WHY-MISSING', 'WHY-SHORT')                         # s308-D20 (#311 lane D1)
+MAKER_CLASSES = ('NO-MAKER', 'BAD-MAKER', 'AUTHORED-FLAG')         # s308-D21 (#311 lane D1)
+MAKER_KINDS = ('hand', 'generated', 'ratified')                    # s308-D21: 'There are three values'
+MAKER_RX = re.compile(r'^(hand|generated|ratified):\S.*$')
 SHAPE_CLASSES = ('SELF-LINE', 'LOOP', 'BOTH-WAYS-STORED', 'READ-SIDE-STORED')   # s308-D18/D19 (#308 lane E r2)
 SHAPE_KEYS = ('self', 'loops', 'bothWays', 'chains')
 ACCEPT_CLASSES = ('NOT-ACCEPTED', 'CARD-HOLDS', 'TOO-MANY', 'TILE-IN-TILE', 'MIXED-SLOTS', 'MISSING', 'NO-KIND',
@@ -144,6 +154,19 @@ def register_rows(reg):
             probs.append(f"row {r['word']!r}: shape must carry booleans {list(SHAPE_KEYS)}"); continue
         if not (isinstance(op, dict) and isinstance(op.get('stored'), bool) and 'type' in op):
             probs.append(f"row {r['word']!r}: opposite must carry `type` and a boolean `stored`"); continue
+        wy, mk = r.get('why'), r.get('maker')
+        if not (isinstance(wy, dict) and isinstance(wy.get('required'), bool)
+                and (wy.get('floor') is None or isinstance(wy.get('floor'), int))):
+            probs.append(f"row {r['word']!r}: why must carry a boolean `required` and an integer or null `floor` (s308-D20)"); continue
+        if not isinstance(mk, dict):
+            probs.append(f"row {r['word']!r}: maker must be an object (s308-D21)"); continue
+        if mk.get('made') == 'none':
+            if op.get('stored', True):
+                probs.append(f"row {r['word']!r}: maker `none` is legal only on a read-side row (opposite.stored false)"); continue
+        elif not (mk.get('made') in MAKER_KINDS and isinstance(mk.get('by'), str) and mk.get('by')
+                  and mk.get('value') == mk['made'] + ':' + mk['by']
+                  and all(isinstance(c, dict) and MAKER_RX.match(str(c.get('value') or '')) for c in mk.get('cases') or [])):
+            probs.append(f"row {r['word']!r}: maker must say made (one of {list(MAKER_KINDS)}), by, and value = made:by (s308-D21)"); continue
         rows[r['word']] = r
     return rows, probs
 
@@ -241,6 +264,49 @@ def check_shape(edges, rows):
     for c, ty, *_ in failures:
         byc[c] += 1; bycT[c][ty] += 1
     return {'byClass': {c: byc[c] for c in SHAPE_CLASSES}, 'byClassType': {c: dict(bycT[c]) for c in bycT}, 'failures': failures}
+
+
+def check_why_maker(edges, rows):
+    """s308-D20 + s308-D21 (#311 overnight lane D1). {'byClass', 'byClassType', 'failures'}; a failure is
+    (class, type, s, t, detail). One count per edge per class."""
+    failures = []
+    for e in edges:
+        ty, s, t = e.get('type'), e.get('s'), e.get('t')
+        row = rows.get(ty)
+        if row is None:
+            continue
+        wy = row.get('why') or {}
+        why = e.get('why')
+        if wy.get('required') and not (isinstance(why, str) and why.strip()):
+            failures.append(('WHY-MISSING', ty, s, t, 'a required reason is missing (s308-D20)'))
+        elif wy.get('floor') and isinstance(why, str) and why.strip() and len(why.strip()) < wy['floor']:
+            failures.append(('WHY-SHORT', ty, s, t, f"why is {len(why.strip())} characters; the floor is {wy['floor']}"))
+        mk = e.get('maker')
+        if not mk:
+            failures.append(('NO-MAKER', ty, s, t, 'no maker on the edge (s308-D21)'))
+        elif not MAKER_RX.match(str(mk)):
+            failures.append(('BAD-MAKER', ty, s, t, f"maker {str(mk)[:40]!r} is not <hand|generated|ratified>:<by>"))
+        if 'authored' in e:
+            failures.append(('AUTHORED-FLAG', ty, s, t, 'the retired authored flag is still on the edge (s308-D21)'))
+    byc, bycT = Counter(), defaultdict(Counter)
+    for c, ty, *_ in failures:
+        byc[c] += 1; bycT[c][ty] += 1
+    return {'byClass': {c: byc[c] for c in WHY_CLASSES + MAKER_CLASSES}, 'byClassType': {c: dict(bycT[c]) for c in bycT},
+            'failures': failures}
+
+
+def print_why_maker(wm):
+    f = {c: n for c, n in wm['byClass'].items() if n}
+    print(f"WHY+MAKER COUNTS: {f or 'none'}")
+    for c in WHY_CLASSES + MAKER_CLASSES:
+        if wm['byClass'][c]:
+            print(f"  {c}: {wm['byClass'][c]} — by type {wm['byClassType'][c]}")
+    for c, ty, s, t, d in wm['failures']:
+        print(f"  ✗ {c:16} {ty:18} {s} → {t}   {d}")
+    print('EDGE WHY: ' + ('every required reason is present' if not any(wm['byClass'][c] for c in WHY_CLASSES)
+                          else 'FAILURES above (ADVISORY, s308-D20)'))
+    print('EDGE MAKER: ' + ('every edge names its maker, none carries authored' if not any(wm['byClass'][c] for c in MAKER_CLASSES)
+                            else 'FAILURES above (ADVISORY, s308-D21)'))
 
 
 def load_metas(K=HERE):
@@ -450,15 +516,19 @@ def main(argv):
     res = check_ends(edges, rows)
     shp = check_shape(edges, rows)
     acc = check_accepts(edges, load_metas(), reg.get('$containers') or {})
+    wm = check_why_maker(edges, rows)
     if '--json' in argv:
         out = {k: v for k, v in res.items() if k != 'failures'}
         out['shape'] = {k: v for k, v in shp.items() if k != 'failures'}
         out['accepts'] = {k: v for k, v in acc.items() if k not in ('failures', 'derived')}
+        out['whyMaker'] = {k: v for k, v in wm.items() if k != 'failures'}
         print(json.dumps(out, sort_keys=True))
     else:
         print_ends(res, rows, how, drift(edges, rows), shp)
         print_accepts(acc)
-    return 1 if (res['fail'] or res['byClass']['OVER-COUNT'] or any(shp['byClass'].values()) or acc['refusals']) else 0
+        print_why_maker(wm)
+    return 1 if (res['fail'] or res['byClass']['OVER-COUNT'] or any(shp['byClass'].values()) or acc['refusals']
+                 or any(wm['byClass'].values())) else 0
 
 
 # ------------------------------------------------------------------ selftest
@@ -564,6 +634,7 @@ def selftest():
     bite(24, 'ROW-WITHOUT-EDGES spares a READ-side row (hasPart, 0 edges), and still refuses it once it claims to be stored',
          lambda: not any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in cov)
          and (w24['opposite'].__setitem__('stored', True) or True)
+         and (w24.__setitem__('maker', {'made': 'generated', 'by': 'planted.py', 'value': 'generated:planted.py'}) or True)
          and any(k == 'ROW-WITHOUT-EDGES' and d == 'hasPart' for k, d in check_coverage(edges, r24, names, skips)))
     gb_row = rows.get('governedBy') or {}
     kept = (gb_row.get('opposite') or {}).get('kept') or []
@@ -605,6 +676,32 @@ def selftest():
     bite(34, "LONE-CARD WARNS: a record alone in a housing (account-card in a drawer) is named, and the refusal count does not move",
          lambda: acc_red('LONE-CARD', edges + [CB('account-card', 'drawer')])
          and check_accepts(edges + [CB('account-card', 'drawer')], metas, cont)['refusals'] == acc0['refusals'])
+    # — s308-D20 / s308-D21 (#311 overnight lane D1): the one why and the one maker
+    wm0 = check_why_maker(edges, rows)
+
+    def wm_red(cls, planted):
+        return check_why_maker(edges + planted, rows)['byClass'][cls] == wm0['byClass'][cls] + 1
+    ob = next(e for e in edges if e['type'] == 'obeys' and e.get('t'))
+    bite(35, f"CONTROL (why+maker): every real edge names its maker ({wm0['byClass']['NO-MAKER']} without) and none carries authored "
+             f"({wm0['byClass']['AUTHORED-FLAG']}); the why backlog on the real graph is {wm0['byClass']['WHY-MISSING']} missing",
+         lambda: wm0['byClass']['NO-MAKER'] == 0 and wm0['byClass']['AUTHORED-FLAG'] == 0 and wm0['byClass']['BAD-MAKER'] == 0)
+    bite(36, 'WHY-MISSING: an obeys line with no why goes red',
+         lambda: wm_red('WHY-MISSING', [dict(ob, why=None)]))
+    bite(37, 'WHY-SHORT: an obeys line whose why is 12 characters (floor 40) goes red',
+         lambda: wm_red('WHY-SHORT', [dict(ob, why='because so.')]))
+    bt = next(e for e in edges if e['type'] == 'bindsToken')
+    bite(38, 'WHY-MISSING is not raised on generated structure (a bindsToken line with no why stays quiet)',
+         lambda: check_why_maker(edges + [dict(bt, why=None)], rows)['byClass']['WHY-MISSING'] == wm0['byClass']['WHY-MISSING'])
+    bite(39, 'NO-MAKER: an edge with no maker goes red',
+         lambda: wm_red('NO-MAKER', [{k: v for k, v in bt.items() if k != 'maker'}]))
+    bite(40, "BAD-MAKER: a maker outside the three values ('drawn:solid') goes red",
+         lambda: wm_red('BAD-MAKER', [dict(bt, maker='drawn:solid')]))
+    bite(41, 'AUTHORED-FLAG: an edge still carrying authored goes red',
+         lambda: wm_red('AUTHORED-FLAG', [dict(bt, authored=True)]))
+    r42 = copy.deepcopy(reg); r42['types'][5].pop('why')
+    bite(42, 'REGISTER-SHAPE: a row without `why` goes red', lambda: cov_red('REGISTER-SHAPE', reg2=r42))
+    r43 = copy.deepcopy(reg); r43['types'][6]['maker'] = dict(r43['types'][6]['maker'], made='solid')
+    bite(43, "REGISTER-SHAPE: a row whose maker is 'solid' (not one of the three) goes red", lambda: cov_red('REGISTER-SHAPE', reg2=r43))
     print('SELFTEST: ' + ('PASS — every planted arm went red' if ok_all else 'FAIL'))
     return 0 if ok_all else 1
 

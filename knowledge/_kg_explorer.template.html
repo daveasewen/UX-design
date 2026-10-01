@@ -1278,10 +1278,13 @@ function openEdge(e,back){if(!e)return;
      picked, so it is labelled for what it is rather than passed off as the designer's. */
   if(e.why)row(ROC(e)?'why — the sentence on the card he answered':'why — the designer’s own words',`<i>${esc(e.why)}</i>`);
   if(e.note)row('note',esc(e.note));
-  row('provenance',(e.authored?'<b>authored</b> — written in the record itself':'')
-    +(e.derived?(e.authored?' · ':'')+'<b>derived</b> — proposed by a builder pass':'')
-    +(e.ratified?` · ratified ${esc(e.ratified)}`:'')
-    +(e.at?` · at ${esc(String(e.at))}`:'')||'—');
+  /* 1.36 (#311 lane D1, s308-D21 — "One maker field on every edge"): the retired `authored` flag is replaced by
+     the edge's one `maker`, `<made>:<by>` — by hand (whose/ruling), generated (which script) or ratified (which
+     ruling) — stamped from its type's row in knowledge/_edge_register.json. */
+  row('made by',(()=>{const m=String(e.maker||''),i=m.indexOf(':'),k=i<0?m:m.slice(0,i),b=i<0?'':m.slice(i+1);
+    return m?`<b>${esc(k==='hand'?'by hand':k)}</b>${b?' — '+esc(b):''}`:'— no maker (its type has no rule in the edge register)';})());
+  row('provenance',[e.derived?'<b>derived</b> — proposed by a builder pass':'',e.ratified?`ratified ${esc(e.ratified)}`:'',
+    e.at?`at ${esc(String(e.at))}`:''].filter(Boolean).join(' · ')||'—');
   /* #281 s281 lane CM: an edge that carries its own `fam` was READ OUT OF that family's file; an
      edge with no `fam` is a base edge and is authored in its source's own record. Asking that first
      is what makes `obeys` — family guidelinerules, stored in the component's meta — name its meta. */
