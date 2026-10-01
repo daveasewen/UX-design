@@ -20,7 +20,10 @@ BORN = "born closed (s305-D40): %s filed at #313 — the file is the record."
 # these lane ids broke it and are renumbered here, in the row and in every link that names them
 RENUMBER = {"W-313gs1": "W-313g1", "W-313ch1": "W-313k1", "W-313b5b": "W-313b5", "W-313b5q": "W-313bq",
             "W-313b5n": "W-313bn", "W-313b4a": "W-313b4", "W-313b4b": "W-313bd", "W-313a2b": "W-313ab",
-            "W-313a2c": "W-313ac", "W-313a2d": "W-313ad", "W-313b123": "W-313b1"}
+            "W-313a2c": "W-313ac", "W-313a2d": "W-313ad", "W-313b123": "W-313b1",
+            # wave 4
+            "W-313c1f": "W-313cf", "W-313cv1": "W-313cv", "W-313a3a": "W-313t1", "W-313a3b": "W-313t2",
+            "W-313a3c": "W-313t3", "W-313a3d": "W-313t4", "W-313a3e": "W-313t5"}
 
 
 def ops_of(lane):
@@ -36,6 +39,10 @@ def new_row(lane, kind, o):
     if not r.get("id") or r["id"].startswith("("):
         r["id"] = "W-313" + lane.lower()
     r["id"] = RENUMBER.get(r["id"], r["id"])
+    if r.get("state") == "closed":          # wave 4 (A3): the store's word is done
+        r["state"] = "done"
+    if not r.get("home"):                   # wave 4 (A3): no home given -> the lane's report
+        r["home"] = "notes/_subreports/2026-10-01-313-%s.md" % lane
     if isinstance(r.get("links"), list):
         r["links"] = [RENUMBER.get(x, x) for x in r["links"]]
     r.setdefault("project", "apollo")

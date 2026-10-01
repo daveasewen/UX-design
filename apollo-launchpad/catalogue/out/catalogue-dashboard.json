@@ -1,13 +1,13 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "$id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
+ "$id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.2/catalog.json",
  "title": "Apollo Launchpad — the dashboard parts",
  "description": "Generated from knowledge/components/*.meta.json by apollo-launchpad/catalogue/gen_catalogue.py; the metas are the source, this file is the API. Per-entry Apollo data sits under x-apollo (an annotation keyword; A2UI ignores it). Beta parts carry x-apollo.proposal: true (s305-D20).",
- "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
+ "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.2/catalog.json",
  "components": {
   "AppShellTopNav": {
    "type": "object",
-   "description": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99's sibling and row 97's own notes cell, 'Frame content lives in.' When: destinations <= 7 AND nav.levels <= 2",
+   "description": "The page frame for an application whose primary navigation lives across the top: a masthead band carrying the brand, the primary destinations and the utility actions, optionally a second band when the nav outgrows one row, optionally a third band of section nav, then the wayfinding trail, then the content region, then the end matter. It is the thing content lives inside — itinerary row 99's sibling and row 97's own notes cell, 'Frame content lives in.' When: primaryNavigation = present AND platform = app",
    "allOf": [
     {
      "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
@@ -134,7 +134,7 @@
    "x-apollo": {
     "slug": "app-shell-top-nav",
     "meta": "knowledge/components/app-shell-top-nav.meta.json",
-    "metaSha256": "6049c26e3ceae5b97f56e58a53d6a20e7ab2b0d5482b52993534025eaf4e6f1d",
+    "metaSha256": "bf2fd6ce705abf1d1cf1218a742347745f2b17690300a4f9aac8d3517338f198",
     "level": "shell",
     "status": "beta",
     "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
@@ -150,21 +150,21 @@
     },
     "priority": 60,
     "when": {
-     "gate": "destinations <= 7 AND nav.levels <= 2",
-     "prose": "the default for dashboards — the bento template composes it; beats app-shell-side-nav (roles.json when: \"> 7 destinations or two nav levels\") below those bounds and app-shell-nav-rail (when: \"dense app, content cannot spare 248px\") when the content can spare the column; yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored.",
+     "gate": "primaryNavigation = present AND platform = app",
+     "prose": "THE DEFAULT FRAME FOR AN APPLICATION, WHATEVER THE COUNT of destinations or levels (s313-D22, Dave by click, #313, verbatim: 'Yes, as drawn'); the primaries sit in one 64px row, the stacked form only when they do not fit the row at the product's floor width; a destination with children opens a flyout (up to six links, one column) or, over six or grouped under headings, the mega menu (s313-D23, verbatim: 'Yes'; Navigations `menu`); the third level is tabs in the page-header lock-up's foot, never a third band of chrome (s313-D24, inscribed for now at his word, pending his nav strategy doc, W-313d1). Beats app-shell-side-nav at any count, and yields to it only on the workbench test (roles.json when: \"the workbench only: the second level must stay on screen while the person works; chosen by the job, never by a count (s313-D25)\"); yields to app-shell-multi-column (when: \"list-and-detail job\") and to app-shell-focused (when: \"one job, no navigation (auth, wizard)\") when the job has no navigation. Co-providers of page-frame are mutually exclusive by construction (roles.json §05: one-at-a-time facility), so no not-with is authored. Superseded #313: the count rule 'destinations <= 7 AND nav.levels <= 2' (W-305e2; Dave, #305: 'Not quite, this is an IA question and the preference in general is a top nav, if there are multiple levels we use a mega menu').",
      "fields": [
-      "destinations",
-      "nav.levels"
+      "platform",
+      "primaryNavigation"
      ]
     },
     "variants": [
      {
       "name": "inline",
-      "use": "a product with five or fewer primary destinations and a brand short enough to share the row"
+      "use": "THE DEFAULT (s313-D22, 'Yes, as drawn'): the primaries fit one 64px row beside the brand at the product's floor width — a fit test, not a count (the #312 F1 run measured it: at 1024 five destinations fit with 131px spare and seven overflow by 36px; at 1440 nine fit with 215px spare). Levels below go into flyouts and the mega menu, never into more rows."
      },
      {
       "name": "stacked",
-      "use": "a product whose primary nav does not fit beside the brand, or one that needs a section tier under it"
+      "use": "only when the primaries do not fit the row at the product's floor width (s313-D22). The section tier under it is NOT the third level's home for now (s313-D24: tabs in the page-header lock-up)."
      }
     ],
     "settings": [
@@ -253,7 +253,9 @@
      "governs": [
       "ruling:s230-D2",
       "ruling:s272-D70",
-      "ruling:s272-D72"
+      "ruling:s272-D72",
+      "ruling:s313-D22",
+      "ruling:s313-D24"
      ],
      "obeysAuthored": [],
      "obeysDerived": [
@@ -481,7 +483,7 @@
    "x-apollo": {
     "slug": "button",
     "meta": "knowledge/components/button.meta.json",
-    "metaSha256": "b369f783348e40bbe9476b93e1013de60e8cd741a3fea53ff95fe25ae8b94b5d",
+    "metaSha256": "b428ce862ace688275f4ccc4525fda4bfe82d0883f801f997cd124c378ac6835",
     "level": "element",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -556,7 +558,8 @@
       "ruling:s272-D2",
       "ruling:s276-D3",
       "ruling:s276-D4",
-      "ruling:s305-D60"
+      "ruling:s305-D60",
+      "ruling:s313-D2"
      ],
      "obeysAuthored": [
       "rule:ctkb-002",
@@ -589,7 +592,7 @@
        "class": "btn {props.type}",
        "disabled": "{state.disabled}"
       },
-      "text": "Loading",
+      "text": "{props.label}",
       "$stateClasses": [
        "is-pressed",
        "is-disabled",
@@ -603,9 +606,12 @@
         "attrs": {
          "class": "spin"
         },
-        "$sel": "body > div.row > button.btn.primary > span.spin"
+        "$sel": "body > div.row > button.btn.primary > span.spin",
+        "$when": "{state.processing}",
+        "$note": "present only while processing; a button at rest has no spinner"
        }
-      ]
+      ],
+      "$note": "the button, read from its first instance (the default primary); its type is the class hole {props.type}, its words the label field (s305-D17). The 312 draft took the richest of six instances, the Loading specimen."
      },
      "states": {
       "states": [
@@ -724,7 +730,7 @@
       "--press-darken": "{component-type.button-family.press-darken}"
      },
      "$extracted": {
-      "by": "extract_spec.py @ 312-L2",
+      "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
       "date": "2026-10-01",
       "reviewed": false,
       "source": "knowledge/snippets/Button.reference.html",
@@ -734,10 +740,30 @@
        "emits",
        "bindings"
       ],
-      "$root": "name affinity 3 (button.btn.primary) → richest of 6 instances",
+      "$root": "name affinity 3 (button.btn.primary) → the first instance, the default button (hand-set 313-L4; the 312 draft took the richest of 6, the Loading one)",
       "$listeners": [],
       "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-      "sha": "97c7793a"
+      "sha": "97c7793a",
+      "$hand": [
+       {
+        "what": "the button's words: the literal \"Loading\" replaced by the label field {props.label}",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+       },
+       {
+        "what": "the spinner kept as the one child, marked present only while processing",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+       },
+       {
+        "what": "root re-read as the default button, not the Loading specimen ($sel already names the first instance)",
+        "why": "The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay."
+       },
+       {
+        "what": "states (7, rest default) and bindings (29) unchanged",
+        "why": "\"the states and bindings can stay\""
+       }
+      ],
+      "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 3, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. … the states and bindings can stay.\"",
+      "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
      }
     }
    }
@@ -799,7 +825,12 @@
       "data": {
        "oneOf": [
         {
-         "type": "object"
+         "type": "object",
+         "not": {
+          "required": [
+           "path"
+          ]
+         }
         },
         {
          "type": "array"
@@ -846,7 +877,7 @@
    "x-apollo": {
     "slug": "chart-bar",
     "meta": "knowledge/components/chart-bar.meta.json",
-    "metaSha256": "e181d9ccacc138594331110323cddce322459f619fd579f5bd0eaf6e7d02d1f9",
+    "metaSha256": "0297304f98cf921bc1913fc7776f87c121426a35b181160253c24884c8db10d8",
     "level": "pattern",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -999,7 +1030,12 @@
       "data": {
        "oneOf": [
         {
-         "type": "object"
+         "type": "object",
+         "not": {
+          "required": [
+           "path"
+          ]
+         }
         },
         {
          "type": "array"
@@ -1069,7 +1105,7 @@
    "x-apollo": {
     "slug": "chart-line",
     "meta": "knowledge/components/chart-line.meta.json",
-    "metaSha256": "44aa63845a4aa97b63d31e19cd976b5a4b07a62b31920f8853b1170f1f36dc2f",
+    "metaSha256": "182a5444c788de5dbca99a81f83f233c6b3061863ad40418d6c857c76d0fcf8b",
     "level": "pattern",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -1180,7 +1216,7 @@
   },
   "DataGrid": {
    "type": "object",
-   "description": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid. When: records >= 2 AND needs in (sort, filter, select, edit)",
+   "description": "The interactive data table: sort, filter, row selection and edit-in-place for data-dense fintech screens (transactions, payees, batch approvals). The distinct component the gated Table's rubric decision A anticipated (2026-06-22: 'if a sortable table is ever needed it should be a distinct component') — Table stays the PASSIVE semantic table; the grid owns interaction on the ARIA grid pattern. Peer shapes: Carbon DataTable, Ant Table, AG-Grid. When: records >= 2 AND needs in (select, edit)",
    "allOf": [
     {
      "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
@@ -1312,7 +1348,7 @@
    "x-apollo": {
     "slug": "data-grid",
     "meta": "knowledge/components/data-grid.meta.json",
-    "metaSha256": "2e6531053c8be3ad89ac25846c26cb9c21541edd9c766ce34b7dede710d74f45",
+    "metaSha256": "e9d7e2b1e4a09524a0431bba9bd17a9535311974701570ba7d7ee3f1d0cdbab7",
     "level": "pattern",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -1323,8 +1359,8 @@
     "span": null,
     "priority": null,
     "when": {
-     "gate": "records >= 2 AND needs in (sort, filter, select, edit)",
-     "prose": "the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) whenever sorting, filtering, selecting or editing is required, and yields to list-items when needs = none.",
+     "gate": "records >= 2 AND needs in (select, edit)",
+     "prose": "the record-list for rows the person works on as a set: it beats list-items (the role's default, s274-D6) only when rows are selected in bulk or edited in place, and yields to list-items when needs in (none, sort, filter) — searching, filtering, sorting and paging from a toolbar leave a list a list (s313-D27, Dave 2026-10-01, by click: \"Option 1, toolbar does not change the shape\").",
      "fields": [
       "needs",
       "records"
@@ -1417,7 +1453,8 @@
       "ruling:s263-D3",
       "ruling:s305-D16",
       "ruling:s305-D23",
-      "ruling:s305-D58"
+      "ruling:s305-D58",
+      "ruling:s313-D40"
      ],
      "obeysAuthored": [],
      "obeysDerived": [
@@ -1641,7 +1678,12 @@
       "dataFreshness": {
        "oneOf": [
         {
-         "type": "object"
+         "type": "object",
+         "not": {
+          "required": [
+           "path"
+          ]
+         }
         },
         {
          "type": "array"
@@ -2346,7 +2388,7 @@
   },
   "ListItems": {
    "type": "object",
-   "description": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image. TWO LEVELS (s274-D2): the CONTAINERS are the variants simple-list, structured-list and card-list; the record ROWS (account, badge, item, review, review-detail, transaction) are parts any container holds, and card-list-row = simple-list-row — no separate row shape. `bullets` is typeset, not a record row. When: records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none",
+   "description": "Lists display a series of related points together in a structured, easily readable way. Covers the tappable list-row family (Account, Badge, Item, Review, Review Detail, Transaction) plus typeset bullet/ordered/custom lists. Interactive rows share the state set default / hover (web) / pressed / disabled / processing and a visual option of icon / avatar / image. TWO LEVELS (s274-D2): the CONTAINERS are the variants simple-list, structured-list and card-list; the record ROWS (account, badge, item, review, review-detail, transaction) are parts any container holds, and card-list-row = simple-list-row — no separate row shape. `bullets` is typeset, not a record row. When: records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs in (none, sort, filter)",
    "allOf": [
     {
      "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentCommon"
@@ -2457,7 +2499,7 @@
    "x-apollo": {
     "slug": "list-items",
     "meta": "knowledge/components/list-items.meta.json",
-    "metaSha256": "d20ebe6e21d9a2329113211b9afdce6c9ac6cf1aafdebd8a1da20ddd981faaaa",
+    "metaSha256": "293d33e7cc0f40940cee06ab31a63c2ca5b2958661f8b6abbfeb4f172c974d2b",
     "level": "element",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -2468,8 +2510,8 @@
     "span": null,
     "priority": 60,
     "when": {
-     "gate": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs = none",
-     "prose": "surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") and data-grid (when: \"sort / filter / select / edit-in-place is required\") whenever each record is read across its own row; yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\").",
+     "gate": "records >= 2 AND the records are the same kind, each read ACROSS its own row AND surface in (none, bordered-per-record) AND needs in (none, sort, filter)",
+     "prose": "a list may be searched, filtered, sorted and paged from a toolbar; the toolbar does not change what it is (s313-D27, Dave 2026-10-01, by click: \"Option 1, toolbar does not change the shape\"). Surface ALONE decides the container (s274-D1): unbordered ⇒ simple-list (one line per record) or structured-list (aligned fields); a bordered surface drawn around EACH record ⇒ card-list. Actions are a ROW property, allowed in any of the three, so they decide nothing. No field count, row count or column count gates this (s274-D4): the comparison test decides — if a field must be read DOWN a column across records, it is a table, not a list. A list-level heading is OPTIONAL on all three containers (s274-D5); a per-card title is a ROW field, distinct from the list heading. Beats table (roles.json when: \"default, read-mostly\") whenever each record is read across its own row, and beats data-grid unless rows are selected in bulk or edited in place (s313-D27: the grid is kept for choosing many rows at once and changing a value where it sits); yields to timeline (when: \"time is the structure, records have happened\") and to tree (when: \"records nest\"). OPEN, Dave's (W-313d2): whether a natural order the person expects (transactions in date order) is itself a sign of a list — his words, verbatim: \"I think this is something we might have to think through.\"",
      "fields": [
       "needs",
       "records",
@@ -2553,7 +2595,8 @@
       "ruling:s274-D3",
       "ruling:s274-D4",
       "ruling:s274-D5",
-      "ruling:s274-D6"
+      "ruling:s274-D6",
+      "ruling:s313-D27"
      ],
      "obeysAuthored": [],
      "obeysDerived": [],
@@ -2623,7 +2666,12 @@
       "target": {
        "oneOf": [
         {
-         "type": "object"
+         "type": "object",
+         "not": {
+          "required": [
+           "path"
+          ]
+         }
         },
         {
          "type": "array"
@@ -2700,7 +2748,7 @@
    "x-apollo": {
     "slug": "metric",
     "meta": "knowledge/components/metric.meta.json",
-    "metaSha256": "a77a9449be78e0fbb39881a3dd50ad22db283449817e01e8d143e06db571781e",
+    "metaSha256": "7536acc7779039058c7bd9b4a1b56d7ea066722eca9a69c7816f879bc9b1ce9e",
     "level": "element",
     "status": "beta",
     "statusSource": "showroom/index.json",
@@ -2814,7 +2862,8 @@
       "ruling:s309-D5",
       "ruling:s309-D6",
       "ruling:s310-D1",
-      "ruling:s310-D2"
+      "ruling:s310-D2",
+      "ruling:s313-D6"
      ],
      "obeysAuthored": [],
      "obeysDerived": [
@@ -2838,7 +2887,7 @@
       "aria": {
        "role": "group",
        "aria-label": "Net cash flow, March",
-       "aria-busy": "{state.busy}"
+       "aria-busy": "{state.loading}"
       },
       "$stateClasses": [
        "is-loading",
@@ -2875,10 +2924,11 @@
           "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span.unit"
          },
          {
-          "part": "span",
+          "part": "value",
           "tag": "span",
           "text": "2,450.00",
-          "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span"
+          "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span",
+          "$note": "the figure a tile is read for; the unit sits beside it"
          }
         ]
        },
@@ -2910,13 +2960,14 @@
           ]
          },
          {
-          "part": "span-2",
+          "part": "change",
           "tag": "span",
           "attrs": {
            "class": "t-cm-figure-6"
           },
           "text": "+12.4% up",
-          "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6"
+          "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6",
+          "$note": "the change figure; its direction is the delta's trend choice"
          },
          {
           "part": "metric-per",
@@ -2965,8 +3016,7 @@
        "error",
        "stale",
        "hover",
-       "focus",
-       "busy"
+       "focus"
       ],
       "initial": "ready",
       "transitions": [
@@ -2994,7 +3044,8 @@
       "$sources": {
        "loading": [
         "class .is-loading on a twin of body > div.board > div.metric",
-        "style .metric.is-loading .sk"
+        "style .metric.is-loading .sk",
+        "attribute aria-busy on a twin of body > div.board > div.metric (was a separate busy state; folded in)"
        ],
        "empty": [
         "class .is-empty on a twin of body > div.board > div.metric",
@@ -3017,9 +3068,6 @@
         "style .metric-panel-spec .scroll:focus-visible",
         "style .metric-retry:focus-visible",
         "style .metric.as-link:has(.metric-link:focus-visible)"
-       ],
-       "busy": [
-        "attribute aria-busy on a twin of body > div.board > div.metric"
        ],
        "stale": [
         "class .is-stale on a twin of body > div.board > div.metric"
@@ -3045,7 +3093,7 @@
       "--tbl-border": "{table.border}"
      },
      "$extracted": {
-      "by": "extract_spec.py @ 312-L2",
+      "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
       "date": "2026-10-01",
       "reviewed": false,
       "source": "knowledge/snippets/Metric.reference.html",
@@ -3058,7 +3106,31 @@
       "$root": "name affinity 3 (div.metric)",
       "$listeners": [],
       "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
-      "sha": "97c7793a"
+      "sha": "97c7793a",
+      "$hand": [
+       {
+        "what": "part span renamed value",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+       },
+       {
+        "what": "part span-2 renamed change",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+       },
+       {
+        "what": "aria-busy now reads the loading state",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+       },
+       {
+        "what": "states busy taken out (and their arrows)",
+        "why": "Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay."
+       },
+       {
+        "what": "the five declared states (ready, loading, empty, error, stale), the trend choice and the spark slot unchanged; rest stays ready, the metric's own word",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+       }
+      ],
+      "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 7, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2 … Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.\"",
+      "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
      }
     }
    }
@@ -3109,6 +3181,16 @@
        "default": "none",
        "description": "Masthead flyouts: main nav (closed/scroll/open), search, user."
       },
+      "menu": {
+       "type": "string",
+       "enum": [
+        "none",
+        "flyout",
+        "mega"
+       ],
+       "default": "none",
+       "description": "WHAT A PRIMARY DESTINATION OPENS (#313). s313-D23 (Dave by click, verbatim: 'Yes'): SIX LINKS IN ONE COLUMN IS THE LINE between a flyout and a mega menu, and links grouped under headings are always the mega menu. none: the destination is a link. flyout: up to six links, one column, no headings, a pa"
+      },
       "breakpoint": {
        "type": "string",
        "enum": [
@@ -3129,7 +3211,12 @@
       "account": {
        "oneOf": [
         {
-         "type": "object"
+         "type": "object",
+         "not": {
+          "required": [
+           "path"
+          ]
+         }
         },
         {
          "type": "array"
@@ -3147,6 +3234,8 @@
         "anchors",
         "nav-bar-bottom",
         "nav-bar-top",
+        "flyout",
+        "mega-menu",
         "compact"
        ],
        "default": "masthead",
@@ -3162,7 +3251,7 @@
    "x-apollo": {
     "slug": "navigations",
     "meta": "knowledge/components/navigations.meta.json",
-    "metaSha256": "123cd59a44ad10591161c39baead72fe1a2487cfe7b194d243968ba17a6f2584",
+    "metaSha256": "d904868c888f04c3e19cdcf206e30169e805ba4df1768351e023316f41a6cb1a",
     "level": "pattern",
     "status": "stable",
     "statusSource": "showroom/index.json",
@@ -3203,6 +3292,14 @@
       "use": "App-only top bar (iOS Nav Bar Top); title + actions, active indicator."
      },
      {
+      "name": "flyout",
+      "use": "A destination with up to six links and no headings (s313-D23): a one-column panel under its trigger. The trigger is a disclosure button, never a link."
+     },
+     {
+      "name": "mega-menu",
+      "use": "A destination with more than six links, or links grouped under headings (s313-D23): a full-width panel under the masthead, up to four columns, heading = level 2, link = level 3. How the top nav carries multiple levels (s313-D22). Below the compact breakpoint it becomes an accordion in the sheet — NOT YET BUILT."
+     },
+     {
       "name": "compact",
       "use": "Below 768px the primary row is REPLACED (not shrunk) by a hamburger that discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids."
      }
@@ -3211,6 +3308,7 @@
      "type",
      "auth",
      "flyout",
+     "menu",
      "breakpoint",
      "count",
      "account"
@@ -3241,7 +3339,9 @@
       "ruling:s262-D2",
       "ruling:s262-D3",
       "ruling:s272-D70",
-      "ruling:s305-D60"
+      "ruling:s305-D60",
+      "ruling:s313-D22",
+      "ruling:s313-D23"
      ],
      "obeysAuthored": [],
      "obeysDerived": [],
@@ -3564,7 +3664,8 @@
        "type": "string",
        "enum": [
         "default",
-        "banded"
+        "banded",
+        "linked-subjects"
        ],
        "default": "default",
        "description": "Apollo variants (meta.variants); the first listed is the default by the generator's convention, not a ruling."
@@ -3596,7 +3697,7 @@
    "x-apollo": {
     "slug": "template-dashboard-bento",
     "meta": "knowledge/components/template-dashboard-bento.meta.json",
-    "metaSha256": "d82e7dde21e2701da39e2181a832c6272ab0cc36e6dd890d76d47ab5e927ad4f",
+    "metaSha256": "6d1a45705ccf10706b02236e15b2a25bd4df52fe1a5ad5d1a9476c7bce7c58c0",
     "level": "template",
     "status": "beta",
     "statusSource": "showroom/index.json status=beta; meta $status PROPOSED",
@@ -3622,6 +3723,10 @@
      {
       "name": "banded",
       "use": "The wall's own container queries re-column it at 1100 / 820 / 520 CONTAINER px to 3 / 2 / 1. Every group becomes a single column and every module a full row. That is canon's compiled behaviour, not a variant this file declares."
+     },
+     {
+      "name": "linked-subjects",
+      "use": "s313-D30 (#313 call 11, Dave by click, verbatim: 'Yes, as a variation, when one header names both and one action serves both'). Two closely linked subjects share ONE bento group under ONE group header: their tiles sit in the same group, so the sub gutter, not the main gutter, separates them. A VARIATION, never the default. The test, both halves: one header names both subjects honestly, AND one action serves both (or neither has one). Fails either half: they stay two groups. Not drawn in the template (its three groups are three subjects); the page's example of a pass was exposure and resilience, where limit utilisation belongs to both."
      }
     ],
     "settings": [
@@ -3701,7 +3806,12 @@
       "ruling:s305-D42",
       "ruling:s305-D59",
       "ruling:s305-D60",
-      "ruling:s305-D9"
+      "ruling:s305-D9",
+      "ruling:s313-D21",
+      "ruling:s313-D29",
+      "ruling:s313-D30",
+      "ruling:s313-D34",
+      "ruling:s313-D41"
      ],
      "obeysAuthored": [],
      "obeysDerived": [
@@ -3811,10 +3921,10 @@
  "x-apollo": {
   "catalogue": {
    "name": "dashboard",
-   "version": "v0.1.1",
-   "sha256": "87e4866c28eba307d1f039d276efb7ca273ba7f1b20c8aa077200140d98ca0d0",
-   "metas_sha": "827c59d0",
-   "metas_sha256": "4465b5940961db925a4e852085e4f0bc06d10a2e39217590f481a7f9f8a335af",
+   "version": "v0.1.2",
+   "sha256": "90f1260fbfe833382fa55de08f1a8e0c20f78c76ba49655cd538a40b6618527d",
+   "metas_sha": "9fcdab2d",
+   "metas_sha256": "a3b865c83c42f8f2e2e4ec9ba6e370df28cabbe47ef8f34c58dd3c84ac5ea9fa",
    "parts": [
     "app-shell-top-nav",
     "breadcrumbs",
@@ -3835,8 +3945,8 @@
     "template-dashboard-bento"
    ],
    "previous": {
-    "version": "v0.1.0",
-    "sha256": "686f823d8da95b3b7a118370018319c61d1ea5d6f6844d1477a6661827869d7e"
+    "version": "v0.1.1",
+    "sha256": "87e4866c28eba307d1f039d276efb7ca273ba7f1b20c8aa077200140d98ca0d0"
    }
   }
  }

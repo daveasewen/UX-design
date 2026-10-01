@@ -10,9 +10,9 @@
     "focus-indicators.md"
   ],
   "totals": {
-    "components": 136,
+    "components": 138,
     "with_deprecated_bindings": 19,
-    "god_node_count": 45
+    "god_node_count": 46
   },
   "components": {
     "Box plot": {
@@ -158,7 +158,8 @@
         "background/default",
         "data/series/1",
         "elevation/border",
-        "elevation/functional"
+        "elevation/functional",
+        "scale"
       ],
       "wcag_sc": [
         "1.3.1",
@@ -337,6 +338,7 @@
         "background/default",
         "border/subtle",
         "icon/default",
+        "scale",
         "tertiary/background/hover",
         "tertiary/background/pressed",
         "text/default"
@@ -1434,11 +1436,10 @@
           "Icon-only with no accessible name.",
           "A disabled/hidden-state glyph bound to a token equal to its own surface (glyph-presence gate, inherited from Icon-button).",
           "display:none while hidden, leaving keyboard-focus users with no way to reach it below the threshold and no way to know it exists above the threshold — the reference uses opacity+pointer-events instead, flagged as the safer default, not proven exhaustively.",
-          "Binding the control's scroll target ambiguously when a page has more than one scrollable region (must set aria-controls explicitly)."
+          "Binding the control's scroll target ambiguously when a page has more than one scrollable region (must set aria-controls explicitly).",
+          "Inventing a page-local scroll threshold instead of the ruled four viewport-heights (s272-D73; this line was a REVIEW (inferred) warning about the unnamed threshold before that ruling)."
         ],
-        "inferred_review": [
-          "REVIEW (inferred): shipping WITHOUT ever naming a scroll threshold value, leaving every consuming team to invent its own (the meta deliberately does not propose one either — see decisionsForDave)."
-        ]
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -1866,7 +1867,7 @@
       ],
       "anti_patterns": {
         "asserted": [
-          "Autoplay with no pause control (WCAG 2.2.2) — not built here, and PROPOSED default is autoplay OFF entirely",
+          "Autoplay of any kind — ruled out with no option (s307-D52, Dave by click 2026-09-28, verbatim: 'Promote image block; no autoplay; carousel stays as it is'); WCAG 2.2.2",
           "Modelling slides as role=tab/tabpanel (a slide is not an independent view)",
           "Colour-only dot state (dot uses aria-current + a visible scale/fill change, not hue alone)",
           "Real photography or drawn icons standing in for placeholder imagery — SVG rect placeholders only, per the wave-4 DO-NOT-RULE",
@@ -2564,6 +2565,7 @@
         "form/background/hover",
         "form/border/active",
         "form/border/default",
+        "scale",
         "secondary/background/default",
         "table/border",
         "table/column/background",
@@ -2571,20 +2573,23 @@
         "tertiary/background/hover",
         "tertiary/background/pressed",
         "tertiary/border/default",
+        "text/disabled",
         "text/on-inverse",
         "text/reverse"
       ],
-      "token_count": 14,
+      "token_count": 16,
       "god_nodes_touched": [
         "background/default",
         "border-radius/control",
         "form/background/hover",
         "form/border/active",
         "form/border/default",
+        "scale",
         "secondary/background/default",
         "tertiary/background/hover",
         "tertiary/background/pressed",
         "tertiary/border/default",
+        "text/disabled",
         "text/on-inverse",
         "text/reverse"
       ],
@@ -2609,7 +2614,10 @@
           "Sort direction by colour or icon-opacity alone (aria-sort + distinct glyphs here; icons stay full-ink, icon-011)",
           "Selection shown by tint alone (bar + checkbox carry it structurally)",
           "Local press physics on grid controls (button-family partial territory — the ratchet bites)",
-          "A second tab stop inside the grid (widgets are reached from cells, not Tab)"
+          "A second tab stop inside the grid (widgets are reached from cells, not Tab)",
+          "Sorting a column whose cells are editable (re-ordering rows under an open editor) — the Reference column's sort is disabled by design, and that is the shipped disabled-column example",
+          "A header state that paints a RIGHT-EDGE bar — #261 G2 removed the last one (filtered's leading accent, which read as the previous column's right edge); the only trailing rule is the 1px table/border column hairline",
+          "A resize handle as a second tab stop — it is a tabindex=-1 separator reached from the header cell with Alt+arrow"
         ],
         "inferred_review": []
       },
@@ -2906,6 +2914,7 @@
         "background/default",
         "divider/border/section",
         "divider/border/subsection",
+        "elevation/border",
         "elevation/functional",
         "form/background/default",
         "form/background/hover",
@@ -2923,11 +2932,12 @@
         "text/disabled",
         "text/reverse"
       ],
-      "token_count": 19,
+      "token_count": 20,
       "god_nodes_touched": [
         "background/default",
         "divider/border/section",
         "divider/border/subsection",
+        "elevation/border",
         "elevation/functional",
         "form/background/default",
         "form/background/hover",
@@ -3240,13 +3250,19 @@
       "tokens": [
         "form/background/hover",
         "form/border/default",
-        "secondary/background/default"
+        "rag/error-ink",
+        "rag/success-ink",
+        "secondary/background/default",
+        "text/default"
       ],
-      "token_count": 3,
+      "token_count": 6,
       "god_nodes_touched": [
         "form/background/hover",
         "form/border/default",
-        "secondary/background/default"
+        "rag/error-ink",
+        "rag/success-ink",
+        "secondary/background/default",
+        "text/default"
       ],
       "wcag_sc": [
         "1.4.1",
@@ -3263,10 +3279,14 @@
       ],
       "anti_patterns": {
         "asserted": [
-          "Re-drawing the search field, dropdown, segmented control or chip CSS instead of composing the existing atom — the #202 defect this brief names explicitly",
+          "Re-drawing the search field, dropdown, segmented control, chip or link CSS instead of composing the existing atom — the #202 defect the Layer-2 brief names explicitly",
           "Consuming View-options instead of Segmented-control for the view switch — View-options was superseded 2026-07-24",
+          "Copying date-range-picker's CALENDAR body into this bar — the bar owns the trigger and the presets; `Custom range…` hands off to the component that owns the calendar (edges.delegatesTo)",
           "Giving the bar a fixed width — s210-D3 reserves that for the container",
-          "Selecting a filter state by colour alone — Dropdown's aria-selected + Segmented-control's aria-pressed already carry the non-colour signal"
+          "Disabling the controls while results load — a filter you cannot change while it is running is a trap; dim the chips, hold the count's position, keep every control live",
+          "Showing the previous count during loading or error as if it were current — loading shows a skeleton, error shows an em-dash",
+          "Selecting a filter state by colour alone — Dropdown's aria-selected, Segmented-control's aria-pressed and the chip's own label already carry the non-colour signal",
+          "Letting the bar decide its own state from the request it just made — the state is READ BACK off the consumer's data-apollo-result-state"
         ],
         "inferred_review": []
       },
@@ -3316,16 +3336,23 @@
       "tokens": [
         "background/default",
         "border-radius/control",
+        "border/strong",
         "divider/border/section",
         "divider/border/subsection",
         "focus/ring",
         "icon/default",
+        "rag/success-glyph",
+        "rag/text/on-light",
+        "rag/warning-background",
+        "rag/warning-glyph",
+        "surface/action",
+        "surface/action-primary",
         "surface/subtle",
         "target/min",
         "text/default",
-        "text/secondary"
+        "text/on-inverse"
       ],
-      "token_count": 10,
+      "token_count": 17,
       "god_nodes_touched": [
         "background/default",
         "border-radius/control",
@@ -3336,7 +3363,7 @@
         "surface/subtle",
         "target/min",
         "text/default",
-        "text/secondary"
+        "text/on-inverse"
       ],
       "wcag_sc": [
         "1.3.1",
@@ -3358,14 +3385,17 @@
       ],
       "anti_patterns": {
         "asserted": [
-          "Never let a doormat duplicate the masthead navigation. A footer that repeats the header is a footer that has stopped being read.",
-          "Never put the primary task's actions in a site Footer. That is an Action-bar, and the two are different components that share a word.",
-          "Never ship an anonymous <footer> with no aria-label on a page that also has a container footer — a screen-reader user then has two contentinfo regions and no way to tell them apart.",
-          "Never let a link column exceed what a reader will scan. If a group needs more than about six links it is two groups, or it is a page.",
+          "Never make the app footer sticky by default. A band that follows the operator down an infinite grid costs a row of data on every screen; sticky is a variant, chosen, for the dashboard that genuinely never ends.",
+          "Never put the primary task's actions in a Footer. That is an Action-bar, and at #261 the two shapes are close enough that the mistake is easy — the test is whether the thing is something you DO.",
+          "Never leave the environment badge off a non-production build. Acting on user-acceptance data believing it is production is the single most expensive mistake a banking console permits, and this badge is the cheapest guard against it.",
+          "Never show a timestamp without its time zone. A freshness figure with no zone is not a fact; that is why locale and time zone sit in the same cluster.",
+          "Never mute footer text with opacity. It defeats the contrast gate silently — MEASURED at 4.41:1 in the previous build. Quietness comes from type size.",
+          "Never let the system dot carry a per-record status, a third colour or a history. One system-level fact, two values; anything more is a Banner or a status page.",
+          "Never ship an anonymous <footer> on a screen that also has a container footer — a screen-reader user then has two contentinfo regions and no way to tell them apart.",
           "Never carry legal text as an image or a PDF-only link with no text alternative in the bar itself."
         ],
         "inferred_review": [
-          "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the 44px trade and the band colour are all open."
+          "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #261, and the name, the 24px floor and the RAG-in-a-footer position are all open."
         ]
       },
       "deprecated_bindings": [],
@@ -3643,6 +3673,7 @@
         "icon/default",
         "icon/default-reverse",
         "icon/disabled",
+        "scale",
         "secondary/background/default",
         "tertiary/background/default",
         "tertiary/background/hover",
@@ -3814,32 +3845,10 @@
     "KPI tile": {
       "name": "KPI tile",
       "category": "molecule",
-      "figma_node": null,
-      "tokens": [
-        "background/default",
-        "border-radius/surface",
-        "border/subtle",
-        "focus/ring",
-        "rag/error",
-        "rag/error-ink",
-        "rag/success",
-        "rag/success-ink",
-        "tertiary/background/default",
-        "text/default"
-      ],
-      "token_count": 10,
-      "god_nodes_touched": [
-        "background/default",
-        "border-radius/surface",
-        "border/subtle",
-        "focus/ring",
-        "rag/error",
-        "rag/error-ink",
-        "rag/success",
-        "rag/success-ink",
-        "tertiary/background/default",
-        "text/default"
-      ],
+      "figma_node": "",
+      "tokens": [],
+      "token_count": 0,
+      "god_nodes_touched": [],
       "wcag_sc": [
         "1.3.1",
         "1.4.1",
@@ -3856,16 +3865,8 @@
         "focus-indicators.md"
       ],
       "anti_patterns": {
-        "asserted": [
-          "Never ship a KPI tile with an empty spark slot — that is a Stat card, and it should be one.",
-          "Never let the delta text wear the delta colour. Dark rag/error measures 3.66 and fails 4.5 as text; the arrow glyph carries the colour at the 3:1 atom floor and the number stays ink (R-D5/R-D6, inherited from Stat card).",
-          "Never give the inline spark per-point focus stops or hover markers — a spark is ambient and the markers fight the axis-free idiom (receipted at #182).",
-          "Never label the table affordance 'View as table'. s182-D2: icon-button form, accessible name only.",
-          "Never fix the arrow seat here alone. Stat card and KPI tile bind the same delta seat and must move together."
-        ],
-        "inferred_review": [
-          "REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it."
-        ]
+        "asserted": [],
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -3923,6 +3924,52 @@
         "inferred_review": [
           "REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the ramp, the default floor and the auto-fill/auto-fit default are all open."
         ]
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Legend": {
+      "name": "Legend",
+      "category": "molecule",
+      "figma_node": "",
+      "tokens": [
+        "background/default",
+        "border/subtle",
+        "data/control/label-disabled/color",
+        "data/series/1",
+        "rag/error-ink",
+        "rag/success-ink",
+        "text/default"
+      ],
+      "token_count": 7,
+      "god_nodes_touched": [
+        "background/default",
+        "border/subtle",
+        "data/series/1",
+        "rag/error-ink",
+        "rag/success-ink",
+        "text/default"
+      ],
+      "wcag_sc": [],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "A second legend for a series set that already has one in the same view",
+          "Hiding a series by removing its marks (the model ghosts to 12%; removal reflows the chart under the user's cursor)",
+          "A legend that neither wraps nor scrolls (it widens its host — the bento break, s248-D3)",
+          "Colour as the only channel — no key letter, no shape",
+          "A round swatch (Badge and Avatar are the only round components)",
+          "A legend id whose live region is not <id minus -legend> + -live (silently unannounced)",
+          "Re-implementing show-hide or isolate in the consumer instead of consuming canon/dv-legend.js",
+          "A dense legend at 24px targets (Dave reversed that proposal on 2026-07-25 — 44 everywhere)"
+        ],
+        "inferred_review": []
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -4161,6 +4208,7 @@
         "rag/success-tint",
         "rag/warning",
         "rag/warning-tint",
+        "scale",
         "text/default",
         "text/secondary"
       ],
@@ -4194,6 +4242,68 @@
           "Painting a delta or an arrow on this component. The two delta conventions question is OPEN AND DAVE'S and nothing here may settle it by construction."
         ],
         "inferred_review": []
+      },
+      "deprecated_bindings": [],
+      "deprecated_count": 0
+    },
+    "Metric": {
+      "name": "Metric",
+      "category": "molecule",
+      "figma_node": null,
+      "tokens": [
+        "background/default",
+        "border-radius/surface",
+        "border/subtle",
+        "focus/ring",
+        "rag/error-ink",
+        "rag/success-ink",
+        "rag/warning",
+        "scale",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "token_count": 10,
+      "god_nodes_touched": [
+        "background/default",
+        "border-radius/surface",
+        "border/subtle",
+        "focus/ring",
+        "rag/error-ink",
+        "rag/success-ink",
+        "rag/warning",
+        "scale",
+        "tertiary/background/default",
+        "text/default"
+      ],
+      "wcag_sc": [],
+      "guidelines": [
+        "accessibility.md",
+        "digital-accessibility-standards.md",
+        "colour-usage.md",
+        "dark-mode.md",
+        "focus-indicators.md"
+      ],
+      "anti_patterns": {
+        "asserted": [
+          "Never ship a KPI tile with an empty spark slot AND no target row — that is a Stat card, and it should be one.",
+          "Never let the delta text wear the delta colour. Dark rag/error measures 3.66 as text; the glyph carries the colour at the 3:1 atom floor and the number stays ink (R-D5/R-D6, inherited from Stat card).",
+          "Never give the inline spark per-point focus stops or hover markers — a spark is ambient and the markers fight the axis-free idiom (receipted at #182).",
+          "Never colour the target row. It is hue-free by design; a red bar for 'behind target' makes the tile pass judgement, which is the reader's job.",
+          "Never render the stale marker in amber. Age is carried by the glyph and the sentence — Dave is astigmatic and yellow is a problem hue.",
+          "Never render an empty metric as 0. A zero is a measurement; an em-dash plus a sentence is an absence.",
+          "Never label the retry control 'Retry'. Name what it will load, so it survives being read out of context.",
+          "Never label the table affordance 'View as table'. s182-D2: icon-button form, accessible name only.",
+          "Never fix the glyph seat here alone. Stat card and KPI tile bind the same delta seat and must move together.",
+          "Coloured delta TEXT (dark rag/error fails 4.5 as text — the arrow wears the colour)",
+          "Amber as a direction (R-D5: red/green only; amber is status, not direction)",
+          "Colour as the only direction channel (arrow + sign + wording, always)",
+          "Re-implementing the money format locally (compose the Amount-display primitive)",
+          "A tile making two claims (one metric per card)",
+          "Proportional (non-tabular) figures in a board (columns shear)"
+        ],
+        "inferred_review": [
+          "REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it."
+        ]
       },
       "deprecated_bindings": [],
       "deprecated_count": 0
@@ -4398,6 +4508,7 @@
         "color/primary",
         "color/white",
         "divider/border/subsection",
+        "elevation/border",
         "elevation/functional",
         "icon/default",
         "layout/web/margin",
@@ -4407,12 +4518,13 @@
         "tertiary/border/default",
         "text/default"
       ],
-      "token_count": 15,
+      "token_count": 16,
       "god_nodes_touched": [
         "background/default",
         "border/subtle",
         "color/primary",
         "divider/border/subsection",
+        "elevation/border",
         "elevation/functional",
         "icon/default",
         "overlay/version1",
@@ -4516,6 +4628,7 @@
         "rag/success-tint",
         "rag/warning",
         "rag/warning-tint",
+        "scale",
         "text/default"
       ],
       "wcag_sc": [
@@ -4562,12 +4675,10 @@
       "category": "organism",
       "figma_node": "",
       "tokens": [
-        "badge/background",
-        "rag/text/on-light",
         "text/default",
         "text/secondary"
       ],
-      "token_count": 4,
+      "token_count": 2,
       "god_nodes_touched": [
         "text/default",
         "text/secondary"
@@ -4946,16 +5057,14 @@
       "category": "atom",
       "figma_node": "",
       "tokens": [
-        "background/default",
         "border-radius/container",
         "focus/ring",
         "surface/digital-black",
         "text/default",
         "text/reverse"
       ],
-      "token_count": 6,
+      "token_count": 5,
       "god_nodes_touched": [
-        "background/default",
         "focus/ring",
         "text/default",
         "text/reverse"
@@ -4975,6 +5084,7 @@
       ],
       "anti_patterns": {
         "asserted": [
+          "Letting the symbol follow the theme into dark mode (light modules on a dark field). #210 measured an inverted symbol failing a real decoder; s307-D50 rules dark on light in every mode.",
           "Inventing the matrix. A QR code that is a plausible texture rather than a real encoding is worse than no QR code: it looks finished, it passes every visual review, and it fails silently in the reader's hand.",
           "Cropping the quiet zone. Four modules of clear margin are part of the symbol. Putting the matrix flush inside a padded card, or letting a container tighten around it, is the most common way a design-system QR code stops working.",
           "Fixing the outer pixel box across payloads. A longer string means more modules; at a fixed box the modules shrink until the camera cannot resolve them. Size the MODULE, let the box follow.",
@@ -5931,23 +6041,9 @@
       "name": "Stat card",
       "category": "molecule",
       "figma_node": "",
-      "tokens": [
-        "border-radius/surface",
-        "border/subtle",
-        "rag/error",
-        "rag/success",
-        "tertiary/background/default",
-        "text/default"
-      ],
-      "token_count": 6,
-      "god_nodes_touched": [
-        "border-radius/surface",
-        "border/subtle",
-        "rag/error",
-        "rag/success",
-        "tertiary/background/default",
-        "text/default"
-      ],
+      "tokens": [],
+      "token_count": 0,
+      "god_nodes_touched": [],
       "wcag_sc": [
         "1.3.1",
         "1.4.1",
@@ -5961,14 +6057,7 @@
         "focus-indicators.md"
       ],
       "anti_patterns": {
-        "asserted": [
-          "Coloured delta TEXT (dark rag/error fails 4.5 as text — the arrow wears the colour)",
-          "Amber as a direction (R-D5: red/green only; amber is status, not direction)",
-          "Colour as the only direction channel (arrow + sign + wording, always)",
-          "Re-implementing the money format locally (compose the Amount-display primitive)",
-          "A tile making two claims (one metric per card)",
-          "Proportional (non-tabular) figures in a board (columns shear)"
-        ],
+        "asserted": [],
         "inferred_review": []
       },
       "deprecated_bindings": [],
@@ -7740,11 +7829,12 @@
         "form/background/pressed",
         "form/border/active",
         "icon/default",
+        "primary/border/default",
         "tertiary/background/default",
         "tertiary/background/hover",
         "text/default"
       ],
-      "token_count": 10,
+      "token_count": 11,
       "god_nodes_touched": [
         "border-radius/control",
         "border-radius/surface",
@@ -7753,6 +7843,7 @@
         "form/background/pressed",
         "form/border/active",
         "icon/default",
+        "primary/border/default",
         "tertiary/background/default",
         "tertiary/background/hover",
         "text/default"

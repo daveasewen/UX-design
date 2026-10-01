@@ -7038,6 +7038,13 @@
 /* ---------- THE COMPONENT ---------- */
 :where(.cn-calendar) .cal{background:var(--page); color:var(--text); border:1px solid var(--rule);
     border-radius:var(--border-radius-surface); padding:16px;}
+/* ===== PARTIAL calendar START (group calendar) ===== */
+/* THE CALENDAR PART, built once (s307-D49, Dave 2026-09-28: 'Yes, the date picker uses the
+     calendar'). Everything from here to the END marker is injected verbatim into
+     Date-picker.reference.html by gen_component_partials.py (registry: component-types.json
+     group "calendar"). Change the calendar HERE and regenerate; never in the date picker.
+     The .cal surface above stays outside: the seat brings its surface (a card here, the
+     anchored overlay in the date picker). #313 lane QQ. */
 :where(.cn-calendar) .cal-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
 :where(.cn-calendar) .cal-title{flex:1; min-width:0; text-align:center; color:var(--text);}
 :where(.cn-calendar) .cal-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
@@ -7048,18 +7055,13 @@
 :where(.cn-calendar) .cal-nav:hover{background:var(--field-bg-hover);}
 :where(.cn-calendar) .cal-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 :where(.cn-calendar) .cal-nav svg{width:18px; height:18px; display:block;}
-/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
-/* INJECTED-SHAPE placeholder, EMPTY BY DESIGN (ADR-0013). .cal-nav is a button-family
-     membership CANDIDATE: the markers and --phys-size:44 are in place so
-     gen_component_partials.py can fill them once the conductor registers $members in
-     knowledge/component-types.json. DO NOT hand-write physics between these markers. */
-/* ===== AUTO-PARTIAL press-physics END ===== */
 :where(.cn-calendar) .cal-grid{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:4px;}
 :where(.cn-calendar) .cal-grid th{padding:0; height:24px;}
 :where(.cn-calendar) .cal-grid td{padding:0;}
 :where(.cn-calendar) .cal-wk{display:flex; align-items:center; justify-content:center; height:24px;
     color:var(--text); opacity:var(--alpha-60);}
-/* the day cell — Date-picker's state language, lock-step */
+/* the day cell — one cell for both seats (the state language began in Date-picker; since
+     #313 the date picker takes this block, so there is no second copy to keep in step) */
 :where(.cn-calendar) .cal-day{width:100%; min-height:40px; display:flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--text);
     border-radius:var(--border-radius-control); position:relative;
@@ -7075,8 +7077,8 @@
      The hover rule above is `button.cal-day:hover:not(:disabled)` = (0,3,1) and OUT-SPECIFIES the
      knockout at (0,2,0), so hovering a SELECTED day repainted the fill --field-bg-hover while the
      text stayed --page: 1.14:1 light / 1.11:1 dark, hover AND pressed, on both selected days —
-     8 of the gate's 8 TEXT failures. Date-picker does not carry it because .dp-day:hover is
-     (0,2,0) and its knockout rule comes LATER; Calendar's does not. Restated here at (0,3,1),
+     8 of the gate's 8 TEXT failures. (The date picker's old .dp-day grid did not need it: its
+     hover was (0,2,0) and its knockout came later. It takes this block now.) Restated at (0,3,1),
      same two tokens as the knockout itself — no new colour, no new constant. */
 :where(.cn-calendar) button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
 /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule.
@@ -7088,6 +7090,17 @@
 :where(.cn-calendar) .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
 /* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
 :where(.cn-calendar) .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}
+/* EMPTY: a seat that hides the neighbouring months marks the pad cell is-empty (the date
+     picker's popover: a transient act of picking, #210 head note 1). The month view draws
+     them instead (is-outside above). */
+:where(.cn-calendar) .cal-day.is-empty{visibility:hidden; pointer-events:none;}
+/* ===== PARTIAL calendar END ===== */
+/* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+/* INJECTED-SHAPE placeholder, EMPTY BY DESIGN (ADR-0013). .cal-nav is a button-family
+     membership CANDIDATE: the markers and --phys-size:44 are in place so
+     gen_component_partials.py can fill them once the conductor registers $members in
+     knowledge/component-types.json. DO NOT hand-write physics between these markers. */
+/* ===== AUTO-PARTIAL press-physics END ===== */
 @media (prefers-reduced-motion: reduce){
 
 }
@@ -11052,56 +11065,93 @@
 :where(.cn-date-picker) .dp-panel.is-open{display:block;}
 :where(.cn-date-picker) .dp-panel.is-static{position:static; display:block; margin-top:8px;}
 /* gallery render */
-:where(.cn-date-picker) .dp-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
-:where(.cn-date-picker) .dp-title{flex:1; text-align:center; color:var(--text);}
-:where(.cn-date-picker) .dp-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+/* ---------- the calendar — THE CALENDAR PART, not a copy (s307-D49) ----------
+     Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar'. The head, the month
+     and year nav, the weekday heads, the grid and the day cell (today, selected, empty,
+     disabled, and today-and-selected with the ring set inside the square, s308-D3) are
+     injected from Calendar.reference.html by gen_component_partials.py (group "calendar").
+     Change the calendar THERE and regenerate. What stays here is the seat: the overlay
+     surface above, the panel's width, and the nav's press physics (button-family member at
+     .cal-nav). Out-of-month pad cells are .is-empty here: a popover is a transient act of
+     picking, so it hides the neighbouring months that Calendar's month view draws.
+     #313 lane QQ. */
+/* ===== AUTO-PARTIAL calendar START (calendar) ===== */
+/* INJECTED from Calendar.reference.html (partial "calendar", group calendar —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* THE CALENDAR PART, built once (s307-D49, Dave 2026-09-28: 'Yes, the date picker uses the
+     calendar'). Everything from here to the END marker is injected verbatim into
+     Date-picker.reference.html by gen_component_partials.py (registry: component-types.json
+     group "calendar"). Change the calendar HERE and regenerate; never in the date picker.
+     The .cal surface above stays outside: the seat brings its surface (a card here, the
+     anchored overlay in the date picker). #313 lane QQ. */
+:where(.cn-date-picker) .cal-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
+:where(.cn-date-picker) .cal-title{flex:1; min-width:0; text-align:center; color:var(--text);}
+:where(.cn-date-picker) .cal-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
-    border-radius:var(--border-radius-control);
+    border-radius:var(--border-radius-control); flex:none;
     --phys-size:44;   /* LOCAL geometry (B-D7): Icon-button precedent — divides the pixel-true travel */
     transition:background var(--ease), transform var(--spring), filter var(--press);}
-:where(.cn-date-picker) .dp-nav:hover{background:var(--field-bg-hover);}
-:where(.cn-date-picker) .dp-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-date-picker) .cal-nav:hover{background:var(--field-bg-hover);}
+:where(.cn-date-picker) .cal-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+:where(.cn-date-picker) .cal-nav svg{width:18px; height:18px; display:block;}
+:where(.cn-date-picker) .cal-grid{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:4px;}
+:where(.cn-date-picker) .cal-grid th{padding:0; height:24px;}
+:where(.cn-date-picker) .cal-grid td{padding:0;}
+:where(.cn-date-picker) .cal-wk{display:flex; align-items:center; justify-content:center; height:24px;
+    color:var(--text); opacity:var(--alpha-60);}
+/* the day cell — one cell for both seats (the state language began in Date-picker; since
+     #313 the date picker takes this block, so there is no second copy to keep in step) */
+:where(.cn-date-picker) .cal-day{width:100%; min-height:40px; display:flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--text);
+    border-radius:var(--border-radius-control); position:relative;
+    transition:background var(--ease), color var(--ease);}
+:where(.cn-date-picker) button.cal-day{cursor:pointer;}
+:where(.cn-date-picker) button.cal-day:hover:not(:disabled){background:var(--field-bg-hover);}
+:where(.cn-date-picker) .cal-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+:where(.cn-date-picker) .cal-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}
+/* SHAPE, not colour — aria-current carries it too */
+:where(.cn-date-picker) .cal-day[aria-selected="true"]{background:var(--text); color:var(--page);}
+/* ink knockout */
+/* ⛔ THE KNOCKOUT HOLDS THROUGH HOVER/PRESSED (#218, measured by _validate_state_contrast.py).
+     The hover rule above is `button.cal-day:hover:not(:disabled)` = (0,3,1) and OUT-SPECIFIES the
+     knockout at (0,2,0), so hovering a SELECTED day repainted the fill --field-bg-hover while the
+     text stayed --page: 1.14:1 light / 1.11:1 dark, hover AND pressed, on both selected days —
+     8 of the gate's 8 TEXT failures. (The date picker's old .dp-day grid did not need it: its
+     hover was (0,2,0) and its knockout came later. It takes this block now.) Restated at (0,3,1),
+     same two tokens as the knockout itself — no new colour, no new constant. */
+:where(.cn-date-picker) button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
+/* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule.
+     s308-D3 (Dave, 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): the
+     #211 page-colour ring met the page at the cell's edge and read as a square 2px smaller, not
+     a ring. The ring is now set INSIDE the square: 3px of the knockout fill, then a 2px ring in
+     --page. The page's proposal rule, verbatim. Same two tokens, no new colour. #313 lane B123. */
+:where(.cn-date-picker) .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page);}
+:where(.cn-date-picker) .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
+/* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
+:where(.cn-date-picker) .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}
+/* EMPTY: a seat that hides the neighbouring months marks the pad cell is-empty (the date
+     picker's popover: a transient act of picking, #210 head note 1). The month view draws
+     them instead (is-outside above). */
+:where(.cn-date-picker) .cal-day.is-empty{visibility:hidden; pointer-events:none;}
+/* ===== AUTO-PARTIAL calendar END ===== */
 /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
 /* INJECTED from Button.reference.html (partial "press-physics", group button-family —
    registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
    AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
    python3 knowledge/gen_component_partials.py */
-:where(.cn-date-picker) .dp-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
-:where(.cn-date-picker) .dp-nav.full:hover{transform:none;}
+:where(.cn-date-picker) .cal-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+:where(.cn-date-picker) .cal-nav.full:hover{transform:none;}
 /* full-width can't grow — would overflow */
-:where(.cn-date-picker) .dp-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
-:where(.cn-date-picker) .dp-nav:disabled:hover, :where(.cn-date-picker) .dp-nav.is-disabled:hover{transform:none; filter:none;}
+:where(.cn-date-picker) .cal-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+:where(.cn-date-picker) .cal-nav:disabled:hover, :where(.cn-date-picker) .cal-nav.is-disabled:hover{transform:none; filter:none;}
 /* disabled stays put */
 /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
 @media (prefers-reduced-motion: reduce){
-:where(.cn-date-picker) .dp-nav:hover, :where(.cn-date-picker) .dp-nav:active{transform:none !important; filter:none !important;}
+:where(.cn-date-picker) .cal-nav:hover, :where(.cn-date-picker) .cal-nav:active{transform:none !important; filter:none !important;}
 }
 /* ===== AUTO-PARTIAL press-physics END ===== */
-:where(.cn-date-picker) .dp-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
-:where(.cn-date-picker) .dp-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:var(--alpha-60);}
-:where(.cn-date-picker) .dp-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
-:where(.cn-date-picker) .dp-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
-    padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
-    border-radius:var(--border-radius-control); position:relative;
-    transition:background var(--ease), color var(--ease);}
-:where(.cn-date-picker) .dp-day:hover{background:var(--field-bg-hover);}
-:where(.cn-date-picker) .dp-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-:where(.cn-date-picker) .dp-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}
-/* today = structural ring, never colour-alone (numeral carries aria-current) */
-:where(.cn-date-picker) .dp-day[aria-selected="true"]{background:var(--text); color:var(--page); font-weight:500;}
-/* ink knockout — tooltip precedent */
-/* today AND selected: the cell is already knocked out to --text, so a --border-active ring is
-     invisible on it (measured 1.21:1 light / 1.00:1 dark, #210 wave-4 lane A claim 2, mutation-proven).
-     The ring JOINS the knockout: it is drawn in --page, the same token the knocked-out numeral
-     already uses on this very selector. NO new token, no new tint — background/default on
-     text/default is a pair this file's own token-manifest already declares. (#211 lane R3)
-     s308-D3 (Dave, 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): the
-     ring is set INSIDE the square — 3px of the knockout fill, then a 2px ring in --page — so it
-     reads as a ring, not a square 2px smaller. The calendar draws the same; the date picker
-     follows it (s307-D49). #313 lane B123. */
-:where(.cn-date-picker) .dp-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page);}
-:where(.cn-date-picker) .dp-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
-:where(.cn-date-picker) .dp-day.is-empty{visibility:hidden; pointer-events:none;}
 :where(.cn-date-picker) .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
 :where(.cn-date-picker) .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
 @media (prefers-reduced-motion: reduce){
@@ -11111,8 +11161,6 @@
 :where(.cn-date-picker) .dp, :where(.cn-date-picker) .gallery{max-width:none;}
 :where(.cn-date-picker) .gallery{grid-template-columns:1fr;}
 :where(.cn-date-picker) .dp-panel{width:100%; min-width:304px;}
-:where(.cn-date-picker) .dp-week, :where(.cn-date-picker) .dp-grid{grid-template-columns:repeat(7,minmax(36px,1fr));}
-:where(.cn-date-picker) .dp-day{width:100%;}
 }
 
 /* ============================================================
@@ -18623,6 +18671,34 @@
            colour change — the affordance is the pointer and the focus ring, because a RAG chip
            that also carried link ink would read as a second status. */
 :where(.cn-template-dashboard-bento) .tpl-strip-link{text-decoration:none; color:var(--text);}
+/* 11 · THE GROUP HEADER — s313-D29 (#313 call 10, Dave by click: 'B, a band inside the group';
+         his comment: 'B as the default, A as an option for the designer'). Each group's FIRST
+         child is the Section-heading-lockup (Arrangement A, label only; Arrangement B when the
+         group has an action of its own) inside a band that wears the TILE surface, full width of
+         the group, on its own auto-height row. The lock-up paints nothing (its meta's `placement`
+         prop, band | wall, default band, N1nav #313); the band is the tile it sits in.
+         11a · the band spans the whole group at every band of columns, including the lead group's
+               four-across pin (rule 10a), and its row is `max-content` — the group's row floor (rule 6)
+               belongs to the tiles below it, never to the header, and when the wall stretches a
+               group to its row-mate's height the stretch goes to the tiles (an `auto` row took
+               half of it: the Spending band measured 108px against Position's 52, cloud, #313).
+         11b · OPTION A, `data-group-header="wall"` on the group: the same lock-up on the wall
+               above the tiles — no surface, no padding, the group's own sub gutter below it.
+               The designer's option, not the default.
+         11c · the no-repeat rule (a group action and a tile action never repeat) is NOT a CSS
+               matter: it is `data-action-repeat` on the wall, read by
+               knowledge/_validate_dashboard_fold.py. Whether it holds under the band is Dave's open
+               question; flipping the answer is that one attribute. */
+:where(.cn-template-dashboard-bento) .tpl-page .tpl-group:has(> .c-bento__grid > .tpl-group-band) > .c-bento__grid{grid-template-rows:max-content;}
+/* 11a */
+:where(.cn-template-dashboard-bento) .tpl-page .tpl-group > .c-bento__grid > .tpl-group-band{grid-column:1 / -1; background:var(--surface);
+    border-radius:var(--border-radius-surface); padding:16px 24px;}
+/* 11a */
+:where(.cn-template-dashboard-bento) .tpl-group-band .l-row{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+:where(.cn-template-dashboard-bento) .tpl-group-band h2{margin:0;}
+:where(.cn-template-dashboard-bento) .tpl-page .tpl-group[data-group-header="wall"] > .c-bento__grid > .tpl-group-band{background:transparent;
+    padding:0 0 8px;}
+/* 11b */
 :where(.cn-template-dashboard-bento) .tpl-strip-link:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
 /* 10d · the plain legal item carries NO chip: Undrawn facilities is a state with no RAG
            meaning, and painting one would say "act on this" (DP-10 grammar, s251-D1). The 1px

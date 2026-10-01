@@ -186,6 +186,117 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ stacked-area — dv-009/016/017/line-011: PASSED by driven receipt — figure fig-0, 3 drawn marks, worst series contrast 99.00:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 - ⚠ stacked-area — requiredAria [driven]: PASSED — all 6 declared string(s) present in the RENDERED DOM across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 
+## Chart-engine test pages — every rule (s307-D63)
+- ✗ _tests/chart-engine/bar.html — 3 charts, 3 failing, 24 advisory
+  - ✗ **column#fig-column** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 9 marks, 15 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **bar#fig-bar** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 9 marks, 15 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **grouped-column#fig-grouped** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 24 marks, 13 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/boxplot.html — 2 charts, 2 failing, 16 advisory
+  - ✗ **boxplot#fig-boxplot** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 6 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **boxplot#fig-boxplot-plain** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 4 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/bullet.html — 1 charts, 1 failing, 0 advisory
+  - ✗ **bullet#fig-bullet** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 4 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/butterfly-h.html — 1 charts, 1 failing, 0 advisory
+  - ✗ **butterfly-h#fig-butterfly-h** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 8 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/butterfly-v.html — 1 charts, 1 failing, 1 advisory
+  - ✗ **butterfly-v#fig-butterfly-v** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 7 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/candlestick.html — 1 charts, 1 failing, 0 advisory
+  - ✗ **candlestick#fig-candlestick** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 40 marks, 8 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/combo.html — 2 charts, 2 failing, 16 advisory
+  - ✗ **combo#fig-combo** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 13 marks, 23 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **combo#fig-shared** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 25 marks, 18 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/donut.html — 2 charts, 1 failing, 4 advisory
+  - ✗ **pie#fig-pie** — dv-pie-010: slice sum 950.00 != displayed total 2320.00.
+- ✗ _tests/chart-engine/histogram.html — 2 charts, 2 failing, 0 advisory
+  - ✗ **histogram#fig-histogram** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 8 marks, 13 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **histogram#fig-fine** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 20 marks, 17 axis/label paints, 0 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/line.html — 2 charts, 2 failing, 16 advisory
+  - ✗ **line#fig-line** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 1 marks, 17 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **multiline#fig-multi** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 17 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/scatter.html — 2 charts, 2 failing, 16 advisory
+  - ✗ **scatter#fig-scatter** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 12 marks, 12 axis/label paints, 8 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+  - ✗ **scatter#fig-segments** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 21 marks, 12 axis/label paints, 9 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/sparkline.html — 4 charts, 1 failing, 3 advisory
+  - ✗ **spark#fig-role** — dv-016 [driven, series]: worst drawn series contrast is 2.80:1 (<3.0:1) in supercharge/light — 2 marks, 0 axis/label paints, 0 gridline paints, over surface rgb(247,246,244). Source: knowledge/_tests/chart-engine/_receipts.json
+- ✗ _tests/chart-engine/stacked-area.html — 1 charts, 1 failing, 8 advisory
+  - ✗ **stacked-area#fig-stack** — dv-016 [driven, axis/label]: worst drawn axis/label contrast is 2.49:1 (<3.0:1) in supercharge/dark — 3 marks, 15 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+
+## Every chart page x every rule (s307-D63)
+
+```
+Codes: D driven · S static · - n-a (the type does not owe it) · K skipped · ? unanswered.
+Rules, in column order: 1 dv-004 · 2 dv-009 · 3 dv-016 · 4 dv-017 · 5 dv-line-011 · 6 DV-D02-A · 7 dv-bar-009 · 8 dv-bar-007 · 9 dv-pie-009 · 10 dv-pie-010 · 11 dv-005 · 12 letters · 13 dv-line-009 · 14 dv-014 · 15 vibration · 16 requiredAria
+
+artefact                                 figure           1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
+---------------------------------------------------------------------------------------------------------
+Chart-bar.reference.html                 fig-0            -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  D 
+Chart-bar.reference.html                 fig-1            -  D  D  D  D  S  S  S  -  -  S  K  -  K  K  D 
+Chart-bar.reference.html                 fig-2            -  S  S  S  S  S  S  -  -  -  S  S  -  S  S  D 
+Chart-bar.reference.html                 fig-3            -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  D 
+Chart-bar.reference.html                 fig-4            S  S  S  S  S  S  S  -  -  -  S  S  -  S  S  D 
+Chart-boxplot.reference.html             cbp1             -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-bullet.reference.html              cbl1             -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-butterfly-h.reference.html         cbh1             -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-butterfly-v.reference.html         cbv1             D  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-candlestick.reference.html         ccs1             -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-combo.reference.html               fig-0            -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  D 
+Chart-donut.reference.html               cd1              D  D  D  D  -  S  -  -  S  S  S  K  -  K  K  D 
+Chart-donut.reference.html               fig-1            S  S  S  S  -  S  -  -  S  S  S  S  -  S  S  D 
+Chart-histogram.reference.html           ch1-fig          -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-line.reference.html                fig-0            -  D  D  D  D  S  -  -  -  -  S  K  -  K  K  D 
+Chart-line.reference.html                fig-1            -  D  D  D  D  S  -  -  -  -  S  K  -  K  K  D 
+Chart-pie.reference.html                 cp1              D  D  D  D  -  S  -  -  S  S  S  K  -  K  K  D 
+Chart-pie.reference.html                 fig-1            S  S  S  S  -  S  -  -  S  S  S  S  -  S  S  D 
+Chart-scatter.reference.html             cs1-fig          -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-scatter.reference.html             cs2-fig          -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+Chart-sparkline.reference.html           fig-0            -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  D 
+Chart-sparkline.reference.html           fig-1            -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  D 
+Chart-sparkline.reference.html           fig-2            -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  D 
+Chart-stacked-area.reference.html        fig-0            -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  D 
+DataViz-interactive.html                 fig-0            -  S  S  S  S  -  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-1            -  S  S  S  S  -  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-10           -  S  S  S  S  S  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-11           -  S  S  S  S  S  -  -  -  -  S  S  S  S  -  - 
+DataViz-interactive.html                 fig-12           S  S  S  S  -  S  -  -  S  S  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-13           S  S  S  S  -  S  -  -  S  S  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-14           S  S  S  S  -  S  -  -  S  S  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-15           -  S  S  S  -  S  -  -  -  -  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-2            -  S  S  S  S  -  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-3            -  S  S  S  S  -  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-4            -  S  S  S  S  -  -  -  -  -  S  S  -  S  -  - 
+DataViz-interactive.html                 fig-5            -  S  S  S  S  S  S  -  -  -  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-6            -  S  S  S  S  S  S  S  -  -  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-7            -  S  S  S  S  S  S  -  -  -  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-8            S  S  S  S  S  S  S  -  -  -  S  S  -  S  S  - 
+DataViz-interactive.html                 fig-9            -  S  S  S  S  S  -  -  -  -  S  S  -  S  -  - 
+bar.html                                 fig-bar          -  D  D  D  D  S  S  S  -  -  S  K  -  K  K  - 
+bar.html                                 fig-column       -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  - 
+bar.html                                 fig-grouped      -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  - 
+boxplot.html                             fig-boxplot      -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+boxplot.html                             fig-boxplot-plai -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+bullet.html                              fig-bullet       -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+butterfly-h.html                         fig-butterfly-h  -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+butterfly-v.html                         fig-butterfly-v  D  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+candlestick.html                         fig-candlestick  -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+combo.html                               fig-combo        -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  - 
+combo.html                               fig-shared       -  D  D  D  D  S  S  -  -  -  S  K  -  K  K  - 
+donut.html                               fig-donut        D  D  D  D  -  S  -  -  S  S  S  K  -  K  K  - 
+donut.html                               fig-pie          D  D  D  D  -  S  -  -  S  S  S  K  -  K  K  - 
+histogram.html                           fig-fine         -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+histogram.html                           fig-histogram    -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+line.html                                fig-line         -  D  D  D  D  S  -  -  -  -  S  K  -  K  K  - 
+line.html                                fig-multi        -  D  D  D  D  S  -  -  -  -  S  K  -  K  K  - 
+scatter.html                             fig-scatter      -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+scatter.html                             fig-segments     -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+sparkline.html                           fig-down         -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  - 
+sparkline.html                           fig-flat         -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  - 
+sparkline.html                           fig-role         -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  - 
+sparkline.html                           fig-up           -  D  D  D  D  S  -  -  -  -  S  K  S  K  K  - 
+stacked-area.html                        fig-stack        -  D  D  D  -  S  -  -  -  -  S  K  -  K  K  - 
+
+28 chart page(s), 64 figure row(s), 16 rule(s): 158 driven · 300 static · 370 n-a · 132 skipped · 0 unanswered.
+```
+
 ---
 Method: `_proforma/_DATAVIZ-METHOD.md`. Dossier: `reviews/DATAVIZ-METHOD-2026-07-16.html` §06.
 Advisory checks promote to blocking after a bite-test (ADR-0005 §5): `python3 knowledge/_validate_dataviz.py --selftest`.

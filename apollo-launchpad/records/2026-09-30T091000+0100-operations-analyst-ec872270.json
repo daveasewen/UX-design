@@ -1,13 +1,13 @@
 {
-  "screen_id": "2026-09-30T09:10:00+01:00-corporate-treasurer-a2633383",
+  "screen_id": "2026-09-30T09:10:00+01:00-operations-analyst-ec872270",
   "asked_at": "2026-09-30T09:10:00+01:00",
   "question": "What needs my attention this morning?",
-  "role": "corporate-treasurer",
+  "role": "operations-analyst",
   "catalogue": {
-    "id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
-    "version": "v0.1.1",
-    "sha256": "87e4866c28eba307d1f039d276efb7ca273ba7f1b20c8aa077200140d98ca0d0",
-    "metas_sha": "827c59d0"
+    "id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.2/catalog.json",
+    "version": "v0.1.2",
+    "sha256": "90f1260fbfe833382fa55de08f1a8e0c20f78c76ba49655cd538a40b6618527d",
+    "metas_sha": "9fcdab2d"
   },
   "parts": [
     {
@@ -39,7 +39,7 @@
       "provides": null
     },
     {
-      "id": "cash-position",
+      "id": "payments-in-repair",
       "component": "Metric",
       "slug": "metric",
       "proposal": true,
@@ -53,16 +53,16 @@
       "provides": "status-surface"
     },
     {
-      "id": "payments-awaiting-approval",
+      "id": "exceptions-to-clear",
       "component": "ListItems",
       "slug": "list-items",
       "proposal": false,
       "provides": "record-list"
     },
     {
-      "id": "balance-30d",
-      "component": "ChartLine",
-      "slug": "chart-line",
+      "id": "queue-by-stage",
+      "component": "ChartBar",
+      "slug": "chart-bar",
       "proposal": false,
       "provides": "chart"
     }
@@ -73,6 +73,7 @@
     "rule:dv-001",
     "rule:dv-002",
     "rule:dv-003",
+    "rule:dv-004",
     "rule:dv-005",
     "rule:dv-006",
     "rule:dv-007",
@@ -85,19 +86,23 @@
     "rule:dv-016",
     "rule:dv-017",
     "rule:dv-018",
-    "rule:dv-line-001",
-    "rule:dv-line-002",
-    "rule:dv-line-003",
-    "rule:dv-line-004",
-    "rule:dv-line-005",
-    "rule:dv-line-006",
-    "rule:dv-line-007",
-    "rule:dv-line-008",
-    "rule:dv-line-011",
+    "rule:dv-019",
+    "rule:dv-bar-001",
+    "rule:dv-bar-002",
+    "rule:dv-bar-003",
+    "rule:dv-bar-004",
+    "rule:dv-bar-005",
+    "rule:dv-bar-006",
+    "rule:dv-bar-007",
+    "rule:dv-bar-008",
+    "rule:dv-bar-009",
+    "rule:dv-bar-010",
     "rule:icon-013",
     "rule:nam-002",
     "ruling:s116-D2",
     "ruling:s160-D2",
+    "ruling:s184-D3",
+    "ruling:s218-D5",
     "ruling:s230-D2",
     "ruling:s231-D2",
     "ruling:s232-D3",
@@ -148,7 +153,6 @@
     "ruling:s277-D1",
     "ruling:s277-D3",
     "ruling:s305-D18",
-    "ruling:s305-D21",
     "ruling:s305-D42",
     "ruling:s305-D59",
     "ruling:s305-D60",
@@ -157,7 +161,17 @@
     "ruling:s309-D5",
     "ruling:s309-D6",
     "ruling:s310-D1",
-    "ruling:s310-D2"
+    "ruling:s310-D2",
+    "ruling:s313-D21",
+    "ruling:s313-D22",
+    "ruling:s313-D23",
+    "ruling:s313-D24",
+    "ruling:s313-D27",
+    "ruling:s313-D29",
+    "ruling:s313-D30",
+    "ruling:s313-D34",
+    "ruling:s313-D41",
+    "ruling:s313-D6"
   ],
   "entitlement": [
     {
@@ -168,73 +182,78 @@
     },
     {
       "tool": "positions",
-      "scope": "all-entities",
-      "allowed": true,
-      "reason": null
+      "scope": null,
+      "allowed": false,
+      "reason": "tool-not-granted"
     },
     {
       "tool": "payments_queue",
-      "scope": "full",
+      "scope": "status-only",
       "allowed": true,
       "reason": null
     },
     {
-      "tool": "prepare_approval",
-      "scope": "up-to-limit",
+      "tool": "exceptions",
+      "scope": "full",
       "allowed": true,
       "reason": null
     }
   ],
   "not_chosen": [
     {
+      "part": "metric",
+      "why": "positions refused for this role",
+      "item": "cash-position"
+    },
+    {
       "part": "app-shell-top-nav",
       "why": "gate false: shape = no-data × page-regions [the part's own shape]; answers = what-holds-the-page [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "breadcrumbs",
       "why": "gate false: shape = ancestor-path × links; shape = ancestor-path × links [the part's own shape]; answers = where-am-i [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "button",
       "why": "gate false: shape = no-data × control [the part's own shape]; answers = what-can-i-do [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "chart-bar",
       "why": "gate false: answers = comparison; shape = categories × series [the part's own shape]; answers = comparison [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "chart-line",
       "why": "gate false: answers=change-over-time; span.cols ≥ 6; shape = time-series × 1–5-series; shape = time-series × 1–5-series [the part's own shape]; answers = change-over-time [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "headers",
       "why": "gate false: shape = no-data × title-and-optional-action [the part's own shape]; answers = what-is-this [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "layout-utilities",
       "why": "gate false: shape = no-data × arbitrary-blocks [the part's own shape]; answers = where-does-it-go [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "navigations",
       "why": "gate false: shape = destination-set × links; shape = destination-set × links [the part's own shape]; answers = where-can-i-go [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "status-indicator",
       "why": "gate false: shape = one-state × dot-and-label; shape = one-state × dot-and-label [the part's own shape]; answers = status-of-one [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "summary",
       "why": "gate false: shape = rows × name-value-pairs; span.cols >= 6; shape = rows × name-value-pairs [the part's own shape]; answers = details-before-commit [the part's own question]",
-      "item": "cash-position"
+      "item": "payments-in-repair"
     },
     {
       "part": "app-shell-top-nav",
@@ -288,58 +307,58 @@
     },
     {
       "part": "data-grid",
-      "why": "gate false: needs in (sort, filter, select, edit)",
-      "item": "payments-awaiting-approval"
+      "why": "gate false: needs in (select, edit)",
+      "item": "exceptions-to-clear"
     },
     {
       "part": "app-shell-top-nav",
       "why": "gate false: shape = no-data × page-regions [the part's own shape]; answers = what-holds-the-page [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "breadcrumbs",
       "why": "gate false: shape = ancestor-path × links; shape = ancestor-path × links [the part's own shape]; answers = where-am-i [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "button",
       "why": "gate false: shape = no-data × control [the part's own shape]; answers = what-can-i-do [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
-      "part": "chart-bar",
-      "why": "gate false: answers = comparison; shape = categories × series [the part's own shape]; answers = comparison [the part's own question]",
-      "item": "balance-30d"
+      "part": "chart-line",
+      "why": "gate false: answers=change-over-time; shape = time-series × 1–5-series; shape = time-series × 1–5-series [the part's own shape]; answers = change-over-time [the part's own question]",
+      "item": "queue-by-stage"
     },
     {
       "part": "headers",
       "why": "gate false: shape = no-data × title-and-optional-action [the part's own shape]; answers = what-is-this [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "layout-utilities",
       "why": "gate false: shape = no-data × arbitrary-blocks [the part's own shape]; answers = where-does-it-go [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "metric",
-      "why": "gate false: shape = one-measure × value-and-delta; shape = one-measure × value-and-delta [the part's own shape]",
-      "item": "balance-30d"
+      "why": "gate false: shape = one-measure × value-and-delta; shape = one-measure × value-and-delta [the part's own shape]; answers = one-number/change-over-time [the part's own question]",
+      "item": "queue-by-stage"
     },
     {
       "part": "navigations",
       "why": "gate false: shape = destination-set × links; shape = destination-set × links [the part's own shape]; answers = where-can-i-go [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "status-indicator",
       "why": "gate false: shape = one-state × dot-and-label; span.cols <= 4; shape = one-state × dot-and-label [the part's own shape]; answers = status-of-one [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     },
     {
       "part": "summary",
       "why": "gate false: shape = rows × name-value-pairs; shape = rows × name-value-pairs [the part's own shape]; answers = details-before-commit [the part's own question]",
-      "item": "balance-30d"
+      "item": "queue-by-stage"
     }
   ],
   "gate": {
@@ -438,14 +457,14 @@
       }
     ],
     "timing_ms": {
-      "surface": 37.28,
-      "page": 137.95,
-      "total": 175.25
+      "surface": 18.73,
+      "page": 125.42,
+      "total": 144.16
     },
     "catalogue": {
-      "id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json",
-      "version": "v0.1.1",
-      "sha256": "87e4866c28eba307d1f039d276efb7ca273ba7f1b20c8aa077200140d98ca0d0"
+      "id": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.2/catalog.json",
+      "version": "v0.1.2",
+      "sha256": "90f1260fbfe833382fa55de08f1a8e0c20f78c76ba49655cd538a40b6618527d"
     }
   },
   "ranker": {
@@ -454,19 +473,19 @@
     "fallback": "rules-order"
   },
   "host": "none",
-  "surface_sha256": "a26333836e4116a83c42257d4d462822e24152f0a3d5075479dc2477bfca7cb0",
+  "surface_sha256": "ec8722704d487dc2952e7ecc0e31de3dfa287a81564d2439820424ca54bab13a",
   "surface": [
     {
       "version": "v0.9.1",
       "createSurface": {
-        "surfaceId": "corporate-treasurer",
-        "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.1/catalog.json"
+        "surfaceId": "operations-analyst",
+        "catalogId": "https://apollo.invalid/catalogs/apollo-launchpad/dashboard/v0.1.2/catalog.json"
       }
     },
     {
       "version": "v0.9.1",
       "updateComponents": {
-        "surfaceId": "corporate-treasurer",
+        "surfaceId": "operations-analyst",
         "components": [
           {
             "id": "root",
@@ -489,14 +508,14 @@
             "id": "wall",
             "component": "TemplateDashboardBento",
             "tiles": [
-              "cash-position",
+              "payments-in-repair",
               "cut-off",
-              "payments-awaiting-approval",
-              "balance-30d"
+              "exceptions-to-clear",
+              "queue-by-stage"
             ]
           },
           {
-            "id": "cash-position",
+            "id": "payments-in-repair",
             "component": "Metric",
             "state": "ready",
             "delta": "up"
@@ -508,78 +527,54 @@
             "variant": "pending"
           },
           {
-            "id": "payments-awaiting-approval",
+            "id": "exceptions-to-clear",
             "component": "ListItems",
             "items": [
               {
-                "title": "Aldwych Supplies Ltd",
-                "id": "PAY-0931-01",
-                "value": "£184,500",
-                "detail": "within limit"
+                "title": "Beneficiary name mismatch",
+                "id": "EXC-2207",
+                "detail": "opened 15:42"
               },
               {
-                "title": "Mersey Freight",
-                "id": "PAY-0931-02",
-                "value": "£92,300",
-                "detail": "within limit"
+                "title": "Missing purpose code",
+                "id": "EXC-2214",
+                "detail": "opened 07:58"
               },
               {
-                "title": "Calder Property Trust",
-                "id": "PAY-0931-03",
-                "value": "£1,250,000",
-                "detail": "needs a second approver"
+                "title": "Sanctions screening hold",
+                "id": "EXC-2219",
+                "detail": "opened 08:31"
+              },
+              {
+                "title": "IBAN check digit failure",
+                "id": "EXC-2221",
+                "detail": "opened 08:47"
               }
             ]
           },
           {
-            "id": "balance-30d",
-            "component": "ChartLine",
-            "series": 1,
+            "id": "queue-by-stage",
+            "component": "ChartBar",
             "data": {
+              "categories": [
+                "Received",
+                "Screening",
+                "Repair",
+                "Awaiting release",
+                "Sent"
+              ],
               "series": [
                 {
-                  "name": "All entities",
-                  "unit": "GBP",
-                  "points": [
-                    46.1,
-                    46.4,
-                    45.9,
-                    46.8,
-                    47.2,
-                    47.0,
-                    46.6,
-                    46.9,
-                    47.4,
-                    47.8,
-                    47.5,
-                    47.1,
-                    46.8,
-                    47.3,
-                    47.9,
-                    48.4,
-                    48.0,
-                    47.6,
-                    47.2,
-                    47.5,
-                    47.9,
-                    48.3,
-                    48.8,
-                    48.5,
-                    48.1,
-                    47.7,
-                    47.4,
-                    46.9,
-                    46.93,
-                    48.25
+                  "name": "Payments",
+                  "values": [
+                    42,
+                    17,
+                    5,
+                    23,
+                    118
                   ]
                 }
-              ],
-              "x": {
-                "from": "2026-09-01",
-                "to": "2026-09-30",
-                "step": "day"
-              },
-              "unit_scale": "millions"
+              ]
             }
           }
         ]
