@@ -247,10 +247,10 @@ CSS = """
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--tertiary-background-default,#FFFFFF);
   --surface-2: var(--tertiary-background-hover,#F0F0F0);   /* #221: was #F3F3F3 */
-  --line:      var(--border-subtle,#D7D8D6);
+  --line:      var(--border-subtle,#E1E1E1);
   --line-2:    var(--border-strong,#808080);               /* #221: was #767676 */
   --ink:       var(--text-default,#1A1A1A);
-  --ink-2:     var(--text-secondary,#545454);
+  --ink-2:     var(--text-secondary,#1A1A1A);
   --focus:     var(--focus-ring,#305A85);                  /* #221: was #1A1A1A */
   --focus-w:   var(--focus-ring-width,2px);
   --radius-ctl:var(--border-radius-control,0px);
@@ -302,7 +302,7 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
 
 /* ---- tile content ---- */
 .dx-photo{margin:0; display:grid; grid-template-rows:1fr auto; overflow:hidden;
-  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);}
 .dx-img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
   background:var(--surface-2,#F0F0F0);}
 /* ⬛ #219 — THE RULED CAPTION BLOCK, WHICH v2 MISSED. Dave: "we've also missed the extra space
@@ -316,7 +316,7 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
    ⚠ Canon's own `min-height` rule is scoped to `[data-bento-role="gallery"]`; this page's walls
    carry no role (it is the s217-D2 defaults demo and giving them one would change what it
    demonstrates), so the token is consumed directly here instead. */
-.dx-cap{padding:var(--sp-3); color:var(--ink-2,#545454);
+.dx-cap{padding:var(--sp-3); color:var(--ink-2,#1A1A1A);
   min-height:var(--layout-bento-caption-space,__CAPSPACE__px);
   display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,__CAPLINES__);
   -webkit-box-orient:vertical; overflow:hidden;
@@ -325,10 +325,10 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
   text-box-edge:text text;}
 __MONOCAP__
 __RECUT__
-.dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
+.dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);
   padding:var(--sp-4); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-1);}
 .dx-eyebrow{color:var(--ink,#1A1A1A);}
-.dx-sub{color:var(--ink-2,#545454);}
+.dx-sub{color:var(--ink-2,#1A1A1A);}
 .dx-fig{margin-top:auto; font-variant-numeric:tabular-nums;}
 
 /* ---- INSTANCE PARAMETER SETS — declared rules, never a style="" attribute -------------- */
@@ -367,7 +367,7 @@ __RECUT__
 .dx-w780{width:780px; max-width:100%;}
 .dx-w460{width:460px; max-width:100%;}
 .dx-band-row .c-bento{--bento-row-unit:120px;}
-.dx-caption{color:var(--ink-2,#545454); margin:var(--sp-2) 0 0; display:block;}
+.dx-caption{color:var(--ink-2,#1A1A1A); margin:var(--sp-2) 0 0; display:block;}
 
 @media (prefers-reduced-motion: reduce){
   .dx *,.dx *::before,.dx *::after{transition-duration:.01ms !important;

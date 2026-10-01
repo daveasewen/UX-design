@@ -260,7 +260,7 @@ GRIDS_CSS = """
    ⛔ EVERY var() CARRIES A LITERAL FALLBACK — an unresolved custom property
    renders silent black and no gate catches it.
    =========================================================================== */
-.gx-ruled{border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);
+.gx-ruled{border:1px solid var(--line,#E1E1E1); padding:var(--sp-4,16px);
   margin-top:var(--sp-5,24px);}
 .gx-ruled-title{margin:0 0 var(--sp-2,8px);}
 .gx-ruled p{margin:0 0 var(--sp-2,8px); max-width:88ch;}
@@ -271,8 +271,8 @@ GRIDS_CSS = """
    `data-view` sets the two names canon's layout utilities read, `--l-margin`
    and `--l-gutter`. ⛔ It is a VIEW control — it changes which ruled pair of
    numbers is on screen, and mints nothing.                                  */
-.gx-stage{border:1px solid var(--line,#D7D8D6); margin-top:var(--sp-4,16px);
-  background:var(--surface-2,#F3F3F3); padding:var(--sp-5,24px) 0;
+.gx-stage{border:1px solid var(--line,#E1E1E1); margin-top:var(--sp-4,16px);
+  background:var(--surface-2,#F0F0F0); padding:var(--sp-5,24px) 0;
   /* ⚠ DECLARED HERE, not merely read with a fallback. MEASURED #218: a name that is only ever
      read resolves EMPTY on every element, so the page runs on its fallback for ever and the
      dangling sweep — rightly — calls it a dangle. A page-local dial is declared once, at the
@@ -302,31 +302,31 @@ __VIEW_RULES__
 .gx-frame > .gx-rows{position:relative; z-index:1;}
 .gx-overlay > i{display:block; background:var(--gx-col,rgba(218,26,0,0.10));
   border-radius:var(--radius-ctl,0px);}
-.gx-demo > *{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
+.gx-demo > *{background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);
   border-radius:var(--radius-ctl,0px); padding:var(--sp-3,12px);
   min-height:var(--tap,44px);}
 .gx-rows{display:flex; flex-direction:column; gap:var(--sp-4,16px);}
 .gx-readout{display:flex; flex-wrap:wrap; gap:var(--sp-5,24px);
-  border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);
+  border:1px solid var(--line,#E1E1E1); padding:var(--sp-4,16px);
   margin-top:var(--sp-4,16px);}
 .gx-readout div{min-width:120px;}
-.gx-readout dt{color:var(--ink-2,#545454); text-transform:uppercase;
+.gx-readout dt{color:var(--ink-2,#1A1A1A); text-transform:uppercase;
   letter-spacing:0.14em; margin:0 0 var(--sp-1,4px);}
 .gx-readout dd{margin:0; font-variant-numeric:tabular-nums;}
 .gx-seg{display:inline-flex; flex-wrap:wrap; border:1px solid var(--ink,#1A1A1A);
   color:var(--ink,#1A1A1A); border-radius:var(--radius-ctl,0px); overflow:hidden;}
 .gx-seg button{font-family:inherit; font-size:12px; font-weight:500; letter-spacing:0.06em;
   text-transform:uppercase; padding:8px 12px; border:0; background:transparent; color:inherit;
-  cursor:pointer; border-right:1px solid var(--line,#D7D8D6); min-height:var(--tap,44px);}
+  cursor:pointer; border-right:1px solid var(--line,#E1E1E1); min-height:var(--tap,44px);}
 .gx-seg button:last-child{border-right:0;}
 .gx-seg button[aria-pressed="true"]{background:var(--ink,#1A1A1A); color:var(--page,#FFFFFF);}
 .gx-ctl{display:flex; flex-wrap:wrap; align-items:center; gap:var(--sp-3,12px);
-  border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);}
-.gx-glabel{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;}
+  border:1px solid var(--line,#E1E1E1); padding:var(--sp-4,16px);}
+.gx-glabel{color:var(--ink-2,#1A1A1A); text-transform:uppercase; letter-spacing:0.14em;}
 .gx-tablewrap{overflow-x:auto; margin-top:var(--sp-4,16px);}
 .gx-tablewrap table{border-collapse:collapse; min-width:520px;}
 .gx-tablewrap th, .gx-tablewrap td{text-align:left; padding:6px var(--sp-4,16px) 6px 0;
-  border-bottom:1px solid var(--line,#D7D8D6); vertical-align:top;}
+  border-bottom:1px solid var(--line,#E1E1E1); vertical-align:top;}
 .gx-tablewrap td.num{font-variant-numeric:tabular-nums;}
 """
 

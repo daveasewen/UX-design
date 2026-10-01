@@ -47,9 +47,13 @@ ORDER = ["Button","List-items","Cards","Headers","Navigations","Notifications","
  "Dropdown","Hero","Slider","Reorder","Countdown-timer","View-options","Video-player","Loading-indicator"]
 
 sections, symbols = [], {}
-# curated order first, then any newer snippets (e.g. reviewed gap-patterns) auto-appended
+# curated order first, then any newer snippets (e.g. reviewed gap-patterns) auto-appended.
+# ⛔ s313-D46 (#313 A6): the twelve PAGE TEMPLATES (`Template-*`) are not sections. They are whole composed
+# pages, two of them carry their own page <style> in the body, and appended here they made the regenerated
+# gallery size 35 parts and type 145 hexes — a page inside a page, which the compose gate (s307-D75) refuses.
+# This page stays what its title says: every reviewed COMPONENT, composed from canon.css.
 _all = sorted(os.path.basename(p).replace(".reference.html", "") for p in glob.glob(os.path.join(SNIP, "*.reference.html")))
-_order = ORDER + [n for n in _all if n not in ORDER]
+_order = ORDER + [n for n in _all if n not in ORDER and not n.startswith("Template-")]
 for nm in _order:
     f = os.path.join(SNIP, nm + ".reference.html")
     if not os.path.exists(f): continue
@@ -85,8 +89,11 @@ doc = f"""<!DOCTYPE html>
   .g-name{{ font:500 12px/1 var(--font); /* sentence case — type26-019 sweep (Dave 2026-07-02) */ color:var(--muted); margin:0 0 16px; }}
   /* Review gallery: render interactive components in a representative SHOWN state (no per-snippet JS).
      A real screen drives these with the component's own script; here we just reveal them for review. */
-  .cn-modals .overlay{{ position:static !important; inset:auto; visibility:visible !important; opacity:1 !important; padding:0; background:transparent; display:block; }}
-  .cn-modals .overlay .dialog{{ transform:none !important; opacity:1 !important; box-shadow:0 0 0 1px var(--border); }}
+  /* s313-D46 (Dave 2026-10-01: "Keep and regenerate"): the page is kept, so it obeys s307-D75 — it places
+     parts, never sizes them. The modal is shown by canon's OWN open state (.overlay.open, set below), not by
+     overriding its padding and transform; only its position is taken out of the fixed layer. */
+  .cn-modals .overlay{{ position:static !important; inset:auto; background:transparent; display:block; }}
+  .cn-modals .overlay .dialog{{ box-shadow:0 0 0 1px var(--border); }}
   .cn-tooltip .tip{{ opacity:1 !important; pointer-events:auto; }}
 </style>
 </head>
@@ -103,6 +110,7 @@ doc = f"""<!DOCTYPE html>
     addEventListener('touchstart',()=>_root.dataset.modality='pointer',{{passive:true}});
     // reveal interactive components in a representative state for review
     function showInteractive(){{
+      document.querySelectorAll('.cn-modals .overlay').forEach(o=>o.classList.add('open'));   // canon's own open state (s313-D46)
       document.querySelectorAll('.cn-dropdown .menu').forEach(m=>m.setAttribute('data-open','true'));
       document.querySelectorAll('.cn-dropdown .trigger').forEach(t=>t.setAttribute('aria-expanded','true'));
       const acc=document.querySelector('.cn-accordion');

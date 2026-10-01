@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """
-_gate_fallback_drift_221.py — ⬛ ADVISORY AT BIRTH. Every `var(--token,#literal)` fallback a
-generator authors must be a value CANON ITSELF RESOLVES for that token.
+_gate_fallback_drift_221.py — ⛔ BLOCKING since #313. Every `var(--token,#literal)` fallback a
+generator authors must be THE value canon resolves for that token in THE BASE THEME, LIGHT.
 
-⛔ ADVISORY, AND IT SAYS SO IN ITS OWN HEADER. It is not in `_build_all.py` and not in
-`gates.yml`. Promotion to blocking is DAVE'S WORD (derivation governance) — nothing here promotes
-itself, and the exit code below is a report, not a build verdict, until he says otherwise.
+⛔ BLOCKING, ON DAVE'S WORD, TWICE. s307-D22 (2026-09-28, by click: "Promote it: make it block")
+promoted it; it stayed advisory because twelve drifted fallbacks each had three right answers by
+theme and mode. s313-D48 (2026-10-01, by click: "The base theme, light", the recommendation, whose
+words were "One answer for every page, and the drift check can then be made to refuse") gave the
+one answer: `:root` in light — mono, the values the other themes override. Until #313 this gate
+accepted a literal that was canon's answer in ANY theme x mode, so a legacy-light #D7D8D6 and a
+mono-dark #4587A7 both passed; now only the base-light value does. Wired as a STEP in
+`_build_all.py` (GATE tier), which CI runs whole (`gates.yml` "python3 knowledge/_build_all.py").
 
 WHY IT EXISTS (#221, from #220 audit L3 finding F-1)
   `s220-D1` built a genuinely new assertion — *"a fallback that has DRIFTED from canon is a red,
@@ -25,10 +30,12 @@ WHY IT MATTERS EVEN THOUGH NOTHING RENDERS IT TODAY
   border and a black focus ring, with no visible signature that anything is wrong.
 
 THREE VERDICTS, AND THE THIRD IS THE ONE BITE 12 COULD NOT SAY
-  DRIFTED       canon resolves the token, and the literal is not one of canon's answers.  -> RED
+  DRIFTED       canon resolves the token in the base theme, light, and the literal is not that
+                value (s313-D48 — one answer; canon's other theme x mode answers are printed
+                beside it so the reader sees which theme the literal was copied from).    -> RED
   LOCAL-DRIFT   a page-local alias is declared `--x: var(--canon,#A)` and consumed as
                 `var(--x,#B)` with A != B — two colours behind one name.                  -> RED
-  UNCHECKED     canon cannot resolve the token in ANY theme x mode, so NOTHING is compared.
+  UNCHECKED     canon cannot resolve the token in the base theme, light, so NOTHING is compared.
                 Bite 12 swallowed the `KeyError` and the row vanished silently; every radius,
                 hit-area and ring-width fallback in this chrome (~40 sites) was therefore never
                 compared to anything, and `0px` happening to be the house default is exactly the
@@ -61,6 +68,11 @@ if HERE not in sys.path:
 # ⛔ THE GLOB IS THE RULE. Widen this and the rule widens with it; narrow it and the rule silently
 # stops being true of whatever fell out [[gate-glob-scope-rule]].
 GLOB = os.path.join(HERE, "*.py")
+# ⬛ #313 A6 — THE SECOND POPULATION: the pages those generators EMIT. A fallback computed at run time (the
+# #220 caption mint's per-theme rows were `resolve_token(...)` calls, never a literal in the source) is
+# invisible to the source glob; on the page it is a literal like any other. Each page is judged on its own
+# declarations only — a page is self-contained, it shares no preamble with a sibling.
+PAGE_GLOBS = (os.path.join(os.path.dirname(os.path.dirname(HERE)), "showroom", "_foundations", "*.html"),)
 THEMES = ("mono", "legacy", "console", "supercharge")
 MODES = ("light", "dark")
 
@@ -79,10 +91,21 @@ def _resolver():
 _ANSWER_CACHE = {}
 
 
+BASE = ("mono", "light")     # s313-D48: `:root`, light — the values the other themes override
+
+
+def base_answer(tok, resolve):
+    """-> the ONE value a fallback for `tok` may carry (s313-D48), or None when canon's base theme in
+    light has no colour for it. None is UNCHECKED — a different fact from 'the literal disagrees'."""
+    try:
+        return resolve(tok, *BASE).upper()
+    except Exception:          # KeyError and anything else the store raises
+        return None
+
+
 def canon_answers(tok, resolve):
-    """`set()` of every value canon resolves for `tok` across theme x mode. EMPTY means canon has
-    no opinion — which is a DIFFERENT fact from 'the literal disagrees', and the two must never be
-    collapsed into one silent skip."""
+    """`set()` of every value canon resolves for `tok` across theme x mode — printed BESIDE a drift so
+    the reader sees which theme a literal was copied from; it no longer decides the verdict (s313-D48)."""
     if tok not in _ANSWER_CACHE:
         out = set()
         for th in THEMES:
@@ -119,10 +142,10 @@ def scan_source(src, resolve, shared=None):
             if lit not in shared[tok]:
                 local_drift.append((tok, lit, "/".join(sorted(shared[tok]))))
             continue
-        ans = canon_answers(tok, resolve)
-        if ans:
-            if lit not in ans:
-                drifted.append((tok, lit, sorted(ans)))
+        base = base_answer(tok, resolve)
+        if base:
+            if lit != base:
+                drifted.append((tok, lit, [base] + sorted(canon_answers(tok, resolve) - {base})))
         else:
             unchecked.append((tok, lit))
     return drifted, local_drift, unchecked
@@ -141,12 +164,14 @@ def shared_declarations(files):
     return out
 
 
-def run(paths=None, verbose=False):
+def run(paths=None, verbose=False, pages=None):
     resolve = _resolver()
     files = sorted(paths if paths is not None else glob.glob(GLOB))
+    if pages is None:
+        pages = sorted(p for g in PAGE_GLOBS for p in glob.glob(g)) if paths is None else []
     shared = shared_declarations(files)
     tot_d, tot_l, tot_u, scanned = [], [], [], 0
-    for p in files:
+    for p in files + list(pages):
         if os.path.basename(p) == os.path.basename(__file__):
             continue
         try:
@@ -157,7 +182,7 @@ def run(paths=None, verbose=False):
         if not FB_RE.search(src):
             continue
         scanned += 1
-        d, l, u = scan_source(src, resolve, shared)
+        d, l, u = scan_source(src, resolve, {} if p.endswith(".html") else shared)
         rel = os.path.relpath(p, os.path.dirname(os.path.dirname(HERE)))
         for tok, lit, ans in d:
             tot_d.append((rel, tok, lit, ans))
@@ -168,23 +193,25 @@ def run(paths=None, verbose=False):
         if verbose:
             print("  %-52s %d fallback(s) · %d drifted · %d local-drift · %d unchecked"
                   % (rel, len(set(FB_RE.findall(src))), len(d), len(l), len(u)))
-    print("fallback-drift gate (ADVISORY, #221) — %d generator source(s) carrying var() fallbacks, "
-          "glob %s" % (scanned, os.path.relpath(GLOB, os.path.dirname(os.path.dirname(HERE)))))
+    print("fallback-drift gate (BLOCKING, s307-D22 + s313-D48) — %d file(s) carrying var() fallbacks "
+          "(generator sources + the pages they emit), globs %s"
+          % (scanned, ", ".join(os.path.relpath(g, os.path.dirname(os.path.dirname(HERE)))
+                                for g in (GLOB,) + PAGE_GLOBS)))
     for rel, tok, lit, ans in tot_d:
-        print("  ⛔ DRIFTED     %s :: var(%s,%s) — canon answers %s"
-              % (rel, tok, lit, ", ".join(ans)))
+        print("  ⛔ DRIFTED     %s :: var(%s,%s) — the base theme, light, answers %s (canon's other "
+              "answers: %s)" % (rel, tok, lit, ans[0], ", ".join(ans[1:]) or "none"))
     for rel, tok, lit, decl in tot_l:
         print("  ⛔ LOCAL-DRIFT %s :: var(%s,%s) — the alias itself declares %s"
               % (rel, tok, lit, decl))
-    print("  ⬛ UNCHECKED: %d fallback(s) on tokens this resolver answers in NO theme and NO mode "
+    print("  ⬛ UNCHECKED: %d fallback(s) on tokens canon's base theme answers with no colour in light "
           "— DECLARED, not passed (%s)"
           % (len(tot_u), ", ".join(sorted({t for _, t, _ in tot_u})[:8]) or "none"))
     if tot_d or tot_l:
-        print("❌ %d drifted + %d local-drift. A fallback must be a value canon RESOLVES for that "
-              "token. ⬛ ADVISORY — this is a report; promotion to blocking is Dave's."
-              % (len(tot_d), len(tot_l)))
+        print("❌ %d drifted + %d local-drift. A fallback must be THE value canon resolves for that "
+              "token in the base theme, light (s313-D48); an alias and its consumers move in ONE edit. "
+              "BLOCKING (s307-D22)." % (len(tot_d), len(tot_l)))
         return 1
-    print("✅ every var() fallback literal in the glob is one of canon's own answers for its token.")
+    print("✅ every var() fallback literal in the glob is canon's base-theme light answer for its token.")
     return 0
 
 
@@ -228,19 +255,27 @@ def selftest():
          "swallowed — the hole is declared, and it does not read as coverage",
          (dr, lo, sorted(t for t, _ in un)),
          ([], [], ["--border-radius-surface", "--target-min"]))
-    # ⬛ s308 lane D round 2 — THE RESOLVER THIS GATE BORROWS MUST SEE EVERY THEME BLOCK. Until
-    # #308 `gen_bento_matrix_217.theme_tokens` read only the FIRST block per theme, so canon's
-    # answers for `--color-neutral-5` collapsed to mono's #313131 and this gate called the RULED
-    # supercharge fallback #312C26 (s220-D1, s308-D1) DRIFTED — the instrument flagged the right
-    # value. Both warm and grey must now be canon's answers; a foreign literal still goes red.
-    bite("7 · ⬛ s308 — supercharge's warm `var(--color-neutral-5,#312C26)` is one of canon's "
-         "answers (the multi-block theme is read), and so is mono's #313131",
-         (scan_source(".c{a:var(--color-neutral-5,#312C26);b:var(--color-neutral-5,#313131);}",
-                      resolve)),
-         ([], [], []))
-    d7, _, _ = scan_source(".c{a:var(--color-neutral-5,#123456);}", resolve)
-    bite("7b · …and a literal canon never answers for it still goes RED, with both answers printed",
-         [(t, h, a) for t, h, a in d7], [("--color-neutral-5", "#123456", ["#312C26", "#313131"])])
+    # ⬛ s308 lane D round 2 — THE RESOLVER THIS GATE BORROWS MUST SEE EVERY THEME BLOCK (until #308
+    # `gen_bento_matrix_217.theme_tokens` read only the FIRST block per theme). It still must: the
+    # other answers are printed beside a drift. ⛔ s313-D48 REVERSED what bite 7 asserted — until #313
+    # supercharge's warm `var(--color-neutral-5,#312C26)` PASSED as "one of canon's answers"; Dave's
+    # "The base theme, light" makes #313131 the ONE answer. Assert what CHANGED, both ways.
+    bite("7 · ⛔ s313-D48 — mono's base-light `var(--color-neutral-5,#313131)` is the one answer and "
+         "passes",
+         scan_source(".c{b:var(--color-neutral-5,#313131);}", resolve), ([], [], []))
+    d7, _, _ = scan_source(".c{a:var(--color-neutral-5,#312C26);b:var(--color-neutral-5,#123456);}",
+                           resolve)
+    bite("7b · ⛔ s313-D48 — supercharge's warm #312C26 (PASSED before #313) and a foreign literal "
+         "both go RED, the base answer first and the multi-block theme's other answer beside it",
+         [(t, h, a) for t, h, a in d7],
+         [("--color-neutral-5", "#123456", ["#313131", "#312C26"]),
+          ("--color-neutral-5", "#312C26", ["#313131", "#312C26"])])
+    d7c, _, _ = scan_source(".c{a:var(--border-subtle,#D7D8D6);b:var(--focus-ring,#4587A7);"
+                            "c:var(--border-subtle,#E1E1E1);d:var(--focus-ring,#305A85);}", resolve)
+    bite("7c · ⛔ s313-D48 — THE REVERSAL ITSELF: a legacy-light literal and a dark-mode literal, each "
+         "canon's answer in SOME theme x mode (both passed before #313), are RED; the base-light "
+         "answers beside them are green",
+         [(t, h) for t, h, _ in d7c], [("--border-subtle", "#D7D8D6"), ("--focus-ring", "#4587A7")])
     bite("8 · ⬛ s308 — a page-local alias SHADOWS canon's same-named token: `--ink` declared "
          "locally as #1A1A1A is judged against that, not canon's global inverting --ink",
          scan_source(".fx{ --ink: var(--text-default,#1A1A1A); } .b{color:var(--ink,#1A1A1A);}",
@@ -259,13 +294,21 @@ def selftest():
                  "gen_gallery_compare_217.py", "_bento_recut_219.py", "gen_bento_matrix_217.py"):
         bite("6 · the glob REACHES %s (a rule is only as wide as its gate's glob)" % want,
              want in reach, True)
+    # ⬛ #313 A6 — the emitted pages are a population too, and a page judges its aliases on its own.
+    pages = sorted(p for g in PAGE_GLOBS for p in glob.glob(g))
+    bite("9 · the page glob REACHES the foundations pages (the computed fallbacks live there)",
+         len(pages) >= 8 and all(FB_RE.search(open(p, encoding="utf-8").read()) for p in pages), True)
+    bite("9b · ⬛ MUTANT — a page-local alias on a PAGE, consumed with a literal it does not declare, is RED "
+         "with no shared preamble to lean on",
+         scan_source(".fx{--line:var(--border-subtle,#E1E1E1);} .b{border-color:var(--line,#D7D8D6);}",
+                     resolve, {}), ([], [("--line", "#D7D8D6", "#E1E1E1")], []))
     if fails:
         print("_gate_fallback_drift_221 --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
             print("  ❌ " + f)
         return 1
     print("_gate_fallback_drift_221 --selftest OK — %d bites (mutation driven BOTH ways). "
-          "⬛ ADVISORY at birth." % len(ran))
+          "⛔ BLOCKING — the base theme, light (s307-D22, s313-D48)." % len(ran))
     return 0
 
 

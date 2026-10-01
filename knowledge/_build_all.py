@@ -765,6 +765,33 @@ STEPS = [
     # would turn every build red. It joins this list when he answers.
     ("foundations pages sync — the eight showroom/_foundations/ pages equal their generation (BLOCKING, s308-D33, wired #308)",
      "_render/gen_foundations_217.py", ["--check"]),
+    # #313 lane A5 — s307-D44 (Dave 2026-09-28, by click: 'Wire the generator into the build; Claude settles the
+    # shadows'). gen_radius_derive.py had NO consumer since #200 (#227 lane 6, Q3: grep found only the file itself),
+    # so a wrong segmented corner mint had two covers: nothing ran the checks, and --check alone cannot see a
+    # wrong mint. APPENDED LAST, no existing step number moves; route rows in the SAME edit. --check is BLOCKING
+    # (green today, determinism); --assert-mint keeps the ADVISORY tier it was born with (its own text: promotion
+    # to blocking is Dave's act); the selftest is ABORT like every sibling selftest. All three green at cdf17a12.
+    ("radius derivation — the proposal file equals a fresh derivation from the store (BLOCKING, s307-D44, wired #313)",
+     "gen_radius_derive.py", ["--check"]),
+    ("radius mint assert — every minted segmented thumb equals its derived value (ADVISORY, #227, wired #313 under s307-D44)",
+     "gen_radius_derive.py", ["--assert-mint"]),
+    ("radius derivation selftest — planted wrong derivation and a wrong thumb in the STORE, both seen and restored (s307-D44, wired #313)",
+     "gen_radius_derive.py", ["--selftest"]),
+    # #313 lane A5 — s307-D43 (W-307qk, the "shared token router" name): ONE table, three routers driven
+    # against it. ADVISORY: it reports two disagreements at cdf17a12 (the gate cannot read color/*, the
+    # cascade cannot read alpha/*); moving the three routers onto the table is the follow-up it will prove.
+    ("token routers agree — the three routers driven against the one table, ROUTES (ADVISORY, s307-D43, built #313)",
+     "_validate_token_routers.py"),
+    ("token routers selftest — control router agrees, a router that forgets size/ is named (s307-D43, built #313)",
+     "_validate_token_routers.py", ["--selftest"]),
+    # #313 lane A6 — s307-D22 (Dave 2026-09-28, by click: "Promote it: make it block") held advisory at #307
+    # because twelve drifted fallbacks had three right answers each; s313-D48 (Dave 2026-10-01, by click:
+    # "The base theme, light") gave the one answer, the twelve were moved to it, and the check now refuses.
+    # APPENDED LAST, no existing step number moves; route row in the SAME edit. The selftest rides beside it.
+    ("fallback-drift gate — every generator var() fallback is canon's base-theme light answer (BLOCKING, s307-D22 + s313-D48, wired #313)",
+     "_render/_gate_fallback_drift_221.py"),
+    ("fallback-drift gate selftest — planted drift both ways, the s313-D48 reversal bitten (s307-D22 + s313-D48, wired #313)",
+     "_render/_gate_fallback_drift_221.py", ["--selftest"]),
 ]
 
 # ── Failure routing: EXACT step IDs, never substrings (#77 periphery finding) ──
@@ -1215,7 +1242,8 @@ ROUTE_ROWS = [
     ('KG edge register coverage — every graph edge type has exactly one row, every row a type (BLOCKING, s308-D16, built #308)', GATE,
      "\n❌ edge register coverage failed (exit {code}) — an edge type is in the knowledge graph with no row in "
      "knowledge/_edge_register.json, a row names a type the graph does not carry, a type the meta schema / "
-     "_kg_verbs.json / the explorer's FAMILY map names is neither a row nor in `$absent`, or a row is malformed. "
+     "_kg_verbs.json names is neither a row nor in `$absent`, a row is malformed, or the meta schema / the verbs map / the "
+     "explorer template no longer agrees with the register (COPY-DRIFT, W-308ie: run python3 knowledge/gen_edge_copies.py --write). "
      "Every edge type is defined ONCE there (s308-D16): add or fix the row. Run: python3 knowledge/_validate_edges.py --coverage"),
     ('KG edge register selftest — control on the real graph + one planted red per refusal, 13 bites (s308-D16/D17, built #308)', ABORT, None),
     # #308 lane D round 2 — s308-D33, the SAME edit as its STEPS entry (join key duplicated verbatim).
@@ -1224,6 +1252,23 @@ ROUTE_ROWS = [
      "what knowledge/_render/gen_foundations_217.py generates from the stores, the logo assets and canon.css. "
      "Never hand-edit those pages: if the generator is right, run python3 knowledge/_render/gen_foundations_217.py "
      "and commit the pages; if the page is right, fix the generator (s308-D31/D32)."),
+    # #313 lane A5 — s307-D44, the SAME edit as its three STEPS entries (join keys duplicated verbatim).
+    ("radius derivation — the proposal file equals a fresh derivation from the store (BLOCKING, s307-D44, wired #313)", GATE,
+     "\n❌ radius derivation drifted (exit {code}) — knowledge/_derive-radius-proposal.json no longer equals "
+     "a fresh derivation from the token store (s200-D1). Re-derive and commit the proposal: "
+     "python3 knowledge/gen_radius_derive.py, then python3 knowledge/gen_radius_derive.py --check."),
+    ("radius mint assert — every minted segmented thumb equals its derived value (ADVISORY, #227, wired #313 under s307-D44)", ADVISORY, None),
+    ("radius derivation selftest — planted wrong derivation and a wrong thumb in the STORE, both seen and restored (s307-D44, wired #313)", ABORT, None),
+    ("token routers agree — the three routers driven against the one table, ROUTES (ADVISORY, s307-D43, built #313)", ADVISORY, None),
+    ("token routers selftest — control router agrees, a router that forgets size/ is named (s307-D43, built #313)", ABORT, None),
+    # #313 lane A6 — s307-D22 + s313-D48, the SAME edit as their STEPS entries (join keys duplicated verbatim).
+    ("fallback-drift gate — every generator var() fallback is canon's base-theme light answer (BLOCKING, s307-D22 + s313-D48, wired #313)", GATE,
+     "\n❌ fallback-drift gate failed (exit {code}) — a `var(--token,#literal)` fallback in knowledge/_render/*.py is "
+     "not the value canon.css resolves for that token in the base theme, light (`:root`; s313-D48), or a page-local "
+     "alias is consumed with a literal its own declaration does not carry. Change the literal to the answer the gate "
+     "prints; move an alias and its consumers in ONE edit; then regenerate the pages that generator writes. "
+     "Run: python3 knowledge/_render/_gate_fallback_drift_221.py"),
+    ("fallback-drift gate selftest — planted drift both ways, the s313-D48 reversal bitten (s307-D22 + s313-D48, wired #313)", ABORT, None),
 ]
 
 

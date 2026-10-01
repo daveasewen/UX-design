@@ -148,8 +148,10 @@ SIZING_PROPS = re.compile(r"^(font-size|height|min-height|width|zoom|transform|p
 # #311 A1 (2026-10-01) on the tree at 148fa6fc. May only SHRINK. Named hits: the A1 report.
 # Shrunk at the A1 second seat (21/8/12/1 -> 2/4/8/1) when the parts' own inline data API
 # (_part_inline_api: fill widths, skeleton bone widths, link font-sizes) stopped counting as sizing.
+# #313 A6: canon-gallery's 2 -> out of the ledger. Dave kept the page ("Keep and regenerate", s313-D46), so
+# gen_gallery.py now shows the modal by canon's own `.overlay.open` instead of sizing it; the regenerated page
+# sizes no part, and a pin it does not need would let two sizing rules come back unseen.
 SIZING_LEDGER = {
-    "canon-gallery.canon.html": 2,
     "nio-dash-console-v1.canon.html": 4,
     "nio-dash-console-v2.canon.html": 8,
     "payments-journey.canon.html": 1,

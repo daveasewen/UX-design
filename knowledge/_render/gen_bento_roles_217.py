@@ -311,10 +311,10 @@ CSS = """
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--tertiary-background-default,#FFFFFF);
   --surface-2: var(--tertiary-background-hover,#F0F0F0);   /* #221: was #F3F3F3 */
-  --line:      var(--border-subtle,#D7D8D6);
+  --line:      var(--border-subtle,#E1E1E1);
   --line-2:    var(--border-strong,#808080);               /* #221: was #767676 */
   --ink:       var(--text-default,#1A1A1A);
-  --ink-2:     var(--text-secondary,#545454);
+  --ink-2:     var(--text-secondary,#1A1A1A);
   --focus:     var(--focus-ring,#305A85);                  /* #221: was #1A1A1A */
   --focus-w:   var(--focus-ring-width,2px);
   --radius-ctl:var(--border-radius-control,0px);
@@ -368,29 +368,29 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
 
 /* ---- tile content ---- */
 .dx-photo{margin:0; display:grid; grid-template-rows:1fr auto;
-  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);}
 .dx-img{display:block; width:100%; height:100%; min-height:0; object-fit:cover;
   background:var(--surface-2,#F0F0F0);}
 /* ⚠ the caption's SPACE is canon's (`.c-bento__caption`, s217-D3). What is here is only its
    inline padding, its colour and its clamp — the block height and the line allowance are the
    ruled numbers and this page must not restate them. */
-.dx-cap{padding-inline:var(--sp-3); color:var(--ink-2,#545454); display:flex;
+.dx-cap{padding-inline:var(--sp-3); color:var(--ink-2,#1A1A1A); display:flex;
   flex-direction:column; gap:2px; justify-content:center;}
 .dx-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,2);
   -webkit-box-orient:vertical; overflow:hidden;
   /* ds-005/ds-048: a clamped label opts out of the cap/alphabetic trim or its last visible
      line loses its descenders. */
   text-box-edge:text text;}
-.dx-lic{color:var(--ink-2,#545454);}
+.dx-lic{color:var(--ink-2,#1A1A1A);}
 __MONOCAP__
 __RECUT__
-.dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
+.dx-card{background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);
   padding:var(--sp-4); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-1);}
-.dx-panel{background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);
+.dx-panel{background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);
   padding:var(--sp-5); overflow:hidden; display:flex; flex-direction:column; gap:var(--sp-3);}
 .dx-eyebrow{color:var(--ink,#1A1A1A);}
-.dx-sub{color:var(--ink-2,#545454);}
-.dx-body{color:var(--ink-2,#545454);}
+.dx-sub{color:var(--ink-2,#1A1A1A);}
+.dx-body{color:var(--ink-2,#1A1A1A);}
 .dx-fig{margin-top:auto; font-variant-numeric:tabular-nums;}
 
 /* ---- INSTANCE PARAMETER SETS — declared rules, never a style="" attribute ---------------
@@ -424,7 +424,7 @@ __RECUT__
    comparison would be of two collapsed walls rather than the layouts being ruled on. */
 .dx-2up{display:flex; flex-direction:column; gap:var(--sp-6);}
 .dx-2up > div{min-width:0;}
-.dx-caption{color:var(--ink-2,#545454); margin:var(--sp-2) 0 0; display:block;}
+.dx-caption{color:var(--ink-2,#1A1A1A); margin:var(--sp-2) 0 0; display:block;}
 
 @media (prefers-reduced-motion: reduce){
   .dx *,.dx *::before,.dx *::after{transition-duration:.01ms !important;

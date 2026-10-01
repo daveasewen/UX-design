@@ -200,6 +200,8 @@ def label_of(slug):
     return slug.replace("-", " ").capitalize()
 
 # ---------------------------------------------------------------- chrome CSS/JS
+# s313-D45: __FOCUS_RING__ is the library's focus token, minted from canon.css by focus_ring_css()
+# below (until #313 two rules here hand-typed the light ring's hex), and the ring answers Tab only.
 CHROME_CSS = """
   :root{--ink:#1A1A1A; --page:#FAFAFA; --line:#E1E1E1; --mid:#808080; --dark:#1A1A1A;}
   *{box-sizing:border-box;}
@@ -212,13 +214,12 @@ CHROME_CSS = """
     background:#FFFFFF; color:var(--ink); cursor:pointer;}
   header>button:hover:not(:disabled){border-color:var(--ink);}
   header>button:disabled{color:var(--mid); cursor:default; opacity:.5;}
-  header>button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
   .seg{display:inline-flex; border:1px solid var(--ink);}
   .seg button{font:inherit; font-size:13px; padding:8px 14px; border:0; background:transparent;
     color:var(--ink); cursor:pointer; border-right:1px solid var(--line);}
   .seg button:last-child{border-right:0;}
   .seg button[aria-pressed="true"]{background:var(--ink); color:#FFFFFF;}
-  .seg button:focus-visible{outline:2px solid #305A85; outline-offset:2px;}
+  __FOCUS_RING__
   .note{font-size:12px; color:var(--mid);}
   .wctl{display:flex; gap:8px; align-items:center; font-size:13px;}
   .wctl input[type=range]{width:180px; accent-color:var(--ink);}
@@ -312,6 +313,12 @@ PAGE_TMPL = """<!doctype html>
 
   f.addEventListener('load',apply);
 
+  // s313-D45 — "it should only be triggered by tabbing not clicks or taps" (Dave, 2026-10-01).
+  // A click or a tap marks the input as a pointer and the ring stays off; the next Tab clears it.
+  var rootEl=document.documentElement;
+  document.addEventListener('pointerdown',function(){ rootEl.setAttribute('data-input','pointer'); },true);
+  document.addEventListener('keydown',function(e){ if(e.key==='Tab') rootEl.removeAttribute('data-input'); },true);
+
   document.getElementById('themes').addEventListener('click',function(e){
     var b=e.target.closest('button'); if(!b) return;
     state.theme=b.dataset.theme; apply();
@@ -377,6 +384,49 @@ PAGE_TMPL = """<!doctype html>
 INDEX_OWNED_ELSEWHERE = "knowledge/_render/gen_library_214.py"
 INDEX_SENTINEL = "<!-- APOLLO-LIBRARY-INDEX v2 (gen_library_214.py) -->"
 PROTECTED = {"index.html"}          # never pruned: another generator's output
+
+# ---------------------------------------------------------------- s313-D45 · the focus ring
+# Dave 2026-10-01 17:49 BST, pictures page call 26, by click: "Yes, bind it to the library's token"
+# (the recommendation), comment, verbatim: "and it should only be triggered by tabbing not clicks or
+# taps". The chrome does not load canon.css (it would restyle the bar), so the binding is made at
+# GENERATION (s200-D1, mint-time): the three tokens are read from canon.css through the repo's one
+# canon reader, in the BASE theme, light (`:root`, the values the other themes override — s313-D48's
+# rule for a generated page's colours; the bar is always light). Canon moves -> the pages go stale ->
+# `--check` (the showroom sync gate, BLOCKING) says so. ⛔ No fallback literal: a token canon stops
+# shipping is a refusal by name, never a quiet blue.
+FOCUS_TOKENS = ("--focus-ring", "--focus-ring-width", "--focus-ring-offset")
+FOCUS_TARGETS = ("header>button", ".seg button", ".wctl input")
+
+
+def focus_ring_tokens(base=None):
+    """-> {token: value} for FOCUS_TOKENS, the base theme in light, read from canon.css.
+    `base` ({token: value}) is for the selftest's planted arm only."""
+    sys.path.insert(0, os.path.join(HERE, "_render"))
+    import gen_bento_matrix_217 as canon_reader     # the shared canon cascade reader
+    if base is None:
+        base = canon_reader.theme_tokens("mono", "light")
+    missing = [t for t in FOCUS_TOKENS if not base.get(t)]
+    if missing:
+        sys.exit("gen_showroom REFUSED, NAMED: canon.css :root no longer declares %s — the showroom's "
+                 "focus ring is bound to it (s313-D45)" % ", ".join(missing))
+    out = {t: base[t] for t in FOCUS_TOKENS}
+    if out["--focus-ring"].startswith("var("):
+        out["--focus-ring"] = canon_reader.resolve_token("--focus-ring", "mono", "light")
+    return out
+
+
+def focus_ring_css(tokens=None):
+    """The chrome's focus rules: the token declared on :root, the ring on :focus-visible, and OFF
+    while the last input was a pointer (a click or a tap) — on again at the next Tab."""
+    tok = tokens or focus_ring_tokens()
+    on = ", ".join(t + ":focus-visible" for t in FOCUS_TARGETS)
+    off = ", ".join('html[data-input="pointer"] ' + t + ":focus" for t in FOCUS_TARGETS)
+    return (":root{%s}\n"
+            "  %s{outline:var(--focus-ring-width) solid var(--focus-ring); "
+            "outline-offset:var(--focus-ring-offset);}\n"
+            "  %s{outline:none;}"
+            % (" ".join("%s:%s;" % (t, tok[t]) for t in FOCUS_TOKENS), on, off))
+
 
 # ---------------------------------------------------------------- generation
 def theme_meta(themes, manifest_vars):
@@ -454,6 +504,7 @@ def build_pages():
     """-> {relpath: content} for the whole showroom."""
     themes = cascade.load_themes()
     btns = theme_buttons(themes)
+    chrome_css = CHROME_CSS.replace("__FOCUS_RING__", focus_ring_css())   # s313-D45
     files, cards = {}, {}
     for f in sorted(glob.glob(os.path.join(SNIP, "*.reference.html"))):
         src = open(f).read()
@@ -491,7 +542,7 @@ def build_pages():
         has_motion = has_dv_animate or has_direct_keyframes
         page = (PAGE_TMPL
                 .replace("__LABEL__", htmlmod.escape(label_of(slug)))
-                .replace("__CSS__", CHROME_CSS)
+                .replace("__CSS__", chrome_css)
                 .replace("__THEME_BTNS__", btns)
                 .replace("__THEMES_JSON__", json.dumps(meta))
                 .replace("__META__", htmlmod.escape(meta_line))
@@ -601,6 +652,31 @@ def selftest():
     bite("8e · an overlay THEMES row printing the id goes red", len(label_faults("['legacy', 'Legacy']", want, "x.js")), 1)
     bite("8f · the live pickers carry the label today (the guard --check runs)", label_guard(), [])
 
+    # s313-D45 — the ring is the library's token, and it answers Tab only. Assert what CHANGED:
+    # the hand-typed hex is gone from the chrome, the minted value is canon's own, a click turns it off.
+    sys.path.insert(0, os.path.join(HERE, "_render"))
+    import gen_bento_matrix_217 as canon_reader
+    css = focus_ring_css()
+    bite("9 · s313-D45 · the chrome hand-types no focus-ring hex any more (was #305A85 twice)",
+         re.findall(r"outline:\s*2px solid #", CHROME_CSS + PAGE_TMPL), [])
+    bite("9b · the ring minted into the chrome is canon's own --focus-ring, base theme, light",
+         "--focus-ring:%s;" % canon_reader.resolve_token("--focus-ring", "mono", "light") in css, True)
+    bite("9c · a planted token value is what the chrome paints (the binding is live, not a copy)",
+         "--focus-ring:#ABCDEF;" in focus_ring_css({"--focus-ring": "#ABCDEF", "--focus-ring-width": "3px",
+                                                     "--focus-ring-offset": "1px"}), True)
+    bite("9d · every ring target has its pointer-off rule (\"only triggered by tabbing\")",
+         [t for t in FOCUS_TARGETS if ('html[data-input="pointer"] %s:focus' % t) not in css], [])
+    bite("9e · a pointer sets the flag and Tab clears it, in the page script",
+         ("addEventListener('pointerdown'" in PAGE_TMPL and "setAttribute('data-input','pointer')" in PAGE_TMPL
+          and "e.key==='Tab'" in PAGE_TMPL and "removeAttribute('data-input')" in PAGE_TMPL), True)
+    ran.append("9f · a canon without the ring token is a refusal by name")
+    try:
+        focus_ring_tokens({"--focus-ring-width": "2px", "--focus-ring-offset": "2px"})
+        fails.append("9f · a missing --focus-ring must refuse — it did not")
+    except SystemExit as e:
+        if "--focus-ring" not in str(e.code):
+            fails.append("9f · the refusal must name the token, got %r" % e.code)
+
     if fails:
         print("gen_showroom --selftest: %d BITE(S) FAILED" % len(fails))
         for f in fails:
@@ -608,7 +684,8 @@ def selftest():
         sys.exit(1)
     print("gen_showroom --selftest OK — %d bites (rebase · fragments · absolutes · "
           "double-rebase fails loud · missing-target gate · query suffix · "
-          "#98-D1 one-bar contract ×4 · embed mode ×5 · s308-D25 theme label ×6)." % len(ran))
+          "#98-D1 one-bar contract ×4 · embed mode ×5 · s308-D25 theme label ×6 · "
+          "s313-D45 focus ring ×6)." % len(ran))
 
 def main():
     if "--selftest" in sys.argv:

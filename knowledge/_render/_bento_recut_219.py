@@ -440,27 +440,27 @@ def open_control_html(key, extra=""):
 RECUT_CSS = """
 /* ---- #219 RE-CUT — the decision ledger's own chrome. Page chrome only. --------------------- */
 table.rcut{border-collapse:collapse; margin:var(--sp-4) 0 0; width:100%;}
-table.rcut th, table.rcut td{border-bottom:1px solid var(--line,#D7D8D6);
-  padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2,#545454);}
+table.rcut th, table.rcut td{border-bottom:1px solid var(--line,#E1E1E1);
+  padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2,#1A1A1A);}
 table.rcut th{color:var(--ink,#1A1A1A); white-space:nowrap;}
 table.rcut td:first-child{color:var(--ink,#1A1A1A); width:38%;}
-table.rcut s{color:var(--ink-2,#545454);}
+table.rcut s{color:var(--ink-2,#1A1A1A);}
 .rcut-key{display:inline-block; border:1px solid var(--line-2,#808080); color:var(--ink,#1A1A1A);
   padding:1px 6px; margin-right:var(--sp-2); letter-spacing:0.1em;}
-.rcut-asked{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
-.rcut-clause{display:block; margin-top:var(--sp-2); color:var(--ink-2,#545454);}
+.rcut-asked{display:block; margin-top:var(--sp-2); color:var(--ink-2,#1A1A1A);}
+.rcut-clause{display:block; margin-top:var(--sp-2); color:var(--ink-2,#1A1A1A);}
 .rcut-res, .rcut-baked, .rcut-mints{display:block; margin-top:var(--sp-2);
-  color:var(--ink-2,#545454);}
+  color:var(--ink-2,#1A1A1A);}
 .rcut-mints{color:var(--ink,#1A1A1A);}
 .rcut-tag{display:inline-block; padding:2px 8px; letter-spacing:0.12em; text-transform:uppercase;}
-.rcut-tag-r{border:1px solid var(--line-2,#808080); color:var(--ink-2,#545454);}
+.rcut-tag-r{border:1px solid var(--line-2,#808080); color:var(--ink-2,#1A1A1A);}
 .rcut-tag-p{border:1px solid var(--ink,#1A1A1A); color:var(--ink,#1A1A1A);}
 .rcut-tag-o{border:1px solid var(--ink,#1A1A1A); background:var(--ink,#1A1A1A);
   color:var(--page,#FFFFFF);}
 .rcut-live{border:1px solid var(--ink,#1A1A1A); padding:var(--sp-4) var(--sp-5);
   margin:var(--sp-5) 0 0; max-width:74ch;}
 .rcut-live-q{margin:var(--sp-2) 0 0; color:var(--ink,#1A1A1A);}
-.rcut-live-b{margin:var(--sp-2) 0 0; color:var(--ink-2,#545454);}
+.rcut-live-b{margin:var(--sp-2) 0 0; color:var(--ink-2,#1A1A1A);}
 """
 
 

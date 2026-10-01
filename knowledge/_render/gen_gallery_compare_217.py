@@ -248,10 +248,10 @@ CSS_HEAD = """
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--tertiary-background-default,#FFFFFF);
   --surface-2: var(--tertiary-background-hover,#F0F0F0);   /* #221: was #F3F3F3 */
-  --line:      var(--border-subtle,#D7D8D6);
+  --line:      var(--border-subtle,#E1E1E1);
   --line-2:    var(--border-strong,#808080);               /* #221: was #767676 */
   --ink:       var(--text-default,#1A1A1A);
-  --ink-2:     var(--text-secondary,#545454);
+  --ink-2:     var(--text-secondary,#1A1A1A);
   --focus:     var(--focus-ring,#305A85);                  /* #221: was #1A1A1A */
   --focus-w:   var(--focus-ring-width,2px);
   --radius-ctl:var(--border-radius-control,0px);
@@ -300,7 +300,7 @@ p.lede{margin:0 0 var(--sp-5); color:var(--ink-2); max-width:74ch;}
   background:var(--ink,#1A1A1A); padding:2px 10px; letter-spacing:0.12em;
   text-transform:uppercase; margin:0 var(--sp-2) var(--sp-2) 0;}
 table.gc-diff{border-collapse:collapse; margin:var(--sp-4) 0 0; width:100%; max-width:960px;}
-table.gc-diff th, table.gc-diff td{border-bottom:1px solid var(--line,#D7D8D6);
+table.gc-diff th, table.gc-diff td{border-bottom:1px solid var(--line,#E1E1E1);
   padding:var(--sp-3) var(--sp-4); text-align:left; vertical-align:top; color:var(--ink-2);}
 table.gc-diff th{color:var(--ink); white-space:nowrap;}
 table.gc-diff td:first-child{color:var(--ink); width:22%;}
@@ -309,11 +309,11 @@ table.gc-diff td:first-child{color:var(--ink); width:22%;}
    ⚠ The caption's SPACE is canon's (`.c-bento__caption`, s217-D3, 86px). What is here is only
    its inline padding, its colour and its clamp. Restating the ruled height would let the two
    drift, and the whole page would be comparing two different caption regimes. */
-.gc-cap{padding-inline:var(--sp-3); color:var(--ink-2,#545454); display:flex;
+.gc-cap{padding-inline:var(--sp-3); color:var(--ink-2,#1A1A1A); display:flex;
   flex-direction:column; gap:2px; justify-content:center;}
 .gc-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
   -webkit-box-orient:vertical; overflow:hidden; text-box-edge:text text;}
-.gc-lic{color:var(--ink-2,#545454);}
+.gc-lic{color:var(--ink-2,#1A1A1A);}
 __MONOCAP__
 __RECUT__
 .gc-img{display:block; width:100%; height:100%; min-height:0;
@@ -321,7 +321,7 @@ __RECUT__
 
 /* ---- CANDIDATE A · tile chrome only. NO GRID, NO GAP, NO SPAN, NO ROLE RULE. ------------- */
 .gc-atile{margin:0; display:grid; grid-template-rows:1fr auto;
-  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);}
 /* ⛔ THE CROP LIVES HERE, and it is A's whole cost: the compartment is decided by the span
    vocabulary, so the picture has to be cut to fit it. */
 .gc-atile .gc-img{object-fit:cover;}
@@ -341,7 +341,7 @@ __RECUT__
 /* flex-basis 0 + grow proportional to aspect = the row justifies flush and every box in it lands
    on one height. `min-width:0` or a long caption would push the row past the container. */
 .gc-btile{margin:0; flex:0 1 0; min-width:0; display:flex; flex-direction:column;
-  background:var(--surface,#FFFFFF); border:1px solid var(--line,#D7D8D6);}
+  background:var(--surface,#FFFFFF); border:1px solid var(--line,#E1E1E1);}
 .gc-box{display:block; width:100%; aspect-ratio:var(--gc-ar); overflow:hidden;}
 /* ⛔ NOT `cover`. The box already carries the picture's own aspect, so there is nothing to crop —
    this is the one line that states B's claim, and `contain` makes a broken aspect VISIBLE as

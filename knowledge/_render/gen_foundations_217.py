@@ -368,7 +368,9 @@ BG_FALLBACK = {"--surface-subtle": "#F0F0F0", "--surface-raised": "#FFFFFF",
 # ⬛ s219-D3(2) — THE INK'S OWN FALLBACK TABLE. Ink follows ground, so the ink token is DERIVED per
 # theme; its literal fence has to be derived with it or a reversed-out caption would dangle to a
 # fallback written for the other ink.
-INK_FALLBACK = {"--text-secondary": "#545454", "--text-reverse": "#FFFFFF"}
+# s313-D48 (Dave 2026-10-01, "The base theme, light"): every fallback literal here is canon's `:root`
+# light answer — the drift gate (_gate_fallback_drift_221.py, BLOCKING) holds it there.
+INK_FALLBACK = {"--text-secondary": "#1A1A1A", "--text-reverse": "#FFFFFF"}
 
 # ⬛ s219-D2 (1) — THE CAPTION INK, AND WHICH TOKEN IT IS. The supersession moves the mono caption
 # onto a LIGHT ground, so the ink flips from `--text-reverse` back to the caption's own standing
@@ -380,11 +382,11 @@ INK_FALLBACK = {"--text-secondary": "#545454", "--text-reverse": "#FFFFFF"}
 # caption already used and because it keeps caption ink one decision across all four themes; the
 # pair diverges only in legacy (#545454 vs #333333), whose caption ground is transparent. ⬛ THE
 # CHOICE IS FILED for Dave (report `notes/_subreports/2026-08-25-219-enactB-defaults.md`).
-CAP_INK = ("--text-secondary", "#545454")
+CAP_INK = ("--text-secondary", "#1A1A1A")      # s313-D48: base theme, light (was legacy's #545454)
 # The keyline's own colour, when a theme's default says `keylines: on` (legacy, here). Canon's
 # subtle border, matching the page's `--line`; the literal is the dangle fence, not a second
 # source. ⚠ TILE BORDER WIDTH IS THE EXPORT'S OWN `tileBorderPx: 1`, not a preference.
-KEYLINE = ("--border-subtle", "#D7D8D6", "1px")
+KEYLINE = ("--border-subtle", "#E1E1E1", "1px")    # s313-D48: base theme, light (was legacy's #D7D8D6)
 
 
 def ruled_words(type_="gallery"):
@@ -915,12 +917,12 @@ CSS = """
   --page:      var(--background-default,#FFFFFF);
   --surface:   var(--surface-raised,#FFFFFF);
   --surface-2: var(--surface-subtle,#F0F0F0);   /* #221: was #F3F3F3 */
-  --line:      var(--border-subtle,#D7D8D6);
+  --line:      var(--border-subtle,#E1E1E1);
   --line-2:    var(--border-strong,#808080);   /* s220-D1: was #767676 — a value canon resolves in
                                                   no theme and no mode. See gen_bento_matrix_217
                                                   bite 12's fallback-drift arm. */
   --ink:       var(--text-default,#1A1A1A);
-  --ink-2:     var(--text-secondary,#545454);
+  --ink-2:     var(--text-secondary,#1A1A1A);
   --focus:     var(--focus-ring,#305A85);      /* #221: was #1A1A1A — a BLACK focus ring where the
                                                   ruled ring is blue, in 8 of 8 theme x mode. The
                                                   s220-D1 repair five lines above swept its own
@@ -1259,24 +1261,24 @@ RAILS_CSS = """
 /* ---- the rails library. One card per chord, short lines, live specimens. ---- */
 .br-cards{display:grid; gap:var(--sp-5,24px);
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
-.br-card{border:1px solid var(--border-subtle,#D7D8D6); padding:var(--sp-4,16px);
+.br-card{border:1px solid var(--border-subtle,#E1E1E1); padding:var(--sp-4,16px);
   display:flex; flex-direction:column; gap:var(--sp-3,12px);}
 .br-card h4{margin:0;}
 .br-lines{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:4px;}
 .br-lines li{max-width:44ch;}
-.br-meta{color:var(--text-secondary,#545454); display:flex; flex-wrap:wrap; gap:8px;
+.br-meta{color:var(--text-secondary,#1A1A1A); display:flex; flex-wrap:wrap; gap:8px;
   letter-spacing:0.06em; text-transform:uppercase;}
-.br-pill{border:1px solid var(--border-subtle,#D7D8D6); padding:2px 8px;}
+.br-pill{border:1px solid var(--border-subtle,#E1E1E1); padding:2px 8px;}
 .br-pill--default{border-color:var(--text-default,#1A1A1A); font-weight:600;}
-.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+.br-spec{border:1px solid var(--border-subtle,#E1E1E1);}
 /* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
 .br-spec .bm-stage{border:0; margin-top:0;}
 .br-spec .bm-page-ground{padding:var(--sp-4,16px);}
 .br-spec .bm-gtile{grid-column:span 1 !important; grid-row:span 1 !important;}
 .br-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);}
-.br-table th, .br-table td{border-bottom:1px solid var(--border-subtle,#D7D8D6);
+.br-table th, .br-table td{border-bottom:1px solid var(--border-subtle,#E1E1E1);
   padding:6px 10px; text-align:left; vertical-align:top;}
-.br-table th{color:var(--text-secondary,#545454); text-transform:uppercase;
+.br-table th{color:var(--text-secondary,#1A1A1A); text-transform:uppercase;
   letter-spacing:0.08em; font-weight:500;}
 .br-scroll{overflow-x:auto;}
 /* ⚠ SEEN, THEN FIXED: X6's plain words are a paragraph, and an unconstrained cell pushed the
@@ -2298,7 +2300,7 @@ def selftest():
          (("var(--surface-subtle,#F0F0F0)" in _grey_block),
           ("--surface-digital-black" in settings_block or "--text-reverse" in settings_block),
           ("--surface-digital-black" in _grey_block or "--text-reverse" in _grey_block),
-          ("var(--text-secondary,#545454)" in settings_block),
+          ("var(--text-secondary,#1A1A1A)" in settings_block),
           _grey,
           sorted({GALLERY_SETTINGS[t]["capBg"] for t in matrix.THEMES})),
          (True, False, False, True, [], ["transparent"]))
@@ -2434,7 +2436,8 @@ def selftest():
     # on the #221 repair that put the ruled ring back. It now asks the two questions apart:
     #   (a) AUTHORED  — a bare literal this file typed. Still zero chromatic. Unchanged.
     #   (b) FALLBACK  — governed by canon, and by `_gate_fallback_drift_221.py` across all five
-    #                   sibling generators (ADVISORY). Named here, never silently exempted.
+    #                   sibling generators (BLOCKING since #313: canon's base-theme light answer,
+    #                   s307-D22 + s313-D48). Named here, never silently exempted.
     _bare_src = re.sub(r"var\(\s*--[a-z0-9-]+\s*,\s*#[0-9A-Fa-f]{6}\s*\)", "var(--x)", rules)
     authored = sorted({c.upper() for c in re.findall(r"#[0-9A-Fa-f]{6}", _bare_src)})
     chromatic = [c for c in authored if _spread(c) > 8]

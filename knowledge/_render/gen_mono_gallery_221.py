@@ -201,7 +201,7 @@ ENACTED_CSS = [
     '%s{border-radius:0;}' % _sel,
     '%s .px-open{border-radius:0; overflow:visible;}' % _sel,
     '%s .px-img{border-radius:var(--border-radius-container,0px); overflow:hidden;}' % _sel,
-    '%s .px-cap{background:transparent; color:var(--text-secondary,#545454);}' % _sel,
+    '%s .px-cap{background:transparent; color:var(--text-secondary,#1A1A1A);}' % _sel,
 ]
 _missing = [c for c in ENACTED_CSS if c not in _art]
 if _missing:
@@ -316,45 +316,45 @@ body{background:var(--background-default,#FFFFFF);}
 .cdl{
   --page:      var(--background-default,#FFFFFF);
   --surface-2: var(--surface-subtle,#F0F0F0);  /* fallback re-derived from canon.css --surface-subtle (#221 drift-gate catch) */
-  --line:      var(--border-subtle,#D7D8D6);
+  --line:      var(--border-subtle,#E1E1E1);
   --line-2:    var(--border-strong,#808080);
   --ink:       var(--text-default,#1A1A1A);
-  --ink-2:     var(--text-secondary,#545454);
+  --ink-2:     var(--text-secondary,#1A1A1A);
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
   background:var(--page,#FFFFFF); color:var(--ink,#1A1A1A); -webkit-font-smoothing:antialiased;
 }
 .cdl *{box-sizing:border-box;}
 .cdl, .cdl-head{color:var(--text-default,#1A1A1A);}
 
-.cdl-head{padding:var(--sp-5,24px) var(--sp-6,32px); border-bottom:1px solid var(--line,#D7D8D6);}
+.cdl-head{padding:var(--sp-5,24px) var(--sp-6,32px); border-bottom:1px solid var(--line,#E1E1E1);}
 .cdl-head h1{margin:0 0 var(--sp-2,8px);}
-.cdl-head p{margin:0 0 6px; color:var(--ink-2,#545454); max-width:88ch;}
+.cdl-head p{margin:0 0 6px; color:var(--ink-2,#1A1A1A); max-width:88ch;}
 main{padding:var(--sp-6,32px); max-width:1180px;}
-.cdl-sec{margin:0 0 var(--sp-7,48px); border-top:1px solid var(--line,#D7D8D6);
+.cdl-sec{margin:0 0 var(--sp-7,48px); border-top:1px solid var(--line,#E1E1E1);
   padding-top:var(--sp-5,24px);}
 .cdl-sec:first-of-type{border-top:0; padding-top:0;}
 .cdl-sec h2{margin:0 0 var(--sp-2,8px);}
 .cdl-sec h3{margin:var(--sp-5,24px) 0 var(--sp-2,8px);}
-.cdl-sec p{margin:0 0 var(--sp-3,12px); color:var(--ink-2,#545454); max-width:84ch;}
+.cdl-sec p{margin:0 0 var(--sp-3,12px); color:var(--ink-2,#1A1A1A); max-width:84ch;}
 .cdl-sec p b, .cdl-lines b{color:var(--ink,#1A1A1A); font-weight:500;}
-.cdl-kicker{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.14em;
+.cdl-kicker{color:var(--ink-2,#1A1A1A); text-transform:uppercase; letter-spacing:0.14em;
   margin:0 0 var(--sp-2,8px); display:flex; align-items:center; gap:var(--sp-2,8px);}
-.cdl-kicker::before{content:''; width:20px; height:1px; background:var(--line,#D7D8D6);}
+.cdl-kicker::before{content:''; width:20px; height:1px; background:var(--line,#E1E1E1);}
 .cdl-quote{border-left:3px solid var(--ink,#1A1A1A); padding:var(--sp-3,12px) var(--sp-4,16px);
   margin:0 0 var(--sp-3,12px); max-width:84ch;}
 .cdl-quote p{margin:0; color:var(--ink,#1A1A1A);}
-.cdl-quote .cdl-attrib{margin-top:6px; color:var(--ink-2,#545454);}
-.cdl-note{border:1px solid var(--line,#D7D8D6); border-left-width:4px;
+.cdl-quote .cdl-attrib{margin-top:6px; color:var(--ink-2,#1A1A1A);}
+.cdl-note{border:1px solid var(--line,#E1E1E1); border-left-width:4px;
   padding:var(--sp-3,12px) var(--sp-4,16px); margin:var(--sp-4,16px) 0 0; max-width:84ch;}
 .cdl-note p{margin:0 0 var(--sp-2,8px);}
 .cdl-note p:last-child{margin:0;}
 .cdl-open{border-left:3px solid var(--text-default,#1A1A1A); padding-left:var(--sp-3,12px);}
-.cdl-foot{border-top:1px solid var(--line,#D7D8D6); padding-top:var(--sp-4,16px);
-  color:var(--ink-2,#545454); max-width:96ch;}
+.cdl-foot{border-top:1px solid var(--line,#E1E1E1); padding-top:var(--sp-4,16px);
+  color:var(--ink-2,#1A1A1A); max-width:96ch;}
 .cdl-foot p{margin:0 0 var(--sp-2,8px);}
 .cdl-lines{margin:0 0 var(--sp-3,12px); padding:0; list-style:none; display:flex;
   flex-direction:column; gap:6px;}
-.cdl-lines li{max-width:80ch; color:var(--ink-2,#545454);}
+.cdl-lines li{max-width:80ch; color:var(--ink-2,#1A1A1A);}
 
 /* ---- the premise receipts. Verdict chips are NEUTRAL — ink on page with a border, never a hue:
    a decision surface may not colour-code its own verdicts on Dave's problem hues.
@@ -366,7 +366,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
   padding:2px 8px; text-transform:uppercase; letter-spacing:0.1em;
   color:var(--ink,#1A1A1A); white-space:nowrap;}
 .cdl-verdict[data-ok="no"]{background:var(--ink,#1A1A1A); color:var(--page,#FFFFFF);}
-.cdl-receipt{border:1px solid var(--line,#D7D8D6); padding:var(--sp-4,16px);
+.cdl-receipt{border:1px solid var(--line,#E1E1E1); padding:var(--sp-4,16px);
   margin:0 0 var(--sp-4,16px);}
 .cdl-receipt h3{margin:0 0 var(--sp-2,8px); display:flex; gap:var(--sp-3,12px);
   align-items:baseline; flex-wrap:wrap;}
@@ -387,19 +387,19 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 /* ⛔ HEIGHT-LOCKED, carried from the #220 ladder: sub-lines that wrap differently push the cards
    to different vertical origins, and a trio compared at different origins reads as three
    different cards. */
-.cdl-col-sub{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#545454); min-height:4em;}
-.cdl-panel{border:1px solid var(--line,#D7D8D6);}
+.cdl-col-sub{margin:0 0 var(--sp-2,8px); color:var(--ink-2,#1A1A1A); min-height:4em;}
+.cdl-panel{border:1px solid var(--line,#E1E1E1);}
 .cdl-col[data-cand="1"] .cdl-panel{border:1px dashed var(--line-2,#808080);}
 .cdl-panel-bd{background:var(--background-default,#FFFFFF); color:var(--text-default,#1A1A1A);
   padding:var(--sp-3,12px);}
 .cdl-panel-bd .br-spec{color:var(--text-default,#1A1A1A);}
 
 .cdl-nums{margin:var(--sp-3,12px) 0 0; display:flex; flex-direction:column; gap:0;
-  border-top:1px solid var(--line,#D7D8D6);}
+  border-top:1px solid var(--line,#E1E1E1);}
 /* ⛔ ROWS HEIGHT-LOCKED — same reason, one level down (the #220 fix, kept). */
 .cdl-num{display:grid; grid-template-columns:minmax(120px,44%) 1fr; gap:var(--sp-3,12px);
-  padding:7px 0; border-bottom:1px solid var(--line,#D7D8D6); min-height:5.2em;}
-.cdl-num dt{margin:0; color:var(--ink-2,#545454); text-transform:uppercase;
+  padding:7px 0; border-bottom:1px solid var(--line,#E1E1E1); min-height:5.2em;}
+.cdl-num dt{margin:0; color:var(--ink-2,#1A1A1A); text-transform:uppercase;
   letter-spacing:0.08em;}
 .cdl-num dd{margin:0; color:var(--ink,#1A1A1A); overflow-wrap:anywhere;}
 
@@ -411,21 +411,21 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 /* ⛔ HEIGHT-LOCKED AND CLAMPED, seen in this page's own render: the four labels wrap 2–4 lines,
    so unclamped cards start at four different origins and the strip cannot be scanned as one row
    (the #220 ladder defect, one level up). Three lines, floor to match. */
-.cdl-opt-cap{color:var(--ink-2,#545454); margin:0 0 6px; min-height:4.2em;
+.cdl-opt-cap{color:var(--ink-2,#1A1A1A); margin:0 0 6px; min-height:4.2em;
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
 .cdl-opt-tag{color:var(--ink,#1A1A1A); text-transform:uppercase; letter-spacing:0.12em;
   margin:0 0 4px;}
 
 .cdl-table{width:100%; border-collapse:collapse; margin-top:var(--sp-3,12px);
   table-layout:fixed;}
-.cdl-table th, .cdl-table td{border-bottom:1px solid var(--line,#D7D8D6);
+.cdl-table th, .cdl-table td{border-bottom:1px solid var(--line,#E1E1E1);
   padding:8px 10px; text-align:left; vertical-align:top; white-space:normal;
-  overflow-wrap:anywhere; color:var(--ink-2,#545454);}
-.cdl-table th{color:var(--ink-2,#545454); text-transform:uppercase; letter-spacing:0.08em;
+  overflow-wrap:anywhere; color:var(--ink-2,#1A1A1A);}
+.cdl-table th{color:var(--ink-2,#1A1A1A); text-transform:uppercase; letter-spacing:0.08em;
   font-weight:500;}
 .cdl-table td:first-child{color:var(--ink,#1A1A1A);}
-.cdl-scroll{overflow-x:auto; border:1px solid var(--line,#D7D8D6);}
-.cdl-code{border:1px solid var(--line,#D7D8D6); padding:var(--sp-3,12px);
+.cdl-scroll{overflow-x:auto; border:1px solid var(--line,#E1E1E1);}
+.cdl-code{border:1px solid var(--line,#E1E1E1); padding:var(--sp-3,12px);
   overflow-x:auto; margin:var(--sp-3,12px) 0; color:var(--ink,#1A1A1A);}
 .cdl-code pre{margin:0; white-space:pre-wrap; color:var(--ink,#1A1A1A);}
 
@@ -433,7 +433,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
    COPIED-FROM-ARTEFACT START — showroom/_foundations/bento-rails.html
    (via notes/_subreports/assets/2026-08-27-220-default-switch/build.py.txt)
    ===================================================================================== */
-.br-spec{border:1px solid var(--border-subtle,#D7D8D6);}
+.br-spec{border:1px solid var(--border-subtle,#E1E1E1);}
 /* the specimen stage is the EXPLORER'S stage — same class, same attributes, same stylesheet. */
 .br-spec .bm-stage{border:0; margin-top:0;}
 .br-spec .bm-page-ground{padding:var(--sp-4,16px);}
@@ -442,8 +442,8 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 /* ---- the `--bm-*` surface the specimen stage reads. Declared on `.br-spec`, which is a CHILD
    of the element carrying the theme — substituting on a child is deterministic in every state
    probed, where substituting on the themed element itself has disagreed (measured 2026-08-22). */
-.br-spec{--bm-line:var(--border-subtle,#D7D8D6); --bm-line-2:var(--border-strong,#808080);
-  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#545454);
+.br-spec{--bm-line:var(--border-subtle,#E1E1E1); --bm-line-2:var(--border-strong,#808080);
+  --bm-ink:var(--text-default,#1A1A1A); --bm-ink-2:var(--text-secondary,#1A1A1A);
   --bm-page:var(--background-default,#FFFFFF);
   --bm-grey:var(--surface-subtle,#F0F0F0);
   --bm-white:var(--surface-raised,#FFFFFF);
@@ -453,7 +453,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
   --bm-container-radius:var(--border-radius-container,0px);}
 
 /* ---- the stage ---- */
-.bm-stage{border:1px solid var(--bm-line,#D7D8D6); margin-top:var(--sp-4,16px);}
+.bm-stage{border:1px solid var(--bm-line,#E1E1E1); margin-top:var(--sp-4,16px);}
 .bm-page-ground{padding:var(--sp-5,24px);}
 .bm-stage[data-page-bg="grey"] .bm-page-ground{background:var(--bm-grey,#F0F0F0);}
 .bm-stage[data-page-bg="white"] .bm-page-ground{background:var(--bm-white,#FFFFFF);}
@@ -475,7 +475,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 .bm-stage[data-spacing="40"] .c-bento.bm-wall{--bento-gutter:40px;}
 /* keylines at the open spacings: a plain 1px tile border. */
 .bm-stage[data-keylines="on"]:not([data-spacing="1"]) .bm-wall > .c-bento__grid > .bm-tile{
-  border:1px solid var(--bm-line,#D7D8D6);}
+  border:1px solid var(--bm-line,#E1E1E1);}
 
 /* ---- INSTANCE DIALS. `.c-bento.` in the selector is DELIBERATE: canon's role rules are (0,2,0),
    a bare class is (0,1,0) and the role rule would beat it — silently, in one theme, at one width. */
@@ -491,7 +491,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 .bm-imgbox{display:block; flex:1 1 auto; min-height:0; overflow:hidden;}
 .bm-img{display:block; width:100%; height:100%; object-fit:cover;
   background:var(--surface-subtle,#F0F0F0);}
-.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#545454); display:flex;
+.bm-cap{padding-inline:var(--sp-3,12px); color:var(--bm-ink-2,#1A1A1A); display:flex;
   flex-direction:column; gap:2px; justify-content:center;}
 .bm-desc{display:-webkit-box; -webkit-line-clamp:var(--bento-caption-lines,3);
   -webkit-box-orient:vertical; overflow:hidden;}
@@ -506,7 +506,7 @@ main{padding:var(--sp-6,32px); max-width:1180px;}
 .bm-stage[data-cap-bg="darkgrey"] .bm-cap{background:var(--bm-darkgrey,#1A1A1A);
   color:var(--bm-ink-rev,#FFFFFF);}
 .bm-stage[data-cap-bg="grey"] .bm-cap,
-.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#545454);}
+.bm-stage[data-cap-bg="white"] .bm-cap{color:var(--bm-ink-2,#1A1A1A);}
 
 /* ---- IMAGE ROUNDING (gallery). `capsule` rounds and clips the whole tile so caption and
    image are one block. Six classes/attributes because canon's gallery tile rule is (0,4,0).
