@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 138 components · 1047 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
+**Totals:** 138 components · 1048 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -11,7 +11,7 @@ Change one of these and the listed number of components is affected. Use before 
 | Token | Blast | Example components |
 |---|---|---|
 | `text/default` | 108 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 74 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
+| `background/default` | 73 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
 | `tertiary/background/default` | 50 | Account card, Action bar, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
 | `icon/default` | 46 | Accordion, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `border-radius/surface` | 42 | Alert, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
@@ -31,17 +31,17 @@ Change one of these and the listed number of components is affected. Use before 
 | Group | Components |
 |---|---|
 | `text/` | 113 |
-| `background/` | 74 |
+| `background/` | 73 |
 | `tertiary/` | 63 |
 | `border-radius/` | 62 |
-| `rag/` | 50 |
+| `rag/` | 49 |
 | `icon/` | 48 |
 | `form/` | 44 |
 | `border/` | 42 |
 | `divider/` | 41 |
 | `focus/` | 40 |
 | `elevation/` | 29 |
-| `primary/` | 21 |
+| `primary/` | 22 |
 | `target/` | 21 |
 | `data/` | 19 |
 | `typography/` | 13 |
@@ -61,10 +61,10 @@ Change one of these and the listed number of components is affected. Use before 
 | `step/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
-| `badge/` | 2 |
 | `tabs/` | 2 |
 | `timer/` | 1 |
 | `gap/` | 1 |
+| `badge/` | 1 |
 
 ## Deprecated tokens still bound (migration worklist)
 
@@ -94,7 +94,7 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-907 of 1047 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+908 of 1048 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
@@ -118,8 +118,8 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | `motion/` | 12 |
 | `component/` | 11 |
 | `padding/` | 10 |
+| `border-radius/` | 9 |
 | `editorial/` | 9 |
-| `border-radius/` | 8 |
 | `divider/` | 8 |
 | `border/` | 6 |
 | `breakpoint/` | 6 |
