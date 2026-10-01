@@ -35,11 +35,23 @@ enumerate-and-skip); open forms split but never refuse on heading content:
 `#### ` REFUSES. Missing declared files REFUSE. A source class contributing ZERO
 records REFUSES.
 Determinism: records sorted by (file, line); id collisions suffixed `-2`, `-3` in
-document order; `--check` regenerates and byte-compares (the ADR-0013 ruling-4 shape).
+document order; `--check` builds the index TWICE from the corpus and byte-compares the two
+fresh renders (sha256), never the file on disk.
+
+⛔ s312-D1 (Dave, #312, 2026-10-01 12:35 BST: "yes to both, I want our plan to run smoothly"):
+the index is NO LONGER COMMITTED. It was 50.6 MB, over GitHub's 50 MB warning, and every
+commit added a copy to history. It is gitignored and BUILT: at the opener by
+`knowledge/_render/ensure_env.sh` (step 5, ~3.4 s at the seat, measured #312), in CI by a step
+before the survey, and by `_build_all.py` / `_wrap_regen.py` as before. So `--check` can no
+longer compare "the committed file" against the corpus — there is no committed file. It
+compares two fresh builds (determinism), and REPORTS (never fails on) a local copy that is
+stale or absent, because that copy is a cache the opener rebuilds. The wrap gate's
+`index_freshness_check` still refuses a stale local copy at the wrap, where retrieval of
+this session's record matters.
 
 Usage:
   python3 knowledge/_build_memento_index.py             # write the index
-  python3 knowledge/_build_memento_index.py --check     # determinism / staleness gate
+  python3 knowledge/_build_memento_index.py --check     # determinism gate: two fresh builds compared
   python3 knowledge/_build_memento_index.py --selftest  # refusal + determinism bites
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -546,16 +558,32 @@ def main():
         return 1
     text = render(records)
     if "--check" in sys.argv:
+        # s312-D1: determinism = two FRESH builds byte-compared; the on-disk copy is a cache.
+        import hashlib
+        n_first = len(records)
+        h1 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        del records
+        records2, errors2 = build_records()
+        if errors2:
+            print("memento index --check: the SECOND build refused — the corpus changed "
+                  "mid-check or the build is non-deterministic: %s" % errors2[0])
+            return 1
+        text2 = render(records2)
+        h2 = hashlib.sha256(text2.encode("utf-8")).hexdigest()
+        del records2, text2
+        if h1 != h2:
+            print("memento index --check: NON-DETERMINISTIC — two fresh builds of the same "
+                  f"corpus differ (sha256 {h1[:12]} v {h2[:12]}); fix the builder")
+            return 1
         if not os.path.exists(OUT_PATH):
-            print("memento index --check: index file missing — run the build")
-            return 1
-        with open(OUT_PATH, encoding="utf-8") as f:
-            on_disk = f.read()
-        if on_disk != text:
-            print("memento index --check: STALE — regenerate (the index on disk does not "
-                  "match the corpus; never hand-edit it)")
-            return 1
-        print(f"memento index --check: current ({len(records)} records)")
+            local = "no local copy (not committed since s312-D1; the opener builds it)"
+        else:
+            with open(OUT_PATH, encoding="utf-8") as f:
+                local = ("local copy current" if f.read() == text else
+                         "local copy STALE — run `python3 knowledge/_build_memento_index.py` "
+                         "(a cache, not the record; reported, not failed)")
+        print(f"memento index --check: deterministic ({n_first} records, two fresh builds "
+              f"agree, sha256 {h1[:12]}) · {local}")
         return 0
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(text)

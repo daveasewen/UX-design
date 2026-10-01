@@ -16,7 +16,8 @@
 # USAGE (one bash call; network needed only on first build):
 #   bash knowledge/_render/ensure_env.sh [<envdir>]     # default <repo>/outputs/_render-env
 #   source knowledge/_render/seat_env.sh                 # then, in the render call
-# Prints `ENSURE_ENV: OK ...` or `ENSURE_ENV: FAIL <which>` (exit 1). Never a launch attempt.
+# Prints `ENSURE_ENV: OK ... index=built(<n> records,<ms>ms)` or `ENSURE_ENV: FAIL <which>` (exit 1).
+# Never a launch attempt. Step 5 builds the Memento index (s312-D1: built, never committed).
 set -u
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 repo="$(cd "$here/../.." && pwd -P)"
@@ -66,4 +67,22 @@ if grep -rIl --exclude-dir=pw-browsers --exclude-dir=pylibs --exclude-dir=chrome
   fail "a file under $envdir bakes a /sessions/<seat> path — the seat-bound half must live in \$TMPDIR"
 fi
 
-echo "ENSURE_ENV: OK envdir=$envdir shell=$shell pylibs=$(ls "$envdir/pylibs" | wc -l | tr -d ' ') libs=$(ls -A "$libdir" | wc -l | tr -d ' ') size=$(du -sh "$envdir" | cut -f1)"
+# 5 · the Memento retrieval index — s312-D1 (Dave, #312 2026-10-01 12:35 BST, "yes to both, I want
+#     our plan to run smoothly"): knowledge/_memento-index.json is gitignored and BUILT, never
+#     committed, so the opener builds it here — this script is already the opener's one shell call.
+#     Measured at the seat #312: ~3.4 s, 2,376 records, 53 MB. A refusal does NOT fail the render env
+#     (renders do not read the index); it is named on the OK line so the opener sees it at `tail -1`.
+#     Skip with APOLLO_SKIP_INDEX=1.
+index="skipped"
+if [ "${APOLLO_SKIP_INDEX:-0}" != "1" ] && [ -f "$repo/knowledge/_build_memento_index.py" ]; then
+  t0=$(date +%s%N)
+  iout="$(cd "$repo" && python3 knowledge/_build_memento_index.py 2>/dev/null)"; irc=$?
+  ims=$(( ( $(date +%s%N) - t0 ) / 1000000 ))
+  if [ "$irc" -eq 0 ]; then
+    index="built($(printf '%s' "$iout" | grep -o '[0-9]* records' | head -1),${ims}ms)"
+  else
+    index="REFUSED(rc=$irc,${ims}ms — run python3 knowledge/_build_memento_index.py)"
+  fi
+fi
+
+echo "ENSURE_ENV: OK envdir=$envdir shell=$shell pylibs=$(ls "$envdir/pylibs" | wc -l | tr -d ' ') libs=$(ls -A "$libdir" | wc -l | tr -d ' ') size=$(du -sh "$envdir" | cut -f1) index=$index"

@@ -222,6 +222,39 @@ dated home with the delta that carried it. Provenance: 254 · 2026-09-07 · stat
   ⚠ **Nothing enforces this** [[instrument-without-a-consumer]] — it is a brief clause, and the
   carry that asks for a gate is still open.
 
+## ⛔ THE SEAT — seven rules from the night of #311, and two facts measured at #312
+
+**Authority:** Dave, #312 opener, Thu 2026-10-01 12:51 BST, verbatim: *"cool fix anything that
+might get in our way now."* — the seven rules are section 04 of the night review
+`notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html` (each rule's evidence is there;
+his words saved at `notes/_lanes/312/DAVE-RULINGS-2026-10-01-1251-wave-2-calls.md`).
+
+1. **A chain conductor with no Agent tool is a worker:** before spawning anything,
+   `ToolSearch select:Agent`; if it is absent, hand back in one line and do not take the brief.
+2. **The pre-push survey runs the committed tree first, without `--include-mutating`,** exactly
+   as CI reads it; the mutating pass is the second run, never the only one.
+3. **The seat takes one command at a time:** never put more than two lanes on it, and never ask
+   it for anything a cloud shell can do.
+4. **The seat-wide commit mutex is one empty directory;** a holder that cannot finish inside one
+   call says so and releases; a holder older than 30 minutes is removed by whoever finds it.
+5. **Never commit `knowledge/_state.json` whole from a lane:** name rows, or leave the store to
+   the one committer.
+6. **Read git without locking:** `git diff --quiet`, `git diff-index --quiet HEAD`,
+   `git ls-files -m -o`, `git log`, `git rev-parse`. `git status` locks (the commit script's own
+   `git status` reads and its bare re-adds of unchanged paths were replaced at #312, lane AC0).
+7. **"Service Unavailable: server draining" is the cloud end restarting:** wait a minute and
+   resend the same call; do not diagnose the seat.
+
+**Measured at #312 (lane AC0's brief, 11:53 UTC):** `device_stage_files` and
+`device_commit_files` **share the seat's queue** — a stage call issued beside a 25 s sleep
+landed 2 s after the sleep ended. Price every stage/commit of files as a seat call.
+
+**Measured at #312:** the seat home disk (`/sessions`) is **99% full (126 MB free)** and is not
+ours to clear. Lanes write nothing under `$HOME` outside `mnt/`; scratch goes to
+`TMPDIR=/dev/shm` (512 MB, does not persist between calls) or `/tmp` (~3.6 GB). A pre-push
+clone survey uses `git clone --depth 1 file://$PWD /tmp/<x>` (a full clone of the ~3 GB `.git`
+will not fit) and deletes it after.
+
 ## Entry points
 
 `_RUNBOOK-capture-ritual.md` (the conductor runs it once) · `_RUNBOOK-git-commit.md` (serialized

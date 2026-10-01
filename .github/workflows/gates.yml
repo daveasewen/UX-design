@@ -237,6 +237,16 @@ jobs:
       - name: Install tiktoken + jsonschema — the chain check refuses the estimate fallback; the integrity lint imports jsonschema
         run: pip install tiktoken jsonschema
 
+      # ⛔ s312-D1 (Dave, #312 2026-10-01 12:35 BST, "yes to both, I want our plan to run smoothly"):
+      # `knowledge/_memento-index.json` is NO LONGER COMMITTED (50.6 MB, over GitHub's 50 MB warning;
+      # a copy in history per commit). It is gitignored and BUILT, here, before the survey, because
+      # the survey's checks READ it (`_gen_chain.py --check`, `_build_graph_mention_map.py --check`,
+      # `_gen_schematic.py --check`). This is not the write-then-check seam the survey guards: the
+      # index is a pure function of the committed corpus, not a committed artefact, and its own
+      # `--check` now compares TWO FRESH BUILDS (determinism), never a file. ~4 s at Dave's seat.
+      - name: Build the Memento index — gitignored and built, never committed (s312-D1)
+        run: python3 knowledge/_build_memento_index.py
+
       - name: Survey the COMMITTED tree — every check/selftest before any regeneration
         run: python3 knowledge/_build_survey.py --timeout 60
 

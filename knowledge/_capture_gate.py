@@ -3796,8 +3796,9 @@ def index_freshness_check(repo):
         fails.append("retrieval index is STALE — it does not match GOOD-MORNING.md / "
                      "_LIVE-STATE.md as they now stand, so `_memento_search.py` is serving "
                      "a PREVIOUS session's record. Run "
-                     "`python3 knowledge/_build_memento_index.py` and stage the result "
-                     "(ritual step 2g). This is the #32 defect — do not close over it.")
+                     "`python3 knowledge/_build_memento_index.py` (ritual step 2g; since "
+                     "s312-D1 the index is gitignored and built, never staged). This is the "
+                     "#32 defect — do not close over it.")
     else:
         notes.append("retrieval index: FRESH — %d records byte-match the live corpus, so "
                      "retrieval-first quotes this session's truth." % len(records))

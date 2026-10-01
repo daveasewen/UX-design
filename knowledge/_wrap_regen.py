@@ -61,7 +61,9 @@ SERIAL = [
     ("knowledge/_gen_titles.py", ["--session", "{N}"], ["--session", "{N}", "--check"], ["knowledge/_gen_titles_receipt.json"]),
     ("knowledge/_render_rulings.py", [], ["--check"], ["notes/_RULINGS.html"]),
     ("knowledge/tokens/_build_blast_radius.py", [], ["--check"], ["knowledge/tokens/_blast-radius.json", "knowledge/_GRAPH-REPORT.md"]),
-    ("knowledge/_build_memento_index.py", [], ["--check"], ["knowledge/_memento-index.json"]),
+    # s312-D1: the index is gitignored and BUILT, never committed — it still runs here (later steps
+    # read it) but names no output to stage; staging an ignored path is refused by git.
+    ("knowledge/_build_memento_index.py", [], ["--check"], []),
     ("knowledge/_build_graph_mention_map.py", [], ["--check"], ["knowledge/_graph-mention-map.json"]),
     ("knowledge/gen_kg_titles.py", ["--write"], ["--check"], ["knowledge/_node_titles.json"]),
     ("knowledge/_gen_chain.py", [], ["--check"], ["_CHAIN.md"]),

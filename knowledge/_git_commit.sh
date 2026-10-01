@@ -470,8 +470,8 @@ echo "— msgfile line 1 carries no T3 prefix (#208 reuse gate passed)"
 
 if [ "$RECONCILED" -ne 1 ]; then
   echo "✗ refusing to stage: run 'git status --short', account for EVERY dirty path (step 0.5),"
-  echo "  then re-run with --reconciled. Dirty paths now:"
-  git status --short
+  echo "  then re-run with --reconciled. Dirty paths now (lock-free read, s312 AC0):"
+  git ls-files -m -o --exclude-standard
   exit 1
 fi
 
@@ -948,15 +948,17 @@ find .git -name '*.lock' | grep -q . && fail "lock survived the mv-aside — do 
 # the reconciliation, not from whatever the tree happens to be carrying.
 if [ "$ALLDIRTY" -eq 1 ]; then
   echo "— --all-dirty: staging every dirty path, named:"
-  git status --porcelain | sed 's/^/  dirty: /'
-  while IFS= read -r _p; do [ -n "$_p" ] && PATHS+=("$_p"); done < <(git status --porcelain | cut -c4-)
+  # #312 AC0 (night review 311-X § 03): `git status` takes the index lock and strands it on the
+  # mount when nothing changed; `ls-files -m -o` reads the same set without writing anything.
+  git ls-files -m -o --exclude-standard | sed 's/^/  dirty: /'
+  while IFS= read -r _p; do [ -n "$_p" ] && PATHS+=("$_p"); done < <(git ls-files -m -o --exclude-standard)
 fi
 if [ "${#PATHS[@]}" -eq 0 ]; then
   echo '✗ refusing to stage: no paths given. --reconciled means you can name WHY every dirty path'
   echo '  exists — so name the ones this commit is for (P5, ruled 2026-08-02: git add -A retired).'
   echo "  Re-run as: bash knowledge/_git_commit.sh --reconciled <msgfile> <path> [<path> ...]"
   echo "  or, if the reconciliation really covered all of them, add --all-dirty. Dirty paths now:"
-  git status --short
+  git ls-files -m -o --exclude-standard
   exit 1
 fi
 # #261 M2 — the instrumentation the gates above just wrote, staged with the work it dirtied.
@@ -977,11 +979,29 @@ if [ "$INSTRUMENT_AUTOSTAGE" -eq 1 ]; then
     _i=$((_i + 1))
   done
 fi
+# #312 AC0 (night review 311-X § 03, measured): a NO-OP `git add` of a path already in the index
+# strands index.lock on the mount (git rolls the lock back with unlink). So a named path is
+# staged ONLY when it actually changed: tracked and differing from the index (`git diff --quiet`,
+# lock-free), or untracked and not ignored (`ls-files -o --exclude-standard`). An unchanged named
+# path is reported and skipped — it has nothing to stage. The mv-aside belt above stays.
+_path_changed() {
+  if git ls-files --error-unmatch -- "$1" >/dev/null 2>&1; then
+    ! git diff --quiet -- "$1" 2>/dev/null
+  else
+    [ -n "$(git ls-files -o --exclude-standard -- "$1" 2>/dev/null)" ]
+  fi
+}
 for _p in "${PATHS[@]}"; do
-  git add -- "$_p" 2>/dev/null || fail "could not stage '$_p' — named in the reconciliation but git refused it"
+  if _path_changed "$_p"; then
+    git add -- "$_p" 2>/dev/null || fail "could not stage '$_p' — named in the reconciliation but git refused it"
+  else
+    echo "  unchanged (not staged, no git add run): $_p"
+  fi
 done
 git diff --cached --name-only | sed 's/^/  staged: /'
-UNSTAGED_DIRTY=$(git status --porcelain | grep -c '^.[MD?]' || true)
+# #312 AC0: lock-free count (was `git status --porcelain | grep -c '^.[MD?]'`, which took the
+# index lock — night review 311-X § 03, "line 984").
+UNSTAGED_DIRTY=$(git ls-files -m -o --exclude-standard | wc -l | tr -d ' ')
 [ "$UNSTAGED_DIRTY" -eq 0 ] ||
   echo "⚠ $UNSTAGED_DIRTY dirty path(s) NOT staged — deliberate under explicit-path staging; they stay for the next commit"
 git diff --cached --quiet && fail "nothing staged — empty commit refused"
