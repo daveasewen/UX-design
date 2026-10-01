@@ -15,7 +15,7 @@
     { "name": "open", "use": "Anchored panel below the field: elevation recipe (shadow light / grey outline dark), 336px, 7×40px columns on the 4px grid." }
   ],
   "$states": ["default", "hover", "active (focus-within)", "completed", "disabled", "error", "panel open", "day hover", "day selected (ink knockout)", "today (structural ring + aria-current)"],
-  "$consumes": ["Input-fields (field anatomy + tail-btn — change it there)", "Popover elevation recipe (panel chrome)", "Icon-button geometry (44×44 nav)"],
+  "$consumes": ["Input-fields (field anatomy + tail-btn — change it there)", "Popover elevation recipe (panel chrome)", "Icon-button geometry (44×44 nav)", "Calendar (the panel's calendar is the calendar part, injected — change it there; s307-D49)"],
   "tokens": {
     "field": "form/background|border sets (Input-fields lock-step)",
     "panel": "background/default + elevation/border + elevation/functional; border-radius/surface",
@@ -120,6 +120,10 @@
       {
         "ref": "component:icon-button",
         "$note": "Icon-button geometry (44×44 nav)"
+      },
+      {
+        "ref": "component:calendar",
+        "$note": "Calendar (the panel's calendar is the calendar part, injected — change it there; s307-D49)"
       }
     ],
     "partial": [
@@ -264,141 +268,172 @@
         "$sel": "body > div.dp > div.dp-panel",
         "children": [
           {
-            "part": "dp-head",
+            "part": "cal-head",
             "tag": "div",
             "attrs": {
-              "class": "dp-head"
+              "class": "cal-head"
             },
-            "$sel": "body > div.dp > div.dp-panel > div.dp-head",
+            "$sel": "body > div.dp > div.dp-panel > div.cal-head",
+            "$partial": "calendar (injected from knowledge/snippets/Calendar.reference.html, PARTIAL calendar; change it there)",
             "children": [
               {
-                "part": "dp-nav",
+                "part": "cal-nav",
                 "tag": "button",
                 "attrs": {
                   "type": "button",
-                  "class": "dp-nav",
+                  "class": "cal-nav",
                   "id": "dp-prev-y"
                 },
                 "aria": {
                   "aria-label": "Previous year"
                 },
-                "$sel": "body > div.dp > div.dp-panel > div.dp-head > button.dp-nav",
+                "$sel": "body > div.dp > div.dp-panel > div.cal-head > button.cal-nav",
                 "children": [
                   {
                     "part": "arrow-icon",
                     "tag": "svg",
                     "attrs": {
-                      "class": "icn",
                       "viewbox": "0 0 18 18"
                     },
                     "aria": {
                       "aria-hidden": "true"
                     },
-                    "$sel": "body > div.dp > div.dp-panel > div.dp-head > button.dp-nav > svg.icn"
+                    "$sel": "body > div.dp > div.dp-panel > div.cal-head > button.cal-nav > svg"
                   }
                 ],
                 "$repeat": 4
               },
               {
-                "part": "dp-title",
+                "part": "cal-title",
                 "tag": "span",
                 "attrs": {
-                  "class": "dp-title t-cm-label",
+                  "class": "cal-title t-cm-label",
                   "id": "dp-title"
                 },
                 "aria": {
                   "aria-live": "polite"
                 },
                 "text": "July 2026",
-                "$sel": "body > div.dp > div.dp-panel > div.dp-head > span.dp-title.t-cm-label"
+                "$sel": "body > div.dp > div.dp-panel > div.cal-head > span.cal-title.t-cm-label"
               }
             ]
           },
           {
-            "part": "dp-week",
-            "tag": "div",
+            "part": "cal-grid",
+            "tag": "table",
             "attrs": {
-              "class": "dp-week"
-            },
-            "aria": {
-              "aria-hidden": "true"
-            },
-            "$sel": "body > div.dp > div.dp-panel > div.dp-week",
-            "children": [
-              {
-                "part": "weekday",
-                "tag": "span",
-                "attrs": {
-                  "class": "t-cm-caption"
-                },
-                "text": "Mo",
-                "$sel": "body > div.dp > div.dp-panel > div.dp-week > span.t-cm-caption",
-                "$repeat": 7
-              }
-            ]
-          },
-          {
-            "part": "dp-grid",
-            "tag": "div",
-            "attrs": {
-              "class": "dp-grid",
+              "class": "cal-grid",
               "id": "dp-grid"
             },
             "aria": {
               "role": "grid",
-              "aria-label": "Days"
+              "aria-labelledby": "dp-title"
             },
-            "$sel": "body > div.dp > div.dp-panel > div.dp-grid",
+            "$sel": "body > div.dp > div.dp-panel > table.cal-grid",
+            "$partial": "calendar (injected from knowledge/snippets/Calendar.reference.html, PARTIAL calendar; change it there)",
             "children": [
               {
-                "part": "day",
-                "tag": "button",
+                "part": "weekday-head",
+                "tag": "thead",
+                "$sel": "body > div.dp > div.dp-panel > table.cal-grid > thead",
+                "children": [
+                  {
+                    "part": "weekday-row",
+                    "tag": "tr",
+                    "aria": {
+                      "role": "row"
+                    },
+                    "$sel": "body > div.dp > div.dp-panel > table.cal-grid > thead > tr",
+                    "children": [
+                      {
+                        "part": "weekday",
+                        "tag": "th",
+                        "attrs": {
+                          "scope": "col",
+                          "abbr": "Monday"
+                        },
+                        "aria": {
+                          "role": "columnheader"
+                        },
+                        "$sel": "body > div.dp > div.dp-panel > table.cal-grid > thead > tr > th",
+                        "$repeat": 7,
+                        "children": [
+                          {
+                            "part": "weekday-label",
+                            "tag": "span",
+                            "attrs": {
+                              "class": "cal-wk t-cm-caption"
+                            },
+                            "text": "Mo",
+                            "$sel": "body > div.dp > div.dp-panel > table.cal-grid > thead > tr > th > span.cal-wk.t-cm-caption"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "part": "days",
+                "tag": "tbody",
                 "attrs": {
-                  "type": "button",
-                  "class": "dp-day t-cm-figure-5",
-                  "disabled": "{state.disabled}"
+                  "id": "dp-body"
                 },
-                "aria": {
-                  "role": "gridcell",
-                  "aria-selected": "{state.selected}",
-                  "aria-current": "{state.today}"
-                },
-                "$stateClasses": [
-                  "is-today",
-                  "is-empty"
-                ],
-                "$visual": "built by the snippet's script, not in the static markup: build() makes one button.dp-day per cell of the month (35 or 42), role gridcell, seven to a div role=row (display: contents)",
-                "$host": "body > div.dp > div.dp-panel > div.dp-grid",
-                "$each": "one per cell of the month grid; an empty cell pads the first and last week",
-                "$states": [
-                  "today",
-                  "selected",
-                  "empty",
-                  "disabled"
-                ],
-                "$sources": {
-                  "today": [
-                    "style .dp-day.is-today",
-                    "style .dp-day.is-today[aria-selected=\"true\"]"
-                  ],
-                  "selected": [
-                    "style .dp-day.is-today[aria-selected=\"true\"]",
-                    "style .dp-day[aria-selected=\"true\"]"
-                  ],
-                  "empty": [
-                    "style .dp-day.is-empty"
-                  ],
-                  "disabled": [
-                    "style .dp-day:disabled (a day outside minDate/maxDate)"
-                  ]
-                },
-                "$rest": "a plain day carries none of the four",
-                "$aria-current": "the value is the word date when the day is today",
-                "$note": "the styles also draw hover and focus on a day (.dp-day:hover, .dp-day:focus-visible); they stay in the field's list until phase 2 (18c, Dave took the recommendation: each piece carries its own states (phase 2))"
+                "$sel": "body > div.dp > div.dp-panel > table.cal-grid > tbody",
+                "children": [
+                  {
+                    "part": "day",
+                    "tag": "button",
+                    "attrs": {
+                      "type": "button",
+                      "class": "cal-day t-cm-figure-5",
+                      "disabled": "{state.disabled}"
+                    },
+                    "aria": {
+                      "aria-selected": "{state.selected}",
+                      "aria-current": "{state.today}"
+                    },
+                    "$stateClasses": [
+                      "is-today",
+                      "is-empty"
+                    ],
+                    "$visual": "built by the snippet's script, not in the static markup: build() writes one tr role=row per week and one td per cell (35 or 42); a day of the month is a button.cal-day in its td (the td is the grid cell); a pad cell before the 1st or after the last day is span.cal-day.is-empty with aria-hidden (not a control). The same markup as the calendar part draws.",
+                    "$host": "body > div.dp > div.dp-panel > table.cal-grid > tbody",
+                    "$each": "one per cell of the month grid; an empty cell pads the first and last week",
+                    "$states": [
+                      "today",
+                      "selected",
+                      "empty",
+                      "disabled"
+                    ],
+                    "$sources": {
+                      "today": [
+                        "style .cal-day.is-today",
+                        "style .cal-day.is-today[aria-selected=\"true\"]"
+                      ],
+                      "selected": [
+                        "style .cal-day.is-today[aria-selected=\"true\"]",
+                        "style .cal-day[aria-selected=\"true\"]",
+                        "style button.cal-day[aria-selected=\"true\"]:hover:not(:disabled)"
+                      ],
+                      "empty": [
+                        "style .cal-day.is-empty"
+                      ],
+                      "disabled": [
+                        "style .cal-day:disabled (a day outside minDate/maxDate)"
+                      ]
+                    },
+                    "$rest": "a plain day carries none of the four",
+                    "$aria-current": "the value is the word date when the day is today",
+                    "$partial": "calendar (injected from knowledge/snippets/Calendar.reference.html, PARTIAL calendar; change it there)",
+                    "$note": "the styles also draw hover and focus on a day (button.cal-day:hover:not(:disabled), .cal-day:focus-visible); they stay in the field's list until phase 2 (18c, Dave took the recommendation: each piece carries its own states (phase 2))"
+                  }
+                ]
               }
             ]
           }
-        ]
+        ],
+        "$partial-note": "the panel is the anchored overlay surface (.dp-panel, the seat's) around the calendar part: its children are Calendar's markup and their CSS is injected from Calendar (s307-D49, Dave 2026-09-28, by click, verbatim: 'Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures')"
       }
     ]
   },
@@ -496,20 +531,20 @@
         "style .is-info"
       ],
       "hover": [
+        "style .cal-nav.full:hover",
+        "style .cal-nav.is-disabled:hover",
+        "style .cal-nav:disabled:hover",
+        "style .cal-nav:hover",
         "style .dp-box:hover:not(:focus-within)",
-        "style .dp-day:hover",
-        "style .dp-nav.full:hover",
-        "style .dp-nav.is-disabled:hover",
-        "style .dp-nav:disabled:hover",
-        "style .dp-nav:hover"
+        "style button.cal-day:hover:not(:disabled)"
       ],
       "focus": [
+        "style .cal-day:focus-visible",
+        "style .cal-nav:focus-visible",
         "style .dp-box .tail-btn:focus-visible",
         "style .dp-box:focus-within",
         "style .dp-box:has(input:focus-visible)",
-        "style .dp-box:hover:not(:focus-within)",
-        "style .dp-day:focus-visible",
-        "style .dp-nav:focus-visible"
+        "style .dp-box:hover:not(:focus-within)"
       ],
       "completed": [
         "class .is-completed on a twin of body > div.dp",
@@ -519,9 +554,9 @@
         "attribute disabled on a twin of body > div.dp > div.dp-box > button.tail-btn",
         "attribute disabled on a twin of body > div.dp > div.dp-box > input",
         "class .is-disabled on a twin of body > div.dp",
-        "style .dp-box input:disabled",
-        "style .dp-day:disabled",
-        "style .dp-nav.is-disabled:hover"
+        "style .cal-day:disabled",
+        "style .cal-nav.is-disabled:hover",
+        "style .dp-box input:disabled"
       ],
       "open": [
         "style .dp-panel.is-open"
@@ -530,7 +565,7 @@
         "style .dp-panel.is-static"
       ],
       "active": [
-        "style .dp-nav:active"
+        "style .cal-nav:active"
       ],
       "invalid": [
         "attribute aria-invalid on a twin of body > div.dp > div.dp-box > input"
@@ -566,7 +601,7 @@
     "--press-darken": "{component-type.button-family.press-darken}"
   },
   "$extracted": {
-    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4",
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4 · panel on the calendar part @ 313-QQ",
     "date": "2026-10-01",
     "reviewed": false,
     "source": "knowledge/snippets/Date-picker.reference.html",
@@ -604,6 +639,10 @@
       {
         "what": "rest state stays default (no word of its own in the meta)",
         "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      },
+      {
+        "what": "the panel's children re-pointed at the calendar part: cal-head (cal-nav ×4, cal-title), cal-grid (table: weekday-head › weekday-row › weekday ×7 › weekday-label; days › day); the day keeps L4's four states (today, selected, empty, disabled), now on button.cal-day in a td; the old dp-head, dp-nav, dp-title, dp-week and dp-grid are gone from the markup; state sources renamed to the .cal-* selectors",
+        "why": "s307-D49, Dave 2026-09-28, by click, verbatim: 'Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures' (row W-307qq)"
       }
     ],
     "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 6, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states.\"",

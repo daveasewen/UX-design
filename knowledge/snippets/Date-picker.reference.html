@@ -18,6 +18,12 @@
    - Panel chrome = the Tooltip/Dropdown/Popover anchored-overlay elevation recipe:
      background/default surface · shadow in light · grey OUTLINE in dark (elevation/border) ·
      border-radius/surface.
+   - ★ THE CALENDAR IS THE CALENDAR PART (s307-D49, Dave 2026-09-28, by click: 'Yes, the date
+     picker uses the calendar'; built #313 lane QQ). Head, nav, weekday heads, grid and day cell
+     are Calendar.reference.html's PARTIAL calendar block, injected by gen_component_partials.py
+     (component-types.json group "calendar"); the markup is Calendar's (.cal-head, .cal-nav,
+     table.cal-grid, button.cal-day). The notes below on the nav and the day cells are the
+     original #-wave reasoning; the classes they name (.dp-nav, .dp-day) are now .cal-nav, .cal-day.
    - Month prev/next + year prev/next = button-family membership CANDIDATES (ADR-0013): one class
      .dp-nav (4 controls), 44×44 = Icon-button geometry, --phys-size:44. Empty AUTO-PARTIAL
      markers in place; $members registration = the conductor's (proposed via receipt).
@@ -192,53 +198,91 @@
   .dp-panel.is-open{display:block;}
   .dp-panel.is-static{position:static; display:block; margin-top:8px;}   /* gallery render */
 
-  .dp-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
-  .dp-title{flex:1; text-align:center; color:var(--text);}
-  .dp-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
+  /* ---------- the calendar — THE CALENDAR PART, not a copy (s307-D49) ----------
+     Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar'. The head, the month
+     and year nav, the weekday heads, the grid and the day cell (today, selected, empty,
+     disabled, and today-and-selected with the ring set inside the square, s308-D3) are
+     injected from Calendar.reference.html by gen_component_partials.py (group "calendar").
+     Change the calendar THERE and regenerate. What stays here is the seat: the overlay
+     surface above, the panel's width, and the nav's press physics (button-family member at
+     .cal-nav). Out-of-month pad cells are .is-empty here: a popover is a transient act of
+     picking, so it hides the neighbouring months that Calendar's month view draws.
+     #313 lane QQ. */
+  /* ===== AUTO-PARTIAL calendar START (calendar) ===== */
+/* INJECTED from Calendar.reference.html (partial "calendar", group calendar —
+   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
+   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
+   python3 knowledge/gen_component_partials.py */
+  /* THE CALENDAR PART, built once (s307-D49, Dave 2026-09-28: 'Yes, the date picker uses the
+     calendar'). Everything from here to the END marker is injected verbatim into
+     Date-picker.reference.html by gen_component_partials.py (registry: component-types.json
+     group "calendar"). Change the calendar HERE and regenerate; never in the date picker.
+     The .cal surface above stays outside: the seat brings its surface (a card here, the
+     anchored overlay in the date picker). #313 lane QQ. */
+  .cal-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
+  .cal-title{flex:1; min-width:0; text-align:center; color:var(--text);}
+  .cal-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--icon); cursor:pointer;
-    border-radius:var(--border-radius-control);
+    border-radius:var(--border-radius-control); flex:none;
     --phys-size:44;   /* LOCAL geometry (B-D7): Icon-button precedent — divides the pixel-true travel */
     transition:background var(--ease), transform var(--spring), filter var(--press);}
-  .dp-nav:hover{background:var(--field-bg-hover);}
-  .dp-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .cal-nav:hover{background:var(--field-bg-hover);}
+  .cal-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .cal-nav svg{width:18px; height:18px; display:block;}
+
+  .cal-grid{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:4px;}
+  .cal-grid th{padding:0; height:24px;}
+  .cal-grid td{padding:0;}
+  .cal-wk{display:flex; align-items:center; justify-content:center; height:24px;
+    color:var(--text); opacity:var(--alpha-60);}
+
+  /* the day cell — one cell for both seats (the state language began in Date-picker; since
+     #313 the date picker takes this block, so there is no second copy to keep in step) */
+  .cal-day{width:100%; min-height:40px; display:flex; align-items:center; justify-content:center;
+    padding:0; border:0; background:transparent; color:var(--text);
+    border-radius:var(--border-radius-control); position:relative;
+    transition:background var(--ease), color var(--ease);}
+  button.cal-day{cursor:pointer;}
+  button.cal-day:hover:not(:disabled){background:var(--field-bg-hover);}
+  .cal-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
+  .cal-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}   /* SHAPE, not colour — aria-current carries it too */
+  .cal-day[aria-selected="true"]{background:var(--text); color:var(--page);}   /* ink knockout */
+  /* ⛔ THE KNOCKOUT HOLDS THROUGH HOVER/PRESSED (#218, measured by _validate_state_contrast.py).
+     The hover rule above is `button.cal-day:hover:not(:disabled)` = (0,3,1) and OUT-SPECIFIES the
+     knockout at (0,2,0), so hovering a SELECTED day repainted the fill --field-bg-hover while the
+     text stayed --page: 1.14:1 light / 1.11:1 dark, hover AND pressed, on both selected days —
+     8 of the gate's 8 TEXT failures. (The date picker's old .dp-day grid did not need it: its
+     hover was (0,2,0) and its knockout came later. It takes this block now.) Restated at (0,3,1),
+     same two tokens as the knockout itself — no new colour, no new constant. */
+  button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
+  /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule.
+     s308-D3 (Dave, 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): the
+     #211 page-colour ring met the page at the cell's edge and read as a square 2px smaller, not
+     a ring. The ring is now set INSIDE the square: 3px of the knockout fill, then a 2px ring in
+     --page. The page's proposal rule, verbatim. Same two tokens, no new colour. #313 lane B123. */
+  .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page);}
+  .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
+  /* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
+  .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}
+  /* EMPTY: a seat that hides the neighbouring months marks the pad cell is-empty (the date
+     picker's popover: a transient act of picking, #210 head note 1). The month view draws
+     them instead (is-outside above). */
+  .cal-day.is-empty{visibility:hidden; pointer-events:none;}
+  /* ===== AUTO-PARTIAL calendar END ===== */
   /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
 /* INJECTED from Button.reference.html (partial "press-physics", group button-family —
    registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
    AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
    python3 knowledge/gen_component_partials.py */
-  .dp-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
-  .dp-nav.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
-  .dp-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
-  .dp-nav:disabled:hover,.dp-nav.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
+  .cal-nav:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
+  .cal-nav.full:hover{transform:none;}                                           /* full-width can't grow — would overflow */
+  .cal-nav:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
+  .cal-nav:disabled:hover,.cal-nav.is-disabled:hover{transform:none; filter:none;}   /* disabled stays put */
   /* WCAG 2.3.3 — the partial carries its OWN reduced-motion override (ADR-0013: rides inside, never per-file) */
   @media (prefers-reduced-motion: reduce){
-    .dp-nav:hover,.dp-nav:active{ transform:none !important; filter:none !important; }
+    .cal-nav:hover,.cal-nav:active{ transform:none !important; filter:none !important; }
   }
   /* ===== AUTO-PARTIAL press-physics END ===== */
-
-  .dp-week{display:grid; grid-template-columns:repeat(7,40px); gap:4px; margin:0 0 4px;}
-  .dp-week span{display:flex; align-items:center; justify-content:center; height:24px; color:var(--text); opacity:var(--alpha-60);}
-  .dp-grid{display:grid; grid-template-columns:repeat(7,40px); gap:4px;}
-  .dp-day{width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
-    padding:0; border:0; background:transparent; color:var(--text); cursor:pointer;
-    border-radius:var(--border-radius-control); position:relative;
-    transition:background var(--ease), color var(--ease);}
-  .dp-day:hover{background:var(--field-bg-hover);}
-  .dp-day:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .dp-day.is-today{box-shadow:inset 0 0 0 2px var(--border-active);}   /* today = structural ring, never colour-alone (numeral carries aria-current) */
-  .dp-day[aria-selected="true"]{background:var(--text); color:var(--page); font-weight:500;}   /* ink knockout — tooltip precedent */
-  /* today AND selected: the cell is already knocked out to --text, so a --border-active ring is
-     invisible on it (measured 1.21:1 light / 1.00:1 dark, #210 wave-4 lane A claim 2, mutation-proven).
-     The ring JOINS the knockout: it is drawn in --page, the same token the knocked-out numeral
-     already uses on this very selector. NO new token, no new tint — background/default on
-     text/default is a pair this file's own token-manifest already declares. (#211 lane R3)
-     s308-D3 (Dave, 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): the
-     ring is set INSIDE the square — 3px of the knockout fill, then a 2px ring in --page — so it
-     reads as a ring, not a square 2px smaller. The calendar draws the same; the date picker
-     follows it (s307-D49). #313 lane B123. */
-  .dp-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page);}
-  .dp-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
-  .dp-day.is-empty{visibility:hidden; pointer-events:none;}
 
   .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px 32px; max-width:760px;}
   .gallery .cap{font:400 12px/1.3 var(--font); color:var(--text); opacity:var(--alpha-52); margin:0 0 8px;}
@@ -251,8 +295,6 @@
     .dp, .gallery{max-width:none;}
     .gallery{grid-template-columns:1fr;}
     .dp-panel{width:100%; min-width:304px;}
-    .dp-week, .dp-grid{grid-template-columns:repeat(7,minmax(36px,1fr));}
-    .dp-day{width:100%;}
   }
 </style>
 </head>
@@ -289,17 +331,28 @@
     <div class="dp-msg" id="f-date-msg" aria-live="polite"></div>
 
     <div class="dp-panel" id="dp-panel" role="dialog" aria-modal="false" aria-label="Choose date">
-      <div class="dp-head">
-        <button type="button" class="dp-nav" id="dp-prev-y" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
-        <button type="button" class="dp-nav" id="dp-prev-m" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
-        <span class="dp-title t-cm-label" id="dp-title" aria-live="polite">July 2026</span>
-        <button type="button" class="dp-nav" id="dp-next-m" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
-        <button type="button" class="dp-nav" id="dp-next-y" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      <!-- the calendar part (Calendar.reference.html), its markup as Calendar writes it -->
+      <div class="cal-head">
+        <button type="button" class="cal-nav" id="dp-prev-y" aria-label="Previous year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="cal-nav" id="dp-prev-m" aria-label="Previous month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title t-cm-label" id="dp-title" aria-live="polite">July 2026</span>
+        <button type="button" class="cal-nav" id="dp-next-m" aria-label="Next month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="cal-nav" id="dp-next-y" aria-label="Next year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
       </div>
-      <div class="dp-week" aria-hidden="true">
-        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
-      </div>
-      <div class="dp-grid" id="dp-grid" role="grid" aria-label="Days"></div>
+      <table class="cal-grid" id="dp-grid" role="grid" aria-labelledby="dp-title">
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" abbr="Monday"><span class="cal-wk t-cm-caption">Mo</span></th>
+            <th role="columnheader" scope="col" abbr="Tuesday"><span class="cal-wk t-cm-caption">Tu</span></th>
+            <th role="columnheader" scope="col" abbr="Wednesday"><span class="cal-wk t-cm-caption">We</span></th>
+            <th role="columnheader" scope="col" abbr="Thursday"><span class="cal-wk t-cm-caption">Th</span></th>
+            <th role="columnheader" scope="col" abbr="Friday"><span class="cal-wk t-cm-caption">Fr</span></th>
+            <th role="columnheader" scope="col" abbr="Saturday"><span class="cal-wk t-cm-caption">Sa</span></th>
+            <th role="columnheader" scope="col" abbr="Sunday"><span class="cal-wk t-cm-caption">Su</span></th>
+          </tr>
+        </thead>
+        <tbody id="dp-body"></tbody>
+      </table>
     </div>
   </div>
 
@@ -335,21 +388,32 @@
   </div>
 
   <h2 class="sec" style="margin-top:2.75rem;">Panel anatomy — static render</h2>
-  <p class="note">Selected = ink knockout (weight 500, never colour-alone) · today = structural ring ·
-    nav = Icon-button geometry (44×44), button-family candidates.</p>
+  <p class="note">The panel is the calendar part (Calendar), inside the anchored overlay ·
+    selected = ink knockout · today = structural ring · today and selected = the ring set inside the
+    square · nav = Icon-button geometry (44×44), button-family.</p>
   <div class="dp" style="max-width:368px;">
     <div class="dp-panel is-static" role="presentation">
-      <div class="dp-head">
-        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
-        <button type="button" class="dp-nav" tabindex="-1" aria-label="Previous month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
-        <span class="dp-title t-cm-label">July 2026</span>
-        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next month"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
-        <button type="button" class="dp-nav" tabindex="-1" aria-label="Next year"><svg class="icn" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
+      <div class="cal-head">
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Previous year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-left"/></svg></button>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Previous month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title t-cm-label">July 2026</span>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Next month"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-right"/></svg></button>
+        <button type="button" class="cal-nav" tabindex="-1" aria-label="Next year"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-chevron-dbl-right"/></svg></button>
       </div>
-      <div class="dp-week" aria-hidden="true">
-        <span class="t-cm-caption">Mo</span><span class="t-cm-caption">Tu</span><span class="t-cm-caption">We</span><span class="t-cm-caption">Th</span><span class="t-cm-caption">Fr</span><span class="t-cm-caption">Sa</span><span class="t-cm-caption">Su</span>
-      </div>
-      <div class="dp-grid" id="static-grid"></div>
+      <table class="cal-grid" role="grid" aria-label="July 2026">
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" abbr="Monday"><span class="cal-wk t-cm-caption">Mo</span></th>
+            <th role="columnheader" scope="col" abbr="Tuesday"><span class="cal-wk t-cm-caption">Tu</span></th>
+            <th role="columnheader" scope="col" abbr="Wednesday"><span class="cal-wk t-cm-caption">We</span></th>
+            <th role="columnheader" scope="col" abbr="Thursday"><span class="cal-wk t-cm-caption">Th</span></th>
+            <th role="columnheader" scope="col" abbr="Friday"><span class="cal-wk t-cm-caption">Fr</span></th>
+            <th role="columnheader" scope="col" abbr="Saturday"><span class="cal-wk t-cm-caption">Sa</span></th>
+            <th role="columnheader" scope="col" abbr="Sunday"><span class="cal-wk t-cm-caption">Su</span></th>
+          </tr>
+        </thead>
+        <tbody id="static-body"></tbody>
+      </table>
     </div>
   </div>
 
@@ -394,7 +458,7 @@
       "chevron-dbl-left": "arrows-and-chevrons/chevron-double-left.svg", "chevron-dbl-right": "arrows-and-chevrons/chevron-double-right.svg",
       "error": "status-icons/error.svg", "success": "status-icons/success.svg"
     },
-    "$partials-note": "The 4 .dp-nav month/year buttons are button-family membership CANDIDATES (ADR-0013): empty AUTO-PARTIAL press-physics markers + --phys-size:44 (Icon-button geometry) declared on .dp-nav; --spring/--press match the source atom. Registration ($members entry) is the conductor's — proposed via the worker receipt. Day cells deliberately carry NO press physics (selection targets, not buttons — receipt-flagged)."
+    "$partials-note": "Two partials. (1) calendar (group calendar): the whole calendar — head, .cal-nav month/year buttons, weekday heads, table.cal-grid and the button.cal-day cell with its states — is injected from Calendar.reference.html (s307-D49, #313 lane QQ); the panel is the anchored overlay around it. (2) press-physics (group button-family): the 4 .cal-nav buttons are the Date-picker member (selector .cal-nav, was .dp-nav); --phys-size:44 (Icon-button geometry) rides in the calendar block; --spring/--press match the source atom. Day cells deliberately carry NO press physics (selection targets, not buttons — receipt-flagged)."
   }
   </script>
   <script type="application/json" id="behaviour-manifest">
@@ -431,6 +495,7 @@
     const openBtn = document.getElementById('dp-open');
     const panel = document.getElementById('dp-panel');
     const grid = document.getElementById('dp-grid');
+    const body = document.getElementById('dp-body');
     const title = document.getElementById('dp-title');
     let view = new Date(today.getFullYear(), today.getMonth(), 1);
     let selected = null;   // Date or null
@@ -439,20 +504,24 @@
     function daysInMonth(y, m){ return new Date(y, m+1, 0).getDate(); }
     function firstCol(y, m){ return (new Date(y, m, 1).getDay() + 6) % 7; }   // Monday-first
 
-    function build(gridEl, y, m, opts){
+    /* One month into a <tbody>, as the calendar part draws it (Calendar.reference.html build()):
+       a <tr role="row"> per week, a <td> per day, the day a button.cal-day. The date picker's one
+       difference is the pad cells: span.cal-day.is-empty (hidden), where the month view draws
+       the neighbouring months. */
+    function build(bodyEl, y, m, opts){
       const live = !!(opts && opts.live);
-      gridEl.innerHTML = '';
+      bodyEl.innerHTML = '';
       const lead = firstCol(y, m), days = daysInMonth(y, m);
       let row;
       for (let cell = 0; cell < Math.ceil((lead + days) / 7) * 7; cell++){
-        if (cell % 7 === 0){ row = document.createElement('div'); row.setAttribute('role','row'); row.style.display='contents'; gridEl.appendChild(row); }
+        if (cell % 7 === 0){ row = document.createElement('tr'); row.setAttribute('role','row'); bodyEl.appendChild(row); }
         const d = cell - lead + 1;
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'dp-day t-cm-figure-5' + (d < 1 || d > days ? ' is-empty' : '');
-        b.setAttribute('role','gridcell');
+        const td = document.createElement('td');
         if (d >= 1 && d <= days){
           const date = new Date(y, m, d);
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'cal-day t-cm-figure-5';
           b.textContent = d;
           b.setAttribute('aria-label', d + ' ' + MONTHS[m] + ' ' + y);
           const isSel = selected && date.toDateString() === selected.toDateString();
@@ -463,15 +532,21 @@
             b.dataset.day = d;
             b.addEventListener('click', () => select(date));
           } else { b.tabIndex = -1; }
-        } else { b.tabIndex = -1; b.setAttribute('aria-hidden','true'); }
-        row.appendChild(b);
+          td.appendChild(b);
+        } else {
+          const e = document.createElement('span');
+          e.className = 'cal-day t-cm-figure-5 is-empty';
+          e.setAttribute('aria-hidden','true');
+          td.appendChild(e);
+        }
+        row.appendChild(td);
       }
       const t = MONTHS[m] + ' ' + y;
       if (live) title.textContent = t;
       return t;
     }
 
-    function render(){ focusDay = Math.min(focusDay, daysInMonth(view.getFullYear(), view.getMonth())); build(grid, view.getFullYear(), view.getMonth(), { live:true }); }
+    function render(){ focusDay = Math.min(focusDay, daysInMonth(view.getFullYear(), view.getMonth())); build(body, view.getFullYear(), view.getMonth(), { live:true }); }
 
     function open(){
       // seed the view from a valid typed value, else today
@@ -514,7 +589,7 @@
     // roving grid keyboard
     grid.addEventListener('keydown', e => {
       const cur = document.activeElement;
-      if (!cur.classList || !cur.classList.contains('dp-day')) return;
+      if (!cur.classList || !cur.classList.contains('cal-day')) return;
       const d = parseInt(cur.dataset.day, 10);
       const days = daysInMonth(view.getFullYear(), view.getMonth());
       const col = (firstCol(view.getFullYear(), view.getMonth()) + d - 1) % 7;
@@ -564,7 +639,7 @@
     (function(){
       const keep = { s: selected, f: focusDay };
       selected = new Date(2026, 6, 8); focusDay = 8;
-      build(document.getElementById('static-grid'), 2026, 6, { live:false });
+      build(document.getElementById('static-body'), 2026, 6, { live:false });
       selected = keep.s; focusDay = keep.f;
     })();
     render();

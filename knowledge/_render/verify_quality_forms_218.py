@@ -395,7 +395,7 @@ def run_arm(pw, snips, label):
     pg.eval_on_selector("#dp-open", "e=>e.click()"); pg.wait_for_timeout(350)
     r.check("control/datepicker-open-focuses-a-day",
             pg.evaluate("!!(document.activeElement.classList "
-                        "&& document.activeElement.classList.contains('dp-day'))"))
+                        "&& document.activeElement.classList.contains('cal-day'))"))
     # SYNTHETIC pointerdown moves no focus of its own — the reading is the component's
     pg.evaluate("()=>document.body.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}))")
     pg.wait_for_timeout(300)

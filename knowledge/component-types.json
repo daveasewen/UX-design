@@ -47,7 +47,7 @@
           "selector": ":is(.dg .sort, .dg .fchip .x, .dg .clearbtn, .dg .pbtn)"
         },
         "Date-picker": {
-          "selector": ".dp-nav"
+          "selector": ".cal-nav"
         },
         "Date-range-picker": {
           "selector": ".dr-nav"
@@ -702,6 +702,56 @@
           "render": "attr:aria-controls",
           "mandatory": false,
           "$description": "dv-lockup (#68) — the OPTIONAL header item: the 'View as table' disclosure. REBUILT #116 under s116-D2 (Dave: \"the table button and pop-over should be a molecule consumed by all of teh charts\"): the injected block is now a <summary class=\"dv-tbl-toggle\"> inside a hand-authored <details class=\"dv-tbl\"> that also wraps that figure's .dv-tablepanel. The disclosure is HTML+CSS and WORKS WITH JS OFF — the previous button + `hidden` + JS split left the table fallback unreachable without JS on every chart but the sparkline (MEASURED #116). canon/dv-behaviour.js now only clamps, moves focus and adds Escape, as progressive enhancement. aria-controls is still rewritten per-occurrence from the figure's data-lockup-table attribute; aria-expanded is GONE — a <summary>'s state is details[open], and a static value would lie with JS off. Sparkline does NOT declare this partial: it is the COMPACT variant of the same native mechanism (inline table, no floating panel, no toolbar chrome) and was the only chart that was already right."
+        }
+      }
+    },
+    "calendar": {
+      "$description": "THE CALENDAR PART, built once (s307-D49, Dave 2026-09-28, by click: 'Yes, the date picker uses the calendar'; row W-307qq). Calendar is the source: its PARTIAL calendar block (head, month and year nav, weekday heads, grid and day cell with every day state) is injected verbatim into each member between AUTO-PARTIAL calendar markers. The date picker's panel is the anchored overlay surface around that part, so there is no second calendar to drift. The .cal surface rule stays outside the block on purpose: the seat brings the surface (a card on Calendar's page, the overlay in the date picker). The nav's press physics stay with button-family (Date-picker is a member at .cal-nav; Calendar's own nav membership is still the conductor's open proposal from #210). Built #313 lane QQ.",
+      "$members": {
+        "Calendar": {
+          "role": "source"
+        },
+        "Date-picker": {
+          "selector": ".cal"
+        }
+      },
+      "$partials": {
+        "calendar": {
+          "source": "Calendar",
+          "rootSelector": ".cal",
+          "requires": {
+            "vars": [
+              "--page",
+              "--text",
+              "--text-disabled",
+              "--field-bg-hover",
+              "--border-active",
+              "--icon",
+              "--focus",
+              "--border-radius-control",
+              "--ease",
+              "--spring",
+              "--press",
+              "--alpha-60"
+            ],
+            "matchValues": [
+              "--ease",
+              "--spring",
+              "--press"
+            ],
+            "declarations": []
+          },
+          "$manifestBinds": {
+            "--page": "background/default",
+            "--text": "text/default",
+            "--text-disabled": "text/disabled",
+            "--field-bg-hover": "form/background/hover",
+            "--border-active": "form/border/active",
+            "--icon": "icon/default",
+            "--focus": "focus/ring",
+            "--border-radius-control": "border-radius/control"
+          },
+          "$description": "The calendar's head, nav, weekday heads, grid and day cell. requires.vars are every custom property the block reads; matchValues pins the motion composites to the source's values so the injected transitions move the same way in both files; $manifestBinds hold both files' token manifests to the same semantic roles for the vars the block paints with."
         }
       }
     },

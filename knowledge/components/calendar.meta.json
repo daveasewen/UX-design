@@ -49,16 +49,14 @@
       "click",
       "keydown"
     ],
-    "fallback": null,
+    "fallback": "With JS off the live month grid renders EMPTY — the days are script-rendered; next-month and the live region do nothing (measured by JS-off render, #245).",
     "$note": {
       "keyboard": "One tab stop (roving tabindex). Arrows move by day and week and page the view at a month edge; Home and End go to the week's edges; PageUp and PageDown change month, with Shift they change year; Enter and Space select. Identical to Date-picker's model, deliberately.",
       "select": "Sets aria-selected on the day and announces it through a polite live region. There is no field to write into and nothing to dismiss — that is the whole difference from Date-picker.",
       "outOfMonthDays": "Drawn and announced, NOT focusable and NOT selectable — they are spans, not buttons. Crossing a month edge with an arrow key pages the view instead. PROPOSED; receipt Q3.",
       "disabledDays": "Rendered as disabled buttons; the roving stop is kept off them."
     },
-    "$unproven": [
-      "fallback"
-    ],
+    "$unproven": [],
     "$fallbackRender": "UNPROVEN by JS-off render #245 (2026-09-03) — the live grid's <tbody id=cal-body> is EMPTY (innerHTML length 0) and #cal-title is a blank &nbsp; — the days are script-rendered, so the candidate 'server-authored buttons' is FALSE; next-month and the live region do nothing. 2/3 assertions held; failed: month grid renders: server-authored day buttons present. notes/_subreports/assets/2026-09-03-245-L2-populate/jsoff-render.json · jsoff-calendar-{before,after}.png"
   },
   "accessibility": {
@@ -95,7 +93,7 @@
     "source": "gap-report",
     "$note": "#210 wave 4, lane A, from the heavy-seven fan-out brief (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md). Premise re-probed in-lane: `ls knowledge/snippets/ | grep -icE '^Calendar\\.'` returned 0. Authority for the day-cell language and the keyboard model is the gated Date-picker snippet; the surface is the card idiom. No Figma node bound. PROPOSED, never promoted — no registration of any kind was taken by this lane."
   },
-  "$relationship-to-date-picker": "RULED s307-D49 (Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures'): one calendar built once; the date picker's panel is to consume this part (row W-307qq, NOT YET BUILT at #313: the date picker's spec tree was redone by #313 lane L4 the same night and its meta was fenced from lane B123, so the fold waits for its own lane). The text below is the #210 proposal it answers. PROPOSED, NOT ADJUDICATED (the brief fences this explicitly). Date-picker is a FIELD that owns a calendar: an Input-fields boxed input plus an anchored dismissable panel whose job is to write DD/MM/YYYY back. Calendar is the month grid on its own. The proposal is that Date-picker's panel should CONSUME this organism rather than keep a second copy of the grid; it does not today, and this lane did not edit Date-picker because it is gated and promoted. Whether they merge, whether Calendar is deleted, or whether both stand is DAVE'S — receipt Q1.",
+  "$relationship-to-date-picker": "RULED s307-D49 (Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures'): one calendar built once; the date picker's panel consumes this part. BUILT #313 lane QQ (row W-307qq): the snippet's PARTIAL calendar block (head, nav, weekday heads, grid, day cell with today, selected, empty, disabled, outside) is injected into Date-picker.reference.html by gen_component_partials.py, registry group \"calendar\" in knowledge/component-types.json; the date picker's markup is this part's markup, its panel the anchored overlay around it. Change the calendar here. The $consumes line below still names Date-picker as the source of the day-cell language: that was true at #210 and is history now (left, because the edge generator only adds). The text below is the #210 proposal it answers. PROPOSED, NOT ADJUDICATED (the brief fences this explicitly). Date-picker is a FIELD that owns a calendar: an Input-fields boxed input plus an anchored dismissable panel whose job is to write DD/MM/YYYY back. Calendar is the month grid on its own. The proposal is that Date-picker's panel should CONSUME this organism rather than keep a second copy of the grid; it does not today, and this lane did not edit Date-picker because it is gated and promoted. Whether they merge, whether Calendar is deleted, or whether both stand is DAVE'S — receipt Q1.",
   "$partials": ".cal-nav (month and year paging) = button-family membership CANDIDATES: empty AUTO-PARTIAL press-physics markers plus --phys-size:44 are declared in the snippet. $members registration in component-types.json is the conductor's and is PROPOSED via the #210 lane-A receipt, never taken here.",
   "edges": {
     "renderedBy": [

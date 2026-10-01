@@ -20,6 +20,10 @@
   PROPOSED, for Dave to rule: Date-picker's panel should CONSUME this organism rather than
   keep its own copy of the grid. It does not today, and this lane did not edit Date-picker —
   it is gated and promoted. See $decisionsForDave Q1.
+  ★ RULED s307-D49 (Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar') and
+  BUILT #313 lane QQ: the PARTIAL calendar block below is injected into Date-picker by
+  gen_component_partials.py (component-types.json group "calendar"). The calendar is built
+  once, here; the date picker's panel is the overlay surface around it.
 
   ── BORROWED, NOT INVENTED (survey before build) ──────────────────────────────────────
    - Day-cell state language is Date-picker's, verbatim: today = a 2px inset ring on
@@ -172,6 +176,13 @@
   /* ---------- THE COMPONENT ---------- */
   .cal{background:var(--page); color:var(--text); border:1px solid var(--rule);
     border-radius:var(--border-radius-surface); padding:16px;}
+  /* ===== PARTIAL calendar START (group calendar) ===== */
+  /* THE CALENDAR PART, built once (s307-D49, Dave 2026-09-28: 'Yes, the date picker uses the
+     calendar'). Everything from here to the END marker is injected verbatim into
+     Date-picker.reference.html by gen_component_partials.py (registry: component-types.json
+     group "calendar"). Change the calendar HERE and regenerate; never in the date picker.
+     The .cal surface above stays outside: the seat brings its surface (a card here, the
+     anchored overlay in the date picker). #313 lane QQ. */
   .cal-head{display:flex; align-items:center; gap:0; margin:0 0 8px;}
   .cal-title{flex:1; min-width:0; text-align:center; color:var(--text);}
   .cal-nav{width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center;
@@ -182,12 +193,6 @@
   .cal-nav:hover{background:var(--field-bg-hover);}
   .cal-nav:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .cal-nav svg{width:18px; height:18px; display:block;}
-  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
-  /* INJECTED-SHAPE placeholder, EMPTY BY DESIGN (ADR-0013). .cal-nav is a button-family
-     membership CANDIDATE: the markers and --phys-size:44 are in place so
-     gen_component_partials.py can fill them once the conductor registers $members in
-     knowledge/component-types.json. DO NOT hand-write physics between these markers. */
-  /* ===== AUTO-PARTIAL press-physics END ===== */
 
   .cal-grid{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:4px;}
   .cal-grid th{padding:0; height:24px;}
@@ -195,7 +200,8 @@
   .cal-wk{display:flex; align-items:center; justify-content:center; height:24px;
     color:var(--text); opacity:var(--alpha-60);}
 
-  /* the day cell — Date-picker's state language, lock-step */
+  /* the day cell — one cell for both seats (the state language began in Date-picker; since
+     #313 the date picker takes this block, so there is no second copy to keep in step) */
   .cal-day{width:100%; min-height:40px; display:flex; align-items:center; justify-content:center;
     padding:0; border:0; background:transparent; color:var(--text);
     border-radius:var(--border-radius-control); position:relative;
@@ -209,8 +215,8 @@
      The hover rule above is `button.cal-day:hover:not(:disabled)` = (0,3,1) and OUT-SPECIFIES the
      knockout at (0,2,0), so hovering a SELECTED day repainted the fill --field-bg-hover while the
      text stayed --page: 1.14:1 light / 1.11:1 dark, hover AND pressed, on both selected days —
-     8 of the gate's 8 TEXT failures. Date-picker does not carry it because .dp-day:hover is
-     (0,2,0) and its knockout rule comes LATER; Calendar's does not. Restated here at (0,3,1),
+     8 of the gate's 8 TEXT failures. (The date picker's old .dp-day grid did not need it: its
+     hover was (0,2,0) and its knockout came later. It takes this block now.) Restated at (0,3,1),
      same two tokens as the knockout itself — no new colour, no new constant. */
   button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
   /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule.
@@ -222,6 +228,17 @@
   .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
   /* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
   .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}
+  /* EMPTY: a seat that hides the neighbouring months marks the pad cell is-empty (the date
+     picker's popover: a transient act of picking, #210 head note 1). The month view draws
+     them instead (is-outside above). */
+  .cal-day.is-empty{visibility:hidden; pointer-events:none;}
+  /* ===== PARTIAL calendar END ===== */
+  /* ===== AUTO-PARTIAL press-physics START (button-family) ===== */
+  /* INJECTED-SHAPE placeholder, EMPTY BY DESIGN (ADR-0013). .cal-nav is a button-family
+     membership CANDIDATE: the markers and --phys-size:44 are in place so
+     gen_component_partials.py can fill them once the conductor registers $members in
+     knowledge/component-types.json. DO NOT hand-write physics between these markers. */
+  /* ===== AUTO-PARTIAL press-physics END ===== */
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
@@ -459,7 +476,7 @@
       "click",
       "keydown"
     ],
-    "fallback": null
+    "fallback": "With JS off the live month grid renders EMPTY — the days are script-rendered; next-month and the live region do nothing (measured by JS-off render, #245)."
   }
   </script>
 
