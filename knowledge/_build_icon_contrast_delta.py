@@ -19,7 +19,7 @@ today's gate but would fail the brand rule:
      this icon can ever sit on this surface", not "defect".
   3. RAG ROUNDEL POLICY (ruled by Dave 2026-07-02 eve): roundel vs surface ≥3:1
      (indicator class) · internal mark vs roundel fill ≥4.5:1 (small-text
-     analogue) · dark mode = WHITE roundel + BLACK mark (icon + label carry the
+     analogue) · dark mode = INK roundel (icon/default, s313-D35; was WHITE) + BLACK mark (icon + label carry the
      meaning). §3 judges rag-on-surface pairs at the ROUNDEL threshold (3:1);
      §4 audits mark-vs-roundel per policy. Mark colours aren't tokenised yet
      (tint-knockout / #333 / white are snippet-level) so §4 models the three
@@ -144,7 +144,7 @@ classify = [(f, fg, bg, mode, ratio, bucket_roundel(ratio, fg))
             for (f, fg, bg, mode, ratio, _b) in classify]
 
 # exhaustive policy-audit rows — declared pairs missed the amber roundel entirely
-# (state-contrast lesson yet again). Light only: dark roundels are WHITE by policy.
+# (state-contrast lesson yet again). Light only: dark roundels take the ink (s313-D35).
 for fam in ("success", "error", "warning", "information", "neutral"):
     fg = f"rag/{fam}"
     for bg in ("background/default", f"rag/{fam}-tint"):
@@ -157,7 +157,7 @@ for fam in ("success", "error", "warning", "information", "neutral"):
             classify.append(row)
 
 # §4 — mark vs roundel fill, per policy, for each rag family × mark treatment.
-# Dark mode is WHITE roundel + BLACK mark by policy (21:1) — light mode is the audit.
+# Dark mode is INK roundel + BLACK mark (s313-D35; was WHITE, 21:1, by the 07-02 policy) — light mode is the audit.
 # ACTIVE = the mark treatment each family actually uses in canon (● in the table).
 # success moved tint-knockout → white per the policy fix (Dave GO, 2026-07-02 eve).
 ACTIVE_MARK = {"success": "white mark", "error": "tint-knockout",
@@ -175,7 +175,12 @@ for fam in ("success", "error", "warning", "information"):
         verdict = "pass-4.5" if ratio >= BRAND else "FAIL-mark<4.5"
         active = ACTIVE_MARK.get(fam) == label
         marks.append((f"rag/{fam} roundel", ("● " if active else "") + label, "light", ratio, verdict, active))
-marks.append(("WHITE roundel (policy dark)", "● BLACK mark", "dark", 21.0, "pass-4.5", True))
+# s313-D35 (Dave 2026-10-01, pictures page call 16, "Follow the ink"): in dark the roundel shape
+# takes the ink (icon/default), no longer pure white; the mark stays black.
+_ink = value("icon/default", "dark") or "#FFFFFF"
+_ink_r = round(contrast_ratio(_ink, "#000000"), 2)
+marks.append((f"INK roundel {_ink} (dark, s313-D35)", "● BLACK mark", "dark", _ink_r,
+              "pass-4.5" if _ink_r >= BRAND else "FAIL-mark<4.5", True))
 
 dz_decl = [r for r in declared if r[5] == "DEAD-ZONE"]
 dz_exh = [r for r in exhaustive if r[4] == "DEAD-ZONE"]

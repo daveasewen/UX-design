@@ -2,22 +2,19 @@
  "$what": "COMPOSITION SPEC for knowledge/gen_provenance_receipt.py --compose. Every region below is a byte-identical cut from the named snippet; nothing here authors markup. Regenerate with:  python3 knowledge/gen_provenance_receipt.py --compose dashboards/international-banking-dashboard.regen-v2-receipt.spec.json -o dashboards/international-banking-dashboard.regen-v2-receipt.html",
  "$scope": "⚠ NOT a replacement for international-banking-dashboard.regen-v1.html. That page is the #227 full regen (11 components, hand-composed by the generate-from-canon skill, no receipt). This is the RECEIPT-BEARING cut of the same dashboard's core parts, built to DRIVE _validate_receipt.py on a real generated artefact (s234-D6 lane L1, W-344). The component list is a subset of regen-v1's own USED ledger.",
  "$scriptField": "Left to the generator. It reads AUTO-BEHAVIOUR names out of the snippet and resolves them in component-types.json $behaviour. meta `behaviour` prose is NOT read as an address — typing it is s234-D5 (L2).",
+ "$313": "#313 lane B7 (W-309g4): the five kind=style regions are dropped (the generator refuses them since s307-D74, link don't paste; their markers sat inside <style> as HTML comments and each swallowed the rule after it); the chart's dv-render and dv-render-line behaviours and the snippet's engine call (`#chart-line-call`, the data and one dvRender call per figure) are spliced (the gate read BEHAVIOUR-NOT-LOADED and the empty svg sized by its viewBox); Metric's #metric-up symbol is spliced so the up arrow draws. The one-tile stat group is Dave's question and is not touched.",
  "title": "Global treasury overview — receipt-bearing regen (v2)",
  "pack": "1.0.5",
  "theme": "light",
  "regions": [
-  {"snippet": "Page-header-lockup", "kind": "style"},
-  {"snippet": "Metric", "kind": "style"},
-  {"snippet": "Chart-line", "kind": "style"},
-  {"snippet": "List-items", "kind": "style"},
-  {"snippet": "Pagination", "kind": "style"},
-
   {"snippet": "Page-header-lockup", "select": ".ph", "kind": "markup",
    "region": "Page-header-lockup#markup",
    "variant": "arrangement A", "props": {"eyebrow": true, "actions": true}},
   {"snippet": "Metric", "select": ".compact", "kind": "markup",
    "region": "Metric#markup",
    "variant": "compact (the DP-06 four-tile row, s246-D5)", "props": {"delta": "up", "trend": false}},
+  {"snippet": "Metric", "select": "#metric-up", "kind": "markup",
+   "region": "Metric#symbol-up", "variant": "sprite symbol the compact tile's up arrow uses", "props": {}},
   {"snippet": "Chart-line", "select": ".dv", "kind": "markup",
    "region": "Chart-line#markup",
    "variant": "line", "props": {"animate": true, "legend": true}},
@@ -30,6 +27,12 @@
   {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-behaviour",
    "region": "Chart-line#behaviour"},
   {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-legend",
-   "region": "Chart-line#legend-behaviour"}
+   "region": "Chart-line#legend-behaviour"},
+  {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-render",
+   "region": "Chart-line#render-behaviour"},
+  {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-render-line",
+   "region": "Chart-line#render-line-behaviour"},
+  {"snippet": "Chart-line", "select": "#chart-line-call", "kind": "markup",
+   "region": "Chart-line#call", "variant": "the engine call with the chart's data, the shape a generated page copies (the snippet's own note)", "props": {}}
  ]
 }

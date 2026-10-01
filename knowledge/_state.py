@@ -672,7 +672,9 @@ def check(doc=None, path=STORE):
 
 def add(doc, **fields):
     """Add an item. REFUSES without a close condition — the refusal is the feature."""
-    it = {"links": [], "home": "", **fields}
+    it = dict(fields)                 # the caller's key order (id first), as a hand-built row reads
+    it.setdefault("links", [])
+    it.setdefault("home", "")
     it.setdefault("condition", CONDITIONED if it.get("closes_when") else UNCONDITIONED)
     doc["items"].append(it)
     ok, fails, _ = check(doc)
@@ -1187,8 +1189,48 @@ def selftest():
     return fails, n_bites[0] + 4 + _hn
 
 
+def cli_add(argv):
+    """`python3 knowledge/_state.py add --json ROWS.json [--dry-run] [--store PATH]`
+
+    Adds one row (a JSON object) or several (a JSON list) through `add()`, so every row meets the
+    same gate a hand-built one would: no row without a close condition, no reused id, a document
+    row closed at birth (s305-D40). All rows or none: the first refusal stops the run and nothing
+    is written. `save()` keeps the file byte-exact for the rows it did not touch.
+    #313 B7 — rows were hand-inserted into _state.json twice (#310 lanes A and B, found, not fixed);
+    `-` reads the rows from stdin."""
+    import argparse
+    ap = argparse.ArgumentParser(prog="python3 knowledge/_state.py add")
+    ap.add_argument("--json", required=True, help="a file holding one row object or a list of rows; - for stdin")
+    ap.add_argument("--dry-run", action="store_true", help="gate the rows, write nothing")
+    ap.add_argument("--store", default=STORE)
+    a = ap.parse_args(argv)
+    raw = sys.stdin.read() if a.json == "-" else open(a.json, encoding="utf-8").read()
+    rows = json.loads(raw)
+    rows = rows if isinstance(rows, list) else [rows]
+    doc = load(a.store)
+    added = []
+    for r in rows:
+        if not isinstance(r, dict) or not r.get("id"):
+            print(f"⛔ REFUSED: a row with no id: {json.dumps(r, ensure_ascii=False)[:120]}")
+            return 1
+        try:
+            add(doc, **r)
+        except StateError as e:
+            print(f"⛔ {e}\n   nothing written ({len(added)} row(s) before it were gated and dropped)")
+            return 1
+        added.append(r["id"])
+    if a.dry_run:
+        print(f"dry run: {len(added)} row(s) pass the gate, nothing written: {', '.join(added)}")
+        return 0
+    save(doc, a.store)
+    print(f"added {len(added)} row(s) to {os.path.relpath(a.store)}: {', '.join(added)}")
+    return 0
+
+
 if __name__ == "__main__":
     import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "add":
+        sys.exit(cli_add(sys.argv[2:]))
     if "--selftest" in sys.argv:
         fs, n = selftest()
         print("\n".join(fs) if fs else f"_state selftest: {n} bites, all GREEN")

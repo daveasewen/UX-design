@@ -469,9 +469,16 @@ def drive(pages, verbose=True):
 
     out_pages = {}
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True, channel="chromium",
+        # #313 B7: the seat's shell first. `knowledge/_render/seat_env.sh` exports RENDER_SHELL
+        # (the aarch64 headless shell with the real fonts); `channel="chromium"` cannot find a
+        # browser there, which is why #310/#311 drove this through outputs/310/A/drive_wrap.py.
+        # Without RENDER_SHELL (CI, a cloud clone) the old channel launch stands unchanged.
+        shell = os.environ.get("RENDER_SHELL")
+        launch = ({"executable_path": shell} if shell and os.path.exists(shell)
+                  else {"channel": "chromium"})
+        browser = pw.chromium.launch(headless=True,
                                      args=["--no-sandbox", "--disable-gpu",
-                                           "--force-device-scale-factor=1"])
+                                           "--force-device-scale-factor=1"], **launch)
         version = browser.version
         for page_path in pages:
             name = os.path.basename(page_path)

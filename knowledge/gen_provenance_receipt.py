@@ -251,7 +251,7 @@ PAGE_TMPL = """<!DOCTYPE html>
 
 def compose(spec_path, out_path):
     spec = json.load(open(spec_path, encoding="utf-8"))
-    markup, behaviours = [], []
+    markup, behaviours, calls = [], [], []
     vars_union = {}
     for i, r in enumerate(spec["regions"], 1):
         name = r["snippet"]
@@ -272,7 +272,22 @@ def compose(spec_path, out_path):
         region = r.get("region") or "%s#%d" % (name, i)
         block = "%s\n%s\n%s" % (VR.splice_marker_start(region, src_rel, kind), text,
                                 VR.splice_marker_end(region))
-        if kind == "markup":                 # the part's scope, OUTSIDE the hashed bytes
+        if kind == "markup" and text.lstrip().startswith("<symbol"):
+            # A sprite SYMBOL the cut markup references (`select: "#metric-up"`): a <symbol> only
+            # resolves inside an <svg>, so it is wrapped in a zero-size one, OUTSIDE the hashed
+            # bytes like the scope div below. #313 B7: the receipt page's arrow was blank because
+            # Metric's markup used #metric-up and nothing defined it (W-309g4).
+            block = ('<svg width="0" height="0" style="position:absolute" aria-hidden="true">\n%s\n</svg>'
+                     % block)
+        elif kind == "markup" and text.lstrip().startswith("<script"):
+            # A part's own CALL script (`select: "#chart-line-call"`: the data and one dvRender
+            # call per figure, the shape the snippet says a generated page copies). It calls the
+            # engine, so it goes AFTER every behaviour block whatever its place in the spec, and
+            # needs no scope div. #313 B7 (W-309g4): with the engine spliced and no call, the
+            # canvas stayed empty.
+            calls.append(block)
+            continue
+        elif kind == "markup":               # the part's scope, OUTSIDE the hashed bytes
             block = '<div class="cn-%s">\n%s\n</div>' % (
                 re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-"), block)
         (behaviours if kind == "behaviour" else markup).append(block)
@@ -284,7 +299,7 @@ def compose(spec_path, out_path):
         "spec": os.path.relpath(spec_path, REPO),
         "manifest": json.dumps({"vars": vars_union}, indent=1),
         "markup": "\n".join(markup),
-        "behaviours": "\n".join(behaviours),
+        "behaviours": "\n".join(behaviours + calls),
         "theme": spec.get("theme", "light"),
     }
     page = mint(page, spec, out_path)
@@ -493,6 +508,29 @@ def selftest():
     g = g1 and g2
     ok &= g; print(("  ✅ " if g else "  ❌ ") + "G  kind=style REFUSED (%s); minted page links canon.css "
                    "and the compose gate agrees (%s)" % (g1, "; ".join(cfails) or "no compose fails"))
+
+    # H — #313 B7 (W-309g4): a <symbol> region lands inside a zero-size <svg> (so `use` resolves),
+    #     a part's call <script> lands AFTER the behaviour blocks it calls, and the gate passes.
+    spec4 = {"title": "selftest-sprite-call", "pack": "selftest", "regions": [
+        {"snippet": "Metric", "select": "#metric-up", "kind": "markup", "region": "Metric#up"},
+        {"snippet": "Chart-line", "select": ".dv", "kind": "markup", "region": "Chart-line#m"},
+        {"snippet": "Chart-line", "select": "#chart-line-call", "kind": "markup", "region": "Chart-line#call"},
+        {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-behaviour", "region": "Chart-line#b"},
+        {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-legend", "region": "Chart-line#l"},
+        {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-render", "region": "Chart-line#r"},
+        {"snippet": "Chart-line", "kind": "behaviour", "behaviour": "dv-render-line", "region": "Chart-line#rl"}]}
+    sp4 = os.path.join(d, "spec4.json"); json.dump(spec4, open(sp4, "w"))
+    out4 = os.path.join(d, "sprite.html")
+    try:
+        p4 = compose(sp4, out4)
+        sym_in_svg = re.search(r'<svg width="0" height="0"[^>]*>\s*<!-- ===== APOLLO-SPLICE Metric#up START', p4) is not None
+        call_after = p4.find("APOLLO-SPLICE Chart-line#call START") > p4.find("APOLLO-SPLICE Chart-line#rl END") > 0
+        _l4, f4, _u4 = VR.check(out4)
+        h = sym_in_svg and call_after and not f4
+        detail = "symbol in svg %s · call after engine %s · gate %s" % (sym_in_svg, call_after, ",".join(f4) or "PASS")
+    except SystemExit as e:
+        h, detail = False, "compose refused: %s" % e
+    ok &= h; print(("  ✅ " if h else "  ❌ ") + "H  sprite symbol wrapped, call script after the behaviours -> " + detail)
 
     print("SELFTEST: " + ("PASS ✅" if ok else "FAIL ❌"))
     return 0 if ok else 1
