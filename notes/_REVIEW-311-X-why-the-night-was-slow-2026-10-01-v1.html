@@ -1,0 +1,2678 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Why the night was slow</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.record{font-size:12px;color:var(--g6);line-height:1.5;margin:var(--s2) 0 0}
+.chart{margin:var(--s3) 0 var(--s2);padding:var(--s2);border:1px solid var(--g3);background:var(--card)}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35;max-width:30em}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s1)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s3)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+.rules{margin:var(--s3) 0 0;padding:0;list-style:none;counter-reset:r}
+.rules li{display:grid;grid-template-columns:40px 1fr;gap:var(--s2);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:16px;line-height:1.6}
+.rules li:last-child{border-bottom:1px solid var(--g3)}
+.rules li::before{counter-increment:r;content:counter(r,decimal-leading-zero);font-size:12px;letter-spacing:.1em;color:var(--accent);padding-top:4px}
+.rules li small{display:block;font-size:13px;color:var(--g7);margin-top:4px;line-height:1.55}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab tr.rec td{background:var(--g1)}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#happened">What happened</a>
+  <a href="#cut">The cut calls</a>
+  <a href="#lock">The lock</a>
+  <a href="#else">What else the night taught</a>
+  <a href="#note">Anything else</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 311 · review page · Why the night was slow</p>
+      <h1>Your Mac runs one command at a time. Twelve lanes queued for it, and the queue ate their clock.</h1>
+      <p class="sub">Both faults are proven and measured. The cut calls were not cut short; they waited in a single-file queue for the seat and were given the minutes left on a 180-second clock that started when they joined it. The lock is older than last night: the mounted folder refuses every delete, so git cannot remove a lock it took and did not use, and it has left 948 of them behind since session 263.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>Your words at 08:04: "we need to understand what went wrong this will be a constant issue otherwise".</span>
+      <span>Measured from the 2,182 seat calls in the overnight transcripts, the lane reports, a seat test at 07:09 and a lock test in a throwaway repo. Nothing in the product was changed.</span>
+    </div>
+  </div>
+</header>
+
+<section id="happened">
+  <div class="wrap">
+    <p class="label">01 · What happened · the timeline</p>
+    <h2>From 21:08 UTC the seat had twelve lanes asking for it at once. Every call then spent about two minutes queueing and one call in eight was cut.</h2>
+    <p class="lead">Until 21:00 one or two lanes ran at a time and a typical call returned in under a second. Then the overnight wave started twelve lanes together. The median call went from 0.7 s to 120 s of wall time. 143 calls were cut with between 1 and 152 seconds of run time, 38 never ran at all, and the commit script, which needs 81 to 165 uninterrupted seconds, landed 23 of 147 attempts. Lane H1 held the commit lock for three hours over nineteen tries. The last cuts came at 03:27, when only two lanes were left and both were rendering.</p>
+    <div class="chart"><svg viewBox="0 0 1100 420" width="100%" role="img" aria-label="Every device_bash call overnight: wall time in seconds against the clock, with lanes in flight as a grey band" style="font-family:inherit;font-size:11px;display:block;max-width:100%">
+<style>.ax{stroke:var(--g3);stroke-width:1}.tk{fill:var(--g6)}.ok{fill:var(--g5);fill-opacity:.55}.cut{fill:var(--accent)}.wait{stroke:var(--fg);stroke-width:1.4;fill:none}.drain{stroke:var(--g6);stroke-width:1.2;fill:none}.band{fill:var(--g2)}.lbl{fill:var(--g7)}</style>
+<rect class="band" x="85.9" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="100.9" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="115.9" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="130.8" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="145.8" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="160.8" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="190.7" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="205.7" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="220.7" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="235.6" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="250.6" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="265.6" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="280.5" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="295.5" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="310.5" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="325.5" y="-6.5" width="15.0" height="382.5"/>
+<rect class="band" x="340.4" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="355.4" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="370.4" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="385.3" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="400.3" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="415.3" y="95.5" width="15.0" height="280.5"/>
+<rect class="band" x="430.2" y="-134.0" width="15.0" height="510.0"/>
+<rect class="band" x="445.2" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="460.2" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="475.2" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="490.1" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="505.1" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="520.1" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="535.0" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="550.0" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="565.0" y="121.0" width="15.0" height="255.0"/>
+<rect class="band" x="579.9" y="146.5" width="15.0" height="229.5"/>
+<rect class="band" x="594.9" y="146.5" width="15.0" height="229.5"/>
+<rect class="band" x="609.9" y="146.5" width="15.0" height="229.5"/>
+<rect class="band" x="624.8" y="146.5" width="15.0" height="229.5"/>
+<rect class="band" x="639.8" y="146.5" width="15.0" height="229.5"/>
+<rect class="band" x="654.8" y="172.0" width="15.0" height="204.0"/>
+<rect class="band" x="669.8" y="172.0" width="15.0" height="204.0"/>
+<rect class="band" x="684.7" y="172.0" width="15.0" height="204.0"/>
+<rect class="band" x="699.7" y="197.5" width="15.0" height="178.5"/>
+<rect class="band" x="714.7" y="223.0" width="15.0" height="153.0"/>
+<rect class="band" x="729.6" y="223.0" width="15.0" height="153.0"/>
+<rect class="band" x="744.6" y="223.0" width="15.0" height="153.0"/>
+<rect class="band" x="759.6" y="248.5" width="15.0" height="127.5"/>
+<rect class="band" x="774.5" y="274.0" width="15.0" height="102.0"/>
+<rect class="band" x="789.5" y="274.0" width="15.0" height="102.0"/>
+<rect class="band" x="804.5" y="274.0" width="15.0" height="102.0"/>
+<rect class="band" x="819.5" y="299.5" width="15.0" height="76.5"/>
+<rect class="band" x="834.4" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="849.4" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="864.4" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="879.3" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="894.3" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="909.3" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="924.2" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="939.2" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="954.2" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="969.2" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="984.1" y="325.0" width="15.0" height="51.0"/>
+<rect class="band" x="999.1" y="350.5" width="15.0" height="25.5"/>
+<rect class="band" x="1014.1" y="350.5" width="15.0" height="25.5"/>
+<line class="ax" x1="56" y1="376" x2="1044" y2="376"/>
+<line class="ax" x1="56" y1="376.0" x2="1044" y2="376.0" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="380.0" text-anchor="end">0</text>
+<line class="ax" x1="56" y1="284.2" x2="1044" y2="284.2" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="288.2" text-anchor="end">60</text>
+<line class="ax" x1="56" y1="192.4" x2="1044" y2="192.4" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="196.4" text-anchor="end">120</text>
+<line class="ax" x1="56" y1="100.6" x2="1044" y2="100.6" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="104.6" text-anchor="end">180 s</text>
+<text class="tk" x="1052" y="278.0">4</text>
+<text class="tk" x="1052" y="176.0">8</text>
+<text class="tk" x="1052" y="74.0">12</text>
+<text class="tk" x="56.0" y="392" text-anchor="middle">18:00</text>
+<text class="tk" x="145.8" y="392" text-anchor="middle">19:00</text>
+<text class="tk" x="235.6" y="392" text-anchor="middle">20:00</text>
+<text class="tk" x="325.5" y="392" text-anchor="middle">21:00</text>
+<text class="tk" x="415.3" y="392" text-anchor="middle">22:00</text>
+<text class="tk" x="505.1" y="392" text-anchor="middle">23:00</text>
+<text class="tk" x="594.9" y="392" text-anchor="middle">00:00</text>
+<text class="tk" x="684.7" y="392" text-anchor="middle">01:00</text>
+<text class="tk" x="774.5" y="392" text-anchor="middle">02:00</text>
+<text class="tk" x="864.4" y="392" text-anchor="middle">03:00</text>
+<text class="tk" x="954.2" y="392" text-anchor="middle">04:00</text>
+<text class="tk" x="1044.0" y="392" text-anchor="middle">05:00</text>
+<text class="lbl" x="56" y="26" font-size="13" fill="var(--fg)">Every device_bash call, 30 Sep 18:00 → 1 Oct 05:00 UTC (add one hour for BST)</text>
+<text class="lbl" x="56" y="44">Left axis: wall time of the call in seconds (capped at 200). Grey band and right axis: lanes calling the seat in that ten minutes.</text>
+<text class="lbl" x="56" y="60">Grey dot: ran. Red dot: cut by the 180 s wall. Black ring: never ran, timed out in the queue. Grey ring: cloud endpoint draining.</text>
+<circle class="ok" cx="91.2" cy="374.2" r="2"/>
+<circle class="ok" cx="91.3" cy="375.1" r="2"/>
+<circle class="ok" cx="91.3" cy="375.1" r="2"/>
+<circle class="ok" cx="91.5" cy="373.1" r="2"/>
+<circle class="ok" cx="91.7" cy="375.1" r="2"/>
+<circle class="ok" cx="91.7" cy="375.2" r="2"/>
+<circle class="ok" cx="92.9" cy="375.1" r="2"/>
+<circle class="ok" cx="93.2" cy="375.1" r="2"/>
+<circle class="ok" cx="93.3" cy="374.9" r="2"/>
+<circle class="ok" cx="93.4" cy="375.2" r="2"/>
+<circle class="ok" cx="93.4" cy="374.9" r="2"/>
+<circle class="ok" cx="93.5" cy="374.9" r="2"/>
+<circle class="ok" cx="93.6" cy="374.9" r="2"/>
+<circle class="ok" cx="93.7" cy="375.1" r="2"/>
+<circle class="ok" cx="94.0" cy="375.1" r="2"/>
+<circle class="ok" cx="94.2" cy="375.2" r="2"/>
+<circle class="ok" cx="94.3" cy="374.2" r="2"/>
+<circle class="ok" cx="94.5" cy="374.9" r="2"/>
+<circle class="ok" cx="94.6" cy="375.1" r="2"/>
+<circle class="ok" cx="94.9" cy="372.5" r="2"/>
+<circle class="ok" cx="95.0" cy="375.1" r="2"/>
+<circle class="ok" cx="95.1" cy="375.2" r="2"/>
+<circle class="ok" cx="95.2" cy="375.1" r="2"/>
+<circle class="ok" cx="95.4" cy="375.1" r="2"/>
+<circle class="ok" cx="95.6" cy="375.1" r="2"/>
+<circle class="ok" cx="95.8" cy="375.1" r="2"/>
+<circle class="ok" cx="95.9" cy="374.9" r="2"/>
+<circle class="ok" cx="96.2" cy="366.7" r="2"/>
+<circle class="ok" cx="96.5" cy="374.8" r="2"/>
+<circle class="ok" cx="96.9" cy="344.0" r="2"/>
+<circle class="ok" cx="97.7" cy="374.8" r="2"/>
+<circle class="ok" cx="97.8" cy="375.1" r="2"/>
+<circle class="ok" cx="97.8" cy="375.1" r="2"/>
+<circle class="ok" cx="97.9" cy="375.1" r="2"/>
+<circle class="ok" cx="98.0" cy="353.4" r="2"/>
+<circle class="ok" cx="98.5" cy="373.7" r="2"/>
+<circle class="ok" cx="98.6" cy="375.1" r="2"/>
+<circle class="ok" cx="98.8" cy="374.8" r="2"/>
+<circle class="ok" cx="98.8" cy="371.9" r="2"/>
+<circle class="ok" cx="99.0" cy="374.9" r="2"/>
+<circle class="ok" cx="99.1" cy="358.3" r="2"/>
+<circle class="ok" cx="99.5" cy="365.1" r="2"/>
+<circle class="ok" cx="99.9" cy="363.5" r="2"/>
+<circle class="ok" cx="100.2" cy="375.1" r="2"/>
+<circle class="ok" cx="100.5" cy="374.9" r="2"/>
+<circle class="ok" cx="100.6" cy="375.2" r="2"/>
+<circle class="ok" cx="100.8" cy="370.2" r="2"/>
+<circle class="ok" cx="101.0" cy="366.1" r="2"/>
+<circle class="ok" cx="101.5" cy="182.8" r="2"/>
+<circle class="ok" cx="104.8" cy="373.1" r="2"/>
+<circle class="ok" cx="105.4" cy="374.9" r="2"/>
+<circle class="ok" cx="105.5" cy="375.1" r="2"/>
+<circle class="ok" cx="106.0" cy="375.1" r="2"/>
+<circle class="ok" cx="106.1" cy="374.8" r="2"/>
+<circle class="ok" cx="106.2" cy="374.8" r="2"/>
+<circle class="ok" cx="106.8" cy="375.2" r="2"/>
+<circle class="ok" cx="107.9" cy="352.9" r="2"/>
+<circle class="ok" cx="108.4" cy="351.7" r="2"/>
+<circle class="ok" cx="109.1" cy="345.1" r="2"/>
+<circle class="ok" cx="109.8" cy="374.8" r="2"/>
+<circle class="ok" cx="110.5" cy="357.8" r="2"/>
+<circle class="ok" cx="111.2" cy="375.1" r="2"/>
+<circle class="ok" cx="111.4" cy="375.1" r="2"/>
+<circle class="ok" cx="113.2" cy="374.9" r="2"/>
+<circle class="ok" cx="113.3" cy="375.1" r="2"/>
+<circle class="ok" cx="113.5" cy="358.1" r="2"/>
+<circle class="ok" cx="114.1" cy="358.3" r="2"/>
+<circle class="ok" cx="114.7" cy="243.5" r="2"/>
+<circle class="ok" cx="116.9" cy="374.9" r="2"/>
+<circle class="ok" cx="117.0" cy="104.0" r="2"/>
+<circle class="ok" cx="121.5" cy="374.6" r="2"/>
+<circle class="ok" cx="121.6" cy="375.2" r="2"/>
+<circle class="ok" cx="121.7" cy="374.9" r="2"/>
+<circle class="ok" cx="121.9" cy="111.3" r="2"/>
+<circle class="ok" cx="126.2" cy="374.9" r="2"/>
+<circle class="ok" cx="126.3" cy="195.0" r="2"/>
+<circle class="ok" cx="129.4" cy="372.8" r="2"/>
+<circle class="ok" cx="129.5" cy="374.9" r="2"/>
+<circle class="ok" cx="129.7" cy="246.6" r="2"/>
+<circle class="ok" cx="131.8" cy="346.9" r="2"/>
+<circle class="ok" cx="132.4" cy="232.8" r="2"/>
+<circle class="ok" cx="134.8" cy="259.6" r="2"/>
+<circle class="ok" cx="136.8" cy="375.1" r="2"/>
+<circle class="ok" cx="137.0" cy="375.1" r="2"/>
+<circle class="ok" cx="137.4" cy="375.1" r="2"/>
+<circle class="ok" cx="137.8" cy="375.1" r="2"/>
+<circle class="ok" cx="138.2" cy="374.9" r="2"/>
+<circle class="ok" cx="138.5" cy="323.8" r="2"/>
+<circle class="ok" cx="139.4" cy="372.3" r="2"/>
+<circle class="ok" cx="139.6" cy="106.9" r="2"/>
+<circle class="ok" cx="144.2" cy="357.9" r="2"/>
+<circle class="ok" cx="144.7" cy="242.6" r="2"/>
+<circle class="ok" cx="147.0" cy="204.3" r="2"/>
+<circle class="ok" cx="149.9" cy="257.7" r="2"/>
+<circle class="cut" cx="151.9" cy="102.6" r="2.6"/>
+<circle class="ok" cx="156.4" cy="375.1" r="2"/>
+<circle class="ok" cx="156.6" cy="300.0" r="2"/>
+<circle class="ok" cx="157.9" cy="374.9" r="2"/>
+<circle class="ok" cx="158.1" cy="122.3" r="2"/>
+<circle class="ok" cx="162.3" cy="253.1" r="2"/>
+<circle class="ok" cx="164.4" cy="374.9" r="2"/>
+<circle class="ok" cx="164.5" cy="329.8" r="2"/>
+<circle class="ok" cx="165.5" cy="375.1" r="2"/>
+<circle class="ok" cx="166.3" cy="221.2" r="2"/>
+<circle class="ok" cx="168.9" cy="374.9" r="2"/>
+<circle class="ok" cx="169.0" cy="375.1" r="2"/>
+<circle class="ok" cx="169.1" cy="374.9" r="2"/>
+<circle class="ok" cx="169.2" cy="371.4" r="2"/>
+<circle class="ok" cx="169.5" cy="364.7" r="2"/>
+<circle class="ok" cx="169.7" cy="375.1" r="2"/>
+<circle class="ok" cx="169.8" cy="365.3" r="2"/>
+<circle class="ok" cx="170.2" cy="315.9" r="2"/>
+<circle class="ok" cx="171.2" cy="374.6" r="2"/>
+<circle class="ok" cx="171.4" cy="250.7" r="2"/>
+<circle class="ok" cx="174.7" cy="374.9" r="2"/>
+<circle class="ok" cx="192.5" cy="374.9" r="2"/>
+<circle class="ok" cx="192.6" cy="374.9" r="2"/>
+<circle class="ok" cx="192.9" cy="374.0" r="2"/>
+<circle class="ok" cx="193.0" cy="370.8" r="2"/>
+<circle class="ok" cx="193.3" cy="318.3" r="2"/>
+<circle class="ok" cx="194.3" cy="246.3" r="2"/>
+<circle class="ok" cx="196.9" cy="374.6" r="2"/>
+<circle class="ok" cx="197.2" cy="374.9" r="2"/>
+<circle class="ok" cx="197.3" cy="374.8" r="2"/>
+<circle class="ok" cx="197.4" cy="375.1" r="2"/>
+<circle class="ok" cx="197.5" cy="375.1" r="2"/>
+<circle class="ok" cx="197.6" cy="373.4" r="2"/>
+<circle class="ok" cx="197.7" cy="375.1" r="2"/>
+<circle class="ok" cx="197.9" cy="374.9" r="2"/>
+<circle class="ok" cx="198.3" cy="369.0" r="2"/>
+<circle class="ok" cx="198.5" cy="362.8" r="2"/>
+<circle class="ok" cx="198.8" cy="374.6" r="2"/>
+<circle class="ok" cx="198.9" cy="375.2" r="2"/>
+<circle class="ok" cx="199.1" cy="375.1" r="2"/>
+<circle class="ok" cx="199.2" cy="374.9" r="2"/>
+<circle class="ok" cx="199.3" cy="375.1" r="2"/>
+<circle class="ok" cx="199.5" cy="373.4" r="2"/>
+<circle class="ok" cx="199.6" cy="374.6" r="2"/>
+<circle class="ok" cx="199.7" cy="375.1" r="2"/>
+<circle class="ok" cx="199.8" cy="374.0" r="2"/>
+<circle class="ok" cx="199.9" cy="375.1" r="2"/>
+<circle class="ok" cx="200.0" cy="375.1" r="2"/>
+<circle class="ok" cx="200.1" cy="375.2" r="2"/>
+<circle class="ok" cx="200.1" cy="375.1" r="2"/>
+<circle class="ok" cx="200.4" cy="375.1" r="2"/>
+<circle class="ok" cx="200.7" cy="375.1" r="2"/>
+<circle class="ok" cx="200.8" cy="375.2" r="2"/>
+<circle class="ok" cx="201.0" cy="374.8" r="2"/>
+<circle class="ok" cx="201.2" cy="374.6" r="2"/>
+<circle class="ok" cx="201.6" cy="374.9" r="2"/>
+<circle class="ok" cx="201.7" cy="375.1" r="2"/>
+<circle class="ok" cx="202.0" cy="374.6" r="2"/>
+<circle class="ok" cx="202.1" cy="356.9" r="2"/>
+<circle class="ok" cx="202.6" cy="374.0" r="2"/>
+<circle class="ok" cx="202.8" cy="374.2" r="2"/>
+<circle class="ok" cx="203.1" cy="374.6" r="2"/>
+<circle class="ok" cx="203.2" cy="375.1" r="2"/>
+<circle class="ok" cx="203.3" cy="374.9" r="2"/>
+<circle class="ok" cx="203.7" cy="372.3" r="2"/>
+<circle class="ok" cx="203.9" cy="371.7" r="2"/>
+<circle class="ok" cx="204.0" cy="374.9" r="2"/>
+<circle class="ok" cx="204.1" cy="373.9" r="2"/>
+<circle class="ok" cx="204.2" cy="358.3" r="2"/>
+<circle class="ok" cx="204.6" cy="375.1" r="2"/>
+<circle class="ok" cx="204.8" cy="375.1" r="2"/>
+<circle class="ok" cx="205.0" cy="375.1" r="2"/>
+<circle class="ok" cx="205.1" cy="375.1" r="2"/>
+<circle class="ok" cx="205.4" cy="368.2" r="2"/>
+<circle class="ok" cx="205.6" cy="375.2" r="2"/>
+<circle class="ok" cx="205.7" cy="371.9" r="2"/>
+<circle class="ok" cx="206.0" cy="375.1" r="2"/>
+<circle class="ok" cx="206.1" cy="374.9" r="2"/>
+<circle class="ok" cx="206.4" cy="375.1" r="2"/>
+<circle class="ok" cx="207.0" cy="374.9" r="2"/>
+<circle class="ok" cx="207.1" cy="375.1" r="2"/>
+<circle class="ok" cx="207.9" cy="354.6" r="2"/>
+<circle class="ok" cx="208.4" cy="355.3" r="2"/>
+<circle class="ok" cx="209.2" cy="375.1" r="2"/>
+<circle class="ok" cx="209.3" cy="375.1" r="2"/>
+<circle class="ok" cx="209.4" cy="375.2" r="2"/>
+<circle class="ok" cx="211.1" cy="374.8" r="2"/>
+<circle class="ok" cx="211.3" cy="363.1" r="2"/>
+<circle class="ok" cx="211.7" cy="368.8" r="2"/>
+<circle class="ok" cx="212.0" cy="359.3" r="2"/>
+<circle class="ok" cx="212.5" cy="370.6" r="2"/>
+<circle class="ok" cx="212.7" cy="374.8" r="2"/>
+<circle class="ok" cx="213.0" cy="196.1" r="2"/>
+<circle class="ok" cx="216.0" cy="373.2" r="2"/>
+<circle class="ok" cx="216.2" cy="110.9" r="2"/>
+<circle class="ok" cx="220.6" cy="374.8" r="2"/>
+<circle class="ok" cx="220.6" cy="375.1" r="2"/>
+<circle class="ok" cx="220.7" cy="374.3" r="2"/>
+<circle class="ok" cx="220.8" cy="273.2" r="2"/>
+<circle class="ok" cx="222.6" cy="287.9" r="2"/>
+<circle class="ok" cx="224.1" cy="279.6" r="2"/>
+<circle class="ok" cx="225.8" cy="374.9" r="2"/>
+<circle class="ok" cx="225.8" cy="375.1" r="2"/>
+<circle class="ok" cx="225.9" cy="375.1" r="2"/>
+<circle class="ok" cx="226.0" cy="375.1" r="2"/>
+<circle class="ok" cx="226.1" cy="114.1" r="2"/>
+<circle class="ok" cx="230.5" cy="113.9" r="2"/>
+<circle class="ok" cx="234.8" cy="374.9" r="2"/>
+<circle class="ok" cx="235.0" cy="375.1" r="2"/>
+<circle class="ok" cx="235.1" cy="165.0" r="2"/>
+<circle class="ok" cx="238.6" cy="201.7" r="2"/>
+<circle class="ok" cx="241.6" cy="373.1" r="2"/>
+<circle class="ok" cx="241.7" cy="375.1" r="2"/>
+<circle class="ok" cx="241.8" cy="247.2" r="2"/>
+<circle class="ok" cx="244.2" cy="244.3" r="2"/>
+<circle class="ok" cx="246.4" cy="374.9" r="2"/>
+<circle class="ok" cx="246.5" cy="349.1" r="2"/>
+<circle class="ok" cx="247.1" cy="374.6" r="2"/>
+<circle class="ok" cx="248.4" cy="250.1" r="2"/>
+<circle class="ok" cx="250.5" cy="374.8" r="2"/>
+<circle class="ok" cx="250.6" cy="375.1" r="2"/>
+<circle class="ok" cx="250.7" cy="375.1" r="2"/>
+<circle class="ok" cx="250.8" cy="372.2" r="2"/>
+<circle class="ok" cx="251.0" cy="362.2" r="2"/>
+<circle class="ok" cx="251.4" cy="365.4" r="2"/>
+<circle class="ok" cx="251.6" cy="374.9" r="2"/>
+<circle class="ok" cx="251.7" cy="284.7" r="2"/>
+<circle class="ok" cx="253.4" cy="252.7" r="2"/>
+<circle class="ok" cx="255.4" cy="374.9" r="2"/>
+<circle class="ok" cx="256.1" cy="374.6" r="2"/>
+<circle class="ok" cx="256.2" cy="374.3" r="2"/>
+<circle class="ok" cx="256.3" cy="375.1" r="2"/>
+<circle class="ok" cx="257.4" cy="346.5" r="2"/>
+<circle class="ok" cx="258.0" cy="235.1" r="2"/>
+<circle class="ok" cx="260.4" cy="270.0" r="2"/>
+<circle class="ok" cx="262.2" cy="245.6" r="2"/>
+<circle class="ok" cx="264.4" cy="255.4" r="2"/>
+<circle class="ok" cx="266.5" cy="328.0" r="2"/>
+<circle class="ok" cx="267.4" cy="371.0" r="2"/>
+<circle class="ok" cx="267.6" cy="119.3" r="2"/>
+<circle class="ok" cx="271.9" cy="364.5" r="2"/>
+<circle class="ok" cx="272.1" cy="374.9" r="2"/>
+<circle class="ok" cx="272.5" cy="357.9" r="2"/>
+<circle class="ok" cx="287.4" cy="374.9" r="2"/>
+<circle class="ok" cx="287.5" cy="373.6" r="2"/>
+<circle class="ok" cx="288.3" cy="375.1" r="2"/>
+<circle class="ok" cx="288.7" cy="375.1" r="2"/>
+<circle class="ok" cx="289.0" cy="372.2" r="2"/>
+<circle class="ok" cx="289.1" cy="374.9" r="2"/>
+<circle class="ok" cx="289.3" cy="375.1" r="2"/>
+<circle class="ok" cx="289.6" cy="374.9" r="2"/>
+<circle class="ok" cx="289.7" cy="374.0" r="2"/>
+<circle class="ok" cx="289.8" cy="374.8" r="2"/>
+<circle class="ok" cx="290.0" cy="375.1" r="2"/>
+<circle class="ok" cx="290.3" cy="375.1" r="2"/>
+<circle class="ok" cx="290.5" cy="375.1" r="2"/>
+<circle class="ok" cx="290.6" cy="375.1" r="2"/>
+<circle class="ok" cx="290.7" cy="375.1" r="2"/>
+<circle class="ok" cx="290.9" cy="375.2" r="2"/>
+<circle class="ok" cx="291.0" cy="374.9" r="2"/>
+<circle class="ok" cx="291.1" cy="375.1" r="2"/>
+<circle class="ok" cx="291.2" cy="373.7" r="2"/>
+<circle class="ok" cx="291.4" cy="374.9" r="2"/>
+<circle class="ok" cx="291.6" cy="374.0" r="2"/>
+<circle class="ok" cx="291.8" cy="374.0" r="2"/>
+<circle class="ok" cx="292.0" cy="375.1" r="2"/>
+<circle class="ok" cx="293.3" cy="374.9" r="2"/>
+<circle class="ok" cx="293.5" cy="374.9" r="2"/>
+<circle class="ok" cx="294.0" cy="374.6" r="2"/>
+<circle class="ok" cx="294.2" cy="375.1" r="2"/>
+<circle class="ok" cx="294.4" cy="375.1" r="2"/>
+<circle class="ok" cx="294.5" cy="375.1" r="2"/>
+<circle class="ok" cx="295.1" cy="375.1" r="2"/>
+<circle class="ok" cx="295.3" cy="375.1" r="2"/>
+<circle class="ok" cx="295.5" cy="374.8" r="2"/>
+<circle class="ok" cx="295.9" cy="275.2" r="2"/>
+<circle class="ok" cx="297.7" cy="374.9" r="2"/>
+<circle class="ok" cx="297.9" cy="375.1" r="2"/>
+<circle class="ok" cx="298.0" cy="375.2" r="2"/>
+<circle class="ok" cx="298.2" cy="375.2" r="2"/>
+<circle class="ok" cx="298.3" cy="375.1" r="2"/>
+<circle class="ok" cx="298.6" cy="375.1" r="2"/>
+<circle class="ok" cx="298.7" cy="375.1" r="2"/>
+<circle class="ok" cx="298.9" cy="375.4" r="2"/>
+<circle class="ok" cx="299.0" cy="359.2" r="2"/>
+<circle class="ok" cx="299.5" cy="370.5" r="2"/>
+<circle class="ok" cx="299.9" cy="375.1" r="2"/>
+<circle class="ok" cx="300.0" cy="374.9" r="2"/>
+<circle class="ok" cx="300.3" cy="375.1" r="2"/>
+<circle class="ok" cx="302.4" cy="374.5" r="2"/>
+<circle class="ok" cx="302.5" cy="375.1" r="2"/>
+<circle class="ok" cx="303.2" cy="375.2" r="2"/>
+<circle class="ok" cx="303.3" cy="375.1" r="2"/>
+<circle class="ok" cx="308.3" cy="374.8" r="2"/>
+<circle class="ok" cx="308.5" cy="374.9" r="2"/>
+<circle class="ok" cx="308.6" cy="375.1" r="2"/>
+<circle class="ok" cx="309.0" cy="374.9" r="2"/>
+<circle class="ok" cx="309.1" cy="375.1" r="2"/>
+<circle class="ok" cx="309.3" cy="365.7" r="2"/>
+<circle class="ok" cx="309.7" cy="369.0" r="2"/>
+<circle class="ok" cx="310.8" cy="368.7" r="2"/>
+<circle class="ok" cx="311.2" cy="368.0" r="2"/>
+<circle class="ok" cx="315.5" cy="374.9" r="2"/>
+<circle class="ok" cx="315.6" cy="375.1" r="2"/>
+<circle class="ok" cx="316.6" cy="369.1" r="2"/>
+<circle class="ok" cx="317.0" cy="364.5" r="2"/>
+<circle class="ok" cx="317.3" cy="315.0" r="2"/>
+<circle class="ok" cx="318.5" cy="227.1" r="2"/>
+<circle class="ok" cx="322.0" cy="372.8" r="2"/>
+<circle class="ok" cx="334.7" cy="374.9" r="2"/>
+<circle class="ok" cx="335.6" cy="375.1" r="2"/>
+<circle class="ok" cx="336.1" cy="375.1" r="2"/>
+<circle class="ok" cx="336.1" cy="374.9" r="2"/>
+<circle class="ok" cx="336.2" cy="375.1" r="2"/>
+<circle class="ok" cx="336.2" cy="375.1" r="2"/>
+<circle class="ok" cx="336.3" cy="375.1" r="2"/>
+<circle class="ok" cx="336.3" cy="374.9" r="2"/>
+<circle class="ok" cx="336.3" cy="374.6" r="2"/>
+<circle class="ok" cx="336.4" cy="374.9" r="2"/>
+<circle class="ok" cx="336.7" cy="375.1" r="2"/>
+<circle class="ok" cx="336.7" cy="375.1" r="2"/>
+<circle class="ok" cx="336.8" cy="375.2" r="2"/>
+<circle class="ok" cx="336.9" cy="375.2" r="2"/>
+<circle class="ok" cx="337.0" cy="375.1" r="2"/>
+<circle class="ok" cx="338.0" cy="375.1" r="2"/>
+<circle class="ok" cx="338.4" cy="375.1" r="2"/>
+<circle class="ok" cx="338.8" cy="375.1" r="2"/>
+<circle class="ok" cx="338.9" cy="375.1" r="2"/>
+<circle class="ok" cx="338.9" cy="375.1" r="2"/>
+<circle class="ok" cx="338.9" cy="374.3" r="2"/>
+<circle class="ok" cx="339.0" cy="374.9" r="2"/>
+<circle class="ok" cx="339.0" cy="374.9" r="2"/>
+<circle class="ok" cx="339.0" cy="375.2" r="2"/>
+<circle class="ok" cx="339.0" cy="375.2" r="2"/>
+<circle class="ok" cx="339.0" cy="375.2" r="2"/>
+<circle class="ok" cx="339.0" cy="270.3" r="2"/>
+<circle class="ok" cx="339.1" cy="270.9" r="2"/>
+<circle class="ok" cx="339.1" cy="275.3" r="2"/>
+<circle class="ok" cx="339.1" cy="275.5" r="2"/>
+<circle class="ok" cx="339.2" cy="277.5" r="2"/>
+<circle class="ok" cx="339.2" cy="279.3" r="2"/>
+<circle class="ok" cx="339.3" cy="287.4" r="2"/>
+<circle class="ok" cx="339.4" cy="292.2" r="2"/>
+<circle class="ok" cx="339.5" cy="297.1" r="2"/>
+<circle class="ok" cx="339.5" cy="301.0" r="2"/>
+<circle class="ok" cx="339.6" cy="304.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.1" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.1" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="375.2" r="2"/>
+<circle class="ok" cx="340.8" cy="372.6" r="2"/>
+<circle class="ok" cx="340.9" cy="373.4" r="2"/>
+<circle class="ok" cx="340.9" cy="374.9" r="2"/>
+<circle class="ok" cx="340.9" cy="374.9" r="2"/>
+<circle class="ok" cx="340.9" cy="375.1" r="2"/>
+<circle class="ok" cx="340.9" cy="374.8" r="2"/>
+<circle class="ok" cx="341.0" cy="375.1" r="2"/>
+<circle class="ok" cx="341.0" cy="375.1" r="2"/>
+<circle class="ok" cx="341.0" cy="375.4" r="2"/>
+<circle class="ok" cx="341.0" cy="375.2" r="2"/>
+<circle class="ok" cx="341.0" cy="375.2" r="2"/>
+<circle class="ok" cx="341.0" cy="375.2" r="2"/>
+<circle class="ok" cx="341.0" cy="375.2" r="2"/>
+<circle class="ok" cx="341.0" cy="375.1" r="2"/>
+<circle class="ok" cx="341.0" cy="375.4" r="2"/>
+<circle class="ok" cx="341.0" cy="370.5" r="2"/>
+<circle class="ok" cx="341.0" cy="370.6" r="2"/>
+<circle class="ok" cx="341.0" cy="370.6" r="2"/>
+<circle class="ok" cx="341.0" cy="370.6" r="2"/>
+<circle class="ok" cx="341.1" cy="371.0" r="2"/>
+<circle class="ok" cx="341.1" cy="373.1" r="2"/>
+<circle class="ok" cx="341.1" cy="373.1" r="2"/>
+<circle class="ok" cx="341.1" cy="373.1" r="2"/>
+<circle class="ok" cx="341.1" cy="373.1" r="2"/>
+<circle class="ok" cx="341.1" cy="375.1" r="2"/>
+<circle class="ok" cx="341.1" cy="375.1" r="2"/>
+<circle class="ok" cx="341.2" cy="375.1" r="2"/>
+<circle class="ok" cx="341.2" cy="374.9" r="2"/>
+<circle class="ok" cx="341.2" cy="374.9" r="2"/>
+<circle class="ok" cx="341.2" cy="375.4" r="2"/>
+<circle class="ok" cx="341.2" cy="375.2" r="2"/>
+<circle class="ok" cx="341.2" cy="375.2" r="2"/>
+<circle class="ok" cx="341.2" cy="375.2" r="2"/>
+<circle class="ok" cx="341.3" cy="374.9" r="2"/>
+<circle class="ok" cx="341.3" cy="375.2" r="2"/>
+<circle class="ok" cx="341.3" cy="361.5" r="2"/>
+<circle class="ok" cx="341.3" cy="362.4" r="2"/>
+<circle class="ok" cx="341.3" cy="363.1" r="2"/>
+<circle class="ok" cx="341.3" cy="363.9" r="2"/>
+<circle class="ok" cx="341.3" cy="364.1" r="2"/>
+<circle class="ok" cx="341.3" cy="344.8" r="2"/>
+<circle class="ok" cx="341.3" cy="345.2" r="2"/>
+<circle class="ok" cx="341.3" cy="345.4" r="2"/>
+<circle class="ok" cx="341.4" cy="346.5" r="2"/>
+<circle class="ok" cx="341.4" cy="348.8" r="2"/>
+<circle class="ok" cx="341.4" cy="348.9" r="2"/>
+<circle class="ok" cx="341.5" cy="358.3" r="2"/>
+<circle class="ok" cx="341.6" cy="106.1" r="2"/>
+<circle class="ok" cx="341.6" cy="106.1" r="2"/>
+<circle class="ok" cx="341.6" cy="107.5" r="2"/>
+<circle class="ok" cx="341.9" cy="122.3" r="2"/>
+<circle class="ok" cx="341.9" cy="122.8" r="2"/>
+<circle class="ok" cx="341.9" cy="122.9" r="2"/>
+<circle class="ok" cx="341.9" cy="123.2" r="2"/>
+<circle class="ok" cx="341.9" cy="125.7" r="2"/>
+<circle class="ok" cx="342.0" cy="127.7" r="2"/>
+<circle class="ok" cx="342.0" cy="130.3" r="2"/>
+<circle class="ok" cx="342.0" cy="131.4" r="2"/>
+<circle class="ok" cx="346.1" cy="375.1" r="2"/>
+<circle class="ok" cx="346.1" cy="375.2" r="2"/>
+<circle class="ok" cx="346.1" cy="375.2" r="2"/>
+<circle class="ok" cx="346.1" cy="375.1" r="2"/>
+<circle class="ok" cx="346.1" cy="375.1" r="2"/>
+<circle class="ok" cx="346.1" cy="375.2" r="2"/>
+<circle class="ok" cx="346.2" cy="375.1" r="2"/>
+<circle class="ok" cx="346.2" cy="375.2" r="2"/>
+<circle class="ok" cx="346.2" cy="375.2" r="2"/>
+<circle class="ok" cx="346.2" cy="374.8" r="2"/>
+<circle class="ok" cx="346.2" cy="374.9" r="2"/>
+<circle class="ok" cx="346.2" cy="374.6" r="2"/>
+<circle class="ok" cx="346.2" cy="374.9" r="2"/>
+<circle class="ok" cx="346.2" cy="375.2" r="2"/>
+<circle class="ok" cx="346.3" cy="375.2" r="2"/>
+<circle class="ok" cx="346.3" cy="375.2" r="2"/>
+<circle class="ok" cx="346.3" cy="375.1" r="2"/>
+<circle class="ok" cx="346.3" cy="375.1" r="2"/>
+<circle class="ok" cx="346.3" cy="374.8" r="2"/>
+<circle class="ok" cx="346.3" cy="374.5" r="2"/>
+<circle class="ok" cx="346.4" cy="374.8" r="2"/>
+<circle class="ok" cx="346.4" cy="244.0" r="2"/>
+<circle class="ok" cx="346.4" cy="375.1" r="2"/>
+<circle class="ok" cx="346.4" cy="244.6" r="2"/>
+<circle class="ok" cx="346.4" cy="244.7" r="2"/>
+<circle class="ok" cx="346.4" cy="112.2" r="2"/>
+<circle class="ok" cx="346.4" cy="242.4" r="2"/>
+<circle class="ok" cx="346.4" cy="242.4" r="2"/>
+<circle class="ok" cx="346.4" cy="242.9" r="2"/>
+<circle class="ok" cx="346.4" cy="243.3" r="2"/>
+<circle class="ok" cx="346.5" cy="244.4" r="2"/>
+<circle class="ok" cx="346.8" cy="264.3" r="2"/>
+<circle class="ok" cx="346.9" cy="268.9" r="2"/>
+<circle class="ok" cx="348.6" cy="245.2" r="2"/>
+<circle class="ok" cx="348.7" cy="250.1" r="2"/>
+<circle class="ok" cx="348.7" cy="250.7" r="2"/>
+<circle class="ok" cx="348.7" cy="250.5" r="2"/>
+<circle class="ok" cx="348.7" cy="250.7" r="2"/>
+<circle class="ok" cx="348.7" cy="250.8" r="2"/>
+<circle class="ok" cx="348.7" cy="252.5" r="2"/>
+<circle class="ok" cx="348.8" cy="255.4" r="2"/>
+<circle class="ok" cx="348.8" cy="258.6" r="2"/>
+<circle class="ok" cx="350.8" cy="374.9" r="2"/>
+<circle class="ok" cx="350.8" cy="375.1" r="2"/>
+<circle class="ok" cx="350.8" cy="375.2" r="2"/>
+<circle class="ok" cx="350.8" cy="375.2" r="2"/>
+<circle class="ok" cx="350.8" cy="375.1" r="2"/>
+<circle class="ok" cx="350.8" cy="374.9" r="2"/>
+<circle class="ok" cx="350.8" cy="371.6" r="2"/>
+<circle class="ok" cx="350.8" cy="372.0" r="2"/>
+<circle class="ok" cx="350.8" cy="369.3" r="2"/>
+<circle class="ok" cx="350.9" cy="370.6" r="2"/>
+<circle class="ok" cx="350.9" cy="371.6" r="2"/>
+<circle class="ok" cx="350.9" cy="374.9" r="2"/>
+<circle class="ok" cx="351.0" cy="375.2" r="2"/>
+<circle class="ok" cx="351.0" cy="375.2" r="2"/>
+<circle class="ok" cx="351.0" cy="375.2" r="2"/>
+<circle class="ok" cx="351.1" cy="375.1" r="2"/>
+<circle class="ok" cx="351.1" cy="374.9" r="2"/>
+<circle class="ok" cx="351.1" cy="375.1" r="2"/>
+<circle class="ok" cx="351.1" cy="375.1" r="2"/>
+<circle class="ok" cx="351.1" cy="375.2" r="2"/>
+<circle class="ok" cx="351.2" cy="375.2" r="2"/>
+<circle class="ok" cx="351.2" cy="375.2" r="2"/>
+<circle class="ok" cx="351.2" cy="375.2" r="2"/>
+<circle class="ok" cx="351.2" cy="375.2" r="2"/>
+<circle class="ok" cx="351.2" cy="370.6" r="2"/>
+<circle class="ok" cx="351.3" cy="374.0" r="2"/>
+<circle class="ok" cx="351.3" cy="374.2" r="2"/>
+<circle class="ok" cx="351.3" cy="375.2" r="2"/>
+<circle class="ok" cx="351.4" cy="375.1" r="2"/>
+<circle class="ok" cx="351.4" cy="375.2" r="2"/>
+<circle class="ok" cx="351.4" cy="375.2" r="2"/>
+<circle class="ok" cx="351.4" cy="374.9" r="2"/>
+<circle class="ok" cx="351.4" cy="374.8" r="2"/>
+<circle class="ok" cx="351.4" cy="375.1" r="2"/>
+<circle class="ok" cx="351.4" cy="375.1" r="2"/>
+<circle class="ok" cx="351.4" cy="375.1" r="2"/>
+<circle class="ok" cx="351.5" cy="375.1" r="2"/>
+<circle class="ok" cx="351.5" cy="374.9" r="2"/>
+<circle class="ok" cx="351.5" cy="375.2" r="2"/>
+<circle class="ok" cx="351.5" cy="375.1" r="2"/>
+<circle class="ok" cx="351.5" cy="375.1" r="2"/>
+<circle class="ok" cx="351.5" cy="371.1" r="2"/>
+<circle class="ok" cx="351.5" cy="372.8" r="2"/>
+<circle class="ok" cx="351.6" cy="374.9" r="2"/>
+<circle class="ok" cx="351.6" cy="374.9" r="2"/>
+<circle class="ok" cx="351.6" cy="375.1" r="2"/>
+<circle class="ok" cx="351.6" cy="375.1" r="2"/>
+<circle class="ok" cx="351.7" cy="374.8" r="2"/>
+<circle class="ok" cx="351.7" cy="375.1" r="2"/>
+<circle class="ok" cx="351.7" cy="375.2" r="2"/>
+<circle class="ok" cx="351.7" cy="375.1" r="2"/>
+<circle class="ok" cx="351.7" cy="374.8" r="2"/>
+<circle class="ok" cx="351.7" cy="375.2" r="2"/>
+<circle class="ok" cx="351.8" cy="375.1" r="2"/>
+<circle class="ok" cx="351.8" cy="375.2" r="2"/>
+<circle class="ok" cx="351.8" cy="373.7" r="2"/>
+<circle class="ok" cx="351.9" cy="375.2" r="2"/>
+<circle class="ok" cx="351.9" cy="374.2" r="2"/>
+<circle class="ok" cx="351.9" cy="374.6" r="2"/>
+<circle class="ok" cx="351.9" cy="375.1" r="2"/>
+<circle class="ok" cx="351.9" cy="374.9" r="2"/>
+<circle class="ok" cx="351.9" cy="373.6" r="2"/>
+<circle class="ok" cx="352.0" cy="373.9" r="2"/>
+<circle class="ok" cx="352.0" cy="374.5" r="2"/>
+<circle class="ok" cx="352.1" cy="375.2" r="2"/>
+<circle class="ok" cx="352.1" cy="375.2" r="2"/>
+<circle class="ok" cx="352.1" cy="375.4" r="2"/>
+<circle class="ok" cx="352.1" cy="374.9" r="2"/>
+<circle class="ok" cx="352.1" cy="375.1" r="2"/>
+<circle class="ok" cx="352.1" cy="375.2" r="2"/>
+<circle class="ok" cx="352.2" cy="375.2" r="2"/>
+<circle class="ok" cx="352.2" cy="371.7" r="2"/>
+<circle class="ok" cx="352.2" cy="371.9" r="2"/>
+<circle class="ok" cx="352.2" cy="372.6" r="2"/>
+<circle class="ok" cx="352.3" cy="374.8" r="2"/>
+<circle class="ok" cx="352.3" cy="374.9" r="2"/>
+<circle class="ok" cx="352.3" cy="374.2" r="2"/>
+<circle class="ok" cx="352.4" cy="374.3" r="2"/>
+<circle class="ok" cx="352.4" cy="374.6" r="2"/>
+<circle class="ok" cx="352.4" cy="373.9" r="2"/>
+<circle class="ok" cx="352.4" cy="375.1" r="2"/>
+<circle class="ok" cx="352.5" cy="375.1" r="2"/>
+<circle class="ok" cx="352.5" cy="375.1" r="2"/>
+<circle class="ok" cx="352.6" cy="375.1" r="2"/>
+<circle class="ok" cx="352.6" cy="375.1" r="2"/>
+<circle class="ok" cx="352.6" cy="374.8" r="2"/>
+<circle class="ok" cx="352.6" cy="375.1" r="2"/>
+<circle class="ok" cx="352.7" cy="374.6" r="2"/>
+<circle class="ok" cx="352.7" cy="372.5" r="2"/>
+<circle class="ok" cx="352.7" cy="372.8" r="2"/>
+<circle class="ok" cx="352.7" cy="372.8" r="2"/>
+<circle class="ok" cx="352.7" cy="375.2" r="2"/>
+<circle class="ok" cx="352.9" cy="374.9" r="2"/>
+<circle class="ok" cx="352.9" cy="374.8" r="2"/>
+<circle class="ok" cx="352.9" cy="375.1" r="2"/>
+<circle class="ok" cx="352.9" cy="375.2" r="2"/>
+<circle class="ok" cx="352.9" cy="375.1" r="2"/>
+<circle class="ok" cx="353.0" cy="374.9" r="2"/>
+<circle class="ok" cx="353.0" cy="369.6" r="2"/>
+<circle class="ok" cx="353.0" cy="372.6" r="2"/>
+<circle class="ok" cx="353.1" cy="375.1" r="2"/>
+<circle class="ok" cx="353.1" cy="375.2" r="2"/>
+<circle class="ok" cx="353.1" cy="375.2" r="2"/>
+<circle class="ok" cx="353.2" cy="375.2" r="2"/>
+<circle class="ok" cx="353.2" cy="375.2" r="2"/>
+<circle class="ok" cx="353.2" cy="368.8" r="2"/>
+<circle class="ok" cx="353.2" cy="370.0" r="2"/>
+<circle class="ok" cx="353.3" cy="375.2" r="2"/>
+<circle class="ok" cx="353.4" cy="375.2" r="2"/>
+<circle class="ok" cx="353.4" cy="375.2" r="2"/>
+<circle class="ok" cx="353.4" cy="375.2" r="2"/>
+<circle class="ok" cx="353.4" cy="375.1" r="2"/>
+<circle class="ok" cx="353.5" cy="375.2" r="2"/>
+<circle class="ok" cx="353.5" cy="374.8" r="2"/>
+<circle class="ok" cx="353.5" cy="375.2" r="2"/>
+<circle class="ok" cx="353.5" cy="375.2" r="2"/>
+<circle class="ok" cx="353.6" cy="372.9" r="2"/>
+<circle class="ok" cx="353.6" cy="373.4" r="2"/>
+<circle class="ok" cx="353.6" cy="373.7" r="2"/>
+<circle class="ok" cx="353.7" cy="371.7" r="2"/>
+<circle class="ok" cx="353.7" cy="375.4" r="2"/>
+<circle class="ok" cx="353.7" cy="368.7" r="2"/>
+<circle class="ok" cx="353.7" cy="368.8" r="2"/>
+<circle class="ok" cx="353.7" cy="371.4" r="2"/>
+<circle class="ok" cx="353.8" cy="372.8" r="2"/>
+<circle class="ok" cx="353.8" cy="375.2" r="2"/>
+<circle class="ok" cx="353.9" cy="375.1" r="2"/>
+<circle class="ok" cx="353.9" cy="375.2" r="2"/>
+<circle class="ok" cx="353.9" cy="375.2" r="2"/>
+<circle class="ok" cx="353.9" cy="237.7" r="2"/>
+<circle class="ok" cx="353.9" cy="238.8" r="2"/>
+<circle class="ok" cx="353.9" cy="240.6" r="2"/>
+<circle class="ok" cx="354.0" cy="241.4" r="2"/>
+<circle class="ok" cx="354.1" cy="241.2" r="2"/>
+<circle class="ok" cx="354.3" cy="252.8" r="2"/>
+<circle class="ok" cx="354.4" cy="259.0" r="2"/>
+<circle class="ok" cx="354.4" cy="260.6" r="2"/>
+<circle class="ok" cx="354.8" cy="279.3" r="2"/>
+<circle class="ok" cx="355.2" cy="305.5" r="2"/>
+<circle class="ok" cx="355.5" cy="320.6" r="2"/>
+<circle class="ok" cx="356.2" cy="367.6" r="2"/>
+<circle class="ok" cx="356.3" cy="362.2" r="2"/>
+<circle class="ok" cx="356.3" cy="362.8" r="2"/>
+<circle class="ok" cx="356.3" cy="363.9" r="2"/>
+<circle class="ok" cx="356.5" cy="352.4" r="2"/>
+<circle class="ok" cx="356.5" cy="346.2" r="2"/>
+<circle class="ok" cx="356.6" cy="352.0" r="2"/>
+<circle class="ok" cx="356.6" cy="357.2" r="2"/>
+<circle class="ok" cx="356.8" cy="360.2" r="2"/>
+<circle class="ok" cx="356.9" cy="363.0" r="2"/>
+<circle class="ok" cx="356.9" cy="304.9" r="2"/>
+<circle class="ok" cx="357.0" cy="309.9" r="2"/>
+<circle class="ok" cx="357.1" cy="315.7" r="2"/>
+<circle class="ok" cx="357.1" cy="319.2" r="2"/>
+<circle class="ok" cx="357.2" cy="322.3" r="2"/>
+<circle class="ok" cx="357.3" cy="295.4" r="2"/>
+<circle class="ok" cx="357.6" cy="315.9" r="2"/>
+<circle class="ok" cx="357.7" cy="320.6" r="2"/>
+<circle class="ok" cx="357.9" cy="329.3" r="2"/>
+<circle class="ok" cx="358.1" cy="133.3" r="2"/>
+<circle class="ok" cx="358.2" cy="138.5" r="2"/>
+<circle class="ok" cx="358.2" cy="138.5" r="2"/>
+<circle class="ok" cx="358.2" cy="139.6" r="2"/>
+<circle class="ok" cx="358.2" cy="140.4" r="2"/>
+<circle class="ok" cx="358.5" cy="154.9" r="2"/>
+<circle class="ok" cx="358.7" cy="167.6" r="2"/>
+<circle class="ok" cx="358.7" cy="170.8" r="2"/>
+<circle class="ok" cx="359.3" cy="182.9" r="2"/>
+<circle class="ok" cx="360.0" cy="229.3" r="2"/>
+<circle class="ok" cx="361.0" cy="290.3" r="2"/>
+<circle class="ok" cx="362.1" cy="357.9" r="2"/>
+<circle class="ok" cx="362.1" cy="358.9" r="2"/>
+<circle class="ok" cx="362.2" cy="360.1" r="2"/>
+<circle class="ok" cx="362.2" cy="362.2" r="2"/>
+<circle class="ok" cx="362.2" cy="362.5" r="2"/>
+<circle class="ok" cx="362.3" cy="366.5" r="2"/>
+<circle class="ok" cx="362.5" cy="264.9" r="2"/>
+<circle class="ok" cx="362.5" cy="266.0" r="2"/>
+<circle class="ok" cx="362.5" cy="267.1" r="2"/>
+<circle class="ok" cx="362.6" cy="270.3" r="2"/>
+<circle class="ok" cx="362.6" cy="274.4" r="2"/>
+<circle class="ok" cx="362.7" cy="270.9" r="2"/>
+<circle class="ok" cx="362.8" cy="278.5" r="2"/>
+<circle class="ok" cx="362.9" cy="282.2" r="2"/>
+<circle class="ok" cx="364.4" cy="373.7" r="2"/>
+<circle class="ok" cx="364.4" cy="335.6" r="2"/>
+<circle class="ok" cx="364.4" cy="292.5" r="2"/>
+<circle class="ok" cx="364.5" cy="292.9" r="2"/>
+<circle class="ok" cx="364.5" cy="292.9" r="2"/>
+<circle class="ok" cx="364.5" cy="294.5" r="2"/>
+<circle class="ok" cx="364.6" cy="301.2" r="2"/>
+<circle class="ok" cx="364.9" cy="319.8" r="2"/>
+<circle class="ok" cx="365.0" cy="328.6" r="2"/>
+<circle class="ok" cx="365.9" cy="347.8" r="2"/>
+<circle class="ok" cx="365.9" cy="348.9" r="2"/>
+<circle class="ok" cx="365.9" cy="349.1" r="2"/>
+<circle class="ok" cx="365.9" cy="349.2" r="2"/>
+<circle class="ok" cx="365.9" cy="349.2" r="2"/>
+<circle class="ok" cx="365.9" cy="320.3" r="2"/>
+<circle class="ok" cx="366.0" cy="323.1" r="2"/>
+<circle class="ok" cx="366.4" cy="349.5" r="2"/>
+<circle class="ok" cx="366.4" cy="350.8" r="2"/>
+<circle class="ok" cx="366.4" cy="351.4" r="2"/>
+<circle class="ok" cx="366.5" cy="354.9" r="2"/>
+<circle class="ok" cx="366.6" cy="361.9" r="2"/>
+<circle class="ok" cx="366.6" cy="361.9" r="2"/>
+<circle class="ok" cx="366.6" cy="363.3" r="2"/>
+<circle class="ok" cx="366.9" cy="374.2" r="2"/>
+<circle class="ok" cx="366.9" cy="375.2" r="2"/>
+<circle class="ok" cx="366.9" cy="375.2" r="2"/>
+<circle class="ok" cx="366.9" cy="375.2" r="2"/>
+<circle class="ok" cx="366.9" cy="266.3" r="2"/>
+<circle class="cut" cx="366.9" cy="100.0" r="2.6"/>
+<circle class="ok" cx="367.0" cy="102.4" r="2"/>
+<circle class="ok" cx="367.0" cy="102.7" r="2"/>
+<circle class="ok" cx="367.0" cy="102.9" r="2"/>
+<circle class="ok" cx="367.0" cy="103.4" r="2"/>
+<circle class="ok" cx="367.0" cy="103.4" r="2"/>
+<circle class="cut" cx="367.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="367.3" cy="106.6" r="2"/>
+<circle class="ok" cx="367.3" cy="105.0" r="2"/>
+<circle class="ok" cx="368.3" cy="166.7" r="2"/>
+<circle class="ok" cx="368.8" cy="193.0" r="2"/>
+<circle class="ok" cx="371.5" cy="359.3" r="2"/>
+<circle class="ok" cx="371.6" cy="367.4" r="2"/>
+<circle class="ok" cx="371.7" cy="365.6" r="2"/>
+<circle class="ok" cx="371.7" cy="367.0" r="2"/>
+<circle class="ok" cx="371.7" cy="367.1" r="2"/>
+<circle class="ok" cx="371.8" cy="371.6" r="2"/>
+<circle class="ok" cx="371.9" cy="222.1" r="2"/>
+<circle class="ok" cx="371.9" cy="226.5" r="2"/>
+<circle class="ok" cx="372.0" cy="218.4" r="2"/>
+<circle class="ok" cx="372.0" cy="226.8" r="2"/>
+<circle class="ok" cx="372.0" cy="229.3" r="2"/>
+<circle class="ok" cx="372.0" cy="229.3" r="2"/>
+<circle class="ok" cx="372.1" cy="235.4" r="2"/>
+<circle class="ok" cx="372.2" cy="233.3" r="2"/>
+<circle class="ok" cx="372.6" cy="255.6" r="2"/>
+<circle class="ok" cx="372.9" cy="273.9" r="2"/>
+<circle class="ok" cx="373.0" cy="280.8" r="2"/>
+<circle class="ok" cx="374.0" cy="341.9" r="2"/>
+<circle class="ok" cx="374.4" cy="370.3" r="2"/>
+<circle class="ok" cx="374.5" cy="218.7" r="2"/>
+<circle class="ok" cx="374.6" cy="227.3" r="2"/>
+<circle class="ok" cx="374.6" cy="228.5" r="2"/>
+<circle class="ok" cx="374.7" cy="231.0" r="2"/>
+<circle class="ok" cx="374.8" cy="241.5" r="2"/>
+<circle class="ok" cx="374.9" cy="244.7" r="2"/>
+<circle class="ok" cx="375.0" cy="249.2" r="2"/>
+<circle class="ok" cx="375.0" cy="247.3" r="2"/>
+<circle class="ok" cx="375.1" cy="256.0" r="2"/>
+<circle class="ok" cx="375.4" cy="264.9" r="2"/>
+<circle class="ok" cx="375.5" cy="234.6" r="2"/>
+<circle class="ok" cx="377.1" cy="330.9" r="2"/>
+<circle class="ok" cx="377.1" cy="219.9" r="2"/>
+<circle class="cut" cx="377.1" cy="100.0" r="2.6"/>
+<circle class="wait" cx="377.2" cy="101.1" r="3.2"/>
+<circle class="ok" cx="377.2" cy="104.7" r="2"/>
+<circle class="cut" cx="377.3" cy="99.8" r="2.6"/>
+<circle class="wait" cx="377.3" cy="100.8" r="3.2"/>
+<circle class="ok" cx="377.3" cy="101.1" r="2"/>
+<circle class="ok" cx="377.4" cy="105.2" r="2"/>
+<circle class="ok" cx="377.8" cy="129.1" r="2"/>
+<circle class="ok" cx="378.1" cy="147.0" r="2"/>
+<circle class="ok" cx="378.6" cy="169.0" r="2"/>
+<circle class="ok" cx="379.8" cy="242.4" r="2"/>
+<circle class="ok" cx="381.7" cy="359.3" r="2"/>
+<circle class="ok" cx="381.8" cy="363.0" r="2"/>
+<circle class="ok" cx="381.9" cy="371.4" r="2"/>
+<circle class="ok" cx="381.9" cy="371.9" r="2"/>
+<circle class="ok" cx="382.0" cy="373.9" r="2"/>
+<circle class="ok" cx="382.0" cy="366.7" r="2"/>
+<circle class="ok" cx="382.0" cy="366.1" r="2"/>
+<circle class="ok" cx="382.1" cy="364.2" r="2"/>
+<circle class="ok" cx="382.1" cy="304.5" r="2"/>
+<circle class="ok" cx="382.1" cy="175.1" r="2"/>
+<circle class="ok" cx="382.1" cy="175.3" r="2"/>
+<circle class="ok" cx="382.2" cy="172.4" r="2"/>
+<circle class="ok" cx="382.2" cy="171.9" r="2"/>
+<circle class="ok" cx="382.3" cy="173.6" r="2"/>
+<circle class="cut" cx="382.4" cy="99.8" r="2.6"/>
+<circle class="ok" cx="382.7" cy="117.4" r="2"/>
+<circle class="ok" cx="382.7" cy="121.7" r="2"/>
+<circle class="ok" cx="382.9" cy="129.5" r="2"/>
+<circle class="ok" cx="382.9" cy="131.8" r="2"/>
+<circle class="cut" cx="383.4" cy="100.0" r="2.6"/>
+<circle class="ok" cx="385.5" cy="226.5" r="2"/>
+<circle class="cut" cx="385.5" cy="97.7" r="2.6"/>
+<circle class="ok" cx="385.7" cy="111.2" r="2"/>
+<circle class="ok" cx="386.4" cy="154.3" r="2"/>
+<circle class="ok" cx="386.8" cy="137.8" r="2"/>
+<circle class="ok" cx="386.9" cy="143.6" r="2"/>
+<circle class="ok" cx="386.9" cy="146.8" r="2"/>
+<circle class="cut" cx="387.0" cy="99.8" r="2.6"/>
+<circle class="drain" cx="387.3" cy="266.8" r="3"/>
+<circle class="ok" cx="387.5" cy="114.1" r="2"/>
+<circle class="ok" cx="388.0" cy="106.0" r="2"/>
+<circle class="ok" cx="388.0" cy="107.5" r="2"/>
+<circle class="ok" cx="389.1" cy="174.8" r="2"/>
+<circle class="ok" cx="390.1" cy="232.9" r="2"/>
+<circle class="ok" cx="390.1" cy="232.8" r="2"/>
+<circle class="ok" cx="390.1" cy="234.0" r="2"/>
+<circle class="ok" cx="390.8" cy="165.5" r="2"/>
+<circle class="ok" cx="390.8" cy="159.7" r="2"/>
+<circle class="ok" cx="391.0" cy="136.7" r="2"/>
+<circle class="ok" cx="391.6" cy="172.1" r="2"/>
+<circle class="ok" cx="392.5" cy="182.0" r="2"/>
+<circle class="cut" cx="392.5" cy="99.8" r="2.6"/>
+<circle class="wait" cx="392.5" cy="100.1" r="3.2"/>
+<circle class="ok" cx="392.6" cy="103.0" r="2"/>
+<circle class="ok" cx="392.6" cy="103.7" r="2"/>
+<circle class="ok" cx="392.6" cy="107.5" r="2"/>
+<circle class="ok" cx="394.3" cy="209.8" r="2"/>
+<circle class="ok" cx="394.3" cy="209.8" r="2"/>
+<circle class="ok" cx="394.5" cy="211.8" r="2"/>
+<circle class="ok" cx="395.2" cy="219.6" r="2"/>
+<circle class="ok" cx="395.3" cy="223.8" r="2"/>
+<circle class="ok" cx="395.8" cy="211.2" r="2"/>
+<circle class="ok" cx="397.0" cy="286.2" r="2"/>
+<circle class="ok" cx="397.1" cy="293.5" r="2"/>
+<circle class="ok" cx="397.1" cy="294.6" r="2"/>
+<circle class="ok" cx="397.2" cy="295.8" r="2"/>
+<circle class="cut" cx="397.2" cy="97.5" r="2.6"/>
+<circle class="wait" cx="397.2" cy="100.9" r="3.2"/>
+<circle class="cut" cx="397.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="397.4" cy="108.1" r="2"/>
+<circle class="ok" cx="397.8" cy="136.1" r="2"/>
+<circle class="cut" cx="397.9" cy="97.7" r="2.6"/>
+<circle class="ok" cx="398.5" cy="139.6" r="2"/>
+<circle class="cut" cx="398.5" cy="99.8" r="2.6"/>
+<circle class="wait" cx="398.5" cy="100.4" r="3.2"/>
+<circle class="ok" cx="399.0" cy="131.0" r="2"/>
+<circle class="ok" cx="399.6" cy="164.7" r="2"/>
+<circle class="ok" cx="401.7" cy="293.7" r="2"/>
+<circle class="ok" cx="401.8" cy="295.8" r="2"/>
+<circle class="ok" cx="401.8" cy="296.7" r="2"/>
+<circle class="ok" cx="401.8" cy="299.0" r="2"/>
+<circle class="ok" cx="402.5" cy="341.3" r="2"/>
+<circle class="ok" cx="402.5" cy="299.3" r="2"/>
+<circle class="ok" cx="402.9" cy="271.5" r="2"/>
+<circle class="ok" cx="403.1" cy="287.1" r="2"/>
+<circle class="cut" cx="403.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="403.2" cy="136.1" r="2"/>
+<circle class="cut" cx="403.2" cy="99.7" r="2.6"/>
+<circle class="wait" cx="403.2" cy="99.7" r="3.2"/>
+<circle class="drain" cx="403.2" cy="300.0" r="3"/>
+<circle class="wait" cx="403.2" cy="100.3" r="3.2"/>
+<circle class="cut" cx="403.3" cy="100.0" r="2.6"/>
+<circle class="ok" cx="403.3" cy="105.0" r="2"/>
+<circle class="cut" cx="403.9" cy="99.5" r="2.6"/>
+<circle class="ok" cx="404.5" cy="137.2" r="2"/>
+<circle class="ok" cx="404.7" cy="102.0" r="2"/>
+<circle class="ok" cx="406.7" cy="227.1" r="2"/>
+<circle class="cut" cx="407.2" cy="99.7" r="2.6"/>
+<circle class="ok" cx="407.7" cy="132.1" r="2"/>
+<circle class="ok" cx="407.8" cy="132.7" r="2"/>
+<circle class="ok" cx="407.8" cy="133.5" r="2"/>
+<circle class="ok" cx="407.8" cy="137.3" r="2"/>
+<circle class="ok" cx="407.9" cy="138.5" r="2"/>
+<circle class="ok" cx="408.4" cy="173.0" r="2"/>
+<circle class="ok" cx="408.5" cy="162.0" r="2"/>
+<circle class="ok" cx="409.1" cy="199.6" r="2"/>
+<circle class="ok" cx="409.3" cy="211.2" r="2"/>
+<circle class="ok" cx="409.3" cy="213.7" r="2"/>
+<circle class="ok" cx="411.8" cy="361.8" r="2"/>
+<circle class="ok" cx="411.8" cy="339.6" r="2"/>
+<circle class="ok" cx="411.9" cy="342.5" r="2"/>
+<circle class="ok" cx="411.9" cy="345.2" r="2"/>
+<circle class="ok" cx="411.9" cy="313.3" r="2"/>
+<circle class="ok" cx="411.9" cy="313.4" r="2"/>
+<circle class="ok" cx="411.9" cy="315.1" r="2"/>
+<circle class="ok" cx="412.0" cy="320.2" r="2"/>
+<circle class="ok" cx="412.0" cy="321.8" r="2"/>
+<circle class="ok" cx="412.1" cy="256.7" r="2"/>
+<circle class="ok" cx="412.1" cy="259.7" r="2"/>
+<circle class="ok" cx="412.2" cy="260.0" r="2"/>
+<circle class="ok" cx="412.4" cy="247.5" r="2"/>
+<circle class="ok" cx="412.4" cy="248.9" r="2"/>
+<circle class="ok" cx="412.6" cy="259.6" r="2"/>
+<circle class="ok" cx="413.0" cy="243.7" r="2"/>
+<circle class="ok" cx="413.0" cy="243.7" r="2"/>
+<circle class="ok" cx="413.1" cy="247.6" r="2"/>
+<circle class="ok" cx="413.1" cy="247.2" r="2"/>
+<circle class="ok" cx="413.2" cy="246.1" r="2"/>
+<circle class="ok" cx="414.1" cy="229.6" r="2"/>
+<circle class="ok" cx="414.2" cy="229.9" r="2"/>
+<circle class="ok" cx="414.2" cy="230.5" r="2"/>
+<circle class="ok" cx="414.5" cy="252.8" r="2"/>
+<circle class="ok" cx="414.5" cy="222.5" r="2"/>
+<circle class="cut" cx="414.6" cy="99.5" r="2.6"/>
+<circle class="cut" cx="415.2" cy="99.8" r="2.6"/>
+<circle class="wait" cx="415.3" cy="100.8" r="3.2"/>
+<circle class="ok" cx="415.3" cy="103.2" r="2"/>
+<circle class="ok" cx="415.6" cy="118.0" r="2"/>
+<circle class="ok" cx="415.8" cy="126.8" r="2"/>
+<circle class="ok" cx="416.6" cy="176.8" r="2"/>
+<circle class="ok" cx="416.6" cy="106.3" r="2"/>
+<circle class="ok" cx="416.7" cy="107.0" r="2"/>
+<circle class="ok" cx="416.9" cy="107.5" r="2"/>
+<circle class="cut" cx="417.1" cy="99.5" r="2.6"/>
+<circle class="ok" cx="419.2" cy="226.2" r="2"/>
+<circle class="ok" cx="419.8" cy="262.0" r="2"/>
+<circle class="ok" cx="419.8" cy="257.6" r="2"/>
+<circle class="ok" cx="419.9" cy="259.7" r="2"/>
+<circle class="ok" cx="420.0" cy="262.3" r="2"/>
+<circle class="ok" cx="420.1" cy="267.2" r="2"/>
+<circle class="ok" cx="420.2" cy="271.0" r="2"/>
+<circle class="ok" cx="421.1" cy="257.7" r="2"/>
+<circle class="ok" cx="421.4" cy="256.5" r="2"/>
+<circle class="ok" cx="421.5" cy="257.7" r="2"/>
+<circle class="ok" cx="421.7" cy="272.6" r="2"/>
+<circle class="ok" cx="421.8" cy="276.4" r="2"/>
+<circle class="ok" cx="421.8" cy="278.2" r="2"/>
+<circle class="ok" cx="421.8" cy="130.6" r="2"/>
+<circle class="ok" cx="421.9" cy="133.8" r="2"/>
+<circle class="ok" cx="422.1" cy="147.7" r="2"/>
+<circle class="ok" cx="422.2" cy="152.0" r="2"/>
+<circle class="ok" cx="422.3" cy="146.7" r="2"/>
+<circle class="ok" cx="423.1" cy="106.1" r="2"/>
+<circle class="ok" cx="423.4" cy="101.5" r="2"/>
+<circle class="ok" cx="423.5" cy="104.4" r="2"/>
+<circle class="ok" cx="423.5" cy="104.9" r="2"/>
+<circle class="ok" cx="423.6" cy="110.7" r="2"/>
+<circle class="ok" cx="424.1" cy="138.1" r="2"/>
+<circle class="ok" cx="425.9" cy="249.9" r="2"/>
+<circle class="ok" cx="425.9" cy="104.7" r="2"/>
+<circle class="ok" cx="426.0" cy="107.9" r="2"/>
+<circle class="ok" cx="426.5" cy="140.7" r="2"/>
+<circle class="ok" cx="426.5" cy="141.1" r="2"/>
+<circle class="ok" cx="427.6" cy="135.0" r="2"/>
+<circle class="ok" cx="428.0" cy="133.2" r="2"/>
+<circle class="drain" cx="428.0" cy="245.6" r="3"/>
+<circle class="ok" cx="428.1" cy="135.5" r="2"/>
+<circle class="ok" cx="428.2" cy="142.2" r="2"/>
+<circle class="ok" cx="428.2" cy="141.9" r="2"/>
+<circle class="ok" cx="430.2" cy="265.4" r="2"/>
+<circle class="ok" cx="430.4" cy="278.4" r="2"/>
+<circle class="ok" cx="430.5" cy="282.5" r="2"/>
+<circle class="ok" cx="430.5" cy="285.1" r="2"/>
+<circle class="ok" cx="430.6" cy="290.9" r="2"/>
+<circle class="ok" cx="431.9" cy="367.9" r="2"/>
+<circle class="ok" cx="432.0" cy="352.1" r="2"/>
+<circle class="ok" cx="432.1" cy="341.1" r="2"/>
+<circle class="ok" cx="432.1" cy="341.3" r="2"/>
+<circle class="ok" cx="432.1" cy="341.3" r="2"/>
+<circle class="ok" cx="432.1" cy="351.4" r="2"/>
+<circle class="ok" cx="432.1" cy="343.6" r="2"/>
+<circle class="ok" cx="432.1" cy="344.2" r="2"/>
+<circle class="ok" cx="432.2" cy="339.3" r="2"/>
+<circle class="ok" cx="432.2" cy="279.9" r="2"/>
+<circle class="ok" cx="432.5" cy="267.1" r="2"/>
+<circle class="ok" cx="432.5" cy="213.4" r="2"/>
+<circle class="ok" cx="432.7" cy="223.3" r="2"/>
+<circle class="ok" cx="432.7" cy="224.4" r="2"/>
+<circle class="ok" cx="432.7" cy="225.0" r="2"/>
+<circle class="ok" cx="432.8" cy="211.2" r="2"/>
+<circle class="ok" cx="432.9" cy="214.7" r="2"/>
+<circle class="ok" cx="433.0" cy="217.6" r="2"/>
+<circle class="ok" cx="433.0" cy="217.8" r="2"/>
+<circle class="ok" cx="433.9" cy="270.1" r="2"/>
+<circle class="ok" cx="434.4" cy="267.5" r="2"/>
+<circle class="ok" cx="435.3" cy="318.3" r="2"/>
+<circle class="ok" cx="435.3" cy="313.1" r="2"/>
+<circle class="ok" cx="435.3" cy="313.9" r="2"/>
+<circle class="ok" cx="435.3" cy="315.9" r="2"/>
+<circle class="ok" cx="435.5" cy="326.4" r="2"/>
+<circle class="ok" cx="435.6" cy="334.8" r="2"/>
+<circle class="ok" cx="435.7" cy="338.4" r="2"/>
+<circle class="ok" cx="437.7" cy="181.1" r="2"/>
+<circle class="ok" cx="437.8" cy="184.8" r="2"/>
+<circle class="drain" cx="437.8" cy="274.6" r="3"/>
+<circle class="ok" cx="437.9" cy="190.6" r="2"/>
+<circle class="ok" cx="437.9" cy="192.4" r="2"/>
+<circle class="ok" cx="438.1" cy="199.6" r="2"/>
+<circle class="drain" cx="438.1" cy="246.9" r="3"/>
+<circle class="ok" cx="438.2" cy="204.2" r="2"/>
+<circle class="ok" cx="438.3" cy="210.0" r="2"/>
+<circle class="ok" cx="438.4" cy="214.7" r="2"/>
+<circle class="ok" cx="439.5" cy="286.2" r="2"/>
+<circle class="ok" cx="440.3" cy="328.4" r="2"/>
+<circle class="ok" cx="441.0" cy="371.6" r="2"/>
+<circle class="ok" cx="441.0" cy="371.6" r="2"/>
+<circle class="ok" cx="441.0" cy="371.7" r="2"/>
+<circle class="ok" cx="441.0" cy="372.2" r="2"/>
+<circle class="ok" cx="441.0" cy="374.0" r="2"/>
+<circle class="ok" cx="441.0" cy="374.0" r="2"/>
+<circle class="ok" cx="441.1" cy="375.2" r="2"/>
+<circle class="ok" cx="441.1" cy="375.2" r="2"/>
+<circle class="ok" cx="441.1" cy="375.2" r="2"/>
+<circle class="ok" cx="441.1" cy="375.1" r="2"/>
+<circle class="ok" cx="441.1" cy="374.9" r="2"/>
+<circle class="ok" cx="441.1" cy="375.1" r="2"/>
+<circle class="ok" cx="441.1" cy="375.1" r="2"/>
+<circle class="ok" cx="441.1" cy="374.9" r="2"/>
+<circle class="ok" cx="441.1" cy="374.3" r="2"/>
+<circle class="ok" cx="441.1" cy="375.1" r="2"/>
+<circle class="ok" cx="441.1" cy="374.8" r="2"/>
+<circle class="ok" cx="441.1" cy="374.8" r="2"/>
+<circle class="ok" cx="441.2" cy="375.1" r="2"/>
+<circle class="ok" cx="441.2" cy="372.5" r="2"/>
+<circle class="ok" cx="441.2" cy="373.7" r="2"/>
+<circle class="ok" cx="441.3" cy="375.1" r="2"/>
+<circle class="ok" cx="441.3" cy="375.1" r="2"/>
+<circle class="ok" cx="441.3" cy="372.0" r="2"/>
+<circle class="ok" cx="441.3" cy="372.2" r="2"/>
+<circle class="ok" cx="441.3" cy="372.0" r="2"/>
+<circle class="ok" cx="441.3" cy="370.5" r="2"/>
+<circle class="ok" cx="441.3" cy="368.0" r="2"/>
+<circle class="ok" cx="441.3" cy="369.6" r="2"/>
+<circle class="ok" cx="441.4" cy="371.0" r="2"/>
+<circle class="ok" cx="441.4" cy="371.9" r="2"/>
+<circle class="ok" cx="441.4" cy="371.4" r="2"/>
+<circle class="ok" cx="441.4" cy="371.9" r="2"/>
+<circle class="ok" cx="441.4" cy="373.9" r="2"/>
+<circle class="ok" cx="441.5" cy="375.2" r="2"/>
+<circle class="ok" cx="441.5" cy="375.1" r="2"/>
+<circle class="ok" cx="441.5" cy="375.2" r="2"/>
+<circle class="ok" cx="441.5" cy="372.6" r="2"/>
+<circle class="ok" cx="441.5" cy="372.9" r="2"/>
+<circle class="ok" cx="441.6" cy="375.2" r="2"/>
+<circle class="ok" cx="441.6" cy="373.6" r="2"/>
+<circle class="ok" cx="441.6" cy="375.2" r="2"/>
+<circle class="ok" cx="441.6" cy="372.6" r="2"/>
+<circle class="ok" cx="441.6" cy="374.6" r="2"/>
+<circle class="ok" cx="441.7" cy="373.7" r="2"/>
+<circle class="ok" cx="441.7" cy="369.1" r="2"/>
+<circle class="ok" cx="441.7" cy="369.7" r="2"/>
+<circle class="ok" cx="441.7" cy="370.8" r="2"/>
+<circle class="ok" cx="441.7" cy="371.7" r="2"/>
+<circle class="ok" cx="441.7" cy="248.9" r="2"/>
+<circle class="ok" cx="441.7" cy="248.9" r="2"/>
+<circle class="ok" cx="441.8" cy="248.9" r="2"/>
+<circle class="ok" cx="441.8" cy="245.6" r="2"/>
+<circle class="ok" cx="441.8" cy="247.6" r="2"/>
+<circle class="ok" cx="441.8" cy="248.7" r="2"/>
+<circle class="ok" cx="441.8" cy="184.8" r="2"/>
+<circle class="ok" cx="441.8" cy="186.6" r="2"/>
+<circle class="ok" cx="441.9" cy="190.3" r="2"/>
+<circle class="ok" cx="442.0" cy="197.1" r="2"/>
+<circle class="ok" cx="443.9" cy="260.9" r="2"/>
+<circle class="ok" cx="444.0" cy="251.6" r="2"/>
+<circle class="ok" cx="444.0" cy="252.1" r="2"/>
+<circle class="ok" cx="444.0" cy="252.1" r="2"/>
+<circle class="ok" cx="444.2" cy="266.8" r="2"/>
+<circle class="ok" cx="444.2" cy="268.0" r="2"/>
+<circle class="ok" cx="445.0" cy="314.0" r="2"/>
+<circle class="ok" cx="445.0" cy="312.0" r="2"/>
+<circle class="ok" cx="445.0" cy="316.3" r="2"/>
+<circle class="ok" cx="445.1" cy="320.8" r="2"/>
+<circle class="ok" cx="445.9" cy="372.0" r="2"/>
+<circle class="ok" cx="446.0" cy="375.1" r="2"/>
+<circle class="ok" cx="446.1" cy="375.2" r="2"/>
+<circle class="ok" cx="446.1" cy="374.6" r="2"/>
+<circle class="ok" cx="446.1" cy="375.2" r="2"/>
+<circle class="ok" cx="446.1" cy="375.1" r="2"/>
+<circle class="ok" cx="446.1" cy="375.2" r="2"/>
+<circle class="ok" cx="446.2" cy="375.1" r="2"/>
+<circle class="ok" cx="446.2" cy="375.2" r="2"/>
+<circle class="ok" cx="446.2" cy="313.7" r="2"/>
+<circle class="ok" cx="446.2" cy="302.9" r="2"/>
+<circle class="ok" cx="446.2" cy="303.2" r="2"/>
+<circle class="ok" cx="446.3" cy="303.8" r="2"/>
+<circle class="ok" cx="446.3" cy="305.9" r="2"/>
+<circle class="ok" cx="446.3" cy="306.4" r="2"/>
+<circle class="ok" cx="446.3" cy="305.5" r="2"/>
+<circle class="ok" cx="446.3" cy="305.2" r="2"/>
+<circle class="ok" cx="446.6" cy="320.0" r="2"/>
+<circle class="ok" cx="446.8" cy="334.1" r="2"/>
+<circle class="ok" cx="447.4" cy="371.0" r="2"/>
+<circle class="ok" cx="447.5" cy="375.1" r="2"/>
+<circle class="ok" cx="447.5" cy="375.2" r="2"/>
+<circle class="ok" cx="447.5" cy="372.8" r="2"/>
+<circle class="ok" cx="447.6" cy="318.9" r="2"/>
+<circle class="ok" cx="447.6" cy="319.2" r="2"/>
+<circle class="ok" cx="447.6" cy="319.1" r="2"/>
+<circle class="ok" cx="447.6" cy="319.2" r="2"/>
+<circle class="ok" cx="447.7" cy="325.4" r="2"/>
+<circle class="ok" cx="447.7" cy="325.5" r="2"/>
+<circle class="ok" cx="447.7" cy="327.2" r="2"/>
+<circle class="ok" cx="447.7" cy="328.6" r="2"/>
+<circle class="ok" cx="447.9" cy="341.4" r="2"/>
+<circle class="ok" cx="448.3" cy="362.4" r="2"/>
+<circle class="ok" cx="448.6" cy="375.2" r="2"/>
+<circle class="ok" cx="448.6" cy="375.2" r="2"/>
+<circle class="ok" cx="448.6" cy="375.2" r="2"/>
+<circle class="ok" cx="448.6" cy="159.2" r="2"/>
+<circle class="ok" cx="448.6" cy="156.1" r="2"/>
+<circle class="ok" cx="448.6" cy="156.3" r="2"/>
+<circle class="ok" cx="448.6" cy="156.9" r="2"/>
+<circle class="ok" cx="448.6" cy="157.4" r="2"/>
+<circle class="ok" cx="448.6" cy="159.7" r="2"/>
+<circle class="cut" cx="448.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="448.7" cy="102.7" r="2"/>
+<circle class="ok" cx="448.9" cy="110.4" r="2"/>
+<circle class="ok" cx="449.0" cy="117.4" r="2"/>
+<circle class="ok" cx="452.2" cy="317.4" r="2"/>
+<circle class="ok" cx="452.3" cy="320.8" r="2"/>
+<circle class="ok" cx="452.3" cy="319.5" r="2"/>
+<circle class="ok" cx="452.3" cy="321.5" r="2"/>
+<circle class="ok" cx="452.4" cy="322.9" r="2"/>
+<circle class="ok" cx="452.4" cy="326.9" r="2"/>
+<circle class="ok" cx="453.2" cy="374.8" r="2"/>
+<circle class="ok" cx="453.2" cy="374.8" r="2"/>
+<circle class="ok" cx="453.3" cy="122.0" r="2"/>
+<circle class="ok" cx="453.3" cy="121.6" r="2"/>
+<circle class="ok" cx="453.3" cy="119.7" r="2"/>
+<circle class="ok" cx="453.3" cy="120.9" r="2"/>
+<circle class="ok" cx="453.3" cy="120.9" r="2"/>
+<circle class="cut" cx="453.4" cy="100.0" r="2.6"/>
+<circle class="ok" cx="453.5" cy="105.0" r="2"/>
+<circle class="ok" cx="453.5" cy="105.0" r="2"/>
+<circle class="cut" cx="453.6" cy="97.2" r="2.6"/>
+<circle class="ok" cx="453.7" cy="107.9" r="2"/>
+<circle class="ok" cx="457.5" cy="337.8" r="2"/>
+<circle class="ok" cx="457.5" cy="107.9" r="2"/>
+<circle class="ok" cx="457.5" cy="110.4" r="2"/>
+<circle class="ok" cx="457.5" cy="109.0" r="2"/>
+<circle class="ok" cx="457.6" cy="114.5" r="2"/>
+<circle class="ok" cx="458.0" cy="135.8" r="2"/>
+<circle class="ok" cx="458.0" cy="136.1" r="2"/>
+<circle class="ok" cx="458.1" cy="146.0" r="2"/>
+<circle class="cut" cx="458.2" cy="100.0" r="2.6"/>
+<circle class="ok" cx="458.3" cy="106.4" r="2"/>
+<circle class="ok" cx="458.4" cy="112.4" r="2"/>
+<circle class="ok" cx="461.9" cy="329.5" r="2"/>
+<circle class="ok" cx="462.0" cy="331.8" r="2"/>
+<circle class="cut" cx="462.0" cy="99.8" r="2.6"/>
+<circle class="wait" cx="462.0" cy="100.0" r="3.2"/>
+<circle class="wait" cx="462.0" cy="101.2" r="3.2"/>
+<circle class="ok" cx="462.1" cy="105.6" r="2"/>
+<circle class="ok" cx="462.1" cy="108.4" r="2"/>
+<circle class="ok" cx="462.7" cy="145.0" r="2"/>
+<circle class="cut" cx="462.8" cy="99.8" r="2.6"/>
+<circle class="wait" cx="462.8" cy="101.4" r="3.2"/>
+<circle class="cut" cx="462.9" cy="99.8" r="2.6"/>
+<circle class="ok" cx="463.5" cy="129.5" r="2"/>
+<circle class="ok" cx="466.5" cy="315.7" r="2"/>
+<circle class="ok" cx="466.5" cy="316.5" r="2"/>
+<circle class="ok" cx="466.5" cy="285.6" r="2"/>
+<circle class="ok" cx="466.6" cy="287.0" r="2"/>
+<circle class="ok" cx="466.6" cy="289.6" r="2"/>
+<circle class="ok" cx="466.7" cy="296.0" r="2"/>
+<circle class="ok" cx="467.4" cy="337.1" r="2"/>
+<circle class="ok" cx="467.4" cy="335.8" r="2"/>
+<circle class="ok" cx="467.6" cy="345.7" r="2"/>
+<circle class="ok" cx="467.6" cy="344.0" r="2"/>
+<circle class="ok" cx="467.7" cy="184.3" r="2"/>
+<circle class="ok" cx="467.8" cy="148.2" r="2"/>
+<circle class="ok" cx="468.1" cy="166.4" r="2"/>
+<circle class="ok" cx="468.1" cy="166.4" r="2"/>
+<circle class="cut" cx="468.1" cy="99.8" r="2.6"/>
+<circle class="wait" cx="468.1" cy="100.6" r="3.2"/>
+<circle class="wait" cx="468.1" cy="100.6" r="3.2"/>
+<circle class="cut" cx="468.2" cy="99.8" r="2.6"/>
+<circle class="wait" cx="468.2" cy="100.0" r="3.2"/>
+<circle class="ok" cx="468.3" cy="107.8" r="2"/>
+<circle class="ok" cx="470.9" cy="263.9" r="2"/>
+<circle class="ok" cx="471.5" cy="305.3" r="2"/>
+<circle class="ok" cx="471.6" cy="310.2" r="2"/>
+<circle class="ok" cx="472.3" cy="351.8" r="2"/>
+<circle class="ok" cx="472.7" cy="370.5" r="2"/>
+<circle class="ok" cx="472.7" cy="370.6" r="2"/>
+<circle class="ok" cx="472.7" cy="370.6" r="2"/>
+<circle class="ok" cx="472.7" cy="371.6" r="2"/>
+<circle class="ok" cx="472.7" cy="373.1" r="2"/>
+<circle class="ok" cx="472.8" cy="365.6" r="2"/>
+<circle class="ok" cx="472.8" cy="365.9" r="2"/>
+<circle class="ok" cx="472.8" cy="182.9" r="2"/>
+<circle class="ok" cx="472.8" cy="182.8" r="2"/>
+<circle class="ok" cx="472.8" cy="155.8" r="2"/>
+<circle class="cut" cx="472.9" cy="100.0" r="2.6"/>
+<circle class="ok" cx="472.9" cy="100.3" r="2"/>
+<circle class="ok" cx="473.0" cy="108.7" r="2"/>
+<circle class="ok" cx="473.1" cy="103.5" r="2"/>
+<circle class="ok" cx="473.1" cy="104.6" r="2"/>
+<circle class="ok" cx="473.3" cy="118.2" r="2"/>
+<circle class="ok" cx="475.0" cy="206.3" r="2"/>
+<circle class="ok" cx="476.0" cy="198.7" r="2"/>
+<circle class="ok" cx="476.6" cy="232.0" r="2"/>
+<circle class="ok" cx="477.4" cy="283.1" r="2"/>
+<circle class="ok" cx="477.4" cy="283.7" r="2"/>
+<circle class="ok" cx="477.4" cy="285.1" r="2"/>
+<circle class="ok" cx="477.6" cy="294.1" r="2"/>
+<circle class="ok" cx="477.7" cy="297.7" r="2"/>
+<circle class="ok" cx="477.8" cy="304.2" r="2"/>
+<circle class="ok" cx="477.9" cy="309.6" r="2"/>
+<circle class="ok" cx="479.0" cy="158.4" r="2"/>
+<circle class="cut" cx="479.0" cy="97.8" r="2.6"/>
+<circle class="wait" cx="479.0" cy="100.1" r="3.2"/>
+<circle class="wait" cx="479.0" cy="101.1" r="3.2"/>
+<circle class="cut" cx="479.1" cy="100.0" r="2.6"/>
+<circle class="ok" cx="479.1" cy="103.8" r="2"/>
+<circle class="ok" cx="479.2" cy="104.7" r="2"/>
+<circle class="cut" cx="479.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="479.2" cy="102.0" r="2"/>
+<circle class="cut" cx="479.3" cy="99.8" r="2.6"/>
+<circle class="ok" cx="482.7" cy="305.6" r="2"/>
+<circle class="ok" cx="483.6" cy="357.8" r="2"/>
+<circle class="ok" cx="483.6" cy="360.7" r="2"/>
+<circle class="ok" cx="483.6" cy="361.9" r="2"/>
+<circle class="ok" cx="483.7" cy="360.7" r="2"/>
+<circle class="ok" cx="483.7" cy="301.3" r="2"/>
+<circle class="ok" cx="483.8" cy="305.2" r="2"/>
+<circle class="ok" cx="483.9" cy="315.6" r="2"/>
+<circle class="ok" cx="483.9" cy="316.5" r="2"/>
+<circle class="ok" cx="484.0" cy="318.5" r="2"/>
+<circle class="ok" cx="484.0" cy="318.8" r="2"/>
+<circle class="ok" cx="484.0" cy="318.6" r="2"/>
+<circle class="ok" cx="484.0" cy="320.6" r="2"/>
+<circle class="ok" cx="484.0" cy="252.1" r="2"/>
+<circle class="ok" cx="484.1" cy="257.4" r="2"/>
+<circle class="ok" cx="485.0" cy="234.0" r="2"/>
+<circle class="ok" cx="485.0" cy="231.6" r="2"/>
+<circle class="ok" cx="485.0" cy="193.3" r="2"/>
+<circle class="ok" cx="485.0" cy="179.2" r="2"/>
+<circle class="ok" cx="485.0" cy="180.3" r="2"/>
+<circle class="ok" cx="485.1" cy="182.1" r="2"/>
+<circle class="ok" cx="485.1" cy="187.8" r="2"/>
+<circle class="ok" cx="485.2" cy="186.3" r="2"/>
+<circle class="ok" cx="486.2" cy="168.4" r="2"/>
+<circle class="ok" cx="486.8" cy="204.5" r="2"/>
+<circle class="ok" cx="487.4" cy="149.1" r="2"/>
+<circle class="ok" cx="487.4" cy="135.0" r="2"/>
+<circle class="ok" cx="488.3" cy="186.4" r="2"/>
+<circle class="ok" cx="488.3" cy="186.9" r="2"/>
+<circle class="ok" cx="488.3" cy="150.3" r="2"/>
+<circle class="ok" cx="488.5" cy="154.9" r="2"/>
+<circle class="ok" cx="488.7" cy="148.9" r="2"/>
+<circle class="ok" cx="488.8" cy="150.9" r="2"/>
+<circle class="ok" cx="490.0" cy="143.4" r="2"/>
+<circle class="ok" cx="491.2" cy="105.2" r="2"/>
+<circle class="ok" cx="491.4" cy="121.6" r="2"/>
+<circle class="ok" cx="491.4" cy="122.2" r="2"/>
+<circle class="ok" cx="491.4" cy="122.8" r="2"/>
+<circle class="ok" cx="491.6" cy="134.4" r="2"/>
+<circle class="ok" cx="492.2" cy="122.9" r="2"/>
+<circle class="ok" cx="492.3" cy="115.6" r="2"/>
+<circle class="ok" cx="492.6" cy="134.1" r="2"/>
+<circle class="cut" cx="492.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="494.1" cy="127.2" r="2"/>
+<circle class="ok" cx="495.7" cy="219.9" r="2"/>
+<circle class="ok" cx="495.7" cy="220.7" r="2"/>
+<circle class="ok" cx="495.7" cy="222.4" r="2"/>
+<circle class="ok" cx="495.8" cy="213.1" r="2"/>
+<circle class="ok" cx="496.1" cy="231.3" r="2"/>
+<circle class="ok" cx="496.4" cy="203.6" r="2"/>
+<circle class="ok" cx="496.7" cy="209.5" r="2"/>
+<circle class="ok" cx="496.9" cy="221.3" r="2"/>
+<circle class="ok" cx="497.3" cy="245.9" r="2"/>
+<circle class="ok" cx="498.2" cy="305.3" r="2"/>
+<circle class="ok" cx="498.2" cy="221.3" r="2"/>
+<circle class="ok" cx="498.3" cy="102.0" r="2"/>
+<circle class="ok" cx="498.3" cy="102.9" r="2"/>
+<circle class="ok" cx="499.1" cy="145.1" r="2"/>
+<circle class="ok" cx="499.3" cy="110.7" r="2"/>
+<circle class="ok" cx="499.5" cy="121.7" r="2"/>
+<circle class="cut" cx="499.5" cy="100.0" r="2.6"/>
+<circle class="wait" cx="499.5" cy="100.0" r="3.2"/>
+<circle class="ok" cx="499.5" cy="102.0" r="2"/>
+<circle class="cut" cx="500.8" cy="99.8" r="2.6"/>
+<circle class="ok" cx="501.4" cy="132.1" r="2"/>
+<circle class="cut" cx="502.9" cy="99.8" r="2.6"/>
+<circle class="cut" cx="503.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="503.0" cy="104.6" r="2"/>
+<circle class="cut" cx="503.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="503.8" cy="100.8" r="2"/>
+<circle class="ok" cx="504.1" cy="118.2" r="2"/>
+<circle class="ok" cx="504.1" cy="118.2" r="2"/>
+<circle class="ok" cx="504.3" cy="130.6" r="2"/>
+<circle class="ok" cx="505.4" cy="198.5" r="2"/>
+<circle class="ok" cx="505.7" cy="219.6" r="2"/>
+<circle class="ok" cx="507.4" cy="322.9" r="2"/>
+<circle class="ok" cx="507.5" cy="329.2" r="2"/>
+<circle class="ok" cx="508.3" cy="375.2" r="2"/>
+<circle class="ok" cx="508.3" cy="375.2" r="2"/>
+<circle class="ok" cx="508.3" cy="145.4" r="2"/>
+<circle class="ok" cx="508.3" cy="139.2" r="2"/>
+<circle class="ok" cx="508.3" cy="137.0" r="2"/>
+<circle class="ok" cx="508.4" cy="138.1" r="2"/>
+<circle class="cut" cx="508.4" cy="99.8" r="2.6"/>
+<circle class="wait" cx="508.4" cy="100.4" r="3.2"/>
+<circle class="wait" cx="508.4" cy="100.4" r="3.2"/>
+<circle class="wait" cx="508.4" cy="100.9" r="3.2"/>
+<circle class="cut" cx="508.4" cy="100.0" r="2.6"/>
+<circle class="ok" cx="508.8" cy="108.4" r="2"/>
+<circle class="ok" cx="512.2" cy="315.6" r="2"/>
+<circle class="ok" cx="512.3" cy="317.2" r="2"/>
+<circle class="ok" cx="512.3" cy="296.9" r="2"/>
+<circle class="ok" cx="512.3" cy="295.7" r="2"/>
+<circle class="ok" cx="512.9" cy="308.4" r="2"/>
+<circle class="ok" cx="512.9" cy="308.7" r="2"/>
+<circle class="ok" cx="512.9" cy="308.7" r="2"/>
+<circle class="ok" cx="512.9" cy="308.7" r="2"/>
+<circle class="ok" cx="513.0" cy="313.1" r="2"/>
+<circle class="ok" cx="513.3" cy="329.8" r="2"/>
+<circle class="ok" cx="513.4" cy="317.4" r="2"/>
+<circle class="cut" cx="513.5" cy="99.8" r="2.6"/>
+<circle class="ok" cx="513.7" cy="113.9" r="2"/>
+<circle class="cut" cx="513.7" cy="100.0" r="2.6"/>
+<circle class="cut" cx="514.1" cy="100.0" r="2.6"/>
+<circle class="wait" cx="514.1" cy="100.3" r="3.2"/>
+<circle class="wait" cx="514.1" cy="101.4" r="3.2"/>
+<circle class="cut" cx="514.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="514.1" cy="101.7" r="2"/>
+<circle class="ok" cx="514.2" cy="104.1" r="2"/>
+<circle class="ok" cx="516.2" cy="219.6" r="2"/>
+<circle class="ok" cx="518.0" cy="329.2" r="2"/>
+<circle class="ok" cx="518.1" cy="119.3" r="2"/>
+<circle class="ok" cx="518.3" cy="131.4" r="2"/>
+<circle class="ok" cx="518.7" cy="152.8" r="2"/>
+<circle class="ok" cx="518.7" cy="139.2" r="2"/>
+<circle class="ok" cx="518.7" cy="139.2" r="2"/>
+<circle class="ok" cx="518.7" cy="140.2" r="2"/>
+<circle class="ok" cx="518.8" cy="148.3" r="2"/>
+<circle class="ok" cx="518.8" cy="150.3" r="2"/>
+<circle class="ok" cx="518.9" cy="153.4" r="2"/>
+<circle class="ok" cx="520.4" cy="248.4" r="2"/>
+<circle class="ok" cx="522.4" cy="260.3" r="2"/>
+<circle class="ok" cx="522.4" cy="258.0" r="2"/>
+<circle class="ok" cx="522.4" cy="260.9" r="2"/>
+<circle class="ok" cx="522.6" cy="269.2" r="2"/>
+<circle class="ok" cx="522.6" cy="269.4" r="2"/>
+<circle class="cut" cx="522.6" cy="99.7" r="2.6"/>
+<circle class="wait" cx="522.6" cy="101.1" r="3.2"/>
+<circle class="wait" cx="522.6" cy="101.4" r="3.2"/>
+<circle class="ok" cx="522.7" cy="102.6" r="2"/>
+<circle class="ok" cx="523.3" cy="139.5" r="2"/>
+<circle class="ok" cx="524.4" cy="147.0" r="2"/>
+<circle class="ok" cx="524.4" cy="148.3" r="2"/>
+<circle class="cut" cx="524.4" cy="99.8" r="2.6"/>
+<circle class="wait" cx="524.4" cy="100.6" r="3.2"/>
+<circle class="ok" cx="524.5" cy="102.0" r="2"/>
+<circle class="ok" cx="527.2" cy="268.0" r="2"/>
+<circle class="ok" cx="527.2" cy="268.1" r="2"/>
+<circle class="cut" cx="527.3" cy="99.8" r="2.6"/>
+<circle class="cut" cx="527.3" cy="99.8" r="2.6"/>
+<circle class="wait" cx="527.3" cy="101.1" r="3.2"/>
+<circle class="ok" cx="528.5" cy="155.2" r="2"/>
+<circle class="cut" cx="528.5" cy="100.0" r="2.6"/>
+<circle class="ok" cx="529.0" cy="119.3" r="2"/>
+<circle class="ok" cx="529.0" cy="119.7" r="2"/>
+<circle class="ok" cx="529.0" cy="108.9" r="2"/>
+<circle class="ok" cx="529.0" cy="108.7" r="2"/>
+<circle class="ok" cx="529.1" cy="110.7" r="2"/>
+<circle class="ok" cx="531.8" cy="278.5" r="2"/>
+<circle class="ok" cx="531.9" cy="285.0" r="2"/>
+<circle class="ok" cx="531.9" cy="286.2" r="2"/>
+<circle class="ok" cx="532.3" cy="306.8" r="2"/>
+<circle class="ok" cx="533.1" cy="357.6" r="2"/>
+<circle class="ok" cx="533.2" cy="361.2" r="2"/>
+<circle class="ok" cx="533.2" cy="364.7" r="2"/>
+<circle class="ok" cx="533.5" cy="375.2" r="2"/>
+<circle class="ok" cx="533.5" cy="359.6" r="2"/>
+<circle class="ok" cx="533.5" cy="238.8" r="2"/>
+<circle class="ok" cx="533.5" cy="240.3" r="2"/>
+<circle class="ok" cx="533.5" cy="241.1" r="2"/>
+<circle class="ok" cx="533.6" cy="236.6" r="2"/>
+<circle class="ok" cx="533.6" cy="237.2" r="2"/>
+<circle class="ok" cx="533.6" cy="214.3" r="2"/>
+<circle class="ok" cx="533.6" cy="218.1" r="2"/>
+<circle class="ok" cx="533.7" cy="223.3" r="2"/>
+<circle class="ok" cx="533.8" cy="203.0" r="2"/>
+<circle class="ok" cx="534.1" cy="217.5" r="2"/>
+<circle class="ok" cx="535.8" cy="201.6" r="2"/>
+<circle class="ok" cx="535.9" cy="205.9" r="2"/>
+<circle class="cut" cx="536.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="536.1" cy="104.7" r="2"/>
+<circle class="ok" cx="536.1" cy="101.8" r="2"/>
+<circle class="ok" cx="536.3" cy="112.7" r="2"/>
+<circle class="cut" cx="536.3" cy="99.8" r="2.6"/>
+<circle class="wait" cx="536.3" cy="100.0" r="3.2"/>
+<circle class="ok" cx="536.7" cy="99.8" r="2"/>
+<circle class="ok" cx="536.9" cy="108.6" r="2"/>
+<circle class="ok" cx="538.7" cy="208.5" r="2"/>
+<circle class="cut" cx="538.8" cy="100.0" r="2.6"/>
+<circle class="ok" cx="540.6" cy="211.7" r="2"/>
+<circle class="cut" cx="540.6" cy="99.8" r="2.6"/>
+<circle class="cut" cx="540.6" cy="99.8" r="2.6"/>
+<circle class="ok" cx="540.7" cy="101.8" r="2"/>
+<circle class="ok" cx="540.9" cy="114.2" r="2"/>
+<circle class="cut" cx="541.0" cy="99.8" r="2.6"/>
+<circle class="cut" cx="541.3" cy="99.8" r="2.6"/>
+<circle class="wait" cx="541.4" cy="101.2" r="3.2"/>
+<circle class="cut" cx="541.5" cy="99.8" r="2.6"/>
+<circle class="ok" cx="543.4" cy="213.7" r="2"/>
+<circle class="ok" cx="543.6" cy="225.8" r="2"/>
+<circle class="ok" cx="545.2" cy="323.8" r="2"/>
+<circle class="ok" cx="545.3" cy="330.7" r="2"/>
+<circle class="ok" cx="545.3" cy="332.1" r="2"/>
+<circle class="ok" cx="545.3" cy="306.2" r="2"/>
+<circle class="ok" cx="545.7" cy="325.8" r="2"/>
+<circle class="ok" cx="545.9" cy="339.6" r="2"/>
+<circle class="ok" cx="546.0" cy="332.9" r="2"/>
+<circle class="ok" cx="546.1" cy="326.7" r="2"/>
+<circle class="ok" cx="546.1" cy="241.4" r="2"/>
+<circle class="ok" cx="546.1" cy="244.9" r="2"/>
+<circle class="ok" cx="546.2" cy="171.7" r="2"/>
+<circle class="ok" cx="546.2" cy="170.5" r="2"/>
+<circle class="ok" cx="546.3" cy="176.0" r="2"/>
+<circle class="ok" cx="546.5" cy="189.6" r="2"/>
+<circle class="ok" cx="546.6" cy="165.9" r="2"/>
+<circle class="ok" cx="546.6" cy="167.6" r="2"/>
+<circle class="ok" cx="546.9" cy="155.7" r="2"/>
+<circle class="ok" cx="546.9" cy="132.9" r="2"/>
+<circle class="ok" cx="548.4" cy="223.2" r="2"/>
+<circle class="ok" cx="548.9" cy="256.5" r="2"/>
+<circle class="ok" cx="549.6" cy="223.2" r="2"/>
+<circle class="ok" cx="549.7" cy="205.9" r="2"/>
+<circle class="ok" cx="549.8" cy="212.7" r="2"/>
+<circle class="ok" cx="550.2" cy="208.8" r="2"/>
+<circle class="ok" cx="550.4" cy="101.7" r="2"/>
+<circle class="cut" cx="550.5" cy="99.7" r="2.6"/>
+<circle class="wait" cx="550.6" cy="101.1" r="3.2"/>
+<circle class="ok" cx="550.9" cy="109.9" r="2"/>
+<circle class="cut" cx="551.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="551.1" cy="105.0" r="2"/>
+<circle class="ok" cx="552.3" cy="101.4" r="2"/>
+<circle class="cut" cx="552.6" cy="99.8" r="2.6"/>
+<circle class="cut" cx="552.7" cy="100.0" r="2.6"/>
+<circle class="ok" cx="553.1" cy="100.4" r="2"/>
+<circle class="cut" cx="555.1" cy="99.2" r="2.6"/>
+<circle class="ok" cx="555.1" cy="102.1" r="2"/>
+<circle class="ok" cx="555.2" cy="104.9" r="2"/>
+<circle class="cut" cx="555.3" cy="100.0" r="2.6"/>
+<circle class="ok" cx="555.5" cy="111.6" r="2"/>
+<circle class="ok" cx="555.6" cy="117.4" r="2"/>
+<circle class="ok" cx="556.9" cy="117.3" r="2"/>
+<circle class="ok" cx="557.2" cy="139.9" r="2"/>
+<circle class="cut" cx="557.6" cy="99.8" r="2.6"/>
+<circle class="wait" cx="557.6" cy="100.8" r="3.2"/>
+<circle class="ok" cx="559.7" cy="228.7" r="2"/>
+<circle class="ok" cx="559.7" cy="202.3" r="2"/>
+<circle class="ok" cx="559.9" cy="186.4" r="2"/>
+<circle class="ok" cx="559.9" cy="187.8" r="2"/>
+<circle class="ok" cx="560.0" cy="196.2" r="2"/>
+<circle class="ok" cx="561.0" cy="255.1" r="2"/>
+<circle class="ok" cx="561.2" cy="188.7" r="2"/>
+<circle class="ok" cx="561.2" cy="122.2" r="2"/>
+<circle class="ok" cx="562.3" cy="192.1" r="2"/>
+<circle class="ok" cx="562.7" cy="211.7" r="2"/>
+<circle class="ok" cx="562.7" cy="211.7" r="2"/>
+<circle class="ok" cx="562.7" cy="184.4" r="2"/>
+<circle class="ok" cx="563.0" cy="180.0" r="2"/>
+<circle class="ok" cx="563.0" cy="102.4" r="2"/>
+<circle class="ok" cx="563.0" cy="103.4" r="2"/>
+<circle class="ok" cx="563.1" cy="109.3" r="2"/>
+<circle class="ok" cx="564.3" cy="106.3" r="2"/>
+<circle class="ok" cx="565.5" cy="174.7" r="2"/>
+<circle class="ok" cx="565.5" cy="102.0" r="2"/>
+<circle class="ok" cx="565.6" cy="111.3" r="2"/>
+<circle class="cut" cx="565.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="566.0" cy="117.6" r="2"/>
+<circle class="ok" cx="566.3" cy="124.0" r="2"/>
+<circle class="cut" cx="566.3" cy="70.0" r="2.6"/>
+<circle class="ok" cx="566.4" cy="70.0" r="2"/>
+<circle class="ok" cx="566.4" cy="70.0" r="2"/>
+<circle class="wait" cx="566.4" cy="70.0" r="3.2"/>
+<circle class="ok" cx="567.6" cy="165.3" r="2"/>
+<circle class="ok" cx="567.6" cy="167.8" r="2"/>
+<circle class="ok" cx="568.2" cy="201.4" r="2"/>
+<circle class="ok" cx="568.9" cy="246.1" r="2"/>
+<circle class="cut" cx="569.1" cy="99.8" r="2.6"/>
+<circle class="cut" cx="570.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="570.3" cy="104.9" r="2"/>
+<circle class="ok" cx="570.3" cy="106.9" r="2"/>
+<circle class="ok" cx="570.3" cy="106.3" r="2"/>
+<circle class="cut" cx="571.1" cy="99.8" r="2.6"/>
+<circle class="wait" cx="571.1" cy="101.4" r="3.2"/>
+<circle class="cut" cx="571.1" cy="99.7" r="2.6"/>
+<circle class="wait" cx="571.1" cy="100.4" r="3.2"/>
+<circle class="ok" cx="573.7" cy="260.5" r="2"/>
+<circle class="ok" cx="574.8" cy="323.8" r="2"/>
+<circle class="ok" cx="574.8" cy="317.4" r="2"/>
+<circle class="ok" cx="574.8" cy="314.0" r="2"/>
+<circle class="ok" cx="574.9" cy="315.3" r="2"/>
+<circle class="ok" cx="575.6" cy="349.7" r="2"/>
+<circle class="ok" cx="575.6" cy="350.6" r="2"/>
+<circle class="ok" cx="575.6" cy="351.2" r="2"/>
+<circle class="ok" cx="575.7" cy="260.8" r="2"/>
+<circle class="ok" cx="575.7" cy="264.3" r="2"/>
+<circle class="ok" cx="575.8" cy="264.9" r="2"/>
+<circle class="ok" cx="575.9" cy="245.3" r="2"/>
+<circle class="cut" cx="576.1" cy="99.8" r="2.6"/>
+<circle class="wait" cx="576.1" cy="101.1" r="3.2"/>
+<circle class="cut" cx="576.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="576.2" cy="103.7" r="2"/>
+<circle class="ok" cx="577.7" cy="102.7" r="2"/>
+<circle class="ok" cx="577.8" cy="113.5" r="2"/>
+<circle class="ok" cx="577.8" cy="111.2" r="2"/>
+<circle class="cut" cx="578.2" cy="99.7" r="2.6"/>
+<circle class="ok" cx="580.6" cy="251.9" r="2"/>
+<circle class="ok" cx="580.7" cy="253.4" r="2"/>
+<circle class="ok" cx="580.7" cy="255.1" r="2"/>
+<circle class="ok" cx="580.8" cy="257.9" r="2"/>
+<circle class="ok" cx="582.3" cy="241.5" r="2"/>
+<circle class="ok" cx="582.4" cy="246.7" r="2"/>
+<circle class="ok" cx="582.6" cy="245.5" r="2"/>
+<circle class="ok" cx="582.8" cy="240.1" r="2"/>
+<circle class="ok" cx="582.8" cy="240.4" r="2"/>
+<circle class="ok" cx="582.8" cy="241.7" r="2"/>
+<circle class="ok" cx="582.9" cy="247.5" r="2"/>
+<circle class="ok" cx="582.9" cy="250.7" r="2"/>
+<circle class="ok" cx="583.0" cy="240.0" r="2"/>
+<circle class="ok" cx="584.6" cy="226.7" r="2"/>
+<circle class="ok" cx="584.7" cy="232.2" r="2"/>
+<circle class="ok" cx="584.9" cy="237.2" r="2"/>
+<circle class="ok" cx="585.0" cy="221.3" r="2"/>
+<circle class="ok" cx="585.1" cy="224.8" r="2"/>
+<circle class="ok" cx="585.1" cy="201.1" r="2"/>
+<circle class="ok" cx="585.1" cy="201.9" r="2"/>
+<circle class="ok" cx="585.2" cy="158.7" r="2"/>
+<circle class="drain" cx="585.3" cy="153.2" r="3"/>
+<circle class="ok" cx="587.2" cy="240.3" r="2"/>
+<circle class="ok" cx="587.2" cy="113.5" r="2"/>
+<circle class="ok" cx="587.3" cy="106.6" r="2"/>
+<circle class="ok" cx="587.6" cy="103.2" r="2"/>
+<circle class="drain" cx="587.6" cy="160.4" r="3"/>
+<circle class="ok" cx="588.1" cy="133.0" r="2"/>
+<circle class="ok" cx="588.1" cy="108.7" r="2"/>
+<circle class="ok" cx="589.1" cy="140.7" r="2"/>
+<circle class="cut" cx="589.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="589.4" cy="120.8" r="2"/>
+<circle class="ok" cx="591.1" cy="224.5" r="2"/>
+<circle class="ok" cx="591.6" cy="125.2" r="2"/>
+<circle class="ok" cx="591.9" cy="141.5" r="2"/>
+<circle class="drain" cx="592.1" cy="305.8" r="3"/>
+<circle class="ok" cx="592.1" cy="140.2" r="2"/>
+<circle class="ok" cx="592.6" cy="144.8" r="2"/>
+<circle class="ok" cx="593.0" cy="132.6" r="2"/>
+<circle class="ok" cx="593.3" cy="135.6" r="2"/>
+<circle class="ok" cx="593.7" cy="159.7" r="2"/>
+<circle class="ok" cx="593.7" cy="160.6" r="2"/>
+<circle class="ok" cx="593.8" cy="165.3" r="2"/>
+<circle class="ok" cx="595.8" cy="161.3" r="2"/>
+<circle class="cut" cx="595.9" cy="99.8" r="2.6"/>
+<circle class="drain" cx="596.1" cy="160.4" r="3"/>
+<circle class="ok" cx="596.4" cy="109.0" r="2"/>
+<circle class="drain" cx="597.0" cy="142.8" r="3"/>
+<circle class="ok" cx="597.2" cy="112.2" r="2"/>
+<circle class="ok" cx="597.2" cy="100.1" r="2"/>
+<circle class="ok" cx="597.3" cy="103.8" r="2"/>
+<circle class="cut" cx="597.4" cy="99.8" r="2.6"/>
+<circle class="cut" cx="599.4" cy="99.5" r="2.6"/>
+<circle class="ok" cx="599.7" cy="118.8" r="2"/>
+<circle class="drain" cx="600.5" cy="261.9" r="3"/>
+<circle class="ok" cx="600.9" cy="122.5" r="2"/>
+<circle class="ok" cx="600.9" cy="147.3" r="2"/>
+<circle class="ok" cx="601.6" cy="162.3" r="2"/>
+<circle class="drain" cx="601.8" cy="210.5" r="3"/>
+<circle class="ok" cx="601.9" cy="181.7" r="2"/>
+<circle class="cut" cx="602.1" cy="99.8" r="2.6"/>
+<circle class="drain" cx="602.5" cy="200.4" r="3"/>
+<circle class="ok" cx="603.9" cy="210.3" r="2"/>
+<circle class="ok" cx="604.0" cy="214.9" r="2"/>
+<circle class="ok" cx="604.6" cy="249.0" r="2"/>
+<circle class="ok" cx="604.7" cy="204.9" r="2"/>
+<circle class="ok" cx="605.1" cy="227.7" r="2"/>
+<circle class="ok" cx="605.2" cy="202.0" r="2"/>
+<circle class="ok" cx="605.3" cy="147.9" r="2"/>
+<circle class="ok" cx="606.7" cy="230.2" r="2"/>
+<circle class="ok" cx="606.7" cy="234.0" r="2"/>
+<circle class="ok" cx="606.7" cy="235.2" r="2"/>
+<circle class="ok" cx="606.8" cy="235.7" r="2"/>
+<circle class="ok" cx="606.8" cy="128.1" r="2"/>
+<circle class="ok" cx="607.6" cy="122.6" r="2"/>
+<circle class="ok" cx="607.7" cy="127.8" r="2"/>
+<circle class="ok" cx="608.2" cy="125.7" r="2"/>
+<circle class="ok" cx="609.1" cy="180.9" r="2"/>
+<circle class="ok" cx="609.1" cy="184.4" r="2"/>
+<circle class="ok" cx="609.2" cy="185.5" r="2"/>
+<circle class="ok" cx="609.2" cy="185.7" r="2"/>
+<circle class="ok" cx="609.2" cy="190.0" r="2"/>
+<circle class="ok" cx="610.9" cy="182.9" r="2"/>
+<circle class="ok" cx="611.8" cy="169.0" r="2"/>
+<circle class="ok" cx="611.8" cy="155.4" r="2"/>
+<circle class="ok" cx="612.4" cy="187.8" r="2"/>
+<circle class="ok" cx="612.4" cy="157.1" r="2"/>
+<circle class="drain" cx="612.4" cy="270.3" r="3"/>
+<circle class="ok" cx="612.4" cy="158.4" r="2"/>
+<circle class="cut" cx="612.4" cy="100.0" r="2.6"/>
+<circle class="ok" cx="612.7" cy="114.5" r="2"/>
+<circle class="cut" cx="614.1" cy="99.7" r="2.6"/>
+<circle class="wait" cx="614.1" cy="101.1" r="3.2"/>
+<circle class="ok" cx="615.3" cy="99.8" r="2"/>
+<circle class="ok" cx="615.5" cy="114.4" r="2"/>
+<circle class="ok" cx="615.5" cy="116.2" r="2"/>
+<circle class="ok" cx="616.0" cy="144.1" r="2"/>
+<circle class="ok" cx="616.1" cy="118.0" r="2"/>
+<circle class="cut" cx="617.2" cy="99.7" r="2.6"/>
+<circle class="cut" cx="617.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="618.7" cy="189.6" r="2"/>
+<circle class="ok" cx="618.7" cy="189.6" r="2"/>
+<circle class="ok" cx="619.8" cy="258.0" r="2"/>
+<circle class="ok" cx="619.8" cy="190.6" r="2"/>
+<circle class="ok" cx="619.9" cy="193.0" r="2"/>
+<circle class="ok" cx="620.4" cy="189.6" r="2"/>
+<circle class="ok" cx="620.5" cy="168.4" r="2"/>
+<circle class="ok" cx="621.8" cy="249.2" r="2"/>
+<circle class="ok" cx="621.8" cy="181.1" r="2"/>
+<circle class="ok" cx="621.9" cy="186.6" r="2"/>
+<circle class="ok" cx="621.9" cy="188.1" r="2"/>
+<circle class="ok" cx="622.9" cy="249.3" r="2"/>
+<circle class="ok" cx="623.0" cy="251.0" r="2"/>
+<circle class="ok" cx="623.0" cy="252.7" r="2"/>
+<circle class="ok" cx="623.6" cy="292.5" r="2"/>
+<circle class="ok" cx="623.9" cy="310.4" r="2"/>
+<circle class="ok" cx="624.5" cy="232.5" r="2"/>
+<circle class="ok" cx="625.1" cy="269.4" r="2"/>
+<circle class="ok" cx="625.1" cy="202.2" r="2"/>
+<circle class="ok" cx="625.1" cy="203.0" r="2"/>
+<circle class="ok" cx="625.2" cy="205.7" r="2"/>
+<circle class="ok" cx="625.2" cy="208.8" r="2"/>
+<circle class="ok" cx="625.4" cy="212.0" r="2"/>
+<circle class="ok" cx="625.4" cy="212.0" r="2"/>
+<circle class="ok" cx="625.4" cy="212.6" r="2"/>
+<circle class="ok" cx="626.9" cy="150.0" r="2"/>
+<circle class="ok" cx="627.0" cy="155.1" r="2"/>
+<circle class="ok" cx="628.0" cy="148.9" r="2"/>
+<circle class="ok" cx="628.0" cy="149.1" r="2"/>
+<circle class="ok" cx="628.1" cy="152.6" r="2"/>
+<circle class="ok" cx="628.2" cy="157.5" r="2"/>
+<circle class="ok" cx="628.3" cy="159.5" r="2"/>
+<circle class="ok" cx="628.3" cy="161.3" r="2"/>
+<circle class="ok" cx="628.7" cy="184.0" r="2"/>
+<circle class="ok" cx="630.6" cy="112.1" r="2"/>
+<circle class="cut" cx="630.8" cy="99.8" r="2.6"/>
+<circle class="cut" cx="631.8" cy="99.8" r="2.6"/>
+<circle class="ok" cx="631.8" cy="103.5" r="2"/>
+<circle class="ok" cx="631.9" cy="107.9" r="2"/>
+<circle class="ok" cx="631.9" cy="109.3" r="2"/>
+<circle class="ok" cx="632.0" cy="113.9" r="2"/>
+<circle class="ok" cx="632.0" cy="114.1" r="2"/>
+<circle class="ok" cx="632.0" cy="101.8" r="2"/>
+<circle class="cut" cx="635.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="635.4" cy="126.5" r="2"/>
+<circle class="ok" cx="636.3" cy="182.9" r="2"/>
+<circle class="ok" cx="636.3" cy="182.6" r="2"/>
+<circle class="ok" cx="636.4" cy="184.3" r="2"/>
+<circle class="ok" cx="636.4" cy="188.7" r="2"/>
+<circle class="ok" cx="636.6" cy="195.5" r="2"/>
+<circle class="ok" cx="636.7" cy="203.0" r="2"/>
+<circle class="ok" cx="636.7" cy="125.4" r="2"/>
+<circle class="ok" cx="639.5" cy="294.8" r="2"/>
+<circle class="ok" cx="639.6" cy="299.3" r="2"/>
+<circle class="ok" cx="639.6" cy="254.1" r="2"/>
+<circle class="ok" cx="639.7" cy="253.9" r="2"/>
+<circle class="ok" cx="639.7" cy="254.7" r="2"/>
+<circle class="ok" cx="639.8" cy="258.8" r="2"/>
+<circle class="ok" cx="639.8" cy="148.5" r="2"/>
+<circle class="ok" cx="640.0" cy="163.5" r="2"/>
+<circle class="cut" cx="640.9" cy="99.7" r="2.6"/>
+<circle class="ok" cx="640.9" cy="126.3" r="2"/>
+<circle class="cut" cx="641.0" cy="99.7" r="2.6"/>
+<circle class="cut" cx="641.7" cy="99.8" r="2.6"/>
+<circle class="wait" cx="641.7" cy="100.4" r="3.2"/>
+<circle class="cut" cx="641.9" cy="100.0" r="2.6"/>
+<circle class="ok" cx="642.0" cy="106.9" r="2"/>
+<circle class="ok" cx="643.6" cy="202.8" r="2"/>
+<circle class="ok" cx="644.1" cy="230.5" r="2"/>
+<circle class="ok" cx="645.0" cy="137.9" r="2"/>
+<circle class="ok" cx="645.4" cy="162.3" r="2"/>
+<circle class="ok" cx="645.7" cy="150.0" r="2"/>
+<circle class="ok" cx="646.3" cy="180.8" r="2"/>
+<circle class="ok" cx="646.3" cy="183.2" r="2"/>
+<circle class="ok" cx="646.5" cy="195.2" r="2"/>
+<circle class="ok" cx="646.5" cy="195.6" r="2"/>
+<circle class="ok" cx="646.6" cy="199.6" r="2"/>
+<circle class="ok" cx="646.6" cy="199.6" r="2"/>
+<circle class="ok" cx="649.0" cy="194.5" r="2"/>
+<circle class="ok" cx="649.1" cy="204.2" r="2"/>
+<circle class="ok" cx="649.5" cy="180.0" r="2"/>
+<circle class="ok" cx="649.5" cy="134.1" r="2"/>
+<circle class="ok" cx="649.7" cy="145.7" r="2"/>
+<circle class="ok" cx="649.7" cy="148.8" r="2"/>
+<circle class="ok" cx="649.8" cy="139.2" r="2"/>
+<circle class="ok" cx="649.9" cy="143.1" r="2"/>
+<circle class="ok" cx="652.0" cy="272.7" r="2"/>
+<circle class="cut" cx="652.0" cy="100.0" r="2.6"/>
+<circle class="ok" cx="652.8" cy="100.9" r="2"/>
+<circle class="cut" cx="653.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="653.8" cy="106.9" r="2"/>
+<circle class="cut" cx="653.9" cy="99.8" r="2.6"/>
+<circle class="ok" cx="654.2" cy="117.1" r="2"/>
+<circle class="ok" cx="654.4" cy="126.3" r="2"/>
+<circle class="ok" cx="655.5" cy="196.1" r="2"/>
+<circle class="ok" cx="656.5" cy="258.2" r="2"/>
+<circle class="ok" cx="657.4" cy="263.1" r="2"/>
+<circle class="ok" cx="658.3" cy="228.5" r="2"/>
+<circle class="ok" cx="658.3" cy="230.0" r="2"/>
+<circle class="ok" cx="658.5" cy="240.1" r="2"/>
+<circle class="ok" cx="658.5" cy="243.5" r="2"/>
+<circle class="ok" cx="658.6" cy="244.1" r="2"/>
+<circle class="ok" cx="658.6" cy="245.0" r="2"/>
+<circle class="ok" cx="658.6" cy="248.1" r="2"/>
+<circle class="ok" cx="659.3" cy="233.3" r="2"/>
+<circle class="ok" cx="660.7" cy="322.8" r="2"/>
+<circle class="ok" cx="660.8" cy="209.7" r="2"/>
+<circle class="cut" cx="660.8" cy="99.8" r="2.6"/>
+<circle class="wait" cx="660.8" cy="101.1" r="3.2"/>
+<circle class="ok" cx="660.8" cy="103.0" r="2"/>
+<circle class="cut" cx="660.9" cy="99.8" r="2.6"/>
+<circle class="drain" cx="661.3" cy="184.9" r="3"/>
+<circle class="cut" cx="661.7" cy="100.0" r="2.6"/>
+<circle class="cut" cx="663.5" cy="99.8" r="2.6"/>
+<circle class="ok" cx="664.5" cy="157.4" r="2"/>
+<circle class="ok" cx="665.3" cy="207.4" r="2"/>
+<circle class="ok" cx="665.3" cy="207.7" r="2"/>
+<circle class="ok" cx="665.5" cy="220.4" r="2"/>
+<circle class="ok" cx="665.7" cy="230.0" r="2"/>
+<circle class="ok" cx="666.2" cy="264.8" r="2"/>
+<circle class="ok" cx="666.7" cy="294.6" r="2"/>
+<circle class="ok" cx="668.1" cy="375.1" r="2"/>
+<circle class="ok" cx="668.1" cy="375.1" r="2"/>
+<circle class="ok" cx="668.1" cy="298.7" r="2"/>
+<circle class="ok" cx="668.2" cy="231.7" r="2"/>
+<circle class="ok" cx="668.2" cy="232.5" r="2"/>
+<circle class="ok" cx="668.2" cy="236.0" r="2"/>
+<circle class="ok" cx="668.3" cy="237.5" r="2"/>
+<circle class="ok" cx="668.3" cy="237.5" r="2"/>
+<circle class="ok" cx="668.6" cy="255.6" r="2"/>
+<circle class="ok" cx="669.5" cy="220.4" r="2"/>
+<circle class="ok" cx="670.6" cy="287.9" r="2"/>
+<circle class="ok" cx="670.7" cy="255.9" r="2"/>
+<circle class="ok" cx="670.7" cy="135.3" r="2"/>
+<circle class="ok" cx="670.7" cy="136.1" r="2"/>
+<circle class="cut" cx="670.8" cy="99.8" r="2.6"/>
+<circle class="ok" cx="671.1" cy="113.6" r="2"/>
+<circle class="cut" cx="672.1" cy="99.8" r="2.6"/>
+<circle class="cut" cx="672.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="672.7" cy="127.2" r="2"/>
+<circle class="ok" cx="674.8" cy="258.5" r="2"/>
+<circle class="ok" cx="674.9" cy="262.3" r="2"/>
+<circle class="ok" cx="675.0" cy="267.8" r="2"/>
+<circle class="ok" cx="675.5" cy="184.4" r="2"/>
+<circle class="ok" cx="675.7" cy="195.8" r="2"/>
+<circle class="ok" cx="676.6" cy="251.2" r="2"/>
+<circle class="ok" cx="676.8" cy="261.6" r="2"/>
+<circle class="ok" cx="676.8" cy="244.6" r="2"/>
+<circle class="ok" cx="676.9" cy="247.0" r="2"/>
+<circle class="ok" cx="677.0" cy="252.4" r="2"/>
+<circle class="ok" cx="678.8" cy="363.8" r="2"/>
+<circle class="ok" cx="678.8" cy="363.9" r="2"/>
+<circle class="ok" cx="678.8" cy="364.7" r="2"/>
+<circle class="ok" cx="678.9" cy="372.9" r="2"/>
+<circle class="ok" cx="679.0" cy="306.1" r="2"/>
+<circle class="ok" cx="679.1" cy="253.4" r="2"/>
+<circle class="ok" cx="679.1" cy="123.9" r="2"/>
+<circle class="cut" cx="679.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="679.5" cy="123.7" r="2"/>
+<circle class="ok" cx="679.6" cy="124.8" r="2"/>
+<circle class="ok" cx="679.6" cy="126.2" r="2"/>
+<circle class="cut" cx="680.2" cy="99.8" r="2.6"/>
+<circle class="cut" cx="680.6" cy="99.7" r="2.6"/>
+<circle class="cut" cx="681.1" cy="100.0" r="2.6"/>
+<circle class="ok" cx="683.3" cy="233.7" r="2"/>
+<circle class="drain" cx="683.7" cy="295.8" r="3"/>
+<circle class="ok" cx="683.8" cy="237.4" r="2"/>
+<circle class="ok" cx="683.9" cy="242.6" r="2"/>
+<circle class="ok" cx="684.0" cy="253.0" r="2"/>
+<circle class="ok" cx="684.8" cy="298.0" r="2"/>
+<circle class="ok" cx="685.1" cy="315.4" r="2"/>
+<circle class="ok" cx="685.2" cy="322.4" r="2"/>
+<circle class="ok" cx="685.7" cy="353.2" r="2"/>
+<circle class="ok" cx="685.7" cy="355.2" r="2"/>
+<circle class="ok" cx="686.1" cy="328.9" r="2"/>
+<circle class="ok" cx="686.1" cy="236.8" r="2"/>
+<circle class="ok" cx="686.3" cy="221.2" r="2"/>
+<circle class="ok" cx="686.3" cy="221.2" r="2"/>
+<circle class="ok" cx="686.3" cy="217.2" r="2"/>
+<circle class="ok" cx="686.4" cy="222.4" r="2"/>
+<circle class="ok" cx="686.7" cy="240.4" r="2"/>
+<circle class="ok" cx="687.0" cy="201.0" r="2"/>
+<circle class="ok" cx="688.4" cy="198.5" r="2"/>
+<circle class="ok" cx="688.9" cy="197.6" r="2"/>
+<circle class="ok" cx="689.0" cy="139.8" r="2"/>
+<circle class="ok" cx="689.0" cy="139.9" r="2"/>
+<circle class="ok" cx="689.1" cy="148.8" r="2"/>
+<circle class="ok" cx="689.2" cy="150.3" r="2"/>
+<circle class="ok" cx="689.9" cy="126.2" r="2"/>
+<circle class="ok" cx="690.6" cy="171.0" r="2"/>
+<circle class="ok" cx="691.4" cy="124.9" r="2"/>
+<circle class="ok" cx="692.0" cy="122.2" r="2"/>
+<circle class="ok" cx="693.0" cy="176.9" r="2"/>
+<circle class="ok" cx="693.0" cy="177.3" r="2"/>
+<circle class="cut" cx="693.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="693.0" cy="103.2" r="2"/>
+<circle class="cut" cx="694.1" cy="99.8" r="2.6"/>
+<circle class="cut" cx="695.5" cy="99.5" r="2.6"/>
+<circle class="cut" cx="696.3" cy="99.8" r="2.6"/>
+<circle class="cut" cx="696.3" cy="97.8" r="2.6"/>
+<circle class="ok" cx="696.5" cy="109.0" r="2"/>
+<circle class="drain" cx="697.6" cy="215.0" r="3"/>
+<circle class="ok" cx="698.6" cy="238.3" r="2"/>
+<circle class="drain" cx="698.6" cy="271.7" r="3"/>
+<circle class="ok" cx="700.1" cy="328.0" r="2"/>
+<circle class="ok" cx="700.2" cy="337.9" r="2"/>
+<circle class="ok" cx="700.4" cy="346.3" r="2"/>
+<circle class="ok" cx="700.9" cy="298.0" r="2"/>
+<circle class="ok" cx="700.9" cy="243.2" r="2"/>
+<circle class="ok" cx="700.9" cy="151.7" r="2"/>
+<circle class="ok" cx="700.9" cy="152.3" r="2"/>
+<circle class="ok" cx="701.0" cy="153.5" r="2"/>
+<circle class="ok" cx="701.1" cy="161.3" r="2"/>
+<circle class="ok" cx="702.2" cy="154.2" r="2"/>
+<circle class="ok" cx="703.2" cy="142.4" r="2"/>
+<circle class="ok" cx="704.6" cy="163.6" r="2"/>
+<circle class="cut" cx="704.6" cy="99.8" r="2.6"/>
+<circle class="ok" cx="704.7" cy="103.0" r="2"/>
+<circle class="cut" cx="705.9" cy="99.8" r="2.6"/>
+<circle class="ok" cx="706.9" cy="162.3" r="2"/>
+<circle class="ok" cx="707.0" cy="101.1" r="2"/>
+<circle class="ok" cx="708.2" cy="168.8" r="2"/>
+<circle class="ok" cx="709.2" cy="234.9" r="2"/>
+<circle class="ok" cx="709.3" cy="237.5" r="2"/>
+<circle class="ok" cx="710.4" cy="308.2" r="2"/>
+<circle class="ok" cx="711.6" cy="298.1" r="2"/>
+<circle class="ok" cx="711.6" cy="218.9" r="2"/>
+<circle class="ok" cx="711.6" cy="288.3" r="2"/>
+<circle class="ok" cx="711.7" cy="291.1" r="2"/>
+<circle class="ok" cx="711.7" cy="222.5" r="2"/>
+<circle class="ok" cx="712.0" cy="244.4" r="2"/>
+<circle class="ok" cx="713.1" cy="304.7" r="2"/>
+<circle class="ok" cx="713.1" cy="306.4" r="2"/>
+<circle class="ok" cx="714.2" cy="298.1" r="2"/>
+<circle class="ok" cx="714.3" cy="183.8" r="2"/>
+<circle class="ok" cx="714.3" cy="118.5" r="2"/>
+<circle class="cut" cx="714.3" cy="100.0" r="2.6"/>
+<circle class="cut" cx="714.4" cy="99.8" r="2.6"/>
+<circle class="cut" cx="715.6" cy="99.5" r="2.6"/>
+<circle class="cut" cx="717.5" cy="99.8" r="2.6"/>
+<circle class="wait" cx="717.5" cy="101.1" r="3.2"/>
+<circle class="ok" cx="718.6" cy="102.7" r="2"/>
+<circle class="ok" cx="718.9" cy="118.5" r="2"/>
+<circle class="ok" cx="719.0" cy="124.8" r="2"/>
+<circle class="ok" cx="720.1" cy="193.0" r="2"/>
+<circle class="ok" cx="722.0" cy="309.3" r="2"/>
+<circle class="ok" cx="722.1" cy="312.2" r="2"/>
+<circle class="ok" cx="723.2" cy="374.8" r="2"/>
+<circle class="ok" cx="723.2" cy="313.0" r="2"/>
+<circle class="ok" cx="723.2" cy="314.3" r="2"/>
+<circle class="ok" cx="723.2" cy="266.1" r="2"/>
+<circle class="ok" cx="723.3" cy="272.7" r="2"/>
+<circle class="ok" cx="723.4" cy="279.8" r="2"/>
+<circle class="ok" cx="724.2" cy="267.7" r="2"/>
+<circle class="ok" cx="724.3" cy="266.8" r="2"/>
+<circle class="ok" cx="725.1" cy="185.8" r="2"/>
+<circle class="ok" cx="725.1" cy="187.4" r="2"/>
+<circle class="cut" cx="725.1" cy="99.7" r="2.6"/>
+<circle class="cut" cx="726.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="726.1" cy="100.1" r="2"/>
+<circle class="ok" cx="726.3" cy="117.3" r="2"/>
+<circle class="ok" cx="728.2" cy="233.7" r="2"/>
+<circle class="ok" cx="728.6" cy="255.1" r="2"/>
+<circle class="ok" cx="729.7" cy="324.4" r="2"/>
+<circle class="ok" cx="730.4" cy="363.9" r="2"/>
+<circle class="ok" cx="730.6" cy="375.2" r="2"/>
+<circle class="ok" cx="730.6" cy="313.7" r="2"/>
+<circle class="ok" cx="730.7" cy="315.7" r="2"/>
+<circle class="ok" cx="730.8" cy="324.6" r="2"/>
+<circle class="ok" cx="731.0" cy="255.4" r="2"/>
+<circle class="ok" cx="731.4" cy="281.1" r="2"/>
+<circle class="ok" cx="731.7" cy="238.6" r="2"/>
+<circle class="ok" cx="731.7" cy="70.0" r="2"/>
+<circle class="ok" cx="731.8" cy="241.8" r="2"/>
+<circle class="cut" cx="731.8" cy="100.0" r="2.6"/>
+<circle class="ok" cx="733.0" cy="177.1" r="2"/>
+<circle class="ok" cx="733.1" cy="103.4" r="2"/>
+<circle class="ok" cx="733.7" cy="126.9" r="2"/>
+<circle class="ok" cx="734.0" cy="147.3" r="2"/>
+<circle class="ok" cx="736.3" cy="288.0" r="2"/>
+<circle class="ok" cx="736.3" cy="288.0" r="2"/>
+<circle class="ok" cx="737.8" cy="313.6" r="2"/>
+<circle class="ok" cx="737.9" cy="221.8" r="2"/>
+<circle class="ok" cx="737.9" cy="223.0" r="2"/>
+<circle class="ok" cx="737.9" cy="227.6" r="2"/>
+<circle class="ok" cx="738.3" cy="247.9" r="2"/>
+<circle class="ok" cx="738.9" cy="220.1" r="2"/>
+<circle class="ok" cx="740.1" cy="282.1" r="2"/>
+<circle class="ok" cx="740.5" cy="304.9" r="2"/>
+<circle class="ok" cx="740.5" cy="306.1" r="2"/>
+<circle class="cut" cx="740.5" cy="100.0" r="2.6"/>
+<circle class="cut" cx="740.6" cy="99.8" r="2.6"/>
+<circle class="cut" cx="741.5" cy="99.7" r="2.6"/>
+<circle class="ok" cx="741.8" cy="118.3" r="2"/>
+<circle class="ok" cx="741.8" cy="121.3" r="2"/>
+<circle class="ok" cx="743.9" cy="238.6" r="2"/>
+<circle class="ok" cx="745.1" cy="308.4" r="2"/>
+<circle class="ok" cx="745.1" cy="311.6" r="2"/>
+<circle class="ok" cx="746.0" cy="364.5" r="2"/>
+<circle class="ok" cx="746.1" cy="257.3" r="2"/>
+<circle class="ok" cx="746.2" cy="202.0" r="2"/>
+<circle class="ok" cx="746.2" cy="84.8" r="2"/>
+<circle class="ok" cx="746.3" cy="204.0" r="2"/>
+<circle class="cut" cx="746.3" cy="99.8" r="2.6"/>
+<circle class="ok" cx="746.4" cy="106.9" r="2"/>
+<circle class="ok" cx="748.1" cy="200.4" r="2"/>
+<circle class="ok" cx="748.1" cy="200.5" r="2"/>
+<circle class="ok" cx="749.2" cy="265.1" r="2"/>
+<circle class="ok" cx="750.8" cy="365.4" r="2"/>
+<circle class="ok" cx="751.0" cy="313.7" r="2"/>
+<circle class="ok" cx="751.1" cy="207.4" r="2"/>
+<circle class="ok" cx="751.1" cy="316.8" r="2"/>
+<circle class="ok" cx="751.1" cy="272.0" r="2"/>
+<circle class="ok" cx="751.2" cy="275.3" r="2"/>
+<circle class="ok" cx="752.2" cy="262.6" r="2"/>
+<circle class="ok" cx="752.9" cy="303.3" r="2"/>
+<circle class="ok" cx="752.9" cy="293.8" r="2"/>
+<circle class="ok" cx="753.0" cy="295.8" r="2"/>
+<circle class="ok" cx="753.9" cy="289.6" r="2"/>
+<circle class="ok" cx="754.1" cy="214.9" r="2"/>
+<circle class="ok" cx="754.2" cy="105.0" r="2"/>
+<circle class="ok" cx="754.4" cy="116.2" r="2"/>
+<circle class="ok" cx="755.3" cy="114.1" r="2"/>
+<circle class="ok" cx="756.2" cy="156.8" r="2"/>
+<circle class="cut" cx="756.8" cy="99.8" r="2.6"/>
+<circle class="ok" cx="758.7" cy="215.2" r="2"/>
+<circle class="ok" cx="758.7" cy="217.8" r="2"/>
+<circle class="ok" cx="759.7" cy="213.2" r="2"/>
+<circle class="ok" cx="761.3" cy="276.2" r="2"/>
+<circle class="ok" cx="761.4" cy="279.5" r="2"/>
+<circle class="ok" cx="761.8" cy="302.4" r="2"/>
+<circle class="ok" cx="761.8" cy="290.8" r="2"/>
+<circle class="ok" cx="762.4" cy="264.3" r="2"/>
+<circle class="ok" cx="763.0" cy="221.3" r="2"/>
+<circle class="cut" cx="763.2" cy="99.8" r="2.6"/>
+<circle class="ok" cx="763.4" cy="110.5" r="2"/>
+<circle class="ok" cx="764.2" cy="101.8" r="2"/>
+<circle class="ok" cx="765.5" cy="167.2" r="2"/>
+<circle class="ok" cx="765.8" cy="187.7" r="2"/>
+<circle class="ok" cx="767.8" cy="306.5" r="2"/>
+<circle class="ok" cx="767.8" cy="307.3" r="2"/>
+<circle class="ok" cx="768.8" cy="304.9" r="2"/>
+<circle class="ok" cx="768.8" cy="244.0" r="2"/>
+<circle class="ok" cx="769.0" cy="319.5" r="2"/>
+<circle class="ok" cx="769.3" cy="340.0" r="2"/>
+<circle class="ok" cx="769.5" cy="352.1" r="2"/>
+<circle class="ok" cx="770.0" cy="320.3" r="2"/>
+<circle class="ok" cx="770.0" cy="320.9" r="2"/>
+<circle class="ok" cx="770.4" cy="345.4" r="2"/>
+<circle class="ok" cx="771.0" cy="298.1" r="2"/>
+<circle class="ok" cx="771.1" cy="299.7" r="2"/>
+<circle class="ok" cx="771.1" cy="301.9" r="2"/>
+<circle class="ok" cx="771.2" cy="297.8" r="2"/>
+<circle class="ok" cx="772.3" cy="288.6" r="2"/>
+<circle class="ok" cx="772.4" cy="293.5" r="2"/>
+<circle class="ok" cx="772.4" cy="295.4" r="2"/>
+<circle class="ok" cx="772.5" cy="297.8" r="2"/>
+<circle class="ok" cx="772.6" cy="300.7" r="2"/>
+<circle class="ok" cx="773.8" cy="298.3" r="2"/>
+<circle class="ok" cx="773.8" cy="301.0" r="2"/>
+<circle class="ok" cx="773.8" cy="172.4" r="2"/>
+<circle class="ok" cx="773.9" cy="176.9" r="2"/>
+<circle class="cut" cx="775.2" cy="99.7" r="2.6"/>
+<circle class="ok" cx="777.2" cy="224.5" r="2"/>
+<circle class="ok" cx="777.3" cy="231.6" r="2"/>
+<circle class="ok" cx="777.7" cy="244.9" r="2"/>
+<circle class="ok" cx="779.7" cy="365.0" r="2"/>
+<circle class="ok" cx="779.8" cy="371.3" r="2"/>
+<circle class="ok" cx="779.9" cy="113.6" r="2"/>
+<circle class="ok" cx="779.9" cy="77.8" r="2"/>
+<circle class="ok" cx="780.0" cy="116.4" r="2"/>
+<circle class="ok" cx="780.0" cy="107.8" r="2"/>
+<circle class="ok" cx="781.1" cy="148.5" r="2"/>
+<circle class="ok" cx="784.3" cy="345.7" r="2"/>
+<circle class="ok" cx="784.5" cy="306.7" r="2"/>
+<circle class="cut" cx="784.9" cy="100.0" r="2.6"/>
+<circle class="ok" cx="784.9" cy="70.0" r="2"/>
+<circle class="ok" cx="784.9" cy="102.6" r="2"/>
+<circle class="cut" cx="785.7" cy="99.8" r="2.6"/>
+<circle class="cut" cx="786.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="789.5" cy="311.3" r="2"/>
+<circle class="ok" cx="790.3" cy="361.8" r="2"/>
+<circle class="ok" cx="790.6" cy="375.2" r="2"/>
+<circle class="ok" cx="790.6" cy="113.6" r="2"/>
+<circle class="ok" cx="790.6" cy="86.2" r="2"/>
+<circle class="cut" cx="790.6" cy="100.0" r="2.6"/>
+<circle class="ok" cx="790.6" cy="102.0" r="2"/>
+<circle class="ok" cx="792.1" cy="181.5" r="2"/>
+<circle class="ok" cx="795.2" cy="366.4" r="2"/>
+<circle class="ok" cx="795.3" cy="373.1" r="2"/>
+<circle class="ok" cx="795.4" cy="113.8" r="2"/>
+<circle class="ok" cx="795.4" cy="85.9" r="2"/>
+<circle class="cut" cx="795.4" cy="100.0" r="2.6"/>
+<circle class="ok" cx="795.5" cy="104.0" r="2"/>
+<circle class="drain" cx="796.9" cy="182.3" r="3"/>
+<circle class="ok" cx="799.9" cy="366.2" r="2"/>
+<circle class="ok" cx="800.0" cy="371.6" r="2"/>
+<circle class="ok" cx="800.1" cy="374.3" r="2"/>
+<circle class="ok" cx="800.2" cy="113.6" r="2"/>
+<circle class="ok" cx="800.2" cy="80.3" r="2"/>
+<circle class="ok" cx="800.2" cy="117.0" r="2"/>
+<circle class="cut" cx="800.3" cy="99.8" r="2.6"/>
+<circle class="ok" cx="801.7" cy="173.1" r="2"/>
+<circle class="ok" cx="804.6" cy="349.5" r="2"/>
+<circle class="ok" cx="804.8" cy="366.4" r="2"/>
+<circle class="ok" cx="805.0" cy="113.6" r="2"/>
+<circle class="ok" cx="805.1" cy="86.4" r="2"/>
+<circle class="cut" cx="805.1" cy="99.8" r="2.6"/>
+<circle class="ok" cx="805.1" cy="101.4" r="2"/>
+<circle class="ok" cx="806.6" cy="178.9" r="2"/>
+<circle class="ok" cx="809.7" cy="369.9" r="2"/>
+<circle class="ok" cx="809.7" cy="372.3" r="2"/>
+<circle class="ok" cx="809.8" cy="375.1" r="2"/>
+<circle class="ok" cx="809.8" cy="375.1" r="2"/>
+<circle class="ok" cx="809.9" cy="374.8" r="2"/>
+<circle class="ok" cx="809.9" cy="375.2" r="2"/>
+<circle class="ok" cx="810.0" cy="374.6" r="2"/>
+<circle class="ok" cx="810.0" cy="373.9" r="2"/>
+<circle class="ok" cx="810.1" cy="375.2" r="2"/>
+<circle class="ok" cx="810.1" cy="374.9" r="2"/>
+<circle class="ok" cx="810.1" cy="324.3" r="2"/>
+<circle class="ok" cx="810.2" cy="327.5" r="2"/>
+<circle class="ok" cx="810.2" cy="327.7" r="2"/>
+<circle class="ok" cx="811.1" cy="236.8" r="2"/>
+<circle class="ok" cx="811.1" cy="238.1" r="2"/>
+<circle class="ok" cx="811.1" cy="239.1" r="2"/>
+<circle class="ok" cx="811.4" cy="241.2" r="2"/>
+<circle class="ok" cx="813.4" cy="358.9" r="2"/>
+<circle class="ok" cx="813.5" cy="361.0" r="2"/>
+<circle class="ok" cx="813.5" cy="361.8" r="2"/>
+<circle class="ok" cx="813.8" cy="375.2" r="2"/>
+<circle class="ok" cx="813.8" cy="375.2" r="2"/>
+<circle class="ok" cx="813.9" cy="375.2" r="2"/>
+<circle class="ok" cx="813.9" cy="375.2" r="2"/>
+<circle class="ok" cx="814.1" cy="375.2" r="2"/>
+<circle class="ok" cx="814.1" cy="375.1" r="2"/>
+<circle class="ok" cx="814.2" cy="375.2" r="2"/>
+<circle class="ok" cx="814.4" cy="364.5" r="2"/>
+<circle class="ok" cx="814.4" cy="366.2" r="2"/>
+<circle class="ok" cx="814.6" cy="344.3" r="2"/>
+<circle class="ok" cx="814.7" cy="290.9" r="2"/>
+<circle class="ok" cx="814.7" cy="292.2" r="2"/>
+<circle class="ok" cx="814.7" cy="294.3" r="2"/>
+<circle class="ok" cx="816.2" cy="251.5" r="2"/>
+<circle class="ok" cx="816.2" cy="256.0" r="2"/>
+<circle class="ok" cx="816.2" cy="256.4" r="2"/>
+<circle class="ok" cx="816.5" cy="240.4" r="2"/>
+<circle class="ok" cx="818.3" cy="348.9" r="2"/>
+<circle class="ok" cx="818.3" cy="351.1" r="2"/>
+<circle class="ok" cx="819.0" cy="362.4" r="2"/>
+<circle class="ok" cx="819.3" cy="375.1" r="2"/>
+<circle class="ok" cx="819.3" cy="375.1" r="2"/>
+<circle class="ok" cx="819.4" cy="337.0" r="2"/>
+<circle class="ok" cx="819.7" cy="346.5" r="2"/>
+<circle class="ok" cx="820.0" cy="337.4" r="2"/>
+<circle class="ok" cx="820.1" cy="339.6" r="2"/>
+<circle class="ok" cx="820.4" cy="306.2" r="2"/>
+<circle class="ok" cx="820.7" cy="286.6" r="2"/>
+<circle class="ok" cx="821.0" cy="300.4" r="2"/>
+<circle class="ok" cx="821.8" cy="221.6" r="2"/>
+<circle class="ok" cx="822.2" cy="209.4" r="2"/>
+<circle class="ok" cx="822.3" cy="215.8" r="2"/>
+<circle class="ok" cx="824.5" cy="347.8" r="2"/>
+<circle class="ok" cx="825.0" cy="336.5" r="2"/>
+<circle class="ok" cx="825.1" cy="343.9" r="2"/>
+<circle class="ok" cx="825.7" cy="336.5" r="2"/>
+<circle class="ok" cx="825.7" cy="337.3" r="2"/>
+<circle class="ok" cx="825.8" cy="344.9" r="2"/>
+<circle class="ok" cx="826.4" cy="336.2" r="2"/>
+<circle class="ok" cx="826.4" cy="337.1" r="2"/>
+<circle class="ok" cx="826.6" cy="221.0" r="2"/>
+<circle class="ok" cx="827.1" cy="210.3" r="2"/>
+<circle class="ok" cx="827.1" cy="214.7" r="2"/>
+<circle class="ok" cx="829.3" cy="347.5" r="2"/>
+<circle class="ok" cx="829.8" cy="375.2" r="2"/>
+<circle class="ok" cx="829.9" cy="351.8" r="2"/>
+<circle class="ok" cx="829.9" cy="354.3" r="2"/>
+<circle class="ok" cx="830.4" cy="359.6" r="2"/>
+<circle class="ok" cx="830.4" cy="355.0" r="2"/>
+<circle class="ok" cx="830.7" cy="306.1" r="2"/>
+<circle class="ok" cx="830.8" cy="181.2" r="2"/>
+<circle class="ok" cx="831.9" cy="202.3" r="2"/>
+<circle class="ok" cx="834.1" cy="338.7" r="2"/>
+<circle class="ok" cx="834.7" cy="273.0" r="2"/>
+<circle class="ok" cx="835.1" cy="289.4" r="2"/>
+<circle class="ok" cx="836.6" cy="374.9" r="2"/>
+<circle class="ok" cx="836.7" cy="375.2" r="2"/>
+<circle class="ok" cx="836.8" cy="371.4" r="2"/>
+<circle class="ok" cx="837.1" cy="370.8" r="2"/>
+<circle class="ok" cx="837.3" cy="361.3" r="2"/>
+<circle class="ok" cx="837.6" cy="313.4" r="2"/>
+<circle class="ok" cx="837.6" cy="375.2" r="2"/>
+<circle class="drain" cx="837.7" cy="201.1" r="3"/>
+<circle class="cut" cx="838.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="840.6" cy="213.5" r="2"/>
+<circle class="ok" cx="843.3" cy="374.9" r="2"/>
+<circle class="ok" cx="843.4" cy="298.3" r="2"/>
+<circle class="ok" cx="843.4" cy="300.4" r="2"/>
+<circle class="ok" cx="844.7" cy="288.9" r="2"/>
+<circle class="ok" cx="844.7" cy="279.5" r="2"/>
+<circle class="ok" cx="846.1" cy="280.7" r="2"/>
+<circle class="ok" cx="846.4" cy="297.4" r="2"/>
+<circle class="ok" cx="847.8" cy="212.4" r="2"/>
+<circle class="cut" cx="847.8" cy="100.0" r="2.6"/>
+<circle class="ok" cx="850.5" cy="110.4" r="2"/>
+<circle class="ok" cx="852.4" cy="224.2" r="2"/>
+<circle class="ok" cx="854.9" cy="205.7" r="2"/>
+<circle class="ok" cx="855.0" cy="210.3" r="2"/>
+<circle class="ok" cx="857.7" cy="205.9" r="2"/>
+<circle class="cut" cx="857.7" cy="99.8" r="2.6"/>
+<circle class="ok" cx="860.5" cy="102.3" r="2"/>
+<circle class="ok" cx="862.3" cy="208.9" r="2"/>
+<circle class="ok" cx="865.1" cy="199.6" r="2"/>
+<circle class="cut" cx="865.1" cy="99.8" r="2.6"/>
+<circle class="cut" cx="868.0" cy="99.7" r="2.6"/>
+<circle class="ok" cx="869.7" cy="199.9" r="2"/>
+<circle class="ok" cx="872.6" cy="374.9" r="2"/>
+<circle class="ok" cx="872.6" cy="259.6" r="2"/>
+<circle class="ok" cx="872.6" cy="122.3" r="2"/>
+<circle class="ok" cx="874.6" cy="241.8" r="2"/>
+<circle class="ok" cx="876.8" cy="374.9" r="2"/>
+<circle class="ok" cx="876.8" cy="236.8" r="2"/>
+<circle class="ok" cx="876.9" cy="232.8" r="2"/>
+<circle class="ok" cx="879.2" cy="371.0" r="2"/>
+<circle class="ok" cx="879.3" cy="283.4" r="2"/>
+<circle class="ok" cx="879.4" cy="169.8" r="2"/>
+<circle class="ok" cx="880.9" cy="110.9" r="2"/>
+<circle class="ok" cx="882.8" cy="225.3" r="2"/>
+<circle class="ok" cx="885.3" cy="205.7" r="2"/>
+<circle class="ok" cx="885.4" cy="213.2" r="2"/>
+<circle class="ok" cx="888.1" cy="206.0" r="2"/>
+<circle class="ok" cx="888.3" cy="215.0" r="2"/>
+<circle class="ok" cx="891.0" cy="205.9" r="2"/>
+<circle class="cut" cx="891.0" cy="99.8" r="2.6"/>
+<circle class="ok" cx="893.8" cy="102.9" r="2"/>
+<circle class="ok" cx="895.5" cy="208.9" r="2"/>
+<circle class="ok" cx="898.3" cy="205.7" r="2"/>
+<circle class="cut" cx="898.3" cy="99.7" r="2.6"/>
+<circle class="drain" cx="901.2" cy="106.1" r="3"/>
+<circle class="ok" cx="902.9" cy="207.4" r="2"/>
+<circle class="ok" cx="905.7" cy="375.1" r="2"/>
+<circle class="ok" cx="905.7" cy="375.2" r="2"/>
+<circle class="ok" cx="905.8" cy="247.0" r="2"/>
+<circle class="cut" cx="905.8" cy="99.8" r="2.6"/>
+<circle class="ok" cx="908.0" cy="231.3" r="2"/>
+<circle class="ok" cx="910.4" cy="375.1" r="2"/>
+<circle class="ok" cx="910.4" cy="375.1" r="2"/>
+<circle class="ok" cx="910.5" cy="247.3" r="2"/>
+<circle class="ok" cx="912.9" cy="374.0" r="2"/>
+<circle class="ok" cx="913.1" cy="373.2" r="2"/>
+<circle class="ok" cx="913.2" cy="364.7" r="2"/>
+<circle class="ok" cx="913.5" cy="360.9" r="2"/>
+<circle class="ok" cx="913.8" cy="375.1" r="2"/>
+<circle class="ok" cx="914.0" cy="250.8" r="2"/>
+<circle class="ok" cx="916.1" cy="375.1" r="2"/>
+<circle class="ok" cx="917.5" cy="375.1" r="2"/>
+<circle class="ok" cx="917.6" cy="375.2" r="2"/>
+<circle class="ok" cx="917.6" cy="371.1" r="2"/>
+<circle class="ok" cx="917.8" cy="362.4" r="2"/>
+<circle class="ok" cx="918.1" cy="367.0" r="2"/>
+<circle class="ok" cx="918.3" cy="375.1" r="2"/>
+<circle class="ok" cx="918.5" cy="375.2" r="2"/>
+<circle class="ok" cx="918.7" cy="374.9" r="2"/>
+<circle class="ok" cx="918.8" cy="366.1" r="2"/>
+<circle class="ok" cx="919.1" cy="375.1" r="2"/>
+<circle class="ok" cx="919.5" cy="375.2" r="2"/>
+<circle class="ok" cx="919.6" cy="242.1" r="2"/>
+<circle class="ok" cx="921.9" cy="244.6" r="2"/>
+<circle class="ok" cx="924.1" cy="214.9" r="2"/>
+<circle class="ok" cx="924.2" cy="70.0" r="2"/>
+<circle class="ok" cx="929.5" cy="375.1" r="2"/>
+<circle class="ok" cx="929.6" cy="375.2" r="2"/>
+<circle class="ok" cx="929.7" cy="373.1" r="2"/>
+<circle class="ok" cx="929.9" cy="367.3" r="2"/>
+<circle class="ok" cx="930.2" cy="364.5" r="2"/>
+<circle class="ok" cx="930.4" cy="313.6" r="2"/>
+<circle class="ok" cx="931.5" cy="243.8" r="2"/>
+<circle class="ok" cx="933.8" cy="374.9" r="2"/>
+<circle class="ok" cx="934.0" cy="375.1" r="2"/>
+<circle class="ok" cx="934.1" cy="261.4" r="2"/>
+<circle class="ok" cx="936.2" cy="374.6" r="2"/>
+<circle class="ok" cx="936.3" cy="374.5" r="2"/>
+<circle class="ok" cx="936.4" cy="247.2" r="2"/>
+<circle class="ok" cx="938.6" cy="374.9" r="2"/>
+<circle class="ok" cx="938.7" cy="343.4" r="2"/>
+<circle class="ok" cx="939.3" cy="218.0" r="2"/>
+<circle class="ok" cx="941.9" cy="373.1" r="2"/>
+<circle class="ok" cx="942.1" cy="375.2" r="2"/>
+<circle class="ok" cx="942.1" cy="375.2" r="2"/>
+<circle class="ok" cx="942.3" cy="369.6" r="2"/>
+<circle class="ok" cx="942.4" cy="371.0" r="2"/>
+<circle class="ok" cx="942.6" cy="269.7" r="2"/>
+<circle class="ok" cx="944.4" cy="222.4" r="2"/>
+<circle class="ok" cx="947.0" cy="374.9" r="2"/>
+<circle class="ok" cx="947.1" cy="373.4" r="2"/>
+<circle class="ok" cx="947.2" cy="375.2" r="2"/>
+<circle class="ok" cx="947.3" cy="374.9" r="2"/>
+<circle class="ok" cx="947.4" cy="374.9" r="2"/>
+<circle class="ok" cx="947.5" cy="332.1" r="2"/>
+<circle class="ok" cx="948.3" cy="286.8" r="2"/>
+<circle class="ok" cx="949.8" cy="374.3" r="2"/>
+<circle class="ok" cx="949.9" cy="247.2" r="2"/>
+<circle class="ok" cx="952.1" cy="374.9" r="2"/>
+<circle class="ok" cx="952.2" cy="374.9" r="2"/>
+<circle class="ok" cx="952.4" cy="371.9" r="2"/>
+<circle class="ok" cx="952.5" cy="288.5" r="2"/>
+<circle class="ok" cx="954.0" cy="347.8" r="2"/>
+<circle class="ok" cx="954.6" cy="375.1" r="2"/>
+<circle class="ok" cx="954.7" cy="375.1" r="2"/>
+<circle class="ok" cx="954.8" cy="165.6" r="2"/>
+<circle class="ok" cx="958.4" cy="193.6" r="2"/>
+<circle class="ok" cx="961.4" cy="365.0" r="2"/>
+<circle class="ok" cx="961.7" cy="126.8" r="2"/>
+<circle class="ok" cx="966.0" cy="244.0" r="2"/>
+<circle class="ok" cx="968.3" cy="374.9" r="2"/>
+<circle class="ok" cx="968.4" cy="375.1" r="2"/>
+<circle class="ok" cx="968.6" cy="375.1" r="2"/>
+<circle class="ok" cx="968.7" cy="375.1" r="2"/>
+<circle class="ok" cx="968.8" cy="375.2" r="2"/>
+<circle class="ok" cx="969.6" cy="375.2" r="2"/>
+<circle class="ok" cx="969.8" cy="242.1" r="2"/>
+<circle class="ok" cx="972.1" cy="191.3" r="2"/>
+<circle class="ok" cx="975.2" cy="360.2" r="2"/>
+<circle class="ok" cx="975.7" cy="362.4" r="2"/>
+<circle class="ok" cx="990.8" cy="371.1" r="2"/>
+<circle class="ok" cx="990.9" cy="371.9" r="2"/>
+<circle class="ok" cx="991.2" cy="371.7" r="2"/>
+<circle class="ok" cx="991.4" cy="375.2" r="2"/>
+<circle class="ok" cx="991.5" cy="375.2" r="2"/>
+<circle class="ok" cx="991.6" cy="337.3" r="2"/>
+<circle class="ok" cx="992.5" cy="139.5" r="2"/>
+<circle class="ok" cx="996.4" cy="337.8" r="2"/>
+<circle class="ok" cx="997.2" cy="364.2" r="2"/>
+<circle class="ok" cx="1012.3" cy="373.6" r="2"/>
+<circle class="ok" cx="1021.4" cy="373.2" r="2"/>
+<text class="lbl" x="341.4" y="78" font-size="11">21:08 twelve lanes start</text>
+<line class="ax" x1="337.4" y1="82" x2="337.4" y2="376" stroke="var(--g5)"/>
+<text class="lbl" x="441.7" y="92" font-size="11">22:15 wave relaunched, ten lanes</text>
+<line class="ax" x1="437.7" y1="96" x2="437.7" y2="376" stroke="var(--g5)"/>
+<text class="lbl" x="838.4" y="78" font-size="11">02:40 two lanes left, still cut</text>
+<line class="ax" x1="834.4" y1="82" x2="834.4" y2="376" stroke="var(--g5)"/>
+</svg></div>
+    <ul class="facts">
+      <li><span class="k">Calls</span><span><b>2,182</b> device_bash calls from the conductor and 30 lanes, 30 Sep 18:23 to 1 Oct 04:44 UTC.</span></li>
+      <li><span class="k">Cut</span><span><b>143</b> cut by the wall. Their run time before the cut: a quarter under 10 s, half under 32 s, three quarters under 70 s, 128 under 100 s. Their wall time from submission: 178.7 to 182 s in 142 of 143.</span></li>
+      <li><span class="k">Never ran</span><span><b>38</b> returned "this call waited (behind another command for the same session, or for the workspace) until its time ran out. Nothing was executed."</span></li>
+      <li><span class="k">Commits</span><span><b>23 of 147</b> runs of <code>_git_commit.sh</code> landed. 41 were cut mid-run, 14 refused to stage because a lock was in the way, the rest were honest gate refusals. A clean run needs 81 to 165 s with the seat to itself (median 87 s).</span></li>
+      <li><span class="k">Queue cost</span><span>About <b>44 lane-hours</b> were spent in flight beyond the solo norm while four or more lanes were calling. The seat itself can only have executed 6.5 hours of work in that window, because it runs one command at a time.</span></li>
+      <li><span class="k">Also</span><span><b>21</b> calls failed with "Service Unavailable: server draining" between 21:41 and 03:15: the cloud end restarting, not the seat. Not part of either fault.</span></li>
+    </ul>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Source: every <code>mcp__remote-devices__device_bash</code> tool_use and its tool_result in <code>/root/.claude/projects/-home-claude/0b1b95b8-…</code> (the conductor transcript and 30 subagent transcripts), paired by id; wall time is result timestamp minus call timestamp. Table at <code>notes/_lanes/311/X/calls.json</code>; the extractor at <code>notes/_lanes/311/X/extract.py</code>.</li>
+      <li>"Lanes calling" for a call is the number of calls in flight at the moment it was submitted, itself included; one agent never has two in flight, so this equals the number of lanes at the seat.</li>
+      <li>The control is the same session's evening: lanes A and B of #311 and the #310 wrap seat ran alone or in pairs 18:24 to 20:55 (280 calls, 1 cut, and that one a genuine 178 s run, median 0.8 s; commit runs of 81 to 126 s landed).</li>
+      <li>Calls by lanes in flight: ≤3 lanes 539 calls, 1 cut, 0 never ran, median 0.7 s. 4 to 9 lanes 267 calls, 12 cut, 8 never ran, median 71 s. 11 to 12 lanes 1,129 calls, 128 cut, 30 never ran, median 114 s.</li>
+    </ol>
+    <div class="chart"><svg viewBox="0 0 1100 300" width="100%" role="img" aria-label="Share of calls cut or never run, by how many lanes were calling at once" style="font-family:inherit;font-size:11px;display:block;max-width:100%">
+<style>.ax{stroke:var(--g3);stroke-width:1}.tk{fill:var(--g6)}.bar{fill:var(--accent)}.bar2{fill:var(--fg)}.med{fill:var(--g5);fill-opacity:.5}.lbl{fill:var(--g7)}</style>
+<text x="56" y="22" font-size="13" fill="var(--fg)">What a call met, by how many lanes were calling the seat at that moment</text>
+<text class="lbl" x="56" y="40">Red: share of calls cut by the wall. Black: share that never ran. Grey (right axis): the median call's wall time in seconds. Figures under the bars: calls in that bucket.</text>
+<line class="ax" x1="56" y1="260.0" x2="1060" y2="260.0" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="264.0" text-anchor="end">0%</text>
+<line class="ax" x1="56" y1="192.0" x2="1060" y2="192.0" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="196.0" text-anchor="end">10%</text>
+<line class="ax" x1="56" y1="124.0" x2="1060" y2="124.0" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="128.0" text-anchor="end">20%</text>
+<line class="ax" x1="56" y1="56.0" x2="1060" y2="56.0" stroke-dasharray="2 3"/>
+<text class="tk" x="48" y="60.0" text-anchor="end">30%</text>
+<text class="tk" x="1068" y="196.0">60 s</text>
+<text class="tk" x="1068" y="128.0">120 s</text>
+<text class="tk" x="1068" y="60.0">180 s</text>
+<rect class="med" x="68.5" y="259.2" width="58.6" height="0.8"/>
+<rect class="bar" x="74.4" y="258.3" width="20.5" height="1.7"/>
+<rect class="bar2" x="100.8" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="97.8" y="274" text-anchor="middle" fill="var(--fg)">1 lane</text>
+<text class="tk" x="97.8" y="288" text-anchor="middle">n=398</text>
+<rect class="med" x="152.2" y="259.3" width="58.6" height="0.7"/>
+<rect class="bar" x="158.1" y="260.0" width="20.5" height="0.0"/>
+<rect class="bar2" x="184.4" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="181.5" y="274" text-anchor="middle" fill="var(--fg)">2 lanes</text>
+<text class="tk" x="181.5" y="288" text-anchor="middle">n=89</text>
+<rect class="med" x="235.9" y="257.6" width="58.6" height="2.4"/>
+<rect class="bar" x="241.7" y="260.0" width="20.5" height="0.0"/>
+<rect class="bar2" x="268.1" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="265.2" y="274" text-anchor="middle" fill="var(--fg)">3 lanes</text>
+<text class="tk" x="265.2" y="288" text-anchor="middle">n=52</text>
+<rect class="med" x="319.6" y="246.1" width="58.6" height="13.9"/>
+<rect class="bar" x="325.4" y="229.1" width="20.5" height="30.9"/>
+<rect class="bar2" x="351.8" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="348.8" y="274" text-anchor="middle" fill="var(--fg)">4 lanes</text>
+<text class="tk" x="348.8" y="288" text-anchor="middle">n=44</text>
+<rect class="med" x="403.2" y="215.3" width="58.6" height="44.7"/>
+<rect class="bar" x="409.1" y="241.1" width="20.5" height="18.9"/>
+<rect class="bar2" x="435.4" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="432.5" y="274" text-anchor="middle" fill="var(--fg)">5 lanes</text>
+<text class="tk" x="432.5" y="288" text-anchor="middle">n=36</text>
+<rect class="med" x="486.9" y="182.1" width="58.6" height="77.9"/>
+<rect class="bar" x="492.7" y="220.0" width="20.5" height="40.0"/>
+<rect class="bar2" x="519.1" y="240.0" width="20.5" height="20.0"/>
+<text class="tk" x="516.2" y="274" text-anchor="middle" fill="var(--fg)">6 lanes</text>
+<text class="tk" x="516.2" y="288" text-anchor="middle">n=34</text>
+<rect class="med" x="570.5" y="187.8" width="58.6" height="72.2"/>
+<rect class="bar" x="576.4" y="229.8" width="20.5" height="30.2"/>
+<rect class="bar2" x="602.8" y="229.8" width="20.5" height="30.2"/>
+<text class="tk" x="599.8" y="274" text-anchor="middle" fill="var(--fg)">7 lanes</text>
+<text class="tk" x="599.8" y="288" text-anchor="middle">n=45</text>
+<rect class="med" x="654.2" y="164.7" width="58.6" height="95.3"/>
+<rect class="bar" x="660.1" y="205.6" width="20.5" height="54.4"/>
+<rect class="bar2" x="686.4" y="246.4" width="20.5" height="13.6"/>
+<text class="tk" x="683.5" y="274" text-anchor="middle" fill="var(--fg)">8 lanes</text>
+<text class="tk" x="683.5" y="288" text-anchor="middle">n=50</text>
+<rect class="med" x="737.9" y="154.0" width="58.6" height="106.0"/>
+<rect class="bar" x="743.7" y="248.3" width="20.5" height="11.7"/>
+<rect class="bar2" x="770.1" y="213.1" width="20.5" height="46.9"/>
+<text class="tk" x="767.2" y="274" text-anchor="middle" fill="var(--fg)">9 lanes</text>
+<text class="tk" x="767.2" y="288" text-anchor="middle">n=58</text>
+<rect class="med" x="821.5" y="230.8" width="58.6" height="29.2"/>
+<rect class="bar" x="827.4" y="254.5" width="20.5" height="5.5"/>
+<rect class="bar2" x="853.8" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="850.8" y="274" text-anchor="middle" fill="var(--fg)">10 lanes</text>
+<text class="tk" x="850.8" y="288" text-anchor="middle">n=247</text>
+<rect class="med" x="905.2" y="148.4" width="58.6" height="111.6"/>
+<rect class="bar" x="911.1" y="188.6" width="20.5" height="71.4"/>
+<rect class="bar2" x="937.4" y="260.0" width="20.5" height="0.0"/>
+<text class="tk" x="934.5" y="274" text-anchor="middle" fill="var(--fg)">11 lanes</text>
+<text class="tk" x="934.5" y="288" text-anchor="middle">n=162</text>
+<rect class="med" x="988.9" y="124.5" width="58.6" height="135.5"/>
+<rect class="bar" x="994.7" y="181.9" width="20.5" height="78.1"/>
+<rect class="bar2" x="1021.1" y="238.9" width="20.5" height="21.1"/>
+<text class="tk" x="1018.2" y="274" text-anchor="middle" fill="var(--fg)">12+ lanes</text>
+<text class="tk" x="1018.2" y="288" text-anchor="middle">n=967</text>
+</svg></div>
+    <div class="scroll"><table class="ctab"><thead><tr><th>Lanes calling</th><th>Calls</th><th>Cut</th><th>Never ran</th><th>Lost</th><th>Median wall s</th><th>p90 wall s</th></tr></thead><tbody><tr class=rec><td class="n">1</td><td class="n">398</td><td class="n">1</td><td class="n">0</td><td class="n">0.3%</td><td class="n">0.7</td><td class="n">63.0</td></tr><tr class=rec><td class="n">2</td><td class="n">89</td><td class="n">0</td><td class="n">0</td><td class="n">0.0%</td><td class="n">0.6</td><td class="n">17.7</td></tr><tr><td class="n">3</td><td class="n">52</td><td class="n">0</td><td class="n">0</td><td class="n">0.0%</td><td class="n">2.1</td><td class="n">82.3</td></tr><tr><td class="n">4</td><td class="n">44</td><td class="n">2</td><td class="n">0</td><td class="n">4.5%</td><td class="n">12.3</td><td class="n">165.8</td></tr><tr><td class="n">5</td><td class="n">36</td><td class="n">1</td><td class="n">0</td><td class="n">2.8%</td><td class="n">39.4</td><td class="n">158.6</td></tr><tr><td class="n">6</td><td class="n">34</td><td class="n">2</td><td class="n">1</td><td class="n">8.8%</td><td class="n">68.7</td><td class="n">178.2</td></tr><tr><td class="n">7</td><td class="n">45</td><td class="n">2</td><td class="n">2</td><td class="n">8.9%</td><td class="n">63.7</td><td class="n">179.4</td></tr><tr><td class="n">8</td><td class="n">50</td><td class="n">4</td><td class="n">1</td><td class="n">10.0%</td><td class="n">84.1</td><td class="n">179.9</td></tr><tr><td class="n">9</td><td class="n">58</td><td class="n">1</td><td class="n">4</td><td class="n">8.6%</td><td class="n">93.5</td><td class="n">179.7</td></tr><tr><td class="n">10</td><td class="n">247</td><td class="n">2</td><td class="n">0</td><td class="n">0.8%</td><td class="n">25.8</td><td class="n">156.8</td></tr><tr><td class="n">11</td><td class="n">162</td><td class="n">17</td><td class="n">0</td><td class="n">10.5%</td><td class="n">98.5</td><td class="n">180.5</td></tr><tr><td class="n">12+</td><td class="n">967</td><td class="n">111</td><td class="n">30</td><td class="n">14.6%</td><td class="n">119.6</td><td class="n">180.5</td></tr></tbody></table></div>
+    <ol start="5">
+      <li>The 10-lane bucket reads better than its neighbours because it is mostly the 21:00 to 21:20 start-up, when all twelve lanes were reading files in sub-second calls; the queue only bites once someone runs something long.</li>
+      <li>Two cut calls had wall times of 344 s and 652 s (lane a64f20, 23:40): they sit inside the "server draining" event, when the cloud end was reconnecting.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="cut" class="grey">
+  <div class="wrap">
+    <p class="label">02 · The cut calls · proven</p>
+    <h2>The seat runs one command at a time, and a call's 180-second clock starts when it joins the queue, not when it runs. Twelve lanes meant two minutes of queue before every command.</h2>
+    <p class="lead">Nothing was cut at 4 seconds. A call that reported "timed out after 4,928 ms" had a wall time of 180.5 s: it waited 175.6 s behind other lanes' commands, then ran for the 4.9 s left. The sum of run time and queue wait is 180 s in all 143 cut calls. The 38 that "never ran" are the same thing with nothing left. Lane CS measured it live: a bare <code>sleep 35</code> was killed at 23.6 s. The seat was never slow; it was busy with someone else.</p>
+    <p>This morning's test at the seat, alone, says the same from the other side. One <code>sleep 150</code> ran to completion. Two issued together ran one after the other: the second started one second after the first ended and also ran its full 150 s, 301 s after it was asked for. Four <code>sleep 40</code> issued together ran strictly in series, the last finishing 162 s after submission, none cut. From one lane the calls are issued one after another and the clock starts at execution; from twelve lanes the calls arrive together, the server queues them, and the clock starts at submission. Either way: one command at a time.</p>
+    <p>The number that follows is two. A commit run needs about 90 uncontended seconds and a render 60 to 160. With one other long call ahead of you the wait is survivable; with two it is not. Measured: with three or fewer lanes calling, 1 call in 539 was cut; from four lanes up the cuts begin; at eleven and twelve, one in eight was lost and the median call waited two minutes. Last night eight of the twelve lanes (H1, H2, C0, CS, E0, D1 to D3, B5) were reading and writing text; they did not need the seat's shell for anything but reading files and landing them.</p>
+    <div class="call" data-id="cut-fix" data-q="1. The fix for the cut calls" data-rec="Cap the seat at two lanes, one of them the committer; the text lanes work in the cloud">
+      <p class="q">Which fix?</p>
+      <p class="rec">The recommendation is first. The cap is measured, not chosen.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Cap the seat at two lanes, one of them the committer; the text lanes work in the cloud">Cap the seat at two lanes at once, one of them the single committer. Lanes that read and write text run in the cloud: they copy files in with device_stage_files, write there, land the result with device_commit_files, and hand the paths to the committer. Renders, gates and commits stay at the seat, never more than two.<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Keep the wide waves, cut every call under 60 s">Keep twelve lanes and cut every call under 60 s. Does not fix it: the wait is the sum of everyone else's calls, and two lanes rendering at 03:00 were still cut at 70 s.</button>
+        <button type="button" class="chip" data-v="Run the overnight as one chain at a time">Run the overnight as one chain, one lane at a time. Zero waste, slowest clock; the evening control shows it works.</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>The server's own wording, from 38 results: "device_bash did not run: this call waited (behind another command for the same session, or for the workspace) until its time ran out. Nothing was executed; it is safe to run it again." The queue is per session or per workspace: all 30 lanes were subagents of one session on one linked computer, so the two cannot be told apart from last night's data. Whether a second claude.ai session linked to the same Mac gets its own slot is untested.</li>
+      <li>Arithmetic, all 143 cut calls: wall 178.7 to 182.0 s (142 of 143); reported run time 1.08 to 178 s; <code>timeout_ms</code> asked for made no difference (asked 20,000 to 178,000, or none). Wait = wall − run time. First eight cut calls: wait 0.7, 71.4, 172.4, 101.7, 175.6, 128.3, 139.4, 98.9 s.</li>
+      <li>Seat test, 1 Oct 07:09 to 07:20 UTC, lane X alone, <code>timeout_ms</code> 178000 on every call. N=1: start 07:09:09, end 07:11:39. N=2 issued in one message: a 07:11:45 to 07:14:15, b 07:14:16 to 07:16:46. N=4 × <code>sleep 40</code> in one message: starts 07:17:24, 07:18:05, 07:18:45, 07:19:26, each ending 40 s later. N=8 was not run: the N=2 and N=4 shape already shows the single-agent client serialises its own parallel calls and starts the clock at execution, so an N=8 from one agent cannot reproduce the overnight queue; that needs calls from several agents at once, which this lane cannot issue.</li>
+      <li>The lane reports agree: CS "every device_bash call was being cut at about 15–25 s regardless of timeout_ms (a bare sleep 35 was killed at 23.6 s)"; H2 "calls cut at 1.8–33 s while queued behind another command for the same session"; E0 "the shared device shell gave this lane 2–40 s a call (queued behind eleven lanes)".</li>
+      <li>Commit runs, overnight: 147 attempts, 23 landed, 41 cut by the wall mid-run, 14 "could not stage" (a lock in the way), the rest gate refusals. H1 held <code>/tmp/apollo-commit.lock</code> 22:10 to about 01:26 over nineteen attempts (H2's report); H2 waited for it 23:20 to 02:29.</li>
+      <li>Whether <code>device_stage_files</code> and <code>device_commit_files</code> share the bash queue is untested; the recommendation assumes they do not, and the conductor should test it with two agents before the next wave.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="lock">
+  <div class="wrap">
+    <p class="label">03 · The lock · proven</p>
+    <h2>The mount refuses every delete, and git releases an unused lock by deleting it. So every no-op git command strands a lock, and every commit strands two.</h2>
+    <p class="lead">Reproduced this morning in a throwaway repo on the mount, with a control in <code>/tmp</code>. A no-op <code>git add</code>, <code>git add --dry-run</code>, <code>git status</code>, <code>git update-index --refresh</code>, an empty <code>git commit</code> and a clean <code>git reset</code> all leave a 0-byte lock behind, with git's own warning "unable to unlink … Operation not permitted". A commit that lands leaves <code>HEAD.lock</code> and <code>objects/maintenance.lock</code> every time. The same commands in <code>/tmp</code> leave nothing. This is not a twelve-lane fault: the repo holds 948 moved-aside locks from 48 sessions, six of them from #310's quiet day. Twelve lanes only made it bite, because a lock one lane leaked is a fatal "File exists" for the next lane's <code>git add</code>: fourteen commit runs died that way.</p>
+    <div class="scroll"><table class="ctab"><thead><tr><th>Command, on the mount</th><th>Lock left behind</th><th>Verdict</th></tr></thead><tbody><tr><td>no-op <code>git add a.txt</code> (already in HEAD)</td><td>index.lock</td><td>leaks</td></tr><tr><td><code>git add --dry-run a.txt</code></td><td>index.lock</td><td>leaks</td></tr><tr><td><code>git status --porcelain</code> on a clean tree</td><td>index.lock</td><td>leaks (1 of 3 runs)</td></tr><tr><td><code>git update-index --refresh</code></td><td>index.lock</td><td>leaks</td></tr><tr><td><code>git commit</code> with nothing to commit</td><td>index.lock</td><td>leaks</td></tr><tr><td><code>git reset -q</code> on a clean index</td><td>HEAD.lock + refs/heads/master.lock</td><td>leaks</td></tr><tr><td><code>git stash</code></td><td>index.stash.&lt;pid&gt;.lock</td><td>leaks, and the stash fails (rc 128)</td></tr><tr><td><code>git commit</code> that lands</td><td>HEAD.lock + objects/maintenance.lock</td><td>leaks, every time</td></tr><tr><td><code>git add</code> of a changed file</td><td>none (tmp_obj_* turd in objects/)</td><td>clean lock-wise</td></tr><tr><td><code>git diff --quiet</code>, <code>git diff --cached --quiet</code></td><td>none</td><td>clean</td></tr><tr><td><code>git diff-index --quiet HEAD</code>, <code>git ls-files -m</code></td><td>none</td><td>clean</td></tr><tr><td><code>git log</code>, <code>git rev-parse</code></td><td>none</td><td>clean</td></tr><tr><td><code>GIT_INDEX_FILE=/tmp/x-index git add</code> (no-op)</td><td>none at /tmp either</td><td>clean: unlink works off the mount</td></tr><tr><td><code>GIT_INDEX_FILE=/tmp/x-index git status</code></td><td>none</td><td>clean</td></tr><tr><td>control: the same no-op add, status and empty commit in <code>/tmp</code></td><td>none</td><td>clean</td></tr></tbody></table></div>
+    <p>The commit script already knows: <code>clear_locks</code> moves locks aside at five points and the commit line greps away "unable to unlink". But it also runs <code>git status --porcelain</code> after staging (line 984), stages every named path with a bare <code>git add</code> whether or not it changed (line 981), and between its <code>clear_locks</code> and its <code>git add</code> any other lane's <code>git status</code> can drop a lock. Moving the index out of the mount (<code>GIT_INDEX_FILE</code>) stops the index lock and nothing else: <code>HEAD.lock</code> and the branch lock still land in <code>.git</code> on every commit. The <code>git reset -q</code> that last night's bridge note recommends leaks two locks of its own.</p>
+    <div class="call" data-id="lock-fix" data-q="2. The fix for the lock" data-rec="Allow deletion in the repo folder at each opener; keep the mv-aside as the belt">
+      <p class="q">Which fix?</p>
+      <p class="rec">The recommendation is first. It is the only one that reaches the cause.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Allow deletion in the repo folder at each opener; keep the mv-aside as the belt">Allow deletion in the repo folder for the session, at the opener, through device_request_delete_permission (one prompt, you click once). Git's own unlink then works and no lock is left by any command. The mv-aside in the commit script stays as the belt. The cost: rm inside the mount becomes possible for that session, permanent, no Trash; the no-rm rule becomes discipline rather than a wall.<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="A git wrapper: mv-aside around every git call, no-op forms refused, lock-free reads only">Keep deletion off and build the belt out: one git wrapper every lane must use, which moves .git/**/*.lock aside before and after each call, refuses git status, bare adds of unchanged paths, empty commits and clean resets, and reads with diff --quiet, diff-index and ls-files. Catches most of it; cannot stop a lock appearing mid-call from another lane.</button>
+        <button type="button" class="chip" data-v="Move the index out of the mount with GIT_INDEX_FILE">Move the index out of the mount with GIT_INDEX_FILE. Measured: stops index.lock only; HEAD.lock and the branch lock still strand on every commit. Not recommended.</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Mount: <code>fuse (rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other)</code>; <code>rm z.tmp</code> → "Operation not permitted"; <code>mv</code> and overwrite work. Git 2.34.1 at the seat.</li>
+      <li>Why git deletes: a lock file is written beside its target and renamed over it on success; on "nothing changed" it is rolled back with <code>unlink()</code>. <code>git add</code> and <code>git status</code> write the index with SKIP_IF_UNCHANGED, so a no-op always takes the rollback path. After a commit, the symbolic <code>HEAD.lock</code> is always rolled back, and <code>objects/maintenance.lock</code> belongs to the post-commit auto-maintenance; both are unlinks. <code>git add</code> of changed content also leaves <code>objects/*/tmp_obj_*</code> files, which are harmless but accumulate.</li>
+      <li>The throwaway repo: <code>outputs/311/X/lockrepo</code> (ignored tree); the probe moved each stranded lock aside after measuring it, into <code>outputs/311/X/aside-*</code>. Full probe output in <code>notes/_lanes/311/X/lock-probe.txt</code>.</li>
+      <li>Stranded locks on record: 377 in <code>notes/_lanes/_orphan-locks/</code> (by session: 263 ×6, 294 ×18, 295 ×38, 296 ×30, 297 ×17, 298 ×3, 299 ×7, 300 ×4, 301 ×11, 302 ×9, 303 ×7, 304 ×18, 305 ×5, 306 ×21, 307 ×26, 308 ×66, 309 ×29, 310 ×6, 311 ×50), 561 in <code>_to_delete/_stale_locks/</code>, 10 in <code>.git/_stale-locks/</code>.</li>
+      <li>In the overnight transcripts: 11 × "fatal: Unable to create '…/.git/index.lock'", 13 × "could not stage … git refused it", 4 × "lock survived the mv-aside — do NOT stage".</li>
+      <li>What <code>device_request_delete_permission</code> changes (not called by this lane): one approval for the connected folder root enables unlink/rmdir under its whole subtree for the rest of the session, from the next device_bash call. It does not survive the session, so it belongs at the opener. The commit script's own <code>rm -f "$L"</code> fallback (line ~304) would then also work.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="else" class="grey">
+  <div class="wrap">
+    <p class="label">04 · What else the night taught · seven rules</p>
+    <h2>Seven one-line rules for the parallel-conductor runbook.</h2>
+    <ol class="rules">
+      <li><span>A chain conductor with no Agent tool is a worker: before spawning anything, <code>ToolSearch select:Agent</code>; if it is absent, hand back in one line and do not take the brief.<small>Chains 1 and 3 both opened with "this seat has no Agent tool" and none of their lanes ran until the conductor relaunched them at 22:15; the night lost its first hour.</small></span></li>
+      <li><span>The pre-push survey runs the committed tree first, without <code>--include-mutating</code>, exactly as CI reads it; the mutating pass is the second run, never the only one.<small>With <code>--include-mutating</code> step [118] rebuilds the memento index before [119] checks it, so the check always passes locally; CI does not ask [118] and went red on 69848bbe for the stale index C0's 70 meta changes left. Lane K's fix: efd0e89f.</small></span></li>
+      <li><span>The seat takes one command at a time: never put more than two lanes on it, and never ask it for anything a cloud shell can do.<small>Section 02. The twelve-lane wave spent about 44 lane-hours queueing for 6.5 hours of seat time.</small></span></li>
+      <li><span>The seat-wide commit mutex is one empty directory; a holder that cannot finish inside one call says so and releases; a holder older than 30 minutes is removed by whoever finds it.<small>Markers inside <code>/tmp/apollo-commit.lock</code> made <code>rmdir</code> fail, so the stale rule could not be applied; it was held past 30 minutes three times and lanes committed around it.</small></span></li>
+      <li><span>Never commit <code>knowledge/_state.json</code> whole from a lane: name rows, or leave the store to the one committer.<small>A7's d1901fa2 carried E0's, F2's, H1's and CS's uncommitted rows into HEAD before their reports existed.</small></span></li>
+      <li><span>Read git without locking: <code>git diff --quiet</code>, <code>git diff-index --quiet HEAD</code>, <code>git ls-files -m -o</code>, <code>git log</code>, <code>git rev-parse</code>. <code>git status</code> locks, including the one on line 984 of the commit script.<small>Measured in section 03.</small></span></li>
+      <li><span>"Service Unavailable: server draining" is the cloud end restarting: wait a minute and resend the same call; do not diagnose the seat.<small>21 calls, 21:41 to 03:15, in bursts.</small></span></li>
+    </ol>
+    <div class="call" data-id="rules" data-q="3. The seven rules" data-rec="Add all seven to the runbook">
+      <p class="q">Add them to the runbook?</p>
+      <p class="rec">The recommendation is first.</p>
+      <div class="chips">
+        <button type="button" class="chip" data-v="Add all seven to the runbook">Add all seven to <code>knowledge/_RUNBOOK-parallel-conductor.md</code>.<em>the recommendation</em></button>
+        <button type="button" class="chip" data-v="Some of them (comment)">Some of them (say which below)</button>
+        <button type="button" class="chip" data-v="None">None</button>
+      </div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section id="note">
+  <div class="wrap">
+    <p class="label">05 · Anything else</p>
+    <h2>Anything you want changed or looked at again.</h2>
+    <div class="call" data-id="page" data-q="4. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · Why the night was slow · v1 · 2026-10-01 · session 311 lane X (Fable)</span>
+  <span>Nothing here is enacted until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 4 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-311-X-why-the-night-was-slow-v1';
+  var PATH='notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 311 · Why the night was slow · comments','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('4. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-311-X-why-the-night-was-slow.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

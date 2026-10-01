@@ -1,0 +1,11 @@
+Seat test, lane X, 2026-10-01, UTC, every call timeout_ms=178000, lane X alone at the seat.
+N=1  sleep 150:  start 07:09:09  end 07:11:39   ran, not cut
+N=2  sleep 150 x2 issued in one message:
+     a start 07:11:45  end 07:14:15   ran
+     b start 07:14:16  end 07:16:46   ran, 301 s after submission, not cut
+N=4  sleep 40 x4 issued in one message:
+     a 07:17:24-07:18:04  b 07:18:05-07:18:45  c 07:18:45-07:19:25  d 07:19:26-07:20:06   all ran, strictly serial, none cut
+N=8  not run: from one agent the client issues parallel calls one after another and the 180 s clock starts at execution,
+     so a single-agent N=8 cannot reproduce the overnight server queue (which needs several agents calling at once).
+Reading: the seat executes one command at a time whoever asks. From one agent the calls are serialised by the client
+and each gets its own clock; from twelve agents they are queued by the server and the clock runs from submission.

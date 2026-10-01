@@ -1,0 +1,28 @@
+Lock probe, lane X, 2026-10-01 07:20 UTC. Repo: outputs/311/X/lockrepo on the mount (fuse rw, deletion refused). Git 2.34.1.
+Each row: command; rc; locks found under .git after it; git's warning. Locks were moved aside after each row.
+rm test: rm z.tmp -> "rm: cannot remove 'z.tmp': Operation not permitted" (mv works)
+1  no-op git add a.txt                 rc=0 locks=[.git/index.lock]  unable to unlink .git/index.lock
+2  git add --dry-run a.txt             rc=0 locks=[.git/index.lock]  unable to unlink .git/index.lock
+3  git status --porcelain (clean)      rc=0 locks=[.git/index.lock]  unable to unlink .git/index.lock
+4  git diff --quiet (clean)            rc=0 locks=[]
+5  git diff --cached --quiet           rc=0 locks=[]
+6  git update-index --refresh          rc=0 locks=[.git/index.lock]  unable to unlink .git/index.lock
+7  git diff-index --quiet HEAD         rc=0 locks=[]
+8  git ls-files -m                     rc=0 locks=[]
+9  git add a.txt (CHANGED)             rc=0 locks=[]  unable to unlink .git/objects/42/tmp_obj_d3UNp5
+10 git commit (real)                   rc=0 locks=[.git/objects/maintenance.lock .git/HEAD.lock]  unable to unlink objects tmp_obj
+11 git commit (nothing to commit)      rc=1 locks=[.git/index.lock]  unable to unlink .git/index.lock
+12 git reset -q (clean)                rc=0 locks=[.git/refs/heads/master.lock .git/HEAD.lock]  unable to unlink .git/HEAD.lock
+13 git log -1                          rc=0 locks=[]
+14 git rev-parse HEAD                  rc=0 locks=[]
+15 git status --short (clean, 2nd)     rc=0 locks=[]
+16 git status after touch              rc=0 locks=[]
+17 git stash                           rc=128 locks=[.git/index.stash.183.lock]
+18 git stash pop                       rc=1 locks=[]
+19 GIT_INDEX_FILE=/tmp/x-index git add a.txt (no-op)   rc=0 locks=[]  (/tmp/x-index.lock absent: unlink worked off the mount)
+20 GIT_INDEX_FILE=/tmp/x-index git status --porcelain rc=0 locks=[]
+Control, same commands in a fresh repo under /tmp:
+C1 no-op git add        rc=0 locks=[]
+C2 git status           rc=0 locks=[]
+C3 git commit nothing   rc=1 locks=[]
+Repo init on the mount itself left: HEAD.lock, objects/maintenance.lock, three objects/*/tmp_obj_* turds.
