@@ -60,6 +60,9 @@
   invisible ring. Repair here: .cal-day.is-today[aria-selected="true"] flips the ring to
   background/default — MEASURED 17.40:1 in both themes. Date-picker carries the same class
   UNREPAIRED and this lane did not touch it (it is gated) — flagged to the conductor.
+  (#211 lane R3 repaired Date-picker the same way.) s308-D3 then moved the ring INSIDE the
+  square — 3px of fill, a 2px --page ring — so it reads as a ring, not a smaller square; the
+  date picker follows (#313 lane B123).
 
   ── ARIA ROLES ARE NATIVE, AND THAT IS PROVEN NOT ASSUMED ─────────────────────────────
   With role="grid" on the <table>, HTML-AAM maps <td> to gridcell and <thead>/<tbody> to
@@ -210,8 +213,12 @@
      (0,2,0) and its knockout rule comes LATER; Calendar's does not. Restated here at (0,3,1),
      same two tokens as the knockout itself — no new colour, no new constant. */
   button.cal-day[aria-selected="true"]:hover:not(:disabled){background:var(--text); color:var(--page);}
-  /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule. */
-  .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 2px var(--page);}
+  /* ⛔ THE REPAIR (see head comment): ring-on-knockout is 1.06:1 without this rule.
+     s308-D3 (Dave, 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): the
+     #211 page-colour ring met the page at the cell's edge and read as a square 2px smaller, not
+     a ring. The ring is now set INSIDE the square: 3px of the knockout fill, then a 2px ring in
+     --page. The page's proposal rule, verbatim. Same two tokens, no new colour. #313 lane B123. */
+  .cal-day.is-today[aria-selected="true"]{box-shadow:inset 0 0 0 3px var(--text), inset 0 0 0 5px var(--page);}
   .cal-day:disabled{color:var(--text-disabled); cursor:not-allowed; background:transparent;}
   /* OUT-OF-MONTH is NOT disabled: readable recessive ink, never the 1.42:1 disabled ghost */
   .cal-day.is-outside{color:var(--text); opacity:var(--alpha-60); cursor:default;}

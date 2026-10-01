@@ -1,0 +1,76 @@
+{
+  "$what": "Draft for the follow-up lane (NOT applied): what knowledge/components/slider.meta.json gains when Range slider becomes Slider's `double` type (s308-D6). Lane B123 could not touch slider.meta.json (lane L4 redid its spec tree on 2026-10-01). Every value below is copied from knowledge/components/range-slider.meta.json at cdf17a12, not authored.",
+  "$ruling": "s308-D6 (Dave, 2026-09-29, by click: 'Rework: Slider's two-handle form')",
+  "$snippet": "knowledge/snippets/Slider.reference.html — the second div.field[data-type=double]: div.rail > div.track + input#r2-lo + input#r2-hi (#313 lane B123)",
+  "props_add": [
+    {
+      "name": "min",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": 1000
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": 50
+    },
+    {
+      "name": "valueLow",
+      "type": "number",
+      "$note": "The low handle's current value. Clamped so it can never exceed valueHigh (authored JS, see behaviour)."
+    },
+    {
+      "name": "valueHigh",
+      "type": "number",
+      "$note": "The high handle's current value. Clamped so it can never fall below valueLow."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "$note": "Prefix/suffix for the displayed value pair, e.g. '£'. Specimen shows GBP; not itself a currency-formatting component."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false,
+      "$note": "NOT DRAWN as a specimen this pass — the gated Slider has no disabled specimen either; carried as a declared gap, not invented here to avoid drifting ahead of its own precedent."
+    }
+  ],
+  "props_note": "valueLow/valueHigh apply when type = double; the single type keeps `value`.",
+  "variants_double_use": "Two handles on one track, a min/max range: two native range inputs on one rail, clamped so they never cross, the last-touched on top, each named by aria-valuetext ('£200, minimum'), the pair shown as text.",
+  "anatomy_add": {
+    "$note": "under the double field: the rail (div.rail) holds a DRAWN track (div.track, an element here, not the browser's) and two inputs, each with its own thumb — consistent with L4's track and thumb parts (the double type has two thumbs on one track).",
+    "parts": [
+      "rail (div.rail)",
+      "track (div.track, aria-hidden, the two-stop fill band --lo..--hi)",
+      "input low (input#r2-lo) › thumb",
+      "input high (input#r2-hi) › thumb"
+    ]
+  },
+  "accessibility_add": {
+    "role": "Two real <input type=\"range\"> elements, each with its own aria-labelledby (sharing the field's one visible label) and a live aria-valuetext ('£200, minimum' / '£800, maximum') so AT never has to infer which handle is which from position alone.",
+    "keyboard": "Native — Arrow keys/Home/End/PageUp/PageDown operate whichever handle has focus, exactly as the gated Slider's single handle does. No custom keydown handler was authored; the browser's own range-input keyboard model is reused twice.",
+    "valueText": "aria-valuetext is recomputed on every input event for BOTH handles (the low handle's text also changes near the clamp boundary), and the visible value pair mirrors it as plain text — never colour or handle position alone (1.4.1), the same answer the gated Slider gives.",
+    "clamp": "The low handle cannot be dragged/keyed past the high handle and vice versa (authored JS). The clamp is silent (no error message) — DECIDED here as a UX default, not settled: should crossing produce a message, or is silent clamping sufficient? See $decisionsForDave."
+  },
+  "antiPatterns_add": [
+    "Letting the low handle's DOM z-index get permanently trapped under the high handle at a shared value — the is-top class swap on pointerdown exists specifically to prevent this",
+    "Synthesising a single custom control with two drawn thumbs instead of two real range inputs — the two-native-inputs technique is what earns the keyboard model honestly, at the cost of the clamp needing to be authored"
+  ],
+  "decisionsForDave_carried": [
+    "Should crossing the clamp boundary produce a message (e.g. a brief inline note) or stay a silent clamp, as built?",
+    "Slider's own meta records a DEPRECATED tick-marker token finding — should Range slider inherit tick markers at all, or stay bare (as built)?",
+    "Is £/GBP the right specimen currency, or should the canonical specimen be currency-neutral (a plain numeric range) with money shown only in a usage example?"
+  ],
+  "when_note": "Under s272-D36 (filters and settings, where the change takes effect at once; a committed value is paired with a number field) and s272-D40 (under about five steps, selection controls instead) — the same rules as the single type.",
+  "then": [
+    "turn range-slider.meta.json into an alias seat: aliasOf {component: component:slider, reading: 'two handles'}, edges.renderedBy snippet:Slider.reference.html, $aliasRecord naming this merge (kpi-tile.meta.json is the shape)",
+    "retire knowledge/snippets/Range-slider.reference.html (nothing outside notes/reviews links .cn-range-slider at cdf17a12; Splitter.reference.html mentions it in prose only) — or keep the old scope with Slider's manifest scopeAliases, the Metric precedent",
+    "re-run extract_spec.py for slider with --force only after L4's $hand entries are carried (it refuses a $hand meta otherwise)",
+    "regen serial; showroom range-slider page goes; KG node snippet:Range-slider goes"
+  ]
+}

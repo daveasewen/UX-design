@@ -62,8 +62,15 @@
      renders without a half/third-star glyph. Decorative; the accessible name carries the number. ---- */
   .display{display:inline-flex; align-items:center; gap:12px;}  /* conductor #209 snap 10->12 (tie up, ruled policy) */
   .display .starsRow{position:relative; display:inline-flex; width:120px; height:24px;}
-  .display .starsRow .row{position:absolute; inset:0; display:flex; gap:4px;}
-  .display .starsRow .row svg{width:20px; height:20px;}
+  /* s308-D7 rework (#313 lane B123) — THE FILLED STARS WERE OUT OF STEP WITH THE EMPTY ONES. The
+     filled row is clipped narrower than the empty one (86% for 4.3), and its five 20px glyphs were
+     flex items that may shrink: squeezed into the narrower row they shrank and slid left of the
+     empty stars beneath them. Now every glyph is fixed (flex:none) and sits in its own 24px cell
+     (2px each side, no gap), so both rows lay out identically, five cells fill the 120px row
+     exactly, and the clip width maps straight onto the score: 4.3 of 5 = 86% = four whole cells
+     and 7.2px of the fifth. */
+  .display .starsRow .row{position:absolute; inset:0; display:flex; align-items:center;}
+  .display .starsRow .row svg{width:20px; height:20px; flex:none; margin:0 2px;}
   .display .starsRow .empty svg{color:var(--star-empty);}
   .display .starsRow .filled{overflow:hidden;}
   .display .starsRow .filled svg{color:var(--star-filled);}

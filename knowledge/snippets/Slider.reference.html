@@ -7,7 +7,17 @@
 <!-- CANONICAL REFERENCE for Slider (gated). Native range input styled: unfilled track scrollbar/background,
      filled scrollbar/foreground, handle background/default + border/subtle, focus ring. Value also shown
      as text (not colour/position alone, 1.4.1). NOTE/finding: the faint handle border + filled-track
-     contrast are ~<3:1 in places — perceptibility leans on handle position + the numeric value. -->
+     contrast are ~<3:1 in places — perceptibility leans on handle position + the numeric value.
+     TWO TYPES, ONE PART (s308-D6, Dave 2026-09-29, by click: 'Rework: Slider's two-handle form'):
+     `single` (one handle) and `double` (two handles on one track, a min/max range). The double
+     type was its own proposed part, Range slider (#209); it is reworked here as Slider's
+     two-handle form, its mechanics moved over unchanged: two real native range inputs on one
+     rail (the honest keyboard model, twice), a min/max clamp so the handles never cross, a
+     z-index hand-off so the last-touched handle sits on top, aria-valuetext naming each handle,
+     and the pair shown as text (1.4.1). Same tokens, same thumb, same focus ring as `single`.
+     Where it may be used is the slider rules of 15 September: filters and settings, where the
+     change takes effect at once; a committed value is paired with a number field (s272-D36);
+     under about five steps use selection controls instead (s272-D40). #313 lane B123. -->
 <style>
 /* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
    enhancement; headings/body excluded. Added 2026-06-29. */
@@ -33,6 +43,24 @@
   input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid var(--focus); outline-offset:2px;}
   input[type=range]:focus-visible::-moz-range-thumb{outline:2px solid var(--focus); outline-offset:2px;}
 
+  /* ---- the double type: two handles on one track (s308-D6). Moved from Range slider (#209)
+     unchanged in mechanism. The two inputs share the rail; their own tracks go transparent and
+     the drawn .track carries the fill, a two-stop band between --lo and --hi (the single type's
+     linear-gradient-on-a-var, extended from one stop to two). ---- */
+  .field + .field{margin-top:2.5rem;}
+  .rail{position:relative; height:24px; --lo:20%; --hi:80%;}   /* defaults in CSS so the composition gate resolves them; the script sets them live */
+  .rail .track{position:absolute; left:0; right:0; top:50%; translate:0 -50%; height:4px; border-radius:var(--border-radius-indicator);
+    background:linear-gradient(90deg, var(--unfilled) 0%, var(--unfilled) var(--lo,20%), var(--filled) var(--lo,20%), var(--filled) var(--hi,80%), var(--unfilled) var(--hi,80%), var(--unfilled) 100%);
+    pointer-events:none;}
+  .rail input[type=range]{position:absolute; left:0; top:0; margin:0; pointer-events:none;}   /* the track ignores the pointer; each thumb takes it back below */
+  .rail input[type=range]::-webkit-slider-runnable-track{background:transparent;}
+  .rail input[type=range]::-moz-range-track{background:transparent;}
+  .rail input[type=range]::-moz-range-progress{background:transparent;}
+  .rail input[type=range]::-webkit-slider-thumb{pointer-events:auto; position:relative;}
+  .rail input[type=range]::-moz-range-thumb{pointer-events:auto;}
+  /* the last-touched handle sits on top, so it is never trapped under its neighbour at a shared value */
+  .rail input[type=range].is-top{z-index:2;}
+
   /* WCAG 2.3.3 / motion sensitivity — honour reduced-motion (invisible to other users) */
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
@@ -46,6 +74,16 @@
     <input type="range" id="r1" min="0" max="1000" step="50" value="600" aria-label="Monthly budget in pounds" style="--pct:60%;">
   </div>
 
+  <!-- the double type: two handles on one track (s308-D6) -->
+  <div class="field" data-type="double">
+    <label id="r2-label">Price range <span class="val" aria-hidden="true"><span id="r2-lo-val">£200</span>&nbsp;–&nbsp;<span id="r2-hi-val">£800</span></span></label>
+    <div class="rail" id="r2">
+      <div class="track" aria-hidden="true"></div>
+      <input type="range" id="r2-lo" min="0" max="1000" step="50" value="200" aria-labelledby="r2-label" aria-valuetext="£200, minimum">
+      <input type="range" id="r2-hi" min="0" max="1000" step="50" value="800" aria-labelledby="r2-label" aria-valuetext="£800, maximum">
+    </div>
+  </div>
+
   <script type="application/json" id="token-manifest">
   {
     "component": "Slider",
@@ -53,13 +91,40 @@
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" }
     ],
-    "requiredAria": ["type=\"range\"", "aria-label"]
+    "requiredAria": ["type=\"range\"", "aria-label", "aria-labelledby", "aria-valuetext"]
   }
   </script>
   <script>
     
     const r=document.getElementById('r1'), v=document.getElementById('v');
     r.addEventListener('input', ()=>{ v.textContent='£'+r.value; r.style.setProperty('--pct',(r.value/10)+'%'); });
+
+    // the double type (s308-D6) — moved from Range slider (#209) unchanged
+    (function(){
+      const rail = document.getElementById('r2');
+      const lo = document.getElementById('r2-lo'), hi = document.getElementById('r2-hi');
+      const loVal = document.getElementById('r2-lo-val'), hiVal = document.getElementById('r2-hi-val');
+      const min = Number(lo.min), max = Number(lo.max);
+      function paint(){
+        // the clamp: the low handle may not pass the high handle, nor the high the low
+        if (Number(lo.value) > Number(hi.value)) lo.value = hi.value;
+        if (Number(hi.value) < Number(lo.value)) hi.value = lo.value;
+        rail.style.setProperty('--lo', ((Number(lo.value) - min) / (max - min)) * 100 + '%');
+        rail.style.setProperty('--hi', ((Number(hi.value) - min) / (max - min)) * 100 + '%');
+        loVal.textContent = '£' + lo.value;
+        hiVal.textContent = '£' + hi.value;
+        lo.setAttribute('aria-valuetext', '£' + lo.value + ', minimum');
+        hi.setAttribute('aria-valuetext', '£' + hi.value + ', maximum');
+      }
+      [lo, hi].forEach(input => {
+        input.addEventListener('input', paint);
+        input.addEventListener('pointerdown', () => {
+          lo.classList.toggle('is-top', input === lo);
+          hi.classList.toggle('is-top', input === hi);
+        });
+      });
+      paint();
+    })();
   </script>
 </body>
 </html>

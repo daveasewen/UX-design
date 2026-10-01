@@ -12,10 +12,10 @@
     { "name": "lazy", "type": "boolean", "default": false, "$note": "A branch whose children are fetched on first open. While fetching, the node carries aria-busy and its group shows skeleton bones." }
   ],
   "variants": [
-    { "name": "single-select", "use": "The drawn component: one selected node, aria-selected, a mono leading bar." },
+    { "name": "single-select", "use": "The drawn component: one selected node, aria-selected, a leading bar whose colour each theme chooses (s308-D2: red in Supercharge and Common, black in Console and Mono)." },
     { "name": "lazy branch", "use": "Children arrive after the open. Drawn live rather than mocked so the loading state is real." }
   ],
-  "$states": ["collapsed branch", "expanded branch", "leaf", "hover", "pressed", "focus (roving, ring inset)", "selected (surface + 3px mono bar + aria-selected)", "view-only (aria-disabled)", "loading (aria-busy + skeleton bones)", "empty branch (a drawn row)", "empty tree (Empty-state, not a tree with no rows)"],
+  "$states": ["collapsed branch", "expanded branch", "leaf", "hover", "pressed", "focus (roving, ring inset)", "selected (surface + 3px bar + aria-selected; the bar red in Supercharge and Common, black in Console and Mono, s308-D2)", "view-only (aria-disabled)", "loading (aria-busy + skeleton bones)", "empty branch (a drawn row)", "empty tree (Empty-state, not a tree with no rows)"],
   "$consumes": ["Sidebar-nav (row anatomy and the collapsible-group idiom — but Sidebar-nav nests exactly one level and hard-codes its child indent; a tree cannot)", "Skeleton-loader (the .bone loading rows, with its reduced-motion behaviour)", "Empty-state (the whole-tree empty idiom)"],
   "dimensions": {
     "rowMinHeight": "44px",
@@ -28,7 +28,7 @@
   "tokens": {
     "surface": "tertiary/background/default on a 1px border/subtle box, border-radius/surface",
     "row": "text/default; hover tertiary/background/hover; pressed form/background/pressed",
-    "selection": "tertiary/background/hover surface + a 3px leading bar in form/border/active (MONO) + aria-selected",
+    "selection": "tertiary/background/hover surface + a 3px leading bar + aria-selected. The bar is a choice each theme makes (s308-D2, Dave 2026-09-29, verbatim: \"The red is correct for Supercharge and Common, the black is correct for console and mono\"): form/border/active in Mono and Console; primary/border/default (#DB0011, the side navigation's red) in Common (legacy) and Supercharge, set by guards.tree in those two themes' override files (--marker: var(--marker-brand)). #313 lane B123.",
     "twisty": "icon/default, rotated 90 degrees when expanded",
     "meta": "text/default at --alpha-60 (the child count)",
     "viewOnly": "FULL INK, no hover surface, aria-disabled, and the words 'View only' in a .tr-meta. ⛔ NOT dimmed — the first draft used --alpha-40 and MEASURED 2.52:1 light / 3.79:1 dark in Chromium with every gate green. A view-only node is content you may READ but not ACT on; dimming it to unreadability is the #209 cancelled-mandate class exactly. A CATEGORY correction, not a colour tweak.",
@@ -85,7 +85,7 @@
     "date": "2026-08-20",
     "against": "current store (values are Sidebar-nav's and Skeleton-loader's, unchanged)",
     "result": "PASS — no token minted, no colour invented. Row chrome = Sidebar-nav's tertiary/* and form/background/pressed set; the bone = Skeleton-loader's; the selection bar = form/border/active, MONO.",
-    "$note": "⚠ DECLARED, NOT SETTLED: Sidebar-nav marks CURRENT LOCATION with the same 3px bar shape in primary/border/default (#DB0011). This lane drew selection MONO rather than reuse the red, because 'the node I selected' and 'the page I am on' are different meanings and whether they share a mark is Dave's. Nothing is asserted by the mono choice — receipt Q9."
+    "$note": "SETTLED by s308-D2 (#308): the question this note declared open (does the chosen mark share the side navigation's red?) is answered per theme — red in Supercharge and Common, black in Console and Mono. Enacted #313 lane B123 by a guard in the legacy and supercharge override files; no token minted. The original #210 note read: 'Sidebar-nav marks CURRENT LOCATION with the same 3px bar shape in primary/border/default (#DB0011). This lane drew selection MONO rather than reuse the red ... receipt Q9.'"
   },
   "provenance": {
     "source": "gap-report",

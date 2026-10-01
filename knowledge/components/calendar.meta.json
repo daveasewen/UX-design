@@ -15,7 +15,7 @@
     { "name": "standalone", "use": "The month living in page flow — a journey step, a booking screen, a statement-period chooser. This is the component." },
     { "name": "narrow", "use": "The same markup in a ~288px seat: columns are 1fr and cells keep their 40px minimum height, so it narrows with no breakpoint of its own." }
   ],
-  "$states": ["resting day", "day hover", "day focus (ring, inset)", "today (2px inset ring + aria-current)", "selected (ink knockout + aria-selected)", "today and selected (ring flips to background/default)", "disabled day (text/disabled)", "out-of-month day (text/default at alpha-60, non-interactive)"],
+  "$states": ["resting day", "day hover", "day focus (ring, inset)", "today (2px inset ring + aria-current)", "selected (ink knockout + aria-selected)", "today and selected (the ring set inside the square: 3px of fill, then a 2px background/default ring, s308-D3)", "disabled day (text/disabled)", "out-of-month day (text/default at alpha-60, non-interactive)"],
   "$consumes": ["Date-picker (day-cell state language and keyboard model — lock-step; change it there)", "Icon-button geometry (44x44 month/year nav)"],
   "dimensions": {
     "dayCellMinHeight": "40px",
@@ -30,7 +30,7 @@
     "day": "text/default on transparent; hover form/background/hover",
     "selection": "ink knockout — text/default fill + background/default numeral (the tooltip precedent, via Date-picker)",
     "today": "2px inset ring on form/border/active — a SHAPE, never colour alone; aria-current carries it too",
-    "todayAndSelected": "the ring flips to background/default so it survives inside the knockout (see antiPatterns)",
+    "todayAndSelected": "the ring is set INSIDE the square (s308-D3, Dave 2026-09-29, by click: 'Set the ring inside the square (the proposal)'): box-shadow inset 0 0 0 3px text/default, inset 0 0 0 5px background/default — 3px of the knockout fill, then a 2px ring in the page colour, so it reads as a ring and not as a square 2px smaller. The date picker draws the same. #313 lane B123.",
     "disabled": "text/disabled (Date-picker lock-step)",
     "outOfMonth": "text/default at --alpha-60 — a READABLE recessive ink, deliberately NOT text/disabled",
     "focus": "focus/ring, 2px, inset by -2px so it survives the 4px cell gap",
@@ -95,7 +95,7 @@
     "source": "gap-report",
     "$note": "#210 wave 4, lane A, from the heavy-seven fan-out brief (notes/_briefs/2026-08-20-210-wave4-heavy7-fanout-brief-v1.md). Premise re-probed in-lane: `ls knowledge/snippets/ | grep -icE '^Calendar\\.'` returned 0. Authority for the day-cell language and the keyboard model is the gated Date-picker snippet; the surface is the card idiom. No Figma node bound. PROPOSED, never promoted — no registration of any kind was taken by this lane."
   },
-  "$relationship-to-date-picker": "PROPOSED, NOT ADJUDICATED (the brief fences this explicitly). Date-picker is a FIELD that owns a calendar: an Input-fields boxed input plus an anchored dismissable panel whose job is to write DD/MM/YYYY back. Calendar is the month grid on its own. The proposal is that Date-picker's panel should CONSUME this organism rather than keep a second copy of the grid; it does not today, and this lane did not edit Date-picker because it is gated and promoted. Whether they merge, whether Calendar is deleted, or whether both stand is DAVE'S — receipt Q1.",
+  "$relationship-to-date-picker": "RULED s307-D49 (Dave, 2026-09-28, by click: 'Yes, the date picker uses the calendar; show me the tree mark and the ring as pictures'): one calendar built once; the date picker's panel is to consume this part (row W-307qq, NOT YET BUILT at #313: the date picker's spec tree was redone by #313 lane L4 the same night and its meta was fenced from lane B123, so the fold waits for its own lane). The text below is the #210 proposal it answers. PROPOSED, NOT ADJUDICATED (the brief fences this explicitly). Date-picker is a FIELD that owns a calendar: an Input-fields boxed input plus an anchored dismissable panel whose job is to write DD/MM/YYYY back. Calendar is the month grid on its own. The proposal is that Date-picker's panel should CONSUME this organism rather than keep a second copy of the grid; it does not today, and this lane did not edit Date-picker because it is gated and promoted. Whether they merge, whether Calendar is deleted, or whether both stand is DAVE'S — receipt Q1.",
   "$partials": ".cal-nav (month and year paging) = button-family membership CANDIDATES: empty AUTO-PARTIAL press-physics markers plus --phys-size:44 are declared in the snippet. $members registration in component-types.json is the conductor's and is PROPOSED via the #210 lane-A receipt, never taken here.",
   "edges": {
     "renderedBy": [

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Two list rows</title>
+<link rel="stylesheet" href="../knowledge/canon/type.css">
+<link rel="stylesheet" href="../knowledge/canon/canon.css">
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s2);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.lead a,.facts a,.sub3 a{color:inherit}
+.call .cnum{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair.narrow{max-width:760px}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--g3)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s2)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab a{color:var(--fg)}
+.ctab td.st{color:var(--g6);white-space:nowrap}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+.quote small{display:block;font-size:12px;color:var(--g6);margin-top:.3rem}
+/* specimens drawn in the page from hex values */
+.spec{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.spec .cell{padding:var(--s3);min-width:0}
+.spec .cap{font-size:11px;letter-spacing:.12em;text-transform:uppercase;line-height:1.5;margin:0 0 var(--s2);opacity:.8}
+.spec .hero-t{font-size:30px;font-weight:300;line-height:1.15;margin:0 0 .4rem}
+.spec .hero-s{font-size:16px;line-height:1.5;margin:0}
+.spec .btn{display:inline-block;font-size:14px;font-weight:500;padding:.6rem 1.1rem;margin:.2rem .6rem .2rem 0;border-radius:0}
+.spec .hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;margin-top:var(--s2);opacity:.85}
+.spec.four{grid-template-columns:repeat(4,1fr)}
+ul.plain{margin:var(--s2) 0 0;padding-left:1.2em;font-size:15px;color:var(--g8)}
+ul.plain li{margin:0 0 .6rem}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair{grid-template-columns:1fr}
+  .spec,.spec.four{grid-template-columns:1fr}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+  #glance-table{min-width:0}
+  #glance-table thead{display:none}
+  #glance-table tr{display:grid;grid-template-columns:2.2em 1fr;border-bottom:1px solid var(--g3);padding:.5rem 0}
+  #glance-table td{border:0;padding:.15rem .3rem}
+  #glance-table td.n{grid-row:1 / span 3}
+  #glance-table td:nth-child(3)::before{content:"Recommended: ";color:var(--g6)}
+  #glance-table td:nth-child(4)::before{content:"Your answer: "}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+
+.opt-cap{font-size:13px;color:var(--g7);margin:-8px 0 var(--s3)}
+
+/* page-only: grounds for the live specimens, and the two deltas the options need */
+.opt-ground{padding:16px;background:var(--page,#fff);overflow:hidden}
+.opt-ground[data-theme="light"]{background:#FFFFFF}
+.opt-ground[data-theme="dark"]{background:#1A1A1A}
+.opt-ground .cn-list-items .wrap{margin-bottom:0;max-width:none;padding:0}   /* the shell's own .wrap padding must not reach the specimen */
+.opt-ground .cn-list-items a.row{display:flex;text-decoration:none}   /* the shell's `.pair a{display:block}` would otherwise beat the row */
+.opt-ground .opt-head{margin:16px 0 8px;color:var(--text)}
+.opt-ground .opt-head:first-child{margin-top:0}
+.opt-ground .opt-bal{flex:none;font:400 14px/1.3 var(--font);font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap;margin-left:auto}
+.opt-ground .line .status + .amount{margin-left:12px}
+</style>
+</head>
+<body>
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#glance">Glance</a>
+  <a href="#mandate">Standing orders</a>
+  <a href="#statement">Statement line</a>
+  <a href="#else">Note</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 313 · review page · Two list rows</p>
+      <h1>Two old parts become list-items rows. Where their extra detail goes is yours.</h1>
+      <p class="sub">The standing order row's tag, and the statement line's running balance. Each drawn live on canon, light and dark, with a recommendation.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>Drawn live from canon.css when opened from the repo; built in the cloud by lane B123, so the seat renders the real type.</span>
+      <span>A drawn option is not a ruling. Nothing is built into list items until you answer.</span>
+    </div>
+  </div>
+</header>
+
+<section id="glance">
+  <div class="wrap">
+    <p class="label">At a glance · every call and its recommendation</p>
+    <h2>If you take both recommendations, this is what you are saying.</h2>
+    <p class="lead">One row per call. The answer column fills as you click.</p>
+    <div class="scroll"><table class="ctab" id="glance-table"><thead><tr><th>#</th><th>The call</th><th>Recommended</th><th>Your answer</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="mandate">
+  <div class="wrap">
+    <p class="label">01 · The standing order and Direct Debit row · your call</p>
+    <h2>The row becomes a list-items row. The type tag moves to the right, and only one chip shows at a time: the state when there is one, otherwise the type.</h2>
+    <p class="quote">"my immediate improvement would be to range the tag to the right but lets see some other options"<small>Your comment on the 29 September review page, when you ruled the row a variant of list items</small></p>
+    <p class="lead">Each picture is the list-items row as canon draws it today: the round avatar, the title and one detail on the first line, the description and the amount on the second. Only the tag moves between the options; the five payments are the ones the old part showed. The old part's manage button is left out of every picture so the tag is the only thing that changes; it is a second action on the row and comes back as built.</p>
+    <div class="pair"><figure><figcaption>Option 1 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="tag t-cm-legal">Standing order</span></span><span class="line"><span class="desc">Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span><span class="tag t-cm-legal">Direct Debit</span></span><span class="line"><span class="desc">Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="tag t-cm-legal">Direct Debit</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="tag t-cm-legal">Standing order</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="tag t-cm-legal">Standing order</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 1 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="tag t-cm-legal">Standing order</span></span><span class="line"><span class="desc">Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span><span class="tag t-cm-legal">Direct Debit</span></span><span class="line"><span class="desc">Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="tag t-cm-legal">Direct Debit</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="tag t-cm-legal">Standing order</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="tag t-cm-legal">Standing order</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 1 · your idea: the type tag ranged right, the state beside it</p><div class="pair"><figure><figcaption>Option 2 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="tag t-cm-legal">Standing order</span></span><span class="line"><span class="desc">Standing order · Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span><span class="tag t-cm-legal">Direct Debit</span></span><span class="line"><span class="desc">Direct Debit · Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Direct Debit · Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Standing order · Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Standing order · Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 2 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="tag t-cm-legal">Standing order</span></span><span class="line"><span class="desc">Standing order · Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span><span class="tag t-cm-legal">Direct Debit</span></span><span class="line"><span class="desc">Direct Debit · Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Direct Debit · Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Standing order · Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Standing order · Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 2 · one chip, ranged right: the state when there is one, otherwise the type</p><div class="pair"><figure><figcaption>Option 3 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Standing order · Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span></span><span class="line"><span class="desc">Direct Debit · Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Direct Debit · Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Standing order · Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Standing order · Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 3 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Standing order · Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span></span><span class="line"><span class="desc">Direct Debit · Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Direct Debit · Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Standing order · Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Standing order · Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 3 · no type tag: the type is a word on the second line; only a state shows a chip</p><div class="pair"><figure><figcaption>Option 4 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Standing orders</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Direct Debits</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span></span><span class="line"><span class="desc">Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 4 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Standing orders</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Monthly on the 1st · Next 1 July</span><span class="amount">£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Bristol Trade Supplies">BT</span><span class="body"><span class="line"><span class="title">Bristol Trade Supplies</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Last payment failed</span></span><span class="line"><span class="desc">Weekly on Fridays · Retry 19 June</span><span class="amount">£780.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Kestrel Asset Finance — equipment loan agreement 44-20916">KA</span><span class="body"><span class="line"><span class="title">Kestrel Asset Finance — equipment loan agreement 44-20916</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>2 payments left</span></span><span class="line"><span class="desc">Monthly on the 20th · Next 20 July</span><span class="amount">£1,204.55</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Direct Debits</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Severn Energy Business">SE</span><span class="body"><span class="line"><span class="title">Severn Energy Business</span></span><span class="line"><span class="desc">Monthly, around the 14th · amount varies · Last taken 14 June</span><span class="amount">£486.20</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Paused</span></span><span class="line"><span class="desc">Monthly on the 5th · Resumes 5 August</span><span class="amount">£44.00</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 4 · grouped: standing orders and Direct Debits under their own list headings</p>
+    <ul class="facts">
+      <li><span class="k">Option 1 · your idea</span><span>The type tag sits at the right of the first line, where a list-items row keeps its detail, and a state chip sits beside it when the mandate has one. A failed payment shows two chips, and at phone width the two chips leave no room for the payee's name at all and run past the row's edge.</span></li>
+      <li><span class="k">Option 2 · one chip</span><span>Your placement, with list items' own rule: the first line has one detail slot, a tag or a status. The state wins when there is one; otherwise the type shows. The type is also written on the second line, so it is never lost.</span></li>
+      <li><span class="k">Option 3 · no tag</span><span>The type is a word on the second line; the right of the first line is empty unless something needs attention. Quietest, and the type is easiest to miss.</span></li>
+      <li><span class="k">Option 4 · grouped</span><span>Two lists under their own headings, so no row needs to say its type. Costs a heading and splits one list into two.</span></li>
+      <li><span class="k">Why option 2</span><span>It keeps your move to the right and stays inside the row as list items already build it: one detail on the first line, never two chips competing. The type is still on every row, as text.</span></li>
+      <li><span class="k">What it changes</span><span>The standing order part stops being its own part: it becomes list items' mandate row, built on the list-items reference file, and its old file is retired. Closes the rework you ruled on 29 September.</span></li>
+    </ul>
+    <div class="call" data-id="mandate-tag" data-q="1. Where the standing order row&#x27;s tag goes" data-rec="Option 2, one chip ranged right"><p class="q">Which placement stands for the tag?</p><p class="rec">Recommended: Option 2, one chip ranged right.</p><div class="chips"><button type="button" class="chip" data-v="Option 1, your idea: tag right, state beside it">Option 1 · your idea</button><button type="button" class="chip" data-v="Option 2, one chip ranged right">Option 2<em>Recommended</em></button><button type="button" class="chip" data-v="Option 3, no type tag">Option 3</button><button type="button" class="chip" data-v="Option 4, grouped under two headings">Option 4</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div><label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label><div class="stamp"></div></div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Drawn live: this page links <code>knowledge/canon/canon.css</code> and <code>type.css</code> and wraps each specimen in <code>.cn-list-items</code>; every row is the list-items row (<code>.row &gt; .avatar + .body &gt; .line × 2</code>), the chips are its <code>.tag</code> and <code>.status</code>. Page-only CSS: the grounds, the list headings (the optional list-level heading, <code>s274-D5</code>). Built by <code>notes/_lanes/313/B123/build_list_rows_page.py</code>, #313 lane B123, in the cloud: fonts there are fallbacks, so the seat's render is the one to look at.</li>
+      <li>Ruling: <code>s308-D4</code> (rework as a list-items variant, show options, his idea among them). Row <code>W-308i3</code>. The old part: <code>knowledge/snippets/Standing-order-mandate-row.reference.html</code> (#209 wave 3, proposed, never ruled).</li>
+      <li>If taken: the mandate row is drawn into <code>knowledge/snippets/List-items.reference.html</code> as its own section on the existing row classes (option 2 needs no new CSS), <code>list-items.meta.json</code> gains the <code>mandate</code> row variant, and <code>standing-order-mandate-row.meta.json</code> becomes an alias seat (the <code>kpi-tile</code> shape, <code>s308-D42</code>). Still the old part's own open questions, carried: the word for each type, a variable Direct Debit's figure, whether a failed payment takes the error seat, the second action's form.</li>
+    </ol></details>
+  </div>
+</section>
+
+
+<section id="statement" class="grey">
+  <div class="wrap">
+    <p class="label">02 · The statement line, the old transaction row · your call</p>
+    <h2>The statement line becomes a list-items row, days as list headings, and the running balance is written on the second line after the reference.</h2>
+    <p class="lead">You made the transaction row a variant of list items on 28 September. As its own part it was a ledger: money out, money in and a running balance in columns. As a list row only its signed form fits: one amount with a minus sign, the balance moved onto the reference line, which is how that part already drew a phone width. Pending shows a dash for the balance; a reversal says so in a chip.</p>
+    <div class="pair"><figure><figcaption>Option 1 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Tuesday 23 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Tesco Stores 3217">TS</span><span class="body"><span class="line"><span class="title">Tesco Stores 3217</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span></span><span class="line"><span class="desc">Card · Ref 4471 · Balance —</span><span class="amount">−£62.40</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Northgate Logistics">NL</span><span class="body"><span class="line"><span class="title">Northgate Logistics</span></span><span class="line"><span class="desc">Faster Payment in · Ref INV-2291 · Balance £6,147.60</span><span class="amount">+£2,500.00</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Monday 22 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Standing order · Ref RENT-JUN · Balance £3,647.60</span><span class="amount">−£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Reversed</span></span><span class="line"><span class="desc">Direct Debit · Ref 8800213 · Balance £5,797.60</span><span class="amount">+£44.00</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 1 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Tuesday 23 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Tesco Stores 3217">TS</span><span class="body"><span class="line"><span class="title">Tesco Stores 3217</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span></span><span class="line"><span class="desc">Card · Ref 4471 · Balance —</span><span class="amount">−£62.40</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Northgate Logistics">NL</span><span class="body"><span class="line"><span class="title">Northgate Logistics</span></span><span class="line"><span class="desc">Faster Payment in · Ref INV-2291 · Balance £6,147.60</span><span class="amount">+£2,500.00</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Monday 22 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span></span><span class="line"><span class="desc">Standing order · Ref RENT-JUN · Balance £3,647.60</span><span class="amount">−£2,150.00</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Reversed</span></span><span class="line"><span class="desc">Direct Debit · Ref 8800213 · Balance £5,797.60</span><span class="amount">+£44.00</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 1 · the balance on the second line, after the reference</p><div class="pair"><figure><figcaption>Option 2 · Mono light</figcaption><div class="opt-ground" data-theme="light"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Tuesday 23 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Tesco Stores 3217">TS</span><span class="body"><span class="line"><span class="title">Tesco Stores 3217</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span><span class="amount">−£62.40</span></span><span class="line"><span class="desc">Card · Ref 4471</span><span class="opt-bal">Balance —</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Northgate Logistics">NL</span><span class="body"><span class="line"><span class="title">Northgate Logistics</span><span class="amount">+£2,500.00</span></span><span class="line"><span class="desc">Faster Payment in · Ref INV-2291</span><span class="opt-bal">Balance £6,147.60</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Monday 22 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="amount">−£2,150.00</span></span><span class="line"><span class="desc">Standing order · Ref RENT-JUN</span><span class="opt-bal">Balance £3,647.60</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Reversed</span><span class="amount">+£44.00</span></span><span class="line"><span class="desc">Direct Debit · Ref 8800213</span><span class="opt-bal">Balance £5,797.60</span></span></span></a></li></ul></div></div></div></figure><figure><figcaption>Option 2 · Mono dark</figcaption><div class="opt-ground" data-theme="dark"><div class="cn-list-items"><div class="wrap"><h3 class="opt-head t-cm-caption">Tuesday 23 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Tesco Stores 3217">TS</span><span class="body"><span class="line"><span class="title">Tesco Stores 3217</span><span class="status warn t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Pending</span><span class="amount">−£62.40</span></span><span class="line"><span class="desc">Card · Ref 4471</span><span class="opt-bal">Balance —</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Northgate Logistics">NL</span><span class="body"><span class="line"><span class="title">Northgate Logistics</span><span class="amount">+£2,500.00</span></span><span class="line"><span class="desc">Faster Payment in · Ref INV-2291</span><span class="opt-bal">Balance £6,147.60</span></span></span></a></li></ul><h3 class="opt-head t-cm-caption">Monday 22 June</h3><ul class="list"><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Wrenfield Property Ltd">WP</span><span class="body"><span class="line"><span class="title">Wrenfield Property Ltd</span><span class="amount">−£2,150.00</span></span><span class="line"><span class="desc">Standing order · Ref RENT-JUN</span><span class="opt-bal">Balance £3,647.60</span></span></span></a></li><li><a class="row" href="#" onclick="return false"><span class="avatar t-cm-caption" role="img" aria-label="Harbour Fitness">HF</span><span class="body"><span class="line"><span class="title">Harbour Fitness</span><span class="status inf t-cm-legal" data-carries="label"><span class="dot" aria-hidden="true"></span>Reversed</span><span class="amount">+£44.00</span></span><span class="line"><span class="desc">Direct Debit · Ref 8800213</span><span class="opt-bal">Balance £5,797.60</span></span></span></a></li></ul></div></div></div></figure></div><p class="opt-cap">Option 2 · the balance as a second figure, right, under the amount</p>
+    <ul class="facts">
+      <li><span class="k">Option 1 · balance on the second line</span><span>The row as list items builds it: title and chip on the first line, how, reference and balance on the second, the amount at the right. Each payment is read across its own row. The cost, seen in these pictures: at this width the second line is cut and the balance is the part that goes first (“Balance £5,…”). Built, the reference would have to give way to the balance, or the balance would come first on the line.</span></li>
+      <li><span class="k">Option 2 · balance under the amount</span><span>The amount moves up to the first line and the balance becomes a second figure at the right. Balances then stack in a column, and a column read down is a table, by the line you ruled tonight.</span></li>
+      <li><span class="k">Why option 1</span><span>It is the list-items row unchanged, and it keeps your line: read across, a list; read down, a table. If you would rather never see a cut balance, option 2 is the honest alternative.</span></li>
+      <li><span class="k">Not asked here</span><span>Your comment tonight, that a natural order such as transactions by date may itself make something a list, is yours to think through and stays open. These pictures are in date order because statements are; they do not answer it.</span></li>
+      <li><span class="k">What it changes</span><span>The transaction row stops being its own part: list items gains a statement row, its old file is retired, and its own open questions come with it (the reference line's contents, whether a line opens a receipt).</span></li>
+    </ul>
+    <div class="call" data-id="statement-balance" data-q="2. Where the statement line&#x27;s running balance goes" data-rec="Option 1, balance on the second line"><p class="q">Which placement stands for the running balance?</p><p class="rec">Recommended: Option 1, balance on the second line.</p><div class="chips"><button type="button" class="chip" data-v="Option 1, balance on the second line">Option 1<em>Recommended</em></button><button type="button" class="chip" data-v="Option 2, balance under the amount">Option 2</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div><label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label><div class="stamp"></div></div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Ruling: <code>s307-D51</code> (the transaction row a variant of list items). Row <code>W-307qt</code>. The old part: <code>knowledge/snippets/Transaction-row.reference.html</code> (#209, proposed, never ruled; its <code>signed</code> variant is option 1's source).</li>
+      <li>Option 2 adds one page-only class (<code>.opt-bal</code>) for the balance figure; option 1 uses the row's classes only.</li>
+      <li>The list rule tonight: <code>s313-D27</code> (option 1, the toolbar does not change the shape), written into <code>list-items.meta.json</code> and <code>data-grid.meta.json</code> <code>when</code> by this lane. The natural-order question is <code>W-313d2</code>, his.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="else">
+  <div class="wrap">
+    <p class="label">03 · Anything else</p>
+    <h2>Anything you want changed, drawn again, or asked a different way.</h2>
+    <div class="call" data-id="page" data-q="3. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · Two list rows · v1 · 2026-10-01 · session 313 lane B123</span>
+  <span>A drawn option is not a ruling. Nothing stands until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 2 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-313-B123-two-list-rows-v1';
+  var PATH='notes/_REVIEW-313-B123-two-list-rows-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  var asked=calls.filter(function(el){ return el.dataset.id!=='page'; });
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  // the at-a-glance table, built from the calls themselves so it cannot drift from them
+  var tb=document.querySelector('#glance-table tbody');
+  asked.forEach(function(el){
+    var sec=el.closest('section'), q=el.dataset.q, n=q.split('.')[0], t=q.slice(n.length+1).trim();
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="n"></td><td><a></a></td><td></td><td class="st"></td>';
+    tr.children[0].textContent=n; tr.children[1].firstChild.textContent=t; tr.children[1].firstChild.href='#'+(sec?sec.id:'');
+    tr.children[2].textContent=el.dataset.rec; tr.dataset.id=el.dataset.id;
+    tb.appendChild(tr);
+  });
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(el.dataset.id!=='page' && has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    [].forEach.call(tb.children,function(tr){
+      var s=state[tr.dataset.id]||{}, el=document.querySelector('.call[data-id="'+tr.dataset.id+'"]');
+      tr.children[3].textContent = s.v ? (s.v===el.dataset.rec ? 'Recommended' : s.v) : ((s.note||'').trim() ? 'Comment only' : 'Not answered');
+    });
+    document.getElementById('count').textContent = n+' of '+asked.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 313 · Two list rows · comments','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Recommended: '+rec);
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-313-B123-two-list-rows.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

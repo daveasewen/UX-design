@@ -80,7 +80,10 @@
 
   /* ---- checkbox, copied verbatim from Selection-controls.reference.html ---- */
   .panel input[type=checkbox]{position:absolute; opacity:0; width:0; height:0;}
-  .row label.chk{cursor:pointer; display:inline-flex; align-items:center; gap:12px; min-height:44px; flex:1; min-width:0;}
+  /* s308-D8 rework (#313 lane B123): the panel header's select-all label matched no rule (the selector
+     was `.row label.chk` and the header is not a .row), so it fell back to inline and its block-level
+     .box stacked ABOVE the words. The header label now takes the same rule: box beside its label. */
+  .row label.chk, .panel .head label.chk{cursor:pointer; display:inline-flex; align-items:center; gap:12px; min-height:44px; flex:1; min-width:0;}
   .box{width:22px; height:22px; flex:none; border:2px solid var(--ctrl-border); border-radius:var(--border-radius-control); background:transparent;
     display:flex; align-items:center; justify-content:center; transition:background var(--ease), border-color var(--ease);}
   .box svg{width:14px; height:14px;}
@@ -117,8 +120,11 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="ic-chev-r" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></path></symbol>
     <symbol id="ic-chev-l" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.8483 17L5.85034 9L13.8483 1H12.1523L4.15234 9L12.1523 17H13.8483Z" fill="currentColor"/></path></symbol>
-    <symbol id="ic-chev-rr" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/></path></symbol>
-    <symbol id="ic-chev-ll" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/></path></symbol>
+    <!-- s308-D8 rework (#313 lane B123): 'move all' carried only the FIRST of the library glyph's two paths, so it
+         drew one chevron and read the same as 'move selected'. Both paths now, byte-matched from
+         assets/icons/arrows-and-chevrons/chevron-double-right.svg and chevron-double-left.svg. -->
+    <symbol id="ic-chev-rr" viewBox="0 0 18 18"><path d="M0.695312 1L8.69331 9L0.695312 17H2.39131L10.3913 9L2.39131 1H0.695312Z" fill="currentColor"/><path d="M9.39131 1H7.69531L15.6933 9L7.69531 17H9.39131L17.3913 9L9.39131 1Z" fill="currentColor"/></symbol>
+    <symbol id="ic-chev-ll" viewBox="0 0 18 18"><path d="M9 1H10.696L2.698 9L10.696 17H9L1 9L9 1Z" fill="currentColor"/><path d="M17.696 1L9.698 9L17.696 17H16L8 9L16 1H17.696Z" fill="currentColor"/></symbol>
   </svg>
 
   <!-- #211 · `.tl-frame` is the query container for `.tl`. It carries the width `.tl` used to

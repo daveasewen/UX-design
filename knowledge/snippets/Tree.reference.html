@@ -49,13 +49,21 @@
   marching off the right edge. Depth is ALSO carried by aria-level, so the indent is never
   the only channel.
 
-  ── SELECTION, AND THE COLOUR CALL THIS LANE DID NOT MAKE ─────────────────────────────
-  Selected = tertiary/background/hover surface + a 3px leading bar in form/border/active
-  (MONO) + aria-selected="true". Three channels, no hue.
-  ⚠ Sidebar-nav marks CURRENT LOCATION with the same bar shape in primary/border/default
-  (#DB0011). This lane deliberately did NOT reuse the red, because "the thing I have
-  selected" and "the page I am on" are different meanings and choosing whether they share a
-  mark is Dave's. Drawn mono so nothing is asserted. See the receipt, Q9.
+  ── SELECTION: THE MARK IS A CHOICE EACH THEME MAKES (s308-D2) ───────────────────────
+  Selected = tertiary/background/hover surface + a 3px leading bar + aria-selected="true".
+  Three channels. The bar's colour is no longer one rule for every theme. Dave, 2026-09-29,
+  verbatim: "The red is correct for Supercharge and Common, the black is correct for console
+  and mono" (s308-D2; 'Common' is the theme whose id is legacy, s308-D25).
+    • Mono and Console: --marker = form/border/active (black in light, white in dark), as
+      this file draws it below.
+    • Common (legacy) and Supercharge: --marker = --marker-brand = primary/border/default
+      (#DB0011, the side navigation's red, both modes). Set by a guard in those two themes'
+      override files (tokens/themes/apollo-legacy|supercharge.overrides.json § guards.tree),
+      which gen_theme_cascade.py projects onto .cn-tree and onto this document's showroom
+      panes; no new token is minted. #313 lane B123.
+  Measured on mono values: #DB0011 on the chosen ground #F0F0F0 = 4.58:1, on #232323 (dark)
+  = 3.01:1 — both at or over the 3:1 floor for a mark; the other themes' grounds are the
+  seat's four-theme render to measure (the bar is never the only channel).
 
   ── A DEFECT FOUND BY DRIVING, IN THIS FILE'S OWN FIRST DRAFT ─────────────────────────
   ⛔ The view-only node was drawn at --alpha-40 and MEASURED 2.52:1 (light) / 3.79:1 (dark)
@@ -133,7 +141,8 @@
     --rule:#E1E1E1;                 /* border/subtle */
     --hover:#F0F0F0;                /* tertiary/background/hover */
     --pressed:#CECECE;              /* form/background/pressed */
-    --marker:#000000;               /* form/border/active — the selection bar, MONO */
+    --marker:#000000;               /* form/border/active — the selection bar in Mono and Console */
+    --marker-brand:#DB0011;         /* primary/border/default — the selection bar in Common and Supercharge (s308-D2, via the themes' guards) */
     --bone:#F0F0F0;                 /* tertiary/background/hover, used as the skeleton bone */
     --focus:#305A85;                /* focus/ring */
     --border-radius-control:0;      /* border-radius/control */
@@ -148,6 +157,7 @@
     --hover:#232323;
     --pressed:#484848;
     --marker:#FFFFFF;
+    --marker-brand:#DB0011;
     --bone:#232323;
     --focus:#4587A7;
     --border-radius-control:0;
@@ -216,7 +226,9 @@
   .tr-item:active > .tr-row{background:var(--pressed);}
   .tr-item:focus{outline:none;}
   .tr-item:focus-visible > .tr-row{outline:2px solid var(--focus); outline-offset:-2px;}
-  /* SELECTED — surface + a 3px leading bar (a SHAPE) + aria-selected. Three channels, mono. */
+  /* SELECTED — surface + a 3px leading bar (a SHAPE) + aria-selected. Three channels. The bar's
+     colour is the theme's choice (s308-D2): --marker is black/white here, red in Common and
+     Supercharge through their guards. */
   .tr-item[aria-selected="true"] > .tr-row{background:var(--hover);
     box-shadow:inset 3px 0 0 var(--marker);}
   /* VIEW-ONLY — ⛔ A CATEGORY CORRECTION, NOT A COLOUR TWEAK (the #209 cancelled-mandate
@@ -356,8 +368,8 @@
 
   <!-- ================= 2 · STATES, DRAWN STATIC ================= -->
   <h2 class="spec-h2 t-cm-label">The states, drawn</h2>
-  <p class="spec-note t-ed-body-small">Left: a selected node (surface, a 3px mono leading bar and
-    aria-selected — three channels, no hue), a branch mid-load with skeleton bones, an empty branch,
+  <p class="spec-note t-ed-body-small">Left: a selected node (surface, a 3px leading bar and
+    aria-selected — three channels; the bar is black here and red in Common and Supercharge), a branch mid-load with skeleton bones, an empty branch,
     and a view-only node. Right: five levels of the indent ladder, so the 24px step and the level-5
     floor can be seen against each other.</p>
   <div class="spec-row">
@@ -460,6 +472,7 @@
       "--hover": "tertiary/background/hover",
       "--pressed": "form/background/pressed",
       "--marker": "form/border/active",
+      "--marker-brand": "primary/border/default",
       "--bone": "tertiary/background/hover",
       "--focus": "focus/ring",
       "--border-radius-control": "border-radius/control",
@@ -470,7 +483,8 @@
       { "fg": "text/default", "bg": "tertiary/background/hover", "context": "text" },
       { "fg": "icon/default", "bg": "tertiary/background/default", "context": "ui" },
       { "fg": "icon/default", "bg": "tertiary/background/hover", "context": "ui" },
-      { "fg": "form/border/active", "bg": "tertiary/background/hover", "context": "ui" }
+      { "fg": "form/border/active", "bg": "tertiary/background/hover", "context": "ui" },
+      { "fg": "primary/border/default", "bg": "tertiary/background/hover", "context": "ui" }
     ],
     "requiredAria": ["role=\"tree\"", "role=\"treeitem\"", "role=\"group\"", "aria-expanded", "aria-selected", "aria-level", "aria-setsize", "aria-posinset", "aria-busy", "aria-disabled", "aria-label"],
     "icons": {
@@ -480,7 +494,7 @@
       "$gap": "NO folder / hierarchy / container glyph exists in the library — branch vs leaf is told by the twisty and by aria-expanded, never by a glyph. An _ICON-GAPS.md entry may be owed (conductor's)."
     },
     "$a11y-gate-note": "This file FAILS _validate_a11y.py: the gate's role vocabulary in _a11y_target.py contains neither `tree` nor `treeitem`, and it is built to fail loud on an unknown role. There is no native element that maps to treeitem, so the roles cannot be dropped the way a table-backed grid can drop role=gridcell. Extending a shared gate's vocabulary is a ruling and is NOT this lane's to take — DECLARED in the #210 lane-A receipt with the recommended classification and the browser-measured hit-target figures the gate would otherwise have produced.",
-    "$selection-colour-note": "Selected = tertiary/background/hover + a 3px MONO leading bar (form/border/active) + aria-selected. Sidebar-nav marks CURRENT LOCATION with the same bar shape in primary/border/default (#DB0011). Whether selection and current-location share a mark is DAVE'S — drawn mono so nothing is asserted."
+    "$selection-colour-note": "s308-D2 (Dave, 2026-09-29, verbatim: \"The red is correct for Supercharge and Common, the black is correct for console and mono\"): selected = tertiary/background/hover + a 3px leading bar + aria-selected; the bar is form/border/active (black, white in dark) in Mono and Console, and primary/border/default (#DB0011) in Common (legacy) and Supercharge, set by the guards.tree entry in those two themes' override files (--marker: var(--marker-brand)). #313 lane B123."
   }
   </script>
   <script type="application/json" id="behaviour-manifest">
