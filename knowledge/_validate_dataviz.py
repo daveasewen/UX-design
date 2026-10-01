@@ -696,7 +696,15 @@ def driven_aria(page_html_path, html, receipts_path=None, root=None):
 # that answered "n-a" says so because the dtype does not owe it; a rule that answered nothing at
 # all would show up as a missing row, which is the whole point of printing it.
 ROUTES = []
-MATRIX_RULES = ("dv-004", "dv-009", "dv-016", "dv-017", "dv-line-011", "requiredAria")
+MATRIX_RULES = ("dv-004", "dv-009", "dv-016", "dv-017", "dv-line-011",
+                "DV-D02-A", "dv-bar-009", "dv-bar-007", "dv-pie-009", "dv-pie-010",
+                "dv-005", "letters", "dv-line-009", "dv-014", "vibration", "requiredAria")
+ROUTE_CODE = {"driven": "D", "static": "S", "n-a": "-", "skipped": "K"}
+# s307-D63 — the 13 chart-engine TEST PAGES are chart pages too: the driver drives them, and every
+# rule is now run on them. Their failures are LISTED and COUNTED in every run; they block only once
+# their fixtures are repaired (row W-313a3b) — flip this to True in the same change.
+ENGINE_PAGES_GLOB = os.path.join(HERE, "_tests", "chart-engine", "*.html")
+ENGINE_PAGES_BLOCK = False
 
 
 def route(artefact, figure, rule, how):
@@ -1049,6 +1057,23 @@ def check_chart(attrs, inner, themes, ctx, fileinfo=None):
         if v["level"] == "HIGH":
             A.append("vibration: adjacent fills %s↔%s shimmer (%.2f:1, %.0f°, sat %.2f) — value-split or gap them."
                      % (resolved[i], resolved[i + 1], v["lum_ratio"], v["hue_sep"], v["sat_min"]))
+
+    # --- s307-D63 (Dave, 2026-09-28: "Every chart page, every rule") — the ROUTE of every rule
+    #     above, not only the six #261 D3 put in the matrix. "static" = read off the markup;
+    #     "n-a" = this dtype does not owe the rule; "skipped" = the dtype owes it but the markup
+    #     carries nothing to read (an engine canvas) and no driven route exists yet — printed and
+    #     counted, never folded into n-a. #313 lane A3.
+    _vacuous = engine and not fills
+    route(_art, _tag, "DV-D02-A", "static" if plot_tags else "n-a")
+    route(_art, _tag, "dv-bar-009", "static" if dtype in BAR_FAMILY else "n-a")
+    route(_art, _tag, "dv-bar-007", "static" if dtype == "bar" else "n-a")
+    route(_art, _tag, "dv-pie-009", "static" if dtype in ("donut", "pie") else "n-a")
+    route(_art, _tag, "dv-pie-010", "static" if dtype in ("donut", "pie") and "data-total" in attrs else "n-a")
+    route(_art, _tag, "dv-005", "static")
+    route(_art, _tag, "letters", "skipped" if _vacuous and not direct_labelled else "static")
+    route(_art, _tag, "dv-line-009", "static" if dtype == "spark" else "n-a")
+    route(_art, _tag, "dv-014", "skipped" if _vacuous else "static")
+    route(_art, _tag, "vibration", "static" if len(resolved) >= 2 else ("skipped" if _vacuous else "n-a"))
     return B, A
 
 # ---------------- file driver ----------------
@@ -1124,6 +1149,43 @@ def main():
         for a in file_adv:
             lines.append("- ⚠ %s" % a)
         lines.append("")
+    # --- s307-D63 (Dave, 2026-09-28: "Every chart page, every rule") -----------------------
+    # (1) the 13 chart-engine test pages, graded under every rule like any shipped page;
+    # (2) every chart page the driver owes a receipt has one; (3) the page x rule matrix.
+    eng = _engine_pages()
+    lines.append("## Chart-engine test pages — every rule (s307-D63)")
+    eng_fail = 0
+    print("  — chart-engine test pages (%s) —" % ("blocking" if ENGINE_PAGES_BLOCK else "graded and counted; blocking once W-313a3b repairs the fixtures"))
+    for path in eng:
+        name = os.path.relpath(path, HERE)
+        results, file_adv = check_file(path)
+        nb = sum(len(B) for _, _, B, _ in results)
+        na = sum(len(A) for _, _, _, A in results) + len(file_adv)
+        eng_fail += 1 if nb else 0
+        print("  [%s] %s  (%d charts, %d failing, %d advisory)" % ("FAIL" if nb else "PASS", name, len(results), nb, na))
+        lines.append("- %s %s — %d charts, %d failing, %d advisory" % ("✗" if nb else "✓", name, len(results), nb, na))
+        for dtype, cid, B, A in results:
+            for b in B:
+                print("     ✗", b[:200])
+                lines.append("  - ✗ **%s#%s** — %s" % (dtype, cid, b))
+    if eng_fail and ENGINE_PAGES_BLOCK:
+        any_fail = True
+    shipped_charts = glob.glob(os.path.join(HERE, "snippets", "Chart-*.reference.html"))
+    missing, orphan = _undriven(eng + shipped_charts)
+    for m_ in missing:
+        any_fail = True
+        print("     ✗ s307-D63: %s is a chart page the driver has never driven (no receipt). Drive: %s" % (m_, DRIVE_CMD))
+        lines.append("- ✗ **s307-D63** — %s has no driven receipt. Drive: `%s`" % (m_, DRIVE_CMD))
+    for o_ in orphan:
+        print("     ⚠ s307-D63: the receipt holds %s, which is no longer on disk." % o_)
+        lines.append("- ⚠ s307-D63 — the receipt holds %s, which is no longer on disk." % o_)
+    mx, gaps, skips = _matrix_lines(files + eng)
+    if gaps:
+        any_fail = True
+    lines += ["", "## Every chart page x every rule (s307-D63)", "", "```"] + mx + ["```", ""]
+    print("  — every chart page x every rule: %s" % mx[-1])
+    print("    %d of %d test page(s) failing a rule · %d page(s) undriven · %d skipped cell(s) (listed in knowledge/_DATAVIZ-GATE.md)"
+          % (eng_fail, len(eng), len(missing), skips))
     lines += ["---", "Method: `_proforma/_DATAVIZ-METHOD.md`. Dossier: `reviews/DATAVIZ-METHOD-2026-07-16.html` §06.",
               "Advisory checks promote to blocking after a bite-test (ADR-0005 §5): `python3 knowledge/_validate_dataviz.py --selftest`."]
     open(os.path.join(HERE, "_DATAVIZ-GATE.md"), "w").write("\n".join(lines) + "\n")
@@ -1456,52 +1518,89 @@ def selftest():
         if not passed:
             ok = False
             print("        B=%s" % B)
+    # s307-D63 — "every chart page": a page on disk with no receipt must be NAMED, and a route
+    # nobody answered must count. Both bitten on fixtures, nothing on disk touched. #313 A3.
+    _rp = os.path.join(_tmp, "d63.json")
+    open(_rp, "w").write(json.dumps({"pages": {"bar.html": {}}}))
+    _miss, _orph = _undriven(["/x/bar.html", "/x/new-type.html"], receipts_path=_rp)
+    _d63a = _miss == ["new-type.html"] and _orph == []
+    print("  [%s] ★ s307-D63 a chart page the driver never drove is NAMED as undriven" % ("ok" if _d63a else "XX"))
+    _saved = list(ROUTES)
+    del ROUTES[:]
+    route("/x/p.html", "f", "dv-004", "driven")
+    route("/x/p.html", "f", "dv-014", "skipped")
+    _mx, _gaps, _skips = _matrix_lines(["/x/p.html"])
+    del ROUTES[:]
+    ROUTES.extend(_saved)
+    _d63b = _gaps == len(MATRIX_RULES) - 2 and _skips == 1
+    print("  [%s] ★ s307-D63 a rule no route answered counts as unanswered; a skipped rule counts as skipped" % ("ok" if _d63b else "XX"))
+    ok = ok and _d63a and _d63b
     __import__("shutil").rmtree(_tmp, ignore_errors=True)
     print("\n%s selftest" % ("✅" if ok else "❌"))
     return 0 if ok else 1
 
+def _matrix_lines(files):
+    """Every (artefact, figure) x every rule in MATRIX_RULES, one code per cell — D driven,
+    S static, - n-a, K skipped, ? unanswered. Reads ROUTES, so check_file must already have run
+    on `files`. Returns (lines, unanswered, skipped)."""
+    names = set(os.path.basename(f) for f in files)
+    per_file = {art: how for art, fig, rule, how in ROUTES if rule == "requiredAria"}
+    seen = {}
+    for art, fig, rule, how in ROUTES:
+        if rule == "requiredAria" or art not in names:
+            continue
+        seen.setdefault((art, fig), {})[rule] = how
+    fig_rules = [r for r in MATRIX_RULES if r != "requiredAria"]
+    out = ["Codes: D driven · S static · - n-a (the type does not owe it) · K skipped · ? unanswered.",
+           "Rules, in column order: " + " · ".join("%d %s" % (i + 1, r) for i, r in enumerate(MATRIX_RULES)), ""]
+    hdr = "%-40s %-16s %s" % ("artefact", "figure", " ".join("%-2d" % (i + 1) for i in range(len(MATRIX_RULES))))
+    out += [hdr, "-" * len(hdr)]
+    gaps = skips = 0
+    for (art, fig) in sorted(seen):
+        row = seen[(art, fig)]
+        cells = [row.get(r, "?") for r in fig_rules] + [per_file.get(art, "?")]
+        gaps += sum(1 for c in cells if c == "?")
+        skips += sum(1 for c in cells if c == "skipped")
+        out.append("%-40s %-16s %s" % (art[:40], fig[:16], " ".join("%-2s" % ROUTE_CODE.get(c, "?") for c in cells)))
+    counts = {}
+    for (art, fig) in seen:
+        for r in fig_rules:
+            counts[seen[(art, fig)].get(r, "?")] = counts.get(seen[(art, fig)].get(r, "?"), 0) + 1
+    out.append("")
+    out.append("%d chart page(s), %d figure row(s), %d rule(s): %d driven · %d static · %d n-a · %d skipped · %d unanswered."
+               % (len(files), len(seen), len(MATRIX_RULES), counts.get("driven", 0), counts.get("static", 0),
+                  counts.get("n-a", 0), skips, gaps))
+    return out, gaps, skips
+
+
+def _engine_pages():
+    return sorted(glob.glob(ENGINE_PAGES_GLOB))
+
+
+def _undriven(pages, receipts_path=None):
+    """Every chart page the DRIVER owes a receipt: a page on disk with none, or a receipt for a
+    page no longer on disk. A page nobody drives is the skip s307-D63 forbids."""
+    rec = _load_receipts(receipts_path) or {}
+    have = set((rec.get("pages") or {}).keys())
+    disk = set(os.path.basename(p) for p in pages)
+    return sorted(disk - have), sorted(have - disk)
+
+
 def matrix():
-    """#261 D3's receipt: every artefact x figure x rule, and WHICH ROUTE answered it.
+    """#261 D3's receipt, widened by s307-D63: every chart page x figure x rule, and WHICH ROUTE
+    answered it — the shipped surfaces AND the 13 chart-engine test pages.
 
     `static OR driven, never skipped` is only checkable if you can see the route. A `?` in this
     table is a rule that answered nothing — the exact silence s260-D3 forbids.
     """
-    files = discover()
+    files = discover() + _engine_pages()
     for path in files:
         try:
             check_file(path)
         except Exception as e:  # a broken file must not hide the rest of the table
             print("  [EXC] %s — %s" % (os.path.relpath(path, HERE), e))
-    # requiredAria is declared once per FILE (the #token-manifest is the file's, not the figure's),
-    # so its route is the artefact's and is repeated down the artefact's figure rows.
-    per_file = {art: how for art, fig, rule, how in ROUTES if rule == "requiredAria"}
-    seen = {}
-    for art, fig, rule, how in ROUTES:
-        if rule == "requiredAria":
-            continue
-        seen.setdefault((art, fig), {})[rule] = how
-    fig_rules = [r for r in MATRIX_RULES if r != "requiredAria"]
-    hdr = "%-36s %-8s " % ("artefact", "figure") + " ".join("%-11s" % r for r in fig_rules) + " requiredAria"
-    print(hdr)
-    print("-" * len(hdr))
-    gaps = 0
-    for (art, fig) in sorted(seen):
-        row = seen[(art, fig)]
-        cells = []
-        for r in fig_rules:
-            v = row.get(r, "?")
-            if v == "?":
-                gaps += 1
-            cells.append("%-11s" % v)
-        aria = per_file.get(art, "?")
-        if aria == "?":
-            gaps += 1
-        print("%-36s %-8s " % (art[:36], fig[:8]) + " ".join(cells) + " " + aria)
-    n_driven = sum(1 for v in ROUTES if v[3] == "driven")
-    n_static = sum(1 for v in ROUTES if v[3] == "static")
-    n_na = sum(1 for v in ROUTES if v[3] == "n-a")
-    print("\n%d artefact(s), %d figure-row(s): %d driven · %d static · %d n-a · %d unanswered."
-          % (len(files), len(seen), n_driven, n_static, n_na, gaps))
+    lines, gaps, skips = _matrix_lines(files)
+    print("\n".join(lines))
     if gaps:
         print("❌ %d rule(s) answered by NEITHER route — that is the skip s260-D3 forbids." % gaps)
     return 1 if gaps else 0
