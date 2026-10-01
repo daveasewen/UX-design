@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What tonight asked you</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s2);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.lead a,.facts a,.sub3 a,.waiting a{color:inherit}
+.call .cnum{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair.three{grid-template-columns:repeat(3,1fr)}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair.narrow{max-width:760px}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--g3)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s2)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab a{color:var(--fg)}
+.ctab td.st{color:var(--g6);white-space:nowrap}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+.quote small{display:block;font-size:12px;color:var(--g6);margin-top:.3rem}
+/* specimens drawn in the page from hex values */
+.spec{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.spec .cell{padding:var(--s3);min-width:0}
+.spec .cap{font-size:11px;letter-spacing:.12em;text-transform:uppercase;line-height:1.5;margin:0 0 var(--s2);opacity:.8}
+.spec .hero-t{font-size:30px;font-weight:300;line-height:1.15;margin:0 0 .4rem}
+.spec .hero-s{font-size:16px;line-height:1.5;margin:0}
+.spec .btn{display:inline-block;font-size:14px;font-weight:500;padding:.6rem 1.1rem;margin:.2rem .6rem .2rem 0;border-radius:0}
+.spec .hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;margin-top:var(--s2);opacity:.85}
+.spec.three{grid-template-columns:repeat(3,1fr)}
+.spec.four{grid-template-columns:repeat(4,1fr)}
+.spec .disc{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;margin-right:12px;vertical-align:middle}
+.spec .row{display:flex;align-items:center;padding:12px 0}
+.spec .sw{display:inline-block;width:28px;height:28px;margin:0 6px 6px 0;vertical-align:middle}
+.spec .roundel{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:10px;vertical-align:middle;font-size:16px;font-weight:700}
+.spec .msg{display:flex;align-items:center;font-size:15px;padding:8px 0}
+.waiting{list-style:none;margin:var(--s3) 0 0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3)}
+.waiting li{background:var(--card);padding:var(--s3);font-size:15px;line-height:1.6;color:var(--g8)}
+.waiting li b{display:block;font-weight:400;font-size:19px;line-height:1.3;color:var(--fg);margin-bottom:.4rem}
+.waiting li a{text-decoration:none;border-bottom:1px solid var(--g5)}
+.waiting li small{display:block;font-size:12px;color:var(--g6);margin-top:.6rem;letter-spacing:.04em}
+ul.plain{margin:var(--s2) 0 0;padding-left:1.2em;font-size:15px;color:var(--g8)}
+ul.plain li{margin:0 0 .6rem}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair,.pair.three{grid-template-columns:1fr}
+  .spec,.spec.three,.spec.four{grid-template-columns:1fr}
+  .waiting{grid-template-columns:1fr}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+  #glance-table{min-width:0}
+  #glance-table thead{display:none}
+  #glance-table tr{display:grid;grid-template-columns:2.2em 1fr;border-bottom:1px solid var(--g3);padding:.5rem 0}
+  #glance-table td{border:0;padding:.15rem .3rem}
+  #glance-table td.n{grid-row:1 / span 3}
+  #glance-table td:nth-child(3)::before{content:"Recommended: ";color:var(--g6)}
+  #glance-table td:nth-child(4)::before{content:"Your answer: "}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#glance">Glance</a>
+  <a href="#waiting">Other pages</a>
+  <a href="#nav">Nav</a>
+  <a href="#ink">The ink</a>
+  <a href="#disc">Grey tiles</a>
+  <a href="#charts">Charts</a>
+  <a href="#parts">Parts</a>
+  <a href="#pack">Pack</a>
+  <a href="#corner">Corner</a>
+  <a href="#eye">By eye</a>
+  <a href="#ledger">Ledger</a>
+  <a href="#launchpad">Launchpad</a>
+  <a href="#yours">Your items</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 313 · review page · What tonight asked you</p>
+      <h1>Every question tonight's lanes raised for you, in one place, each with a recommendation.</h1>
+      <p class="sub">Twenty-five calls. Most need one click. Four more questions already have their own page tonight; they are linked, not repeated.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026, night wave</span>
+      <span>Pictures marked cloud render were drawn in cloud Chromium in a fallback face, not at the seat. Specimens drawn in the page use the hex values from canon.</span>
+      <span>A recommendation is not a ruling. Nothing is built or written into the record until you answer.</span>
+    </div>
+  </div>
+</header>
+
+<section id="glance">
+  <div class="wrap">
+    <p class="label">At a glance · every call and its recommendation</p>
+    <h2>If you take every recommendation, this is what you are saying.</h2>
+    <p class="lead">One row per call, in page order. The answer column fills as you click. Each row jumps to its call.</p>
+    <div class="scroll"><table class="ctab" id="glance-table"><thead><tr><th>#</th><th>The call</th><th>Recommended</th><th>Your answer</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="waiting" class="grey">
+  <div class="wrap">
+    <p class="label">Other pages waiting for you · four · not repeated here</p>
+    <h2>Four questions have a page of their own tonight. Answer them there; this page only points.</h2>
+    <ul class="waiting">
+      <li><b><a href="_REVIEW-313-L4-seven-trees-redone-2026-10-01-v1.html">The seven trees, redone</a></b>Button, table, date picker, metric, slider, switch and dialog, each redone on the recommendation you took. It also carries your open question from tonight: switch, checkbox, radio and chip as four parts, or four trees in one part. Recommended there: four parts.<small>Seven re-looks and one question</small></li>
+      <li><b><a href="_REVIEW-313-B6-the-third-red-2026-10-01-v1.html">The third red</a></b>Mono's message box still draws Legacy's whole palette, because the retag ruled in July was never built. Three ways drawn, no recommendation: the pick is yours. Whichever you pick, the amber, the navy and the three tints in the same box follow it, and one of the three ways means the notification tree you approved tonight describes a part that would not ship in Mono.<small>One call, three ways, your pick</small></li>
+      <li><b><a href="_REVIEW-313-B123-two-list-rows-2026-10-01-v1.html">Two list rows</a></b>Where the standing-order row's tag goes (your idea drawn first, four options) and where the transaction row's running balance sits. Both drawn live on canon, light and dark.<small>Two calls with pictures</small></li>
+      <li><b><a href="_PROPOSAL-313-H3-assembly-and-studio-2026-10-01-v1.html">Assembly and Studio</a></b>The proposal for Apollo's modes, thirteen calls with recommendations. The one most likely wrong on the seat's own reading is where Launchpad lives, and the page says so under that call.<small>A proposal, thirteen calls</small></li>
+    </ul>
+  </div>
+</section>
+
+<section id="nav">
+  <div class="wrap">
+    <p class="label">01–03 · The nav and the frame · three calls</p>
+    <h2>Three edges of what you ruled this afternoon: the band's no-repeat rule, which floating surfaces lose their side edges, and who chooses the rail.</h2>
+    <p class="lead">Your afternoon answers were built tonight. Each of these three is a place where the rule you chose meets a part the page did not name. No picture: each is a rule, not a look.</p>
+
+    <div class="call" data-id="norepeat" data-q="1. The no-repeat rule under the band header" data-rec="Yes, it still holds">
+      <p class="q">You chose the band inside the group for bento headers. The rule that a group's action and a tile's action never repeat came with the other option. Does it still hold with the band?</p>
+      <p class="rec">Recommended: yes, it holds. The rule is about the reader, not where the header sits: two buttons doing one thing are a duplicate wherever they are.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it still holds">Yes, it holds<em>Recommended</em></button><button type="button" class="chip" data-v="No, a tile may repeat the group's action">No, a tile may repeat it</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="bottom-edge" data-q="2. Bottom-only edge: popover, tooltip and the rail's flyout too" data-rec="Yes, every floating surface">
+      <p class="q">You ruled the elevation border on floating surfaces is the bottom edge only, naming the mega menu, the account menu and dropdowns. Popover, tooltip and the nav rail's flyout float too, and still carry the edge on all four sides. Bottom only for them as well?</p>
+      <p class="rec">Recommended: yes, every floating surface. One rule for one behaviour, or the designer has to remember a list.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, every floating surface">Yes, every floating surface<em>Recommended</em></button><button type="button" class="chip" data-v="Only the three named; the rest keep four sides">Only the three named</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="rail-job" data-q="3. Is the rail chosen by the workbench job too" data-rec="Yes, the workbench job picks both">
+      <p class="q">The side nav is kept for the workbench only, chosen by the job. The rail is the side nav's narrow form, and today it is chosen by width alone: when the content cannot spare 248px. Should the rail also be chosen by the workbench job, so it never appears on a page that would not have the side nav?</p>
+      <p class="rec">Recommended: yes. The rail is the side nav folded, so it goes where the side nav goes.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, the workbench job picks both">Yes, the job picks both<em>Recommended</em></button><button type="button" class="chip" data-v="No, the rail stays a width choice on any page">No, a width choice anywhere</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Call 1: lane N1nav, <code>notes/_subreports/2026-10-01-313-N1nav.md</code> § Dave's, in plain words, 1. Ruling s313-D29 (bento group header B as the default). <code>template-dashboard-bento.meta.json</code> <code>$groupHeader.openForDave</code>. The band build is row W-313n2.</li>
+      <li>Call 2: N1nav § 3, 2. Ruling s313-D26 ("only a bottom edge", your comment). Popover, Tooltip and the rail flyout are in <code>knowledge/snippets/</code>; the Split-button menu is owed under the same ruling.</li>
+      <li>Call 3: N1nav § 3, 3. Ruling s313-D25 (side nav for the workbench only). <code>knowledge/roles.json</code> picks the rail when "content cannot spare 248px".</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="ink" class="grey">
+  <div class="wrap">
+    <p class="label">04–06 · The ink in dark · three calls</p>
+    <h2>You said the border follows the ink and the dark roundels follow the ink. Three places the rule stopped short, because nobody had asked.</h2>
+    <p class="lead">Two lanes asked the same first question in different words. The light border was moved tonight; the dark border was not, because your answer was given on a light picture. The roundels were moved in eighteen parts; two success marks were not reached. And the Mono rule, if built as picked, would reach three other themes.</p>
+
+    <div class="sub3"><h3>Call 4 · the dark outline border</h3>
+      <p>In light the outline button's border now takes the ink in every theme. In dark the border token is still a mid grey, while the dark ink is the soft white beside it, and the outline button itself already paints its dark border pure white. Three colours for one edge. Drawn in this page from the hex values, Mono dark.</p>
+    </div>
+    <div class="spec three">
+      <div class="cell" style="background:#1A1A1A;color:#E1E1E1"><p class="cap">Dark · the token today</p><span class="btn" style="border:1px solid #808080;color:#E1E1E1">Download</span><p class="hex">border #808080</p></div>
+      <div class="cell" style="background:#1A1A1A;color:#E1E1E1"><p class="cap">Dark · as the button paints it</p><span class="btn" style="border:1px solid #FFFFFF;color:#E1E1E1">Download</span><p class="hex">border #FFFFFF</p></div>
+      <div class="cell" style="background:#1A1A1A;color:#E1E1E1"><p class="cap">Dark · the ink</p><span class="btn" style="border:1px solid #E1E1E1;color:#E1E1E1">Download</span><p class="hex">border #E1E1E1</p></div>
+    </div>
+    <div class="call" data-id="dark-border" data-q="4. Does the border follow the ink in dark too" data-rec="Yes, the ink in dark as well">
+      <p class="q">Does "the border follows the ink" reach the dark border, so a button's border and label are one colour in both modes?</p>
+      <p class="rec">Recommended: yes. The same rule in both modes, and it ends the fork between the token's grey and the button's white.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, the ink in dark as well">Yes, the ink in dark too<em>Recommended</em></button><button type="button" class="chip" data-v="No, dark keeps the grey">No, dark keeps the grey</button><button type="button" class="chip" data-v="Dark takes the button's white">Dark takes the white</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>Call 5 · the two success marks the roundel rule did not reach</h3>
+      <p>Error, warning and information marks in dark now take the soft white. Two success marks were left: the big tick's roundel on the confirmation page is still pure white, and the small success message's mark stays green, because a later rule outranks the dark one and it was never white to begin with. Cloud render of the confirmation page, dark, fallback face.</p>
+    </div>
+    <div class="pair"><figure><figcaption>Cloud render · confirmation, dark · the 56px tick's roundel is pure white</figcaption><a href="_lanes/313/Q/img/confirmation-dark.png"><img src="_lanes/313/Q/img/confirmation-dark.png" alt="The payment sent confirmation in dark mode with a pure white round tick above the heading"></a></figure>
+      <figure><figcaption>Drawn in the page · the small marks in dark</figcaption>
+        <div class="spec" style="margin:0;grid-template-columns:1fr"><div class="cell" style="background:#1A1A1A;color:#E1E1E1;padding:12px 16px">
+          <div class="msg"><span class="roundel" style="background:#E1E1E1;color:#1A1A1A">!</span>Error mark, now the ink</div>
+          <div class="msg"><span class="roundel" style="background:#E1E1E1;color:#1A1A1A">i</span>Information mark, now the ink</div>
+          <div class="msg"><span class="roundel" style="background:transparent;color:#66CC8D;border:2px solid #66CC8D">&#10003;</span>Success mark, still green #66CC8D</div>
+          <div class="msg"><span class="roundel" style="background:#FFFFFF;color:#1A1A1A">&#10003;</span>The big tick's roundel, pure white #FFFFFF</div>
+        </div></div>
+      </figure></div>
+    <div class="call" data-id="success-marks" data-q="5. Do the success marks follow the ink too" data-rec="Both follow the ink">
+      <p class="q">Does the ink reach the success marks too: the big tick on the confirmation page, and the small success message's mark?</p>
+      <p class="rec">Recommended: both follow the ink. Success is the fourth status, and your ruling named the roundels without an exception.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Both follow the ink">Both follow the ink<em>Recommended</em></button><button type="button" class="chip" data-v="The big tick follows; the small success mark keeps its green">The tick follows, success stays green</button><button type="button" class="chip" data-v="Neither; success keeps its own colour">Neither</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>Call 6 · when Mono's notification bar takes the ink, three other themes are reached</h3>
+      <p>The Mono pick for the notifications family binds the bar's warning text to the status mark. Legacy, Console and Supercharge share that rule, and their warning mark is pure black, so their warning text would go from dark grey to black with it. This only arises once the notifications family is built, which waits on the third red. Drawn in the page from the hex values.</p>
+    </div>
+    <div class="spec">
+      <div class="cell" style="background:#FFBB33;color:#333333"><p class="cap">Legacy, Console, Supercharge · today</p><p style="margin:0;font-size:15px">Your session ends in two minutes</p><p class="hex">text #333333 on #FFBB33</p></div>
+      <div class="cell" style="background:#FFBB33;color:#000000"><p class="cap">The same · taking their warning mark</p><p style="margin:0;font-size:15px">Your session ends in two minutes</p><p class="hex">text #000000 on #FFBB33</p></div>
+    </div>
+    <div class="call" data-id="warn-guard" data-q="6. The other three themes' warning text when Mono takes the ink" data-rec="Keep their text by a guard">
+      <p class="q">When the notifications bar takes the ink in Mono, do Legacy, Console and Supercharge keep their dark grey warning text by a guard, or take their own theme's warning mark, black?</p>
+      <p class="rec">Recommended: keep their text by a guard. A Mono rule should not repaint three other themes; each theme keeps its own paint.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep their text by a guard">Keep by a guard<em>Recommended</em></button><button type="button" class="chip" data-v="Take their theme's warning mark">Take their warning mark</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Call 4 merges lane B5b's question 1 (<code>notes/_subreports/2026-10-01-313-B5b-fork-picks.md</code>), lane AC4's "Left for Dave" line and P-plan § 4. Ruling s313-D39 read with s176-D1; <code>tertiary/border/default</code> light now takes <code>{text.default}</code>; its dark leg is #808080 in Mono, Console and Legacy and #524842 in Supercharge; the dark ink is #E1E1E1 (#F7F6F4 in Supercharge); the outline button's dark border is #FFFFFF. Row W-313bq (B5b's W-313b5q, renumbered by the committer).</li>
+      <li>Call 5: lane B7 § Found, not fixed 2–3 and § questions 1–2 (<code>notes/_subreports/2026-10-01-313-B7.md</code>). Ruling s313-D35 (21 rules moved, 18 snippets). The success message's <code>.is-ok .ic{color:var(--success)}</code> outranks the dark rule in Amount input, Form layout, Secure entry and the Create/edit template; Confirmation's 56px tick is <code>--success:#FFFFFF</code> under the July policy, carried into Template-confirmation and Template-wizard. The small-marks figure is drawn in this page, not a render; the big-tick figure is a cloud render of <code>knowledge/snippets/Confirmation.reference.html</code> by <code>notes/_lanes/313/Q/shots.py</code>.</li>
+      <li>Call 6: B5b § questions 2; rows W-313bn (B5b's W-313b5n). The s158-D1 guard is the mechanism B5b names. The warning mark in Legacy, Console and Supercharge is #000000; the bar's text today is #333333. The amber #FFBB33 is the Notifications reference's; the third red page (lane B6) decides whether that box stays Legacy's.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="disc">
+  <div class="wrap">
+    <p class="label">07 · The grey-tiles option · one call</p>
+    <h2>With grey tiles on in dark, the round initials disc in list rows all but disappears: 1.03:1 against its tile.</h2>
+    <p class="lead">The disc was drawn for black tiles. On the grey-tile option its fill is a near match for the tile, so only the initials remain. No ruling settles a colour pick like this, so it comes to you. Drawn in the page from the hex values; the lighter value is for the eye only, the real one would be the next step of the dark neutral ramp.</p>
+    <div class="spec three">
+      <div class="cell" style="background:#000000;color:#E1E1E1"><p class="cap">Black tiles · as designed</p><div class="row"><span class="disc" style="background:#232323;color:#E1E1E1">JS</span>Jane Smith</div><p class="hex">disc #232323 on #000000 · 1.6:1</p></div>
+      <div class="cell" style="background:#1F1F1F;color:#E1E1E1"><p class="cap">Grey tiles · today</p><div class="row"><span class="disc" style="background:#232323;color:#E1E1E1">JS</span>Jane Smith</div><p class="hex">disc #232323 on #1F1F1F · 1.03:1</p></div>
+      <div class="cell" style="background:#1F1F1F;color:#E1E1E1"><p class="cap">Grey tiles · one step lighter (for the eye)</p><div class="row"><span class="disc" style="background:#3A3A3A;color:#E1E1E1">JS</span>Jane Smith</div><p class="hex">disc #3A3A3A on #1F1F1F · 1.6:1</p></div>
+    </div>
+    <div class="call" data-id="avatar-disc" data-q="7. The initials disc on grey tiles" data-rec="Step the disc lighter in the grey-tiles option">
+      <p class="q">On grey tiles, should the disc step lighter, or is its edge not needed because the initials carry it?</p>
+      <p class="rec">Recommended: step it lighter. A disc that is there in one option and gone in the other reads as a fault, not a choice.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Step the disc lighter in the grey-tiles option">Step it lighter<em>Recommended</em></button><button type="button" class="chip" data-v="No disc edge needed; the initials carry it">The initials carry it</button><button type="button" class="chip" data-v="Give the disc a hairline border instead">A hairline border</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane B7 § 2, item 7 and § questions 3. The disc is #232323 on the #1F1F1F grey tile (s310-D3 black tiles are the default). #3A3A3A is this page's own dark grey, used for the eye; the real value is a token from the dark neutral ramp, not minted here.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="charts" class="grey">
+  <div class="wrap">
+    <p class="label">08–11 · Charts · four calls</p>
+    <h2>The stacked area rises as one; the stacked column needs bytes the page does not have; "Other" needs a colour; the boxplot's grid is quiet.</h2>
+    <p class="lead">Your two ring calls from this afternoon are written into the parts' records and wait on a sizer. These four are what the chart lane found while building the stacked area and the category cap.</p>
+
+    <div class="call" data-id="stack-curve" data-q="8. The stacked area: one curve, or the column's cadence" data-rec="One curve for the whole stack">
+      <p class="q">The stacked area now rises as one stack on one curve. The column's bottom-first, top-last cadence cannot ride an area without opening gaps between the bands, because a band's thickness changes at every point. Is one curve right, or do you want that cadence, which needs the bands drawn another way?</p>
+      <p class="rec">Recommended: one curve. The bands cannot keep their thickness under a staggered rise, and one movement reads as one total.</p>
+      <div class="chips"><button type="button" class="chip" data-v="One curve for the whole stack">One curve<em>Recommended</em></button><button type="button" class="chip" data-v="The column's cadence, bands drawn another way">The column's cadence</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="stack-bytes" data-q="9. The stacked column's fix needs 478 bytes; the chart page has 7 left" data-rec="Find the bytes first; move the budget only if they cannot be found">
+      <p class="q">The engine's stacked column still staggers its bars the old way. The cure is known and costs 478 bytes of code, and the chart page has 7 bytes of budget left. Move the budget for it, or have Claude find the bytes?</p>
+      <p class="rec">Recommended: find the bytes first, and move the budget only if they cannot be found. A budget moved for one feature stops measuring anything.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Find the bytes first; move the budget only if they cannot be found">Find the bytes first<em>Recommended</em></button><button type="button" class="chip" data-v="Move the budget now">Move the budget</button><button type="button" class="chip" data-v="Leave the stagger as it is">Leave it</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>Call 10 · the colour of "Other"</h3>
+      <p>The category cap folds the smallest categories into "Other", which takes the next letter, F. Canon has five series colours; a sixth palette colour does not exist and would have to be minted. Drawn in the page from canon's series values.</p>
+    </div>
+    <div class="spec">
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">The five series, then Other as a sixth palette colour</p><span class="sw" style="background:#766682"></span><span class="sw" style="background:#A45C3A"></span><span class="sw" style="background:#577C78"></span><span class="sw" style="background:#7F7B45"></span><span class="sw" style="background:#A37E94"></span><span class="sw" style="background:repeating-linear-gradient(45deg,#D7D8D6 0 4px,#fff 4px 8px);border:1px dashed #767676"></span><p class="hex">F = a colour not yet minted</p></div>
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">The five series, then Other as a quiet neutral</p><span class="sw" style="background:#766682"></span><span class="sw" style="background:#A45C3A"></span><span class="sw" style="background:#577C78"></span><span class="sw" style="background:#7F7B45"></span><span class="sw" style="background:#A37E94"></span><span class="sw" style="background:#626262"></span><p class="hex">F = the axis grey #626262, already in canon</p></div>
+    </div>
+    <div class="call" data-id="other-colour" data-q="10. The colour of the Other bucket" data-rec="A quiet neutral">
+      <p class="q">Does "Other" take the next palette colour, or a quiet neutral?</p>
+      <p class="rec">Recommended: a quiet neutral. "Other" is not a category but the ones you are not showing, and a neutral says so without a new colour.</p>
+      <div class="chips"><button type="button" class="chip" data-v="A quiet neutral">A quiet neutral<em>Recommended</em></button><button type="button" class="chip" data-v="The next palette colour, minted">The next palette colour</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3"><h3>Call 11 · the boxplot's grid</h3>
+      <p>The boxplot's gridlines now draw at full strength and the dataviz gate prints an advisory: their contrast against the page is 1.31:1 in light and 1.90:1 in dark, against the 3:1 it looks for. Cloud render, fallback face.</p>
+    </div>
+    <div class="pair"><figure><figcaption>Cloud render · boxplot, light</figcaption><a href="_lanes/313/Q/img/chart-boxplot-light.png"><img src="_lanes/313/Q/img/chart-boxplot-light.png" alt="The boxplot chart in light mode with faint horizontal gridlines"></a></figure><figure><figcaption>Cloud render · boxplot, dark</figcaption><a href="_lanes/313/Q/img/chart-boxplot-dark.png"><img src="_lanes/313/Q/img/chart-boxplot-dark.png" alt="The boxplot chart in dark mode with faint horizontal gridlines"></a></figure></div>
+    <div class="call" data-id="boxplot-grid" data-q="11. The boxplot's quiet gridlines against the 3:1 advisory" data-rec="A quiet grid stands">
+      <p class="q">Does the quiet grid stand, or should the gridlines darken to meet 3:1?</p>
+      <p class="rec">Recommended: the quiet grid stands. Gridlines are a reading aid; the axis labels and the boxes carry the data, and 3:1 is for things you must see to understand the chart.</p>
+      <div class="chips"><button type="button" class="chip" data-v="A quiet grid stands">The quiet grid stands<em>Recommended</em></button><button type="button" class="chip" data-v="Darken the gridlines to 3:1">Darken to 3:1</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Calls 8–10: lane A2, <code>notes/_subreports/2026-10-01-313-A2.md</code> § Ruling-shaped questions 1–3. Rulings s307-D58 and s307-D60 built; s307-D59 the cap in part. The stagger is <code>dv-render-bar.js</code>'s 45ms per-rect <code>animation-delay</code>; the cure (+478 bytes) was built and reverted against 7 bytes left on Chart-combo's page; row W-313ac (A2's W-313a2c). Series values from <code>knowledge/canon/canon.css</code> lines 401–405; <code>--data-axis-color: #626262</code> line 411. There is no <code>--data-series-6</code>.</li>
+      <li>Call 11: lane AC4's wave-3 report "Left for Dave" (<code>notes/_subreports/2026-10-01-313-AC4-wave3.md</code>); B5b's row 11 boxplot patch. The gate's figures: 1.31:1 light, 1.90:1 dark. Figures are cloud renders of <code>knowledge/snippets/Chart-boxplot.reference.html</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="parts">
+  <div class="wrap">
+    <p class="label">12–14 · The components that settled · three calls</p>
+    <h2>The toast has no error kind by design; a corner that disagrees with its derivation only warns; and Mono's dark caption waits its turn.</h2>
+    <p class="lead">Nine component rows were settled tonight within your rules. Three could not be settled without you.</p>
+
+    <div class="call" data-id="toast-error" data-q="12. The toast has no error kind; errors go to the alert" data-rec="Right as it is: errors go to the alert">
+      <p class="q">Your toast answer said "at once only for errors". The toast has no error kind: errors are meant to stay on screen, so they go to the alert, which already announces at once. Is that right, or should the toast gain an error kind?</p>
+      <p class="rec">Recommended: right as it is. An error that vanishes on a timer is an error the person may miss.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Right as it is: errors go to the alert">Right as it is<em>Recommended</em></button><button type="button" class="chip" data-v="The toast gains an error kind that announces at once">The toast gains an error kind</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="corner-stop" data-q="13. A corner token that does not match its derivation: stop the build, or warn" data-rec="Stop the build">
+      <p class="q">The corner generator now runs in every build. When a corner token does not match what the derivation says it should be, should that stop the build, or keep warning as it does today?</p>
+      <p class="rec">Recommended: stop the build. You chose the token for corners tonight, so a corner that disagrees with its own derivation is a defect, not a note.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Stop the build">Stop the build<em>Recommended</em></button><button type="button" class="chip" data-v="Keep warning">Keep warning</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="chord-order" data-q="14. Mono's dark caption chord after the nav frame" data-rec="Yes, the nav frame first, then the chord">
+      <p class="q">Mono's dark caption chord was not built tonight: its one home writes a file that, regenerated now, would bake the nav family in as a tile group, which you ruled against this afternoon. Fine to build the nav frame first and the chord after?</p>
+      <p class="rec">Recommended: yes, frame first. Building the chord now would bake in the reading you ruled against.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, the nav frame first, then the chord">Frame first, then the chord<em>Recommended</em></button><button type="button" class="chip" data-v="Build the chord now and redo it when the frame lands">The chord now, redo later</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane A5, <code>notes/_subreports/2026-10-01-313-A5.md</code> § Ruling-shaped questions 1–3. Call 12: W-307qx, s307-D54; Toast's region is <code>role="status" aria-live="polite"</code> from load, errors persist in Alert <code>role="alert"</code>. Call 13: W-307ql, s307-D44; <code>gen_radius_derive.py --check</code> is BLOCKING, <code>--assert-mint</code> ADVISORY in <code>_build_all.py</code>. Call 14: W-307qh, s307-D37; the chord is one data line in <code>gen_bento_matrix_217.py</code>; a fresh <code>--rails</code> differs from disk by the #261 nav family counted as a tile group (R6d/R6e); s313-D21 is "frame, not a tile group"; the bento-matrix selftest is also red on C4i, C4k, C4f, C8c (row W-313n3).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="pack" class="grey">
+  <div class="wrap">
+    <p class="label">15–16 · The pack · two calls</p>
+    <h2>How far "only by tabbing" reaches, and whether a gallery without the page templates is the gallery you want.</h2>
+
+    <div class="call" data-id="focus-reach" data-q="15. The focus ring only by tabbing: the components too, or the showroom's bar only" data-rec="The components too">
+      <p class="q">You said the showroom's focus ring "should only be triggered by tabbing not clicks or taps". Tonight's build covers the showroom's own control bar. Should the same apply inside the library's components themselves, in every showroom pane and on the library index?</p>
+      <p class="rec">Recommended: the components too. A ring that appears on click is the same noise inside a part as on the chrome, and the browser already tells the two apart.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The components too">The components too<em>Recommended</em></button><button type="button" class="chip" data-v="The showroom's bar only">The bar only</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="gallery-templates" data-q="16. The canon gallery without the twelve page templates" data-rec="A component-only gallery is what to keep">
+      <p class="q">You kept the canon gallery. Regenerated, it no longer shows the twelve page templates, because two of them bring their own page styles and broke the compose check. Is a component-only gallery what you want to keep?</p>
+      <p class="rec">Recommended: yes, components only. The templates have their own pages, and two of them cannot sit in a shared gallery without breaking its check.</p>
+      <div class="chips"><button type="button" class="chip" data-v="A component-only gallery is what to keep">Components only<em>Recommended</em></button><button type="button" class="chip" data-v="Put the templates back, with their page styles fenced">Put the templates back</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane A6, <code>notes/_subreports/2026-10-01-313-A6.md</code> § Ruling-shaped questions. Call 15: s313-D45, <code>knowledge/gen_showroom.py</code>; canon has 18 rules with a bare <code>:focus</code>, most <code>outline:none</code> on text inputs; the mechanism is <code>:focus-visible</code>. Call 16: s313-D46, <code>knowledge/gen_gallery.py</code> and <code>_validate_compose.py</code>; the two templates with page styles are named in the report.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="corner">
+  <div class="wrap">
+    <p class="label">17–18 · The square-corner token · two calls</p>
+    <h2>You chose a token for the split button's two inner corners and said its name is yours. It ships tonight under a placeholder.</h2>
+    <p class="lead">The token binds the corners where two controls are joined. Three names were weighed. The second call is a gate change made on the back of your answer, stated so you can overrule it.</p>
+
+    <div class="call" data-id="corner-name" data-q="17. The square-corner token's name" data-rec="join">
+      <p class="q">What is the token called?</p>
+      <p class="rec">Recommended: join. It names the job, the corners where two controls meet, the way the other radius tokens name a role, and it stays true if a theme ever softens those corners.</p>
+      <div class="chips"><button type="button" class="chip" data-v="join">join<em>Recommended</em></button><button type="button" class="chip" data-v="square">square</button><button type="button" class="chip" data-v="none">none</button><button type="button" class="chip" data-v="Another name (comment)">Another name (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="corner-strict" data-q="18. A plain zero on one corner beside token corners is now refused" data-rec="Stands">
+      <p class="q">Until tonight the gate only warned when one corner was a plain zero beside corners that use tokens. Your choice of a token over a bare zero was read as answering that question too, and the gate now refuses it. Does that stand?</p>
+      <p class="rec">Recommended: it stands. You chose a token over a bare zero, and the gate now says the same thing.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Stands">Stands<em>Recommended</em></button><button type="button" class="chip" data-v="Back to a warning">Back to a warning</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane B4, <code>notes/_subreports/2026-10-01-313-B4.md</code> § Ruling-shaped questions 1–2; merged with AC4's "Left for Dave" and P-plan § 4. Ruling s313-D43 ("its name is yours"). Placeholder <code>border-radius.provisional-square</code>; the rename is one pass over <code>tokens/layout.json</code>, <code>Split-button.reference.html</code>, <code>split-button.meta.json</code>, then the regen (row W-313bd, B4's W-313b4b). Call 18: <code>CORNER_ARM_STRICT = True</code> in the radius gate; the revert is one line.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="eye" class="grey">
+  <div class="wrap">
+    <p class="label">19 · Five parts rebuilt tonight · one call, by eye</p>
+    <h2>The tree's selection mark, the calendar's today ring, the transfer list's double chevrons, the rating, and the slider's two handles. Built in the snippets; promotion waits on your eye.</h2>
+    <p class="lead">Each is a mechanical change on a rule you already gave. Cloud renders, fallback face: the shapes are right, the type is not the house face. The seat renders them in four themes tomorrow.</p>
+    <div class="pair"><figure><figcaption>Cloud render · tree, light · the selection mark</figcaption><a href="_lanes/313/Q/img/tree-light.png"><img src="_lanes/313/Q/img/tree-light.png" alt="The tree component in light mode with its selected row marked"></a></figure><figure><figcaption>Cloud render · tree, dark</figcaption><a href="_lanes/313/Q/img/tree-dark.png"><img src="_lanes/313/Q/img/tree-dark.png" alt="The tree component in dark mode"></a></figure></div>
+    <div class="pair"><figure><figcaption>Cloud render · calendar, light · the today ring</figcaption><a href="_lanes/313/Q/img/calendar-light.png"><img src="_lanes/313/Q/img/calendar-light.png" alt="The calendar component in light mode with today ringed"></a></figure><figure><figcaption>Cloud render · calendar, dark</figcaption><a href="_lanes/313/Q/img/calendar-dark.png"><img src="_lanes/313/Q/img/calendar-dark.png" alt="The calendar component in dark mode"></a></figure></div>
+    <div class="pair"><figure><figcaption>Cloud render · transfer list, light · both chevron paths drawn</figcaption><a href="_lanes/313/Q/img/transfer-list-light.png"><img src="_lanes/313/Q/img/transfer-list-light.png" alt="The transfer list with two lists and four move buttons, the move-all buttons showing double chevrons"></a></figure><figure><figcaption>Cloud render · transfer list, dark</figcaption><a href="_lanes/313/Q/img/transfer-list-dark.png"><img src="_lanes/313/Q/img/transfer-list-dark.png" alt="The transfer list in dark mode"></a></figure></div>
+    <div class="pair"><figure><figcaption>Cloud render · rating, light</figcaption><a href="_lanes/313/Q/img/rating-light.png"><img src="_lanes/313/Q/img/rating-light.png" alt="The rating component: five stars in three states"></a></figure><figure><figcaption>Cloud render · slider, light · the two-handle form</figcaption><a href="_lanes/313/Q/img/slider-light.png"><img src="_lanes/313/Q/img/slider-light.png" alt="The slider component with its single and double-handle forms"></a></figure></div>
+    <div class="call" data-id="five-by-eye" data-q="19. The five rebuilt parts, by eye" data-rec="All five pass; confirm on the seat's render">
+      <p class="q">Do these five pass your eye, pending the seat's render in the house face?</p>
+      <p class="rec">Recommended: all five pass, confirmed on the seat's render. The changes are a mark, a ring, a second path, a star and a second handle, and the face does not change any of them.</p>
+      <div class="chips"><button type="button" class="chip" data-v="All five pass; confirm on the seat's render">All five pass<em>Recommended</em></button><button type="button" class="chip" data-v="Some pass (comment: say which)">Some pass (say which below)</button><button type="button" class="chip" data-v="Wait for the seat's render before I look">Wait for the seat's render</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane B123, <code>notes/_subreports/2026-10-01-313-B123.md</code>: tree mark W-308i1 (s308-D2), today ring W-308i2 (s308-D3), transfer list W-308i6 (s308-D8), rating W-308i5, slider double type (its meta merge drafted at <code>notes/_lanes/313/B123/slider-double-merge.json</code>). Renders by <code>notes/_lanes/313/Q/shots.py</code> from <code>knowledge/snippets/{Tree,Calendar,Transfer-list,Rating,Slider}.reference.html</code> at 900px, light and dark, cropped to content (tree and calendar to their first specimen). The seat's four-theme render is lane BV's, 07:30.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="ledger">
+  <div class="wrap">
+    <p class="label">20 · The token-fork ledger · one call</p>
+    <h2>Three ledger rows say a token forks where the tree no longer does. Pruning them is yours to sanction.</h2>
+    <p class="lead">The fork ledger lists every place a token's value splits by theme or mode in a way that was not meant. Three rows, the three disabled tokens for border, fill and text, now describe a plain theme-and-mode split that is meant. The reconcile step says the change is yours, so they were left in.</p>
+    <div class="call" data-id="ledger-prune" data-q="20. Prune the three fork-ledger rows the tree no longer agrees with" data-rec="Prune the three">
+      <p class="q">Prune the three rows, or keep them listed?</p>
+      <p class="rec">Recommended: prune them. A ledger row the tree no longer disagrees with is noise that hides the next real fork.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Prune the three">Prune the three<em>Recommended</em></button><button type="button" class="chip" data-v="Keep them listed">Keep them listed</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane AC4's wave-3 report, "Left for Dave": the rows are border-disabled, disabled and text-disabled, each now a benign theme-and-mode split; the reconcile names the change as Dave's sanction.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="launchpad" class="grey">
+  <div class="wrap">
+    <p class="label">21–22 · Launchpad · two calls</p>
+    <h2>The gates and the chooser were built as a service tonight, with your two words kept. Two things they could not decide.</h2>
+
+    <div class="call" data-id="slot-words" data-q="21. Should every part declare the capability words it offers" data-rec="Yes, every part declares what it offers">
+      <p class="q">When a slot says what it takes by a capability word, a brand mark, navigation, a trend line, should every part declare which of those words it offers, so the gate can check the fit? Today only the wall's tiles and the data grid's filters can be checked, because they ask by kind of part or by tier. Everything else is passed as unmeasured.</p>
+      <p class="rec">Recommended: yes. A slot that asks for navigation and cannot check it is a rule that is not a rule.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, every part declares what it offers">Yes, every part declares<em>Recommended</em></button><button type="button" class="chip" data-v="No, kind and tier are enough">No, kind and tier are enough</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="trend-shape" data-q="22. The headline figure with a trend line: retire the old shape, or let Metric take it" data-rec="Retire the shape; the series decides the trend line">
+      <p class="q">A headline figure with a trend line used to be its own tile with its own data shape: one measure, its change, and a series. Since the tiles became one Metric, no part accepts that shape, so a screen asking for it gets nothing. Should Metric's rule take the shape as well, or should the shape be retired, so the trend line is decided only by whether a series exists?</p>
+      <p class="rec">Recommended: retire the shape. You made the two tiles one Metric, and a shape only the old tile answered is the old tile's ghost.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Retire the shape; the series decides the trend line">Retire the shape<em>Recommended</em></button><button type="button" class="chip" data-v="Metric's rule takes the shape too">Metric takes the shape</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Call 21: lane C3, <code>notes/_subreports/2026-10-01-313-C3.md</code> § Ruling-shaped questions; S6 unmeasured for the worked example's <code>brand</code> and <code>primaryNav</code> slots; only <code>provides</code> and <code>tier</code> are decisive; s313-D41 is pinned by a bite (the gate refuses a fifth kind of tile).</li>
+      <li>Call 22: lane C4, <code>notes/_subreports/2026-10-01-313-C4.md</code> § Found, not fixed and § questions: <code>one-measure × value-delta-and-series</code> has no owner since metric's gate reads <code>one-measure × value-and-delta</code>; the spec's alias rule (the series decides the spark) passes W3b. Whether the shape stays in <code>shapes.json</code> is the metas' owner's question too.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="yours">
+  <div class="wrap">
+    <p class="label">23–25 · Your own open items from this afternoon · three calls</p>
+    <h2>Three things you left open in your own words at 17:49. They are here so they do not go quiet.</h2>
+    <p class="lead">None of these needs an answer tonight. Each has a hold option so the item stays yours and open.</p>
+
+    <div class="call" data-id="third-level" data-q="23. The third level, against your nav strategy doc" data-rec="Hold until checked">
+      <p class="quote">"I do have a nav strategy worked out in a sigma file, inscribe for now but I will revist if this doesnt match with the doc."<small>Your comment on call 5 of the pictures page, Thursday 1 October, 17:49</small></p>
+      <p class="q">Tabs in the page-header lock-up are inscribed for now as the home of the third level, and you said your own preference was a simple side nav at this point. Have you checked it against the doc?</p>
+      <p class="rec">Recommended: hold until checked. Your word was to revisit, and nothing tonight changes the recommendation you took.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Hold until checked">Hold until checked<em>Recommended</em></button><button type="button" class="chip" data-v="It matches the doc; let it stand">It matches, let it stand</button><button type="button" class="chip" data-v="It does not match (comment: say what the doc says)">It does not match (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="natural-order" data-q="24. Is it still a list when a natural order is assumed" data-rec="Still a list: the order is the data's, not a control">
+      <p class="quote">"I think this is something we might have to think through."<small>Your comment on call 8 of the pictures page, on lists with a natural order such as transactions by date</small></p>
+      <p class="q">Transactions arrive in date order without anyone sorting them. Is that still a list under your rule that a toolbar does not change the shape, or does an assumed order make it something else?</p>
+      <p class="rec">Recommended: still a list. The order arrives with the data; it is not a control the person operates, so it is not even a toolbar.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Still a list: the order is the data's, not a control">Still a list<em>Recommended</em></button><button type="button" class="chip" data-v="A table once the order matters">A table once the order matters</button><button type="button" class="chip" data-v="Hold; think it through later">Hold, think it through later</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="lockup-future" data-q="25. The page-header lock-up's future work" data-rec="Park it as future work">
+      <p class="quote">"this is one component that I want to work on in the future its quite fussy at the moment"<small>Your comment on call 9 of the pictures page</small></p>
+      <p class="q">The lock-up now has a foot for the tab strip, as you chose for now. Park the rework as future work, or brief it now?</p>
+      <p class="rec">Recommended: park it. You called it future work, and the foot you chose tonight is the only change it needs now. If you can say in a line what is fussy, the comment box keeps it for the brief.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Park it as future work">Park it<em>Recommended</em></button><button type="button" class="chip" data-v="Brief it now (comment: say what is fussy)">Brief it now (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane AC3, <code>notes/_subreports/2026-10-01-313-AC3-inscription.md</code> § 3: rows W-313d1 (third level, s313-D24), W-313d2 (natural order, s313-D27), W-313d3 (lock-up, s313-D28), owner dave, close conditions in his words. W-313d4 (switch, checkbox, radio, chip) is on the seven-trees page above and is not repeated here. Quotes are verbatim from <code>notes/_lanes/313/DAVE-RULINGS-2026-10-01-1749-pictures-you-are-owed.md</code>.</li>
+      <li>Not asked on this page because no lane raised them as his: D4's <code>inFamily</code> verb (carried as unread, like every other unread edge type); the running balance and the tag (on the two-list-rows page); Launchpad's place (on the Assembly and Studio page).</li>
+    </ol></details>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · What tonight asked you · v1 · 2026-10-01 · session 313 lane Q</span>
+  <span>A recommendation is not a ruling. Nothing stands until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 25 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-313-Q-what-tonight-asked-you-v1';
+  var PATH='notes/_REVIEW-313-Q-what-tonight-asked-you-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  var asked=calls.filter(function(el){ return el.dataset.id!=='page'; });
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  // the at-a-glance table, built from the calls themselves so it cannot drift from them
+  var tb=document.querySelector('#glance-table tbody');
+  asked.forEach(function(el){
+    var sec=el.closest('section'), q=el.dataset.q, n=q.split('.')[0], t=q.slice(n.length+1).trim();
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="n"></td><td><a></a></td><td></td><td class="st"></td>';
+    tr.children[0].textContent=n; tr.children[1].firstChild.textContent=t; tr.children[1].firstChild.href='#'+(sec?sec.id:'');
+    tr.children[2].textContent=el.dataset.rec; tr.dataset.id=el.dataset.id;
+    tb.appendChild(tr);
+  });
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(el.dataset.id!=='page' && has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    [].forEach.call(tb.children,function(tr){
+      var s=state[tr.dataset.id]||{}, el=document.querySelector('.call[data-id="'+tr.dataset.id+'"]');
+      tr.children[3].textContent = s.v ? (s.v===el.dataset.rec ? 'Recommended' : s.v) : ((s.note||'').trim() ? 'Comment only' : 'Not answered');
+    });
+    document.getElementById('count').textContent = n+' of '+asked.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 313 · What tonight asked you · comments','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Recommended: '+rec);
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-313-Q-what-tonight-asked-you.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
