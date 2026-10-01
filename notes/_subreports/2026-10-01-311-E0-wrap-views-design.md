@@ -46,3 +46,7 @@ Store row `W-311e0` reached HEAD inside lane A7's commit `d1901fa2` (A7 committe
 None. Every threshold marked "picked" on the page sits under `s306-D10`'s guards and goes to Dave only if a real wrap trips it.
 
 REPLAY-THESE: `python3 -c "import tiktoken;e=tiktoken.get_encoding('cl100k_base');s=open('notes/_lanes/312/E/STORY-310.example.md',encoding='utf-8').read();print(len(s.encode()),len(e.encode(s)))"` (23966 6793) · `grep -n '_AGE_RE = ' knowledge/_capture_gate.py` (the regex that cannot match `[NEW — 0]`) · `grep -c 'residual → #311' _CARRIES.md`
+
+## Post-commit, by addition (00:55 UTC)
+
+Committed as `3756e3ec`. The commit carries more than E0's three paths: lane H1 was staging its own commit at the same time (the doubled lock named above was real), so `3756e3ec` also holds `notes/_lanes/312/H/H1/FINDINGS.md`, `notes/_subreports/2026-10-01-311-H1-permutation-matrix-research.md` and `knowledge/_state.json` with the rows `W-311b5`, `W-311h1`, `W-311f1` (B5's and F1's reports were not yet committed at that sha; the doc-row gate checks documents for rows, not rows for documents). H1's content is H1's own, staged by H1; nothing of it was written by this lane. The conductor should read H1's hand-back against this sha.
