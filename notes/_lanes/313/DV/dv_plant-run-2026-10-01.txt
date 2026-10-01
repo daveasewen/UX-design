@@ -1,0 +1,186 @@
+CLEAN: C1 exit 1 · C2 exit 0 · C3 exit 0 · C4 exit 0 · C5 exit 0
+
+[why-missing] s308-D20 — Button's first obeys line (rule:ctkb-002) loses its reason
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WHY-MISSING: ✗ WHY-MISSING      obeys              component:button → rule:ctkb-002   a required reason is missing (s308-D20)
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+  ✓ C4 _build_integrity.py --check → exit 0→1, caught by name schema: [Button] schema: edges/obeys/0: 'why' is a required property
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+[why-short] s308-D20 — Button's first obeys reason cut to 18 characters (floor 40)
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WHY-SHORT: ✗ WHY-SHORT        obeys              component:button → rule:ctkb-002   why is 18 characters; the floor is 40
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+  ✓ C4 _build_integrity.py --check → exit 0→1, caught by name schema: [Button] schema: edges/obeys/0/why: 'Because it says so' is too short
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+[why-old-spelling] s308-D20 + W-308ie (D4) — Button's first obeys reason spelled the pre-D4 way, `$why`
+  ✓ C4 _build_integrity.py --check → exit 0→1, caught by name schema: [Button] schema: edges/obeys/0: 'why' is a required property
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[maker-bad] s308-D21 — the logo obeys line logo:hexagon-dark-colour → rule:logo26-010 carries maker 'drawn:solid'
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name BAD-MAKER: ✗ BAD-MAKER        obeys              logo:hexagon-dark-colour → rule:logo26-010   maker 'drawn:solid' is not <hand|generated|ratified>:<by>
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[maker-rule-gone] s308-D21 — the usesLogo row's maker rule says made 'drawn' (not hand / generated / ratified)
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name REGISTER-SHAPE: ✗ REGISTER-SHAPE     row 'usesLogo': maker must say made (one of ['hand', 'generated', 'ratified']), by, and value = made:by (s308-D21)
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+[outside-grade] s308-D22 — the obeys row's outside grade set to 'near'
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name REGISTER-SHAPE: ✗ REGISTER-SHAPE     row 'obeys': outside must carry a term graded one of ['exact', 'close', 'loose'] (or both null) and a `name` with a boolean `adop
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+[fold-missing] s308-D23 — the fold map loses the older type 'relates'
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name FOLD-MISSING: ✗ FOLD-MISSING       relates (used by the older decision graph; name it in $folded)
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[fold-dangling] s308-D23 — the older type 'relates' folded onto 'noSuchRow'
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name FOLD-DANGLING: ✗ FOLD-DANGLING      relates → 'noSuchRow' (no row and no $proposed entry)
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[alias-loop] s308-D28 (a) — an aliasOf line back from token:color to token:background (a loop between groups)
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name LOOP: ✗ LOOP             aliasOf            token:background → token:surface   a loop: token:background → token:color → token:surface → token:background
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[cap-wrong-to] s308-D28 (b) — providesCapability from component:breadcrumbs ending on a component
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WRONG-TO: ✗ WRONG-TO         providesCapability component:breadcrumbs → component:cards   ends on 'component'; the row allows ['capability']
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[cap-dangling] s308-D28 (b) + #308 L — providesCapability from component:breadcrumbs to 'component:card', a node that does not exist
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name SKIPPED-UNDECLARED: ✗ SKIPPED-UNDECLARED standard providesCapability (1 edge(s) read from storage and not linked) — draw it, or name it in _build_kg_explorer.SKIP_DECLARE
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[theme-wrong-to] s308-D28 (c) / s308-D24 — the logo defaultFor line from logo:masterbrand-dark-colour pointed at a logo, not a theme
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WRONG-TO: ✗ WRONG-TO         defaultFor         logo:masterbrand-dark-colour → logo:masterbrand-dark-colour   ends on 'logo'; the row allows ['theme']
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[aria-wrong-from] s308-D28 (d) — an ariaRole line starting on a token, to aria:group
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WRONG-FROM: ✗ WRONG-FROM       ariaRole           token:background → aria:group   starts on 'token'; the row allows ['component']
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[replaced-ends-source] s308-D28 (e) — a ratified replacement line: the Button replaced by a token
+  ✓ C5 gen_kg_standards.py --check → exit 0→1, caught by name REPLACED-ENDS: ✗ REPLACED-ENDS        component:button → token:background   replacedBy runs component → component or token → token
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[replaced-no-version] s308-D28 (e) — a ratified replacement line with no version
+  ✓ C5 gen_kg_standards.py --check → exit 0→1, caught by name REPLACED-NO-VERSION: ✗ REPLACED-NO-VERSION  component:badge → component:tag   a replacement names the version it happened in and its ruling
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[replaced-pair] s308-D28 (e) — a replacedBy line in the graph: component:stat-card replaced by a token
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name WRONG-PAIR: ✗ WRONG-PAIR       replacedBy         component:stat-card → token:background   component→token is not one of the row's pairs [['component', 'component
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[replaced-twice] s308-D28 (e) — component:stat-card replaced by a second component
+  ✓ C1 _validate_edges.py --check → exit 1→1, caught by name OVER-COUNT: ✗ OVER-COUNT       replacedBy         component:stat-card → None   2 distinct targets; the row allows at most 1
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[copy-schema] W-308ie (s308-D16) — meta.schema.json grows an edge key 'plantedEdge' the register lacks
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name COPY-DRIFT: ✗ COPY-DRIFT         SCHEMA-DRIFT: meta.schema.json edges: plantedEdge not in the register — run python3 knowledge/gen_edge_copies.py --write
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name UNREGISTERED-NAME: ✗ UNREGISTERED-NAME  plantedEdge (named in ['meta.schema.json'])
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+  ✓ C3 gen_edge_copies.py --check → exit 0→1, caught by name SCHEMA-DRIFT: ✗ SCHEMA-DRIFT  meta.schema.json edges: plantedEdge not in the register
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+[copy-verbs] W-308ie (s308-D16) — _kg_verbs.json's unread block loses ariaRole
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name COPY-DRIFT: ✗ COPY-DRIFT         VERBS-DRIFT: _kg_verbs.json unread lacks ariaRole, which the register carries as unread — run python3 knowledge/gen_edge_copies.p
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+  ✓ C3 gen_edge_copies.py --check → exit 0→1, caught by name VERBS-DRIFT: ✗ VERBS-DRIFT   _kg_verbs.json unread lacks ariaRole, which the register carries as unread
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[copy-template] W-308ie (s308-D16) — a literal FAMILY map put back into the explorer template
+  ✓ C2 _validate_edges.py --coverage → exit 0→1, caught by name COPY-DRIFT: ✗ COPY-DRIFT         TEMPLATE-COPY: knowledge/_kg_explorer.template.html holds a literal FAMILY map — the chip map is the register's `chip` column, ba
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+  ✓ C3 gen_edge_copies.py --check → exit 0→1, caught by name TEMPLATE-COPY: ✗ TEMPLATE-COPY knowledge/_kg_explorer.template.html holds a literal FAMILY map — the chip map is the register's `chip` column, baked as KG.fam
+  ✓    guard broken on purpose → the plant goes through (exit 1)
+
+[meta-new-type] s308-D16 — Button's meta carries an edge list 'plantedEdge' with no register row
+  ✓ C4 _build_integrity.py --check → exit 0→1, caught by name schema: [Button] schema: edges: Additional properties are not allowed ('plantedEdge' was unexpected)
+  ✓    guard broken on purpose → the plant goes through (exit 0)
+
+GUARDS NO SOURCE FILE CAN REACH — each owner selftest, then the guard broken on purpose:
+  ✓ _validate_edges.py AUTHORED-FLAG: clean selftest exit 0; guard broken → exit 1, ✗ 41 AUTHORED-FLAG: an edge still carrying authored goes red
+       no source plant: the builder's link() strips `authored` from every stored line (explorer 1.36), so no file can carry it into the graph
+  ✓ _validate_edges.py PROPOSED-HAS-EDGES: clean selftest exit 0; guard broken → exit 1, ✗ 48 PROPOSED-HAS-EDGES: a conflictsWith line drawn while conflictsWith is only a proposal goes red
+       no source plant: the explorer builder names neither conflictsWith nor divergesFrom (grep: 0 lines; both are $proposed, s308-D23), so this lane found no file that draws one
+  ✓ gen_kg_standards.py ALIAS-LOOP: clean selftest exit 0; guard broken → exit 1, ✗ 1 ALIAS-LOOP: color/neutral/15 planted to alias back to background/default goes red
+       no source plant: not planted in a token file tonight: the loop is checked at leaf grain over the DTCG files read through the s311-D8 legacy view, and this lane did not write a DTCG plant; the generator's own bite plants it in memory
+  ✓ gen_kg_standards.py ALIAS-NOT-ONE: clean selftest exit 0; guard broken → exit 1, ✗ 2 ALIAS-NOT-ONE: a leaf aliasing two targets in one mode goes red
+       no source plant: the same: not planted in a token file tonight; the generator bite plants a two-target alias in memory
+
+  ✓ QUIET BY DESIGN: `authored` planted on logo:hexagon-dark-colour's obeys line in _logo_nodes.json — C1 raises no AUTHORED-FLAG because the builder's link() strips the flag (1.36); the class fires only in memory
+  ✓ QUIET BY DESIGN: `$why` on Button's first obeys line — C1 raises nothing because the builder still reads both spellings (#311 D1); only C4, the schema, refuses it (plant why-old-spelling above)
+
+✓ RESTORE: every consumer's output after the plants equals its clean output
+
+GOOD EDGES — one legal edge planted per register row on the real graph (12137 edges), every class tallied before and after:
+  ✓ acceptsCapability    kept      component:Chart-boxplot → capability:action-button
+  ✓ activeVariantOf      kept      icon:accessibility → icon:account
+  ✓ aliasOf              kept      token:alpha → token:blur
+  ✓ answersIntent        kept      component:accordion → intent:change-over-time
+  ✓ appliesTo            kept      sc:1.2.3 → component:Chart-boxplot
+  ✓ ariaRole             kept      component:accordion → aria:alert
+  ✓ behaviourFrom        kept      component:accordion → file:knowledge/_proforma/DataViz-interactive.html
+  ✓ bindsToken           kept      component:back-to-top → token:alpha
+  ✓ boundBy              kept      sc:dv-planted-start → policy:hsbc-digital-accessibility-framework
+  ✓ bounds               kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ capturedFrom         kept      component:account-card → snippet:Accordion.reference.html
+  ✓ challengedBy         kept      polarity:pl-01 → ruling:chain-cut
+  ✓ checkedBy            kept      sc:1.2.3 → axe:area-alt
+  ✓ cites                kept      rule:acd-005 → sc:1.1.1
+  ✓ commonPattern        kept      component:dv-planted-start → pattern:12-month-mini-trend
+  ✓ composedOf           kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ confirms             kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ consumes             kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ containedBy          kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ corrects             kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ defaultActive        kept      icon:accessibility → icon:account
+  ✓ defaultFor           kept      logo:hexagon-dark-colour → theme:apollo-console
+  ✓ definedIn            kept      rule:dv-planted-start → artefact:--mark-* atoms (gen_token_ramp source)
+  ✓ delegatesTo          kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ drivesConsumer       kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ enClause             kept      sc:dv-planted-start → standard:en-301-549
+  ✓ enacts               kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ enforcedBy           kept      rule:aca-001 → artefact:--mark-* atoms (gen_token_ramp source)
+  ✓ evidencedBy          kept      ruling:dv-planted-start → evidence:./_REVIEW-L3-composition-edge-2026-09-03-v1.html - the surface put to Dave (repo root); § 06 carries the seven questions and the recommendations his words adopt
+  ✓ explainedBy          kept      polarity:pl-02 → ruling:chain-cut
+  ✓ extends              kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ family               kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ flaggedBy            kept      snippet:Accordion.reference.html → rule:aca-001
+  ✓ governedBy           read-side stores nothing; its stored opposite governs is planted instead
+  ✓ governs              kept      ruling:dv-planted-start → artefact:--mark-* atoms (gen_token_ramp source)
+  ✓ groupsWith           kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ hasDataShape         kept      component:accordion → shape:ancestor-path × links
+  ✓ hasPart              read-side stores nothing; its stored opposite containedBy is planted instead
+  ✓ hasParty             kept      polarity:dv-planted-start → ux:pr-aesthetic-usability
+  ✓ inFamily             kept      ux:dv-planted-start → family:fam-acceptance
+  ✓ inGroup              kept      icon:dv-planted-start → iconGroup:arrows-and-chevrons
+  ✓ mentions             kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ mustNotNeighbour     kept      component:accordion → component:account-card
+  ✓ narrows              kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ obeys                kept      component:Chart-boxplot → rule:aca-001
+  ✓ partial              kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ providesCapability   kept      component:Chart-boxplot → capability:action-button
+  ✓ providesRole         kept      component:account-card → role:action
+  ✓ refines              kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ renderedBy           kept      component:dv-planted-start → snippet:Accordion.reference.html
+  ✓ replacedBy           kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ resolvedBy           kept      polarity:pl-01 → ruling:chain-cut
+  ✓ restsOn              kept      rule:aca-001 → ux:pr-aesthetic-usability
+  ✓ retires              kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ reuses               kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ ruledIn              kept      ruling:chain-cut → session:100
+  ✓ setIn                kept      component:accordion → typestyle:t-cm-button
+  ✓ supersedes           kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ supersedesClause     kept      ruling:chain-cut → ruling:d0802-P2a
+  ✓ tensionWith          kept      ux:pr-anti-confirmshaming → ux:pr-anti-fake-urgency
+  ✓ touches              kept      polarity:pl-01 → ruling:chain-cut
+  ✓ triggeredBy          kept      component:Chart-boxplot → component:Chart-bullet
+  ✓ under                kept      guideline:dv-planted-start → principle:operable
+  ✓ usedInContext        kept      component:avatar-group → context:a-full-screen-task-takeover
+  ✓ usesIcon             kept      component:account-card → icon:accessibility
+  ✓ usesLogo             kept      component:Chart-boxplot → logo:hexagon-dark-colour
+  ✓ verifiedBy           kept      sc:1.1.1 → artefact:--mark-* atoms (gen_token_ramp source)
+  ✓ yieldsTo             kept      component:accordion → component:account-card
+
+COUNTS: plants 21 · expectations 27 · caught by name 27 · mutants blind 27 · good edges kept 66 of 66 (read-side rows 2)
+OWNER SELFTESTS: 4 of 4 guards went blind when broken
+DV: PASS
