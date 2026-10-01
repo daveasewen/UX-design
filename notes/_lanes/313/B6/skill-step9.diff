@@ -1,0 +1,40 @@
+--- a/apollo-spider/skills/generate-from-canon/SKILL.md
++++ b/apollo-spider/skills/generate-from-canon/SKILL.md
+@@ -328,9 +328,9 @@
+    — then `python3 knowledge/_validate_receipt.py path/to/your-screen.html`. Without a receipt the
+    gate stops at `FAIL:NO-RECEIPT` and never inspects the page; every later check (behaviour loaded,
+    no demo chrome copied) only runs on a receipted page.
+-   **No eyes, no browser (a VS Code / Copilot session):** you cannot do step 8 or read a console. Say
++   **No eyes, no browser (a VS Code / Copilot session):** you cannot do step 8 by eye. Say
+    so in the Gaps list as one line — *"not driven: no browser in this session"* — list the controls
+-   you wired and what each should change, and stop. Do not claim a drive.
++   you wired and what each should change, and go to step 9. Do not claim a drive.
+ 8. **Drive it, and measure it.** Load the page, read the console (rule 16), then work every control
+    (rule 14) and reload once to prove the state came back (rule 15). Then read the geometry from the
+    DOM, not from a screenshot: parts in one row share top and bottom edges; the gutters between
+@@ -338,6 +338,14 @@
+    holds dead space below its content; each part's rendered height matches the same part on its
+    showroom page (rules 3a, 7). Report what you drove, what each control changed, and each geometry
+    reading — untested wiring and unmeasured layout are claims too.
++9. **Last, always: one headless load and a console read** (`s308-D15`). Whatever else you did or
++   could not do — even in a session with no eyes and no browser window — end by loading the page
++   once, headless, and reading its console:
++   `python3 knowledge/_validate_screen.py --load path/to/your-screen.html`
++   (or on its own: `python3 knowledge/_screen_load.py path/to/your-screen.html`). Any uncaught
++   error or console error fails the page: fix it and load again. Paste the `load:` line it prints.
++   If it prints `COULD-NOT-ASK`, the box has no headless browser — write *"not loaded: <its
++   reason>"* in the Gaps list; never claim a clean console you did not read (rule 16).
+ 
+ ## Output
+ 
+@@ -347,8 +355,8 @@
+ - A **behaviour manifest**: for each control, what it drives, and where its state persists. Where
+   you started from a snippet's script, name its address and say whether you carried it verbatim or
+   extended it (`s258-D1` — extending is allowed and is reported, not hidden).
+-- The gate verdict from step 7 and the drive and geometry result from step 8, as they actually
+-  printed.
++- The gate verdict from step 7, the drive and geometry result from step 8, and the `load:` line
++  from step 9, as they actually printed.
+ 
+ > With Figma Dev Mode + Code Connect available you can pull components and variables live;
+ > otherwise the files above are the source of truth.

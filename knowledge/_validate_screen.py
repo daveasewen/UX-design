@@ -26,6 +26,12 @@ Runs, on each composed screen:
   3. a11y         — _validate_a11y.check: reduced-motion present if it animates; target-size
   4. state-contrast (optional, --render) — _validate_state_contrast.audit_page driven over
                     every screen × light/dark with real hover/pressed states
+  5. load (optional, --load or APOLLO_SCREEN_LOAD=1) — _screen_load.load: ONE headless load
+                    served over http, and a read of the console. Any uncaught exception or
+                    console error FAILS the screen (s308-D15, Dave: "Take the three fixes"; the
+                    fix, verbatim: "one headless load with a console read as the skill's default
+                    last step" — #307's cold run threw on first load, F01). No Playwright or no
+                    browser here is `UNPROVEN:COULD-NOT-ASK`, said so, never blocking.
 
 Exits non-zero if any gate fails. Writes ONE record per subject —
 `_screen-gate/<subject>.md` — plus `_SCREEN-GATE.md`, an index rebuilt from that directory
@@ -42,7 +48,7 @@ THE RECEIPT STEP — WHAT BLOCKS, AND WHAT IS STILL OWED (#235 L1, W-344)
   before the ruling does. Standalone `_validate_receipt.py` always exits non-zero on
   NO-RECEIPT — the downgrade lives only in this chained step, and prints itself.
 
-Usage:  python3 _validate_screen.py [--render] [--receipt-strict] [path ...]
+Usage:  python3 _validate_screen.py [--render] [--load] [--receipt-strict] [path ...]
         (default: _fitness-test/*.canon.html)
 """
 import os as _hg_os, sys as _hg_sys  # noqa: E402 - help gate (#158 write-by-default class)
@@ -59,6 +65,7 @@ icons = importlib.import_module("_validate_icons")
 a11y  = importlib.import_module("_validate_a11y")
 import _validate_receipt as receipt          # noqa: E402 - step 0 (s235-D2); a literal import so _validate_wiring.py can SEE the arm
 import _validate_composition as composition  # noqa: E402 - step 1b (s245-D7)
+import _screen_load as screen_load           # noqa: E402 - step 5 (s308-D15); a literal import so the pack's helper closure carries it
 
 
 def gate_receipt(path, strict):
@@ -98,6 +105,18 @@ def markup_only(html):
         i = m.end(2)
     out.append(html[i:])
     return "".join(out)
+
+
+def gate_load(path):
+    """Step 5 — one headless load and a console read (s308-D15). Returns (lines, blocking_fails).
+    A box that cannot host the load reports UNPROVEN and does not block (ADR-0016: an unmeasured
+    page must SAY it is unmeasured, never pass silently and never fail for the box)."""
+    try:
+        rep = screen_load.load(path)
+    except screen_load.CouldNotAsk as e:
+        return (["- load: UNPROVEN:COULD-NOT-ASK — not loaded: %s" % e], [])
+    good, lines = screen_load.verdict_lines(rep)
+    return (lines, [] if good else ["LOAD"])
 
 
 def gate_icons(html):
@@ -253,6 +272,7 @@ def write_index():
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     render = "--render" in sys.argv
+    load = "--load" in sys.argv or os.environ.get("APOLLO_SCREEN_LOAD") == "1"
     receipt_strict = ("--receipt-strict" in sys.argv
                       or os.environ.get("APOLLO_RECEIPT_STRICT") == "1")
     files = args or sorted(glob.glob(os.path.join(HERE, "_fitness-test", "*.canon.html")))
@@ -282,9 +302,14 @@ def main():
         _, af, aw, *_rest = a11y.check(path)
         lines.append("- a11y: " + ("✅" if not af else "❌ " + "; ".join(af)) +
                      (f"  (warn: {'; '.join(aw)})" if aw else ""))
-        if cf or icf or af or rf or cpf:
+        # 5. load (s308-D15) — one headless load, the console read
+        lf = []
+        if load:
+            ll, lf = gate_load(path)
+            lines += ll
+        if cf or icf or af or rf or cpf or lf:
             ok = False
-        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf or cpf) else "FAIL ❌"))
+        lines.insert(0, "- verdict: " + ("PASS ✅" if not (cf or icf or af or rf or cpf or lf) else "FAIL ❌"))
         subjects[name] = lines
         subject_src[name] = path
         report += lines[1:]

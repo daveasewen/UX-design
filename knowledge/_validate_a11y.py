@@ -68,6 +68,23 @@ from _a11y_target import (                                    # noqa: E402
 MOTION = re.compile(r'transition\s*:|animation\s*:|@keyframes', re.I)
 REDUCED = 'prefers-reduced-motion'
 
+# THE CLAUSE READS CODE, NOT COMMENTS (s308-D15, Dave 2026-09-29: "Take the three fixes";
+# the page's fix, verbatim: "the screen gate stops reading comments (it fails the page on a
+# word inside the chart engine's own comment)"). #307's cold run failed for carrying
+# canon/dv-behaviour.js verbatim: its block comment says "turns it into a transition: the
+# fit pinned 580", and MOTION matched the prose (notes/_subreports/2026-09-28-307-E-cold-run.md
+# F03). Both halves are read uncommented: a commented-out `transition:` does not animate, and a
+# `prefers-reduced-motion` that only appears in a comment is not a block. Stripped per PART,
+# after motion_parts() has split the page, because the APOLLO-SPLICE markers are comments.
+# Measured #313 B6 on the 144 snippets and *.canon.html screens: no verdict moves.
+_COMMENT_BLOCK = re.compile(r'/\*.*?\*/|<!--.*?-->', re.S)
+_COMMENT_LINE = re.compile(r'(?m)(^|[\s;{}>])//[^\n]*')   # a `//` line comment; `://` in a URL never matches
+
+
+def uncommented(s):
+    """-> s with CSS/JS block comments, HTML comments and `//` line comments blanked."""
+    return _COMMENT_LINE.sub(r'\1', _COMMENT_BLOCK.sub(' ', s))
+
 
 def motion_parts(s):
     """-> [(part name | None, bytes)] — the units the 2.3.3 clause judges (s305-D54).
@@ -106,6 +123,7 @@ def motion_fails(s):
     of its own. The single-part wording is the gate's historical line, byte for byte."""
     out = []
     for name, body in motion_parts(s):
+        body = uncommented(body)
         if MOTION.search(body) and REDUCED not in body:
             out.append("animates but has no `prefers-reduced-motion: reduce` block (2.3.3)"
                        if name is None else
@@ -470,6 +488,31 @@ def selftest():
     m2 = page(("Aaa", ANIM + RM), ("Bbb", ANIM))
     expect("M5 the old whole-page reading misses M2",
            bool(MOTION.search(m2) and REDUCED not in m2), False)
+
+    # ---- COMMENTS are not code (s308-D15, #313 B6) -----------------------
+    # C1 — the #307 cold run's fault: the chart engine's own block comment, carried verbatim.
+    #      Read from canon/dv-behaviour.js itself so the fixture cannot drift from the engine.
+    eng = open(os.path.join(HERE, "canon", "dv-behaviour.js")).read()
+    cmt = re.search(r"/\*(?:(?!\*/).)*?turns it into a transition:.*?\*/", eng, re.S)
+    expect("C1 fixture: the engine still carries the comment that tripped #307",
+           bool(cmt), True)
+    c1 = "<script>%s</script>" % (cmt.group(0) if cmt else "/* transition: x */")
+    expect("C1 a `transition:` inside a block comment does not animate", motion_fails(c1), [])
+    # C2 — MUTATION of C1: the same words uncommented must still bite.
+    expect("C2 the same words out of the comment still fail",
+           len(motion_fails("<style>.x{transition: opacity .2s}</style>")), 1)
+    # C3 — HTML comments and `//` line comments are comments too; a URL's `://` is not one.
+    expect("C3 HTML and // comments do not animate",
+           motion_fails("<!-- .x{transition: a 1s} --><script>// animation: none\n</script>"), [])
+    expect("C3b a URL's :// does not swallow a real rule after it",
+           len(motion_fails("<style>.x{background:url(https://a.b/c.png); transition: a 1s}</style>")), 1)
+    # C4 — the remediation half: a reduced-motion block that only appears in a comment
+    #      does not discharge real motion.
+    expect("C4 a commented-out reduced-motion block is not a block",
+           len(motion_fails("<style>" + ANIM + "/* " + RM + " */</style>")), 1)
+    # C5 — splice markers are comments: stripping must not stop the per-part split (M2 again).
+    expect("C5 the per-part split survives comment stripping",
+           [f.split("`")[1] for f in motion_fails(page(("Aaa", ANIM + RM), ("Bbb", ANIM)))], ["Bbb"])
 
     print("a11y target selftest: %d clause(s) green, %d failing" % (ok, len(bad)))
     for b in bad:
