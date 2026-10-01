@@ -406,7 +406,7 @@
      floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
      — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
      centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
-     (an explicit attribute is RSQ, #249). H_MIN_DEFAULT is PROVISIONAL-AWAITING-DAVE. */
+     (settled #313, s307-D60). H_MIN_DEFAULT 200 is RULED: s307-D60 keeps the floor. */
   /* #304 W5a — THE RIGHT-HAND TWIN OF ds-012(b). A label placed on a fraction of the plot and
      growing rightward (centred category labels, the last value tick, start-anchored end labels)
      ran up to 19px past the svg's right edge in every cold-run set ("Middle East and Afric",
@@ -974,6 +974,35 @@
              '" y2="' + n1(zy) + '" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>');
   }
 
+  /* ★ s307-D59 (Dave 2026-09-28, 'ship the cap now and the expandable "Other" after') — DV-D16c,
+     THE CATEGORY CAP, IN THE ENGINE. A type that declares `fn.cap = {of: 'series'|'categories',
+     max: 6}` (and every `stacked-*` type, below) draws at most `max` parts: the first max−1 AS AUTHORED, and every part after them
+     summed into ONE part named "Other" — a bucket, never a silent drop. The <table> spine is
+     written from the AUTHORED spec, so every bucketed value stays reachable in the table view
+     until the expandable "Other" lands (DV-D16c's rider: the cap is acceptable only because the
+     bucketed data stays reachable). Authored order, not largest-first: the author's order is the
+     reading order of the legend and the letters. */
+  function capped(spec, cap) {
+    var of = cap && cap.of, max = cap && cap.max, out = {}, k, i, j, s;
+    var n = of === 'series' ? spec.series.length : of === 'categories' ? spec.categories.length : 0;
+    if (!(max > 1) || n <= max) { return spec; }
+    for (k in spec) { if (Object.prototype.hasOwnProperty.call(spec, k)) { out[k] = spec[k]; } }
+    function sum(vs) { for (s = 0, j = 0; j < vs.length; j++) { s += vs[j]; } return Math.round(s * 1000) / 1000; }
+    if (of === 'series') {
+      var rest = spec.series.slice(max - 1), vals = [];
+      for (i = 0; i < spec.categories.length; i++) { vals.push(sum(rest.map(function (r) { return r.values[i]; }))); }
+      out.series = spec.series.slice(0, max - 1).concat([{ name: 'Other', values: vals }]);
+    } else {
+      out.categories = spec.categories.slice(0, max - 1).concat(['Other']);
+      out.series = spec.series.map(function (r) {
+        var o = {}; for (k in r) { if (Object.prototype.hasOwnProperty.call(r, k)) { o[k] = r[k]; } }
+        o.values = r.values.slice(0, max - 1).concat([sum(r.values.slice(max - 1))]);
+        return o;
+      });
+    }
+    return out;
+  }
+
   /* ---------- THE ENGINE. Idempotent by construction: everything inside the <svg> and everything
      inside the <table> is REPLACED, so a filter re-render (rule 14) is one more call with a
      smaller spec, never a diff. The cached fit fractions (data-fy/data-fh) go with the old marks,
@@ -986,6 +1015,11 @@
       bad('no type partial registered for "' + spec.type + '" — have: ' +
           (Object.keys(TYPES).sort().join(', ') || '(none)'));
     }
+    var authored = spec;
+    /* s307-D59 — the cap; the table below keeps `authored`. DV-D16c binds every STACKED type, so
+       the core names that family itself (no stacked partial carries a byte for it: dv-render-bar
+       sits 7 code bytes under the page budget on Chart-combo); a ring declares its own. */
+    spec = capped(spec, draw.cap || (/^stacked-/.test(spec.type) ? { of: 'series', max: 6 } : 0));
     var svg = fig.querySelector('svg.dv-fit') || fig.querySelector('svg.dv-svg');
     if (!svg) { bad('figure has no <svg class="dv-fit"> canvas to render into'); }
 
@@ -1062,13 +1096,13 @@
        is unchanged where it matters: an AUTHORED spec.label still wins over both. */
     svg.setAttribute('aria-label', spec.label ||
       (typeof draw.label === 'function' ? draw.label(spec) : autoLabel(spec)) || autoLabel(spec));
-    writeTable(fig, spec);
+    writeTable(fig, authored);
 
     /* #260 A7 — the spec is REMEMBERED on the figure so a caller can ask for a real re-render.
        dvRender dispatches one `resize`, which re-FITS; it never re-DRAWS, so any decision a partial
        took from the plot width (scatter's tick strategy, histogram's label thinning — measured: 11
        of 20 bin labels at 1074px stay 11 at 654px) is frozen at first-render width. */
-    fig.__dvSpec = spec;
+    fig.__dvSpec = authored;
 
     /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).
        dv-behaviour's one rAF-debounced listener re-derives x from data-fx and caches y. */

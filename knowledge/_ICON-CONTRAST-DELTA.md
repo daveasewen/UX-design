@@ -486,7 +486,7 @@ _(176 of 464 exhaustive combos already clear 4.5:1; 40 transparent/composite sur
 | rag/information roundel | ● tint-knockout | light | 2.03 | FAIL-mark<4.5 |
 | rag/information roundel | white mark | light | 2.47 | FAIL-mark<4.5 |
 | rag/information roundel | #333 mark | light | 5.11 | pass-4.5 |
-| WHITE roundel (policy dark) | ● BLACK mark | dark | 21.0 | pass-4.5 |
+| INK roundel #E1E1E1 (dark, s313-D35) | ● BLACK mark | dark | 16.06 | pass-4.5 |
 
 Policy (Dave, 2026-07-02 eve): roundel = indicator (3:1); internal mark = small-text
 analogue (4.5:1 vs the fill); dark mode replaces coloured roundels with WHITE + BLACK

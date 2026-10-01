@@ -72,6 +72,14 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ stacked-column — dv-016 [gridline]: var(--data-grid)=#484848 vs surface #1A1A1A = 1.90:1 (<3:1) in dark mode.
 
 ## ✓ snippets/Chart-boxplot.reference.html — PASS
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.90:1 (<3.0:1) in console/dark — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.31:1 (<3.0:1) in console/light — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(255,255,255). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.90:1 (<3.0:1) in legacy/dark — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.31:1 (<3.0:1) in legacy/light — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(255,255,255). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.90:1 (<3.0:1) in mono/dark — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.31:1 (<3.0:1) in mono/light — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(255,255,255). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.90:1 (<3.0:1) in supercharge/dark — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ boxplot#cbp1 — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.31:1 (<3.0:1) in supercharge/light — 8 marks, 10 axis/label paints, 5 gridline paints, over surface rgb(255,255,255). Source: knowledge/_tests/chart-engine/_receipts.json
 - ⚠ boxplot#cbp1 — dv-009/016/017/line-011: PASSED by driven receipt — figure cbp1, 8 drawn marks, worst series contrast 3.31:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 - ⚠ boxplot#cbp1 — requiredAria [driven]: PASSED — all 6 declared string(s) present in the RENDERED DOM across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 
@@ -164,7 +172,7 @@ Gridline contrast is advisory (decorative, WCAG 1.4.11-exempt); series-fill + ax
 - ⚠ spark — dv-009/016/017/line-011: PASSED by driven receipt — figure fig-0, 4 drawn marks, worst series contrast 5.09:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 - ⚠ spark — requiredAria [driven]: PASSED — all 5 declared string(s) present in the RENDERED DOM across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 - ⚠ spark — dv-009/016/017/line-011: PASSED by driven receipt — figure fig-1, 2 drawn marks, worst series contrast 5.09:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
-- ⚠ spark — dv-009/016/017/line-011: PASSED by driven receipt — figure fig-2, 2 drawn marks, worst series contrast 17.40:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
+- ⚠ spark — dv-009/016/017/line-011: PASSED by driven receipt — figure fig-2, 2 drawn marks, worst series contrast 13.31:1, 0 gradients, 0 rogue hex, 0 curved series, across 8 theme x mode combos. Source: knowledge/_tests/chart-engine/_receipts.json
 
 ## ✓ snippets/Chart-stacked-area.reference.html — PASS
 - ⚠ stacked-area — dv-016 [driven, gridline]: worst drawn gridline contrast is 1.90:1 (<3.0:1) in console/dark — 3 marks, 15 axis/label paints, 4 gridline paints, over surface rgb(26,26,26). Source: knowledge/_tests/chart-engine/_receipts.json

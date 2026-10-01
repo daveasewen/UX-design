@@ -1,7 +1,7 @@
 {
   "$description": "Sutherland acceptance fixtures — per component, the contract a React implementation must satisfy to match the gated reference. Generated from snippet manifests + metas; regenerated each build.",
   "generated": "by _build_sutherland_fixtures.py",
-  "componentCount": 136,
+  "componentCount": 137,
   "fixtures": [
     {
       "component": "Accordion",
@@ -90,6 +90,12 @@
               "6": "icon"
             },
             "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp (the only migrated size ramp; adopted as the de facto general size ramp per the C2 judgment, name notwithstanding). TENSION: values ('5','6') have no name-correspondence to icon-scale rungs and no prose ties them to icon sizing -- bound to the bare family only; per-value rung grounding NOT resolved here (would require inventing a correspondence). FINDING for the build-time grounding pass. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The header's words: the question or section name the header button reads out (reference snippet: 'How do I set up a standing order?'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -168,6 +174,18 @@
             "default": false,
             "binds": "form.border.default",
             "$note": "Optional account-type tag (Tags atom)."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The account's name and masked number (reference snippet: 'Current account · ···4821'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "balance",
+            "type": "number",
+            "ownText": true,
+            "$note": "The balance the card shows, formatted by the Amount-display primitive (reference snippet: '£3,248.55'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -223,7 +241,26 @@
           {
             "name": "accounts",
             "type": "array",
-            "$note": "Rows of {name, masked, balance}; balances render via the Amount-display primitive (tabular figures, copy-025)."
+            "$note": "Rows of {name, masked, balance}; balances render via the Amount-display primitive (tabular figures, copy-025).",
+            "bindsData": {
+              "capability": [
+                "account-records"
+              ]
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "account-records"
+                  ]
+                },
+                "use": "The selectable accounts, each supplying name, masked number and balance.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "selected",
@@ -322,11 +359,6 @@
             "$note": "Pin the bar to the bottom of a scrolling flow (position:sticky).",
             "binds": "elevation.decorative",
             "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- bind:composite. Stuck state's visual consequence is the shadow; bound as the COMPOSITE (elevation.decorative as a whole) -- not decomposed into one scalar of it, so the bind survives shadow re-tuning. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "actions",
-            "type": "number",
-            "$note": "1–3 actions: one primary + optional secondary + optional tertiary (e.g. Back). More than 3 is an anti-pattern."
           }
         ]
       }
@@ -498,6 +530,18 @@
             "default": false,
             "$note": "Privacy mask: the value is replaced by dots (aria-hidden) and the element carries role=img + an aria-label giving context (e.g. 'Balance hidden').",
             "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "ownText": true,
+            "$note": "The amount itself; sign and tabular figures are the part's own rules (reference snippet: '3,248.55'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "currency",
+            "type": "string",
+            "ownText": true,
+            "$note": "The currency symbol or code written before the amount, no space (copy-025; reference snippet: 'GBP', '£'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -881,7 +925,8 @@
           "aria-busy",
           "role=\"status\"",
           "aria-hidden=\"true\"",
-          "<h1"
+          "<h1",
+          "role=\"contentinfo\""
         ],
         "contrastPairs": [
           {
@@ -913,6 +958,16 @@
             "fg": "icon/default",
             "bg": "tertiary/background/hover",
             "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "surface/subtle",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "surface/subtle",
+            "context": "text"
           }
         ],
         "props": [
@@ -1013,19 +1068,7 @@
             "context": "ui"
           }
         ],
-        "props": [
-          {
-            "name": "flyout",
-            "type": "enum",
-            "values": [
-              "label",
-              "menu"
-            ],
-            "default": "label",
-            "$note": "⚠⚠ NOT A COSMETIC VARIANT. The two forms have DIFFERENT ACCESSIBILITY CONTRACTS and identical pixels — see $finding-two-contracts. label: the panel repeats a name the link already carries, so it is aria-hidden and the item stays a link. menu: the panel carries destinations, so it is announced and the item becomes a <button> with aria-expanded + aria-controls.",
-            "$status": "PROPOSED #210"
-          }
-        ]
+        "props": []
       }
     },
     {
@@ -1064,7 +1107,8 @@
           "role=\"dialog\"",
           "aria-modal",
           "<main",
-          "<h1"
+          "<h1",
+          "role=\"contentinfo\""
         ],
         "contrastPairs": [
           {
@@ -1096,6 +1140,16 @@
             "fg": "icon/default",
             "bg": "tertiary/background/hover",
             "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "surface/subtle",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "surface/subtle",
+            "context": "text"
           }
         ],
         "props": [
@@ -1302,7 +1356,7 @@
             "type": "boolean",
             "default": false,
             "$note": "the third band — in-section destinations. Horizontally scrollable rather than wrapping, so a long section list never silently becomes two rows of chrome.",
-            "$status": "PROPOSED #210"
+            "$status": "PROPOSED #210. ⚠ NOT THE THIRD LEVEL'S HOME FOR NOW — s313-D24 (#313) inscribes, at Dave's word and not by click, that the third level lives in TABS IN THE PAGE-HEADER LOCK-UP (its foot, s313-D28), never a third band of chrome. His comment, verbatim: 'I think this can get is fairly complicated, but would probably have a preference for introducing a simple side nav at this point. lets leave this as it is now, but I do have a nav strategy worked out in a sigma file, inscribe for now but I will revist if this doesnt match with the doc.' The prop is NOT deleted: he revisits it against his doc (W-313d1). Nothing new is built for the third level."
           }
         ]
       }
@@ -1380,6 +1434,12 @@
             "default": "on-light",
             "binds": "background.default",
             "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "ownText": true,
+            "$note": "The person's or entity's name: the initials variant derives from it and it is the name a screen reader hears (reference snippet: 'JL'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -1541,7 +1601,8 @@
           {
             "name": "threshold",
             "type": "number",
-            "$note": "⛔ UNSPECIFIED store-wide. The scroll distance (px or viewport-heights) past which the control fades in is a UX-writing / Dave call, not resolved here. The demo uses an arbitrary 200px scrollTop for illustration only."
+            "default": 4,
+            "$note": "In viewport-heights. RULED s272-D73 (Dave, 2026-09-15, harvest row R8, verbatim: 'ratify') — the lane's option 1, verbatim: 'Adopt NN/g wholesale: appears past 4 viewport-heights, one per page, bottom-end, labelled.' The reference demo reads it as four heights of its scroll frame (#313 B4; it was an arbitrary 200px scrollTop, 'UNSPECIFIED store-wide', before)."
           },
           {
             "name": "visible",
@@ -1562,7 +1623,8 @@
           "--surface": "badge/background",
           "--number": "rag/text/on-light",
           "--host": "text/default",
-          "--page": "background/default"
+          "--page": "background/default",
+          "--disabled": "text/disabled"
         },
         "requiredAria": [
           "aria-label"
@@ -1615,6 +1677,12 @@
               "large": "icon.large"
             },
             "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact name match to the icon-scale rungs -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "What the badge says: the count as shown or one short word (reference snippet: '3', '99+', 'New'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -1710,11 +1778,6 @@
             "name": "link",
             "type": "string",
             "$note": "Optional inline link, descriptive text (aca-004)."
-          },
-          {
-            "name": "actions",
-            "type": "array",
-            "$note": "Up to two ghost actions — mutually exclusive with dismiss (Legacy family shape rule kept)."
           },
           {
             "name": "dismissible",
@@ -1850,7 +1913,27 @@
               "multi"
             ],
             "default": "categorical",
-            "$note": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter."
+            "$note": "categorical = data/series/1–5 (mode-stable isoluminant, R-D9); status = the salience RAMP red › amber › green › blue on rag/* (R-D9); multi = grouped/stacked use series/1–3 with shaped+lettered legend keys and legend-as-filter.",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "categories × series"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "One or more series drawn grouped or stacked across the categorical axis.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "sort",
@@ -1866,7 +1949,29 @@
           {
             "name": "data",
             "type": "table",
-            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>."
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005). Surfaced by the TABLE-VIEW POPOVER (dropdown w/ solid rotating arrow, static label; surface card, Esc-dismiss) — the exemplar's, not a native <details>.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "categories × series"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the category values per series the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -1891,6 +1996,7 @@
           "--shadow": "elevation/functional",
           "--data-series-1": "data/series/1",
           "--data-axis": "data/axis/color",
+          "--data-grid": "data/grid/color",
           "--data-control-label-disabled": "data/control/label-disabled/color",
           "--border-radius-control": "border-radius/control",
           "--border-radius-surface": "border-radius/surface"
@@ -1919,17 +2025,78 @@
           {
             "name": "categories",
             "type": "array",
-            "$note": "One box per category; each carries min/Q1/median/Q3/max + optional outliers."
+            "$note": "One box per category; each carries min/Q1/median/Q3/max + optional outliers.",
+            "bindsData": {
+              "capability": [
+                "category-labels"
+              ],
+              "shape": "categories × five-number-summary"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "category-labels"
+                  ]
+                },
+                "use": "One entry per box on the categorical axis.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "outliers",
             "type": "array",
-            "$note": "Points outside the whisker range, drawn with the Chart-scatter ENLARGED marker family (circle r5.5, page-colour stroke) — same series, not a new colour channel."
+            "$note": "Points outside the whisker range, drawn with the Chart-scatter ENLARGED marker family (circle r5.5, page-colour stroke) — same series, not a new colour channel.",
+            "bindsData": {
+              "capability": [
+                "outlier-points"
+              ],
+              "shape": "categories × five-number-summary"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "outlier-points"
+                  ]
+                },
+                "use": "Points falling outside the whiskers, plotted individually.",
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> mirroring the five-number summary + outliers per category (dv-005)."
+            "$note": "Real <table class=\"dv-table\"> mirroring the five-number summary + outliers per category (dv-005).",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "categories × five-number-summary"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the five-number summary per category the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -1975,6 +2142,13 @@
             "default": "default",
             "$note": "Per .Breadcrumb level. 'no-link' = the current/last item (non-clickable). Hover and Pressed share a single combined state.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "trail",
+            "type": "array",
+            "ownText": true,
+            "$note": "The ancestor path, root first; the last entry is the current page (reference snippet: 'Home / Accounts / Current account / Statements'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, href}; the current page has no href"
           }
         ]
       }
@@ -2021,7 +2195,27 @@
           {
             "name": "rows",
             "type": "array",
-            "$note": "One row per KPI: measure, target, and three qualitative range breakpoints."
+            "$note": "One row per KPI: measure, target, and three qualitative range breakpoints.",
+            "bindsData": {
+              "capability": [
+                "kpi-rows"
+              ],
+              "shape": "rows × measure-target-bands"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "kpi-rows"
+                  ]
+                },
+                "use": "One measure/target row per KPI shown in the bullet stack.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "measure",
@@ -2036,12 +2230,53 @@
           {
             "name": "ranges",
             "type": "array",
-            "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order)."
+            "$note": "Qualitative bands (poor/satisfactory/good) BEHIND the measure — CANON greys (#96-D1 ③ RULED), z-order bands→bar→marker confirmed correct (DOM paint order).",
+            "bindsData": {
+              "capability": [
+                "qualitative-ranges"
+              ],
+              "shape": "rows × measure-target-bands"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "qualitative-ranges"
+                  ]
+                },
+                "use": "The banded qualitative ranges each measure bar is read against.",
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005)."
+            "$note": "Real <table class=\"dv-table\"> mirroring measure/target/range values per row (dv-005).",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "rows × measure-target-bands"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the measure, target and range values the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -2111,12 +2346,54 @@
           {
             "name": "series",
             "type": "pair",
-            "$note": "Exactly two series, one per direction. LEFT takes data/series/1 (categorical default); RIGHT takes data/series/3 (DV-D09's h-bar default, cited here for the positive-reading direction)."
+            "$note": "Exactly two series, one per direction. LEFT takes data/series/1 (categorical default); RIGHT takes data/series/3 (DV-D09's h-bar default, cited here for the positive-reading direction).",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "categories × two-series-mirrored"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "The two opposed series mirrored either side of the centre gutter.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005), surfaced by the same TABLE-VIEW POPOVER Chart-bar uses."
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005), surfaced by the same TABLE-VIEW POPOVER Chart-bar uses.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "categories × two-series-mirrored"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the paired category values the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -2186,12 +2463,54 @@
           {
             "name": "series",
             "type": "pair",
-            "$note": "Exactly two series, one per direction. UP takes data/series/1 (column default, DV-D09); DOWN takes data/series/3, paired for visual contrast with the -h sibling's LEFT/RIGHT choice."
+            "$note": "Exactly two series, one per direction. UP takes data/series/1 (column default, DV-D09); DOWN takes data/series/3, paired for visual contrast with the -h sibling's LEFT/RIGHT choice.",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "categories × two-series-mirrored"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "The two opposed series mirrored above and below the shared baseline.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)."
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005).",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "categories × two-series-mirrored"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the paired category values the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -2349,6 +2668,12 @@
             "default": "on-light",
             "binds": "background.default",
             "$status": "s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lands at migration. NOTE: an alternative 4-way surface-tier map judgment (C13, background.default/surface.raised/surface.subtle/surface.action) was NOT ratified -- superseded by this simpler row-pick per s142-D1; do not re-propose it. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json. | CORRECTED AT #145 BY ADDITION (measured, not assumed): the 'colour spine is NOT yet DTCG-migrated / value lands at that migration' clause above is STALE. Probed directly at #145 -- this address RESOLVES in knowledge/tokens/semantic-colour.json to a $value/$type leaf. _validate_dtcg.py reports 0 FAILURES on the spine; its 8 semantic-colour deferrals are all DEF-COLOR-MISTYPE on blur/image OPACITY tokens (values 12/0/100/20), NONE on rag or surface. The value has landed; the migration this line waits on is already done (axis A, s141-D1). *** WHAT IS STILL MISSING IS THE GATE: no validator resolves a meta 'binds' address against the colour spine. Four gates mention binds (_validate_binds_ratchet, _validate_partials, _validate_radius, _validate_type_blast_radius); NONE of them reads semantic-colour.json. So this address resolving is UNCHECKED -- rename the rung and every gate stays green. That gate is the real remaining work, not a migration."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The button's words (reference snippet: 'Example'; the action bar's 'Confirm payment'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -2564,7 +2889,27 @@
           {
             "name": "sessions",
             "type": "array",
-            "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule)."
+            "$note": "One candle per session: open/high/low/close. Canon example: 40 sessions, seed 103 (ds-027 standing density rule).",
+            "bindsData": {
+              "capability": [
+                "ohlc-periods"
+              ],
+              "shape": "periods × ohlc"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "ohlc-periods"
+                  ]
+                },
+                "use": "One open-high-low-close period per candle.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "up",
@@ -2579,7 +2924,29 @@
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> mirroring OHLC columns per session (dv-005) — THE accessibility fallback per ds-027, not decorative."
+            "$note": "Real <table class=\"dv-table\"> mirroring OHLC columns per session (dv-005) — THE accessibility fallback per ds-027, not decorative.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "periods × ohlc"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the OHLC values per period the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -2770,19 +3137,6 @@
             "default": "default",
             "$note": "Interactive types only (basic, actions). Non-interactive/image-static types are default-only.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "content",
-            "type": "enum",
-            "values": [
-              "iconTitleDescription",
-              "iconDescription",
-              "iconTitle",
-              "titleDescription",
-              "title"
-            ],
-            "default": "titleDescription",
-            "$note": "Content combinations seen on actions/basic cards."
           }
         ]
       }
@@ -2854,12 +3208,6 @@
             "name": "slideCount",
             "type": "number",
             "$note": "Drives the dot row and the aria-label \"N of M\" on each slide; authoring-time, not user-facing."
-          },
-          {
-            "name": "autoplay",
-            "type": "boolean",
-            "default": false,
-            "$note": "PROPOSED DEFAULT OFF, not built as an option in this snippet. Dave's — see the receipt's $decisionsForDave: does an opt-in autoplay variant belong in the library at all, given WCAG 2.2.2 timing-adjustable and the mixed UX record of autoplaying carousels."
           }
         ]
       }
@@ -3044,7 +3392,27 @@
           {
             "name": "series",
             "type": "fixed",
-            "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3)."
+            "$note": "Exactly TWO: bars = data/series/1 (DV-D09 column default) on the left/primary axis, line = data/series/2 on the right/secondary axis. More bar series (grouped combo) is a future variant — grouped promote rides the bar lane (D-Q3).",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "shared-x × two-measures-different-units"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "The bar series on the primary axis plus the line series on the secondary axis.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "secondaryAxis",
@@ -3064,7 +3432,29 @@
           {
             "name": "data",
             "type": "table",
-            "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target."
+            "$note": "ONE real <table class=\"dv-table\"> (dv-005) carries BOTH series with unit column headers (Payments £000 · STP rate %); popover tips read the same values; † flags at/above target.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "shared-x × two-measures-different-units"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the both measures over the shared x the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "target",
@@ -3194,6 +3584,19 @@
             ],
             "default": "underline",
             "$status": "PROPOSED #203, Dave's eye owed — how the matched run is marked. Underline was chosen because weight needs a raw font-weight declaration (TYPE-002 forbids it; there is no .t-cm-* emphasis hook) and colour alone is barred by 1.4.1 and by the red/yellow caution."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The field's label. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The options the typed text filters. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, value}"
           }
         ]
       }
@@ -3349,11 +3752,6 @@
             "name": "message",
             "type": "string",
             "$note": "One-line detail / what happens next."
-          },
-          {
-            "name": "actions",
-            "type": "number",
-            "$note": "1 primary (e.g. Done) + optional ghost (e.g. View receipt)."
           }
         ]
       }
@@ -3414,6 +3812,12 @@
               "large": "icon.large"
             },
             "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. Exact name match to the icon-scale rungs -- cleanly grounded. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "What the countdown leads to (reference snippet: 'until session timeout'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -3549,6 +3953,7 @@
           "--onpressed": "text/reverse",
           "--currentbd": "tertiary/border/default",
           "--bone": "tertiary/background/hover",
+          "--grouphdr": "table/column/background",
           "--press-travel": "component-type/button-family/press-travel",
           "--press-darken": "component-type/button-family/press-darken",
           "--border-radius-control": "border-radius/control",
@@ -3565,7 +3970,12 @@
           "aria-busy",
           "aria-live",
           "role=\"status\"",
-          "aria-label"
+          "aria-label",
+          "aria-expanded",
+          "aria-disabled",
+          "aria-pressed",
+          "role=\"separator\"",
+          "aria-valuenow"
         ],
         "contrastPairs": [
           {
@@ -3617,13 +4027,42 @@
             "fg": "icon/default",
             "bg": "table/header/background",
             "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "table/column/background",
+            "context": "text"
+          },
+          {
+            "fg": "form/border/active",
+            "bg": "table/header/background",
+            "context": "ui"
           }
         ],
         "props": [
           {
             "name": "columns",
             "type": "array",
-            "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite)."
+            "$note": "Column defs: key · label · numeric (right-aligned, .t-cm-figure-5 tabular) · sortable · editable. Sort headers are full-cell buttons riding .t-cm-button (16/500 — Table's header weight via composite).",
+            "bindsData": {
+              "capability": [
+                "column-definitions"
+              ]
+            },
+            "$wasSlot": {
+              "$settled": "s305-D58 (Dave, #305, \"As recommended\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "column-definitions"
+                  ]
+                },
+                "use": "The column contract: header, alignment, sort and edit affordances per column.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "selection",
@@ -3636,9 +4075,10 @@
             "$note": "Leading checkbox column (Selection-controls anatomy); header checkbox = page scope, indeterminate when partial."
           },
           {
-            "name": "filters",
+            "name": "terms",
             "type": "array",
-            "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns."
+            "$note": "Search-committed terms rendered as dismissible chips (Tags recipe, namespaced .fchip); terms AND-combine across text columns.",
+            "$renamedFrom": "filters — s305-D58 (Dave, \"As recommended\") made `filters` the slot and named the cost: the applied search terms need a name of their own. `terms` is this lane's plain word for them, Dave's to keep or rename. #311 lane C0."
           },
           {
             "name": "pageSize",
@@ -3662,6 +4102,32 @@
             "default": "live",
             "$note": "loading = aria-busy + Skeleton bones (by reference); empty = message + clear-filters recovery action.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "density",
+            "type": "enum",
+            "values": [
+              "comfortable",
+              "compact"
+            ],
+            "default": "comfortable",
+            "$note": "#261: a real prop on .dg (data-density), not a demo dial. Compact drops --cell-py 10->4, the header row 44->32 and every control target 44->32 — above the 24px dial-down floor, never below (s116-D1). The switch mirrors Segmented-control (its group, not button-family: no press physics)."
+          },
+          {
+            "name": "groupHeader",
+            "type": "enum",
+            "values": [
+              "on",
+              "off"
+            ],
+            "default": "on",
+            "$note": "#261: an OPTIONAL spanning row above the column row (th scope=colgroup), sticky at top:0 with the column row sticking below it at top:var(--grp-h). It counts as a header row: aria-rowcount and every aria-rowindex shift by one when it is on."
+          },
+          {
+            "name": "columnFilters",
+            "type": "boolean",
+            "default": true,
+            "$note": "#261: per-column filter menu behind a 24px header button. Committing writes a {key, term} filter, which renders as a chip that names its column ('Payee: acme'); the toolbar filter is the same shape with key null. Amount ships WITHOUT one — the affordance is optional per column, and a contains-filter on money is the wrong control."
           }
         ]
       }
@@ -4021,6 +4487,18 @@
             ],
             "default": "roomy",
             "$note": "⬛ PROPOSED — P6, DAVE'S. --row-h 76 / --row-pad 14 / --label-gap 12 inherited VERBATIM from List-items' roomy default. A statements archive is a long list and may want List-items' 64/10/8 compact leg as ITS default. Not ruled either way."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The document's name (reference snippet: 'June 2026 statement'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "detail",
+            "type": "string",
+            "ownText": true,
+            "$note": "The line under it: period, format and size (reference snippet: '1 Jun – 30 Jun 2026 · PDF · 1.2MB'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -4142,7 +4620,27 @@
           {
             "name": "slices",
             "type": "number",
-            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the displayed centre total (dv-pie-010, data-total attr)."
+            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the displayed centre total (dv-pie-010, data-total attr).",
+            "bindsData": {
+              "capability": [
+                "proportion-slices"
+              ],
+              "shape": "parts-of-whole"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "proportion-slices"
+                  ]
+                },
+                "use": "The parts of the whole drawn as ring segments.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "total",
@@ -4246,11 +4744,6 @@
             "default": 400,
             "$note": "400px, full-width ≤480px viewport.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- none-of-these:candidates-invalid. candidate addresses were border-width.* (a SUBSTRING TRAP; this is not a border width). The real home is a layout dimension that doesn't exist yet -- an authoring item. NOT picked or invented here. EXCEPTION row. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "actions",
-            "type": "array",
-            "$note": "Footer actions — primary FIRST, left-aligned (Modals' corrected order); stack full-width at small sizes."
           }
         ]
       }
@@ -4266,11 +4759,13 @@
           "--field-bg-hover": "form/background/hover",
           "--border": "form/border/default",
           "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
           "--menu-surface": "background/default",
           "--menu-border": "elevation/border",
           "--shadow": "elevation/functional",
           "--divider": "divider/border/section",
           "--text": "text/default",
+          "--text-disabled": "text/disabled",
           "--icon": "icon/default",
           "--error": "rag/error",
           "--page": "background/default",
@@ -4282,7 +4777,9 @@
           "aria-expanded",
           "role=\"listbox\"",
           "role=\"option\"",
-          "aria-selected"
+          "aria-selected",
+          "role=\"group\"",
+          "aria-labelledby"
         ],
         "contrastPairs": [
           {
@@ -4374,6 +4871,19 @@
             "default": "default",
             "$note": "list-item level",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The field's label (reference snippet: 'Country of residence'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The options in the list. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, value}; a grouped list adds {group}"
           }
         ]
       }
@@ -4711,10 +5221,17 @@
           "--seg-thumb-s": "border-radius/segmented-thumb/s",
           "--seg-rad-xs": "border-radius/segmented-container/xs",
           "--seg-thumb-xs": "border-radius/segmented-thumb/xs",
+          "--seg-rad-l": "border-radius/segmented-container/l",
+          "--seg-thumb-l": "border-radius/segmented-thumb/l",
+          "--seg-h-l": "size/segmented-control/l",
+          "--seg-pad-l": "padding/segmented-control/l",
+          "--seg-inset-l": "padding/fixed/large",
           "--hover": "form/background/hover",
           "--border": "form/border/default",
           "--border-active": "form/border/active",
+          "--border-disabled": "form/border/disabled",
           "--text": "text/default",
+          "--text-disabled": "text/disabled",
           "--icon": "icon/default",
           "--page": "background/default",
           "--field-bg-hover": "form/background/hover",
@@ -4728,7 +5245,11 @@
           "--surface": "tertiary/background/default",
           "--sel": "secondary/background/default",
           "--on-sel": "text/on-inverse",
-          "--hit": "target/min"
+          "--hit": "target/min",
+          "--error-ink": "rag/error-ink",
+          "--pos-ink": "rag/success-ink",
+          "--tbl-head": "table/header/background",
+          "--tbl-border": "table/border"
         },
         "requiredAria": [
           "type=\"search\"",
@@ -4736,7 +5257,9 @@
           "role=\"combobox\"",
           "role=\"listbox\"",
           "role=\"option\"",
-          "aria-pressed"
+          "aria-pressed",
+          "role=\"status\"",
+          "aria-live"
         ],
         "contrastPairs": [
           {
@@ -4763,6 +5286,21 @@
             "fg": "text/on-inverse",
             "bg": "secondary/background/default",
             "context": "text"
+          },
+          {
+            "fg": "rag/error-ink",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/success-ink",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "table/header/background",
+            "context": "text"
           }
         ],
         "props": [
@@ -4774,18 +5312,48 @@
               "compact"
             ],
             "default": "full",
-            "$note": "Structural variance (a different assembly, not a scaled param) — routes to the VARIANTS axis, the same reading Tags' own `type` prop carries (s142-D1 class C6). Full = search + N dropdowns + view switch + chip row (arrangement A). Compact = underline search + sm segmented control only, for sitting directly above a table/list (arrangement B, the itinerary row's own stated context)."
+            "$note": "A DIAL, not an assembly (changed at #261): `data-density` on the bar root moves the search/trigger height 48px→40px and the bar padding 12px→8px, both on the 4px grid, both clear of the 24px dial-down floor. The bar also HANDS the same value to its consumer as `data-apollo-density`, which is the point — one control, two surfaces. The old structural reading of this prop (full = arrangement A, compact = arrangement B) is superseded by the `arrangement` prop below, so the two axes stop being conflated."
+          },
+          {
+            "name": "arrangement",
+            "type": "enum",
+            "values": [
+              "dashboard",
+              "dense"
+            ],
+            "default": "dashboard",
+            "$note": "Structural variance (a different assembly — the VARIANTS axis, the reading Tags' own `type` prop carries, s142-D1 class C6). dashboard = the full two-row bar. dense = underline search + one small segmented control, sitting directly above a table/list, no context row."
           },
           {
             "name": "filterCount",
             "type": "number",
-            "default": "2",
-            "$note": "0-N Dropdown instances. The organism does not draw a new dropdown style."
+            "default": "0",
+            "$note": "0-N applied filters. Each is one dismissible Tags chip; the organism draws no new chip."
           },
           {
-            "name": "appliedFilters",
-            "type": "array",
-            "$note": "0-N dismissible Tags, each removable via the atom's own × control; the organism supplies none of the dismiss mechanics itself."
+            "name": "chipOverflow",
+            "type": "number",
+            "default": "3",
+            "$note": "How many chips stay visible before the rest collapse behind a `+N more` disclosure. The disclosure is a BUTTON carrying `.tag`, so it takes the chip paint and the chip's own hit floor rather than inventing a control."
+          },
+          {
+            "name": "state",
+            "type": "enum",
+            "values": [
+              "no-filters",
+              "filtered",
+              "loading",
+              "empty",
+              "error"
+            ],
+            "default": "no-filters",
+            "$note": "One attribute, `data-ftb-state`, on the bar root. Every state-scoped node declares the states it belongs to in `data-when`; nodes without `data-when` are always present. The bar does NOT set this from its own optimism — it reads it back off the consumer's `data-apollo-result-state` (see edges.drivesConsumer)."
+          },
+          {
+            "name": "sticky",
+            "type": "boolean",
+            "default": "true",
+            "$note": "`position:sticky` under the page header, offset by `--ftb-top` (0 by default). The stuck shadow is EARNED, not permanent: an IntersectionObserver on a sentinel above the bar flips `data-stuck`."
           }
         ]
       }
@@ -4800,29 +5368,39 @@
           "--page": "background/default",
           "--surface": "surface/subtle",
           "--divider": "divider/border/section",
-          "--subdivider": "divider/border/subsection",
           "--text": "text/default",
-          "--muted": "text/secondary",
           "--icon": "icon/default",
           "--focus": "focus/ring",
+          "--border-strong": "border/strong",
+          "--ft-band": "surface/action-primary",
+          "--ft-ink": "text/on-inverse",
+          "--env-alert": "rag/warning-background",
+          "--env-alert-ink": "rag/text/on-light",
+          "--ok": "rag/success-glyph",
+          "--degraded": "rag/warning-glyph",
           "--border-radius-control": "border-radius/control",
           "--target-min": "target/min"
         },
         "requiredAria": [
           "role=\"contentinfo\"",
           "aria-label",
-          "aria-labelledby",
-          "aria-current=\"page\""
+          "role=\"status\"",
+          "aria-hidden=\"true\""
         ],
         "contrastPairs": [
           {
-            "fg": "text/default",
-            "bg": "surface/subtle",
+            "fg": "text/on-inverse",
+            "bg": "surface/action-primary",
             "context": "text"
           },
           {
-            "fg": "text/secondary",
-            "bg": "surface/subtle",
+            "fg": "border/strong",
+            "bg": "surface/action-primary",
+            "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "background/default",
             "context": "text"
           },
           {
@@ -4831,36 +5409,80 @@
             "context": "icon"
           },
           {
-            "fg": "text/default",
-            "bg": "background/default",
+            "fg": "rag/text/on-light",
+            "bg": "rag/warning-background",
             "context": "text"
           }
         ],
         "props": [
           {
-            "name": "form",
+            "name": "variant",
             "type": "enum",
             "values": [
-              "doormat",
-              "slim"
+              "default",
+              "sticky",
+              "minimal"
             ],
-            "default": "doormat",
-            "$note": "doormat = brand statement + back-to-top + named link columns + legal bar. slim = legal bar and copyright only. Which surfaces get which is a product decision and is NOT settled here.",
-            "$status": "PROPOSED #204, Dave's eye owed"
+            "default": "default",
+            "$note": "default = the full one-row app footer, in document flow at the end of the content column. sticky = the same row pinned to the bottom edge, for a dashboard whose grid genuinely never ends. minimal = version + legal only.",
+            "$status": "PROPOSED #261, Dave's eye owed"
           },
           {
-            "name": "groups",
+            "name": "environment",
+            "type": "enum",
+            "values": [
+              "prod",
+              "uat",
+              "staging",
+              "dev"
+            ],
+            "default": "prod",
+            "$note": "Set as data-env on the footer element; the paint is CSS, so a shell that switches environment cannot forget to restyle anything. prod is a QUIET outlined chip (border/strong + text/default) because production is the normal case and a permanent alarm is no alarm. Every other value takes rag/warning-background with rag/text/on-light ink — 9.16:1, mode-invariant, the ruled 'amber is always black text' pair (R-D3). The label is real text in the markup, never generated content and never an ALL-CAPS run.",
+            "$status": "PROPOSED #261, Dave's eye owed"
+          },
+          {
+            "name": "systemStatus",
+            "type": "enum",
+            "values": [
+              "ok",
+              "degraded"
+            ],
+            "default": "ok",
+            "$note": "Set as data-system. Dot + label, never colour alone (1.4.1); wrapped in role=\"status\" so a degradation announced while the operator is elsewhere on the page is still heard. Only two values by intent: a footer that needs a third has outgrown a footer.",
+            "$status": "PROPOSED #261, Dave's eye owed"
+          },
+          {
+            "name": "dataFreshness",
+            "type": "object",
+            "default": null,
+            "$note": "data-updated (ISO timestamp) plus an optional data-now. Renders an absolute <time> ALWAYS and a relative age as progressive enhancement, with the relative string already present in the markup as the JS-off fallback (s245-D5). data-now is fixed rather than Date.now() so a driven screenshot is byte-deterministic.",
+            "$status": "PROPOSED #261, Dave's eye owed"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "default": null,
+            "$note": "Language and time zone as one string ('en-GB · Europe/London (GMT+1)'). It belongs beside the freshness because a timestamp without a zone is not a timestamp — that is the whole reason this pair sits together.",
+            "$status": "PROPOSED #261, Dave's eye owed"
+          },
+          {
+            "name": "legalLinks",
             "type": "array",
-            "default": [],
-            "$note": "Each group is a <nav> with aria-labelledby pointing at its own heading, so a screen-reader user gets four named navigation landmarks rather than one anonymous list of forty links. The specimen shows four groups; the auto-fit track floor is 180px.",
-            "$status": "PROPOSED #204, Dave's eye owed"
+            "default": [
+              "privacy",
+              "terms",
+              "accessibility",
+              "support"
+            ],
+            "$note": "The regulator's row. The list is regulatory, it varies by market, and it is not this file's to fix — see $decisionsForDave 5.",
+            "$status": "PROPOSED #261, Dave's eye owed"
           },
           {
-            "name": "backToTop",
-            "type": "boolean",
-            "default": true,
-            "$note": "The arrow link from the gated Links atom, rotated to point up, glyph byte-matched from arrows-and-chevrons/arrow-up.svg. 44px tall.",
-            "$status": "PROPOSED #204, Dave's eye owed"
+            "name": "copyright",
+            "type": "string",
+            "default": "© HSBC Group 2026. All rights reserved.",
+            "$note": "ADDED #261 Ft3 on Dave's word: 'Be more generous with the spacing and add the copyright notice.' The string is the repo's EXISTING one, unaltered — it already appears verbatim in 17 other snippets — and it is NOT re-typed per surface. It sits at the far right, the last item in the regulator's cluster, and it shares one .ft-end box with the legal links so the two travel together when the row wraps rather than separating across a break. Full ink strength: $finding-opacity-is-not-hierarchy forbids the alpha-60 the #204 build put on exactly this line.",
+            "$status": "PROPOSED #261, Dave's eye owed"
           }
         ]
       }
@@ -5055,6 +5677,12 @@
             "type": "boolean",
             "default": false,
             "$note": "'(optional)' ink marker beside the label — required is the default, unmarked (intro line states it)."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The form's heading, the legend of its outer fieldset (reference snippet: 'Add a payee'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -5279,6 +5907,18 @@
             "default": "false",
             "$note": "Headers Display — with/without an image.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C9 -- no-bind:behavioural. Behavioural/content-presence state, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The header's title (reference snippet: 'Statements', 'Good morning, Jordan'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "subtitle",
+            "type": "string",
+            "ownText": true,
+            "$note": "The optional line under the title (reference snippet: 'Here's a summary of your accounts.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -5291,6 +5931,7 @@
       "contract": {
         "tokenBindings": {
           "--text": "text/default",
+          "--muted": "text/secondary",
           "--pri": "primary/background/default",
           "--on-pri": "text/reverse",
           "--accent": "primary/background/default",
@@ -5352,6 +5993,18 @@
             ],
             "default": "image",
             "$note": "Background/secondary asset type."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The headline (reference snippet: 'Banking that moves with you.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "intro",
+            "type": "string",
+            "ownText": true,
+            "$note": "The intro under the headline (reference snippet: 'Manage your money, set goals and get support — all in one place.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -5365,6 +6018,7 @@
         "tokenBindings": {
           "--border-radius-surface": "border-radius/surface",
           "--text": "text/default",
+          "--muted": "text/secondary",
           "--pri": "primary/background/default",
           "--on-pri": "text/reverse",
           "--accent": "primary/background/default",
@@ -5501,12 +6155,54 @@
           {
             "name": "bins",
             "type": "array",
-            "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. DERIVED from Chart-bar's column geometry — see the snippet header for the exact arithmetic (8 bins, 522px plot area, 65.25px/bin)."
+            "$note": "Contiguous value ranges; rect width == category slot width exactly (no bar-style inset), adjacent rects share an x-edge. ★ #260: the arithmetic is no longer authored — dv-render-histogram derives band = plotW / bins at the RENDERED width and the mark is the whole band, so contiguity holds at every width instead of at the one the specimen was baked at (the old note's 8 bins / 522px plot / 65.25px per bin was that one width). Driven: bins tile the plot to within 0.1px at 1132px and at 712px.",
+            "bindsData": {
+              "capability": [
+                "histogram-bins"
+              ],
+              "shape": "bins × frequency"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "histogram-bins"
+                  ]
+                },
+                "use": "The contiguous frequency bins drawn as columns.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005)."
+            "$note": "A real <table class=\"dv-table\"> inside the figure — the a11y spine AND the tabular alternative (dv-005).",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "bins × frequency"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the bin boundaries and counts the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -5821,115 +6517,165 @@
             ],
             "$note": ".Date calendar day cell.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The field's label. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "help",
+            "type": "string",
+            "ownText": true,
+            "$note": "The optional help line under the label. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
     },
     {
-      "component": "KPI tile",
+      "component": "Legend",
       "category": "molecule",
-      "referenceSnippet": "snippets/Kpi-tile.reference.html",
-      "meta": "components/kpi-tile.meta.json",
+      "referenceSnippet": "snippets/Legend.reference.html",
+      "meta": "components/legend.meta.json",
       "contract": {
         "tokenBindings": {
-          "--surface": "tertiary/background/default",
-          "--border": "border/subtle",
-          "--text": "text/default",
           "--page": "background/default",
-          "--focus": "focus/ring",
-          "--up": "rag/success",
-          "--down": "rag/error",
-          "--spark-up": "rag/success-ink",
-          "--spark-down": "rag/error-ink",
-          "--spark-flat": "text/default",
-          "--border-radius-surface": "border-radius/surface",
-          "--tbl-header": "table/header/background",
-          "--tbl-colhdr": "table/column/background",
-          "--tbl-cell": "background/default",
-          "--tbl-border": "table/border"
+          "--ink": "text/default",
+          "--line": "border/subtle",
+          "--data-series-1": "data/series/1",
+          "--data-series-2": "data/series/2",
+          "--data-series-3": "data/series/3",
+          "--data-series-4": "data/series/4",
+          "--data-series-5": "data/series/5",
+          "--data-axis": "data/axis/color",
+          "--axis-alpha": "data/axis/alpha",
+          "--data-control-label-disabled": "data/control/label-disabled/color",
+          "--delta-up": "rag/success-ink",
+          "--delta-down": "rag/error-ink",
+          "--border-radius-control": "border-radius/control",
+          "--border-radius-surface": "border-radius/surface"
         },
         "requiredAria": [
           "role=\"group\"",
           "aria-label",
-          "aria-hidden=\"true\"",
-          "role=\"region\"",
-          "scope=\"col\"",
-          "scope=\"row\"",
-          "<caption"
+          "role=\"checkbox\"",
+          "aria-checked",
+          "aria-pressed",
+          "role=\"status\"",
+          "aria-live"
         ],
         "contrastPairs": [
           {
             "fg": "text/default",
-            "bg": "tertiary/background/default",
+            "bg": "background/default",
             "context": "text"
           },
           {
-            "fg": "rag/error",
-            "bg": "tertiary/background/default",
+            "fg": "data/series/1",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/2",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/3",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/4",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/series/5",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "data/axis/color",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/success-ink",
+            "bg": "background/default",
             "context": "ui"
           },
           {
             "fg": "rag/error-ink",
-            "bg": "tertiary/background/default",
-            "context": "ui"
-          },
-          {
-            "fg": "rag/success-ink",
-            "bg": "tertiary/background/default",
+            "bg": "background/default",
             "context": "ui"
           }
         ],
         "props": [
           {
-            "name": "size",
+            "name": "orientation",
             "type": "enum",
             "values": [
-              "display",
-              "compact"
+              "horizontal",
+              "vertical"
             ],
-            "default": "display",
-            "$note": "display = .t-cm-figure-4 (32px) value; compact = .t-cm-figure-3 (24px) for dense boards. Inherited from Stat card unchanged.",
-            "$status": "PROPOSED #203, Dave's eye owed"
+            "default": "horizontal",
+            "$note": "horizontal = the default row form; vertical = .vert, the column form (min-width 190px) that carries the numeric group in an aligned column."
           },
           {
-            "name": "trend",
+            "name": "placement",
             "type": "enum",
             "values": [
-              "up",
-              "down",
-              "flat"
+              "top",
+              "right",
+              "bottom"
             ],
-            "default": "flat",
-            "binds": {
-              "up": "rag.success-ink",
-              "down": "rag.error-ink",
-              "flat": "text.default"
-            },
-            "$note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's governs-list says the future trend card inherits it when built.",
-            "$status": "RULED for the stroke by s182-D3; the tile's use of it is PROPOSED #203"
+            "default": "top",
+            "$note": "Declared by the HOST (data-leg-place on .leg-host), not by the legend — the legend fills the cell it is given. LEFT is deliberately absent: it puts the key before the thing it keys, and no registered chart draws one."
           },
           {
-            "name": "delta",
+            "name": "overflow",
             "type": "enum",
             "values": [
-              "up",
-              "down",
-              "flat"
+              "wrap",
+              "scroll"
             ],
-            "default": "flat",
-            "binds": {
-              "up": "rag.success",
-              "down": "rag.error"
-            },
-            "$note": "⛔ INHERITED UNCHANGED FROM THE GATED Stat-card — the FILL seat, not the ink seat. This is the LIVE two-red question and it is Dave's; see $finding-two-seats. Flat deltas take no arrow and no colour at all ('No change', full ink).",
-            "$status": "INHERITED from Stat card, FLAGGED not resolved — Dave's"
+            "default": "wrap",
+            "$note": "One is REQUIRED. A legend that neither wraps nor scrolls widens its own container, which is how a bento tile breaks (s248-D3)."
           },
           {
-            "name": "tableCta",
+            "name": "swatchShape",
+            "type": "enum",
+            "values": [
+              "square",
+              "triangle",
+              "diamond",
+              "bar",
+              "line",
+              "line-dashed",
+              "line-dotted"
+            ],
+            "default": "square",
+            "$note": "The WCAG 1.4.1 second channel: colour is never the only carrier. Angular only — Badge and Avatar are the sole round components. The clip-path lands on the mark (::after), never on the 44px target (::before)."
+          },
+          {
+            "name": "values",
             "type": "boolean",
             "default": false,
-            "$note": "Opt-in icon-button affordance enacting s182-D2's standing direction for this component: 'table CTA optional, icon-button form'. No visible label — Dave: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool'. Accessible name survives as aria-label. 44x44.",
-            "$status": "PROPOSED #203, Dave's eye owed"
+            "$note": "Shows the trailing numeric group: value, share of total, and the period delta. Tabular figures (.t-cm-chart-value)."
+          },
+          {
+            "name": "reset",
+            "type": "boolean",
+            "default": true,
+            "$note": "The B-D4 pattern: rendered DISABLED while nothing is hidden, enabling on any ghost or isolate. dv-legend owns the disabled state."
+          },
+          {
+            "name": "shared",
+            "type": "boolean",
+            "default": false,
+            "$note": "Shared mode. TODAY the mechanism is SCOPE: dv-legend resolves marks with host.closest('figure'), so one legend and N canvases inside one <figure> is a shared legend by construction. `data-dv-controls=\"<chart id> …\"` is a declared CONTRACT the engine does not read yet — see $sharedContract."
           }
         ]
       }
@@ -6086,12 +6832,54 @@
           {
             "name": "series",
             "type": "number",
-            "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011)."
+            "$note": "1–5; each series carries colour (data/series/N) + MARKER SHAPE (dv-line-002: circle r4.2 · square 8.4 · diamond ±4.9) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011).",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "time-series × 1–5-series"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "One polyline per series over the shared time axis.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source)."
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel; popover data-tips read the SAME values (one source).",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "time-series × 1–5-series"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the values per point per series the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "markers",
@@ -6236,6 +7024,12 @@
             ],
             "default": "false",
             "$note": "Arrow link supports multiline (chevron stays attached to last word)."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The link's words (reference snippet: 'Open a new account', 'Back to overview'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -6389,6 +7183,13 @@
             ],
             "default": "bullet",
             "$note": "Bullets list only."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The rows the list shows (reference snippet: 'Amazon · Pending · 22 Jun · Shopping · −1,234.00 HKD'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {title, detail, value}"
           }
         ]
       }
@@ -6461,13 +7262,19 @@
           },
           {
             "name": "label",
-            "type": "boolean",
-            "values": [
-              "false",
-              "true"
-            ],
-            "default": "false",
-            "$note": "Optional caption (e.g. 'Loading') in font-5/6 regular."
+            "type": "string",
+            "ownText": true,
+            "$note": "The caption under the spinner (reference snippet: 'Loading your accounts…'); absent means no visible caption, as the old switch's false did. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$wasSwitch": {
+              "name": "label",
+              "type": "boolean",
+              "values": [
+                "false",
+                "true"
+              ],
+              "default": "false",
+              "$note": "Optional caption (e.g. 'Loading') in font-5/6 regular."
+            }
           }
         ]
       }
@@ -6591,7 +7398,9 @@
           {
             "name": "label",
             "type": "string",
-            "$note": "The accessible name. Required — a meter with no name announces only a number."
+            "$note": "The accessible name. Required — a meter with no name announces only a number.",
+            "ownText": true,
+            "$ownText": "s305-D17: the meter's words; they also serve its two alias seats, limits-meter and progress-bar, which cannot carry props (s210-D5). #311 lane C0."
           },
           {
             "name": "valueText",
@@ -6603,6 +7412,184 @@
             "type": "boolean",
             "default": true,
             "$note": "Renders the numeric value as visible text. Default TRUE and load-bearing, not decoration: it is what carries meaning independently of the fill/track boundary (1.4.1). Progress-bar's own reasoning, inherited."
+          }
+        ]
+      }
+    },
+    {
+      "component": "Metric",
+      "category": "molecule",
+      "referenceSnippet": "snippets/Metric.reference.html",
+      "meta": "components/metric.meta.json",
+      "contract": {
+        "tokenBindings": {
+          "--surface": "tertiary/background/default",
+          "--border": "border/subtle",
+          "--text": "text/default",
+          "--muted": "text/secondary",
+          "--page": "background/default",
+          "--focus": "focus/ring",
+          "--pos-ink": "rag/success-ink",
+          "--neg-ink": "rag/error-ink",
+          "--flat-ink": "text/default",
+          "--border-radius-surface": "border-radius/surface",
+          "--tbl-header": "table/header/background",
+          "--tbl-colhdr": "table/column/background",
+          "--tbl-cell": "background/default",
+          "--tbl-border": "table/border"
+        },
+        "requiredAria": [
+          "role=\"group\"",
+          "aria-label",
+          "aria-hidden=\"true\"",
+          "aria-busy=\"true\"",
+          "role=\"status\"",
+          "role=\"img\"",
+          "role=\"region\"",
+          "scope=\"col\"",
+          "scope=\"row\"",
+          "<caption"
+        ],
+        "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/error-ink",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "rag/success-ink",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          }
+        ],
+        "props": [
+          {
+            "name": "size",
+            "type": "enum",
+            "values": [
+              "hero",
+              "display",
+              "compact"
+            ],
+            "default": "display",
+            "$note": "hero = .t-cm-figure-2 (40px) at span 6, one big number; display = .t-cm-figure-4 (32px) at span 3; compact = .t-cm-figure-3 (24px) at span 3 for the DP-06 four-tile row (s246-D5). Sizes are the only thing that changes with this prop — the anatomy is identical.",
+            "$status": "PROPOSED #203, hero added #261, Dave's eye owed"
+          },
+          {
+            "name": "trend",
+            "type": "enum",
+            "values": [
+              "up",
+              "down",
+              "flat"
+            ],
+            "default": "flat",
+            "binds": {
+              "up": "rag.success-ink",
+              "down": "rag.error-ink",
+              "flat": "text.default"
+            },
+            "$note": "Declared as data-trend on the svg and read from the FIRST vs LAST datum. Binds the INK seat because s182-D3 RULES the sparkline stroke semantic ('the rules for colours should just follow the red and green ink colours for all themes') and that ruling's own governs-list says the future trend card inherits it when built. #261 extends the same ink to the area fill under the line (alpha-08) and to the error-state glyph.",
+            "$status": "RULED for the stroke by s182-D3; the tile's use of it is PROPOSED #203"
+          },
+          {
+            "name": "delta",
+            "type": "enum",
+            "values": [
+              "up",
+              "down",
+              "flat"
+            ],
+            "default": "flat",
+            "binds": {
+              "up": "rag.success-ink",
+              "down": "rag.error-ink"
+            },
+            "$note": "REBOUND AT #261 K3 ON DAVE'S WORD, verbatim: 'We need to use the dark versions of the colours on the arrows.' The arrow left Stat-card's FILL seat and took the INK seat the spark stroke already wore, which CLOSES the two-seat question — see $finding-two-seats. Flat deltas take the neutral rule glyph at full standing ink (s309-D6; it was alpha-60 until #309) and the words 'No change', never a colour.",
+            "$status": "RESOLVED #261 K3 by Dave — the ink seat. Stat card still wears the fill seat and owes the same move; the two must travel together."
+          },
+          {
+            "name": "upIsBad",
+            "type": "boolean",
+            "default": false,
+            "binds": {
+              "up": "rag.error-ink",
+              "down": "rag.success-ink"
+            },
+            "$note": "Say that a rise is bad for this figure (a cost, a risk, a count of failures). Set by the class up-is-bad on the tile (.metric.up-is-bad). A rise then takes the fall ink and a fall the rise ink, on the arrow and on the trend line; the arrow still points the way the number moved, and the sign and the word are unchanged, so colour is still never the only channel. Default false: colour follows direction (s182-D3, col26-016, dv-017). No new colour — the same two canon RAG inks, swapped. Which metrics are up-is-bad is a content call made page by page; no live page sets it at #309.",
+            "$status": "RULED s309-D5 (#309, Dave by click: 'Let a metric say up is bad', not the recommendation); built #309 lane G"
+          },
+          {
+            "name": "deltaGlyph",
+            "type": "enum",
+            "values": [
+              "direction-rotated"
+            ],
+            "default": "direction-rotated",
+            "$note": "RULED BY DAVE'S REVIEW at #261 K2, verbatim: \"please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle\". So the glyph is the LIBRARY direction arrow and the 45 degrees is a CSS transform on the icon, never a new drawing: up-trend = assets/icons/global-controls/direction-up.svg + transform:rotate(45deg) scale(.78) (points up-right); down-trend = direction-down.svg + rotate(-45deg) scale(.78) (down-right); flat = direction-right.svg at 0 degrees. scale(.78) only keeps the rotated bounding box inside the 16px seat. The HSBC trend mark proposed at #261 K (status-icons/trend-positive|trend-negative|indeterminate) is DROPPED, and so is the 'arrow' alternative — the enum collapses to one value because Dave chose. Direction never depends on the glyph alone: the sign on the number and the word 'up'/'down' carry it too.",
+            "$status": "SETTLED #261 K2 by Dave's review — no longer a divergence question"
+          },
+          {
+            "name": "target",
+            "type": "object",
+            "default": null,
+            "$note": "NEW #261. { value, target, pace } drives the optional progress row: a border/subtle track, a standing-ink fill, a one-pixel pace tick at alpha-60, and a caption that spells out every figure the bar draws. NO HUE AT ALL, deliberately: whether 48% against a 60% target is a problem is the reader's judgement, not the tile's, and a hue-free bar cannot be misread by a reader who separates colours poorly.",
+            "$status": "PROPOSED #261, Dave's eye owed",
+            "bindsData": {
+              "capability": [
+                "measure-against-target"
+              ],
+              "shape": "one-measure × value-and-delta"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "measure-against-target"
+                  ]
+                },
+                "required": false,
+                "use": "holds the progress row: track (border/subtle), fill (text/default), pace tick (text/default at alpha-60), caption (.t-cm-legal). Carries no hue and no RAG rung.",
+                "$status": "optional; drawn #261, Dave's eye owed"
+              }
+            }
+          },
+          {
+            "name": "state",
+            "type": "enum",
+            "values": [
+              "ready",
+              "loading",
+              "empty",
+              "error",
+              "stale"
+            ],
+            "default": "ready",
+            "$note": "NEW #261 — see stateModel. Drawn, not described: loading is a skeleton with aria-busy and an opacity pulse that prefers-reduced-motion kills; empty renders an em-dash value plus a sentence saying why; error renders an em-dash, a rag/error-ink glyph and a 44px retry control that names what it will load; stale renders the full tile plus a NEUTRAL marker chip. Stale is not amber on purpose (Dave is astigmatic; yellow is a problem hue).",
+            "$status": "PROPOSED #261, Dave's eye owed"
+          },
+          {
+            "name": "affordance",
+            "type": "enum",
+            "values": [
+              "none",
+              "link",
+              "tableCta"
+            ],
+            "default": "none",
+            "$note": "link is NEW #261 and is the RIVAL to tableCta: the whole tile becomes the hit area via a stretched ::after on the label's anchor, the accessible name is the metric, and the focus ring lands on the tile rather than on four words of label. tableCta is s182-D2's standing direction unchanged — opt-in icon button, 44x44, no visible label, accessible name only, Dave verbatim: 'a sparkline shows a trend beside a headline figure, it is not an analysis tool'. Both are in the snippet; the review page asks which survives.",
+            "$status": "RULED s262-D1 (#262, Dave): the whole card is the affordance AND it may contain a link (no underline) — as-link and the CTA are NOT rivals, a tile may carry more than one affordance. tableCta stays PROPOSED #203 as a variant."
           }
         ]
       }
@@ -6653,7 +7640,26 @@
           {
             "name": "items",
             "type": "array",
-            "$note": "The viewable set; each item = media + caption. Counter announces position ('1 of 3')."
+            "$note": "The viewable set; each item = media + caption. Counter announces position ('1 of 3').",
+            "bindsData": {
+              "capability": [
+                "viewable-items"
+              ]
+            },
+            "$wasSlot": {
+              "$settled": "s305-D58 (Dave, #305, \"As recommended\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "viewable-items"
+                  ]
+                },
+                "use": "The documents or images the viewer pages through.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "label",
@@ -6760,6 +7766,18 @@
             ],
             "default": "scale-1",
             "$note": "Partial modal module scale."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The dialog's title (reference snippet: 'Confirm payment'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "body",
+            "type": "string",
+            "ownText": true,
+            "$note": "The message under the title (reference snippet: 'You're about to send …'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -6877,19 +7895,26 @@
       "meta": "components/navigations.meta.json",
       "contract": {
         "tokenBindings": {
-          "--surface": "background/default",
-          "--text": "text/default",
-          "--icon": "icon/default",
-          "--rule": "divider/border/section",
-          "--logo": "primary/background/default",
-          "--hover": "form/background/hover",
-          "--focus": "focus/ring",
-          "--page": "background/default",
-          "--menu-surface": "background/default",
-          "--menu-border": "elevation/border",
-          "--shadow": "elevation/functional",
+          "--nav-page": "background/default",
+          "--nav-surface": "tertiary/background/default",
+          "--nav-text": "text/default",
+          "--nav-muted": "text/secondary",
+          "--nav-icon": "icon/default",
+          "--nav-rule": "divider/border/section",
+          "--nav-sub-rule": "divider/border/subsection",
+          "--nav-hover": "tertiary/background/hover",
+          "--nav-pressed": "form/background/pressed",
+          "--nav-indicator": "primary/border/default",
+          "--nav-focus": "focus/ring",
+          "--nav-disabled": "tertiary/text/disabled",
+          "--nav-count-bg": "secondary/background/default",
+          "--nav-count-fg": "text/on-inverse",
+          "--nav-shadow": "elevation/functional",
+          "--nav-scrim": "elevation/functional",
+          "--nav-radius": "border-radius/surface",
           "--field-border": "form/border/default",
-          "--field-active": "form/border/active"
+          "--field-active": "form/border/active",
+          "--nav-elev-border": "elevation/border"
         },
         "requiredAria": [
           "<nav",
@@ -6901,27 +7926,48 @@
           "role=\"menu\"",
           "role=\"menuitem\"",
           "role=\"search\"",
-          "type=\"search\""
+          "type=\"search\"",
+          "aria-disabled"
         ],
         "contrastPairs": [
           {
             "fg": "text/default",
-            "bg": "background/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/secondary",
+            "bg": "tertiary/background/default",
             "context": "text"
           },
           {
             "fg": "icon/default",
-            "bg": "background/default",
+            "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/hover",
+            "context": "text"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "tertiary/background/hover",
+            "context": "ui"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
             "context": "ui"
           },
           {
             "fg": "form/border/default",
-            "bg": "background/default",
+            "bg": "tertiary/background/default",
             "context": "ui"
           },
           {
             "fg": "form/border/active",
-            "bg": "background/default",
+            "bg": "tertiary/background/default",
             "context": "ui"
           }
         ],
@@ -6961,6 +8007,18 @@
             "$note": "Masthead flyouts: main nav (closed/scroll/open), search, user."
           },
           {
+            "name": "menu",
+            "type": "enum",
+            "values": [
+              "none",
+              "flyout",
+              "mega"
+            ],
+            "default": "none",
+            "$note": "WHAT A PRIMARY DESTINATION OPENS (#313). s313-D23 (Dave by click, verbatim: 'Yes'): SIX LINKS IN ONE COLUMN IS THE LINE between a flyout and a mega menu, and links grouped under headings are always the mega menu. none: the destination is a link. flyout: up to six links, one column, no headings, a panel under its trigger. mega: over six links, or any links grouped under headings — a full-width panel under the masthead, up to four columns, the second level is a column's heading and the third its links, a column never over six (s272-D70; six is the column ceiling ratified in September). s313-D22 (verbatim: 'Yes, as drawn'): the mega menu is how the top nav carries multiple levels.",
+            "$status": "s313-D22 + s313-D23, RULED #313. Built #313 lane N1nav in the reference (Payments: mega, ten links in three groups; Cards: flyout, three links)."
+          },
+          {
             "name": "breakpoint",
             "type": "enum",
             "values": [
@@ -6975,6 +8033,18 @@
             "$note": "Masthead/Anchors fully responsive; app nav bars are mobile.",
             "binds": "scale",
             "$status": "s142-D1 (Dave, 2026-08-10) class C8 -- bind:ramp. breakpoint binds to the scale ramp per s141-D1(B) -- dimension + $extensions carries the breakpoint set verbatim; 'breakpoint' as a candidate address is rejected, scale is the ruled home. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "count",
+            "type": "string",
+            "$note": "Optional count chip on a destination or on the notifications action. On the action it is aria-hidden because the button's accessible name already carries the number — a count read twice is a count read wrong.",
+            "$since": "#261"
+          },
+          {
+            "name": "account",
+            "type": "object",
+            "$note": "The signed-in trigger: avatar initials plus name, dropping to the avatar alone below 768px. Initials are a stand-in for a real product identity — PROPOSED.",
+            "$since": "#261"
           }
         ]
       }
@@ -6996,7 +8066,8 @@
           "--info-t": "rag/information-tint",
           "--text": "text/default",
           "--page": "background/default",
-          "--border-radius-surface": "border-radius/surface"
+          "--border-radius-surface": "border-radius/surface",
+          "--border-alpha": "notification/contextual/border/alpha"
         },
         "requiredAria": [
           "role=\"alert\"",
@@ -7060,6 +8131,18 @@
             ],
             "default": "false",
             "$note": "Contextual 'form multi-link' variant with action links."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The notification's title (reference snippet: 'Notification title.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "ownText": true,
+            "$note": "The message under it (reference snippet: 'Message description.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -7100,10 +8183,7 @@
           "--ter-border": "button/tertiary/border/default",
           "--ter-label": "button/tertiary/label/default",
           "--quat-hover": "button/quaternary/background/hover",
-          "--quat-label": "button/quaternary/label/default",
-          "--badge-surface": "badge/background",
-          "--badge-number": "rag/text/on-light",
-          "--badge-host": "text/default"
+          "--quat-label": "button/quaternary/label/default"
         },
         "requiredAria": [
           "<nav",
@@ -7141,33 +8221,12 @@
             "context": "text"
           },
           {
-            "fg": "rag/text/on-light",
-            "bg": "badge/background",
-            "context": "text"
-          },
-          {
-            "fg": "text/default",
-            "bg": "tabs/background",
-            "context": "text"
-          },
-          {
             "fg": "tabs/active",
-            "bg": "tabs/background",
+            "bg": "background/default",
             "context": "ui"
           }
         ],
         "props": [
-          {
-            "name": "arrangement",
-            "type": "enum",
-            "values": [
-              "simple",
-              "breadcrumb-tabs",
-              "meta-badge"
-            ],
-            "default": "simple",
-            "$note": "Three arrangement variants drawn in the reference: A simple (eyebrow+title+actions), B breadcrumb+title+tabs, C eyebrow+title+badge+meta-line+actions. Structural variance, not a colour/size parameter — this is a VARIANTS-axis prop, following the same class-C6 reading Tags' own `type` prop carries (s142-D1)."
-          },
           {
             "name": "actions",
             "type": "slot",
@@ -7177,22 +8236,25 @@
               "two"
             ],
             "default": "two",
-            "$note": "0-2 Button instances (any tier). The organism does not draw a new button style."
+            "$note": "0-2 Button instances (any tier), ALWAYS ON THE TITLE ROW (s313-D28). The organism does not draw a new button style."
           },
           {
             "name": "showBreadcrumb",
             "type": "boolean",
-            "default": "false"
+            "default": "false",
+            "$note": "The crumb-or-eyebrow switch: on a drill-down the breadcrumb REPLACES the eyebrow — never both (s313-D28)."
+          },
+          {
+            "name": "showMeta",
+            "type": "boolean",
+            "default": "false",
+            "$note": "The meta line under the title (a timestamp, a scope such as 'Consolidated position · GBP equivalent'). Replaces showBadge (s313-D28): the badge-count arrangement goes — a count belongs in a tab label or the content, not beside the title."
           },
           {
             "name": "showTabs",
             "type": "boolean",
-            "default": "false"
-          },
-          {
-            "name": "showBadge",
-            "type": "boolean",
-            "default": "false"
+            "default": "false",
+            "$note": "THE FOOT: on a page with sub-views the Tabs strip sits on the lock-up's bottom edge, where the page's views begin (s313-D28). Tabs keeps its own overflow script — a tab foot on a real page needs that script beside it (#312 F2: at 390 the demo's foot ran off the right edge without it)."
           }
         ]
       }
@@ -7265,6 +8327,18 @@
             "default": "default",
             "$note": "Page buttons / dropdown trigger states; current page marked active.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "page",
+            "type": "number",
+            "ownText": true,
+            "$note": "The current page (reference snippet: '1'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "pages",
+            "type": "number",
+            "ownText": true,
+            "$note": "How many pages there are (reference snippet: '12'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -7521,7 +8595,27 @@
           {
             "name": "slices",
             "type": "number",
-            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the total carried on data-total (dv-pie-010) even though no centre figure displays it."
+            "$note": "Maximum 6 (dv-pie-009); more → combine smallest into 'Other'. Values must sum to the total carried on data-total (dv-pie-010) even though no centre figure displays it.",
+            "bindsData": {
+              "capability": [
+                "proportion-slices"
+              ],
+              "shape": "parts-of-whole"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "proportion-slices"
+                  ]
+                },
+                "use": "The parts of the whole drawn as full-ring segments.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -7650,10 +8744,22 @@
           },
           {
             "name": "body",
-            "type": "boolean",
-            "default": true,
-            "$note": "The consequence sentence beneath the question. Optional: a low-stakes confirm in a dense row can be question-plus-actions only, and the third specimen shows that form.",
-            "$status": "PROPOSED #204, Dave's eye owed"
+            "type": "string",
+            "ownText": true,
+            "$note": "The consequence sentence beneath the question (reference snippet: 'You can add them again later.'); absent means question-plus-actions only, as the old switch's false did. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$wasSwitch": {
+              "name": "body",
+              "type": "boolean",
+              "default": true,
+              "$note": "The consequence sentence beneath the question. Optional: a low-stakes confirm in a dense row can be question-plus-actions only, and the third specimen shows that form.",
+              "$status": "PROPOSED #204, Dave's eye owed"
+            }
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The one question the bubble asks (reference snippet: 'Remove Alder Consulting from your payees?'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -7696,11 +8802,6 @@
             "name": "title",
             "type": "string",
             "$note": "Labels the dialog (aria-labelledby); .t-ed-body .em."
-          },
-          {
-            "name": "content",
-            "type": "string",
-            "$note": ".t-ed-body-small body; may include one descriptive link (aca-004)."
           },
           {
             "name": "placement",
@@ -7846,8 +8947,6 @@
           "--divider": "divider/border/section",
           "--qr-plate-fixed": "text/reverse",
           "--qr-module-fixed": "surface/digital-black",
-          "--qr-plate-theme": "background/default",
-          "--qr-module-theme": "text/default",
           "--border-radius-container": "border-radius/container"
         },
         "requiredAria": [
@@ -7887,11 +8986,10 @@
             "name": "theme",
             "type": "enum",
             "values": [
-              "fixed-plate",
-              "follows-theme"
+              "fixed-plate"
             ],
             "default": "fixed-plate",
-            "$status": "PROPOSED #210, Dave's eye owed — see accessibility.$openQuestion. Both are drawn side by side in section 4 of the snippet so the difference can be seen rather than argued about."
+            "$status": "RULED s307-D50 (Dave, 2026-09-28, verbatim: 'QR codes stay dark on light in every mode'). The theme-following value drawn at #210 was removed at #313 A5; the measured reason is in accessibility.$ruled and $render-verification."
           },
           {
             "name": "errorCorrection",
@@ -7923,6 +9021,7 @@
         "tokenBindings": {
           "--surface": "tertiary/background/default",
           "--hover": "tertiary/background/hover",
+          "--pressed": "tertiary/background/pressed",
           "--text": "text/default",
           "--icon": "icon/default",
           "--border": "border/subtle",
@@ -7977,6 +9076,13 @@
             ],
             "default": "false",
             "$note": "Reorder handle variant (drag to reorder)."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The shortcut buttons (reference snippet: 'Transfer', 'Pay bill', 'Top up', 'Send'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {icon, label}"
           }
         ]
       }
@@ -8166,6 +9272,12 @@
             "default": "default",
             "$note": "Drag handle; hover web only. Cursor shows grab → grabbed during drag.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The grab handle's accessible name, naming the item it moves (reference snippet rows: 'Checking', 'Savings', 'ISA'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -8235,12 +9347,54 @@
           {
             "name": "series",
             "type": "number",
-            "$note": "1–3 segments; each carries colour (data/series/N) + MARKER SHAPE (circle · square · diamond) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011). Points carry class dv-series so the gate reads the fills directly (dv-016)."
+            "$note": "1–3 segments; each carries colour (data/series/N) + MARKER SHAPE (circle · square · diamond) + letter key A/B/C repeated in the legend (§04.3) — colour is never the only channel (dv-011). Points carry class dv-series so the gate reads the fills directly (dv-016).",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "points × two-measures"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "Point sets, one per segment, sharing both quantitative axes.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>."
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by native <details>.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "points × two-measures"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the x/y point values the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "trendLine",
@@ -8322,13 +9476,19 @@
           },
           {
             "name": "label",
-            "type": "boolean",
-            "values": [
-              "false",
-              "true"
-            ],
-            "default": "true",
-            "$note": "Optional field label + help text + tooltip (Input label)."
+            "type": "string",
+            "ownText": true,
+            "$note": "The field's label; absent means no visible label, as the old switch's false did (the field still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$wasSwitch": {
+              "name": "label",
+              "type": "boolean",
+              "values": [
+                "false",
+                "true"
+              ],
+              "default": "true",
+              "$note": "Optional field label + help text + tooltip (Input label)."
+            }
           }
         ]
       }
@@ -8426,6 +9586,16 @@
               "two-buttons"
             ],
             "default": "none"
+          },
+          {
+            "name": "placement",
+            "type": "enum",
+            "values": [
+              "band",
+              "wall"
+            ],
+            "default": "band",
+            "$note": "WHERE THE LOCK-UP SITS WHEN IT HEADS A BENTO GROUP. s313-D29 (#313, Dave by click, pictures page call 10, verbatim: 'B, a band inside the group' — not the page's recommendation, A — and his comment, verbatim: 'B as the default, A as an option for the designer'). band (B, the default): the lock-up is the group's first row, a full-width tile (data-c spanning the group) on the tile surface — the band's surface is the TILE's, so this lock-up still paints nothing of its own. wall (A, the designer's option): the lock-up sits on the wall above the group's tiles, no surface, no tile. Outside a bento group the prop does not apply. OPEN, HIS: the page's no-repeat rule (a group's action and a tile's own action never repeat) was offered with A; whether it holds under B is Dave's question, not decided here."
           }
         ]
       }
@@ -8523,6 +9693,12 @@
             "type": "boolean",
             "default": true,
             "$note": "Ghost button unlocked by a countdown; button-family membership candidate (ADR-0013)."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The field's label (reference snippet: 'One-time passcode'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -8638,6 +9814,13 @@
             "default": "default",
             "$note": "Per-segment; the chosen option is 'selected' (aria-pressed=true), shown by the sliding fill + inverted label.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The segments; icon-only segments still carry a label as their accessible name (reference snippet: 'List', 'Grid', 'Table'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, icon?}"
           }
         ]
       }
@@ -8750,12 +9933,18 @@
           },
           {
             "name": "label",
-            "type": "boolean",
-            "values": [
-              "false",
-              "true"
-            ],
-            "default": "true"
+            "type": "string",
+            "ownText": true,
+            "$note": "The control's label (reference snippet: 'Email notifications'); absent means no visible label, as the old switch's false did (the control still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$wasSwitch": {
+              "name": "label",
+              "type": "boolean",
+              "values": [
+                "false",
+                "true"
+              ],
+              "default": "true"
+            }
           }
         ]
       }
@@ -8767,18 +9956,23 @@
       "meta": "components/sidebar-nav.meta.json",
       "contract": {
         "tokenBindings": {
-          "--page": "background/default",
-          "--panel": "tertiary/background/default",
-          "--text": "text/default",
-          "--muted": "text/secondary",
-          "--icon": "icon/default",
-          "--rule": "divider/border/section",
-          "--sub-rule": "divider/border/subsection",
-          "--hover": "tertiary/background/hover",
-          "--pressed": "form/background/pressed",
-          "--indicator": "primary/border/default",
-          "--focus": "focus/ring",
-          "--radius": "border-radius/surface"
+          "--nav-page": "background/default",
+          "--nav-surface": "tertiary/background/default",
+          "--nav-text": "text/default",
+          "--nav-muted": "text/secondary",
+          "--nav-icon": "icon/default",
+          "--nav-rule": "divider/border/section",
+          "--nav-sub-rule": "divider/border/subsection",
+          "--nav-hover": "tertiary/background/hover",
+          "--nav-pressed": "form/background/pressed",
+          "--nav-indicator": "primary/border/default",
+          "--nav-focus": "focus/ring",
+          "--nav-disabled": "tertiary/text/disabled",
+          "--nav-count-bg": "secondary/background/default",
+          "--nav-count-fg": "text/on-inverse",
+          "--nav-shadow": "elevation/functional",
+          "--nav-scrim": "elevation/functional",
+          "--nav-radius": "border-radius/surface"
         },
         "requiredAria": [
           "<nav",
@@ -8786,7 +9980,8 @@
           "aria-current=\"page\"",
           "aria-expanded",
           "aria-controls",
-          "aria-labelledby"
+          "aria-labelledby",
+          "aria-disabled"
         ],
         "contrastPairs": [
           {
@@ -8813,6 +10008,11 @@
             "fg": "icon/default",
             "bg": "tertiary/background/hover",
             "context": "ui"
+          },
+          {
+            "fg": "text/on-inverse",
+            "bg": "secondary/background/default",
+            "context": "ui"
           }
         ],
         "props": [
@@ -8836,6 +10036,31 @@
             "name": "footerItems",
             "type": "array",
             "$note": "Persistent utilities pinned below the scrolling body — settings, help, sign out."
+          },
+          {
+            "name": "count",
+            "type": "string",
+            "$note": "Optional per-row count chip (.nv-count). 24px on a row, 18px in the rail. Rounded — Badge and Avatar are the ruled exceptions to square corners, and a count is a Badge wearing a nav row.",
+            "$since": "#261"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "$note": "Renders aria-disabled=true + tabindex=-1. The row keeps its place in the reading order rather than vanishing.",
+            "$since": "#261"
+          },
+          {
+            "name": "user",
+            "type": "object",
+            "$note": "The bottom account slot: avatar initials, name, role, chevron. Hidden to a name-only tooltip in the rail.",
+            "$since": "#261"
+          },
+          {
+            "name": "lockup",
+            "type": "object",
+            "$note": "The top product slot: ONE product word beside the collapse control. #261 N2, Dave verbatim: \"the original header is better\" — the #261 masterbrand-SVG lockup is WITHDRAWN and 7647aaf's header row restored. The #230 mark ruling is untouched: this row never claimed to be the brand mark, and the masthead still carries it.",
+            "$since": "#261"
           }
         ]
       }
@@ -8915,7 +10140,9 @@
         },
         "requiredAria": [
           "type=\"range\"",
-          "aria-label"
+          "aria-label",
+          "aria-labelledby",
+          "aria-valuetext"
         ],
         "contrastPairs": [
           {
@@ -8963,6 +10190,12 @@
               "tertiary.background.pressed"
             ],
             "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The slider's label (reference snippet: 'Monthly budget'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -8981,6 +10214,10 @@
           "--spark-down": "rag/error-ink",
           "--spark-up": "rag/success-ink",
           "--spark-flat": "text/default",
+          "--status-negative": "rag/error-ink",
+          "--status-positive": "rag/success-ink",
+          "--status-neutral": "text/default",
+          "--status-monitor": "rag/warning-graphic",
           "--shadow": "elevation/functional",
           "--pop-border": "elevation/border",
           "--border-radius-surface": "border-radius/surface"
@@ -9033,7 +10270,29 @@
           {
             "name": "data",
             "type": "table",
-            "$note": "Standalone carries a real <table> (dv-005); inline defers to the composed tile's value + period."
+            "$note": "Standalone carries a real <table> (dv-005); inline defers to the composed tile's value + period.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "time-series × single-series-no-axes"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the trend values behind the axis-free line the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "empty",
@@ -9073,6 +10332,7 @@
           "--page": "background/default",
           "--border-radius-control": "border-radius/control",
           "--border-radius-surface": "border-radius/surface",
+          "--border-radius-provisional-square": "border-radius/provisional-square",
           "--press-travel": "component-type/button-family/press-travel",
           "--press-darken": "component-type/button-family/press-darken"
         },
@@ -9349,12 +10609,54 @@
           {
             "name": "series",
             "type": "number",
-            "$note": "1–5 supported by the token ramp; 3 in the reference. Each band carries colour (data/series/N) + an in-fill letter key (A/B/C, data/text/on-series) — colour is never the only channel."
+            "$note": "1–5 supported by the token ramp; 3 in the reference. Each band carries colour (data/series/N) + an in-fill letter key (A/B/C, data/text/on-series) — colour is never the only channel.",
+            "bindsData": {
+              "capability": [
+                "data-series"
+              ],
+              "shape": "time-series × parts-of-whole"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "data-series"
+                  ]
+                },
+                "use": "The bands stacked cumulatively over the shared time axis.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "data",
             "type": "table",
-            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel. Mirrors PER-SERIES values plus a computed Total column (the bands' sum) — parity between chart and table is scriptable the same way as the stacked-column check."
+            "$note": "Real <table class=\"dv-table\"> in the figure (dv-005), surfaced by the table-view popover panel. Mirrors PER-SERIES values plus a computed Total column (the bands' sum) — parity between chart and table is scriptable the same way as the stacked-column check.",
+            "bindsData": {
+              "capability": [
+                "chart-dataset",
+                "table-rows"
+              ],
+              "shape": "time-series × parts-of-whole"
+            },
+            "$wasSlot": {
+              "$settled": "s305-D19 (Dave, #305 call 18, \"yes\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "chart-dataset",
+                    "table-rows"
+                  ]
+                },
+                "use": "Carries the values per point per band the chart renders, and the same rows the a11y data table exposes.",
+                "required": true,
+                "multiple": false,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "fillAlpha",
@@ -9556,61 +10858,7 @@
             "context": "ui"
           }
         ],
-        "props": [
-          {
-            "name": "label",
-            "type": "string",
-            "$note": ".t-cm-caption at 0.6 ink; names the metric, sentence case."
-          },
-          {
-            "name": "value",
-            "type": "string",
-            "$note": "The Amount-display primitive markup unchanged: figure composites, tabular-nums, currency before value no space (copy-025), U+2212 minus. Plain counts render without currency."
-          },
-          {
-            "name": "size",
-            "type": "enum",
-            "values": [
-              "display",
-              "compact"
-            ],
-            "default": "display",
-            "$note": "display = .t-cm-figure-4 (32px) · compact = .t-cm-figure-3 (24px, T-D14) for dense boards.",
-            "binds": {
-              "display": "icon",
-              "compact": "icon"
-            },
-            "$status": "s142-D1 (Dave, 2026-08-10) class C2 -- bind:icon-ramp-map. Size enum binds to the icon-scale ramp. CROSS-REFERENCE (s143-D1(A), Dave, 2026-08-10): this prop's own $note also binds to TYPOGRAPHY composites (.t-cm-figure-3/4) -- size is TWO ADDITIVE AXES (icon scale + type scale), not a conflict. No safe rung correspondence; bound to the bare family. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "delta",
-            "type": "string",
-            "binds": [
-              "rag.success",
-              "rag.error",
-              "text.default"
-            ],
-            "$note": "Signed change + direction word ('+12.4% up'); .t-cm-figure-6 in INK. Direction = arrow + sign + wording, never colour alone.",
-            "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "direction",
-            "type": "enum",
-            "values": [
-              "up",
-              "down",
-              "flat"
-            ],
-            "default": "flat",
-            "$note": "R-D5: directional deltas are red/green ONLY. The arrow glyph wears rag/success or rag/error (3:1 floor, R-D6 A′ — labelled); flat = no arrow, 'No change'.",
-            "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
-          },
-          {
-            "name": "period",
-            "type": "string",
-            "$note": ".t-cm-legal at 0.6 ink ('vs February', 'this month')."
-          }
-        ]
+        "props": []
       }
     },
     {
@@ -9827,6 +11075,12 @@
             ],
             "default": "default",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The words beside the dot (reference snippet: 'Approved', 'Pending review'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -9934,12 +11188,6 @@
         ],
         "props": [
           {
-            "name": "steps",
-            "type": "array",
-            "default": "4 named steps",
-            "$note": "Name + panel per step; the dots render from it, the collapsed head shows 'Step n of m' + the step title."
-          },
-          {
             "name": "gate",
             "type": "function",
             "default": "per-step validators",
@@ -9985,6 +11233,13 @@
             "type": "boolean",
             "default": false,
             "$note": "Emphasise the final row as a total (heavier weight, larger size)."
+          },
+          {
+            "name": "rows",
+            "type": "array",
+            "ownText": true,
+            "$note": "The key/value rows (reference snippet: 'To · Jane Smith', 'Amount · £250.00'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {name, value}"
           }
         ]
       }
@@ -9996,30 +11251,55 @@
       "meta": "components/tab-bar.meta.json",
       "contract": {
         "tokenBindings": {
-          "--surface": "tertiary/background/default",
-          "--border": "border/subtle",
-          "--muted": "text/secondary",
-          "--text": "text/default",
-          "--sel-bg": "secondary/background/default",
-          "--sel-fg": "text/on-inverse",
-          "--focus": "focus/ring",
-          "--shadow": "elevation/functional",
-          "--page": "background/default"
+          "--nav-page": "background/default",
+          "--nav-surface": "tertiary/background/default",
+          "--nav-text": "text/default",
+          "--nav-muted": "text/secondary",
+          "--nav-icon": "icon/default",
+          "--nav-rule": "divider/border/section",
+          "--nav-sub-rule": "divider/border/subsection",
+          "--nav-hover": "tertiary/background/hover",
+          "--nav-pressed": "form/background/pressed",
+          "--nav-indicator": "primary/border/default",
+          "--nav-focus": "focus/ring",
+          "--nav-disabled": "tertiary/text/disabled",
+          "--nav-count-bg": "secondary/background/default",
+          "--nav-count-fg": "text/on-inverse",
+          "--nav-shadow": "elevation/functional",
+          "--nav-scrim": "elevation/functional",
+          "--nav-radius": "border-radius/surface"
         },
         "requiredAria": [
           "aria-current=\"page\"",
-          "aria-label"
+          "aria-label",
+          "aria-disabled",
+          "aria-expanded"
         ],
         "contrastPairs": [
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/default",
+            "context": "text"
+          },
           {
             "fg": "text/secondary",
             "bg": "tertiary/background/default",
             "context": "text"
           },
           {
-            "fg": "text/default",
+            "fg": "icon/default",
             "bg": "tertiary/background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "text/default",
+            "bg": "tertiary/background/hover",
             "context": "text"
+          },
+          {
+            "fg": "icon/default",
+            "bg": "tertiary/background/hover",
+            "context": "ui"
           },
           {
             "fg": "text/on-inverse",
@@ -10030,14 +11310,53 @@
         "props": [
           {
             "name": "items",
-            "type": "number",
-            "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets."
+            "type": "array",
+            "ownText": true,
+            "bindsData": {
+              "capability": [
+                "nav-destination"
+              ]
+            },
+            "$note": "3–5 destinations, each an icon and a label. s305-D58 named the cost: the setting must carry each destination's icon and label, not only the count it held. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {icon, label, href}; 3 to 5 entries",
+            "$wasCount": {
+              "name": "items",
+              "type": "number",
+              "$note": "3–5 destinations. Fewer than 3 isn't a tab bar; more than 5 crowds the targets."
+            },
+            "$wasSlot": {
+              "$settled": "s305-D58 (Dave, #305, \"As recommended\"): data is a setting bound to a data shape; a slot only ever holds another part. This name's slot named only a data capability, so the name is a setting. The slot is kept below, archived, not deleted. #311 lane C0.",
+              "slot": {
+                "accepts": {
+                  "capability": [
+                    "nav-destination"
+                  ]
+                },
+                "use": "The 3-5 equal-width destinations, each an icon plus label.",
+                "required": true,
+                "multiple": true,
+                "$status": "ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)"
+              }
+            }
           },
           {
             "name": "current",
             "type": "string",
             "$note": "The active destination — gets the filled glyph + text/default + aria-current='page'.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C11 -- non-visual:binds-irrelevant. Non-visual -- composition/behavioural concern; binds do not apply. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "count",
+            "type": "string",
+            "$note": "Optional count chip riding the GLYPH, not the row, so a four- or five-destination bar keeps equal columns. 18px here, 24px on a sidebar row.",
+            "$since": "#261"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "$note": "aria-disabled=true + tabindex=-1. A bottom bar's column count is part of its layout, so an unavailable destination stays and says so rather than shifting everything.",
+            "$since": "#261"
           }
         ]
       }
@@ -10118,6 +11437,19 @@
             "default": "left",
             "$note": "Right-aligned for numeric columns.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The table's caption (reference snippet: 'Account balances'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "rows",
+            "type": "array",
+            "ownText": true,
+            "$note": "The rows under the header. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry one cell per column, in header order"
           }
         ]
       }
@@ -10153,17 +11485,47 @@
         "contrastPairs": [
           {
             "fg": "text/default",
-            "bg": "tabs/background",
+            "bg": "background/default",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "surface/section",
+            "context": "text"
+          },
+          {
+            "fg": "text/default",
+            "bg": "surface/raised",
             "context": "text"
           },
           {
             "fg": "tabs/active",
-            "bg": "tabs/background",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "tabs/active",
+            "bg": "surface/section",
+            "context": "ui"
+          },
+          {
+            "fg": "tabs/active",
+            "bg": "surface/raised",
             "context": "ui"
           },
           {
             "fg": "focus/ring",
-            "bg": "tabs/background",
+            "bg": "background/default",
+            "context": "ui"
+          },
+          {
+            "fg": "focus/ring",
+            "bg": "surface/section",
+            "context": "ui"
+          },
+          {
+            "fg": "focus/ring",
+            "bg": "surface/raised",
             "context": "ui"
           }
         ],
@@ -10213,6 +11575,13 @@
             ],
             "default": "true",
             "$note": "Tabs can be label or icon-only."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The tabs' labels (reference snippet: 'Overview', 'Transactions', 'Statements'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, icon?}; the `label` switch still decides whether the words show"
           }
         ]
       }
@@ -10306,6 +11675,12 @@
             "default": "default",
             "$note": "Tag link only (hover & pressed combined).",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "ownText": true,
+            "$note": "The tag's words (reference snippet: 'Savings', '#travel'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -10518,6 +11893,18 @@
             "type": "boolean",
             "default": true,
             "$note": "An ORDERED list, because the steps are ordered and a bulleted list would say they are not."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The page's title (reference snippet: 'Payment sent'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "ownText": true,
+            "$note": "The sentence under it (reference snippet: '£12,480.00 has left the business current account ending 8841.'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -10700,6 +12087,7 @@
           "--page": "background/default",
           "--surface": "tertiary/background/default",
           "--text": "text/default",
+          "--muted": "text/secondary",
           "--icon": "icon/default",
           "--border": "border/subtle",
           "--divider": "divider/border/section",
@@ -10767,11 +12155,12 @@
           "--layout-bento-outer-padding": "layout/bento/outer-padding",
           "--layout-bento-row-unit": "layout/bento/row-unit",
           "--border-radius-container": "border-radius/container",
-          "--wall-ground": "surface/subtle"
+          "--wall-ground": "surface/section"
         },
         "requiredAria": [
           "<nav",
           "<main",
+          "role=\"contentinfo\"",
           "aria-label",
           "aria-labelledby",
           "aria-current",
@@ -11775,6 +13164,12 @@
             "type": "boolean",
             "default": true,
             "$note": "A TEXT toggle, not a glyph - the library has no visibility icon (see accessibility.$noVisibilityGlyph). Its label states the NEXT action and aria-pressed states the CURRENT one."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The page's title (reference snippet: 'Log on'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -11921,6 +13316,12 @@
             "type": "boolean",
             "default": true,
             "$note": "The action bar is position:sticky against the nearest SCROLLPORT. On a real page that is the page. See the antiPattern about reference pages."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The page's title, which says whether the record is being created or edited. s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -12358,6 +13759,13 @@
             "default": true,
             "$note": "Date group headings ('Today, 19 August'). Ungrouped is legal for short feeds but loses the axis the component exists for.",
             "$status": "PROPOSED #203, Dave's eye owed"
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The entries, newest first (reference snippet: 'Payment to Meridian Supplies · −£1,240.00 · 14:32 · Completed'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {date, title, value, status}"
           }
         ]
       }
@@ -12478,6 +13886,12 @@
             "default": "centre",
             "$note": "Horizontal position of the pointer along that edge.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C10 -- no-bind:structural-param. Structural/positional parameter, no token consequence. (classification doubt, resolved here.) Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "ownText": true,
+            "$note": "The tip's words (reference snippet: 'The funds you can spend right now, after …'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -12703,6 +14117,7 @@
           "--hover": "tertiary/background/hover",
           "--pressed": "form/background/pressed",
           "--marker": "form/border/active",
+          "--marker-brand": "primary/border/default",
           "--bone": "tertiary/background/hover",
           "--focus": "focus/ring",
           "--border-radius-control": "border-radius/control",
@@ -12744,6 +14159,11 @@
           },
           {
             "fg": "form/border/active",
+            "bg": "tertiary/background/hover",
+            "context": "ui"
+          },
+          {
+            "fg": "primary/border/default",
             "bg": "tertiary/background/hover",
             "context": "ui"
           }
@@ -12829,6 +14249,12 @@
             "default": "idle",
             "$note": "Playback states (multiple state rows shown on the page).",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "ownText": true,
+            "$note": "The video's title (reference snippet: 'How to set up a standing order'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
           }
         ]
       }
@@ -12896,6 +14322,13 @@
             "default": "default",
             "$note": "Per-segment; the chosen format is 'selected'.",
             "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."
+          },
+          {
+            "name": "items",
+            "type": "array",
+            "ownText": true,
+            "$note": "The views offered (reference snippet: 'List', 'Grid'). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0.",
+            "$items": "each entry {label, icon?}"
           }
         ]
       }
