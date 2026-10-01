@@ -136,5 +136,140 @@
         "ref": "role:overlay"
       }
     ]
+  },
+  "anatomy": {
+    "part": "tip-wrap",
+    "tag": "span",
+    "attrs": {
+      "class": "tip-wrap"
+    },
+    "$sel": "body > div.row > span.lbl > span.tip-wrap",
+    "children": [
+      {
+        "part": "trigger",
+        "tag": "button",
+        "attrs": {
+          "class": "trigger"
+        },
+        "aria": {
+          "aria-describedby": "tt1",
+          "aria-label": "What is available balance?"
+        },
+        "$sel": "body > div.row > span.lbl > span.tip-wrap > button.trigger",
+        "children": [
+          {
+            "part": "icon",
+            "tag": "svg",
+            "attrs": {
+              "viewbox": "0 0 18 18",
+              "fill": "none"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.row > span.lbl > span.tip-wrap > button.trigger > svg"
+          }
+        ]
+      },
+      {
+        "part": "tip",
+        "tag": "span",
+        "attrs": {
+          "class": "tip",
+          "id": "tt1"
+        },
+        "aria": {
+          "role": "tooltip"
+        },
+        "text": "The funds you can spend right now, after pending transactions are deducted.",
+        "$sel": "body > div.row > span.lbl > span.tip-wrap > span.tip"
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "focus",
+      "show"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "mouseenter",
+        "to": "show"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "show"
+      },
+      {
+        "from": "show",
+        "on": "mouseleave",
+        "to": "default"
+      },
+      {
+        "from": "show",
+        "on": "blur",
+        "to": "default"
+      }
+    ],
+    "keys": {
+      "Escape": "close"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "focus": [
+        "style .trigger:focus-visible"
+      ],
+      "show": [
+        "script focus handler",
+        "script mouseenter handler",
+        "style .tip.show"
+      ],
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--focus": "{focus.ring}",
+    "--surface": "{background.default}",
+    "--tip-border": "{elevation.border}",
+    "--shadow": "{elevation.functional}",
+    "--text": "{text.default}",
+    "--page": "{background.default}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Tooltip.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (span.tip) → climbed to span.tip-wrap",
+    "$listeners": [
+      "blur",
+      "focus",
+      "keydown",
+      "mouseenter",
+      "mouseleave"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

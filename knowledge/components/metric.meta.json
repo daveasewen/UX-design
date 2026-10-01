@@ -431,5 +431,236 @@
         "$note": "A chart making the identical claim in the same view (pick one headline form)"
       }
     ]
+  },
+  "anatomy": {
+    "part": "metric",
+    "tag": "div",
+    "attrs": {
+      "class": "metric"
+    },
+    "aria": {
+      "role": "group",
+      "aria-label": "Net cash flow, March",
+      "aria-busy": "{state.busy}"
+    },
+    "$stateClasses": [
+      "is-loading",
+      "is-empty",
+      "is-error",
+      "is-stale"
+    ],
+    "$sel": "body > div.board > div.metric",
+    "children": [
+      {
+        "part": "metric-lbl",
+        "tag": "p",
+        "attrs": {
+          "class": "metric-lbl t-cm-caption"
+        },
+        "text": "Net cash flow",
+        "$sel": "body > div.board > div.metric > p.metric-lbl.t-cm-caption"
+      },
+      {
+        "part": "metric-val",
+        "tag": "span",
+        "attrs": {
+          "class": "metric-val t-cm-figure-4"
+        },
+        "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4",
+        "children": [
+          {
+            "part": "unit",
+            "tag": "span",
+            "attrs": {
+              "class": "unit"
+            },
+            "text": "+£",
+            "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span.unit"
+          },
+          {
+            "part": "span",
+            "tag": "span",
+            "text": "2,450.00",
+            "$sel": "body > div.board > div.metric > span.metric-val.t-cm-figure-4 > span"
+          }
+        ]
+      },
+      {
+        "part": "metric-delta",
+        "tag": "span",
+        "attrs": {
+          "class": "metric-delta {props.trend}",
+          "data-carries": "symbol label"
+        },
+        "$sel": "body > div.board > div.metric > span.metric-delta.up",
+        "children": [
+          {
+            "part": "glyph",
+            "tag": "span",
+            "attrs": {
+              "class": "glyph"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.glyph",
+            "children": [
+              {
+                "part": "icon",
+                "tag": "svg",
+                "$sel": "body > div.board > div.metric > span.metric-delta.up > span.glyph > svg"
+              }
+            ]
+          },
+          {
+            "part": "span-2",
+            "tag": "span",
+            "attrs": {
+              "class": "t-cm-figure-6"
+            },
+            "text": "+12.4% up",
+            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.t-cm-figure-6"
+          },
+          {
+            "part": "metric-per",
+            "tag": "span",
+            "attrs": {
+              "class": "metric-per t-cm-legal"
+            },
+            "text": "vs February",
+            "$sel": "body > div.board > div.metric > span.metric-delta.up > span.metric-per.t-cm-legal"
+          }
+        ]
+      },
+      {
+        "part": "metric-spark",
+        "tag": "div",
+        "attrs": {
+          "class": "metric-spark"
+        },
+        "slot": "spark",
+        "$sel": "body > div.board > div.metric > div.metric-spark",
+        "children": [
+          {
+            "part": "spark-inline",
+            "tag": "svg",
+            "attrs": {
+              "class": "spark-inline",
+              "data-trend": "up",
+              "viewbox": "0 0 200 48",
+              "preserveaspectratio": "none",
+              "data-bespoke": "chart canvas — dataviz geometry, not an icon (validate-dataviz territory)"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.board > div.metric > div.metric-spark > svg.spark-inline"
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "ready",
+      "loading",
+      "empty",
+      "error",
+      "stale",
+      "hover",
+      "focus",
+      "busy"
+    ],
+    "initial": "ready",
+    "transitions": [
+      {
+        "from": "ready",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "ready"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "ready"
+      }
+    ],
+    "$sources": {
+      "loading": [
+        "class .is-loading on a twin of body > div.board > div.metric",
+        "style .metric.is-loading .sk"
+      ],
+      "empty": [
+        "class .is-empty on a twin of body > div.board > div.metric",
+        "style .metric.is-empty .metric-val"
+      ],
+      "error": [
+        "class .is-error on a twin of body > div.board > div.metric",
+        "style .metric.is-error .metric-note",
+        "style .metric.is-error .metric-note .glyph",
+        "style .metric.is-error .metric-note .glyph .inner"
+      ],
+      "hover": [
+        "style .metric-cta:hover",
+        "style .metric-retry:hover",
+        "style .metric.as-link:hover"
+      ],
+      "focus": [
+        "style .metric-cta:focus-visible",
+        "style .metric-link:focus-visible",
+        "style .metric-panel-spec .scroll:focus-visible",
+        "style .metric-retry:focus-visible",
+        "style .metric.as-link:has(.metric-link:focus-visible)"
+      ],
+      "busy": [
+        "attribute aria-busy on a twin of body > div.board > div.metric"
+      ],
+      "stale": [
+        "class .is-stale on a twin of body > div.board > div.metric"
+      ],
+      "$initial": "meta.stateModel.states, in its order; initial = its first"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--surface": "{tertiary.background.default}",
+    "--border": "{border.subtle}",
+    "--text": "{text.default}",
+    "--muted": "{text.secondary}",
+    "--page": "{background.default}",
+    "--focus": "{focus.ring}",
+    "--pos-ink": "{rag.success-ink}",
+    "--neg-ink": "{rag.error-ink}",
+    "--flat-ink": "{text.default}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--tbl-header": "{table.header.background}",
+    "--tbl-colhdr": "{table.column.background}",
+    "--tbl-cell": "{background.default}",
+    "--tbl-border": "{table.border}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Metric.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (div.metric)",
+    "$listeners": [],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

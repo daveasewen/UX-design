@@ -157,5 +157,108 @@
         "ref": "role:input"
       }
     ]
+  },
+  "anatomy": {
+    "part": "field",
+    "tag": "div",
+    "attrs": {
+      "class": "field"
+    },
+    "$sel": "body > div.field",
+    "children": [
+      {
+        "part": "label",
+        "tag": "label",
+        "attrs": {
+          "for": "r1"
+        },
+        "text": "Monthly budget",
+        "$sel": "body > div.field > label",
+        "children": [
+          {
+            "part": "val",
+            "tag": "span",
+            "attrs": {
+              "class": "val",
+              "id": "v"
+            },
+            "text": "£600",
+            "$sel": "body > div.field > label > span.val"
+          }
+        ]
+      },
+      {
+        "part": "input",
+        "tag": "input",
+        "attrs": {
+          "type": "range",
+          "id": "r1",
+          "min": "0",
+          "max": "1000",
+          "step": "50",
+          "value": "600"
+        },
+        "aria": {
+          "aria-label": "Monthly budget in pounds"
+        },
+        "$sel": "body > div.field > input"
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "focus"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      }
+    ],
+    "$sources": {
+      "focus": [
+        "style input[type=range]:focus-visible",
+        "style input[type=range]:focus-visible::-moz-range-thumb",
+        "style input[type=range]:focus-visible::-webkit-slider-thumb"
+      ],
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--filled": "{scrollbar.foreground}",
+    "--unfilled": "{scrollbar.background}",
+    "--handle": "{tertiary.background.default}",
+    "--handle-bd": "{form.border.default}",
+    "--text": "{text.default}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-indicator": "{border-radius.indicator}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Slider.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (input.slider) → climbed to div.field",
+    "$listeners": [
+      "input"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

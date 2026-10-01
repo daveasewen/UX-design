@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The pictures you are owed</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s2);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.lead a,.facts a,.sub3 a{color:inherit}
+.call .cnum{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair.narrow{max-width:760px}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--g3)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s2)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab a{color:var(--fg)}
+.ctab td.st{color:var(--g6);white-space:nowrap}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+.quote small{display:block;font-size:12px;color:var(--g6);margin-top:.3rem}
+/* specimens drawn in the page from hex values */
+.spec{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.spec .cell{padding:var(--s3);min-width:0}
+.spec .cap{font-size:11px;letter-spacing:.12em;text-transform:uppercase;line-height:1.5;margin:0 0 var(--s2);opacity:.8}
+.spec .hero-t{font-size:30px;font-weight:300;line-height:1.15;margin:0 0 .4rem}
+.spec .hero-s{font-size:16px;line-height:1.5;margin:0}
+.spec .btn{display:inline-block;font-size:14px;font-weight:500;padding:.6rem 1.1rem;margin:.2rem .6rem .2rem 0;border-radius:0}
+.spec .hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;margin-top:var(--s2);opacity:.85}
+.spec.four{grid-template-columns:repeat(4,1fr)}
+ul.plain{margin:var(--s2) 0 0;padding-left:1.2em;font-size:15px;color:var(--g8)}
+ul.plain li{margin:0 0 .6rem}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair{grid-template-columns:1fr}
+  .spec,.spec.four{grid-template-columns:1fr}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+  #glance-table{min-width:0}
+  #glance-table thead{display:none}
+  #glance-table tr{display:grid;grid-template-columns:2.2em 1fr;border-bottom:1px solid var(--g3);padding:.5rem 0}
+  #glance-table td{border:0;padding:.15rem .3rem}
+  #glance-table td.n{grid-row:1 / span 3}
+  #glance-table td:nth-child(3)::before{content:"Recommended: ";color:var(--g6)}
+  #glance-table td:nth-child(4)::before{content:"Your answer: "}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#glance">Glance</a>
+  <a href="#containers">Containers</a>
+  <a href="#navfamily">Navs</a>
+  <a href="#topnav">Top nav</a>
+  <a href="#list-rule">Lists</a>
+  <a href="#lockup">Lock-up</a>
+  <a href="#groupheader">Groups</a>
+  <a href="#ring">Ring</a>
+  <a href="#ground">Ground</a>
+  <a href="#roundels">Roundels</a>
+  <a href="#names">Names</a>
+  <a href="#forks">Forks</a>
+  <a href="#schema">Schema</a>
+  <a href="#house">Housekeeping</a>
+  <a href="#else">Note</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 312 · review page · The pictures you are owed</p>
+      <h1>The questions that were waiting on a picture, each drawn, each with a recommendation.</h1>
+      <p class="sub">Most need one click. Where a picture would not help, the call is plain words. Take the recommendations in the table below, or change any of them.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>Every picture is drawn on canon as committed, at the seat, never the working tree.</span>
+      <span>A drawn option is not a ruling. Nothing is built or written into the record until you answer.</span>
+    </div>
+  </div>
+</header>
+
+<section id="glance">
+  <div class="wrap">
+    <p class="label">At a glance · every call and its recommendation</p>
+    <h2>If you take every recommendation, this is what you are saying.</h2>
+    <p class="lead">One row per call, in page order. The answer column fills as you click. Each row jumps to its picture.</p>
+    <div class="scroll"><table class="ctab" id="glance-table"><thead><tr><th>#</th><th>The call</th><th>Recommended</th><th>Your answer</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="containers" class="grey">
+  <div class="wrap">
+    <p class="label">01 · Container types · your call</p>
+    <h2>Keep two container words: section, a named region of the page that a screen reader lists, and panel, as it is defined today. Drop division and sector.</h2>
+    <p class="quote">"So extending this do we need a series of container types like section, division, sector, panel, etc"<small>Your page note, Tuesday 29 September, 18:56</small></p>
+    <p class="lead">Section and panel drawn on the banking demo. Orange is a section, blue is a housing (the tile, with its cell written as columns by rows), the dashed line is the frame. Today the demo marks every tile as a named section: three of its four named sections are tiles, and the three bento groups are plain unnamed boxes. The recommendation turns that round. The page header and each bento group become the sections, and tiles stop being landmarks.</p>
+    <div class="pair"><figure><figcaption>Section · Console light · the banking demo</figcaption><a href="_lanes/312/F/F3/img/F3-1-section-1440-light.png"><img src="_lanes/312/F/F3/img/F3-1-section-1440-light.png" alt="The banking demo with orange outlines round the page header and each bento group marked as sections, blue outlines round each tile marked as a housing with its cell size, and a dashed outline round the top banner marked as frame"></a></figure><figure><figcaption>Section · Console dark · the same</figcaption><a href="_lanes/312/F/F3/img/F3-1-section-1440-dark.png"><img src="_lanes/312/F/F3/img/F3-1-section-1440-dark.png" alt="The same section drawing in dark mode"></a></figure></div>
+    <div class="pair one"><figure><figcaption>Panel · canon's side sheet docked under the top nav, 400px, the page narrowed to 1040px</figcaption><a href="_lanes/312/F/F3/img/F3-1-panel-1440-light.png"><img src="_lanes/312/F/F3/img/F3-1-panel-1440-light.png" alt="The banking demo with a 400 pixel side sheet docked on the right under the top navigation and the page content narrowed beside it"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Section</span><span>A page region with a name. A screen reader lists it, so a person can jump to it. On a dashboard: the page header and each bento group.</span></li>
+      <li><span class="k">Panel</span><span>Stands as defined: a sheet that docks beside the page and narrows it, rather than floating over it.</span></li>
+      <li><span class="k">Division, sector</span><span>No behaviour of their own. A division is any box, which every part already is; a sector is a section by another name. Two words with nothing to do become two words people use differently.</span></li>
+      <li><span class="k">What it changes</span><span>Tiles stop being named regions, so the demo's screen-reader list drops from tile by tile to four regions. Closes the container-types question from your cards-and-tiles page.</span></li>
+    </ul>
+    <div class="call" data-id="containers" data-q="1. Container types: section, division, sector, panel" data-rec="Section and panel; drop division and sector">
+      <p class="q">Which container words stand?</p>
+      <p class="rec">Recommended: section and panel; drop division and sector.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Section and panel; drop division and sector">Section and panel<em>Recommended</em></button><button type="button" class="chip" data-v="Keep all four">Keep all four</button><button type="button" class="chip" data-v="Section only">Section only</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered at the seat by <code>notes/_lanes/312/F/F3/render_F3.py</code> against canon at <code>d3be2c22</code>, from <code>git show</code> copies in <code>/dev/shm</code>. Facts in <code>notes/_lanes/312/F/F3/img/F3-facts.json</code>: the demo has 8 <code>&lt;section&gt;</code>s, 4 named (region landmarks), 3 of those 4 are tiles; the 3 bento groups are <code>div[aria-label]</code>.</li>
+      <li>Panel is the canon Drawer sheet, docked right under the top nav at 400px; page narrowed to 1040px.</li>
+      <li>Row this closes: <code>W-308iw</code> (the three naming words; housing and cell were ruled at s308-D44).</li>
+      <li>Seen in the frame, not fixed: the demo's top nav renders as plain underlined links (it uses bare <code>&lt;a&gt;</code>s in <code>nav.main</code>; canon's nav styles target <code>.nv-item</code>) and its action buttons are empty boxes. <code>dashboards/international-banking-dashboard.canon.html</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="navfamily">
+  <div class="wrap">
+    <p class="label">02 · The nav family on a dashboard · your call</p>
+    <h2>The nav family (top nav, sidebar nav, tab bar) is the page's frame, not a group of tiles. A dashboard counts the groups on its wall, and the navs are not on the wall.</h2>
+    <p class="lead">A check that counts a dashboard's tile groups reads the three navs as one group, because they answer the same question: where am I, where can I go. Drawn both ways on the dashboard template. Left: the navs are frame, and the wall has three groups, as the designer drew them. Right: the navs counted as a fourth group. The check is built and held until you answer.</p>
+    <div class="pair"><figure><figcaption>Frame, not counted · three groups (recommended)</figcaption><a href="_lanes/312/F/F3/img/F3-2-navfamily-count1-1440.png"><img src="_lanes/312/F/F3/img/F3-2-navfamily-count1-1440.png" alt="The dashboard with the top navigation outlined as frame and not counted, and three green tile groups: This month, Spending analysis, Position"></a></figure><figure><figcaption>Counted as a tile group · four groups</figcaption><a href="_lanes/312/F/F3/img/F3-2-navfamily-count2-1440.png"><img src="_lanes/312/F/F3/img/F3-2-navfamily-count2-1440.png" alt="The same dashboard with the navigation family counted as a tile group alongside the three wall groups"></a></figure></div>
+    <div class="pair"><figure><figcaption>The family elsewhere · sidebar nav at 1440</figcaption><a href="_lanes/312/F/F3/img/F3-2-family-sidebar-nav-1440.png"><img src="_lanes/312/F/F3/img/F3-2-family-sidebar-nav-1440.png" alt="The canon sidebar navigation"></a></figure><figure><figcaption>The family elsewhere · tab bar at 390</figcaption><a href="_lanes/312/F/F3/img/F3-2-family-tab-bar-390.png"><img src="_lanes/312/F/F3/img/F3-2-family-tab-bar-390.png" alt="The canon tab bar at phone width"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Frame</span><span>The navs hold the page; they do not sit among the tiles. Counting them would make every dashboard with a top nav fail a count it passes by eye.</span></li>
+      <li><span class="k">Either way</span><span>The check's expected answer must be re-set before it can run. Since the stat card and the KPI tile became one block called Metric, the two groups it expects have become one. That is a mechanical fix, not a question.</span></li>
+      <li><span class="k">What it changes</span><span>The grouping check skips the navs, its expected answer becomes one Metric group, and it can then be wired to refuse. Closes the held half of the tile-group check.</span></li>
+    </ul>
+    <div class="call" data-id="navfamily" data-q="2. The nav family on a dashboard: frame or tile group" data-rec="Frame, not a tile group">
+      <p class="q">Is the nav family frame, or a tile group?</p>
+      <p class="rec">Recommended: frame, not a tile group.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Frame, not a tile group">Frame<em>Recommended</em></button><button type="button" class="chip" data-v="A tile group">A tile group</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered by <code>notes/_lanes/312/F/F3/render_F3.py nav</code> at <code>d3be2c22</code>. The s245-D7 dial re-derived four ways (<code>F3-facts.json</code> <code>nav_dial</code>): as HEAD reads it, one group (navigations + sidebar-nav + tab-bar); family skipped, zero groups; family skipped and aliases followed, <code>[metric]</code>; the selftest bite R6e expects <code>[[kpi-tile],[stat-card]]</code>.</li>
+      <li>R6e is red for a second reason: #309 made kpi-tile and stat-card aliases of metric (<code>879f9aae</code>); their <code>count{per:"group"}</code> facts live in <code>metric.meta.json</code>, which is not in the template's <code>$composes</code>. Re-base R6e to <code>[metric]</code> before s308-D33's selftest is wired (<code>notes/_subreports/2026-10-01-312-F-renders.md</code>, found 1).</li>
+      <li>Held ruling: s308-D33, enacted in part at <code>8fe11818</code>; bento-matrix selftest bites R6e and R6d.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="topnav" class="grey">
+  <div class="wrap">
+    <p class="label">03–07 · The top-nav shell as an information-architecture question · five calls</p>
+    <h2>The top nav is the frame for any app, whatever the count. A destination opens a flyout up to six links and a mega menu beyond; the third level is tabs in the page header; the side nav is kept for the workbench only.</h2>
+    <p class="quote">"Not quite, this is an IA question and the preference in general is a top nav, if there are multiple levels we use a mega menu. Again we need to explore this rule more rigorously"<small>Sunday 28 September</small></p>
+    <p class="quote">"typically we use mega-menus for multi level navs, we engineer the IA so that it the top level doesn't have a lot of items"<small>14 September</small></p>
+    <p class="lead">The banking demo carries four destinations. A real corporate banking portal carries about nine, most with a second and third level: Overview, Accounts, Payments, Receivables, Liquidity, Trade, FX, Reports, Admin; Payments alone has ten pages in three groups. Today's rule (up to seven destinations and two levels, else the side nav) hands that portal to the side nav. Every option below is drawn against it, on the real demo with a wireframe masthead.</p>
+    <div class="pair one"><figure><figcaption>Option 2 · the top nav with a mega menu, open on Payments (recommended)</figcaption><a href="_lanes/312/F/img/F1-opt2a.png"><img src="_lanes/312/F/img/F1-opt2a.png" alt="The banking demo with a nine-item top navigation and a full-width mega menu open under Payments: three group headings with their links in columns and an optional fourth column"></a></figure></div>
+    <div class="pair"><figure><figcaption>Option 2 · FX open: three links, no groups, so a flyout</figcaption><a href="_lanes/312/F/img/F1-opt2b.png"><img src="_lanes/312/F/img/F1-opt2b.png" alt="The same masthead with FX open as a small one-column flyout of three links"></a></figure><figure><figcaption>Option 1 · one flat row, the second level as a ten-tab strip in the page</figcaption><a href="_lanes/312/F/img/F1-opt1.png"><img src="_lanes/312/F/img/F1-opt1.png" alt="A nine-item flat top row with a long tab strip of ten peers inside the page"></a></figure></div>
+    <div class="pair"><figure><figcaption>Option 3 · stacked, a section tier under the masthead: 170px before the page title</figcaption><a href="_lanes/312/F/img/F1-opt3.png"><img src="_lanes/312/F/img/F1-opt3.png" alt="A masthead with a second band of section links under it, pushing the page title down"></a></figure><figure><figcaption>The foil · today's rule at nine destinations: the side nav takes 248px</figcaption><a href="_lanes/312/F/img/F1-opt4.png"><img src="_lanes/312/F/img/F1-opt4.png" alt="The demo with a 248 pixel side navigation column holding all three levels and the masthead holding only the brand and actions"></a></figure></div>
+    <div class="pair"><figure><figcaption>What hands over to what · the order the frame is chosen in</figcaption><a href="_lanes/312/F/img/F1-handover-map.png"><img src="_lanes/312/F/img/F1-handover-map.png" alt="A five-step diagram: focused when there is no navigation, then the frame by job, then the top nav, with the count choosing what a destination opens, and the side nav kept for the workbench"></a></figure><figure><figcaption>Below 600px · the mega menu becomes an accordion in the sheet</figcaption><a href="_lanes/312/F/img/F1-phone.png"><img src="_lanes/312/F/img/F1-phone.png" alt="The phone sheet open with the nine destinations as rows and Payments expanded into its group headings and links" style="max-width:320px;margin:0 auto"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Why option 2</span><span>The row is unchanged and costs nothing until it opens. One map of the site in two shapes, desktop and phone.</span></li>
+      <li><span class="k">Why not 1</span><span>It holds the row but breaks below: every Payments page carries a ten-peer tab strip that wraps or scrolls, and the third level has nowhere to live.</span></li>
+      <li><span class="k">Why not 3</span><span>The section tier spends the fold on every page to solve what the mega menu solves on demand. Worth keeping only for a product whose top level does not fit the row.</span></li>
+      <li><span class="k">The side nav</span><span>Survives for one job: a workbench, where the person needs the second level on screen while they work. Chosen by the job, never by a count. The rail is its narrow form.</span></li>
+      <li><span class="k">In dark</span><span>The mega menu is black over black tiles; its only edge is a shadow, which does not read on black. Pictured below call 6.</span></li>
+    </ul>
+    <div class="call" data-id="topnav-rule" data-q="3. The top nav as the default frame for an app, mega menu for multiple levels" data-rec="Yes, as drawn">
+      <p class="q">Does the top nav become the default frame for an app, whatever the count of destinations or levels, with the mega menu for multiple levels?</p>
+      <p class="rec">Recommended: yes, as drawn.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, as drawn">Yes, as drawn<em>Recommended</em></button><button type="button" class="chip" data-v="Change (comment)">Change (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="topnav-flyout" data-q="4. Six links in one column as the line between a flyout and a mega menu" data-rec="Yes">
+      <p class="q">Is six links in one column the line between a flyout and a mega menu? Links grouped under headings are always the mega menu.</p>
+      <p class="rec">Recommended: yes. Six is the column ceiling you ratified in September.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes">Yes<em>Recommended</em></button><button type="button" class="chip" data-v="Change (comment)">Change (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="topnav-third" data-q="5. Where the third level lives" data-rec="Tabs in the page-header lock-up">
+      <p class="q">Where does the third level live?</p>
+      <p class="rec">Recommended: tabs in the page-header lock-up (the foot drawn in call 9), never a third band of chrome.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Tabs in the page-header lock-up">Tabs in the lock-up<em>Recommended</em></button><button type="button" class="chip" data-v="The section tier">The section tier</button><button type="button" class="chip" data-v="Change (comment)">Change (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="topnav-side" data-q="6. The side nav kept for the workbench only, chosen by the job" data-rec="Yes">
+      <p class="q">Does the side nav survive for the workbench case only, chosen by the job, never by a count?</p>
+      <p class="rec">Recommended: yes.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes">Yes<em>Recommended</em></button><button type="button" class="chip" data-v="No, retire it">No, retire it</button><button type="button" class="chip" data-v="Change (comment)">Change (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3">
+      <h3>Call 7 · a menu that floats over black tiles needs an edge</h3>
+      <p>In Console dark the mega menu is black (#000000) over black tiles, on a #1F1F1F ground under a scrim. Its only edge is a shadow at 85% black, and a black shadow does not read on black. The token set already holds the answer: the elevation border, transparent in light and a #808080 line in dark. Nothing floating uses it yet.</p>
+      <div class="pair"><figure><figcaption>Console light · the menu reads by its shadow</figcaption><a href="_lanes/312/F/F1/img/B-mega-1440-light.png"><img src="_lanes/312/F/F1/img/B-mega-1440-light.png" alt="The mega menu open on Payments in light mode, a white panel with a soft shadow over the page"></a></figure><figure><figcaption>Console dark · panel and tiles are one black</figcaption><a href="_lanes/312/F/F1/img/B-mega-1440-dark.png"><img src="_lanes/312/F/F1/img/B-mega-1440-dark.png" alt="The same mega menu in dark mode: a black panel over black tiles with no visible edge"></a></figure></div>
+    </div>
+    <div class="call" data-id="float-edge" data-q="7. Floating surfaces (mega menu, account menu, dropdowns) carry the elevation border" data-rec="Yes">
+      <p class="q">Does every surface that floats over the page (the mega menu, the account menu, dropdowns) carry the elevation border: invisible in light, a grey line in dark?</p>
+      <p class="rec">Recommended: yes. The token exists for exactly this edge.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes">Yes<em>Recommended</em></button><button type="button" class="chip" data-v="Change (comment)">Change (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Calls 3–6: lane F1's committed page <code>notes/_lanes/312/F/F1-topnav-ia.html</code> (<code>d4e6a1a9</code>), rendered from <code>git show d1901fa2</code> copies by <code>notes/_lanes/312/F/render_F1.py</code>; facts <code>notes/_lanes/312/F/img/F1-facts.json</code>. The demo's own masthead is hidden and a wireframe masthead injected; header and bento below are real. Wireframe type is Helvetica 14px with 12px item padding, narrower than the canon nav link, so its 812px row reads low. Chrome before the page title: options 1 and 2, 65px; option 3, 170px; foil, 64px plus a 248px column.</li>
+      <li>The rule as drafted, in the when-fields grammar: <code>primaryNavigation = present AND platform = app</code> — the default frame for an application whatever the count; primaries in one 64px row (stacked form only when they do not fit the row at the product's floor width); a destination with children opens a flyout (up to 6 links, one column) or, over 6 or grouped, the mega menu (up to 4 columns, level 2 the heading, level 3 the link, a column never over 6; s272-D70); peer views are tabs in the lock-up. Yields to focused, multi-column, split and doormat; side nav and rail by the workbench test.</li>
+      <li>If taken: <code>knowledge/roles.json</code> <code>app-shell-side-nav</code> when ("&gt; 7 destinations or two nav levels") becomes the workbench test; <code>when-fields.json</code> has no name for "links under one destination" (prose inside the gate until one is added by the s273-D4 route); <code>Navigations.reference.html</code> has no flyout or mega-menu markup at all, so the mega menu is a build owed. Row this closes: <code>W-305e2</code>.</li>
+      <li>Call 7 and its two pictures come from an earlier F1 run on the same night (<code>notes/_lanes/312/F/F1/</code>, rendered against <code>148fa6fc</code> by <code>render_f1.py</code>, not committed; <code>notes/_lanes/312/WAVE-2-START.md</code> § 6 names <code>d4e6a1a9</code> as F1's record). The token was re-checked today: <code>--elevation-border</code> in <code>knowledge/canon/canon.css</code> is <code>#FFFFFF00</code> (light), <code>#808080</code> (dark), <code>#524842</code> (one Supercharge scope). That run also measured a fit test in place of the count: at 1024 five destinations fit with 131px spare and seven overflow by 36px; at 1440 nine fit with 215px spare and twelve overflow by 37px (<code>F1/img/E-fit-*.png</code>).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="list-rule">
+  <div class="wrap">
+    <p class="label">08 · The list rule, worked on its own · your call</p>
+    <h2>A list is the default, and it may be searched, filtered and sorted. The table takes over when a field is read down a column; the data grid only when rows are selected in bulk or edited in place.</h2>
+    <p class="quote">"we need to revisit this rule, lists can be filtered and resorted, and the general preference is for lists in most cases, lets work on this rule on it's own."<small>The loose-ends page, 28 September</small></p>
+    <p class="lead">The banking demo already works the way you said. Its payment activity tile is a list under a toolbar: a search box, a market filter, a currency filter, a credits-or-debits switch, a chip for each filter you set, and pages. Twelve payments, six to a page; filtered to Europe it shows four. The sentence you rejected would have made that tile a data grid. Below, the same twelve payments in the three shapes, drawn on canon as it stands.</p>
+    <div class="pair one"><figure><figcaption>Mono light · the list the demo has, that list filtered to Europe, a table, and the data grid</figcaption><a href="_lanes/312/F/F2/img/01-three-shapes-light.png"><img src="_lanes/312/F/F2/img/01-three-shapes-light.png" alt="Four pictures stacked: the demo's payment list with its search, two filters, a switch and pages; the same list filtered to Europe with four rows; the twelve payments as a table; and the canon data grid with a checkbox column and sort and filter icons on every heading"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Option 1 · toolbar does not change the shape</span><span>A list is the default for records of one kind, each read across its own row. It may be searched, filtered, sorted and paged from a toolbar; the toolbar does not change what it is. The table takes over when a field must be read down a column across records. The data grid takes over only when rows are selected in bulk or edited in place. This is what the demo does, and it keeps the line to the table you already ruled: read across, list; read down, table.</span></li>
+      <li><span class="k">Option 2 · sort is the line</span><span>Search and filter belong to the list; sorting by a field means reading it down a column, so a sorted list becomes a table. It would push a "newest first" list into a table, the case you said you prefer as a list.</span></li>
+      <li><span class="k">Option 3 · list until it is edited</span><span>The list for everything but in-place editing. Your instinct at full strength; the cost is a checkbox column on list rows, which is a column read down, so bulk selection starts to look like a grid anyway.</span></li>
+      <li><span class="k">Why option 1</span><span>The grid is kept for the two things a list cannot honestly do: choose many rows at once and change a value where it sits.</span></li>
+      <li><span class="k">What it changes</span><span>The list's rule loses "needs = none"; the data grid's narrows to "select in bulk or edit in place". Closes the list rule you asked to work on its own.</span></li>
+    </ul>
+    <div class="call" data-id="list-rule" data-q="8. The list rule, worked on its own" data-rec="Option 1, toolbar does not change the shape">
+      <p class="q">Which wording stands?</p>
+      <p class="rec">Recommended: option 1, the toolbar does not change the shape.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Option 1, toolbar does not change the shape">Option 1<em>Recommended</em></button><button type="button" class="chip" data-v="Option 2, sort is the line">Option 2</button><button type="button" class="chip" data-v="Option 3, list until it is edited">Option 3</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane F2 (<code>e75c8c1e</code>), rendered read-only against canon at <code>148fa6fc</code> by <code>notes/_lanes/312/F/F2/render_F2.py list</code>; facts <code>notes/_lanes/312/F/F2/img/facts-all.json</code>; dark version <code>01-three-shapes-dark.png</code>.</li>
+      <li>The list pictures are the demo's own tile (<code>#transactions</code>, 1392px at 1440): 12 results and 6 rows; filtered to Europe, 4 and 4. The table is <code>.cn-table</code> from the demo's <code>DATA</code> array; the grid is <code>knowledge/snippets/Data-grid.reference.html</code> cropped, its own 24 records.</li>
+      <li>If taken: <code>knowledge/components/list-items.meta.json</code> <code>when</code>, <code>knowledge/roles.json</code> record-list providers, <code>notes/_lanes/304/R4a/drafts/when-rules.proposed.json</code>. Row this closes: <code>W-305e1</code>.</li>
+      <li>Seen, not fixed: inside the tile the toolbar stacks its four controls in a column at 1392px wide, where the filter-toolbar reference runs them in a row.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="lockup" class="grey">
+  <div class="wrap">
+    <p class="label">09 · The page-header lock-up · your call</p>
+    <h2>Keep the built lock-up as the default and give it a foot: on a page with sub-views the tab strip sits on its bottom edge, and on a drill-down the breadcrumb replaces the eyebrow.</h2>
+    <p class="quote">"we have to work on this lock-up though"<small>The loose-ends page, 28 September</small></p>
+    <p class="lead">The lock-up is built as three separate arrangements: simple, breadcrumb with tabs, and a badge count with a meta line. Below is the demo's own header drawn three ways in light and dark, using only the lock-up's own classes; the second uses the tab strip you accepted on Wednesday, the one that takes its ground's colour.</p>
+    <div class="pair"><figure><figcaption>Mono light · three arrangements of the demo's header</figcaption><a href="_lanes/312/F/F2/img/02-lockup-options-light.png"><img src="_lanes/312/F/F2/img/02-lockup-options-light.png" alt="Three page headers stacked: as built with eyebrow, title, meta line and one button; a breadcrumb over the title with two buttons and a five-tab strip beneath; a two-row version with the meta line level with two buttons"></a></figure><figure><figcaption>Mono dark · the same three</figcaption><a href="_lanes/312/F/F2/img/02-lockup-options-dark.png"><img src="_lanes/312/F/F2/img/02-lockup-options-dark.png" alt="The same three page headers in dark"></a></figure></div>
+    <div class="pair"><figure><figcaption>390 wide · option 1 as built</figcaption><a href="_lanes/312/F/F2/img/02-lockup-a-390.png"><img src="_lanes/312/F/F2/img/02-lockup-a-390.png" alt="The header at phone width with the button on its own row"></a></figure><figure><figcaption>390 wide · option 2</figcaption><a href="_lanes/312/F/F2/img/02-lockup-b-390.png"><img src="_lanes/312/F/F2/img/02-lockup-b-390.png" alt="The drill-down header at phone width with a tab strip that runs off the right edge"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Option 1 · as built</span><span>Eyebrow, title and meta line; actions on the title row. 126px tall at 1440. Nowhere for sub-views to go.</span></li>
+      <li><span class="k">Option 2 · a foot for the tab strip</span><span>Breadcrumb or eyebrow above; title, meta line and actions on one row; the tab strip on the bottom edge. 198px tall. The header ends where the page's views begin, and a drill-down gets its way back without a second component.</span></li>
+      <li><span class="k">Option 3 · two rows</span><span>The title alone on its row; meta line and actions share the second. 162px tall. Spends a row on desktop for nothing option 1 lacks. At phone width every option becomes this anyway.</span></li>
+      <li><span class="k">Why option 2</span><span>As the shape of the whole family, not a fourth arrangement: one lock-up with three optional parts (crumb or eyebrow, meta line, tab foot), actions always on the title row. The badge-count arrangement goes: a count belongs in a tab label or the content, not beside the title.</span></li>
+      <li><span class="k">What it changes</span><span>The lock-up's arrangement choice is replaced by the three switches it already carries. Closes the lock-up work you asked for.</span></li>
+    </ul>
+    <div class="call" data-id="lockup" data-q="9. The page-header lock-up" data-rec="Option 2, a foot for the tab strip">
+      <p class="q">Which shape stands?</p>
+      <p class="rec">Recommended: option 2, a foot for the tab strip; the badge-count arrangement goes.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Option 1, as built">Option 1</button><button type="button" class="chip" data-v="Option 2, a foot for the tab strip">Option 2<em>Recommended</em></button><button type="button" class="chip" data-v="Option 3, two rows">Option 3</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane F2, <code>notes/_lanes/312/F/F2/render_F2.py header</code> at <code>148fa6fc</code>. Options 2 and 3 are demo copies with the header swapped for markup from <code>.cn-page-header-lockup</code>'s own classes; option 3's second row carries one inline <code>align-items:center</code>. Heights at 1440: 126, 198, 162px; at 390: 210 and 282px. "New payment" and the tab names are stand-ins.</li>
+      <li>Seen, not fixed: at 390 the tab foot runs off the right edge because the demo does not carry Tabs' overflow script (the reference snippet does). A tab foot on a real page needs that script beside it.</li>
+      <li>If taken: <code>knowledge/components/page-header-lockup.meta.json</code> (<code>arrangement</code> enum and <code>variants</code>), <code>knowledge/snippets/Page-header-lockup.reference.html</code> (arrangement C). Row this closes: <code>W-305e3</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="groupheader">
+  <div class="wrap">
+    <p class="label">10–11 · A header for bento groups · two calls</p>
+    <h2>Give each bento group a header: the section heading lock-up, sitting on the wall above the group's tiles, with an action only when the group has one. A group's action and a tile's own action never repeat.</h2>
+    <p class="quote">"one thing to note, I want to add a header component to bento groups."<small>The loose-ends page, 28 September</small></p>
+    <p class="lead">Drawn on the canon dashboard template, Mono light, three ways. A puts the header on the wall above the tiles. B puts the same lock-up inside the group as a band on the tile surface: it reads as one more tile and costs a row. C is your second question, below. The drawing shows a fault worth a rule: on Position, the group header says View all and the Needs attention tile inside it says View all too, a few pixels apart.</p>
+    <div class="pair one"><figure><figcaption>Mono light · A on the wall (recommended) · B a band inside the group · C two linked subjects under one header</figcaption><a href="_lanes/312/F/F4/img/F4-6-groupheader-options.png"><img src="_lanes/312/F/F4/img/F4-6-groupheader-options.png" alt="Three versions of the dashboard: group titles This month, Spending analysis and Position sitting on the grey wall above their tiles; the same titles as white bands inside each group; and Spending and Position merged under one header"></a></figure></div>
+    <div class="pair one"><figure><figcaption>Option A in the four themes</figcaption><a href="_lanes/312/F/F4/img/F4-6-groupheader-A-4themes.png"><img src="_lanes/312/F/F4/img/F4-6-groupheader-A-4themes.png" alt="Option A drawn in Mono, Legacy, Supercharge and Console"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">A · on the wall</span><span>A label, and a trailing action when the group has one. It names the group without becoming part of it, and costs no tile surface.</span></li>
+      <li><span class="k">B · a band inside</span><span>The same lock-up on the tile surface, full width. Reads as one more tile and spends a row.</span></li>
+      <li><span class="k">The repeat rule</span><span>If a group header carries an action, no tile inside it carries the same action. On Position that means one View all, not two.</span></li>
+    </ul>
+    <div class="call" data-id="group-header" data-q="10. A header for bento groups" data-rec="A, on the wall, with the no-repeat rule">
+      <p class="q">Where does the group header sit?</p>
+      <p class="rec">Recommended: A, on the wall above the tiles, with the rule that a group's action and a tile's action never repeat.</p>
+      <div class="chips"><button type="button" class="chip" data-v="A, on the wall, with the no-repeat rule">A · on the wall<em>Recommended</em></button><button type="button" class="chip" data-v="B, a band inside the group">B · a band inside</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3">
+      <h3>Call 11 · can two closely linked subjects be one group?</h3>
+      <p class="quote">"I wonder if this is a valid variation if two subjects are intimately linked. This is a UX qustion."<small>The loose-ends page, 28 September</small></p>
+      <p>Drawn as C: Spending and Position under one header, the outer gutter between them closed to the inner one so they read as one block. The test that makes it valid: one header can name both honestly, and one action serves both. Exposure and resilience, where limit utilisation belongs to both, pass that test. Spending and Position as drawn are a stretch; they are there only to show the shape.</p>
+      <div class="pair one narrow"><figure><figcaption>C · Mono light · two linked subjects, one header, one gutter</figcaption><a href="_lanes/312/F/F4/img/F4-6-groupheader-C-mono-light.png"><img src="_lanes/312/F/F4/img/F4-6-groupheader-C-mono-light.png" alt="The dashboard with Spending and Position under one header reading Spending and position, two linked subjects, one group"></a></figure></div>
+    </div>
+    <div class="call" data-id="linked-subjects" data-q="11. Two closely linked subjects as one bento group" data-rec="Yes, as a variation, when one header names both and one action serves both">
+      <p class="q">May two closely linked subjects share one group?</p>
+      <p class="rec">Recommended: yes, as a variation and not the default, when one header names both honestly and one action serves both. Otherwise they stay two groups.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, as a variation, when one header names both and one action serves both">Yes, with that test<em>Recommended</em></button><button type="button" class="chip" data-v="No, one subject per group">No, one subject per group</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered by <code>notes/_lanes/312/F/F4/render_F4.py &lt;sha&gt; header</code> at <code>f8eedc96</code> on the canon-scoped dashboard template. The header is the canon Section heading lock-up: arrangement A (label only) for "This month", B (with the arrow link) for the others. Per-theme files <code>F4-6-groupheader-&lt;opt&gt;-&lt;theme&gt;-&lt;mode&gt;.png</code>.</li>
+      <li>The doubled View all on Position is the drawing's own fault (group action plus the tile's link), kept on purpose so the rule has a picture.</li>
+      <li>Rows these close: <code>W-305e4</code> (the header) and <code>W-305e5</code> (linked subjects).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="ring" class="grey">
+  <div class="wrap">
+    <p class="label">12–13 · The ring's size bands · two calls</p>
+    <h2>Size the ring at build time on the 4px grid, between a lower and an upper band. The lower band is measured at 148px; the upper band is yours, and 280px is drawn.</h2>
+    <p class="quote">"The chart pattern should be set to fill but its container should constrain it by being smaller of having more than one element in it"<small>The loose-ends page, 28 September</small></p>
+    <p class="lead">Top row: today, a fixed 200px ring in every tile. At 320, 440 and 560 wide the legend cannot sit beside it (it needs 518px), and at 720 the tile has 154px empty beside it. Bottom row: your sketch. The ring grows with its tile and stops at the band. The lower band is not a taste number: it is the smallest ring whose hole holds the centre figure. The sizes come out the same in all four themes, light and dark.</p>
+    <div class="pair one"><figure><figcaption>Mono light · tiles 320, 440, 560, 720 · today above, your sketch below</figcaption><a href="_lanes/312/F/F4/img/F4-3-donut-bands-mono-light.png"><img src="_lanes/312/F/F4/img/F4-3-donut-bands-mono-light.png" alt="Two rows of four donut charts in tiles of increasing width. Top row: every ring 200 pixels with the legend under it in the first three tiles. Bottom row: rings of 172, 280, 192 and 280 pixels"></a></figure></div>
+    <div class="pair"><figure><figcaption>Mono dark · the same sizes</figcaption><a href="_lanes/312/F/F4/img/F4-3-donut-bands-mono-dark.png"><img src="_lanes/312/F/F4/img/F4-3-donut-bands-mono-dark.png" alt="The same eight donuts in Mono dark"></a></figure><figure><figcaption>Supercharge dark · the same sizes</figcaption><a href="_lanes/312/F/F4/img/F4-3-donut-bands-supercharge-dark.png"><img src="_lanes/312/F/F4/img/F4-3-donut-bands-supercharge-dark.png" alt="The same eight donuts in Supercharge dark"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Lower band · 148px</span><span>Measured: the centre figure and its label are 72px of text, plus 16px of air, divided by 0.6 because the hole is six-tenths of the ring.</span></li>
+      <li><span class="k">Upper band · 280px</span><span>Proposed, yours to set. Beyond it the ring stops growing and the tile gives the room to the legend.</span></li>
+      <li><span class="k">Drawn</span><span>Tile 320: ring 172, legend under. Tile 440: ring 280, legend under. Tile 560: ring 192, legend beside. Tile 720: ring 280, legend beside.</span></li>
+    </ul>
+    <div class="call" data-id="ring-upper" data-q="12. The ring's upper band" data-rec="280px, as drawn">
+      <p class="q">Where is the upper band?</p>
+      <p class="rec">Recommended: 280px, as drawn. The lower band, 148px, is measured, not chosen.</p>
+      <div class="chips"><button type="button" class="chip" data-v="280px, as drawn">280px<em>Recommended</em></button><button type="button" class="chip" data-v="Another upper band (comment)">Another number (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3">
+      <h3>Call 13 · the sketch sizes backwards in one place</h3>
+      <p>Look at the second and third tiles in the bottom row. At 440 wide the legend cannot sit beside, so it drops underneath and the ring grows to the 280 upper band. At 560 the legend fits beside and the ring drops to 192. A narrower tile gets a bigger ring. The sketch needs a rule for the stacked case. Two ways out: a cap, where a stacked ring is never bigger than the ring one step wider with its legend beside (at 440, that is 192); or a separate, lower band for the stacked case, a number you name.</p>
+    </div>
+    <div class="call" data-id="ring-stacked" data-q="13. The ring when the legend drops under it" data-rec="The cap: never bigger than one step wider with the legend beside">
+      <p class="q">When the legend drops under the ring, how big may the ring be?</p>
+      <p class="rec">Recommended: the cap. A stacked ring is never bigger than it would be one step wider with the legend beside, so rings only grow as tiles grow.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The cap: never bigger than one step wider with the legend beside">The cap<em>Recommended</em></button><button type="button" class="chip" data-v="A separate stacked band (comment)">A separate stacked band (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered by <code>notes/_lanes/312/F/F4/render_F4.py &lt;sha&gt; donut</code> at <code>f8eedc96</code>: real <code>dv-render</code> and <code>dv-render-donut</code> on canon, tiles 320/440/560/720. Rings 172 (stacked), 280 (stacked), 192 (beside), 280 (beside), identical in all 8 theme and mode runs (<code>F4-facts.json</code>). Four-theme sheets: <code>notes/_lanes/312/F/F4/img/F4-3-donut-bands-4themes-light.png</code> and <code>-dark.png</code>.</li>
+      <li>Lower band: total text 72px + 16, ÷ 0.6 (hole = 0.6 × outer radius) = 148px, measured. Upper band 280px, proposed. The non-monotonic step is found 3 of <code>notes/_subreports/2026-10-01-312-F-renders.md</code>.</li>
+      <li>Row this closes: <code>W-305n2</code>; the donut meta's "does not stretch" (s305-D59) is what this replaces.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="ground">
+  <div class="wrap">
+    <p class="label">14–15 · The bento ground word · two calls</p>
+    <h2>Add a fifth ground word to the bento editor, "section", bound to the ground canon already paints under the wall. In light it changes nothing; in dark it is one step darker than grey.</h2>
+    <p class="lead">The bento editor offers four grounds: grey, white, dark grey and transparent. None of them is bound to the section ground the dashboard template paints, so the editor cannot record what canon draws; the nearest word is grey. In light, grey and section are the same colour in all four themes. In dark they part by one step, and the section ground equals the dark page, so the wall meets the page with no edge while the tiles keep theirs. Left: grey, what the editor can record today. Right: section, what canon paints.</p>
+    <div class="pair one"><figure><figcaption>Four themes, dark · left grey, right section</figcaption><a href="_lanes/312/F/F4/img/F4-7-rails-4themes-dark.png"><img src="_lanes/312/F/F4/img/F4-7-rails-4themes-dark.png" alt="Eight dark dashboards in two columns: the left column on a grey ground #1F1F1F, the right on the section ground #1A1A1A, black tiles on both; Supercharge in warm browns"></a></figure></div>
+    <div class="pair one"><figure><figcaption>Four themes, light · the two words paint the same colour</figcaption><a href="_lanes/312/F/F4/img/F4-7-rails-4themes-light.png"><img src="_lanes/312/F/F4/img/F4-7-rails-4themes-light.png" alt="Eight light dashboards in two columns that look identical: grey and section both #F0F0F0, Supercharge #DFDEDC"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">Light</span><span>Grey and section both #F0F0F0 (Supercharge #DFDEDC). No visible change.</span></li>
+      <li><span class="k">Dark</span><span>Grey #1F1F1F, section #1A1A1A, tiles #000000. Supercharge: grey #2A2621, section #25211C, tiles #13110E.</span></li>
+      <li><span class="k">A claim corrected</span><span>A note on record says that in dark, grey is the tile colour. Measured on canon's template it is not: the tiles are #000000 and grey is #1F1F1F.</span></li>
+    </ul>
+    <div class="call" data-id="ground-word" data-q="14. A fifth ground word in the bento editor, bound to the section ground" data-rec="Yes, called section">
+      <p class="q">Does the editor get a fifth ground word, and what is it called?</p>
+      <p class="rec">Recommended: yes, called "section", the same word as the token under it.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, called section">Yes, "section"<em>Recommended</em></button><button type="button" class="chip" data-v="Yes, another word (comment)">Yes, another word (say below)</button><button type="button" class="chip" data-v="No fifth word, use grey">No, use grey</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="ground-scope" data-q="15. The scope of the section ground" data-rec="Every bento wall">
+      <p class="q">Does the section ground belong to the dashboard only, or to every bento wall?</p>
+      <p class="rec">Recommended: every bento wall. A wall is the same wall whichever page it sits on; one ground, one word.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Every bento wall">Every bento wall<em>Recommended</em></button><button type="button" class="chip" data-v="The dashboard only">The dashboard only</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered by <code>notes/_lanes/312/F/F4/render_F4.py &lt;sha&gt; rails</code> at <code>f8eedc96</code>; 16 per-shot files <code>F4-7-rails-&lt;theme&gt;-&lt;mode&gt;-&lt;grey|section&gt;.png</code>. Contrast of ground under tiles, dark: grey 1.27:1, section 1.21:1 (Supercharge 1.25:1 and 1.18:1).</li>
+      <li>This is the rails half of s305-D10, held: the rails generator's <code>theme_tokens()</code> picks the wrong Supercharge block (drift since #288), and no rails word binds <code>surface/section</code>. The "grey is the tile colour" note came through that resolver's first-match bug (found 2 of <code>notes/_subreports/2026-10-01-312-F-renders.md</code>).</li>
+      <li>Row this closes: <code>W-305w2</code> (its rails half).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="roundels" class="grey">
+  <div class="wrap">
+    <p class="label">16 · The status roundels in dark · your call</p>
+    <h2>In dark, the status roundel follows the ink: the same soft white as the text beside it, not pure white. Contrast stays well above the line.</h2>
+    <p class="lead">In dark, twenty rules across eighteen parts and templates paint the status roundel (the round mark in a notification, an inline message and a field error) pure white, by a policy from July: white shape, black mark. On Wednesday you softened the icons to the ink, so the roundel is now the one pure-white thing on those notes. Left in each theme: as built. Right: following the ink. The status still rides the shape and the tinted ground; only the white softens.</p>
+    <div class="pair one"><figure><figcaption>Four themes, dark · as built (left), following the ink (right)</figcaption><a href="_lanes/312/F/F4/img/F4-9-roundels-dark-4themes.png"><img src="_lanes/312/F/F4/img/F4-9-roundels-dark-4themes.png" alt="Four dark panels, one per theme, each showing notifications, inline messages and a field error twice: with pure white roundels on the left and soft white roundels on the right"></a></figure></div>
+    <ul class="facts">
+      <li><span class="k">The ink</span><span>#E1E1E1 in Mono, Console and Legacy; #F7F6F4 in Supercharge.</span></li>
+      <li><span class="k">Lowest contrast on a tint</span><span>Mono 8.59:1 to 6.57:1. Console 8:1 to 6.12:1. Legacy 17.63:1 to 13.48:1. Supercharge 13.45:1 to 12.45:1. Every one stays above 4.5:1.</span></li>
+      <li><span class="k">What it changes</span><span>The July rule (white shape, black mark) becomes: the shape takes the ink. Twenty rules move.</span></li>
+    </ul>
+    <div class="call" data-id="roundels" data-q="16. The dark status roundels: pure white or the ink" data-rec="Follow the ink">
+      <p class="q">In dark, does the roundel follow the ink?</p>
+      <p class="rec">Recommended: follow the ink, stated as a change to the July rule.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Follow the ink">Follow the ink<em>Recommended</em></button><button type="button" class="chip" data-v="Keep pure white">Keep pure white</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rendered by <code>notes/_lanes/312/F/F4/render_F4.py &lt;sha&gt; roundel</code> at <code>f8eedc96</code>; per theme <code>F4-9-roundels-&lt;theme&gt;-dark.png</code>; the following-the-ink side takes <code>icon/default</code>.</li>
+      <li>20 <code>.ic{color:#FFFFFF}</code> dark rules in 18 canon scopes, not the nine lane B counted: they include four templates (auth, create-edit, settings, wizard), tags-input, textarea and time-picker (<code>F4-facts.json</code> <code>roundel_white_rules</code>). The policy is the 2026-07-02 white-shape-black-mark rule; the softened ink is s311-D1.</li>
+      <li>Source item: lane B's found item 2, <code>notes/_subreports/2026-09-30-311-B-icons-and-supercharge-page.md</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="names">
+  <div class="wrap">
+    <p class="label">17–18 · Two token names · two calls</p>
+    <h2>Accept both names. They were minted on 27 September to build two of your calls, and names are yours.</h2>
+    <p class="lead">No new picture is needed: each token is already on this page. The section ground is the right-hand column of the pictures in call 14. The notification border is the thin coloured edge on the Legacy and Supercharge notes in call 16, absent on Mono and Console.</p>
+    <ul class="facts">
+      <li><span class="k">surface/section</span><span>The ground under a bento wall's tiles. Light #F0F0F0; dark #1A1A1A, one step below the tile it carries.</span></li>
+      <li><span class="k">notification/contextual/border/alpha</span><span>Switches the thin border on a tinted notification on or off by theme: off in Mono and Console, on in the variant's own colour in Legacy and Supercharge. Snackbars keep their own. The last word has to be "alpha" for the generators to read it as a number, so any rename keeps that ending.</span></li>
+    </ul>
+    <div class="call" data-id="name-section" data-q="17. Token name: surface/section" data-rec="Accept">
+      <p class="q">surface/section: accept or rename?</p>
+      <p class="rec">Recommended: accept.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Accept">Accept<em>Recommended</em></button><button type="button" class="chip" data-v="Rename (comment)">Rename (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="name-border" data-q="18. Token name: notification/contextual/border/alpha" data-rec="Accept">
+      <p class="q">notification/contextual/border/alpha: accept or rename?</p>
+      <p class="rec">Recommended: accept.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Accept">Accept<em>Recommended</em></button><button type="button" class="chip" data-v="Rename, keeping alpha last (comment)">Rename (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Minted by #305 lane B1 for calls 9 and 26 (<code>notes/_subreports/2026-09-27-305-B1-look.md</code>). <code>surface/section</code>: light <code>color/neutral/13</code>, dark <code>color/neutral/4</code>; ADR-0014 resolves Supercharge light #DFDEDC, dark now #25211C after s311-D2. <code>notification/contextual/border/alpha</code>: a number token in <code>semantic-colour.json</code>, base 0, legacy and supercharge overrides 1; the unitless rule in all three generators keys on a last segment <code>alpha</code>.</li>
+      <li>Names are Dave's under s145-D1. Row: <code>W-305b1</code>; carried in <code>_CARRIES.md</code> as a residual since #305.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="forks" class="grey">
+  <div class="wrap">
+    <p class="label">19–20 · The 29 colour forks · two calls</p>
+    <h2>Of the 29 colour forks, 26 settle under rulings already on record and one has gone. Two are real colour choices, and they are yours.</h2>
+    <p class="lead">The rest are a legacy palette pasted into Mono (twelve), the check reading a sanctioned variant or a shared nickname as a fork (nine), the disabled grey already owed (four), and one chart gap. Two wait on the third red. Your caveat, that some were chosen for halation and contrast, holds on exactly one family: the notification bar kept dark fills because white fails on the Mono pastels; the ruled answer there is dark ink on the pastel. The full table, with a pick and a reason on every row: <a href="_lanes/312/B/forks-29-table.html"><code>notes/_lanes/312/B/forks-29-table.html</code></a>.</p>
+
+    <div class="sub3" style="margin-top:var(--s3)">
+      <h3>Call 19 · the Mono hero's grey sub-line</h3>
+      <p>Mono's hero sub-line is grey. Everywhere else in Mono, secondary text is the ink. No ruling mints a text grey for Mono. The case for the grey is halation: in dark it cuts the glow about five times. The case against: you already softened the dark ink to #E1E1E1 for that reason. Drawn in this page from the hex values, not a canon render.</p>
+    </div>
+    <div class="spec">
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">Light · as built, grey #767676</p><p class="hero-t">Global treasury overview</p><p class="hero-s" style="color:#767676">Consolidated position · 28 August 2026 · GBP equivalent</p><p class="hex">#767676 on #FFFFFF · 4.54:1</p></div>
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">Light · the ink #1A1A1A</p><p class="hero-t">Global treasury overview</p><p class="hero-s" style="color:#1A1A1A">Consolidated position · 28 August 2026 · GBP equivalent</p><p class="hex">#1A1A1A on #FFFFFF · 17.4:1</p></div>
+      <div class="cell" style="background:#1A1A1A;color:#E1E1E1"><p class="cap">Dark · as built, grey #9A9A9A</p><p class="hero-t">Global treasury overview</p><p class="hero-s" style="color:#9A9A9A">Consolidated position · 28 August 2026 · GBP equivalent</p><p class="hex">#9A9A9A on #1A1A1A · 6.19:1</p></div>
+      <div class="cell" style="background:#1A1A1A;color:#E1E1E1"><p class="cap">Dark · the ink #E1E1E1</p><p class="hero-t">Global treasury overview</p><p class="hero-s" style="color:#E1E1E1">Consolidated position · 28 August 2026 · GBP equivalent</p><p class="hex">#E1E1E1 on #1A1A1A · 13.31:1</p></div>
+    </div>
+    <div class="call" data-id="hero-grey" data-q="19. The Mono hero's grey sub-line: keep a text grey, or the ink" data-rec="The ink">
+      <p class="q">In Mono, does the hero's sub-line keep a grey, or take the ink?</p>
+      <p class="rec">Recommended: the ink, like every other secondary text in Mono. No Mono text grey is minted.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The ink">The ink<em>Recommended</em></button><button type="button" class="chip" data-v="Keep the grey">Keep the grey</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="sub3">
+      <h3>Call 20 · does the ink rule reach the outline border?</h3>
+      <p>The tertiary (outline) button's border token is pure black in Supercharge and Mono. Only Supercharge's button paints its theme's darkest colour instead. Your ink rule stops short of borders today. The contrast model cannot tell the two apart (19.4:1 and 17.5:1 on Supercharge's ground); only your eye can. Drawn in this page from the hex values.</p>
+    </div>
+    <div class="spec four">
+      <div class="cell" style="background:#F7F6F4;color:#13110E"><p class="cap">Supercharge · pure black</p><span class="btn" style="border:1px solid #000000;color:#13110E">Download</span><p class="hex">border #000000</p></div>
+      <div class="cell" style="background:#F7F6F4;color:#13110E"><p class="cap">Supercharge · the ink</p><span class="btn" style="border:1px solid #13110E;color:#13110E">Download</span><p class="hex">border #13110E</p></div>
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">Mono · pure black</p><span class="btn" style="border:1px solid #000000;color:#1A1A1A">Download</span><p class="hex">border #000000</p></div>
+      <div class="cell" style="background:#FFFFFF;color:#1A1A1A"><p class="cap">Mono · the ink</p><span class="btn" style="border:1px solid #1A1A1A;color:#1A1A1A">Download</span><p class="hex">border #1A1A1A</p></div>
+    </div>
+    <div class="call" data-id="outline-border" data-q="20. Does the ink rule reach the outline border token" data-rec="Yes, the border follows the ink">
+      <p class="q">Does the outline border follow the ink, so a button's border and label are one colour?</p>
+      <p class="rec">Recommended: yes. One rule with no exception for borders; Supercharge's button already does it.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, the border follows the ink">Yes, follow the ink<em>Recommended</em></button><button type="button" class="chip" data-v="No, borders stay pure black">No, stay pure black</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane B5 (#311 overnight), <code>notes/_subreports/2026-10-01-311-B5-forks-29.md</code>; table <code>notes/_lanes/312/B/forks-29.json</code> and <code>forks-29-table.html</code>; scorer <code>forks_29.py</code>. Rows 9 and 10 (<code>--muted</code> mono, root v <code>.cn-hero</code>) and 29 (<code>--ter-border</code> supercharge, action-bar #000000 v button #13110E; <code>tertiary/border/default</code> pure black at <code>canon.css:387</code> and <code>:26864</code>). Bloom, dark: #9A9A9A 2.9 v #E1E1E1 16.2.</li>
+      <li>The Mono ink values in the specimens (#1A1A1A light, #E1E1E1 dark) are B5's row 9 and 10 figures. The specimens are HTML in this page, not a canon render; the type is this page's, not the hero's.</li>
+      <li>A second, earlier B5 run (<code>notes/_subreports/2026-10-01-311-B5-forks.md</code>, uncommitted) made different picks; <code>WAVE-2-START.md</code> § 6 leaves the choice of record to the conductor. This page follows <code>forks-29</code>. Row: <code>W-308ib</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="schema">
+  <div class="wrap">
+    <p class="label">21–22 · Two words from last night's schema build · two calls</p>
+    <h2>Keep both as built: the data grid's applied search words are "terms", and a bento wall accepts four kinds of tile.</h2>
+    <p class="lead">Your four schema rulings from 27 and 28 September are now in the parts' records. Two words in that build were left for you. No picture: both are names in the record, not things on screen.</p>
+    <ul class="facts">
+      <li><span class="k">terms</span><span>The data grid shows each applied search word as a removable chip; the record calls that list "terms". You said it needed a name of its own and did not give one. "Terms" is short, plain, and what a searcher calls them.</span></li>
+      <li><span class="k">The wall's four</span><span>Headline metric, status surface, chart, record list. The wall now refuses anything else. The navs stay out (call 2: they are frame).</span></li>
+    </ul>
+    <div class="call" data-id="terms" data-q="21. The data grid's applied search words, named terms" data-rec="Keep terms">
+      <p class="q">Keep "terms", or name them?</p>
+      <p class="rec">Recommended: keep "terms".</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep terms">Keep "terms"<em>Recommended</em></button><button type="button" class="chip" data-v="Rename (comment)">Rename (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="wall-accepts" data-q="22. The four kinds of tile a bento wall accepts" data-rec="Keep the four">
+      <p class="q">Widen or narrow the four kinds of tile the wall accepts?</p>
+      <p class="rec">Recommended: keep the four; widen only when a real page needs a fifth.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep the four">Keep the four<em>Recommended</em></button><button type="button" class="chip" data-v="Widen (comment)">Widen (say what)</button><button type="button" class="chip" data-v="Narrow (comment)">Narrow (say what)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Lane C0 (#311), <code>notes/_subreports/2026-10-01-311-C0-schema-calls.md</code>: s305-D17, D18, D19, D58 built at <code>7eaae613</code>. D58 said the data grid's applied search terms need a name of their own; C0 used <code>terms</code>. The bento tiles slot accepts four roles: headline metric, status surface, chart, record list.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="house" class="grey">
+  <div class="wrap">
+    <p class="label">23–29 · Housekeeping that waits on your word · seven calls</p>
+    <h2>Seven small calls a lane could not settle inside your rules. Each is plain words; none needs a picture.</h2>
+    <p class="lead">They came out of the quick-fixes lane on 28 September and one overnight lane. Each changes something visible or changes a rule, which is why they are yours.</p>
+
+    <div class="call" data-id="tabs-width" data-q="23. The Tabs part's width" data-rec="Fill the container">
+      <p class="cnum">23 · The Tabs width</p>
+      <p class="q">The Tabs part is 640px wide wherever it goes (in a 1200px space: strip 640px, panel 424px). Should its real default fill the space it is put in?</p>
+      <p class="rec">Recommended: fill the container. The 640px was a demo setting that never left; your September rule says such a setting is moved to a real default, not fenced off. The panel's text keeps its reading width.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Fill the container">Fill the container<em>Recommended</em></button><button type="button" class="chip" data-v="Keep 640px">Keep 640px</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="square-corner" data-q="24. Square corners on the split button: a plain 0 or a token" data-rec="A square-corner token">
+      <p class="cnum">24 · Square corners</p>
+      <p class="q">The split button has two square corners where its halves meet. The corner check refuses a plain 0 on purpose, because corners are token-bound, and no zero token exists. A token, or allow a plain 0?</p>
+      <p class="rec">Recommended: mint a square-corner token (its name is yours). It keeps the check's teeth; allowing 0 blunts it.</p>
+      <div class="chips"><button type="button" class="chip" data-v="A square-corner token">A token<em>Recommended</em></button><button type="button" class="chip" data-v="Allow a plain 0">Allow a plain 0</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="evidence-image" data-q="25. The 4.36 MB evidence folder from 3 September" data-rec="Leave it as filed and close the question">
+      <p class="cnum">25 · The September evidence image</p>
+      <p class="q">A question asked to apply "the image size rule" to a 4.36 MB evidence folder from 3 September (largest file a 1.33 MB full-page screenshot). No such rule was ever made. What happens?</p>
+      <p class="rec">Recommended: leave it as filed and close the question. There is no rule to apply, and filed evidence is frozen.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Leave it as filed and close the question">Leave it, close it<em>Recommended</em></button><button type="button" class="chip" data-v="Drop the full-page picture">Drop the full-page picture</button><button type="button" class="chip" data-v="Set a size cap (comment)">Set a size cap (say it)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="focus-ring" data-q="26. The showroom's focus ring as a token" data-rec="Yes, bind it to the library's token">
+      <p class="cnum">26 · The showroom focus ring</p>
+      <p class="q">137 showroom pages hard-code a blue focus ring (#305A85). Should it be the library's own focus token? Their dark-mode look changes.</p>
+      <p class="rec">Recommended: yes, so the showroom shows the focus the library ships.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, bind it to the library's token">Yes, a token<em>Recommended</em></button><button type="button" class="chip" data-v="Keep the hard-coded blue">Keep the blue</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="canon-gallery" data-q="27. The old canon gallery page: keep and regenerate, or retire" data-rec="Keep and regenerate">
+      <p class="cnum">27 · The old canon gallery</p>
+      <p class="q">The old canon gallery page is well out of date, and regenerating it changes it. Keep and regenerate, or retire?</p>
+      <p class="rec">Recommended: keep and regenerate. It is still one of the pages a colour change is measured against (the 27 September build proved nothing else moved by zero changes on it in four themes, light and dark), and the screen gate holds a record for it. Its two sizing rules from last night follow this answer.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep and regenerate">Keep and regenerate<em>Recommended</em></button><button type="button" class="chip" data-v="Retire it">Retire it</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="runbook-date" data-q="28. The runbook index's date stamp" data-rec="Show the date of the newest runbook change">
+      <p class="cnum">28 · The runbook index date</p>
+      <p class="q">Every build rewrites "last generated" with today's date on the runbook index, so the file changes when nothing in it did. Keep it, or show the date of the newest runbook change?</p>
+      <p class="rec">Recommended: show the date of the newest runbook change.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Show the date of the newest runbook change">The newest change<em>Recommended</em></button><button type="button" class="chip" data-v="Keep today's date">Keep today's date</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="call" data-id="fallback-theme" data-q="29. Which theme a generated page's fallback colours follow" data-rec="The base theme, light">
+      <p class="cnum">29 · Fallback colours</p>
+      <p class="q">Generated pages write a fallback colour inside each colour variable, used only if the stylesheet fails to load. Twelve have drifted from canon, and each has three right answers by theme and mode. Which theme do the fallbacks follow?</p>
+      <p class="rec">Recommended: the base theme in light, the values the other themes override. One answer for every page, and the drift check can then be made to refuse.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The base theme, light">The base theme, light<em>Recommended</em></button><button type="button" class="chip" data-v="A named theme (comment)">A named theme (say which)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Calls 23–29 are lane D's six from <code>notes/_subreports/2026-09-28-307-D-quick-18.md</code>, in its order; call 27 is also overnight lane A1's question (<code>notes/_subreports/2026-10-01-311-A1-shared-stylesheet-link-dont-paste.md</code>: canon-gallery's 2 legacy sizing pins wait on it). The recommendations on these seven are this page's, not lane D's; lane D gave none.</li>
+      <li>23 · <code>W-307ye</code>: <code>--tabs-w:640px</code> and <code>max-width:52ch</code> in canon at <code>canon.css:3026</code> and <code>:3069</code>, unfenced; render <code>notes/_lanes/307/D/tabs_probe.py</code>; s258-D3.</li>
+      <li>24 · <code>W-307qn</code>: the #209 Split-button pair (<code>canon.css:15838</code>, <code>Split-button.reference.html:134</code>); ADR-0010; radius gate's selftest "hardcoded 0 NOT flagged (gate has no teeth)". Arm stays ADVISORY, 4 declarations.</li>
+      <li>25 · <code>W-307qp</code>: the #245 L4 evidence folder; <code>page-full.png</code> 1.33 MB; the #238 asset-size policy was never ruled; ADR-0017 freezes filed reports.</li>
+      <li>26 · <code>W-307q8</code>: the L3 report's Q3; 137 <code>showroom/*.html</code> pages hard-code <code>#305A85</code>.</li>
+      <li>27, 28 · <code>W-307q2</code> Q1 and Q4: <code>canon-gallery.canon.html</code> 2.3× stale; <code>knowledge/_screen-gate/canon-gallery.canon.md</code> exists; <code>gen_runbook_index.py</code> stamps <code>_RUNBOOKS.md</code>. Zero-change proof on canon-gallery: <code>notes/_subreports/2026-09-27-305-B1-look.md</code>. Q3 (the 18-home <code>THEMES</code> literal) is a seam of its own and not on this page.</li>
+      <li>29 · <code>W-307q5</code>: 13 drifts over six generators (<code>--border-subtle,#D7D8D6</code> ×6, <code>--text-secondary,#545454</code> ×6, <code>--color-neutral-5,#312C26</code> ×1); the one mechanical fix, <code>--color-neutral-5</code> → <code>#313131</code>, is already ruled (s220-D1). "Base theme" means the values in the base token files that the theme overrides sit on (ADR-0014).</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="seen">
+  <div class="wrap">
+    <p class="label">Seen on the way · not questions</p>
+    <h2>Five faults the pictures caught. None is a call; each is named so it is not lost.</h2>
+    <ul class="plain">
+      <li>The banking demo's top nav renders as plain underlined links, and its action buttons as empty boxes: the page's markup does not use the classes canon's nav styles target. Visible in call 1.</li>
+      <li>In the demo's payment tile, the filter toolbar stacks its four controls in a column at full width, where the toolbar's reference runs them in a row. Visible in call 8.</li>
+      <li>A tab strip on a real page needs Tabs' own overflow script beside it; without it the strip runs off the right edge at phone width. Visible in call 9.</li>
+      <li>The dashboard template at 1440 sits flush left, with no outer padding on its header block. Visible in call 2.</li>
+      <li>The library has no flyout or mega-menu markup yet. If you take call 3, the mega menu is a build owed.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="else" class="grey">
+  <div class="wrap">
+    <p class="label">30 · Anything else</p>
+    <h2>Anything you want changed, drawn again, or asked a different way.</h2>
+    <div class="call" data-id="page" data-q="30. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · The pictures you are owed · v1 · 2026-10-01 · session 312 lane F5</span>
+  <span>A drawn option is not a ruling. Nothing stands until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 29 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-312-F-the-pictures-you-are-owed-v1';
+  var PATH='notes/_REVIEW-312-F-the-pictures-you-are-owed-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  var asked=calls.filter(function(el){ return el.dataset.id!=='page'; });
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  // the at-a-glance table, built from the calls themselves so it cannot drift from them
+  var tb=document.querySelector('#glance-table tbody');
+  asked.forEach(function(el){
+    var sec=el.closest('section'), q=el.dataset.q, n=q.split('.')[0], t=q.slice(n.length+1).trim();
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="n"></td><td><a></a></td><td></td><td class="st"></td>';
+    tr.children[0].textContent=n; tr.children[1].firstChild.textContent=t; tr.children[1].firstChild.href='#'+(sec?sec.id:'');
+    tr.children[2].textContent=el.dataset.rec; tr.dataset.id=el.dataset.id;
+    tb.appendChild(tr);
+  });
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(el.dataset.id!=='page' && has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    [].forEach.call(tb.children,function(tr){
+      var s=state[tr.dataset.id]||{}, el=document.querySelector('.call[data-id="'+tr.dataset.id+'"]');
+      tr.children[3].textContent = s.v ? (s.v===el.dataset.rec ? 'Recommended' : s.v) : ((s.note||'').trim() ? 'Comment only' : 'Not answered');
+    });
+    document.getElementById('count').textContent = n+' of '+asked.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 312 · The pictures you are owed · comments','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Recommended: '+rec);
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-312-F-the-pictures-you-are-owed.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

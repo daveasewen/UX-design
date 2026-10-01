@@ -3,7 +3,7 @@
 session: `#310` · 2026-09-30
 window: lane W (delegated, Opus 5.5 wrap seat)
 sub index: `W`
-brief: the conductor's launch message, on his 17:38 BST "wrap"
+brief: the conductor's launch message, on his 17:38 BST "wrap" (and `notes/_lanes/310/W/BRIEF.md` where one was cut)
 provenance: 310 · 2026-09-30
 status: observed
 tokens: UNMEASURED — this seat cannot read its own transcript while it is still growing
@@ -18,7 +18,7 @@ WRAP COUNTS (before the commit): hand-written files `1` (the story; target 1) ·
 
 ## 1. The fill
 
-boot **135,179** (OVER the 135,000 ceiling by 179) · 160,000 at 14:03 · **300,000 at 14:47** · 320,000 at 16:24 · ⛔ **350,000 at 17:17** · **372,194 at his "wrap"** (17:38), past the hard 350,000 by 22,194. subs 647,656 real (n=2, quota, never added). Every figure is `_wrap_facts.py`'s hand sum over `knowledge/_tmp/wrap310/conductor-310.jsonl` to `2026-09-30T16:38:47.058Z`.
+Every figure is `_wrap_facts.py`'s hand sum over `knowledge/_tmp/wrap310/conductor-310.jsonl` to `2026-09-30T16:38:47.058Z` (108 distinct messages): Boot **135,179** (14:02 BST), ⚠ OVER `BOOT_CEILING_TK` 135,000 (`s305-D64`) by 179 · over 160,000 at the 6th (14:03, 160,215) · **over 300,000 stop line at the 75th (14:47, 301,546)** · over 320,000 at the 84th (16:24, 325,742) · ⛔ **over 350,000 at the 98th (17:17, 354,103)** · **372,194 at the 108th (17:38), the message before his "wrap" (17:38 BST)** · 383,092 at the 113th (17:39), the message that launched this seat. ⛔ FILL 372,194 is past the hard 350,000 by 22,194; the launch message was 33,092 past it. subs 647,656 (n=2) (`agent-a5483d7ce5d7d55ea.jsonl` 316,357 · `agent-ade2c6fd9f65590d8.jsonl` 331,299).
 
 ## 2. Each step, and what the tool did
 
@@ -28,14 +28,14 @@ boot **135,179** (OVER the 135,000 ceiling by 179) · 160,000 at 14:03 · **300,
 | gate at open | `_capture_gate.py --wrap` | 247 in scope · 0 fail · 33 warn |
 | the story | `STORY.md` by hand, `_wrap_views.py --check` then `--write` | 15 views generated |
 | carries | `_wrap_carries.py delta` (6 new, 4 struck) | the `residual → #311` delta block; `render` materialises the full line |
-| GM/LS | `_wrap_ops.py` → `_gm_move.py` | one move file, dry run then write, its inputs from `views/` |
+| GM/LS | `_wrap_ops.py` → `_gm_move.py` | one move file (`_ops-310W.json`), dry run then write, its inputs from `views/` |
 | rows | `_wrap_rows.py --spec views/rows.json` | `W-310h`, `W-310dh`, `W-310w`, `W-310wk` minted born closed; W-309g2 closed, W-309g4 noted, W-305wr noted, W-305v2 noted |
 | regen | `_wrap_regen.py --run --session 310` | once, after the last edit |
 | commit | `_wrap_commit.py msg/paths/commit` | § POST-COMMIT |
 
 ## 3. What this wrap found
 
-1. **The brief's typed fill is 5,887 under the hand sum** (366,307 against 372,194 on the last record before his "wrap"). The typed figure is a sum of two fields on one call the conductor read; the tool's is the last record per message id, three fields. The hand sum is the one written everywhere.
+1. **The brief's typed fill is 5,887 under the hand sum** (366,307, cache read 361,253 + creation 5,052, against 372,194 on the last record before his "wrap"). The typed figure is a sum of two fields on one call the conductor read; the tool's is the last record per message id, three fields. The hand sum is the one written everywhere.
 2. **`s310-D2` reads `ruled` in the store although it was built at `7bc6b0c5`.** Not changed here: a status is stamped by `_inscribe_ruling.py --set-status`, and the stamp is the conductor's. Carried in `_HANDOFF-161` item 7.
 3. **Boot 135,179 is over `BOOT_CEILING_TK` by 179**, the first boot over the ceiling since `s305-D64` set it. Stated, not diagnosed.
 
@@ -59,9 +59,9 @@ REPLAY-THESE: `python3 knowledge/_wrap_views.py --check --session 310` · `pytho
 
 ## POST-COMMIT (by addition, 5b)
 
-- **The wrap commit is `b40bddc2`**, on the `--wrap` path, gate `248 in scope · 0 fail · 31 warn`; **`4ece47a5`** carries the seat's files.
-- **The pre-push check, before the push:** 155 pass · 0 FAIL · 3 advisory · 9 could-not-ask over 4 chunks; `test_gates` 32 (0 failures). Logs `notes/_lanes/310/W/_prepush-*.txt`.
-- **The push:** `44696966..4ece47a5` at 2026-09-30T17:01:30Z, 21.7 minutes from the launch.
-- **CI:** `4ece47a5`, run `36748452503`, GREEN (gates completed/success, render completed/success, release completed/success).
-- **`_CHAIN.md` 7,824 cl100k** at the wrap's regen (warn 7,700, fail 10,000). Declared.
+- **The wrap commit is `b40bddc2`**, on the `--wrap` path, gate `248 in scope · 0 fail · 31 warn`, the named paths plus `notes/_REHEARSAL-LOG.jsonl` auto-staged; **`4ece47a5`** carries the seat's files.
+- **The pre-push check, before the push:** 155 pass · 0 FAIL · 3 advisory (140, 150, 163) · 9 could-not-ask over 4 chunks of 167 steps; `test_gates` 32 (0 failures). Logs `notes/_lanes/310/W/_prepush-*.txt`.
+- **The push:** `44696966..4ece47a5` at 2026-09-30T17:01:30Z, 21.7 minutes from the launch, carrying `69173275`.
+- **CI:** `4ece47a5`, run `36748452503`, GREEN (gates completed/success, render completed/success, release completed/success). 
+- **`_CHAIN.md` 7,824 cl100k** at the wrap's regen, over the 7,700 warn by 124 (fail 10,000). Declared.
 - **Title:** the story's `Apollo - #311: the soft white and the tab strip, built and shown`; `_gen_titles.py` derived `Apollo - #311: build the soft white and the tab strip, then show him`. Declared.

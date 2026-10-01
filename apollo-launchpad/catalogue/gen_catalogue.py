@@ -470,6 +470,18 @@ def build(metas_sha=None, prev_dash=None, prev_all=None, overlay=None):
     return dash, allc, report, round(time.perf_counter() - t0, 3)
 
 
+def report_comparable(rep):
+    """The report with its provenance stamps masked, for --check and the selftest (#312 lane V).
+    `inputs` carries the input files' hashes and `catalogue.metas_sha` is git HEAD at build time,
+    so a committed report can never carry the sha of the commit that holds it: comparing them made
+    --check STALE on every commit (AC1 found, not fixed). The entries' sha256 and the metas' bytes
+    (metas_sha256) stay in the comparison; the git stamp and the input hashes are informational."""
+    out = {k: v for k, v in rep.items() if k != "inputs"}
+    if isinstance(out.get("catalogue"), dict):
+        out["catalogue"] = {k: v for k, v in out["catalogue"].items() if k != "metas_sha"}
+    return canonical(out)
+
+
 def dump(obj):
     return json.dumps(obj, indent=1, ensure_ascii=False) + "\n"
 
@@ -505,10 +517,16 @@ def main(argv=None):
             if old.get("metas_sha256") != new["metas_sha256"]:
                 stale.append("catalogue-dashboard.json: the metas' bytes moved (metas_sha256 %s -> %s)"
                              % (str(old.get("metas_sha256"))[:12], new["metas_sha256"][:12]))
+        if prev_dash is not None:
+            # the BODY on disk, re-hashed — a tampered entry under an untouched stamp is stale too (#312 lane V)
+            body_sha = sha_bytes(canonical({"components": prev_dash.get("components"), "$defs": prev_dash.get("$defs")}))
+            if body_sha != dash["x-apollo"]["catalogue"]["sha256"]:
+                stale.append("catalogue-dashboard.json: the entries on disk differ from a fresh build (body sha256 %s -> %s)"
+                             % (body_sha[:12], dash["x-apollo"]["catalogue"]["sha256"][:12]))
         prev_rep = load_prev(paths["report"])
         if prev_rep is None:
             stale.append("catalogue-report.json missing")
-        elif canonical({k: v for k, v in prev_rep.items() if k != "inputs"}) != canonical({k: v for k, v in report.items() if k != "inputs"}):
+        elif report_comparable(prev_rep) != report_comparable(report):
             stale.append("catalogue-report.json differs from a fresh run")
         if stale:
             print("gen_catalogue --check: STALE\n  " + "\n  ".join(stale) + "\n  run: python3 apollo-launchpad/catalogue/gen_catalogue.py")

@@ -123,5 +123,210 @@
         "ref": "role:wayfinding"
       }
     ]
+  },
+  "anatomy": {
+    "part": "pg",
+    "tag": "nav",
+    "attrs": {
+      "class": "pg"
+    },
+    "aria": {
+      "aria-label": "Pagination"
+    },
+    "$sel": "body > nav.pg",
+    "children": [
+      {
+        "part": "ul",
+        "tag": "ul",
+        "$sel": "body > nav.pg > ul",
+        "children": [
+          {
+            "part": "li",
+            "tag": "li",
+            "$sel": "body > nav.pg > ul > li",
+            "children": [
+              {
+                "part": "ctrl",
+                "tag": "button",
+                "attrs": {
+                  "class": "ctrl"
+                },
+                "aria": {
+                  "aria-label": "Previous page"
+                },
+                "$sel": "body > nav.pg > ul > li > button.ctrl",
+                "children": [
+                  {
+                    "part": "icon",
+                    "tag": "svg",
+                    "attrs": {
+                      "viewbox": "0 0 18 18"
+                    },
+                    "aria": {
+                      "aria-hidden": "true"
+                    },
+                    "$sel": "body > nav.pg > ul > li > button.ctrl > svg"
+                  }
+                ]
+              }
+            ],
+            "$repeat": 2
+          },
+          {
+            "part": "li-2",
+            "tag": "li",
+            "$sel": "body > nav.pg > ul > li",
+            "children": [
+              {
+                "part": "a",
+                "tag": "a",
+                "attrs": {
+                  "href": "#"
+                },
+                "aria": {
+                  "aria-current": "{state.current}"
+                },
+                "text": "1",
+                "$sel": "body > nav.pg > ul > li > a"
+              }
+            ],
+            "$repeat": 5
+          },
+          {
+            "part": "li-3",
+            "tag": "li",
+            "$sel": "body > nav.pg > ul > li",
+            "children": [
+              {
+                "part": "ellipsis",
+                "tag": "span",
+                "attrs": {
+                  "class": "ellipsis"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "text": "…",
+                "$sel": "body > nav.pg > ul > li > span.ellipsis"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "completed",
+      "disabled",
+      "focus",
+      "active",
+      "current"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      }
+    ],
+    "keys": {
+      "Space": "activate",
+      "ArrowLeft": "previous",
+      "ArrowRight": "next",
+      "End": "last",
+      "Home": "first"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "hover": [
+        "style .pg .ctrl:not([disabled]):hover",
+        "style .pg a:hover"
+      ],
+      "disabled": [
+        "style .pg .ctrl:not([disabled]):active",
+        "style .pg .ctrl:not([disabled]):hover",
+        "style .pg .ctrl[disabled]"
+      ],
+      "active": [
+        "style .pg .ctrl:active",
+        "style .pg .ctrl:not([disabled]):active",
+        "style .pg a:active"
+      ],
+      "focus": [
+        "style .pg .ctrl:focus-visible",
+        "style .pg a:focus-visible"
+      ],
+      "current": [
+        "attribute aria-current on a twin of body > nav.pg > ul > li > a",
+        "style .pg [aria-current=\"page\"]"
+      ],
+      "$initial": "meta prop `state` enum; initial = its default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--text": "{text.default}",
+    "--disabled": "{text.disabled}",
+    "--icon": "{icon.default}",
+    "--current-bd": "{tertiary.border.default}",
+    "--hover": "{form.background.hover}",
+    "--pressed": "{tertiary.background.pressed}",
+    "--on-pressed": "{text.reverse}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Pagination.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 1 (nav.pg)",
+    "$listeners": [
+      "click",
+      "keydown"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

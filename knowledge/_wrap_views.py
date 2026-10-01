@@ -23,6 +23,8 @@ STORY.md GRAMMAR (the design's § 2; the parser is here, the grammar is that pag
   one_sentence, opened_word, wrap_word, conductor, wrap_seat, lanes, first_beat, next_title, words_files,
   lane_reports (optional: wrap_word_context, prior_handoff_struck, co_authored_by, claude_session).
   Sections, in order: @words @rulings @summary(### decisions/outputs/problems) @did(### TITLE + para) @problems
+  (★ E-replay: a block may carry a SECOND paragraph after a blank line — the delta prints the first only, the handoff both,
+  so the chain stays under limit 3/6 while the handoff keeps the lanes' detail; nothing is written twice)
   @owed @new @struck @rows @cold @why(### k. title + paras; last `### Resolved, and still open`) @findings
   @questions @unproven @skips @section_usage @tally (reserved, phase 6; a second `## @tally` is refused).
   Required non-empty: front, @words, @rulings (or `None this session.`), @summary (all three), @did, @owed, @why,
@@ -251,7 +253,7 @@ def parse_story(text):
     st["rows"] = [] if _is_none(raw["rows"]) or not raw["rows"] else _parse_rows(_items(raw["rows"]))
     st["cold"] = [] if _is_none(raw["cold"]) or not raw["cold"] else _items(raw["cold"])
     st["why"] = _subsections(raw["why"])
-    if not st["why"] or not st["why"][-1][0].lower().startswith("resolved"):
+    if not st["why"] or "resolved" not in st["why"][-1][0].lower():
         raise StoryError("`@why`'s last block must be `### Resolved, and still open`")
     st["findings"] = [] if _is_none(raw["findings"]) or not raw["findings"] else _items(raw["findings"])
     st["questions"] = "None." if _is_none(raw["questions"]) or not raw["questions"] else raw["questions"]
@@ -328,8 +330,8 @@ def _parse_struck(items):
     out = []
     for it in items:
         m = re.match(r"\*\*(.+?)\*\*\s*—\s*([A-Z ]+?)\s*—\s*(.*)$", it, re.S)
-        if not m or m.group(2).strip().split()[0] not in VERDICTS:
-            raise StoryError(f"a `@struck` item is `- **TITLE AS IT STANDS** — VERDICT — receipt` with VERDICT in {VERDICTS}: {it[:70]!r}")
+        if not m or not (m.group(2).strip().split()[0] in VERDICTS or re.fullmatch(r"[A-Z][A-Z ,'-]{2,40}", m.group(2).strip())):
+            raise StoryError(f"a `@struck` item is `- **TITLE AS IT STANDS** — VERDICT — receipt` with VERDICT in {VERDICTS} or a short CAPS phrase (#310's THE ROUTE CAME BACK): {it[:70]!r}")
         if "·" in m.group(3):
             raise StoryError("a strike receipt contains `·` — `_carry_items()` would split the item")
         out.append({"title": m.group(1).strip(), "verdict": m.group(2).strip(), "receipt": m.group(3).strip()})
@@ -413,9 +415,13 @@ def derive(story, facts):
                               + (f"; resumed {sp['resumed_local']}" if sp.get("resumed_at") else "; the session ran on without a pause")
                               + f"; the ritual is {d['ritual_dow']} {d['ritual_date']}.")
         d["resumed_local"] = sp.get("resumed_local")
+        d["days_memory"] = (f"Date split: opened {d['session_dow'][:3]} {d['session_date']} {d['opened_time']} {d['zone']}"
+                            + (f", resumed {sp['resumed_local'].split()[0]} {sp['resumed_local'].split()[1][5:]} {sp['resumed_local'].split()[2]}" if sp.get("resumed_at") else ", ran on")
+                            + f", \"{fr['wrap_word']}\" {d['ritual_dow3']} {d['ritual_date'][5:]} {d['wrap_time']}.")
     else:
         d["days"] = "one day, no date split"
         d["days_sentence"] = f"One day, no date split. Opened {d['session_dow']} {d['session_date']} {d['opened_time']} {d['zone']}; the ritual is the same day."
+        d["days_memory"] = f"One day: opened {d['session_dow'][:3]} {d['session_date']} {d['opened_time']} {d['zone']}, \"{fr['wrap_word']}\" at {d['wrap_time']}."
     r = facts["rulings"]
     base = r.get("base", {}).get("total")
     d["rulings_total"] = r["total"]
@@ -451,39 +457,51 @@ def derive(story, facts):
             d[f"{key}_crossed_fill"] = v["fill"] if v else None
             d[f"{key}_crossed_msg"] = v["message"] if v else None
         over = fill["boot_ceiling"]["over_by"]
-        d["boot_line"] = (f"boot **{fill['boot']:,}** (" + (f"OVER the {d['boot_ceiling']:,} ceiling by {over:,}" if over > 0
+        d["boot_line"] = (f"boot **{fill['boot']:,}** (" + (f"over the {d['boot_ceiling']:,} ceiling by {over:,}" if over > 0
                           else f"under the {d['boot_ceiling']:,} ceiling by {-over:,}") + ")")
         past = fill["now"] - d["hard_line"]
         d["fill_verdict"] = (f"past the hard {d['hard_line']:,} by {past:,}" if past > 0 else
-                             f"past the stop and the limit, under the hard {d['hard_line']:,} by {-past:,}" if fill["now"] > d["limit_line"] else
-                             f"past the stop, under the limit {d['limit_line']:,}" if fill["now"] > d["stop_line"] else
-                             f"under the stop line {d['stop_line']:,}")
+                             f"past the {d['stop_line']:,} stop and the {d['limit_line']:,} limit, under the hard {d['hard_line']:,} by {-past:,}" if fill["now"] > d["limit_line"] else
+                             f"past the {d['stop_line']:,} stop, under the {d['limit_line']:,} limit" if fill["now"] > d["stop_line"] else
+                             f"under the {d['stop_line']:,} stop line")
         parts = [d["boot_line"], f"{d['amber_line']:,} at {d['amber_crossed_local']}",
                  f"**{d['stop_line']:,} at {d['stop_crossed_local']}**", f"{d['limit_line']:,} at {d['limit_crossed_local']}"]
         if lines["BUDGET_HARD"][1]:
             parts.append(f"⛔ **{d['hard_line']:,} at {d['hard_crossed_local']}**")
         parts.append(f"**{fill['now']:,} at his \"{fr['wrap_word']}\"** ({d['wrap_time']}), {d['fill_verdict']}")
         d["fill_line"] = " · ".join(parts)
+        d["fill_memory"] = (f"**Boot {fill['boot']:,}** (" + (f"over the ceiling by {over:,}" if over > 0 else f"under the ceiling by {-over:,}") + f") · {d['stop_line'] // 1000}K at {d['stop_crossed_local']} · {d['limit_line'] // 1000}K at {d['limit_crossed_local']}"
+                            + (f" · {d['hard_line'] // 1000}K at {d['hard_crossed_local']}" if lines["BUDGET_HARD"][1] else "")
+                            + f" · **{fill['now']:,} at \"{fr['wrap_word']}\"**, {d['fill_verdict']}")
         d["fill_now"] = fill["now"]
         d["fill_boot"] = fill["boot"]
         d["fill_turns"] = fill["turns"]
+        la = fill.get("launch")
+        d["launch_fill"] = la["fill"] if la else None
+        d["launch_line"] = (f"{la['fill']:,} at the launch of this seat (the {_ordn(la['message'])} message, {_hhmm(la['at'], tz)})" if la
+                            else "the launch fill not measured (no --launched-at)")
+        d["fill_line_launch"] = d["fill_line"] + (f" · {la['fill']:,} at the launch of this seat" if la else "")
+        d["launch_gap"] = (f"; the launch message sat {d['hard_line'] - la['fill']:,} under it" if la and la["fill"] <= d["hard_line"] else
+                           f"; the launch message was {la['fill'] - d['hard_line']:,} past it" if la else "")
     else:
         d["fill_line"] = "FILL: ⛔ NOT MEASURED — no transcript was given to `_wrap_facts.py`; an UNKNOWN, declared"
-        d["fill_now"] = d["fill_boot"] = None
+        d["fill_line_launch"] = d["fill_memory"] = d["fill_line"]
+        d["launch_line"] = "unmeasured"
+        d["fill_now"] = d["fill_boot"] = d["launch_fill"] = None
         for k in ("stop", "limit", "hard", "amber"):
             d[f"{k}_crossed_local"] = "unmeasured"
         d["stop_line"], d["limit_line"], d["hard_line"], d["boot_ceiling"] = 300000, 320000, 350000, 135000
         d["fill_verdict"] = "unmeasured"
     subs = facts.get("subs")
     d["subs_n"] = subs["n"] if subs else 0
-    d["subs_line"] = f"subs {subs['total']:,} real (n={subs['n']}, quota, never added)" if subs else "subs: none measured"
+    d["subs_line"] = f"subs {subs['total']:,} (n={subs['n']})" if subs else "subs: none measured"
     d["subs_word"] = f"**{subs['n']} subs**" if subs else "**no subs**"
     c = facts["carries"]
     d["carries_items"] = c["items"]
     d["carries_section"] = c["section"]
     d["new_count"] = len(story["new"])
     d["struck_count"] = len(story["struck"])
-    d["struck_titles"] = [s["title"] for s in story["struck"]]
+    d["struck_titles"] = [re.sub(r"^[①-⑳]\s*", "", s["title"]) for s in story["struck"]]     # for prose; the delta block keeps the title AS IT STANDS (its ① mark)
     d["carries_line"] = (f"{c['items']:,} items on `residual → #{c['section']}` at the wrap (`_carry_items`), "
                          f"{d['new_count']} new, {d['struck_count']} STRUCK")
     d["probe_line"] = f"PROBE `python3 knowledge/_wrap_carries.py count --section {n + 1}`"
@@ -502,9 +520,14 @@ def derive(story, facts):
     else:
         unpushed = shas if not pt else shas
     d["unpushed"] = unpushed
-    d["commits_line"] = (f"{len(commits)} commits `{d['commits_range']}`" +
+    since8 = g["since"]["sha"][:8] if g.get("since") else None
+    d["since_sha8"] = since8
+    d["commits_line"] = (f"{len(commits)} commits `{d['commits_range']}`" + (f" since `{since8}`" if since8 and commits and since8 != commits[0]["sha8"] else "") +
                          (f"; {len(commits) - len(unpushed)} pushed through `{pt}`, " + ", ".join(f"`{s}`" for s in unpushed) + " ride" + ("s" if len(unpushed) == 1 else "") + " the wrap push"
                           if unpushed else f"; all pushed through `{pt}`" if pt else "; push state unmeasured"))
+    d["banner_commits"] = (f"{len(commits)} commits" + (f" since `{since8}`" if since8 else "") +
+                           (f"; {len(commits) - len(unpushed)} pushed through `{pt}`; " + (", ".join(f"`{s}`" for s in unpushed) if len(unpushed) <= 2 else f"the conductor's {len(unpushed)}") + " ride" + ("s" if len(unpushed) == 1 else "") + " the wrap push"
+                            if unpushed else f", all pushed through `{pt}`" if pt else "; push state unmeasured"))
     h = _need(facts, "handoff", "the handoff number")
     d["handoff_no"] = h["no"]
     d["prev_handoff_no"] = h["prev_no"]
@@ -514,6 +537,8 @@ def derive(story, facts):
     d["dossier_path"] = f"_DECISION-HISTORY/{d['session_date']}-{n}-{d['slug']}.md"
     d["report_path"] = f"notes/_subreports/{d['ritual_date']}-{n}-W-wrap.md"
     d["memory_name"] = f"wrap-{n}-{d['slug']}"
+    d["memory_file"] = d["memory_name"] + ".md"
+    d["dossier_row"] = f"W-{n}dh"
     d["hook_path"] = f"notes/_lanes/{n}/WRAP-MEMORY-HOOK.md"
     d["facts_path"] = f"notes/_lanes/{n}/W/FACTS.json"
     d["story_path"] = f"notes/_lanes/{n}/W/STORY.md"
@@ -524,8 +549,12 @@ def derive(story, facts):
                            (f" (run `{owed['run_id']}`)" if owed.get("run_id") else "")) if owed else "no owed CI read is on record for the opener"
     reds = ci.get("reds", [])
     d["ci_reds_n"] = len(reds)
-    d["ci_reds_line"] = ("; ".join(f"`{x['sha8']}` RED at step {x['step']}, fixed by `{x['fixed_by']}`" for x in reds)
+    d["ci_reds_line"] = ("; ".join(f"`{x['sha8']}` RED at step {x['step']}" + (f" ({x['cause']})" if x.get("cause") else "") + f", fixed by `{x['fixed_by']}`" for x in reds)
                          if reds else "no CI red in the session")
+    d["ci_reds_short"] = ("; ".join(f"`{x['sha8']}` RED at step {x['step']}, fixed by `{x['fixed_by']}`" for x in reds) if reds else "no CI red in the session")
+    pushes = ci.get("pushes")
+    if pushes:
+        d["ci_reds_short"] = "pushes " + ", ".join(f"`{x['sha8']}` {x['verdict']}" + (f" (step {x['step']})" if x.get("step") else "") for x in pushes)
     d["ci_reds_word"] = (f"{NUM_WORDS.get(len(reds), str(len(reds)))} CI RED" + ("S" if len(reds) != 1 else "")) if reds else "NO CI RED"
     ch = facts.get("chain") or {}
     d["chain_tk"] = ch.get("tk")
@@ -599,21 +628,20 @@ def v_banner(s, f, d):
     head = (f"> ## ★ LATEST — {d['ritual_date']} ({d['ritual_dow3']} **{d['session']}**, {d['days']}, "
             f"{d['conductor_model']} conductor{' in the CLOUD' if d['in_cloud'] else ''}, {d['subs_word']}, "
             f"{fr['wrap_seat'].split(',')[0].strip().upper()} wrap on {d['wrap_seat_model']} — ★★ **{d['headline_caps']}**)")
-    rl = "; ".join(_gloss(r) for r in s["rulings"]) if s["rulings"] else "none this session"
+    rl = _gloss_run(s["rulings"]) if s["rulings"] else "none this session"
     one = f"- ★★★ ① **{d['rulings_n_words']}, `_rulings.json` {d['rulings_delta']} ({d['rulings_ids']}).** {rl}."
     outs = [re.sub(r"^Built:\s*", "", x) for x in s["summary"]["outputs"]]
-    two = "- ★★ ② **BUILT:** " + " ".join(outs)
-    probs = [x for x in s["problems"] if x.startswith("⚠") or x.startswith("⛔")]
+    two = "- ★★ ② **BUILT:** " + " ".join(outs) + f" {fr['lanes']}."
+    probs = [x for x in s["problems"] if x.startswith("⛔")]       # the CI reds are facts (below); a ⛔ line is a breach the banner must carry
     pline = (" " + probs[0] + " ") if probs else " "
     three = (f"- ⚠ ③ **{d['ci_reds_word']}:** {d['ci_reds_line']}.{pline}"
-             f"⛔ **FILL {d['fill_now']:,} at his \"{fr['wrap_word']}\" (hand sum, `_wrap_facts.py`), {d['fill_verdict'].upper()}** (crossed at {d['hard_crossed_local'] if d['fill_now'] > d['hard_line'] else d['stop_crossed_local']}). "
+             f"⛔ **FILL {d['fill_now']:,} at his \"{fr['wrap_word']}\" (hand sum, `_wrap_facts.py`), {d['fill_verdict']}" + (f", crossed at {d['hard_crossed_local']}" if d["fill_now"] > d["hard_line"] else "") + ".** "
              if d["fill_now"] else f"- ⚠ ③ **{d['ci_reds_word']}:** {d['ci_reds_line']}.{pline}{d['fill_line']}. ")
-    three += (f"{d['commits_n']} commits, " + (", ".join(f"`{x}`" for x in d["unpushed"]) + (" ride" if len(d["unpushed"]) > 1 else " rides") + " the wrap push. " if d["unpushed"] else "all pushed. ")
-              + f"**`{d['handoff_name']}` OUTRANKS `_CHAIN.md`.**")
+    three += f"{d['banner_commits']}. **`{d['handoff_name']}` OUTRANKS `_CHAIN.md`.**"
     new0 = s["new"][0] if s["new"] else None
     first = (f"⬛ **{new0['title']}** [NEW — 0{', DAVE' + chr(39) + 'S' if new0['daves'] else ''}] — put it first. " if new0 else "")
-    resid = (f"> **residual → #{d['next']}:** {first}`s225-D2`. **{d['carries_line']}**, `_CARRIES.md` § `residual → #{d['next']}` "
-             f"`carries:residual-{d['next']}`. {d['probe_line']} (new items count from #{d['next'] + 1} until the gate's `_AGE_RE` is fixed).")
+    resid = (f"> **residual → #{d['next']}:** {first}`s225-D2`. **{d['carries_items']:,} items at the wrap, {d['new_count']} new, {d['struck_count']} STRUCK**, `_CARRIES.md` § `residual → #{d['next']}` "
+             f"`carries:residual-{d['next']}`. {d['probe_line']} (new items count from #{d['next'] + 1}).")
     return "\n".join([head, ">", "> " + one[2:] and "> " + one, "> " + two, "> " + three, resid, "{{ROLL_STATE}}"]) + "\n"
 
 
@@ -627,6 +655,27 @@ def _ruling_parts(r):
     return {"id": m.group(1), "k": m.group(2), "quote": m.group(3), "gloss": m.group(4), "status": m.group(5), "note": (m.group(6) or "").strip()}
 
 
+def _gloss_run(rulings):
+    """The banner's ① as runs: consecutive rulings that share a reference and a status print once, "g1; g2; g3 (D3..D9, 11:10 export)"
+    (the #311 hand banner's own shape for his seven export calls)."""
+    parts = []
+    for x in (_ruling_parts(r) for r in rulings):
+        q = x["quote"]
+        m = re.search(r"\((\d\d:\d\d)\)", q)
+        ref = m.group(1) if m else (re.split(r",|\*\"", q, 1)[0].strip().replace("his ", "") if "export" in q.lower() else (q if len(q) <= 40 else "his words"))
+        st = "" if x["status"] == "ENACTED" else f", {x['status']}"
+        parts.append((x["gloss"], x["k"], ref, st))
+    out, i = [], 0
+    while i < len(parts):
+        j = i
+        while j + 1 < len(parts) and parts[j + 1][2:] == parts[i][2:]:
+            j += 1
+        ks = f"D{parts[i][1]}" if i == j else f"D{parts[i][1]}..D{parts[j][1]}"
+        out.append("; ".join(p[0] for p in parts[i:j + 1]) + f" ({ks}, {parts[i][2]}{parts[i][3]})")
+        i = j + 1
+    return "; ".join(out)
+
+
 def _gloss(r):
     """`sNNN-Dk` — quote — gloss — STATUS  →  'gloss (Dk, his HH:MM words, STATUS)' in the banner's register: the
     banner names WHERE his word is (a time, an export); the quotation itself lives in the delta, the handoff and the
@@ -635,16 +684,21 @@ def _gloss(r):
     q = x["quote"]
     m = re.search(r"\((\d\d:\d\d)\)", q)
     if m:
-        ref = f"his {m.group(1)} words"
+        ref = m.group(1)
     elif "export" in q.lower():
-        ref = re.split(r",|\*\"", q, 1)[0].strip()
+        ref = re.split(r",|\*\"", q, 1)[0].strip().replace("his ", "")
     else:
         ref = q if len(q) <= 40 else "his words"
-    return f"{x['gloss']} (D{x['k']}, {ref}, {x['status']}" + (f" — {x['note']}" if x["note"] and len(x["note"]) <= 60 else "") + ")"
+    st = "" if x["status"] == "ENACTED" else f", {x['status']}"
+    return f"{x['gloss']} (D{x['k']}, {ref}{st})"        # the note (a page note, a store status) lives in the memory and the handoff
+
+
+LANE_SHAS_RE = re.compile(r"(?:,\s*|\s*\(|\s+)`[0-9a-f]{8}`(?:\.\.`[0-9a-f]{8}`)?(?:,\s*`[0-9a-f]{8}`)*\)?")     # a lanes line may carry each lane's commits; the delta's header drops them
 
 
 def v_delta(s, f, d):
     fr = s["front"]
+    lanes_plain = LANE_SHAS_RE.sub("", fr["lanes"])
     if d["split"]:
         when = (f"⛔ **DATE SPLIT, THE {d['split_ordinal_word']} ON THIS RUN — SESSION OPENED {d['session_dow'][:3].upper()} {d['session_date']} "
                 f"{d['opened_time']} {d['zone']}, \"{fr['wrap_word']}\" {d['ritual_dow3'].upper()} {d['ritual_date'][5:]} {d['wrap_time']}; `s294-D11`'s SHAPE, NOTHING RE-DATED**")
@@ -652,16 +706,44 @@ def v_delta(s, f, d):
         when = f"ONE DAY — OPENED {d['opened_time']} {d['zone']}, \"{fr['wrap_word']}\" AT {d['wrap_time']}"
     head = (f"## ⏱ LATEST DELTA — {d['ritual_date']} ({d['ritual_dow3']} from `date`) (**{d['session']}**, {when}, "
             f"conductor **{d['conductor_model'].upper()}{' IN THE CLOUD' if d['in_cloud'] else ''}**, "
-            f"**{d['subs_n']} DELEGATED SUBS — {fr['lanes']}**, {fr['wrap_seat'].split(',')[0].strip().upper()} wrap on **{d['wrap_seat_model']}**)")
-    paras = [f"> ★★ **{t}.** {p}" for t, p in s["did"]]
+            f"**{d['subs_n']} DELEGATED SUBS — {lanes_plain}**, {fr['wrap_seat'].split(',')[0].strip().upper()} wrap on **{d['wrap_seat_model']}**)")
+    paras = [f"> ★★ **{t}.** {p.split(chr(10) + chr(10))[0]}" for t, p in s["did"]]     # the first paragraph of each block: the chain's register
     paras[-1] += f" **`_rulings.json` {d['rulings_delta']}.**"
     prob = " ".join(s["problems"]) if s["problems"] else "No problem declared by the story."
-    fillp = (f"> ⚠ **CI AND THE FILL.** {prob} ⚙ **FILL, a hand sum by `_wrap_facts.py`:** {d['fill_line']}. {d['subs_line']}.")
+    fillp = (f"> ⚠ **CI AND THE FILL.** {prob} ⚙ **FILL, a hand sum by `_wrap_facts.py`:** {d['fill_line_launch']}. {d['subs_line']}.")
     five = f"> ⛔★ **5b —** PLACEHOLDER-{d['n']}W"
     foot = (f"> **WHY/HOW: `{d['dossier_path']}`. Handoff: `{d['handoff_name']}` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. "
             f"His words: `{d['words_dir']}`. Lane reports: " + ", ".join(f"`{p}`" for p in d["lane_reports"]) +
             f". Wrap: `{d['report_path']}`.**")
     return "\n\n".join([head] + paras + [fillp, five, foot]) + "\n"
+
+
+def _fill_steps(s, f, d):
+    """The post-mortem's crossing steps, from `facts.fill` — one list the stratum and the report both print."""
+    fr = s["front"]
+    fill = f["fill"]
+    cr = fill["crossings"]
+    steps = [f"Boot **{fill['boot']:,}** ({d['opened_time']} {d['zone']}" + (f" {d['session_dow'][:3]}" if d["split"] else "") + "), "
+             + ("⚠ OVER" if fill["boot_ceiling"]["over_by"] > 0 else "under") + f" `BOOT_CEILING_TK` {d['boot_ceiling']:,} (`s305-D64`) by {abs(fill['boot_ceiling']['over_by']):,}"]
+    for key, nm, bold in (("amber", "BUDGET_AMBER", False), ("stop", "STOP_LINE_TK", True), ("limit", "BUDGET_WORKING", False), ("hard", "BUDGET_HARD", True)):
+        v = next((v for k, v in cr.items() if k.startswith(nm)), None)
+        if v:
+            t = f"over {d[key + '_line']:,}{' stop line' if key == 'stop' else ''} at the {_ordn(v['message'])} ({d[key + '_crossed_local']}, {v['fill']:,})"
+            steps.append(("⛔ **" + t + "**") if key == "hard" else ("**" + t + "**") if bold else t)
+    steps.append(f"**{fill['now']:,} at the {_ordn(fill['turns'])} ({_hhmm(fill['now_at'], d['tz'])}), the message before his \"{fr['wrap_word']}\" ({d['wrap_time']} {d['zone']})**")
+    if fill.get("launch"):
+        la = fill["launch"]
+        steps.append(f"{la['fill']:,} at the {_ordn(la['message'])} ({_hhmm(la['at'], d['tz'])}), the message that launched this seat")
+    return steps
+
+
+def _subs_each(f):
+    """`subs.each` as one clause, when the facts carry it (★ E-replay): the per-sub fills by transcript."""
+    subs = f.get("subs") or {}
+    each = subs.get("each")
+    if not each:
+        return f"(largest {subs['largest']:,}, smallest {subs['smallest']:,})" if subs else ""
+    return "(" + " · ".join(f"`{k}` {v:,}" for k, v in each.items()) + ")"
 
 
 def v_stratum(s, f, d):
@@ -670,29 +752,23 @@ def v_stratum(s, f, d):
     pre = (f"> **pre-flight {d['session']}:** ⛔ NOT CAPTURED — UNMEASURED. The conductor ran in the CLOUD and no pre-flight was declared at this seat; "
            f"its window is measured first-hand in the post-mortem below, from the cloud transcript. ⛔ An UNKNOWN is declared, never defaulted to a number [[feedback-measuring-tool-must-not-guess]].")
     if fill:
-        cr = fill["crossings"]
-        steps = [f"Boot **{fill['boot']:,}** ({d['opened_time']} {d['zone']}" + (f" {d['session_dow'][:3]}" if d["split"] else "") + "), "
-                 + ("⚠ OVER" if fill["boot_ceiling"]["over_by"] > 0 else "under") + f" `BOOT_CEILING_TK` {d['boot_ceiling']:,} (`s305-D64`) by {abs(fill['boot_ceiling']['over_by']):,}"]
-        for key, nm, bold in (("amber", "BUDGET_AMBER", False), ("stop", "STOP_LINE_TK", True), ("limit", "BUDGET_WORKING", False), ("hard", "BUDGET_HARD", True)):
-            v = next((v for k, v in cr.items() if k.startswith(nm)), None)
-            if v:
-                t = f"over {d[key + '_line']:,}{' stop line' if key == 'stop' else ''} at the {_ordn(v['message'])} ({d[key + '_crossed_local']}, {v['fill']:,})"
-                steps.append(("⛔ **" + t + "**") if key == "hard" else ("**" + t + "**") if bold else t)
-        steps.append(f"**{fill['now']:,} at the {_ordn(fill['turns'])} ({d['wrap_time']}), the message before his \"{fr['wrap_word']}\" ({d['wrap_time']} {d['zone']})**")
-        pm = (f"> **POST-MORTEM {d['session']} — measured, not narrated, and NOT by `_checkin.py`.** ⚙ The conductor's transcript was copied to the gitignored "
+        steps = _fill_steps(s, f, d)
+        pm = (f"> **POST-MORTEM {d['session']} — measured, not narrated, and NOT by `_checkin.py`.** ⚙ The conductor's transcript" + (f" is `{fill['source']}` in the cloud container; it" if fill.get("source") else "") + " was copied to the gitignored "
               f"`{fill['transcript'].rsplit('/', 1)[0] if '/' in fill['transcript'] else 'knowledge/_tmp'}/` and every figure here is `_wrap_facts.py`'s HAND SUM of "
               f"`input_tokens + cache_creation_input_tokens + cache_read_input_tokens` of the last record per distinct `message.id`, main thread only "
               f"({fill['turns']} distinct messages to his words; `{d['facts_path']}`). " + " · ".join(steps) +
-              f". ⛔ **FILL {fill['now']:,} is {d['fill_verdict']} (`s305-D62`).** Stated, not graded.")
+              f". ⛔ **FILL {fill['now']:,} is {d['fill_verdict']} (`s305-D62`)**{d.get('launch_gap', '')}. Stated, not graded.")
     else:
         pm = f"> **POST-MORTEM {d['session']}:** {d['fill_line']}."
     subs = f.get("subs")
     subs1 = f"> **subs {subs['total']:,} tokens (n={subs['n']})**" if subs else "> **subs: none measured**"
     subs2 = (f"> **⚠ THE `subs` FIGURE ABOVE IS `_wrap_facts.py`'s HAND SUM** — the final FILL of each sub's own transcript, same fields, same dedupe, "
-             f"{subs['n']} transcripts (largest {subs['largest']:,}, smallest {subs['smallest']:,}). This wrap seat's own transcript was NOT COPIED, so it is excluded. "
+             f"{subs['n']} transcripts {_subs_each(f)}. This wrap seat's own transcript was NOT COPIED, so it is excluded. "
              f"⚠ **UNIT: REAL tokens, QUOTA not window FILL** — never added to the figures above [[budget-vs-quota-vocabulary]].") if subs else ""
+    la = fill.get("launch") if fill else None
     hand = (f"> **wrap-handover: his words {fill['now']:,} real ({d['wrap_time']} {d['zone']}) · the brief's figure, where typed, is in the story · "
-            f"replay unobservable (conductor-side, post-wrap)**") if fill else ""
+            + (f"sub-cut {la['fill']:,} real (the {_ordn(la['message'])} distinct message, the one that launched this seat) · delta {la['fill'] - fill['now']:,} real (the brief's own write and the launch) · " if la else "sub-cut not measured (no --launched-at) · ")
+            + f"replay unobservable (conductor-side, post-wrap)**") if fill else ""
     skips = (f"> **⚠ DECLARED SKIPS AND NOT-DONE AT THIS WRAP, EACH WITH ITS SIZE.** {s['skips']} **Carries:** {d['struck_count']} STRUCK, {d['new_count']} NEW. "
              f"**NOT DONE, and his:** everything in `_CARRIES.md` § `residual → #{d['next']}`, first: {d['first_beat']}")
     usage = f"> **section-usage {d['session']} (self-report, {fr['wrap_seat'].split(',')[0].strip()} {d['wrap_seat_model'].upper()} wrap seat):** {s['section_usage']}"
@@ -706,7 +782,7 @@ def v_stratum(s, f, d):
                f"`{d['prev_handoff']}` and #{d['prev']}'s wrap files were read BY PATH. **A consult, not a use** [[instrument-without-a-consumer]].")
     s214 = "> **⚠ `s214-D6` BANNER-DISCIPLINE MEASUREMENT:** quoted in the ⏱ LATEST DELTA's 5b line from `_CHAIN.md`'s GENERATED footer, after the one regen."
     commit = (f"> **COMMIT STATE {d['session']}:** ⬛ **THE HASH IS A DECLARED GAP IN THIS BLOCK — A COMMIT CANNOT NAME ITSELF.** This wrap's sha, its push and its CI read are in the ⏱ LATEST DELTA's 5b line and in `{d['report_path']}`. "
-              f"**{d['commits_n']} commits before the wrap, all declared not-a-wrap:** {d['commits_line']} (listed in `notes/_lanes/{d['n']}/W/COMMITS.txt`; CI: {d['ci_reds_line']}). "
+              f"**{d['commits_n']} commits before the wrap, all declared not-a-wrap:** {d['commits_line']} (listed in `notes/_lanes/{d['n']}/W/COMMITS.txt`; CI: {d['ci_reds_short']}). "
               f"Handoff `{d['handoff_name']}` OUTRANKS `_CHAIN.md`." +
               (f" Context gauge at authoring: ⚙ **{fill['now']:,} real at his \"{fr['wrap_word']}\" — a hand sum; {d['fill_verdict']}.**" if fill else ""))
     blocks = [f"#### {d['session_date']} {d['session']}", "", pre, "", pm, "", subs1, "", subs2, "", hand, "", skips, "", usage, "", wrote, "",
@@ -742,7 +818,20 @@ def v_datesplit(s, f, d):
             f"{'RESUMED' if d.get('resumed_local') else 'RAN ON INTO'} {d['ritual_dow'].upper()} {d['ritual_date']}; RITUAL + WRAP COMMIT {d['ritual_date']}.** "
             f"{d['session']} opened at {d['opened_time']} {d['zone']} on {d['session_date'][5:]}; {span}. ⛔ **Nothing re-dated** — `s294-D11`'s shape: the session date on keys, "
             f"the dossier and the stratum (`{d['session_date']}-{d['n']}-*`), the ritual date on this one line so the gate's `is not today` check grades a true statement; "
-            f"reports keep the day their lanes wrote them; the rulings carry the days he ruled them.\n")
+            f"reports keep the day their lanes wrote them; {_rulings_by_day(f, d)}.\n")
+
+
+def _rulings_by_day(f, d):
+    """`facts.rulings.by_date` → "`s311-D1`, `D2` carry 2026-09-30 and `s311-D3`..`D9` carry 2026-10-01, the days he ruled them"."""
+    bd = (f.get("rulings") or {}).get("by_date")
+    if not bd:
+        return "the rulings carry the days he ruled them"
+    parts = []
+    for day, ids in sorted(bd.items()):
+        ks = [i.split("-D")[1] for i in ids]
+        span = f"`{ids[0]}`" if len(ids) == 1 else (f"`{ids[0]}`, `D{ks[1]}`" if len(ids) == 2 else f"`{ids[0]}`..`D{ks[-1]}`")
+        parts.append(f"{span} carry {day}")
+    return " and ".join(parts) + ", the days he ruled them"
 
 
 def v_5b(s, f, d):
@@ -750,15 +839,37 @@ def v_5b(s, f, d):
     if not p:
         return None
     pp = p.get("prepush")
-    pre = (f"the pre-push check on the wrap's tree first ({pp['pass']} pass, {pp['fail']} FAIL, {pp['tests']} tests)" if pp else "the pre-push check: not on record")
+    pre = ((f"the pre-push check first: committed tree {pp['committed']['pass']} pass, {pp['committed']['fail']} FAIL{_red_step_passed(f, pp)}; writer gates {pp['pass']} pass, {pp['fail']} FAIL; {pp['tests']} tests"
+            if pp.get("committed") else f"the pre-push check on the wrap's tree first ({pp['pass']} pass, {pp['fail']} FAIL, {pp['tests']} tests)") if pp else "the pre-push check: not on record")
     ch = p.get("chain_tk_after_regen")
     chain = (f"`_CHAIN.md` {ch:,} cl100k after the wrap's regen, " + (f"over the {d['chain_warn']:,} warn by {ch - d['chain_warn']:,}" if ch > d["chain_warn"] else f"under the {d['chain_warn']:,} warn by {d['chain_warn'] - ch:,}")) if ch else "`_CHAIN.md` after the regen: not measured"
     return (f"**(by addition, after the commit):** wrap commit **`{p['wrap_sha']}`** (`--wrap`, gate `{p.get('gate_wrap') or 'not on record'}`)" +
-            (f" and **`{p['seat_sha']}`** (the seat's files)" if p.get("seat_sha") else "") + f"; {pre}; pushed `{p['push_range']}` at {p['pushed_at']}" +
+            (f" and **`{p['seat_sha']}`** (the seat's files)" if p.get("seat_sha") else "") + f"; {pre}; pushed `{p['push_range']}` at {_utc(p['pushed_at'])}" +
             (f", carrying " + ", ".join(f"`{x}`" for x in d["unpushed"]) if d["unpushed"] else "") +
             f". **CI on `{p['ci']['sha8']}`, run `{p['ci']['run_id']}`: {p['ci']['verdict']}, " +
             ("all three jobs" if p["ci"]["verdict"] == "GREEN" and len(p["ci"]["jobs"]) == 3 else ", ".join(f"{k} {v}" for k, v in p["ci"]["jobs"].items())) +
-            f".** {chain}. This addendum's CI is owed to #{d['next']}.\n")
+            f".** {_owed_read_clause(f)}{chain}. This addendum's CI is owed to #{d['next']}.\n")
+
+
+def _red_step_passed(f, pp):
+    """", step 119 green" when the committed-tree half passed the step a CI red failed on (facts.ci.reds × prepush.committed.passed_steps)."""
+    reds = (f.get("ci") or {}).get("reds") or []
+    ps = (pp.get("committed") or {}).get("passed_steps") or []
+    hits = [x["step"] for x in reds if x["step"].isdigit() and int(x["step"]) in ps]
+    return (", step " + ", ".join(hits) + " green") if hits else ""
+
+
+def _utc(iso):
+    """`2026-10-01T11:05:59Z` → `11:05:59 UTC` (the hand 5b lines' form)."""
+    m = re.match(r"\d{4}-\d\d-\d\dT(\d\d:\d\d:\d\d)Z?$", iso or "")
+    return f"{m.group(1)} UTC" if m else (iso or "not on record")
+
+
+def _owed_read_clause(f):
+    """`facts.ci.owed_at_wrap` (★ E-replay): a CI run still owed when the wrap seat sat, read by the seat before the
+    commit (`_ci_readback.py --sha`), as at #309 — distinct from `ci.owed`, the opener's read of the previous wrap."""
+    o = (f.get("ci") or {}).get("owed_at_wrap")
+    return f"The owed read on `{o['sha8']}` (run `{o['run_id']}`): {o['verdict']}. " if o else ""
 
 
 def v_handoff(s, f, d, stage="wrap"):
@@ -772,7 +883,7 @@ def v_handoff(s, f, d, stage="wrap"):
          f"⛔ **`knowledge/_rulings.json` READS {d['rulings_total']}**, newest `{d['rulings_newest']}`" + (f" ({d['rulings_base']} at the opener)" if d["rulings_base"] is not None else "") +
          (f". Every one of {d['rulings_ids']} is his, from a chat line or his review export, kept verbatim in `{d['words_dir']}`. **Quote them; never paraphrase.**" if d["rulings_n"] else ". No ruling landed this session."), "",
          f"⛔★ **#{d['next']}'S FIRST BEAT: {fr['first_beat']}.** {s['owed'][0]['body']}", "",
-         f"⛔ **THE FILL IS A HAND SUM BY `_wrap_facts.py`**" + (f", over the conductor's transcript `{f['fill']['transcript']}`: {d['fill_line']}. {d['subs_line']}." if f.get("fill") else f": {d['fill_line']}."), "",
+         f"⛔ **THE FILL IS A HAND SUM BY `_wrap_facts.py`**" + ((f", over the conductor's cloud transcript `{f['fill']['source']}`, copied to the gitignored `{f['fill']['transcript']}`" if f["fill"].get("source") else f", over the conductor's transcript `{f['fill']['transcript']}`") + f": {d['fill_line_launch']}. {d['subs_line']}." if f.get("fill") else f": {d['fill_line']}."), "",
          "---", "", "## ⛔ READ FIRST, IN THIS ORDER", "",
          "1. **This file.** It is newer than `_CHAIN.md` and **OUTRANKS it**.",
          "2. `_CHAIN.md` — the read contract (header → ★ LATEST banner → ⏱ LATEST delta).",
@@ -785,7 +896,7 @@ def v_handoff(s, f, d, stage="wrap"):
          "6. The lane reports, when the work needs them: " + " · ".join(f"`{p}`" for p in d["lane_reports"]) + f" · this wrap's `{d['report_path']}`.", "",
          "---", "", "## ⛔⛔ HIS WORDS (chat lines; the exports are in the files above)", "",
          _quoted_block(s["words"]), "", "---", "", "## WHAT THE SESSION DID", "",
-         _bullets([f"**{t.capitalize() if t.isupper() else t}.** {p}" for t, p in s["did"]]), "",
+         _bullets([f"**{t.capitalize() if t.isupper() else t}.** {p.replace(chr(10) + chr(10), ' ')}" for t, p in s["did"]]), "",     # every paragraph: the handoff's register
          "| Range | What |", "|---|---|",
          f"| `{d['commits_range']}` | {d['commits_line']} (`notes/_lanes/{d['n']}/W/COMMITS.txt`) |",
          "| *the wrap* | § POST-WRAP |", "", "---", "",
@@ -822,10 +933,14 @@ def _handoff_post(s, f, d):
         raise StoryError("`--stage post` needs `post` in FACTS.json (`_wrap_facts.py --post`)")
     pp = p.get("prepush")
     items = [f"1. {'✅' if p['ci']['verdict'] == 'GREEN' else '⛔'} **CI IS {p['ci']['verdict']}.** `{p['ci']['sha8']}` run `{p['ci']['run_id']}`, "
-             + ", ".join(f"{k} {v}" for k, v in p["ci"]["jobs"].items()) + f", read by `_ci_readback.py` (`notes/_lanes/{d['n']}/W/_ci-runs-{p['ci']['sha8']}.txt`)."]
+             + ", ".join(f"{k} {v}" for k, v in p["ci"]["jobs"].items()) + f", read by `_ci_readback.py` (`notes/_lanes/{d['n']}/W/_ci-runs-{p['ci']['sha8']}.txt`)."
+             + (f" **The owed read on `{f['ci']['owed_at_wrap']['sha8']}` (run `{f['ci']['owed_at_wrap']['run_id']}`): {f['ci']['owed_at_wrap']['verdict']}** (`{f['ci']['owed_at_wrap']['file']}`)." if (f.get("ci") or {}).get("owed_at_wrap") else "")]
     if pp:
-        items.append(f"2. {'✅' if pp['fail'] == 0 else '⛔'} **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST** (Worker checklist step 5): {pp['pass']} pass, {pp['fail']} FAIL, "
-                     f"{pp['advisory']} advisory, {pp['could_not_ask']} could-not-ask over {pp['surveys']} survey chunks; `test_gates` {pp['tests']} with {pp['test_failures']} failure(s). Logs: `notes/_lanes/{d['n']}/W/_prepush-*.txt`.")
+        com = pp.get("committed")
+        items.append(f"2. {'✅' if pp['fail'] == 0 else '⛔'} **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST" + (", IN TWO HALVES" if com else "") + "** (Worker checklist step 5): "
+                     + (f"first the committed tree as CI's gates job runs it, no mutating steps, {com['pass']} pass, {com['fail']} FAIL, {com['advisory']} advisory, {com['could_not_ask']} could-not-ask over {com['surveys']} chunks{_red_step_passed(f, pp)}; then the writer gates with `--include-mutating`, " if com else "")
+                     + f"the survey over {pp.get('steps') or '?'} steps in {pp['surveys']} chunks, {pp['pass']} pass, {pp['fail']} FAIL, "
+                     f"{pp['advisory']} advisory" + (" (" + ", ".join(str(x) for x in pp["advisory_steps"]) + ")" if pp.get("advisory_steps") else "") + f", {pp['could_not_ask']} could-not-ask; `test_gates` {pp['tests']} with {pp['test_failures']} failure(s). Logs: `notes/_lanes/{d['n']}/W/_prepush-*.txt`.")
     else:
         items.append("2. ⚠ **THE PRE-PUSH CHECK IS NOT ON RECORD** in FACTS.json (`--prepush-dir` not given). Declared.")
     items.append(f"3. ⛔ **THE WRAP COMMIT IS `{p['wrap_sha']}`, ON THE `--wrap` PATH** (gate `{p.get('gate_wrap') or 'not on record'}`)" + (f"; **`{p['seat_sha']}` carries the seat's files.**" if p.get("seat_sha") else "."))
@@ -850,7 +965,7 @@ def v_prior_strikes(s, f, d):
     L = ["", "---", "", f"## ⬛ STRUCK AT THE {d['session']} WRAP — BY ADDITION; NOTHING ABOVE IS REWRITTEN", ""]
     for k, st in enumerate(s["struck"]):
         ref = f"OWED item {d['prior_struck'][k]}, " if k < len(d["prior_struck"]) else ""
-        L.append(f"- ~~{ref}{st['title'].lower()}~~ ⛔ **STRUCK {d['session']} {d['ritual_date']} BY THE WRAP SEAT — {st['verdict']}** — {st['receipt']}")
+        L.append(f"- ~~{ref}{d['struck_titles'][k].lower()}~~ ⛔ **STRUCK {d['session']} {d['ritual_date']} BY THE WRAP SEAT — {st['verdict']}** — {st['receipt']}")
     return "\n".join(L) + "\n"
 
 
@@ -859,7 +974,7 @@ def v_dossier(s, f, d):
     L = [f"# {d['session']} — {fr['headline'][0].upper() + fr['headline'][1:]}", "", f"provenance: {d['n']} · {d['session_date']}", "status: observed", "",
          f"*The why and the how of session {d['session']} ({d['days_sentence'][0].lower() + d['days_sentence'][1:]} His \"{fr['wrap_word']}\" at {d['wrap_time']}.) "
          f"The what is in `{d['handoff_name']}` and in `_LIVE-STATE.md`'s ⏱ LATEST delta (spine entry); the rulings are {d['rulings_ids_full']} in `knowledge/_rulings.json` (ledger). "
-         f"Generated from `{d['story_path']}` § @why.*", ""]
+         f"Generated from `{d['story_path']}` § @why. Row: {d['dossier_row']}.*", ""]
     for t, body in s["why"]:
         L += [f"## {t}", "", body, ""]
     return "\n".join(L)
@@ -870,7 +985,7 @@ def v_report(s, f, d, stage="wrap"):
     L = [f"# {d['session']} W — the wrap, generated from one story: {fr['headline']}", "",
          f"session: `{d['session']}` · {d['session_date']}" + (f" (ritual {d['ritual_date']})" if d["split"] else ""),
          f"window: lane W ({fr['wrap_seat']} wrap seat)", "sub index: `W`",
-         f"brief: the conductor's launch message, on his {d['wrap_time']} {d['zone']} \"{fr['wrap_word']}\"",
+         f"brief: the conductor's launch message, on his {d['wrap_time']} {d['zone']} \"{fr['wrap_word']}\" (and `notes/_lanes/{d['n']}/W/BRIEF.md` where one was cut)",
          f"provenance: {d['n']} · {d['ritual_date']}", "status: observed",
          "tokens: UNMEASURED — this seat cannot read its own transcript while it is still growing", "", "## VERDICT", "",
          f"DONE. The capture ritual ran on phase 3 (`s306-D4`, `s306-D5`): ONE story (`{d['story_path']}`) and ONE measured file (`{d['facts_path']}`), every other view generated by `_wrap_views.py` "
@@ -880,13 +995,18 @@ def v_report(s, f, d, stage="wrap"):
          f"WRAP COUNTS (before the commit): hand-written files `1` (the story; target 1) · move files `1` + the 5b · rebuilds `1` for the wrap commit · hand steps `0` · "
          f"rulings `{d['rulings_delta']}` · carries `{d['carries_items']:,}` on `residual → #{d['carries_section']}` at the wrap · gate at open `{d['gate_open']}`", "",
          "## 1. The fill", "",
-         (f"{d['fill_line']}. {d['subs_line']}. Every figure is `_wrap_facts.py`'s hand sum over `{f['fill']['transcript']}` to `{f['fill']['until'] or f['fill']['now_at']}`." if f.get("fill") else d["fill_line"] + "."), "",
+         ((f"Every figure is `_wrap_facts.py`'s hand sum over `{f['fill']['transcript']}` to `{f['fill']['until'] or f['fill']['now_at']}` ({f['fill']['turns']} distinct messages): "
+           + " · ".join(_fill_steps(s, f, d)) + f". ⛔ FILL {d['fill_now']:,} is {d['fill_verdict']}{d.get('launch_gap', '')}. {d['subs_line']} {_subs_each(f)}.") if f.get("fill") else d["fill_line"] + "."), "",
          "## 2. Each step, and what the tool did", "", "| step | tool | result |", "|---|---|---|",
          f"| figures | `_wrap_facts.py` | `FACTS.json`; {d['owed_read_line']} |",
-         f"| gate at open | `_capture_gate.py --wrap` | {d['gate_open']} |",
+         f"| gate at open | `_capture_gate.py --wrap` | {d['gate_open']} |"]
+    ow = (f.get("ci") or {}).get("owed_at_wrap")
+    if ow:
+        L.append(f"| CI owed on `{ow['sha8']}` | `_ci_readback.py --sha {ow['sha8']}` | {ow['verdict']}, run `{ow['run_id']}` (`{ow['file']}`) |")
+    L += [
          f"| the story | `STORY.md` by hand, `_wrap_views.py --check` then `--write` | {len(VIEW_NAMES)} views generated |",
          f"| carries | `_wrap_carries.py delta` ({d['new_count']} new, {d['struck_count']} struck) | the `residual → #{d['next']}` delta block; `render` materialises the full line |",
-         "| GM/LS | `_wrap_ops.py` → `_gm_move.py` | one move file, dry run then write, its inputs from `views/` |",
+         f"| GM/LS | `_wrap_ops.py` → `_gm_move.py` | one move file (`_ops-{d['n']}W.json`), dry run then write, its inputs from `views/` |",
          f"| rows | `_wrap_rows.py --spec views/rows.json` | `W-{d['n']}h`, `W-{d['n']}dh`, `W-{d['n']}w`, `W-{d['n']}wk` minted born closed; " + (", ".join(f"{r['id']} {r['op']}d" if r['op'] != 'note' else f"{r['id']} noted" for r in s["rows"]) if s["rows"] else "no other row") + " |",
          f"| regen | `_wrap_regen.py --run --session {d['n']}` | once, after the last edit |",
          "| commit | `_wrap_commit.py msg/paths/commit` | § POST-COMMIT |", "",
@@ -905,12 +1025,12 @@ def v_report(s, f, d, stage="wrap"):
         p = d["post"]
         pp = p.get("prepush")
         text += "\n".join(["", "## POST-COMMIT (by addition, 5b)", "",
-                           f"- **The wrap commit is `{p['wrap_sha']}`**, on the `--wrap` path, gate `{p.get('gate_wrap') or 'not on record'}`" + (f"; **`{p['seat_sha']}`** carries the seat's files." if p.get("seat_sha") else "."),
-                           (f"- **The pre-push check, before the push:** {pp['pass']} pass · {pp['fail']} FAIL · {pp['advisory']} advisory · {pp['could_not_ask']} could-not-ask over {pp['surveys']} chunks; `test_gates` {pp['tests']} ({pp['test_failures']} failures). Logs `notes/_lanes/{d['n']}/W/_prepush-*.txt`."
+                           f"- **The wrap commit is `{p['wrap_sha']}`**, on the `--wrap` path, gate `{p.get('gate_wrap') or 'not on record'}`, the named paths plus `notes/_REHEARSAL-LOG.jsonl` auto-staged" + (f"; **`{p['seat_sha']}`** carries the seat's files." if p.get("seat_sha") else "."),
+                           (f"- **The pre-push check, before the push" + (f", in two halves:** the committed tree first, {pp['committed']['pass']} pass · {pp['committed']['fail']} FAIL · {pp['committed']['advisory']} advisory · {pp['committed']['could_not_ask']} could-not-ask{_red_step_passed(f, pp)}; then the writer gates, " if pp.get("committed") else ":** ") + f"{pp['pass']} pass · {pp['fail']} FAIL · {pp['advisory']} advisory" + (" (" + ", ".join(str(x) for x in pp["advisory_steps"]) + ")" if pp.get("advisory_steps") else "") + f" · {pp['could_not_ask']} could-not-ask over {pp['surveys']} chunks of {pp.get('steps') or '?'} steps; `test_gates` {pp['tests']} ({pp['test_failures']} failures). Logs `notes/_lanes/{d['n']}/W/_prepush-*.txt`."
                             if pp else "- **The pre-push check:** not on record in FACTS.json."),
-                           f"- **The push:** `{p['push_range']}` at {p['pushed_at']}" + (f", {p['minutes_to_push']} minutes from the launch" if p.get("minutes_to_push") is not None else "") + ".",
-                           f"- **CI:** `{p['ci']['sha8']}`, run `{p['ci']['run_id']}`, {p['ci']['verdict']} (" + ", ".join(f"{k} {v}" for k, v in p["ci"]["jobs"].items()) + ").",
-                           f"- **`_CHAIN.md` {p['chain_tk_after_regen']:,} cl100k** at the wrap's regen (warn {d['chain_warn']:,}, fail {d['chain_block']:,}). Declared." if p.get("chain_tk_after_regen") else "- `_CHAIN.md` after the regen: not measured.",
+                           f"- **The push:** `{p['push_range']}` at {p['pushed_at']}" + (f", {p['minutes_to_push']} minutes from the launch" if p.get("minutes_to_push") is not None else "") + (", carrying " + ", ".join(f"`{x}`" for x in d["unpushed"]) if d["unpushed"] else "") + ".",
+                           f"- **CI:** `{p['ci']['sha8']}`, run `{p['ci']['run_id']}`, {p['ci']['verdict']} (" + ", ".join(f"{k} {v}" for k, v in p["ci"]["jobs"].items()) + "). " + _owed_read_clause(f),
+                           (f"- **`_CHAIN.md` {p['chain_tk_after_regen']:,} cl100k** at the wrap's regen, " + (f"over the {d['chain_warn']:,} warn by {p['chain_tk_after_regen'] - d['chain_warn']:,}" if p["chain_tk_after_regen"] > d["chain_warn"] else f"under the {d['chain_warn']:,} warn") + f" (fail {d['chain_block']:,}). Declared.") if p.get("chain_tk_after_regen") else "- `_CHAIN.md` after the regen: not measured.",
                            f"- **Title:** the story's `{fr['next_title']}`; `_gen_titles.py` derived `{(p.get('titles') or {}).get('derived') or 'not read'}`. Declared.", ""])
     return text
 
@@ -924,10 +1044,17 @@ def _qcount(q):
 
 def v_memory(s, f, d, stage="wrap"):
     fr = s["front"]
+    g = f["git"]
     def _mr(r):
+        """gloss (short quote; status) — the memory register: a quotation of his only when it is short (the hand hooks'
+        own habit, *"1. good"*); the long ones live in the handoff and the dossier."""
         x = _ruling_parts(r)
-        q = x["quote"] if '*"' in x["quote"] else f"*\"{x['quote']}\"*"
-        return f"{x['gloss']} ({q}" + (f"; {x['status']}, {x['note']}" if x["status"] != "ENACTED" else "") + ")"
+        m = re.search(r'\*"(.+?)"\*', x["quote"])
+        is_click = "export" in x["quote"].lower() and not re.search(r"comment|page note", x["quote"].lower())   # a click on a recommendation is not a sentence of his
+        q = m.group(0) if m and len(m.group(1)) <= 80 and not is_click else ""
+        st = "" if x["status"] == "ENACTED" else x["status"] + (f", {x['note']}" if x["note"] and len(x["note"]) <= 60 else "")
+        inner = "; ".join(p for p in (q, st) if p)
+        return x["gloss"] + (f" ({inner})" if inner else "")
     rl = "; ".join(_mr(r) for r in s["rulings"]) if s["rulings"] else "no rulings this session"
     desc = (f"{d['session']} ({d['session_dow'][:3]} {d['session_date']}, {d['days']}) wrapped — {d['rulings_summary']}" + (f" ({d['rulings_ids_plain']})" if d["rulings_n"] else "") +
             f": {fr['headline']}; " + d["ci_reds_word"].lower().replace("ci red", "CI red") + f"; fill {d['fill_verdict']}; ⬛ #{d['next']}: {fr['first_beat']}. Body verbatim from {d['hook_path']}.")
@@ -942,12 +1069,12 @@ def v_memory(s, f, d, stage="wrap"):
     front = "\n".join(["---", f"name: {d['memory_name']}", f'description: "{desc}"', "sources: [cowork]", "metadata:", f"  provenance: {d['n']} · {d['session_date']}", "  status: observed", "---"])
     body = [f"# {d['session']} wrapped — {fr['headline']}", "",
             f"provenance: {d['n']} · {d['session_date']} · status: observed · repo record: `{d['handoff_name']}`", "", "### What landed",
-            f"- **{d['days_sentence']}** Lanes: {fr['lanes']}; {d['commits_line']}.",
+            f"- **{d['days_memory']}** {d['subs_n']} delegated subs ({LANE_SHAS_RE.sub('', fr['lanes'])}); {d['commits_n']} commits, " + (f"{d['commits_n'] - len(d['unpushed'])} pushed through `{g['pushed_through']}` before the wrap" if d["unpushed"] else "all pushed") + ".",
             f"- **{d['rulings_summary']}" + (f" ({d['rulings_ids']}):** {rl}." if d["rulings_n"] else ".**"),
             "- **Built:** " + " ".join(re.sub(r"^Built:\s*", "", x) for x in s["summary"]["outputs"]),
-            f"- **CI:** {d['ci_reds_line']}.", "", "### The numbers",
-            f"- {d['fill_line']} — a hand sum by `_wrap_facts.py`. {d['subs_line']}.", "", "### OPEN — each a question put at the wrap"]
-    for i, o in enumerate(s["owed"][:4], 1):
+            f"- **CI:** {d['ci_reds_short']}.", "", "### The numbers",
+            f"- {d['fill_memory']} — a hand sum by `_wrap_facts.py`. {d['subs_line']}.", "", "### OPEN — each a question put at the wrap"]
+    for i, o in enumerate(s["owed"][:5], 1):        # five, the hand hooks' own count at #309–#311; the handoff carries the rest
         body.append(f"{i}. **{_owner_word(o)}{', first' if i == 1 else ''}:** {o['question']}")
     if stage == "post" and d["post"]:
         p = d["post"]
@@ -986,12 +1113,12 @@ def v_rows(s, f, d):
     n = d["n"]
     by = f"{d['session']} W ({d['ritual_date']})"
     ops = [{"op": "mint", "id": f"W-{n}h", "title": f"{d['session']} handoff - {fr['headline']}", "home": d["handoff_name"],
-            "body": f"The {d['session']} wrap's handoff to #{d['next']}, generated from the story; OWED list of {len(s['owed'])} questions, first: {d['first_beat']}"},
+            "body": f"The {d['session']} wrap's handoff to #{d['next']}, generated from the story; OWED list of {len(s['owed'])} questions."},
            {"op": "mint", "id": f"W-{n}dh", "title": f"{d['session']} dossier - the why and the how: {fr['headline']}", "home": d["dossier_path"],
             "body": f"Step 1b dossier for {d['session']}, generated from the story's @why."},
            {"op": "mint", "id": f"W-{n}w", "title": f"{d['session']} W - the wrap, generated from one story", "home": d["report_path"],
-            "body": f"s218-D7 filed report of the {d['session']} wrap seat (s306-D5: the generated report is the filed report)."},
-           {"op": "mint", "id": f"W-{n}wk", "title": f"{d['session']} wrap memory hook - the one hook file (index line, front block, body) for the conductor to place after Dave is done",
+            "body": f"s218-D7 filed report of the {d['session']} wrap seat (s306-D5: the generated report is the filed report)" + (f"; the owed CI read on {f['ci']['owed_at_wrap']['sha8']}." if (f.get("ci") or {}).get("owed_at_wrap") else ".")},
+           {"op": "mint", "id": f"W-{n}wk", "title": f"{d['session']} wrap memory hook - the one hook file for the conductor to place after Dave is done",
             "home": d["hook_path"], "body": f"Ritual step 3 payloads for {d['session']}, one file."}]
     for r in s["rows"]:
         if r["op"] == "close":
@@ -1005,22 +1132,29 @@ def v_msg(s, f, d, stage="wrap"):
     fr = s["front"]
     if stage == "post":
         p = d["post"]
-        line1 = f"{d['n']} W 5b: the post-wrap addendum - CI {p['ci']['verdict']} on {p['ci']['sha8']}, CI owed to #{d['next']}"
+        ow = (f.get("ci") or {}).get("owed_at_wrap")
+        line1 = f"{d['n']} W 5b: the post-wrap addendum - CI {p['ci']['verdict']} on {p['ci']['sha8']}" + (f" and on the owed {ow['sha8']}" if ow else "") + f", CI owed to #{d['next']}"
         body = [f"The {d['session']} post-wrap addendum (5b), by addition.", "",
-                f"- The delta's 5b line filled (one --fill-token move file): wrap commit {p['wrap_sha']}" + (f" plus {p['seat_sha']}" if p.get("seat_sha") else "") + f", pushed {p['push_range']}; CI on {p['ci']['sha8']} run {p['ci']['run_id']} {p['ci']['verdict']}.",
-                f"- _HANDOFF-{d['handoff_no']} POST-WRAP ADDENDUM (5b) with the CI owed line; the W report's POST-COMMIT section; the memory hook's after-the-wrap line; all regenerated by _wrap_views.py --stage post (pre-commit text byte-identical, checked)."]
+                f"- The delta's 5b line filled (one --fill-token move file): wrap commit {p['wrap_sha']}" + (f" plus {p['seat_sha']}" if p.get("seat_sha") else "") + f", pushed {p['push_range']}; CI on {p['ci']['sha8']} run {p['ci']['run_id']} {p['ci']['verdict']}" + (f"; the owed read on {ow['sha8']} run {ow['run_id']} {ow['verdict']}" if ow else "") + ".",
+                f"- _HANDOFF-{d['handoff_no']} POST-WRAP ADDENDUM (5b) with the CI owed line; the W report's POST-COMMIT section; the memory hook's after-the-wrap line; all regenerated by _wrap_views.py --stage post, by addition (checked).",
+                (f"- The pre-push check first: " + (f"committed tree {p['prepush']['committed']['pass']} pass {p['prepush']['committed']['fail']} FAIL{_red_step_passed(f, p['prepush'])}; " if p['prepush'].get('committed') else "") + f"{p['prepush']['pass']} pass, {p['prepush']['fail']} FAIL, {p['prepush']['tests']} tests" + (f"; carrying {', '.join(d['unpushed'])}" if d["unpushed"] else "") + "." if p.get("prepush") else "- The pre-push check: not on record." + (f" Carrying {', '.join(d['unpushed'])}." if d["unpushed"] else "")),
+                f"- One regen for this commit (_wrap_regen.py --session {d['n']}); _CHAIN.md " + (f"{p['chain_tk_after_regen']:,} cl100k at the wrap's regen" if p.get("chain_tk_after_regen") else "not measured") + f" (warn {d['chain_warn']:,}, fail {d['chain_block']:,}); the figure after this regen is not re-taken (the #241 rule)."]
     else:
         line1 = f"{d['n']} W: the {d['session']} wrap - {d['rulings_n']} rulings ({d['rulings_ids_plain']}), {fr['headline']}; handoff {d['handoff_no']}"
         if len(line1) > LIMITS["msg_line1"]:
             line1 = line1[:LIMITS["msg_line1"] - 1].rstrip() + "…"
         body = [f"The {d['session']} capture ritual on phase 3 of the wrap redesign (s306-D4): one story, every view generated; {d['days']}.", "",
-                f"- Figures from {d['facts_path']} (_wrap_facts.py): " + (d["fill_line"].replace("**", "") + "; " if f.get("fill") else "") + f"rulings {d['rulings_delta']}.",
-                f"- Views by _wrap_views.py from {d['story_path']}: banner, delta, stratum, stamp" + (", date-split line" if d["split"] else "") + ", handoff, dossier, W report, memory hook, carries, rows, this message, the summary.",
+                f"- Figures from {d['facts_path']} (_wrap_facts.py): " + (d["fill_line"].replace("**", "") + "; " + d["subs_line"] + "; " if f.get("fill") else "") + f"rulings {d['rulings_delta']}.",
+                (f"- Rulings: " + ", ".join(f"{_ruling_parts(r)['id']} {_ruling_parts(r)['status'].lower()}" for r in s["rulings"]) + "." if s["rulings"] else "- No ruling landed this session."),
+                f"- Views by _wrap_views.py from {d['story_path']}: banner, delta, stratum, stamp" + (", date-split line" if d["split"] else "") + f", handoff {d['handoff_no']}, dossier, W report, memory hook, carries, rows, this message, the summary.",
                 f"- One move file (_wrap_ops.py --date {d['ritual_date']}) for the banner, stratum, stamp, delta and the 2c/2d/2f rolls; title for #{d['next']}.",
-                f"- Carries: the residual → #{d['next']} delta block ({d['new_count']} new, {d['struck_count']} struck); rows W-{d['n']}h, W-{d['n']}dh, W-{d['n']}w, W-{d['n']}wk minted born closed" + (f"; " + ", ".join(f"{r['id']} {r['op']}" for r in s["rows"]) if s["rows"] else "") + ".",
-                f"- One regen (_wrap_regen.py --session {d['n']}).", "- Decisions / Outputs / Problems for Dave: " + " ".join(s["summary"]["decisions"][:1])]
+                f"- Carries: the residual → #{d['next']} delta block ({d['new_count']} new, counted from #{d['next'] + 1} until the gate's _AGE_RE is fixed; {d['struck_count']} struck); rows W-{d['n']}h, W-{d['n']}dh, W-{d['n']}w, W-{d['n']}wk minted born closed" + (f"; " + ", ".join(f"{r['id']} {r['op']}" for r in s["rows"]) if s["rows"] else "") + ".",
+                f"- One regen (_wrap_regen.py --session {d['n']})."]
         if d["unpushed"]:
             body.append(f"- Rides the push with the conductor's unpushed " + ", ".join(d["unpushed"]) + ".")
+        ow = (f.get("ci") or {}).get("owed_at_wrap")
+        if ow:
+            body.append(f"- CI owed on {ow['sha8']} read by this seat: {ow['verdict']} (run {ow['run_id']}).")
     trailers = [t for t in (fr.get("co_authored_by") and f"Co-Authored-By: {fr['co_authored_by']}", fr.get("claude_session") and f"Claude-Session: {fr['claude_session']}") if t]
     return "\n".join([line1, ""] + body + ([""] + trailers if trailers else [])) + "\n"
 
@@ -1029,7 +1163,8 @@ def v_summary(s, f, d, stage="wrap"):
     p = d["post"] if stage == "post" else None
     post = ([f"- The wrap is committed and pushed (`{p['wrap_sha']}`" + (f", plus `{p['seat_sha']}` for the wrap seat's files" if p.get("seat_sha") else "") + "). "
              + ("The full pre-push check ran on the wrap first and came back clean. " if p.get("prepush") and p["prepush"]["fail"] == 0 else "")
-             + (f"CI is {p['ci']['verdict'].lower()}" + (" on all three jobs." if p["ci"]["verdict"] == "GREEN" and len(p["ci"]["jobs"]) == 3 else "."))] if p else [])
+             + (f"CI is {p['ci']['verdict'].lower()}" + (" on all three jobs" if p["ci"]["verdict"] == "GREEN" and len(p["ci"]["jobs"]) == 3 else "")
+                + (f", and the owed read on `{f['ci']['owed_at_wrap']['sha8']}` is {f['ci']['owed_at_wrap']['verdict'].lower()} too." if (f.get("ci") or {}).get("owed_at_wrap") else "."))] if p else [])
     L = [f"# {d['session']} — summary for Dave", "", "## Decisions"] + ["- " + x for x in s["summary"]["decisions"]] + \
         ["", "## Outputs"] + ["- " + x for x in s["summary"]["outputs"]] + post + [f"- Next chat: `{s['front']['next_title']}`."] + \
         ["", "## Problems"] + ["- " + x for x in s["summary"]["problems"]]
@@ -1140,6 +1275,8 @@ def check_limits(views, story, facts, d, stage="wrap"):
     def walk(x, path):
         if isinstance(x, dict):
             for k, v in x.items():
+                if "." in k or " " in k:
+                    continue        # not dotted-addressable (`sizes.bytes._CARRIES.md`, the crossings' keys); the derived values cover them
                 walk(v, f"{path}.{k}" if path else k)
         elif isinstance(x, list):
             for i, v in enumerate(x):
@@ -1216,8 +1353,8 @@ def run_check(repo, session=None, quiet=False):
             red.append(f"{os.path.relpath(p, repo)}: MISSING on disk")
             continue
         disk = _read(p)
-        if p.endswith(d["handoff_name"]) and disk.startswith(text):
-            continue      # a STRUCK addendum appended later by the next wrap is by addition
+        if p.endswith(d["handoff_name"]) and disk.startswith(text) and re.fullmatch(r"\s*---\s*## ⬛ STRUCK AT THE #\d+ WRAP — BY ADDITION.*", disk[len(text):], re.S):
+            continue      # the next wrap's STRUCK addendum, appended by addition, is the ONE suffix allowed (★ E-replay EV-9: any other appended text is red)
         if disk != text:
             i, x, y = _first_diff(text, disk)
             red.append(f"{os.path.relpath(p, repo)}: differs at line {i} — generated {x[:70]!r} · disk {y[:70]!r}")
@@ -1271,12 +1408,12 @@ SHA_RE = re.compile(r"\b[0-9a-f]{8}\b")
 RID_RE = re.compile(r"\bs\d{2,4}-D\d+\b")
 WID_RE = re.compile(r"\bW-\d{3}[a-z0-9]*\b")
 PATH_RE = re.compile(r"`([^`\s]+\.(?:md|py|json|html|txt|css|sh|jsonl))`")
-NUM_RE = re.compile(r"(?<![\w.-])\d{1,3}(?:,\d{3})+(?![\w.])|(?<![\w.,-])\d{3,}(?![\w.,])")
+NUM_RE = re.compile(r"(?<![\w.-])\d{1,3}(?:,\d{3})+(?!\.\d)(?!\w)|(?<![\w.,-])\d{3,}(?!,\d{3})(?!\.\d)(?!\w)")   # a sentence-final figure counts; a decimal's parts do not
 
 
 def figures(text):
     return {"numbers": set(NUM_RE.findall(text)), "shas": set(SHA_RE.findall(text)) - {"00000000"}, "rulings": set(RID_RE.findall(text)),
-            "rows": set(WID_RE.findall(text)), "paths": set(PATH_RE.findall(text))}
+            "rows": set(WID_RE.findall(text)), "paths": {p.rsplit("/", 1)[-1] for p in PATH_RE.findall(text)}}   # a path is the same file by its name
 
 
 def headings(text, view=None):
@@ -1346,13 +1483,16 @@ def render_diff(rep):
          f"- HIS WORDS: {rep['words']['hand_quotes']} quotations in the hand file; missing from the generated view: {len(rep['words']['missing'])}"]
     for q in rep["words"]["missing"]:
         L.append(f"  - ⛔ *\"{q[:100]}\"*")
-    L.append(f"- HEADINGS: {'same' if rep['headings']['same'] else '⛔ differ'} ({len(rep['headings']['generated'])} generated · {len(rep['headings']['hand'])} hand)")
+    L.append(f"- HEADINGS: {'same' if rep['headings']['same'] else '⛔ differ'} ({len(rep['headings']['generated'])} generated · {len(rep['headings']['hand'])} hand)"
+             + (f" — graded as {rep['headings']['graded']}" if rep["headings"].get("graded") else ""))
     for k, v in rep["figures"].items():
         L.append(f"- FIGURES {k}: missing {len(v['missing'])} · extra {len(v['extra'])} · extra unsourced {len(v['extra_unsourced'])}")
         if v["missing"]:
             L.append("  - ⛔ missing: " + ", ".join(v["missing"][:40]))
         if v["extra_unsourced"]:
             L.append("  - ⛔ unsourced: " + ", ".join(v["extra_unsourced"][:40]))
+        if v.get("declared"):
+            L.append("  - ◌ declared (the replay's docstring says why): " + ", ".join(v["declared"]))
     L += ["", "```diff", rep["bytes_diff"].rstrip("\n"), "```", ""]
     return "\n".join(L)
 

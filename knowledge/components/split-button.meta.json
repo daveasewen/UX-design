@@ -126,5 +126,240 @@
         "ref": "role:action"
       }
     ]
+  },
+  "anatomy": {
+    "part": "split-btn",
+    "tag": "div",
+    "attrs": {
+      "class": "split-btn {props.tier}"
+    },
+    "$sel": "body > div.row > div.split-btn.primary",
+    "children": [
+      {
+        "part": "sb-main",
+        "tag": "button",
+        "attrs": {
+          "class": "sb-main t-cm-button",
+          "type": "button"
+        },
+        "text": "Send payment",
+        "$sel": "body > div.row > div.split-btn.primary > button.sb-main.t-cm-button"
+      },
+      {
+        "part": "sb-caret",
+        "tag": "button",
+        "attrs": {
+          "class": "sb-caret",
+          "type": "button"
+        },
+        "aria": {
+          "aria-haspopup": "menu",
+          "aria-expanded": "{state.expanded}",
+          "aria-controls": "sbMenu1",
+          "aria-label": "More payment actions"
+        },
+        "$sel": "body > div.row > div.split-btn.primary > button.sb-caret",
+        "children": [
+          {
+            "part": "icon",
+            "tag": "svg",
+            "attrs": {
+              "viewbox": "0 0 18 18"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.row > div.split-btn.primary > button.sb-caret > svg"
+          }
+        ]
+      },
+      {
+        "part": "sb-menu",
+        "tag": "ul",
+        "attrs": {
+          "class": "sb-menu",
+          "id": "sbMenu1",
+          "tabindex": "-1",
+          "data-open": "{state.open}"
+        },
+        "aria": {
+          "role": "menu",
+          "aria-label": "More payment actions"
+        },
+        "$sel": "body > div.row > div.split-btn.primary > ul.sb-menu",
+        "children": [
+          {
+            "part": "sb-item",
+            "tag": "li",
+            "attrs": {
+              "class": "sb-item t-cm-button",
+              "tabindex": "-1"
+            },
+            "aria": {
+              "role": "menuitem"
+            },
+            "text": "Schedule for later",
+            "$sel": "body > div.row > div.split-btn.primary > ul.sb-menu > li.sb-item.t-cm-button",
+            "$repeat": 3
+          },
+          {
+            "part": "sb-sep",
+            "tag": "li",
+            "attrs": {
+              "class": "sb-sep"
+            },
+            "aria": {
+              "role": "presentation"
+            },
+            "$sel": "body > div.row > div.split-btn.primary > ul.sb-menu > li.sb-sep"
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "closed",
+      "hover",
+      "focus",
+      "active",
+      "expanded",
+      "open",
+      "disabled"
+    ],
+    "initial": "closed",
+    "transitions": [
+      {
+        "from": "closed",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "closed"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "closed"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      },
+      {
+        "from": "expanded",
+        "on": "click",
+        "to": "closed"
+      }
+    ],
+    "keys": {
+      "Space": "activate",
+      "ArrowDown": "next",
+      "ArrowUp": "previous",
+      "Enter": "activate",
+      "Escape": "close"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "hover": [
+        "style .sb-caret:disabled:hover",
+        "style .sb-caret:hover",
+        "style .sb-item:hover",
+        "style .sb-main:disabled:hover",
+        "style .sb-main:hover",
+        "style .split-btn.primary .sb-caret:hover"
+      ],
+      "active": [
+        "style .sb-caret:active",
+        "style .sb-main:active"
+      ],
+      "disabled": [
+        "style .sb-caret:disabled:hover",
+        "style .sb-main:disabled:hover",
+        "style .split-btn.primary .sb-caret.is-disabled",
+        "style .split-btn.primary .sb-main.is-disabled",
+        "style .split-btn.tertiary .sb-caret.is-disabled",
+        "style .split-btn.tertiary .sb-main.is-disabled"
+      ],
+      "focus": [
+        "style .sb-caret:focus-visible",
+        "style .sb-item:focus-visible",
+        "style .sb-main:focus-visible"
+      ],
+      "expanded": [
+        "attribute aria-expanded on body > div.row > div.split-btn.primary > button.sb-caret",
+        "style .sb-caret[aria-expanded=\"true\"] svg"
+      ],
+      "open": [
+        "attribute data-open on a twin of body > div.row > div.split-btn.primary > ul.sb-menu",
+        "style .sb-menu[data-open=\"true\"]"
+      ],
+      "$initial": "meta has a boolean prop `open`"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--alpha-24": "{alpha.24}",
+    "--alpha-68": "{alpha.68}",
+    "--pri-default": "{button.primary.background.default}",
+    "--pri-hover": "{button.primary.background.hover}",
+    "--pri-pressed": "{button.primary.background.pressed}",
+    "--pri-disabled": "{button.primary.background.disabled}",
+    "--pri-label": "{button.primary.label.default}",
+    "--pri-label-disabled": "{button.primary.label.disabled}",
+    "--ter-hover": "{button.tertiary.background.hover}",
+    "--ter-border": "{button.tertiary.border.default}",
+    "--ter-border-disabled": "{button.tertiary.border.disabled}",
+    "--ter-label": "{button.tertiary.label.default}",
+    "--ter-label-disabled": "{button.tertiary.label.disabled}",
+    "--menu-surface": "{background.default}",
+    "--menu-border": "{elevation.border}",
+    "--shadow": "{elevation.functional}",
+    "--divider": "{divider.border.section}",
+    "--text": "{text.default}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--press-travel": "{component-type.button-family.press-travel}",
+    "--press-darken": "{component-type.button-family.press-darken}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Split-button.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (div.split-btn.primary)",
+    "$listeners": [
+      "click",
+      "keydown"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

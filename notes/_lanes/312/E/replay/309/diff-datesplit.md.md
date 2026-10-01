@@ -1,0 +1,18 @@
+## datesplit — GREEN
+
+- SIZE: generated 247 · hand 228 · ratio 1.083
+- HIS WORDS: 0 quotations in the hand file; missing from the generated view: 0
+- HEADINGS: same (0 generated · 0 hand)
+- FIGURES numbers: missing 0 · extra 0 · extra unsourced 0
+- FIGURES shas: missing 0 · extra 0 · extra unsourced 0
+- FIGURES rulings: missing 0 · extra 1 · extra unsourced 0
+- FIGURES rows: missing 0 · extra 0 · extra unsourced 0
+- FIGURES paths: missing 0 · extra 0 · extra unsourced 0
+
+```diff
+--- hand
++++ generated
+@@ -1 +1 @@
+-> ⚠ **WRAP DATE SPLIT, ELEVENTH OCCURRENCE ON THIS RUN — SESSION OPENED TUESDAY 2026-09-29, RESUMED WEDNESDAY 2026-09-30; RITUAL + WRAP COMMIT 2026-09-30.** #309 opened at 20:47 BST on 09-29; its commits carry both dates (`94ba3c73` to `528e8318` on 09-29, `054aee4b` to `fc203264` on 09-30). ⛔ **Nothing re-dated** — `s294-D11`'s shape: the session date on keys, the dossier and the stratum (`2026-09-29-309-*`), the ritual date on this one line so the gate's `is not today` check grades a true statement; reports keep the day their lanes wrote them; `s309-D3`..`D7` carry 2026-09-30, the day he ruled them.
++> ⚠ **WRAP DATE SPLIT, ELEVENTH OCCURRENCE ON THIS RUN — SESSION OPENED TUESDAY 2026-09-29, RESUMED WEDNESDAY 2026-09-30; RITUAL + WRAP COMMIT 2026-09-30.** #309 opened at 20:47 BST on 09-29; its commits carry both dates (`94ba3c73` to `528e8318` on 09-29, `054aee4b` to `fc203264` on 09-30). ⛔ **Nothing re-dated** — `s294-D11`'s shape: the session date on keys, the dossier and the stratum (`2026-09-29-309-*`), the ritual date on this one line so the gate's `is not today` check grades a true statement; reports keep the day their lanes wrote them; `s309-D1`, `D2` carry 2026-09-29 and `s309-D3`..`D7` carry 2026-09-30, the days he ruled them.
+```

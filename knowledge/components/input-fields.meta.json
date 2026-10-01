@@ -155,5 +155,332 @@
         "ref": "component:dropdown"
       }
     ]
+  },
+  "anatomy": {
+    "part": "field",
+    "tag": "div",
+    "attrs": {
+      "class": "field"
+    },
+    "$stateClasses": [
+      "is-completed",
+      "is-disabled",
+      "is-error"
+    ],
+    "$sel": "body > div.field",
+    "children": [
+      {
+        "part": "lbl",
+        "tag": "div",
+        "attrs": {
+          "class": "lbl"
+        },
+        "$sel": "body > div.field > div.lbl",
+        "children": [
+          {
+            "part": "label",
+            "tag": "label",
+            "attrs": {
+              "for": "b1"
+            },
+            "text": "Amount",
+            "$sel": "body > div.field > div.lbl > label"
+          },
+          {
+            "part": "help-btn",
+            "tag": "button",
+            "attrs": {
+              "class": "help-btn",
+              "type": "button"
+            },
+            "aria": {
+              "aria-label": "More information about Amount",
+              "aria-describedby": "b1tip"
+            },
+            "$sel": "body > div.field > div.lbl > button.help-btn",
+            "children": [
+              {
+                "part": "icn",
+                "tag": "svg",
+                "attrs": {
+                  "class": "icn",
+                  "viewbox": "0 0 18 18"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "$sel": "body > div.field > div.lbl > button.help-btn > svg.icn"
+              },
+              {
+                "part": "tip",
+                "tag": "span",
+                "attrs": {
+                  "class": "tip",
+                  "id": "b1tip"
+                },
+                "aria": {
+                  "role": "tooltip"
+                },
+                "text": "Enter the amount you want to send, in pounds.",
+                "$sel": "body > div.field > div.lbl > button.help-btn > span.tip"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "part": "help-text",
+        "tag": "p",
+        "attrs": {
+          "class": "help-text",
+          "id": "b1help"
+        },
+        "text": "How much would you like to pay?",
+        "$sel": "body > div.field > p.help-text"
+      },
+      {
+        "part": "box",
+        "tag": "div",
+        "attrs": {
+          "class": "box"
+        },
+        "$stateClasses": [
+          "s-hover",
+          "s-active"
+        ],
+        "$sel": "body > div.field > div.box",
+        "children": [
+          {
+            "part": "prefix",
+            "tag": "span",
+            "attrs": {
+              "class": "prefix"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "text": "GBP",
+            "$sel": "body > div.field > div.box > span.prefix"
+          },
+          {
+            "part": "input",
+            "tag": "input",
+            "attrs": {
+              "id": "b1",
+              "type": "text",
+              "inputmode": "decimal",
+              "placeholder": "Placeholder",
+              "maxlength": "100",
+              "disabled": "{state.disabled}"
+            },
+            "aria": {
+              "aria-describedby": "b1help b1count",
+              "aria-invalid": "{state.invalid}"
+            },
+            "$sel": "body > div.field > div.box > input"
+          },
+          {
+            "part": "tail-btn",
+            "tag": "button",
+            "attrs": {
+              "type": "button",
+              "class": "tail-btn",
+              "disabled": "{state.disabled}"
+            },
+            "aria": {
+              "aria-label": "Choose date"
+            },
+            "$sel": "body > div.field > div.box > button.tail-btn",
+            "children": [
+              {
+                "part": "icn-2",
+                "tag": "svg",
+                "attrs": {
+                  "class": "icn",
+                  "viewbox": "0 0 18 18"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "$sel": "body > div.field > div.box > button.tail-btn > svg.icn"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "part": "count",
+        "tag": "p",
+        "attrs": {
+          "class": "count",
+          "id": "b1count"
+        },
+        "aria": {
+          "aria-hidden": "true"
+        },
+        "text": "0/100",
+        "$sel": "body > div.field > p.count"
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "active",
+      "completed",
+      "disabled",
+      "error",
+      "focus",
+      "invalid",
+      "info",
+      "ok",
+      "success",
+      "warning"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      }
+    ],
+    "keys": {
+      "Tab": "focus-next"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "error": [
+        "class .is-error on a twin of body > div.field",
+        "style .field.is-error .box",
+        "style .field.is-error .box input",
+        "style .is-error",
+        "style .ufield.is-error .uctrl input",
+        "style [data-theme=\"dark\"] .field.is-error .box"
+      ],
+      "warning": [
+        "style .is-warning"
+      ],
+      "ok": [
+        "style .is-ok",
+        "style .ufield.is-ok .uctrl input"
+      ],
+      "success": [
+        "style .is-success"
+      ],
+      "info": [
+        "style .is-info"
+      ],
+      "focus": [
+        "style .box .tail-btn:focus-visible",
+        "style .box input:focus",
+        "style .box:focus-within",
+        "style .box:has(input:focus-visible)",
+        "style .box:hover:not(:focus-within)",
+        "style .help-btn:focus-visible"
+      ],
+      "active": [
+        "class .s-active on a twin of body > div.field > div.box",
+        "style .box .tail-btn:active",
+        "style .box.s-active",
+        "style .field.is-disabled .tail-btn:active",
+        "style .help-btn:active"
+      ],
+      "hover": [
+        "class .s-hover on a twin of body > div.field > div.box",
+        "style .box .tail-btn:hover",
+        "style .box.s-hover",
+        "style .box:hover:not(:focus-within)",
+        "style .field.is-disabled .tail-btn:hover",
+        "style .help-btn:hover .tip"
+      ],
+      "disabled": [
+        "attribute disabled on a twin of body > div.field > div.box > button.tail-btn",
+        "attribute disabled on a twin of body > div.field > div.box > input",
+        "class .is-disabled on a twin of body > div.field",
+        "style .box input:disabled",
+        "style .field.is-disabled .box",
+        "style .field.is-disabled .box .tail"
+      ],
+      "completed": [
+        "class .is-completed on a twin of body > div.field",
+        "style .field.is-completed .box input"
+      ],
+      "invalid": [
+        "attribute aria-invalid on a twin of body > div.field > div.box > input"
+      ],
+      "$initial": "meta prop `state` enum; initial = its default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--alpha-60": "{alpha.60}",
+    "--field-bg-default": "{form.background.default}",
+    "--field-bg-hover": "{form.background.hover}",
+    "--border-default": "{form.border.default}",
+    "--border-active": "{form.border.active}",
+    "--border-disabled": "{form.border.disabled}",
+    "--text": "{text.default}",
+    "--text-disabled": "{text.disabled}",
+    "--icon": "{icon.default}",
+    "--icon-disabled": "{icon.disabled}",
+    "--error": "{rag.error}",
+    "--success": "{rag.success}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Input-fields.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (input.textbox) → climbed to div.box → climbed to div.field",
+    "$listeners": [
+      "input",
+      "keydown",
+      "mousedown",
+      "touchstart"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

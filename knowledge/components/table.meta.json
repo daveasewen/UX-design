@@ -118,5 +118,258 @@
         "ref": "role:record-list"
       }
     ]
+  },
+  "anatomy": {
+    "part": "scroll",
+    "tag": "div",
+    "attrs": {
+      "class": "scroll",
+      "tabindex": "0"
+    },
+    "aria": {
+      "role": "region",
+      "aria-label": "Account balances at 19 June 2026, scrollable"
+    },
+    "$sel": "body > div.wrap > div.scroll",
+    "children": [
+      {
+        "part": "table",
+        "tag": "table",
+        "attrs": {
+          "id": "tbl",
+          "data-headers": "both"
+        },
+        "$sel": "body > div.wrap > div.scroll > table",
+        "children": [
+          {
+            "part": "caption",
+            "tag": "caption",
+            "text": "Account balances",
+            "$sel": "body > div.wrap > div.scroll > table > caption",
+            "children": [
+              {
+                "part": "sub",
+                "tag": "span",
+                "attrs": {
+                  "class": "sub"
+                },
+                "text": "As at 19 June 2026 · all figures in GBP",
+                "$sel": "body > div.wrap > div.scroll > table > caption > span.sub"
+              }
+            ]
+          },
+          {
+            "part": "thead",
+            "tag": "thead",
+            "$sel": "body > div.wrap > div.scroll > table > thead",
+            "children": [
+              {
+                "part": "tr",
+                "tag": "tr",
+                "$sel": "body > div.wrap > div.scroll > table > thead > tr",
+                "children": [
+                  {
+                    "part": "th",
+                    "tag": "th",
+                    "attrs": {
+                      "scope": "col"
+                    },
+                    "text": "Account",
+                    "$sel": "body > div.wrap > div.scroll > table > thead > tr > th",
+                    "$repeat": 4
+                  },
+                  {
+                    "part": "num",
+                    "tag": "th",
+                    "attrs": {
+                      "scope": "col",
+                      "class": "num"
+                    },
+                    "text": "Available balance",
+                    "$sel": "body > div.wrap > div.scroll > table > thead > tr > th.num"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "part": "tbody",
+            "tag": "tbody",
+            "$sel": "body > div.wrap > div.scroll > table > tbody",
+            "children": [
+              {
+                "part": "tr-2",
+                "tag": "tr",
+                "$sel": "body > div.wrap > div.scroll > table > tbody > tr",
+                "children": [
+                  {
+                    "part": "th-2",
+                    "tag": "th",
+                    "attrs": {
+                      "scope": "row",
+                      "data-first": "",
+                      "data-label": "Account"
+                    },
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th",
+                    "children": [
+                      {
+                        "part": "v",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "v"
+                        },
+                        "text": "Current account",
+                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > th > span.v"
+                      }
+                    ]
+                  },
+                  {
+                    "part": "td",
+                    "tag": "td",
+                    "attrs": {
+                      "data-label": "Type"
+                    },
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td",
+                    "children": [
+                      {
+                        "part": "v-2",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "v"
+                        },
+                        "text": "Personal",
+                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td > span.v"
+                      }
+                    ],
+                    "$repeat": 3
+                  },
+                  {
+                    "part": "num-2",
+                    "tag": "td",
+                    "attrs": {
+                      "data-label": "Available balance",
+                      "class": "num"
+                    },
+                    "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num",
+                    "children": [
+                      {
+                        "part": "v-3",
+                        "tag": "span",
+                        "attrs": {
+                          "class": "v"
+                        },
+                        "text": "£2,140.50",
+                        "$sel": "body > div.wrap > div.scroll > table > tbody > tr > td.num > span.v"
+                      }
+                    ]
+                  }
+                ],
+                "$repeat": 4
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "focus",
+      "pressed",
+      "disabled"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "pressed"
+      },
+      {
+        "from": "pressed",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      }
+    ],
+    "$sources": {
+      "hover": [
+        "style .seg button:hover",
+        "style tbody tr:hover td",
+        "style tbody tr:hover th[scope=\"row\"]"
+      ],
+      "focus": [
+        "style .scroll:focus-visible",
+        "style .seg button:focus-visible"
+      ],
+      "pressed": [
+        "style .seg button:active",
+        "style .seg button[aria-pressed=\"true\"]"
+      ],
+      "disabled": [
+        "style .seg button:disabled"
+      ],
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--header": "{table.header.background}",
+    "--colhdr": "{table.column.background}",
+    "--cell": "{background.default}",
+    "--border": "{table.border}",
+    "--text": "{text.default}",
+    "--muted": "{text.secondary}",
+    "--hover": "{tertiary.background.hover}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--border-radius-indicator": "{border-radius.indicator}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Table.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (table.table) → climbed to div.scroll",
+    "$listeners": [
+      "click"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

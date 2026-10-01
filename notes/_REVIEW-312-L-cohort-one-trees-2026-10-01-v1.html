@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cohort one trees</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+a{color:inherit}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+/* the count */
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0}
+.count div{background:var(--card);padding:var(--s2) var(--s3);min-width:0}
+.count b{display:block;font-size:40px;font-weight:200;line-height:1.1}
+.count span{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+/* the words */
+.words{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin:var(--s3) 0 0}
+.words h3{font-size:18px;font-weight:500;margin:0 0 var(--s1);line-height:1.3}
+.words p{font-size:15px;line-height:1.55;color:var(--g8)}
+/* picture beside tree */
+.part{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--s3);margin:var(--s3) 0 var(--s2);align-items:start}
+.pic figure{margin:0 0 var(--s2);background:var(--card);border:1px solid var(--g3);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1)}
+.pic img{display:block;max-width:100%;width:auto;height:auto;align-self:flex-start;background:#fff;border:1px solid var(--g2)}
+.pic figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pic .links{font-size:13px;color:var(--g7)}
+.tree{border-top:1px solid var(--fg);min-width:0}
+.tree h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;margin:var(--s2) 0 var(--s1);line-height:1.5}
+.tree h4 small{font-size:11px;letter-spacing:0;text-transform:none;color:var(--g6);font-weight:400;margin-left:.5em}
+.outline,.outline ul{list-style:none;margin:0;padding:0}
+.outline ul{padding-left:1.1rem;border-left:1px solid var(--g3);margin-left:.35rem}
+.outline li{font-size:14px;line-height:1.5;padding:2px 0;overflow-wrap:anywhere}
+.outline .pn{font-weight:500}
+.outline .tg{color:var(--g6);font-size:12px}
+.outline .tx{color:var(--g6);font-size:12px;margin-left:3px}
+.h{font-style:normal;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--g3);color:var(--g7);margin-left:3px;white-space:nowrap;vertical-align:1px}
+.h.st{border-color:var(--accent);color:var(--accent)}
+.h.prop{background:var(--g2)}
+.sts{display:flex;flex-wrap:wrap;gap:.3rem}
+.sc{font-size:12px;letter-spacing:.04em;padding:.25rem .55rem;border:1px solid var(--g3);color:var(--g8);line-height:1.35}
+.sc.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.keys,.ev{font-size:14px;line-height:1.55;margin:var(--s1) 0 0;color:var(--g8)}
+.keys .k,.ev .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);margin-right:.4em}
+.fires{margin:.3rem 0 0;padding-left:1.2em;font-size:14px;line-height:1.55;color:var(--g8)}
+.fires li{margin:0 0 3px}
+.binds{list-style:none;margin:0;padding:0;font-size:13px;line-height:1.5;color:var(--g8)}
+.binds li{overflow-wrap:anywhere}
+.binds .arr{color:var(--g5);margin:0 .3em}
+details.more summary{cursor:pointer;font-size:12px;color:var(--g6);padding:.3rem 0}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+/* calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s2)}
+.call .q .rw{font-weight:500}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:900px){
+  .count,.words{grid-template-columns:1fr 1fr}
+  .part{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .count,.words{grid-template-columns:1fr}
+  .count b{font-size:32px}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#words">How to read a tree</a>
+  <a href="#mapping">Menus and select</a>
+  <a href="#p-button">Button</a><a href="#p-tabs">Tabs</a><a href="#p-table">Table</a><a href="#p-date-picker">Date picker</a><a href="#p-metric">Metric</a><a href="#p-split-button">Menus</a><a href="#p-accordion">Accordion</a><a href="#p-slider">Slider</a><a href="#p-selection-controls">Switch</a><a href="#p-input-fields">Text input</a><a href="#p-dropdown">Select</a><a href="#p-modals">Dialog</a><a href="#p-tooltip">Tooltip</a><a href="#p-pagination">Pagination</a><a href="#p-notifications">Notification</a>
+  <a href="#rules">The words</a>
+  <a href="#else">Anything else</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 312 · review page · Cohort one: fifteen trees, read by eye</p>
+      <h1>Fifteen parts now carry a first draft of their spec. Here is each one, drawn as a tree beside its picture, for you to say whether the tree describes the part.</h1>
+      <p class="sub">This morning you ruled that each part's spec lives in its meta: its anatomy, its states, what it fires, and its bindings to tokens. An extractor read those four out of the fifteen reference pages this afternoon. Nothing is inscribed until you answer; every draft is marked reviewed: false.</p>
+    </div>
+    <div class="meta">
+      <span>Thursday 1 October 2026</span>
+      <span>Read tonight, rule Friday. 20 calls: the menus and select mapping, one per part, three on the words, and a note.</span>
+      <span>Yes means the tree stands as the part's spec and the proposed events go in. Change it means say how in the comment.</span>
+      <span>Revised after the verifier: button, table and metric moved from Yes to Change it.</span>
+    </div>
+  </div>
+</header>
+
+<section id="words">
+  <div class="wrap">
+    <p class="label">01 · Where it stands, and how to read a tree</p>
+    <h2>All fifteen are drafted at full coverage: every part name points at a real element, every binding at a real token.</h2>
+    <div class="count">
+      <div><b>15 of 15</b><span>cohort parts drafted, full coverage</span></div>
+      <div><b>15 of 139</b><span>library parts drafted so far</span></div>
+      <div><b>0</b><span>refused by name</span></div>
+      <div><b>215</b><span>bindings, none unresolved</span></div>
+    </div>
+    <p class="record">Pasted from the extractor's report: 119 parts not yet drafted, 4 fenced (alias seats), 1 exempt (the example). Recommendation on the fifteen: Yes on 8, Change it on 7.</p>
+    <p class="record">Full coverage is not the same as right. It means every name points at something real; it does not mean the tree describes the part. An independent check read all fifteen by eye this evening: the button's tree is plainly wrong (it is the Loading specimen), and the table's and the metric's are weak. All three now recommend Change it, and each says why. The other twelve were read the same way and their recommendations stand.</p>
+    <p class="lead">Four words run through every tree. Here is what each means to a designer, so the trees below read without a glossary.</p>
+    <div class="words">
+      <div><h3>Anatomy</h3><p>The named pieces a part is made of, nested the way they sit: a date picker is a label, a box with an input and a calendar button, a message, and a panel with a head, a weekday row and a grid. Names are what you would point at. A small red tag marks where a state lands on a piece (disabled, selected); a grey tag marks where a choice of yours lands (the button's type, the metric's trend). ×6 means six of the same, drawn once.</p></div>
+      <div><h3>States</h3><p>The looks a part can be in, with the one it rests in marked. Rest, hover, pressed, focus, disabled are the usual five; open, selected, expanded, error and the rest are the part's own. Keys say what the keyboard does. The draft also records how each look moves to the next; that is behind Technical.</p></div>
+      <div><h3>Events</h3><p>What a part listens to (clicks, keys) and what it fires: the messages it sends out to the page when something happens in it, such as a tab chosen or a date picked. Every draft today says fires nothing, because the reference pages only react and never send a message out. So each part comes with a proposal in plain names; Yes takes the proposal.</p></div>
+      <div><h3>Bindings</h3><p>The lines from a part's colours and measures to the tokens: the primary fill at rest is button / primary / background / default. Each line was checked against the token store. This is what lets another library paint the part in Apollo's colours.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="mapping" class="grey">
+  <div class="wrap">
+    <p class="label">02 · Menus and select · which part is which?</p>
+    <h2>Your list said menus and select. Neither is a part's name in the library, so two parts were drafted as the nearest: the split button for menus, the dropdown for select.</h2>
+    <p class="lead">The split button's flyout is the only true menu in the cohort, a list of actions. The dropdown is a select: one value chosen from a list of options. Another lane's name-matcher sends both your words to the dropdown, which is why this is a call and not a footnote.</p>
+    <ul class="facts">
+      <li><span class="k">Menus</span><span><b>Drafted as the split button.</b> Its menu carries the menu role and menu items, the most of any reference page. One thing to know: the split button meta is proposed at session 209 and has not been ruled. The alternative with real menus is the navigation header's flyouts, a much bigger part.</span></li>
+      <li><span class="k">Select</span><span><b>Drafted as the dropdown.</b> It holds the custom list and the native select in one meta; the combobox and multi-select are separate parts, not in this cohort.</span></li>
+      <li><span class="k">If you meant something else</span><span>Say which part you had in mind in the comment; it joins cohort two.</span></li>
+    </ul>
+    <div class="call" data-id="mapping" data-q="2. Menus and select: which part is which?" data-rec="Menus = split button, select = dropdown">
+      <p class="q">Which parts are menus and select? <span class="rw">Recommendation: menus = split button, select = dropdown.</span> They are the two parts that actually carry a menu and a select.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Menus = split button, select = dropdown">Menus = split button, select = dropdown<em>recommended</em></button><button type="button" class="chip" data-v="Both = dropdown">Both = dropdown</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section id="p-button">
+  <div class="wrap">
+    <p class="label">03 · Button · does this tree describe the part?</p>
+    <h2>The draft is wrong: the extractor took the Loading button as the button.</h2>
+    <p class="lead">The reference page shows the primary button in five looks (default, pressed, disabled, loading, done). The picture is the default one. The extractor picked the richest of the primary buttons on the page, and the richest is the Loading specimen, so the drafted tree is a button whose words are literally “Loading” and whose only inner part is the spinner. That describes one state of a button, not a button.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/button.png" srcset="_lanes/312/L/img/button.png 2x" alt="Button from its reference page, light theme"><figcaption>Button · light · the default button; the draft was read from the Loading one beside it</figcaption></figure><p class="links"><a href="../showroom/button.html">Showroom page</a> · <a href="../knowledge/snippets/Button.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">btn</span> <span class="tg">button</span> <i class="h prop">prop type</i> <i class="h st">state disabled</i> <span class="tx">“Loading”</span><ul><li><span class="pn">spin</span> <span class="tg">span</span> </li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">disabled</span><span class="sc">processing</span><span class="sc">success</span><span class="sc">focus</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> nothing</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>press</b> when the button is activated by pointer or keyboard; carries its type</li></ul>
+        <h4>Bindings <small>29 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--alpha-68</code> <span class="arr">→</span> alpha / 68</li><li><code>--pri-default</code> <span class="arr">→</span> button / primary / background / default</li><li><code>--pri-hover</code> <span class="arr">→</span> button / primary / background / hover</li><li><code>--pri-pressed</code> <span class="arr">→</span> button / primary / background / pressed</li><li><code>--pri-disabled</code> <span class="arr">→</span> button / primary / background / disabled</li><li><code>--pri-label</code> <span class="arr">→</span> button / primary / label / default</li></ul><details class="more"><summary>and 23 more</summary><ul class="binds"><li><code>--pri-label-disabled</code> <span class="arr">→</span> button / primary / label / disabled</li><li><code>--pri-icon</code> <span class="arr">→</span> button / primary / icon / default</li><li><code>--sec-default</code> <span class="arr">→</span> button / secondary / background / default</li><li><code>--sec-hover</code> <span class="arr">→</span> button / secondary / background / hover</li><li><code>--sec-pressed</code> <span class="arr">→</span> button / secondary / background / pressed</li><li><code>--sec-disabled</code> <span class="arr">→</span> button / secondary / background / disabled</li><li><code>--sec-label</code> <span class="arr">→</span> button / secondary / label / default</li><li><code>--sec-label-disabled</code> <span class="arr">→</span> button / secondary / label / disabled</li><li><code>--ter-hover</code> <span class="arr">→</span> button / tertiary / background / hover</li><li><code>--ter-border</code> <span class="arr">→</span> button / tertiary / border / default</li><li><code>--ter-border-disabled</code> <span class="arr">→</span> button / tertiary / border / disabled</li><li><code>--ter-label</code> <span class="arr">→</span> button / tertiary / label / default</li><li><code>--ter-label-disabled</code> <span class="arr">→</span> button / tertiary / label / disabled</li><li><code>--quat-hover</code> <span class="arr">→</span> button / quaternary / background / hover</li><li><code>--quat-label</code> <span class="arr">→</span> button / quaternary / label / default</li><li><code>--quat-label-disabled</code> <span class="arr">→</span> button / quaternary / label / disabled</li><li><code>--success</code> <span class="arr">→</span> rag / success-background</li><li><code>--success-fg</code> <span class="arr">→</span> text / on-success</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--surface</code> <span class="arr">→</span> button / tertiary / background / hover</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--press-travel</code> <span class="arr">→</span> component-type / button-family / press-travel</li><li><code>--press-darken</code> <span class="arr">→</span> component-type / button-family / press-darken</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">What is wrong</span><span>The words are the fixed text Loading where the button&#x27;s own label belongs, and the spinner is drawn as if every button has one. A client library reading this tree would build a Loading button.</span></li><li><span class="k">The right tree</span><span>One part, the button, with its type (primary, secondary, tertiary, quaternary) as a choice on it and its words as its label field, as you ruled at session 305 (a part&#x27;s own words are a field on the part, not a part inside it). The spinner is a child that appears only while processing. If icon-and-label buttons belong in the spec, an icon slot beside the label.</span></li><li><span class="k">What is right</span><span>The seven states (rest, hover, pressed, disabled, processing, success, focus) and the colour bindings were read from all six specimens and the styles, not only the Loading one, and they stand.</span></li><li><span class="k">Not here</span><span>The icon button is its own part and is not in this cohort.</span></li></ul>
+    <div class="call" data-id="button" data-q="3. Button: does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> The tree is the Loading specimen, not the button. The right tree is the button with its type and its label field, and the spinner shown only while processing. Leave that in the comment (or your own words) and the draft is redone in phase 2; the states and bindings can stay.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.row &gt; button.btn.primary</code>, found by name affinity 3 (button.btn.primary) → richest of 6 instances. Parts 2 after collapsing 0 repeated siblings. Source knowledge/snippets/Button.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>focus</b> ← style .btn:focus-visible; <b>hover</b> ← style .actionbar .btn:hover (+5); <b>disabled</b> ← attribute disabled on a twin of body &gt; div.row &gt; button.btn.primary (+5); <b>pressed</b> ← class .is-pressed on a twin of body &gt; div.row &gt; button.btn.primary (+5); <b>success</b> ← class .is-success on a twin of body &gt; div.row &gt; button.btn.primary (+1). Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ pressed; pressed →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Listens (DOM events the page script attaches): none. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 29, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/button.html</code>; reference <code>knowledge/snippets/Button.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-tabs" class="grey">
+  <div class="wrap">
+    <p class="label">04 · Tabs · does this tree describe the part?</p>
+    <h2>Tabs are a strip of tab buttons with a sliding indicator and a More menu, over a set of panels.</h2>
+    <p class="lead">The tree reads the strip (tablist) with its tabs, the overflow trigger and its menu, and the indicator line, then the panels, one per tab, with their text. Six tabs and six panels collapse to one of each, marked ×6.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/tabs.png" srcset="_lanes/312/L/img/tabs.png 2x" alt="Tabs from its reference page, light theme"><figcaption>Tabs · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/tabs.html">Showroom page</a> · <a href="../knowledge/snippets/Tabs.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">tabs</span> <span class="tg">div</span> <ul><li><span class="pn">tablist</span> <span class="tg">div</span> <i class="h role">role tablist</i><ul><li><span class="pn">tab</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h role">role tab</i> <i class="h st">state selected</i> <i class="h rep">×6</i> <span class="tx">“Overview”</span></li><li><span class="pn">overflow</span> <span class="tg">div</span> <i class="h st">state hidden</i><ul><li><span class="pn">overflow-trigger</span> <span class="tg">button</span> <i class="h st">state expanded</i> <span class="tx">“More ▾”</span></li><li><span class="pn">overflow-menu</span> <span class="tg">ul</span> <i class="h role">role menu</i></li></ul></li><li><span class="pn">indicator</span> <span class="tg">span</span> </li></ul></li><li><span class="pn">panel</span> <span class="tg">div</span> <i class="h st">state hidden</i> <i class="h role">role tabpanel</i> <i class="h rep">×6</i><ul><li><span class="pn">p</span> <span class="tg">p</span> <span class="tx">“A summary of balances, recent a…”</span></li></ul></li></ul></li></ul>
+        <h4>States <small>9, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">selected</span><span class="sc">expanded</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">hidden</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>ArrowDown</b> next · <b>ArrowLeft</b> previous · <b>ArrowRight</b> next · <b>ArrowUp</b> previous · <b>End</b> last · <b>Escape</b> close · <b>Home</b> first</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>tab-change</b> when a different tab is chosen; carries the tab&#x27;s index and id</li></ul>
+        <h4>Bindings <small>14 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--tabs-active</code> <span class="arr">→</span> tabs / active</li><li><code>--tabs-background</code> <span class="arr">→</span> tabs / background</li><li><code>--tabs-standard-border</code> <span class="arr">→</span> tabs / standard-border</li><li><code>--tabs-overflow-border</code> <span class="arr">→</span> tabs / overflow-border</li><li><code>--tabs-overflow-background</code> <span class="arr">→</span> tabs / overflow-background</li><li><code>--text-default</code> <span class="arr">→</span> text / default</li></ul><details class="more"><summary>and 8 more</summary><ul class="binds"><li><code>--text-reverse</code> <span class="arr">→</span> text / reverse</li><li><code>--tertiary-hover</code> <span class="arr">→</span> tertiary / background / hover</li><li><code>--tertiary-pressed</code> <span class="arr">→</span> tertiary / background / pressed</li><li><code>--focus-ring</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--border-radius-indicator</code> <span class="arr">→</span> border-radius / indicator</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The More menu</span><span>Its items are built by the page&#x27;s script when tabs overflow, so the menu in the tree has no children. The items will need to be named when the fixture is generated.</span></li><li><span class="k">The colour sets</span><span>The meta&#x27;s list of looks (unselected-hover, selected-first and so on) is a colour-set list, not taken as states. The nine states here are the machine ones: rest, hover, focus, active, selected, expanded, open, disabled, hidden.</span></li><li><span class="k">Keys</span><span>Left and Right move between tabs, Home and End jump to the ends, Escape closes the More menu.</span></li></ul>
+    <div class="call" data-id="tabs" data-q="4. Tabs: does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> The strip, the indicator, the overflow and the panels are all there and named by their own class words.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.tabs</code>, found by name affinity 3 (div.tabs). Parts 9 after collapsing 10 repeated siblings. Source knowledge/snippets/Tabs.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hidden</b> ← attribute hidden on a twin of body &gt; div.tabs &gt; div.panel (+4); <b>hover</b> ← style .overflow__item:hover (+2); <b>active</b> ← style .tab:active; <b>selected</b> ← attribute aria-selected on body &gt; div.tabs &gt; div.tablist &gt; button.tab (+1); <b>disabled</b> ← attribute disabled on a twin of body &gt; div.tabs &gt; div.tablist &gt; button.tab (+2); <b>focus</b> ← style .overflow__item:focus-visible (+2); <b>open</b> ← style .overflow__menu[data-open=&quot;true&quot;]; <b>expanded</b> ← attribute aria-expanded on body &gt; div.tabs &gt; div.tablist &gt; div.overflow &gt; button.overflow__trigger. Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Keys: ArrowDown = next, ArrowLeft = previous, ArrowRight = next, ArrowUp = previous, End = last, Escape = close, Home = first. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 14, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/tabs.html</code>; reference <code>knowledge/snippets/Tabs.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-table">
+  <div class="wrap">
+    <p class="label">05 · Table · does this tree describe the part?</p>
+    <h2>The draft has the table&#x27;s pieces, but it starts at the scrolling box around the table and keeps the demo&#x27;s words.</h2>
+    <p class="lead">The tree starts at the scroll region (so keyboard users can scroll it), then the table, its caption and sub-line, the header row with its cells, and the body rows with a row-header cell, three cells and a number cell, each holding a value span.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/table.png" srcset="_lanes/312/L/img/table.png 2x" alt="Table from its reference page, light theme"><figcaption>Table · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/table.html">Showroom page</a> · <a href="../knowledge/snippets/Table.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">scroll</span> <span class="tg">div</span> <i class="h role">role region</i><ul><li><span class="pn">table</span> <span class="tg">table</span> <ul><li><span class="pn">caption</span> <span class="tg">caption</span> <span class="tx">“Account balances”</span><ul><li><span class="pn">sub</span> <span class="tg">span</span> <span class="tx">“As at 19 June 2026 · all figure…”</span></li></ul></li><li><span class="pn">thead</span> <span class="tg">thead</span> <ul><li><span class="pn">tr</span> <span class="tg">tr</span> <ul><li><span class="pn">th</span> <span class="tg">th</span> <i class="h rep">×4</i> <span class="tx">“Account”</span></li><li><span class="pn">num</span> <span class="tg">th</span> <span class="tx">“Available balance”</span></li></ul></li></ul></li><li><span class="pn">tbody</span> <span class="tg">tbody</span> <ul><li><span class="pn">tr-2</span> <span class="tg">tr</span> <i class="h rep">×4</i><ul><li><span class="pn">th-2</span> <span class="tg">th</span> <ul><li><span class="pn">v</span> <span class="tg">span</span> <span class="tx">“Current account”</span></li></ul></li><li><span class="pn">td</span> <span class="tg">td</span> <i class="h rep">×3</i><ul><li><span class="pn">v-2</span> <span class="tg">span</span> <span class="tx">“Personal”</span></li></ul></li><li><span class="pn">num-2</span> <span class="tg">td</span> <ul><li><span class="pn">v-3</span> <span class="tg">span</span> <span class="tx">“£2,140.50”</span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>5, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">pressed</span><span class="sc">disabled</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>sort</b> if column sorting is wanted; carries the column and direction. Today the reference table does not sort, so the honest draft is: fires nothing</li></ul>
+        <h4>Bindings <small>12 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--header</code> <span class="arr">→</span> table / header / background</li><li><code>--colhdr</code> <span class="arr">→</span> table / column / background</li><li><code>--cell</code> <span class="arr">→</span> background / default</li><li><code>--border</code> <span class="arr">→</span> table / border</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--muted</code> <span class="arr">→</span> text / secondary</li></ul><details class="more"><summary>and 6 more</summary><ul class="binds"><li><code>--hover</code> <span class="arr">→</span> tertiary / background / hover</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--border-radius-indicator</code> <span class="arr">→</span> border-radius / indicator</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The names</span><span>The rows and cells have no class names in the markup, so the draft calls them tr, tr-2, td, v-2. The call on words, below, decides whether those become row, cell, header-cell, value.</span></li><li><span class="k">The states</span><span>The meta says a table is not interactive, yet the draft lists hover, focus and pressed. Hover is the row highlight and focus is the scroll region, both real. Pressed was read from the demo&#x27;s header-type switcher above the table, which is not part of it.</span></li><li><span class="k">Listens</span><span>The only click on the page is that demo switcher, so the table itself listens to nothing.</span></li><li><span class="k">The root and the words</span><span>The root is the scrolling box (a region you can tab into on a narrow screen), not the table; the extractor climbed one level up from the table. Every cell carries the demo&#x27;s words (Current account, the balances, the caption&#x27;s date) where the spec wants holes for the title and the rows.</span></li></ul>
+    <div class="call" data-id="table" data-q="5. Table: does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Three things, none of them covered by the calls below: start the tree at the table, with the scrolling box as an optional wrapper rather than the part itself; take pressed out (it belongs to the demo switcher above the table, not the table); and make the caption and the cells holes for the title and rows the table already has as choices, not the demo&#x27;s account names and balances. The caption, header row, body rows and number cells are right.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.wrap &gt; div.scroll</code>, found by name affinity 3 (table.table) → climbed to div.scroll. Parts 16 after collapsing 8 repeated siblings. Source knowledge/snippets/Table.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .seg button:hover (+2); <b>focus</b> ← style .scroll:focus-visible (+1); <b>pressed</b> ← style .seg button:active (+1); <b>disabled</b> ← style .seg button:disabled. Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ pressed; pressed →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Listens (DOM events the page script attaches): click. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 12, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/table.html</code>; reference <code>knowledge/snippets/Table.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-date-picker" class="grey">
+  <div class="wrap">
+    <p class="label">06 · Date picker · does this tree describe the part?</p>
+    <h2>A date picker is a labelled field with a calendar button, a message line, and a panel with month arrows, a title, the weekday row and the day grid.</h2>
+    <p class="lead">The picture has the panel open. The tree reads the label row, the help line, the box (input and calendar button), the message, then the panel: its head (four arrows, the month title), the weekday row and the grid.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/date-picker.png" srcset="_lanes/312/L/img/date-picker.png 2x" alt="Date picker from its reference page, light theme"><figcaption>Date picker · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/date-picker.html">Showroom page</a> · <a href="../knowledge/snippets/Date-picker.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">dp</span> <span class="tg">div</span> <ul><li><span class="pn">dp-lblrow</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Payment date”</span></li></ul></li><li><span class="pn">dp-help</span> <span class="tg">p</span> <span class="tx">“Format: DD/MM/YYYY.”</span></li><li><span class="pn">dp-box</span> <span class="tg">div</span> <ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">tail-btn</span> <span class="tg">button</span> <i class="h st">state disabled</i> <i class="h st">state expanded</i><ul><li><span class="pn">icn</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">dp-msg</span> <span class="tg">div</span> </li><li><span class="pn">dp-panel</span> <span class="tg">div</span> <i class="h role">role dialog</i><ul><li><span class="pn">dp-head</span> <span class="tg">div</span> <ul><li><span class="pn">dp-nav</span> <span class="tg">button</span> <i class="h rep">×4</i><ul><li><span class="pn">icn-2</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">dp-title</span> <span class="tg">span</span> <span class="tx">“July 2026”</span></li></ul></li><li><span class="pn">dp-week</span> <span class="tg">div</span> <ul><li><span class="pn">span</span> <span class="tg">span</span> <i class="h rep">×7</i> <span class="tx">“Mo”</span></li></ul></li><li><span class="pn">dp-grid</span> <span class="tg">div</span> <i class="h role">role grid</i></li></ul></li></ul></li></ul>
+        <h4>States <small>18, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">selected</span><span class="sc">expanded</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">invalid</span><span class="sc">error</span><span class="sc">completed</span><span class="sc">empty</span><span class="sc">info</span><span class="sc">ok</span><span class="sc">static</span><span class="sc">success</span><span class="sc">today</span><span class="sc">warning</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Space</b> activate · <b>ArrowDown</b> next · <b>ArrowLeft</b> previous · <b>ArrowRight</b> next · <b>ArrowUp</b> previous · <b>End</b> last · <b>Enter</b> activate · <b>Escape</b> close · <b>Home</b> first · <b>PageDown</b> next-page · <b>PageUp</b> previous-page · <b>Tab</b> focus-next</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> blur, click, input, keydown, mousedown, pointerdown, touchstart</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>change</b> when a date is chosen or typed; carries the value</li><li><b>open</b> when the panel opens</li><li><b>close</b> when the panel closes</li></ul>
+        <h4>Bindings <small>19 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--text-disabled</code> <span class="arr">→</span> text / disabled</li><li><code>--field-bg-default</code> <span class="arr">→</span> form / background / default</li><li><code>--field-bg-hover</code> <span class="arr">→</span> form / background / hover</li><li><code>--border-default</code> <span class="arr">→</span> form / border / default</li></ul><details class="more"><summary>and 13 more</summary><ul class="binds"><li><code>--border-active</code> <span class="arr">→</span> form / border / active</li><li><code>--border-disabled</code> <span class="arr">→</span> form / border / disabled</li><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--icon-disabled</code> <span class="arr">→</span> icon / disabled</li><li><code>--error</code> <span class="arr">→</span> rag / error</li><li><code>--success</code> <span class="arr">→</span> rag / success</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--pop-border</code> <span class="arr">→</span> elevation / border</li><li><code>--shadow</code> <span class="arr">→</span> elevation / functional</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--press-travel</code> <span class="arr">→</span> component-type / button-family / press-travel</li><li><code>--press-darken</code> <span class="arr">→</span> component-type / button-family / press-darken</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">No day part</span><span>The day cells are drawn by the page&#x27;s script, so the grid in the tree is empty and there is no day part, although today, selected and empty are in the state list because the styles name them.</span></li><li><span class="k">Eighteen states</span><span>The list mixes the field&#x27;s states (rest, hover, focus, disabled, invalid, error, completed) with the message&#x27;s words (ok, info, warning), the panel&#x27;s (expanded, open, static) and a day&#x27;s (today, selected, empty). Each says where it was read from.</span></li><li><span class="k">Keys</span><span>The full set: arrows move a day, PageUp and PageDown a month, Home and End to the ends of the week, Enter and Space choose, Escape closes.</span></li></ul>
+    <div class="call" data-id="date-picker" data-q="6. Date picker: does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Add the day part: a day cell in the grid, with today, selected, empty and disabled as its states. A designer sees the days first; the tree should too. Say so in the comment, or write your own list.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.dp</code>, found by name affinity 2 (div.dp). Parts 17 after collapsing 9 repeated siblings. Source knowledge/snippets/Date-picker.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>error</b> ← class .is-error on a twin of body &gt; div.dp (+4); <b>warning</b> ← style .is-warning; <b>ok</b> ← style .dp-msg.is-ok .ic (+1); <b>success</b> ← style .is-success; <b>info</b> ← style .is-info; <b>hover</b> ← style .dp-box:hover:not(:focus-within) (+5); <b>focus</b> ← style .dp-box .tail-btn:focus-visible (+5); <b>completed</b> ← class .is-completed on a twin of body &gt; div.dp (+1); <b>disabled</b> ← attribute disabled on a twin of body &gt; div.dp &gt; div.dp-box &gt; button.tail-btn (+5); <b>open</b> ← style .dp-panel.is-open; <b>static</b> ← style .dp-panel.is-static; <b>active</b> ← style .dp-nav:active; <b>today</b> ← style .dp-day.is-today (+1); <b>selected</b> ← style .dp-day.is-today[aria-selected=&quot;true&quot;] (+1); <b>empty</b> ← style .dp-day.is-empty; <b>invalid</b> ← attribute aria-invalid on a twin of body &gt; div.dp &gt; div.dp-box &gt; input; <b>expanded</b> ← attribute aria-expanded on body &gt; div.dp &gt; div.dp-box &gt; button.tail-btn. Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Keys: Space = activate, ArrowDown = next, ArrowLeft = previous, ArrowRight = next, ArrowUp = previous, End = last, Enter = activate, Escape = close, Home = first, PageDown = next-page, PageUp = previous-page, Tab = focus-next. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): blur, click, input, keydown, mousedown, pointerdown, touchstart. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 19, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/date-picker.html</code>; reference <code>knowledge/snippets/Date-picker.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-metric">
+  <div class="wrap">
+    <p class="label">07 · Metric · does this tree describe the part?</p>
+    <h2>A metric is a label, a value with its unit, a delta line (arrow, figure, period), and a spark chart in its own slot.</h2>
+    <p class="lead">The tree reads the label, the value with its unit span and figure span, the delta with its glyph (an icon), figure and period, and the spark container holding the inline chart. The delta&#x27;s direction (up, down) is a prop hole on its class.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/metric.png" srcset="_lanes/312/L/img/metric.png 2x" alt="Metric from its reference page, light theme"><figcaption>Metric · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/metric.html">Showroom page</a> · <a href="../knowledge/snippets/Metric.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">metric</span> <span class="tg">div</span> <i class="h role">role group</i> <i class="h st">state busy</i><ul><li><span class="pn">metric-lbl</span> <span class="tg">p</span> <span class="tx">“Net cash flow”</span></li><li><span class="pn">metric-val</span> <span class="tg">span</span> <ul><li><span class="pn">unit</span> <span class="tg">span</span> <span class="tx">“+£”</span></li><li><span class="pn">span</span> <span class="tg">span</span> <span class="tx">“2,450.00”</span></li></ul></li><li><span class="pn">metric-delta</span> <span class="tg">span</span> <i class="h prop">prop trend</i><ul><li><span class="pn">glyph</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">span-2</span> <span class="tg">span</span> <span class="tx">“+12.4% up”</span></li><li><span class="pn">metric-per</span> <span class="tg">span</span> <span class="tx">“vs February”</span></li></ul></li><li><span class="pn">metric-spark</span> <span class="tg">div</span> <i class="h slot">slot spark</i><ul><li><span class="pn">spark-inline</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul>
+        <h4>States <small>8, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">ready · rest</span><span class="sc">loading</span><span class="sc">empty</span><span class="sc">error</span><span class="sc">stale</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">busy</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> nothing</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>nothing</b> a metric displays; it does not act. If a retry on error is ever wanted, that would be a retry event</li></ul>
+        <h4>Bindings <small>14 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--surface</code> <span class="arr">→</span> tertiary / background / default</li><li><code>--border</code> <span class="arr">→</span> border / subtle</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--muted</code> <span class="arr">→</span> text / secondary</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li></ul><details class="more"><summary>and 8 more</summary><ul class="binds"><li><code>--pos-ink</code> <span class="arr">→</span> rag / success-ink</li><li><code>--neg-ink</code> <span class="arr">→</span> rag / error-ink</li><li><code>--flat-ink</code> <span class="arr">→</span> text / default</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--tbl-header</code> <span class="arr">→</span> table / header / background</li><li><code>--tbl-colhdr</code> <span class="arr">→</span> table / column / background</li><li><code>--tbl-cell</code> <span class="arr">→</span> background / default</li><li><code>--tbl-border</code> <span class="arr">→</span> table / border</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Ready first</span><span>The five states the meta already declares (ready, loading, empty, error, stale) come first and ready is the rest state. Hover, focus and busy were added from the styles and the aria-busy attribute; busy says the same as loading.</span></li><li><span class="k">Two unnamed spans</span><span>The value figure and the delta figure are spans with no class, so they are called span and span-2. These are the two parts that matter most on a tile, so they are worth naming here and not left to the general rule on words below.</span></li><li><span class="k">No script</span><span>The metric page has no script, so it listens to nothing; the transitions are only the ones the styles imply.</span></li></ul>
+    <div class="call" data-id="metric" data-q="7. Metric: does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Name the two figures: the value and the change are what a tile is read for, and the draft calls them span and span-2, the two least telling names in the tree. Take busy out; it is loading said twice. The five declared states, the trend choice on the delta and the spark slot are right and stay.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.board &gt; div.metric</code>, found by name affinity 3 (div.metric). Parts 12 after collapsing 0 repeated siblings. Source knowledge/snippets/Metric.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>loading</b> ← class .is-loading on a twin of body &gt; div.board &gt; div.metric (+1); <b>empty</b> ← class .is-empty on a twin of body &gt; div.board &gt; div.metric (+1); <b>error</b> ← class .is-error on a twin of body &gt; div.board &gt; div.metric (+3); <b>hover</b> ← style .metric-cta:hover (+2); <b>focus</b> ← style .metric-cta:focus-visible (+4); <b>busy</b> ← attribute aria-busy on a twin of body &gt; div.board &gt; div.metric; <b>stale</b> ← class .is-stale on a twin of body &gt; div.board &gt; div.metric. Rest state: meta.stateModel.states, in its order; initial = its first.</li><li>Transitions: ready →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ ready; * →<i>focus</i>→ focus; focus →<i>blur</i>→ ready.</li><li>Listens (DOM events the page script attaches): none. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 14, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/metric.html</code>; reference <code>knowledge/snippets/Metric.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-split-button" class="grey">
+  <div class="wrap">
+    <p class="label">08 · Menus (drafted as the split button) · does this tree describe the part?</p>
+    <h2>A split button is a main button and a caret button side by side, with a menu of items (and a separator) that opens under the caret.</h2>
+    <p class="lead">The picture has the menu open. The tree reads the main button, the caret button with its icon, and the menu with three items and a separator. Its tier (primary, secondary) is a prop hole on the class, and the menu&#x27;s open state is a hole on its data attribute.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/split-button.png" srcset="_lanes/312/L/img/split-button.png 2x" alt="Menus (drafted as the split button) from its reference page, light theme"><figcaption>Menus · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/split-button.html">Showroom page</a> · <a href="../knowledge/snippets/Split-button.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">split-btn</span> <span class="tg">div</span> <i class="h prop">prop tier</i><ul><li><span class="pn">sb-main</span> <span class="tg">button</span> <span class="tx">“Send payment”</span></li><li><span class="pn">sb-caret</span> <span class="tg">button</span> <i class="h st">state expanded</i><ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">sb-menu</span> <span class="tg">ul</span> <i class="h st">state open</i> <i class="h role">role menu</i><ul><li><span class="pn">sb-item</span> <span class="tg">li</span> <i class="h role">role menuitem</i> <i class="h rep">×3</i> <span class="tx">“Schedule for later”</span></li><li><span class="pn">sb-sep</span> <span class="tg">li</span> <i class="h role">role presentation</i></li></ul></li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">closed · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">expanded</span><span class="sc">open</span><span class="sc">disabled</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Space</b> activate · <b>ArrowDown</b> next · <b>ArrowUp</b> previous · <b>Enter</b> activate · <b>Escape</b> close</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>press</b> when the main button is activated</li><li><b>select</b> when a menu item is chosen; carries the item</li><li><b>open</b> when the menu opens</li><li><b>close</b> when it closes</li></ul>
+        <h4>Bindings <small>24 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--alpha-24</code> <span class="arr">→</span> alpha / 24</li><li><code>--alpha-68</code> <span class="arr">→</span> alpha / 68</li><li><code>--pri-default</code> <span class="arr">→</span> button / primary / background / default</li><li><code>--pri-hover</code> <span class="arr">→</span> button / primary / background / hover</li><li><code>--pri-pressed</code> <span class="arr">→</span> button / primary / background / pressed</li><li><code>--pri-disabled</code> <span class="arr">→</span> button / primary / background / disabled</li></ul><details class="more"><summary>and 18 more</summary><ul class="binds"><li><code>--pri-label</code> <span class="arr">→</span> button / primary / label / default</li><li><code>--pri-label-disabled</code> <span class="arr">→</span> button / primary / label / disabled</li><li><code>--ter-hover</code> <span class="arr">→</span> button / tertiary / background / hover</li><li><code>--ter-border</code> <span class="arr">→</span> button / tertiary / border / default</li><li><code>--ter-border-disabled</code> <span class="arr">→</span> button / tertiary / border / disabled</li><li><code>--ter-label</code> <span class="arr">→</span> button / tertiary / label / default</li><li><code>--ter-label-disabled</code> <span class="arr">→</span> button / tertiary / label / disabled</li><li><code>--menu-surface</code> <span class="arr">→</span> background / default</li><li><code>--menu-border</code> <span class="arr">→</span> elevation / border</li><li><code>--shadow</code> <span class="arr">→</span> elevation / functional</li><li><code>--divider</code> <span class="arr">→</span> divider / border / section</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--press-travel</code> <span class="arr">→</span> component-type / button-family / press-travel</li><li><code>--press-darken</code> <span class="arr">→</span> component-type / button-family / press-darken</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">This is your menus</span><span>Of the fifteen, this is the only part that carries a true menu (a list of actions, role menu). The dropdown is a select: one value chosen from a list. The mapping call above is where that is decided.</span></li><li><span class="k">Expanded and open</span><span>Both are listed: expanded is the caret&#x27;s attribute, open is the menu&#x27;s. They are one fact read from two places.</span></li><li><span class="k">Not yet ruled</span><span>The split button meta is proposed at session 209 and has not been ruled. Drafting its tree does not change that.</span></li></ul>
+    <div class="call" data-id="split-button" data-q="8. Menus (drafted as the split button): does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Main, caret, menu, items: a designer would name the same five. The expanded/open doubling is a cleanup for the rule on words, not a reason to redraw.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.row &gt; div.split-btn.primary</code>, found by name affinity 3 (div.split-btn.primary). Parts 7 after collapsing 2 repeated siblings. Source knowledge/snippets/Split-button.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .sb-caret:disabled:hover (+5); <b>active</b> ← style .sb-caret:active (+1); <b>disabled</b> ← style .sb-caret:disabled:hover (+5); <b>focus</b> ← style .sb-caret:focus-visible (+2); <b>expanded</b> ← attribute aria-expanded on body &gt; div.row &gt; div.split-btn.primary &gt; button.sb-caret (+1); <b>open</b> ← attribute data-open on a twin of body &gt; div.row &gt; div.split-btn.primary &gt; ul.sb-menu (+1). Rest state: meta has a boolean prop `open`.</li><li>Transitions: closed →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ closed; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ closed; * →<i>props.disabled</i>→ disabled; expanded →<i>click</i>→ closed.</li><li>Keys: Space = activate, ArrowDown = next, ArrowUp = previous, Enter = activate, Escape = close. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 24, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/split-button.html</code>; reference <code>knowledge/snippets/Split-button.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-accordion">
+  <div class="wrap">
+    <p class="label">09 · Accordion · does this tree describe the part?</p>
+    <h2>An accordion is a list of items, each a head button with its words and a chevron, over a panel with the content inside.</h2>
+    <p class="lead">The picture has the first item open. The tree reads the accordion, an item (two collapse to one), its head with the words span and the chevron with its icon, and the panel with its inner wrapper.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/accordion.png" srcset="_lanes/312/L/img/accordion.png 2x" alt="Accordion from its reference page, light theme"><figcaption>Accordion · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/accordion.html">Showroom page</a> · <a href="../knowledge/snippets/Accordion.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">acc</span> <span class="tg">div</span> <ul><li><span class="pn">item</span> <span class="tg">div</span> <i class="h rep">×2</i><ul><li><span class="pn">head</span> <span class="tg">button</span> <i class="h st">state expanded</i><ul><li><span class="pn">span</span> <span class="tg">span</span> <span class="tx">“How do I set up a standing orde…”</span></li><li><span class="pn">chev</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">panel</span> <span class="tg">div</span> <ul><li><span class="pn">inner</span> <span class="tg">div</span> <span class="tx">“Go to Payments → Standing order…”</span></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>5, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">focus</span><span class="sc">expanded</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>toggle</b> when an item opens or closes; carries the item and whether it is now expanded</li></ul>
+        <h4>Bindings <small>6 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--rule</code> <span class="arr">→</span> border / subtle</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--hover</code> <span class="arr">→</span> tertiary / background / hover</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li></ul>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The words</span><span>The head&#x27;s text is an unnamed span. The words call below covers it.</span></li><li><span class="k">Expanded</span><span>The head&#x27;s expanded attribute is the one real state beyond rest, hover, pressed and focus. The meta also has an open state; the draft kept the meta&#x27;s own rest word, default.</span></li></ul>
+    <div class="call" data-id="accordion" data-q="9. Accordion: does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Item, head, chevron, panel: the tree is the part.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.acc</code>, found by name affinity 2 (div.acc). Parts 8 after collapsing 1 repeated siblings. Source knowledge/snippets/Accordion.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .acc .head:hover; <b>focus</b> ← style .acc .head:focus-visible; <b>expanded</b> ← attribute aria-expanded on body &gt; div.acc &gt; div.item &gt; button.head (+2). Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ pressed; pressed →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>click</i>→ expanded; expanded →<i>click</i>→ default.</li><li>Listens (DOM events the page script attaches): click. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 6, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/accordion.html</code>; reference <code>knowledge/snippets/Accordion.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-slider" class="grey">
+  <div class="wrap">
+    <p class="label">10 · Slider · does this tree describe the part?</p>
+    <h2>The draft sees a field with a label, a value readout and the range input, and nothing else.</h2>
+    <p class="lead">The picture shows a track and a thumb; the tree does not. The browser draws those two from the range input, so the extractor, which reads elements, cannot see them. The draft has four parts and two states (rest, focus).</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/slider.png" srcset="_lanes/312/L/img/slider.png 2x" alt="Slider from its reference page, light theme"><figcaption>Slider · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/slider.html">Showroom page</a> · <a href="../knowledge/snippets/Slider.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">field</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Monthly budget”</span><ul><li><span class="pn">val</span> <span class="tg">span</span> <span class="tx">“£600”</span></li></ul></li><li><span class="pn">input</span> <span class="tg">input</span> </li></ul></li></ul>
+        <h4>States <small>2, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">focus</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> input</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>input</b> while the thumb is being dragged; carries the value</li><li><b>change</b> when the thumb is released; carries the value</li></ul>
+        <h4>Bindings <small>8 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--filled</code> <span class="arr">→</span> scrollbar / foreground</li><li><code>--unfilled</code> <span class="arr">→</span> scrollbar / background</li><li><code>--handle</code> <span class="arr">→</span> tertiary / background / default</li><li><code>--handle-bd</code> <span class="arr">→</span> form / border / default</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li></ul><details class="more"><summary>and 2 more</summary><ul class="binds"><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-indicator</code> <span class="arr">→</span> border-radius / indicator</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">What is missing</span><span>Thumb and track, and their states: the thumb&#x27;s hover and active (dragging) live on browser pseudo-elements and were not read; disabled is not in the list either.</span></li><li><span class="k">Listens</span><span>The page&#x27;s script listens to input and writes the value into the readout.</span></li></ul>
+    <div class="call" data-id="slider" data-q="10. Slider: does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Name the thumb and the track as parts, with hover, active and disabled, even though the markup has no element for them. A client library will have elements for both; the tree should describe what you see, not what the browser hides.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.field</code>, found by name affinity 3 (input.slider) → climbed to div.field. Parts 4 after collapsing 0 repeated siblings. Source knowledge/snippets/Slider.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>focus</b> ← style input[type=range]:focus-visible (+2). Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: * →<i>focus</i>→ focus; focus →<i>blur</i>→ default.</li><li>Listens (DOM events the page script attaches): input. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 8, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/slider.html</code>; reference <code>knowledge/snippets/Slider.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-selection-controls">
+  <div class="wrap">
+    <p class="label">11 · Switch (drafted as the selection-controls family) · does this tree describe the part?</p>
+    <h2>The draft is the whole family in one tree: checkbox rows, a radio group, the switch rows, and three kinds of chip.</h2>
+    <p class="lead">Your word was switch. Switch has no meta of its own; it is one branch of the selection-controls family, so the picture shows the switch rows first and the whole family below. In the tree the switch is field-3: the switch input with its label, and inside the label the knob (span-2) holding the thumb.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/selection-controls-switch.png" srcset="_lanes/312/L/img/selection-controls-switch.png 2x" alt="The four switch rows"><figcaption>The switch rows · your word</figcaption></figure><figure><img src="_lanes/312/L/img/selection-controls.png" srcset="_lanes/312/L/img/selection-controls.png 2x" alt="Switch (drafted as the selection-controls family) from its reference page, light theme"><figcaption>Switch · light · the whole family, the draft's root</figcaption></figure><p class="links"><a href="../showroom/selection-controls.html">Showroom page</a> · <a href="../knowledge/snippets/Selection-controls.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">sc</span> <span class="tg">div</span> <ul><li><span class="pn">field</span> <span class="tg">div</span> <i class="h rep">×6</i><ul><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Email notifications”</span><ul><li><span class="pn">box</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul></li><li><span class="pn">err-msg</span> <span class="tg">p</span> <i class="h rep">×3</i> <span class="tx">“⚠ You must accept the terms to …”</span></li><li><span class="pn">fieldset</span> <span class="tg">fieldset</span> <ul><li><span class="pn">legend</span> <span class="tg">legend</span> <span class="tx">“Delivery speed”</span></li><li><span class="pn">field-2</span> <span class="tg">div</span> <i class="h rep">×4</i><ul><li><span class="pn">input-2</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">label-2</span> <span class="tg">label</span> <span class="tx">“Standard delivery”</span><ul><li><span class="pn">span</span> <span class="tg">span</span> <i class="h prop">prop control</i><ul><li><span class="pn">dot</span> <span class="tg">span</span> </li></ul></li></ul></li></ul></li><li><span class="pn">err-msg-2</span> <span class="tg">p</span> <span class="tx">“⚠ This option is unavailable fo…”</span></li></ul></li><li><span class="pn">field-3</span> <span class="tg">div</span> <i class="h rep">×4</i><ul><li><span class="pn">switch</span> <span class="tg">input</span> <i class="h st">state checked</i> <i class="h st">state disabled</i> <i class="h role">role switch</i> <i class="h st">state invalid</i></li><li><span class="pn">label-3</span> <span class="tg">label</span> <span class="tx">“Marketing emails”</span><ul><li><span class="pn">span-2</span> <span class="tg">span</span> <i class="h prop">prop control</i><ul><li><span class="pn">thumb</span> <span class="tg">span</span> </li></ul></li></ul></li></ul></li><li><span class="pn">chips</span> <span class="tg">div</span> <i class="h role">role group</i><ul><li><span class="pn">button</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h st">state pressed</i> <i class="h rep">×2</i> <span class="tx">“Current”</span><ul><li><span class="pn">icon-2</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">button-2</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h st">state disabled</i> <i class="h st">state pressed</i> <i class="h rep">×2</i> <span class="tx">“Credit card”</span></li></ul></li><li><span class="pn">chips-2</span> <span class="tg">div</span> <i class="h role">role radiogroup</i><ul><li><span class="pn">radio</span> <span class="tg">button</span> <i class="h prop">prop control</i> <i class="h role">role radio</i> <i class="h st">state checked</i> <i class="h rep">×4</i> <span class="tx">“30 days”</span></li></ul></li><li><span class="pn">chips-3</span> <span class="tg">div</span> <ul><li><span class="pn">chip-del</span> <span class="tg">span</span> <i class="h prop">prop control</i> <i class="h rep">×3</i> <span class="tx">“GBP”</span><ul><li><span class="pn">x</span> <span class="tg">button</span> <span class="tx">“✕”</span></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>10, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">pressed</span><span class="sc">selected</span><span class="sc">disabled</span><span class="sc">error</span><span class="sc">focus</span><span class="sc">checked</span><span class="sc">indeterminate</span><span class="sc">invalid</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>ArrowDown</b> next · <b>ArrowLeft</b> previous · <b>ArrowRight</b> next · <b>ArrowUp</b> previous · <b>End</b> last · <b>Home</b> first</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> change, click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>change</b> when a control is checked, unchecked or chosen; carries the control&#x27;s value and whether it is checked</li></ul>
+        <h4>Bindings <small>15 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--ctrl-border</code> <span class="arr">→</span> form / border / default</li><li><code>--ctrl-border-active</code> <span class="arr">→</span> form / border / active</li><li><code>--ctrl-border-disabled</code> <span class="arr">→</span> form / border / disabled</li><li><code>--checked</code> <span class="arr">→</span> secondary / background / default</li><li><code>--glyph</code> <span class="arr">→</span> text / on-inverse</li></ul><details class="more"><summary>and 9 more</summary><ul class="binds"><li><code>--label</code> <span class="arr">→</span> text / default</li><li><code>--label-disabled</code> <span class="arr">→</span> text / disabled</li><li><code>--error</code> <span class="arr">→</span> rag / error</li><li><code>--error-atom</code> <span class="arr">→</span> rag / error-ink</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--chip-hover</code> <span class="arr">→</span> form / background / hover</li><li><code>--chip-pressed</code> <span class="arr">→</span> form / background / pressed</li><li><code>--reverse</code> <span class="arr">→</span> text / reverse</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Twenty-nine parts</span><span>Six checkbox rows, a fieldset of four radio rows, four switch rows, and three chip groups, each collapsed to one with its count. Every control shares one state list: checked, indeterminate, invalid, pressed, selected and the usual rest, hover, focus, disabled, error.</span></li><li><span class="k">The names</span><span>field, field-2, field-3, input-2, label-3, span-2: the markup reuses the same class on every row, so the draft numbers them. Only the switch input and the chip-del wrapper are named by role or class.</span></li><li><span class="k">Keys</span><span>Arrows move within the radio and chip groups; Home and End to the ends.</span></li></ul>
+    <div class="call" data-id="selection-controls" data-q="11. Switch (drafted as the selection-controls family): does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. One tree for four controls will not describe any of them to a client library. Whether that is four metas or four roots in one is the comment to leave.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.sc</code>, found by name affinity 2 (div.sc). Parts 29 after collapsing 20 repeated siblings. Source knowledge/snippets/Selection-controls.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>disabled</b> ← attribute disabled on a twin of body &gt; div.sc &gt; div.chips &gt; button.chip (+5); <b>hover</b> ← style .chip .x:hover (+5); <b>checked</b> ← attribute aria-checked on body &gt; div.sc &gt; div.chips &gt; button.chip (+5); <b>indeterminate</b> ← style .field.is-error input:indeterminate + label .box (+2); <b>focus</b> ← style .chip .x:focus-visible (+4); <b>error</b> ← class .is-error on a twin of body &gt; div.sc &gt; div.field (+5); <b>pressed</b> ← attribute aria-pressed on body &gt; div.sc &gt; div.chips &gt; button.chip (+5); <b>invalid</b> ← attribute aria-invalid on a twin of body &gt; div.sc &gt; div.field &gt; input (+1). Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ pressed; pressed →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled; checked →<i>change</i>→ default; indeterminate →<i>change</i>→ default; * →<i>click</i>→ pressed.</li><li>Keys: ArrowDown = next, ArrowLeft = previous, ArrowRight = next, ArrowUp = previous, End = last, Home = first. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): change, click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 15, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/selection-controls.html</code>; reference <code>knowledge/snippets/Selection-controls.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-input-fields" class="grey">
+  <div class="wrap">
+    <p class="label">12 · Text input (drafted as the input-fields family) · does this tree describe the part?</p>
+    <h2>A text input is a label row (label and a help button with its tooltip), help text, the box (prefix, input, tail button) and a count line.</h2>
+    <p class="lead">Your word was text input. The input-fields family is the nearest meta: single-line, large and multi-line inputs in one. The tree reads the first one on the page, an amount field with a prefix (GBP) and a tail button.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/input-fields.png" srcset="_lanes/312/L/img/input-fields.png 2x" alt="Text input (drafted as the input-fields family) from its reference page, light theme"><figcaption>Text input · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/input-fields.html">Showroom page</a> · <a href="../knowledge/snippets/Input-fields.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">field</span> <span class="tg">div</span> <ul><li><span class="pn">lbl</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Amount”</span></li><li><span class="pn">help-btn</span> <span class="tg">button</span> <ul><li><span class="pn">icn</span> <span class="tg">svg</span> </li><li><span class="pn">tip</span> <span class="tg">span</span> <i class="h role">role tooltip</i> <span class="tx">“Enter the amount you want to se…”</span></li></ul></li></ul></li><li><span class="pn">help-text</span> <span class="tg">p</span> <span class="tx">“How much would you like to pay?”</span></li><li><span class="pn">box</span> <span class="tg">div</span> <ul><li><span class="pn">prefix</span> <span class="tg">span</span> <span class="tx">“GBP”</span></li><li><span class="pn">input</span> <span class="tg">input</span> <i class="h st">state disabled</i> <i class="h st">state invalid</i></li><li><span class="pn">tail-btn</span> <span class="tg">button</span> <i class="h st">state disabled</i><ul><li><span class="pn">icn-2</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">count</span> <span class="tg">p</span> <span class="tx">“0/100”</span></li></ul></li></ul>
+        <h4>States <small>12, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">completed</span><span class="sc">disabled</span><span class="sc">error</span><span class="sc">focus</span><span class="sc">invalid</span><span class="sc">info</span><span class="sc">ok</span><span class="sc">success</span><span class="sc">warning</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Tab</b> focus-next</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> input, keydown, mousedown, touchstart</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>input</b> on every keystroke; carries the value</li><li><b>change</b> when the field is left; carries the value</li></ul>
+        <h4>Bindings <small>15 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--alpha-60</code> <span class="arr">→</span> alpha / 60</li><li><code>--field-bg-default</code> <span class="arr">→</span> form / background / default</li><li><code>--field-bg-hover</code> <span class="arr">→</span> form / background / hover</li><li><code>--border-default</code> <span class="arr">→</span> form / border / default</li><li><code>--border-active</code> <span class="arr">→</span> form / border / active</li><li><code>--border-disabled</code> <span class="arr">→</span> form / border / disabled</li></ul><details class="more"><summary>and 9 more</summary><ul class="binds"><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--text-disabled</code> <span class="arr">→</span> text / disabled</li><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--icon-disabled</code> <span class="arr">→</span> icon / disabled</li><li><code>--error</code> <span class="arr">→</span> rag / error</li><li><code>--success</code> <span class="arr">→</span> rag / success</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Twelve states</span><span>Rest, hover, active, focus, completed, disabled, error and invalid are the box&#x27;s. Ok, info, warning and success are the message line&#x27;s words; they sit in the same list because the draft has one list per part. The call on per-part states, below, covers that.</span></li><li><span class="k">Hover and active</span><span>Both were lent by the gallery&#x27;s s-hover and s-active classes on a twin box, so a reader can see them drawn.</span></li><li><span class="k">Keys and listens</span><span>Tab moves on. The script listens to input, keydown, mousedown and touchstart (for the count and the clear button).</span></li></ul>
+    <div class="call" data-id="input-fields" data-q="12. Text input (drafted as the input-fields family): does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Label row, help, box, count: the tree is the field. The mixed state list is a schema question asked once below, not a reason to send this back.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.field</code>, found by name affinity 3 (input.textbox) → climbed to div.box → climbed to div.field. Parts 13 after collapsing 0 repeated siblings. Source knowledge/snippets/Input-fields.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>error</b> ← class .is-error on a twin of body &gt; div.field (+5); <b>warning</b> ← style .is-warning; <b>ok</b> ← style .is-ok (+1); <b>success</b> ← style .is-success; <b>info</b> ← style .is-info; <b>focus</b> ← style .box .tail-btn:focus-visible (+5); <b>active</b> ← class .s-active on a twin of body &gt; div.field &gt; div.box (+4); <b>hover</b> ← class .s-hover on a twin of body &gt; div.field &gt; div.box (+5); <b>disabled</b> ← attribute disabled on a twin of body &gt; div.field &gt; div.box &gt; button.tail-btn (+5); <b>completed</b> ← class .is-completed on a twin of body &gt; div.field (+1); <b>invalid</b> ← attribute aria-invalid on a twin of body &gt; div.field &gt; div.box &gt; input. Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Keys: Tab = focus-next. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): input, keydown, mousedown, touchstart. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 15, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/input-fields.html</code>; reference <code>knowledge/snippets/Input-fields.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-dropdown">
+  <div class="wrap">
+    <p class="label">13 · Select (drafted as the dropdown) · does this tree describe the part?</p>
+    <h2>A dropdown is a label, a trigger button showing the chosen value with a chevron, and a list of options with a tick on the chosen one and a separator.</h2>
+    <p class="lead">Your word was select. The dropdown meta holds the custom listbox and the native select in one; the tree is the custom one, with its list open in the picture. Five options collapse to one, marked ×5.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/dropdown.png" srcset="_lanes/312/L/img/dropdown.png 2x" alt="Select (drafted as the dropdown) from its reference page, light theme"><figcaption>Select · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/dropdown.html">Showroom page</a> · <a href="../knowledge/snippets/Dropdown.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">dd</span> <span class="tg">div</span> <ul><li><span class="pn">label</span> <span class="tg">label</span> <span class="tx">“Country of residence”</span></li><li><span class="pn">trigger</span> <span class="tg">button</span> <i class="h role">role combobox</i> <i class="h st">state expanded</i><ul><li><span class="pn">ddval</span> <span class="tg">span</span> <span class="tx">“United Kingdom”</span></li><li><span class="pn">chev</span> <span class="tg">span</span> <span class="tx">“▾”</span></li></ul></li><li><span class="pn">menu</span> <span class="tg">ul</span> <i class="h role">role listbox</i><ul><li><span class="pn">opt</span> <span class="tg">li</span> <i class="h role">role option</i> <i class="h st">state selected</i> <i class="h rep">×5</i> <span class="tx">“United Kingdom”</span><ul><li><span class="pn">tick</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">sep</span> <span class="tg">li</span> <i class="h role">role presentation</i></li></ul></li></ul></li></ul>
+        <h4>States <small>11, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">active</span><span class="sc">active-message</span><span class="sc">completed</span><span class="sc">disabled</span><span class="sc">error</span><span class="sc">focus</span><span class="sc">selected</span><span class="sc">expanded</span><span class="sc">open</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Space</b> activate · <b>ArrowDown</b> next · <b>ArrowUp</b> previous · <b>Enter</b> activate · <b>Escape</b> close</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>change</b> when an option is chosen; carries the value</li><li><b>open</b> when the list opens</li><li><b>close</b> when it closes</li></ul>
+        <h4>Bindings <small>14 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--field-bg-hover</code> <span class="arr">→</span> form / background / hover</li><li><code>--border</code> <span class="arr">→</span> form / border / default</li><li><code>--border-active</code> <span class="arr">→</span> form / border / active</li><li><code>--menu-surface</code> <span class="arr">→</span> background / default</li><li><code>--menu-border</code> <span class="arr">→</span> elevation / border</li></ul><details class="more"><summary>and 8 more</summary><ul class="binds"><li><code>--shadow</code> <span class="arr">→</span> elevation / functional</li><li><code>--divider</code> <span class="arr">→</span> divider / border / section</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--error</code> <span class="arr">→</span> rag / error</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Found by elimination</span><span>Nothing in the markup shares a word with dropdown, so the root is the first candidate that is not page chrome. It is the right element, but the method is worth knowing.</span></li><li><span class="k">Eleven states</span><span>Rest, hover, active, focus, disabled, error, completed and active-message come from the meta&#x27;s own state prop; selected is the option&#x27;s; expanded and open are the trigger&#x27;s attribute and the list&#x27;s style, one fact twice.</span></li><li><span class="k">Not drafted</span><span>The boxed and grouped variant on the same page is a different look and was not drafted; the native select is not in the tree.</span></li></ul>
+    <div class="call" data-id="dropdown" data-q="13. Select (drafted as the dropdown): does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Trigger, value, chevron, list, option, tick: it describes the part. The native select can join in phase 2.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.row &gt; div &gt; div.dd</code>, found by first non-harness candidate. Parts 9 after collapsing 4 repeated siblings. Source knowledge/snippets/Dropdown.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .opt:hover (+1); <b>expanded</b> ← attribute aria-expanded on body &gt; div.row &gt; div &gt; div.dd &gt; button.trigger (+3); <b>focus</b> ← style .opt:focus-visible (+1); <b>open</b> ← style .menu[data-open=&quot;true&quot;]; <b>selected</b> ← attribute aria-selected on body &gt; div.row &gt; div &gt; div.dd &gt; ul.menu &gt; li.opt (+2). Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled; expanded →<i>click</i>→ default.</li><li>Keys: Space = activate, ArrowDown = next, ArrowUp = previous, Enter = activate, Escape = close. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 14, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/dropdown.html</code>; reference <code>knowledge/snippets/Dropdown.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-modals" class="grey">
+  <div class="wrap">
+    <p class="label">14 · Dialog (drafted as the modals family) · does this tree describe the part?</p>
+    <h2>A dialog is a scrim with the dialog box on it: a close button, a title, the body text, and an actions row with two buttons.</h2>
+    <p class="lead">Your word was dialog. The modals family&#x27;s first member is the dialog, so the tree starts at the scrim (overlay) and the dialog inside it, whose kind (dialog, sheet) is a prop hole on its class. The picture is the dialog open on its scrim.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/modals.png" srcset="_lanes/312/L/img/modals.png 2x" alt="Dialog (drafted as the modals family) from its reference page, light theme"><figcaption>Dialog · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/modals.html">Showroom page</a> · <a href="../knowledge/snippets/Modals.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">overlay</span> <span class="tg">div</span> <ul><li><span class="pn">dialog</span> <span class="tg">div</span> <i class="h prop">prop type</i> <i class="h role">role dialog</i><ul><li><span class="pn">close</span> <span class="tg">button</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">h2</span> <span class="tg">h2</span> <span class="tx">“Confirm payment”</span></li><li><span class="pn">p</span> <span class="tg">p</span> <span class="tx">“You&#x27;re about to send £250.00 to…”</span></li><li><span class="pn">actions</span> <span class="tg">div</span> <ul><li><span class="pn">btn</span> <span class="tg">button</span> <span class="tx">“Confirm payment”</span></li><li><span class="pn">btn-2</span> <span class="tg">button</span> <span class="tx">“Cancel”</span></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">closed · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">open</span><span class="sc">disabled</span><span class="sc">inert</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Escape</b> close · <b>Tab</b> focus-next</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>open</b> when the dialog opens</li><li><b>close</b> when it closes; carries the reason: confirm, cancel, dismiss, escape</li></ul>
+        <h4>Bindings <small>18 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--alpha-84</code> <span class="arr">→</span> alpha / 84</li><li><code>--surface</code> <span class="arr">→</span> tertiary / background / default</li><li><code>--elev-bd</code> <span class="arr">→</span> elevation / border</li><li><code>--shadow</code> <span class="arr">→</span> elevation / functional</li><li><code>--overlay</code> <span class="arr">→</span> overlay / version1</li><li><code>--text</code> <span class="arr">→</span> text / default</li></ul><details class="more"><summary>and 12 more</summary><ul class="binds"><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--pri</code> <span class="arr">→</span> button / primary / background / default</li><li><code>--pri-hover</code> <span class="arr">→</span> button / primary / background / hover</li><li><code>--on-pri</code> <span class="arr">→</span> button / primary / label / default</li><li><code>--sec-bd</code> <span class="arr">→</span> tertiary / border / default</li><li><code>--sec-hover</code> <span class="arr">→</span> tertiary / background / hover</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-control</code> <span class="arr">→</span> border-radius / control</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--press-travel</code> <span class="arr">→</span> component-type / button-family / press-travel</li><li><code>--press-darken</code> <span class="arr">→</span> component-type / button-family / press-darken</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The names</span><span>Title and body are h2 and p in the draft, the tags, because the markup gives them no class. The words call below covers them.</span></li><li><span class="k">Inert and disabled</span><span>The draft lists them as states of the dialog. They are what the dialog does to the page behind it (made inert) and to its own open button (disabled) while it is open. They are not looks of the dialog.</span></li><li><span class="k">Keys</span><span>Escape closes; Tab is trapped inside the dialog while it is open.</span></li></ul>
+    <div class="call" data-id="modals" data-q="14. Dialog (drafted as the modals family): does this tree describe the part?" data-rec="Change it (comment)">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Change it.</span> Take inert and disabled out of the dialog&#x27;s states; they belong to the page. The parts are right.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)<em>recommended</em></button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.overlay</code>, found by hint: the meta is the Modals family, the snippet&#x27;s root class is `overlay` &gt; `dialog`; no class or role shares a token with &#x27;modals&#x27; (aria-modal is an attribute). Parts 9 after collapsing 0 repeated siblings. Source knowledge/snippets/Modals.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .btn.full:hover (+5); <b>active</b> ← style .btn:active (+2); <b>disabled</b> ← script click handler (+2); <b>focus</b> ← style .btn:focus-visible (+1); <b>open</b> ← script click handler (+2); <b>inert</b> ← script click handler. Rest state: the root element itself carries an open/expanded state, so the rest state is closed.</li><li>Transitions: closed →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ closed; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ closed; * →<i>props.disabled</i>→ disabled; * →<i>click</i>→ open; * →<i>click</i>→ inert; * →<i>click</i>→ disabled; open →<i>click</i>→ closed; inert →<i>click</i>→ closed; disabled →<i>click</i>→ closed.</li><li>Keys: Escape = close, Tab = focus-next. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 18, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/modals.html</code>; reference <code>knowledge/snippets/Modals.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-tooltip">
+  <div class="wrap">
+    <p class="label">15 · Tooltip · does this tree describe the part?</p>
+    <h2>A tooltip is a trigger (the help button with its icon) and the tip bubble that shows beside it.</h2>
+    <p class="lead">The picture has the tip shown. The tree is small: the wrapper, the trigger with its icon, and the tip. The words the trigger sits beside (Available balance) are context on the page, not part of the tooltip.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/tooltip.png" srcset="_lanes/312/L/img/tooltip.png 2x" alt="Tooltip from its reference page, light theme"><figcaption>Tooltip · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/tooltip.html">Showroom page</a> · <a href="../knowledge/snippets/Tooltip.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">tip-wrap</span> <span class="tg">span</span> <ul><li><span class="pn">trigger</span> <span class="tg">button</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">tip</span> <span class="tg">span</span> <i class="h role">role tooltip</i> <span class="tx">“The funds you can spend right n…”</span></li></ul></li></ul>
+        <h4>States <small>3, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">focus</span><span class="sc">show</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Escape</b> close</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> blur, focus, keydown, mouseenter, mouseleave</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>nothing</b> a tooltip is a hint. If shows are ever counted, that would be show and hide events, but they are not needed to describe the part</li></ul>
+        <h4>Bindings <small>6 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--surface</code> <span class="arr">→</span> background / default</li><li><code>--tip-border</code> <span class="arr">→</span> elevation / border</li><li><code>--shadow</code> <span class="arr">→</span> elevation / functional</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--page</code> <span class="arr">→</span> background / default</li></ul>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">Show</span><span>The tip&#x27;s show state is the script&#x27;s class; focus is the trigger&#x27;s. Those two and rest are the whole machine.</span></li><li><span class="k">Listens</span><span>mouseenter, mouseleave, focus, blur and Escape, all on the trigger.</span></li></ul>
+    <div class="call" data-id="tooltip" data-q="15. Tooltip: does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Trigger, icon, tip: there is nothing else to a tooltip.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.row &gt; span.lbl &gt; span.tip-wrap</code>, found by name affinity 3 (span.tip) → climbed to span.tip-wrap. Parts 4 after collapsing 0 repeated siblings. Source knowledge/snippets/Tooltip.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>focus</b> ← style .trigger:focus-visible; <b>show</b> ← script focus handler (+2). Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>mouseenter</i>→ show; * →<i>focus</i>→ show; show →<i>mouseleave</i>→ default; show →<i>blur</i>→ default.</li><li>Keys: Escape = close. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): blur, focus, keydown, mouseenter, mouseleave. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 6, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/tooltip.html</code>; reference <code>knowledge/snippets/Tooltip.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-pagination" class="grey">
+  <div class="wrap">
+    <p class="label">16 · Pagination · does this tree describe the part?</p>
+    <h2>Pagination is a nav holding a list: a previous and a next control with icons, page links with the current one marked, and an ellipsis.</h2>
+    <p class="lead">The tree reads the nav, its list, a control item (two collapse to one: previous and next) with its button and icon, a page item (five collapse to one) with its link, and the ellipsis item with its span. The current page is a hole on the link&#x27;s aria-current.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/pagination.png" srcset="_lanes/312/L/img/pagination.png 2x" alt="Pagination from its reference page, light theme"><figcaption>Pagination · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/pagination.html">Showroom page</a> · <a href="../knowledge/snippets/Pagination.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">pg</span> <span class="tg">nav</span> <ul><li><span class="pn">ul</span> <span class="tg">ul</span> <ul><li><span class="pn">li</span> <span class="tg">li</span> <i class="h rep">×2</i><ul><li><span class="pn">ctrl</span> <span class="tg">button</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li></ul></li><li><span class="pn">li-2</span> <span class="tg">li</span> <i class="h rep">×5</i><ul><li><span class="pn">a</span> <span class="tg">a</span> <i class="h st">state current</i> <span class="tx">“1”</span></li></ul></li><li><span class="pn">li-3</span> <span class="tg">li</span> <ul><li><span class="pn">ellipsis</span> <span class="tg">span</span> <span class="tx">“…”</span></li></ul></li></ul></li></ul></li></ul>
+        <h4>States <small>7, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">completed</span><span class="sc">disabled</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">current</span></div>
+        <p class="keys"><span class="k">Keys</span> <b>Space</b> activate · <b>ArrowLeft</b> previous · <b>ArrowRight</b> next · <b>End</b> last · <b>Home</b> first</p>
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, keydown</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>page-change</b> when a page is chosen or previous/next pressed; carries the page number</li></ul>
+        <h4>Bindings <small>9 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--disabled</code> <span class="arr">→</span> text / disabled</li><li><code>--icon</code> <span class="arr">→</span> icon / default</li><li><code>--current-bd</code> <span class="arr">→</span> tertiary / border / default</li><li><code>--hover</code> <span class="arr">→</span> form / background / hover</li><li><code>--pressed</code> <span class="arr">→</span> tertiary / background / pressed</li></ul><details class="more"><summary>and 3 more</summary><ul class="binds"><li><code>--on-pressed</code> <span class="arr">→</span> text / reverse</li><li><code>--focus</code> <span class="arr">→</span> focus / ring</li><li><code>--page</code> <span class="arr">→</span> background / default</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The names</span><span>li, li-2, li-3, a and ul are the tags because the items have no class. The words call below covers them.</span></li><li><span class="k">Completed</span><span>It is in the state list because the meta&#x27;s own state prop names it, not because the page draws it.</span></li><li><span class="k">Keys</span><span>Left and Right for previous and next, Home and End for the first and last page, Space to activate.</span></li></ul>
+    <div class="call" data-id="pagination" data-q="16. Pagination: does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Controls, pages, current, ellipsis: it describes the part once the words are plain.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; nav.pg</code>, found by name affinity 1 (nav.pg). Parts 9 after collapsing 5 repeated siblings. Source knowledge/snippets/Pagination.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>hover</b> ← style .pg .ctrl:not([disabled]):hover (+1); <b>disabled</b> ← style .pg .ctrl:not([disabled]):active (+2); <b>active</b> ← style .pg .ctrl:active (+2); <b>focus</b> ← style .pg .ctrl:focus-visible (+1); <b>current</b> ← attribute aria-current on a twin of body &gt; nav.pg &gt; ul &gt; li &gt; a (+1). Rest state: meta prop `state` enum; initial = its default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>props.disabled</i>→ disabled.</li><li>Keys: Space = activate, ArrowLeft = previous, ArrowRight = next, End = last, Home = first. key names read from the snippet&#x27;s script; action words are the APG defaults for those keys, not read from the snippet</li><li>Listens (DOM events the page script attaches): click, keydown. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 9, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/pagination.html</code>; reference <code>knowledge/snippets/Pagination.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+<section id="p-notifications">
+  <div class="wrap">
+    <p class="label">17 · Notification · does this tree describe the part?</p>
+    <h2>A notification is a bar with a status icon, the message (a bold title, the text, a link) and a dismiss button.</h2>
+    <p class="lead">The tree reads the bar (role alert), the icon wrapper with its icon, the main span with the bold title, text spans (three collapse to one) and a link, and the dismiss button with its icon. The picture is the error one, the richest of the two on the page.</p>
+    <div class="part">
+      <div class="pic"><figure><img src="_lanes/312/L/img/notifications.png" srcset="_lanes/312/L/img/notifications.png 2x" alt="Notification from its reference page, light theme"><figcaption>Notification · light · cut at the draft's root</figcaption></figure><p class="links"><a href="../showroom/notifications.html">Showroom page</a> · <a href="../knowledge/snippets/Notifications.reference.html">Reference page</a></p></div>
+      <div class="tree">
+        <h4>Anatomy <small>the parts, nested as they sit</small></h4>
+        <ul class="outline"><li><span class="pn">note</span> <span class="tg">div</span> <i class="h role">role alert</i><ul><li><span class="pn">ic</span> <span class="tg">span</span> <ul><li><span class="pn">icon</span> <span class="tg">svg</span> </li></ul></li><li><span class="pn">main</span> <span class="tg">span</span> <ul><li><span class="pn">strong</span> <span class="tg">strong</span> <span class="tx">“Notification title.”</span></li><li><span class="pn">span</span> <span class="tg">span</span> <i class="h rep">×3</i> <span class="tx">“Message description.”</span><ul><li><span class="pn">a</span> <span class="tg">a</span> <span class="tx">“Link style.”</span></li></ul></li></ul></li><li><span class="pn">x</span> <span class="tg">button</span> <ul><li><span class="pn">icon-2</span> <span class="tg">svg</span> </li></ul></li></ul></li></ul>
+        <h4>States <small>10, rest state marked</small></h4>
+        <div class="sts"><span class="sc on">default · rest</span><span class="sc">hover</span><span class="sc">focus</span><span class="sc">active</span><span class="sc">error</span><span class="sc">info</span><span class="sc">ok</span><span class="sc">removing</span><span class="sc">success</span><span class="sc">warning</span></div>
+        
+        <h4>Events</h4>
+        <p class="ev"><span class="k">Listens</span> click, transitionend</p>
+        <p class="ev"><span class="k">Fires</span> <b>nothing yet</b> — the reference page sends no message out. Proposed:</p>
+        <ul class="fires"><li><b>dismiss</b> when the bar is closed by its button</li></ul>
+        <h4>Bindings <small>12 lines to tokens</small></h4>
+        <ul class="binds"><li><code>--err</code> <span class="arr">→</span> rag / error</li><li><code>--warn</code> <span class="arr">→</span> rag / warning</li><li><code>--ok</code> <span class="arr">→</span> rag / success</li><li><code>--info</code> <span class="arr">→</span> rag / information</li><li><code>--err-t</code> <span class="arr">→</span> rag / error-tint</li><li><code>--warn-t</code> <span class="arr">→</span> rag / warning-tint</li></ul><details class="more"><summary>and 6 more</summary><ul class="binds"><li><code>--ok-t</code> <span class="arr">→</span> rag / success-tint</li><li><code>--info-t</code> <span class="arr">→</span> rag / information-tint</li><li><code>--text</code> <span class="arr">→</span> text / default</li><li><code>--page</code> <span class="arr">→</span> background / default</li><li><code>--border-radius-surface</code> <span class="arr">→</span> border-radius / surface</li><li><code>--border-alpha</code> <span class="arr">→</span> notification / contextual / border / alpha</li></ul></details>
+      </div>
+    </div>
+    <ul class="facts"><li><span class="k">The kind</span><span>tint and err are literal classes on the root in the draft, because the meta&#x27;s variants do not name them as a prop. The kind (error, warning, info, success) wants to be a prop hole, like the button&#x27;s type.</span></li><li><span class="k">Ten states</span><span>Rest, hover, focus and active are the dismiss button&#x27;s and the link&#x27;s; error, warning, info, ok and success are the bar&#x27;s kind written as states; removing is the exit animation the script adds.</span></li><li><span class="k">Listens</span><span>click on dismiss and transitionend for the exit.</span></li></ul>
+    <div class="call" data-id="notifications" data-q="17. Notification: does this tree describe the part?" data-rec="Yes, it describes the part">
+      <p class="q">Does this tree describe the part? <span class="rw">Recommendation: Yes.</span> Icon, message, title, link, dismiss: the parts are right. Making the kind a prop instead of five states is a cleanup for the rule on words.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, it describes the part">Yes, it describes the part<em>recommended</em></button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Root: <code>body &gt; div.nwrap &gt; div.note.tint.err</code>, found by first non-harness candidate → richest of 2 instances. Parts 9 after collapsing 2 repeated siblings. Source knowledge/snippets/Notifications.reference.html; drafted by extract_spec.py @ 312-L2 on 2026-10-01; <code>reviewed: false</code>.</li><li>States, first source each: <b>error</b> ← style .is-error; <b>warning</b> ← style .is-warning; <b>ok</b> ← style .is-ok; <b>success</b> ← style .is-success; <b>info</b> ← style .is-info; <b>hover</b> ← style .note .x:hover (+3); <b>active</b> ← style .note .x:active (+3); <b>focus</b> ← style .note .x:focus-visible (+2); <b>removing</b> ← script click handler. Rest state: no stateModel, no `state` prop, no open state: rest state named default.</li><li>Transitions: default →<i>pointerenter</i>→ hover; hover →<i>pointerleave</i>→ default; hover →<i>pointerdown</i>→ active; active →<i>pointerup</i>→ hover; * →<i>focus</i>→ focus; focus →<i>blur</i>→ default; * →<i>click</i>→ removing.</li><li>Listens (DOM events the page script attaches): click, transitionend. <code>emits: []</code> on disk: the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave&#x27;s call on the review page</li><li>Bindings: 12, every one resolved against knowledge/tokens/ by the extractor's coverage gate (light, then dark or modeless).</li><li>Showroom <code>showroom/notifications.html</code>; reference <code>knowledge/snippets/Notifications.reference.html</code>; picture cut at the root selector by <code>notes/_lanes/312/L/render_312L.py shots</code>.</li></ol></details>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <p class="label">18 · The words · three rules the fifteen trees need</p>
+    <h2>The extractor names things the way the reference pages do. Three places it needs a rule from you rather than a guess.</h2>
+    <p class="lead">Each of these shows up in several trees above. Settling them once here means the drafts can be fixed by rule in phase 2 instead of part by part.</p>
+
+    <div class="sub3">
+      <h3>Plain words where the markup has none</h3>
+      <p>Where a piece has no class in the markup, the draft uses its tag: the table's rows and cells are tr, tr-2, td, v-2; the dialog's title and body are h2 and p; pagination's items are li, li-2, li-3, a. A designer would say row, cell, value, title, body, item, page link. The reference pages are not edited today, so the names would be set by hand, once per part, when a cohort is ratified.</p>
+      <div class="call" data-id="words" data-q="18a. Plain words where the markup has none" data-rec="Plain words, set by hand per part">
+      <p class="q">When the markup gives a piece no name, what should the tree call it? <span class="rw">Recommendation: plain words, set by hand when each cohort is ratified.</span> A client library will map to the names; tr-2 will not survive that.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Plain words, set by hand per part">Plain words, set by hand per part<em>recommended</em></button><button type="button" class="chip" data-v="Keep the tag words as drafted">Keep the tag words as drafted</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    </div>
+
+    <div class="sub3">
+      <h3>The rest state's name</h3>
+      <p>Ten parts rest in default (their meta says so). The split button and the dialog rest in closed, because they open. The metric rests in ready, from its own state model. Three words for one idea. The schema has an initial field that names the rest state whatever it is called, so the choice is between one word everywhere and each part's own word.</p>
+      <div class="call" data-id="rest" data-q="18b. The rest state&#x27;s name" data-rec="Each part&#x27;s own word, initial names it">
+      <p class="q">What is the rest state called? <span class="rw">Recommendation: each part’s own word.</span> A closed dialog is closed, not default; the initial field already says which state is rest.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Each part&#x27;s own word, initial names it">Each part&#x27;s own word, initial names it<em>recommended</em></button><button type="button" class="chip" data-v="One word everywhere: default">One word everywhere: default</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    </div>
+
+    <div class="sub3">
+      <h3>One state list per part, or per piece</h3>
+      <p>Today a tree has one list of states for the whole part. So the date picker's list holds the field's states, the message's words (ok, info, warning), the panel's and a day's (today, selected) all together, each marked with where it was read from. The text input and the notification have the same mix. The alternative is for each piece to carry its own states: the message has ok, info, warning; the day has today, selected, empty; the field has rest, hover, focus, disabled, error. That is a schema change, done in phase 2.</p>
+      <div class="call" data-id="perpart" data-q="18c. One state list per part, or per piece" data-rec="Each piece carries its own states (phase 2)">
+      <p class="q">Should states live on the pieces that show them? <span class="rw">Recommendation: yes, in phase 2.</span> A message’s warning and a day’s today are not states of the field; a client library needs to know which piece changes.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Each piece carries its own states (phase 2)">Each piece carries its own states (phase 2)<em>recommended</em></button><button type="button" class="chip" data-v="One list per part, as drafted">One list per part, as drafted</button><button type="button" class="chip" data-v="Change it (comment)">Change it (comment)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section id="else" class="grey">
+  <div class="wrap">
+    <p class="label">19 · Anything else</p>
+    <h2>Anything you want changed or looked at again.</h2>
+    <div class="call" data-id="page" data-q="19. Note on the page" data-rec="">
+      <p class="q">Anything else on this page?</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <span>Apollo · review page · Cohort one: fifteen trees · v1, revised after the verifier · 2026-10-01 · session 312 lanes L3 and L3b</span>
+  <span>No draft stands until you say.</span>
+</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 20 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+
+<script>
+(function(){
+  var KEY='review-312-L-cohort-one-trees-v1';
+  var PATH='notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 312 · Cohort one: fifteen trees · decisions','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('19. Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-312-L-cohort-one-trees.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

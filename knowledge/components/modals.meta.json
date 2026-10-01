@@ -195,5 +195,266 @@
         "ref": "component:dropdown"
       }
     ]
+  },
+  "anatomy": {
+    "part": "overlay",
+    "tag": "div",
+    "attrs": {
+      "class": "overlay",
+      "id": "overlay"
+    },
+    "$sel": "body > div.overlay",
+    "children": [
+      {
+        "part": "dialog",
+        "tag": "div",
+        "attrs": {
+          "class": "{props.type}"
+        },
+        "aria": {
+          "role": "dialog",
+          "aria-modal": "true",
+          "aria-labelledby": "dtitle",
+          "aria-describedby": "dbody"
+        },
+        "$sel": "body > div.overlay > div.dialog",
+        "children": [
+          {
+            "part": "close",
+            "tag": "button",
+            "attrs": {
+              "class": "close",
+              "id": "close",
+              "type": "button"
+            },
+            "aria": {
+              "aria-label": "Close dialog"
+            },
+            "$sel": "body > div.overlay > div.dialog > button.close",
+            "children": [
+              {
+                "part": "icon",
+                "tag": "svg",
+                "attrs": {
+                  "viewbox": "0 0 18 18"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "$sel": "body > div.overlay > div.dialog > button.close > svg"
+              }
+            ]
+          },
+          {
+            "part": "h2",
+            "tag": "h2",
+            "attrs": {
+              "id": "dtitle"
+            },
+            "text": "Confirm payment",
+            "$sel": "body > div.overlay > div.dialog > h2"
+          },
+          {
+            "part": "p",
+            "tag": "p",
+            "attrs": {
+              "id": "dbody"
+            },
+            "text": "You're about to send £250.00 to Jordan Lee. This can't be undone once confirmed.",
+            "$sel": "body > div.overlay > div.dialog > p"
+          },
+          {
+            "part": "actions",
+            "tag": "div",
+            "attrs": {
+              "class": "actions"
+            },
+            "$sel": "body > div.overlay > div.dialog > div.actions",
+            "children": [
+              {
+                "part": "btn",
+                "tag": "button",
+                "attrs": {
+                  "class": "btn primary",
+                  "id": "confirm",
+                  "type": "button"
+                },
+                "text": "Confirm payment",
+                "$sel": "body > div.overlay > div.dialog > div.actions > button.btn.primary"
+              },
+              {
+                "part": "btn-2",
+                "tag": "button",
+                "attrs": {
+                  "class": "btn secondary",
+                  "id": "cancel",
+                  "type": "button"
+                },
+                "text": "Cancel",
+                "$sel": "body > div.overlay > div.dialog > div.actions > button.btn.secondary"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "closed",
+      "hover",
+      "focus",
+      "active",
+      "open",
+      "disabled",
+      "inert"
+    ],
+    "initial": "closed",
+    "transitions": [
+      {
+        "from": "closed",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "closed"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "closed"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      },
+      {
+        "from": "*",
+        "on": "click",
+        "to": "open"
+      },
+      {
+        "from": "*",
+        "on": "click",
+        "to": "inert"
+      },
+      {
+        "from": "*",
+        "on": "click",
+        "to": "disabled"
+      },
+      {
+        "from": "open",
+        "on": "click",
+        "to": "closed"
+      },
+      {
+        "from": "inert",
+        "on": "click",
+        "to": "closed"
+      },
+      {
+        "from": "disabled",
+        "on": "click",
+        "to": "closed"
+      }
+    ],
+    "keys": {
+      "Escape": "close",
+      "Tab": "focus-next"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "hover": [
+        "style .btn.full:hover",
+        "style .btn.is-disabled:hover",
+        "style .btn.primary:hover",
+        "style .btn.secondary:hover",
+        "style .btn:disabled:hover",
+        "style .btn:hover"
+      ],
+      "active": [
+        "style .btn:active",
+        "style .close:active",
+        "style .dialog .close:active"
+      ],
+      "disabled": [
+        "script click handler",
+        "style .btn.is-disabled:hover",
+        "style .btn:disabled:hover"
+      ],
+      "focus": [
+        "style .btn:focus-visible",
+        "style .dialog .close:focus-visible"
+      ],
+      "open": [
+        "script click handler",
+        "style .overlay.open",
+        "style .overlay.open .dialog"
+      ],
+      "inert": [
+        "script click handler"
+      ],
+      "$initial": "the root element itself carries an open/expanded state, so the rest state is closed"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--alpha-84": "{alpha.84}",
+    "--surface": "{tertiary.background.default}",
+    "--elev-bd": "{elevation.border}",
+    "--shadow": "{elevation.functional}",
+    "--overlay": "{overlay.version1}",
+    "--text": "{text.default}",
+    "--icon": "{icon.default}",
+    "--pri": "{button.primary.background.default}",
+    "--pri-hover": "{button.primary.background.hover}",
+    "--on-pri": "{button.primary.label.default}",
+    "--sec-bd": "{tertiary.border.default}",
+    "--sec-hover": "{tertiary.background.hover}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--press-travel": "{component-type.button-family.press-travel}",
+    "--press-darken": "{component-type.button-family.press-darken}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Modals.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "hint: the meta is the Modals family, the snippet's root class is `overlay` > `dialog`; no class or role shares a token with 'modals' (aria-modal is an attribute)",
+    "$listeners": [
+      "click",
+      "keydown"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

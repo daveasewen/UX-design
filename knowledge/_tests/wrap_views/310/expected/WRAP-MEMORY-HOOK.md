@@ -42,19 +42,20 @@ metadata:
 provenance: 310 · 2026-09-30 · status: observed · repo record: `_HANDOFF-161-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md`
 
 ### What landed
-- **One day, no date split. Opened Wednesday 2026-09-30 14:02 BST; the ritual is the same day.** Lanes: A dark tiles (Opus 5.5) · B white ink and tab strip (Opus 5.5); 17 commits `7bc6b0c5..69173275`; 16 pushed through `44696966`, `69173275` rides the wrap push.
-- **8 rulings, 841 → 849 (`s310-D1`..`D8`):** the thin library direction arrow stays (*"the rhin arrow from the icon assets"* (14:03)); Net FX exposure is the first up-is-bad metric, because colour means good or bad news, not direction (*"I think your logic is sound, its positive and negative news, not up and down"* (14:07)); dark mode mirrors light by default, black tiles on the dark grey ground; the reverse an option (his 14:43 export, *"lets have the mirror as default but the other is an option both are valid"*); Supercharge the same, with its own darkest #13110E (his 14:43 export, *"Yes (the recommendation)"*); the interim pressed tile #25211C (*"lets do that for now, I have some proper specs for this but cant access the figma files at teh moment"* (16:24)); the option named "dark tiles, black or grey" and homed in the theme register (*"yes"* (16:24)); the white ink softens to #E1E1E1; Supercharge keeps #F7F6F4 (*"his 17:35 export, call 1"*; RULED NOT ENACTED, his page note *"i need to see this"*); the tab strip takes its container's colour (*"his 17:35 export, call 2"*; RULED NOT ENACTED, his page note *"i need to see this"*).
-- **Built:** black tiles by default and grey tiles as an option, recorded in the theme register (51 of 137 components change in dark), and the interim pressed tile. Three review pages reached you through the review artifact (v18 to v20). The repo's halation tool showed the ink, not the tile, is what cuts the glare.
+- **One day: opened Wed 2026-09-30 14:02 BST, "wrap" at 17:38.** 2 delegated subs (A dark tiles (Opus 5.5 · B white ink and tab strip (Opus 5.5); 17 commits, 16 pushed through `44696966` before the wrap.
+- **8 rulings, 841 → 849 (`s310-D1`..`D8`):** the thin library direction arrow stays (*"the rhin arrow from the icon assets"*); Net FX exposure is the first up-is-bad metric: colour means good or bad news, not direction (*"I think your logic is sound, its positive and negative news, not up and down"*); dark mirrors light by default, black tiles; the reverse an option (*"lets have the mirror as default but the other is an option both are valid"*); Supercharge the same, #13110E; the interim pressed tile #25211C, *"lets do that for now"*; the option named and homed in the theme register (*"yes"*); the white ink softens to #E1E1E1; Supercharge keeps #F7F6F4 (RULED NOT ENACTED, his page note *"i need to see this"*); the tab strip takes its container's colour (RULED NOT ENACTED, his page note *"i need to see this"*).
+- **Built:** black tiles by default and grey tiles as an option, recorded in the theme register (51 of 137 components change in dark), and the interim pressed tile. Three review pages reached you through the artifact "Apollo 304 review" (v18 to v20). The repo's halation tool (`reviews/_rag_bloom_model.py`) showed the ink, not the tile, is what cuts the glare.
 - **CI:** `93cdb12a` RED at step 88, fixed by `7e4602db`.
 
 ### The numbers
-- boot **135,179** (OVER the 135,000 ceiling by 179) · 160,000 at 14:03 · **300,000 at 14:47** · 320,000 at 16:24 · ⛔ **350,000 at 17:17** · **372,194 at his "wrap"** (17:38), past the hard 350,000 by 22,194 — a hand sum by `_wrap_facts.py`. subs 647,656 real (n=2, quota, never added).
+- **Boot 135,179** (over the ceiling by 179) · 300K at 14:47 · 320K at 16:24 · 350K at 17:17 · **372,194 at "wrap"**, past the hard 350,000 by 22,194 — a hand sum by `_wrap_facts.py`. subs 647,656 (n=2).
 
 ### OPEN — each a question put at the wrap
 1. **Mine, first:** build `s310-D7` and `s310-D8`, then show him before they stand.
 2. **Dave's:** should Supercharge's dark page read its own near-black, not #1A1A1A?
 3. **Mine:** can the receipt page's blank arrow and the older looks be fixed?
 4. **Dave's:** when he can reach Figma, what replaces the interim #25211C (`s310-D5`)?
+5. **Standing:** the designer pack re-cut towards the end of the week (`s309-D4`), and the container types (W-308iw)
 
 ### After the wrap
 - Wrap commit `b40bddc2`, seat files `4ece47a5`; CI on `4ece47a5` GREEN (run `36748452503`).

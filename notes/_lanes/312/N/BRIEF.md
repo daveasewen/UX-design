@@ -1,5 +1,7 @@
 # Lane N — #312 — The adapter manifest schema, and Sutherland React as the first manifest (S2 of Apollo for other libraries)
 
+> CORRECTION 2026-10-01 13:02 BST (Dave: "the four Sutherland bindings we already have? Im not sure I'm aware of these, this might be an assumption of your part, please be careful"; `notes/_lanes/312/DAVE-WORDS-2026-10-01-1302-sutherland-bindings.md`): the "four existing `codeBindings` spokes" this brief names are four TODO placeholder slots from 2026-06-22 with no Sutherland component, prop or import name in them. They are not bindings or mappings; nothing is mapped. The brief's text below is kept as written; lane N1b corrected the files it produced. Added by lane V.
+
 Brief written by #311 lane R (Fable) at noon Thu 2026-10-01 for the revised wave 2 (`notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html`, job N). Ruled: `s311-D7` (an adapter manifest per client library; Apollo governs, theirs renders; the unmapped list is required) and `s311-D9` (the S2 schema starts now). Dave's export: `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`. The shape: the proposal § 05 "The S2 manifest" and § 06 "S2". The prior record: `docs/decisions/ADR-0008-canonical-core-and-adapters.md`, `knowledge/_RUNBOOK-onboard-code-library.md`, the four `codeBindings` blocks in `knowledge/components/{cards,list-items,status-indicator,table}.meta.json`.
 
 ## The ask

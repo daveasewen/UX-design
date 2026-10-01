@@ -1,0 +1,17 @@
+--- knowledge/_RUNBOOK-capture-ritual.md	2026-10-01 14:06:25.776835914 +0000
++++ notes/_lanes/312/AC2/runbook-as-E-replay-left-it.md	2026-10-01 14:06:25.728115565 +0000
+@@ -381,13 +381,8 @@
+    *(Added 2026-07-28 #32. Order is the whole point: the index must be built from the files as they
+    will be COMMITTED, not as they were when the session's last `_build_all.py` ran.)*
+    ```
+-   python3 knowledge/_build_memento_index.py     # built, NEVER staged — gitignored since s312-D1
++   python3 knowledge/_build_memento_index.py     # then stage knowledge/_memento-index.json
+    ```
+-   ★ **#312 (s312-D1): the index is built, never committed.** `knowledge/_memento-index.json` is in
+-   `.gitignore`; the opener (`ensure_env.sh` step 5) and CI's gates job build it. Run the command so the
+-   local copy the later regen steps read is fresh, and do NOT stage it (git refuses the ignored path;
+-   `_wrap_regen.py` names no output for this step). The freshness check below still refuses a stale
+-   local copy at the wrap.
+    **Why this step exists, measured at #32's opener:** `_memento_search.py --fetch gm:LATEST` returned
+    **#29's banner** while the file carried #31's — because the index regenerates inside `_build_all.py`
+    and the wrap rewrites GM/LS *afterwards*. Retrieval was structurally one session behind, and

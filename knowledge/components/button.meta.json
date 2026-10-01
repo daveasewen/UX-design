@@ -392,5 +392,162 @@
         "ref": "ruling:ds-032"
       }
     ]
+  },
+  "anatomy": {
+    "part": "btn",
+    "tag": "button",
+    "attrs": {
+      "class": "btn {props.type}",
+      "disabled": "{state.disabled}"
+    },
+    "text": "Loading",
+    "$stateClasses": [
+      "is-pressed",
+      "is-disabled",
+      "is-success"
+    ],
+    "$sel": "body > div.row > button.btn.primary",
+    "children": [
+      {
+        "part": "spin",
+        "tag": "span",
+        "attrs": {
+          "class": "spin"
+        },
+        "$sel": "body > div.row > button.btn.primary > span.spin"
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "pressed",
+      "disabled",
+      "processing",
+      "success",
+      "focus"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "pressed"
+      },
+      {
+        "from": "pressed",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      }
+    ],
+    "$sources": {
+      "focus": [
+        "style .btn:focus-visible"
+      ],
+      "hover": [
+        "style .actionbar .btn:hover",
+        "style .btn.full:hover",
+        "style .btn.is-disabled:hover",
+        "style .btn.primary:hover",
+        "style .btn.quaternary:hover",
+        "style .btn.secondary:hover"
+      ],
+      "disabled": [
+        "attribute disabled on a twin of body > div.row > button.btn.primary",
+        "class .is-disabled on a twin of body > div.row > button.btn.primary",
+        "style .btn.is-disabled:hover",
+        "style .btn.primary.is-disabled",
+        "style .btn.quaternary.is-disabled",
+        "style .btn.secondary.is-disabled"
+      ],
+      "pressed": [
+        "class .is-pressed on a twin of body > div.row > button.btn.primary",
+        "style .btn.primary.is-pressed",
+        "style .btn.quaternary.is-pressed",
+        "style .btn.secondary.is-pressed",
+        "style .btn.tertiary.is-pressed",
+        "style .btn:active"
+      ],
+      "success": [
+        "class .is-success on a twin of body > div.row > button.btn.primary",
+        "style .btn.primary.is-success"
+      ],
+      "$initial": "meta prop `state` enum; initial = its default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--alpha-68": "{alpha.68}",
+    "--pri-default": "{button.primary.background.default}",
+    "--pri-hover": "{button.primary.background.hover}",
+    "--pri-pressed": "{button.primary.background.pressed}",
+    "--pri-disabled": "{button.primary.background.disabled}",
+    "--pri-label": "{button.primary.label.default}",
+    "--pri-label-disabled": "{button.primary.label.disabled}",
+    "--pri-icon": "{button.primary.icon.default}",
+    "--sec-default": "{button.secondary.background.default}",
+    "--sec-hover": "{button.secondary.background.hover}",
+    "--sec-pressed": "{button.secondary.background.pressed}",
+    "--sec-disabled": "{button.secondary.background.disabled}",
+    "--sec-label": "{button.secondary.label.default}",
+    "--sec-label-disabled": "{button.secondary.label.disabled}",
+    "--ter-hover": "{button.tertiary.background.hover}",
+    "--ter-border": "{button.tertiary.border.default}",
+    "--ter-border-disabled": "{button.tertiary.border.disabled}",
+    "--ter-label": "{button.tertiary.label.default}",
+    "--ter-label-disabled": "{button.tertiary.label.disabled}",
+    "--quat-hover": "{button.quaternary.background.hover}",
+    "--quat-label": "{button.quaternary.label.default}",
+    "--quat-label-disabled": "{button.quaternary.label.disabled}",
+    "--success": "{rag.success-background}",
+    "--success-fg": "{text.on-success}",
+    "--page": "{background.default}",
+    "--surface": "{button.tertiary.background.hover}",
+    "--border-radius-control": "{border-radius.control}",
+    "--press-travel": "{component-type.button-family.press-travel}",
+    "--press-darken": "{component-type.button-family.press-darken}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Button.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (button.btn.primary) → richest of 6 instances",
+    "$listeners": [],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

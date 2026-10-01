@@ -54,9 +54,13 @@ try:
     t = time.perf_counter()
     dash, allc, rep, secs = quiet_build(metas_sha=metas_sha, prev_dash=prev_dash, prev_all=prev_all)
     d1 = os.path.join(tmp, "run1"); write_set(d1, dash, allc, rep)
-    same = all(os.path.exists(os.path.join(OUT, fn)) and open(os.path.join(OUT, fn), "rb").read() == open(os.path.join(d1, fn), "rb").read()
-               for fn in ("catalogue-dashboard.json", "catalogue-report.json"))
-    check("T1.0", same, "out/catalogue-dashboard.json + catalogue-report.json byte-equal a fresh build (%s %s, %d parts)" % (
+    # the API file byte-equal; the report through gen.report_comparable (its provenance stamps —
+    # git HEAD, the input files' hashes — move with every commit and are not the catalogue; #312 lane V)
+    same = (os.path.exists(os.path.join(OUT, "catalogue-dashboard.json"))
+            and open(os.path.join(OUT, "catalogue-dashboard.json"), "rb").read() == open(os.path.join(d1, "catalogue-dashboard.json"), "rb").read()
+            and os.path.exists(os.path.join(OUT, "catalogue-report.json"))
+            and gen.report_comparable(json.load(open(os.path.join(OUT, "catalogue-report.json")))) == gen.report_comparable(rep))
+    check("T1.0", same, "out/catalogue-dashboard.json byte-equal + catalogue-report.json equal (stamps masked) a fresh build (%s %s, %d parts)" % (
         dash["x-apollo"]["catalogue"]["version"], dash["x-apollo"]["catalogue"]["sha256"][:12], len(dash["components"]))
           if same else "out/ is STALE or missing against the metas: run gen_catalogue.py")
 
@@ -144,7 +148,10 @@ try:
     spec6 = d6["components"]["Metric"]["x-apollo"].get("spec")
     r6 = va.run(d6, "overlay")
     others_same = all(d6["components"][c] == dash["components"][c] for c in dash["components"] if c != "Metric")
-    check("T1.8b", spec6 == four and r6["ok"] and others_same and rep6["counts"]["spec_fields_present"] == 1,
+    # the count moves by one unless metric already carries a spec on disk (L2's drafts; #312 lane V — the
+    # selftest hard-coded today's zero and went red the moment a real draft landed on a dashboard part)
+    spec_expected = spec_n + (0 if dash["components"]["Metric"]["x-apollo"].get("spec") else 1)
+    check("T1.8b", spec6 == four and r6["ok"] and others_same and rep6["counts"]["spec_fields_present"] == spec_expected,
           "a meta carrying anatomy/states/emits/bindings publishes them under x-apollo.spec (Metric: %s), entry still A2UI-valid %d/%d, other entries unchanged %s" % (
               sorted(spec6 or {}), r6["entries_valid"], r6["entries_total"], others_same))
 
@@ -157,6 +164,15 @@ try:
     rc_stale = subprocess.run([sys.executable, os.path.join(HERE, "gen_catalogue.py"), "--check", "--out", d5], capture_output=True, text=True).returncode
     rc_fresh = subprocess.run([sys.executable, os.path.join(HERE, "gen_catalogue.py"), "--check", "--out", d1, "--metas-sha", str(metas_sha)], capture_output=True, text=True).returncode
     check("T1.9", rc_stale == 1 and rc_fresh == 0, "--check on a tampered copy exit %d (want 1); on a fresh copy exit %d (want 0)" % (rc_stale, rc_fresh))
+    # ---- T1.9b the gate reads the BODY, not the stamp: an entry tampered under an untouched sha256 is refused
+    d6 = os.path.join(tmp, "stale-body"); shutil.copytree(d1, d6)
+    body = json.load(open(os.path.join(d6, "catalogue-dashboard.json")))
+    body["components"]["Button"]["x-apollo"]["slug"] = "tampered"
+    open(os.path.join(d6, "catalogue-dashboard.json"), "w", encoding="utf-8").write(gen.dump(body))
+    rc_body = subprocess.run([sys.executable, os.path.join(HERE, "gen_catalogue.py"), "--check", "--out", d6, "--metas-sha", str(metas_sha)], capture_output=True, text=True).returncode
+    # and the git stamp alone never stales it: a different --metas-sha on a fresh copy still passes
+    rc_sha = subprocess.run([sys.executable, os.path.join(HERE, "gen_catalogue.py"), "--check", "--out", d1, "--metas-sha", "0000000f"], capture_output=True, text=True).returncode
+    check("T1.9b", rc_body == 1 and rc_sha == 0, "--check on a body-tampered copy under its old stamp exit %d (want 1); on a fresh copy stamped with another git sha exit %d (want 0)" % (rc_body, rc_sha))
 finally:
     shutil.rmtree(tmp, ignore_errors=True)
 

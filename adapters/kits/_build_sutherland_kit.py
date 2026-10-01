@@ -234,7 +234,9 @@ def build():
     tokens_doc = {
         "$model": "Apollo's SEMANTIC token paths, names only, for the kit checker to resolve token rows against. A row's `apollo` is written as a DTCG alias: {text.default}. A path with light/dark children is a group and a legal target (the mode resolves at render). The primitive palette (color.*) is left out on purpose: a Sutherland token maps onto a semantic rung, never onto a palette swatch (ADR-0008).",
         "written": TODAY,
-        "files": ["knowledge/tokens/%s" % os.path.basename(f) for f in files if not os.path.basename(f).startswith("colour")],
+        # the real relative path: since s311-D8 the dark context lives at tokens/modes/dark/<base>.json
+        # and a basename would print the base file twice (#312 lane V)
+        "files": [os.path.relpath(f, ROOT) for f in files if not os.path.basename(f).startswith("colour")],
         "countByType": by_type,
         "tokens": tok,
         "groups": grp,

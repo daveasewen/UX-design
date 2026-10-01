@@ -284,5 +284,215 @@
         "ref": "role:feedback"
       }
     ]
+  },
+  "anatomy": {
+    "part": "note",
+    "tag": "div",
+    "attrs": {
+      "class": "note tint err"
+    },
+    "aria": {
+      "role": "alert"
+    },
+    "$sel": "body > div.nwrap > div.note.tint.err",
+    "children": [
+      {
+        "part": "ic",
+        "tag": "span",
+        "attrs": {
+          "class": "ic"
+        },
+        "$sel": "body > div.nwrap > div.note.tint.err > span.ic",
+        "children": [
+          {
+            "part": "icon",
+            "tag": "svg",
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.nwrap > div.note.tint.err > span.ic > svg"
+          }
+        ]
+      },
+      {
+        "part": "main",
+        "tag": "span",
+        "attrs": {
+          "class": "main mlinks"
+        },
+        "$sel": "body > div.nwrap > div.note.tint.err > span.main.mlinks",
+        "children": [
+          {
+            "part": "strong",
+            "tag": "strong",
+            "text": "Notification title.",
+            "$sel": "body > div.nwrap > div.note.tint.err > span.main.mlinks > strong"
+          },
+          {
+            "part": "span",
+            "tag": "span",
+            "text": "Message description.",
+            "$sel": "body > div.nwrap > div.note.tint.err > span.main.mlinks > span",
+            "children": [
+              {
+                "part": "a",
+                "tag": "a",
+                "attrs": {
+                  "href": "#"
+                },
+                "text": "Link style.",
+                "$sel": "body > div.nwrap > div.note.tint.err > span.main.mlinks > span > a"
+              }
+            ],
+            "$repeat": 3
+          }
+        ]
+      },
+      {
+        "part": "x",
+        "tag": "button",
+        "attrs": {
+          "class": "x"
+        },
+        "aria": {
+          "aria-label": "Dismiss notification"
+        },
+        "$sel": "body > div.nwrap > div.note.tint.err > button.x",
+        "children": [
+          {
+            "part": "icon-2",
+            "tag": "svg",
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.nwrap > div.note.tint.err > button.x > svg"
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "focus",
+      "active",
+      "error",
+      "info",
+      "ok",
+      "removing",
+      "success",
+      "warning"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "click",
+        "to": "removing"
+      }
+    ],
+    "$sources": {
+      "error": [
+        "style .is-error"
+      ],
+      "warning": [
+        "style .is-warning"
+      ],
+      "ok": [
+        "style .is-ok"
+      ],
+      "success": [
+        "style .is-success"
+      ],
+      "info": [
+        "style .is-info"
+      ],
+      "hover": [
+        "style .note .x:hover",
+        "style .note a:hover",
+        "style .note.global .actions button:hover",
+        "style .note.global.warn .actions button:hover"
+      ],
+      "active": [
+        "style .note .x:active",
+        "style .note a:active",
+        "style .note.global .actions button:active",
+        "style .note.global.warn .actions button:active"
+      ],
+      "focus": [
+        "style .note .x:focus-visible",
+        "style .note a:focus-visible",
+        "style .note.global .actions button:focus-visible"
+      ],
+      "removing": [
+        "script click handler"
+      ],
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--err": "{rag.error}",
+    "--warn": "{rag.warning}",
+    "--ok": "{rag.success}",
+    "--info": "{rag.information}",
+    "--err-t": "{rag.error-tint}",
+    "--warn-t": "{rag.warning-tint}",
+    "--ok-t": "{rag.success-tint}",
+    "--info-t": "{rag.information-tint}",
+    "--text": "{text.default}",
+    "--page": "{background.default}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--border-alpha": "{notification.contextual.border.alpha}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Notifications.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "first non-harness candidate → richest of 2 instances",
+    "$listeners": [
+      "click",
+      "transitionend"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

@@ -55,6 +55,8 @@ One file: `manifest.json`, passing the checker, plus `FILL-NOTES.md`. Nothing el
 
 ## The shape, in one example
 
+Read this before the block: the Apollo-side names in this example are button's real ones from `parts.json`; EVERY Sutherland-side name in it (`Button`, `@hsbc/sutherland-react`, `variant`, `outline`, `medium`, the file paths) is illustrative, made up to show the shape, and is not known to be real. Yours come from Sutherland's files, never from here.
+
 ```json
 {
   "apollo": { "meta": "button" },
@@ -85,4 +87,3 @@ One file: `manifest.json`, passing the checker, plus `FILL-NOTES.md`. Nothing el
 }
 ```
 
-The Apollo-side names in this example are button's real ones from `parts.json`; the Sutherland-side names are illustrative and yours come from Sutherland's files.

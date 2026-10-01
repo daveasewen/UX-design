@@ -104,5 +104,183 @@
         "ref": "role:arrangement"
       }
     ]
+  },
+  "anatomy": {
+    "part": "acc",
+    "tag": "div",
+    "attrs": {
+      "class": "acc"
+    },
+    "$sel": "body > div.acc",
+    "children": [
+      {
+        "part": "item",
+        "tag": "div",
+        "attrs": {
+          "class": "item"
+        },
+        "$sel": "body > div.acc > div.item",
+        "children": [
+          {
+            "part": "head",
+            "tag": "button",
+            "attrs": {
+              "class": "head"
+            },
+            "aria": {
+              "aria-expanded": "{state.expanded}",
+              "aria-controls": "p1"
+            },
+            "$sel": "body > div.acc > div.item > button.head",
+            "children": [
+              {
+                "part": "span",
+                "tag": "span",
+                "text": "How do I set up a standing order?",
+                "$sel": "body > div.acc > div.item > button.head > span"
+              },
+              {
+                "part": "chev",
+                "tag": "span",
+                "attrs": {
+                  "class": "chev"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "$sel": "body > div.acc > div.item > button.head > span.chev",
+                "children": [
+                  {
+                    "part": "icon",
+                    "tag": "svg",
+                    "attrs": {
+                      "viewbox": "0 0 18 18"
+                    },
+                    "aria": {
+                      "aria-hidden": "true"
+                    },
+                    "$sel": "body > div.acc > div.item > button.head > span.chev > svg"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "part": "panel",
+            "tag": "div",
+            "attrs": {
+              "class": "panel",
+              "id": "p1"
+            },
+            "$sel": "body > div.acc > div.item > div.panel",
+            "children": [
+              {
+                "part": "inner",
+                "tag": "div",
+                "attrs": {
+                  "class": "inner"
+                },
+                "text": "Go to Payments → Standing orders → New, choose the payee and amount, and set …",
+                "$sel": "body > div.acc > div.item > div.panel > div.inner"
+              }
+            ]
+          }
+        ],
+        "$repeat": 2
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "pressed",
+      "focus",
+      "expanded"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "pressed"
+      },
+      {
+        "from": "pressed",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "click",
+        "to": "expanded"
+      },
+      {
+        "from": "expanded",
+        "on": "click",
+        "to": "default"
+      }
+    ],
+    "$sources": {
+      "hover": [
+        "style .acc .head:hover"
+      ],
+      "focus": [
+        "style .acc .head:focus-visible"
+      ],
+      "expanded": [
+        "attribute aria-expanded on body > div.acc > div.item > button.head",
+        "script click handler",
+        "style .acc .head[aria-expanded=\"true\"] .chev"
+      ],
+      "$initial": "meta prop `state` enum; initial = its default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--rule": "{border.subtle}",
+    "--text": "{text.default}",
+    "--icon": "{icon.default}",
+    "--hover": "{tertiary.background.hover}",
+    "--focus": "{focus.ring}",
+    "--page": "{background.default}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Accordion.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 2 (div.acc)",
+    "$listeners": [
+      "click"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

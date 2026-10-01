@@ -1,0 +1,29 @@
+## banner — GREEN (declared numbers: 436)
+
+- SIZE: generated 750 · hand 741 · ratio 1.012 · limit 1,200
+- HIS WORDS: 0 quotations in the hand file; missing from the generated view: 0
+- HEADINGS: same (3 generated · 3 hand)
+- FIGURES numbers: missing 0 · extra 2 · extra unsourced 0
+  - ◌ declared (the replay's docstring says why): 436
+- FIGURES shas: missing 0 · extra 1 · extra unsourced 0
+- FIGURES rulings: missing 0 · extra 0 · extra unsourced 0
+- FIGURES rows: missing 0 · extra 0 · extra unsourced 0
+- FIGURES paths: missing 0 · extra 1 · extra unsourced 0
+
+```diff
+--- hand
++++ generated
+@@ -1,7 +1,7 @@
+-> ## ★ LATEST — 2026-09-30 (Wed **#310**, one day, Opus 5.5 conductor in the CLOUD, **2 subs**, DELEGATED wrap on Opus 5.5 — ★★ **THE DARK TILES WERE BUILT, AND THE SOFT WHITE WAITS TO BE SEEN**)
++> ## ★ LATEST — 2026-09-30 (Wed **#310**, one day, no date split, Opus 5.5 conductor in the CLOUD, **2 subs**, DELEGATED wrap on Opus 5.5 — ★★ **THE DARK TILES WERE BUILT, AND THE SOFT WHITE WAITS TO BE SEEN**)
+ >
+-> - ★★★ ① **EIGHT RULINGS, `_rulings.json` 841 → 849 (`s310-D1`..`D8`).** The thin arrow from the icon assets (D1, his 14:03 "the rhin arrow from the icon assets"); Net FX exposure is the first up-is-bad metric, because colour means good or bad news, not direction (D2, 14:07); dark mode mirrors light by default with black tiles, the reverse an option (D3), Supercharge the same with #13110E (D4), both from his 14:43 export; the interim pressed tile #25211C (D5) and the option named and registered (D6), his 16:24 words; the white ink softens to #E1E1E1 (D7) and the tab strip takes its container's colour (D8), his 17:35 export, RULED NOT ENACTED on his page note "i need to see this".
+-> - ★★ ② **BUILT:** the black-tile default and the grey-tile option at the token source, in the theme register's new `options` (lane A, `8db81543`..`3b47aa5d`, 51 of 137 components change in dark); the interim pressed tile and the white-ink and tab-strip review page with the repo's halation tool (lane B, `896b2b0e`..`44696966`). Three review pages reached him through the artifact, v18 to v20.
+-> - ⚠ ③ **ONE CI RED, ON THE CONDUCTOR'S OWN PUSH:** `93cdb12a` pushed without its pre-push check, step 88 read `_node_titles.json` stale; lane B's `7e4602db` fixed it, `44696966` GREEN. `69173275` rides the wrap push. ⛔ **FILL 372,194 at his "wrap" (hand sum, `_wrap_facts.py`), PAST THE HARD 350,000 BY 22,194** — crossed at 17:17, unseen until 17:35. **`_HANDOFF-161-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md` OUTRANKS `_CHAIN.md`.**
+-> **residual → #311:** ⬛ **BUILD THE SOFT WHITE AND THE TAB STRIP, THEN SHOW HIM** [NEW — 0] — put it first. `s225-D2`. **436 items by `_carry_items`, 6 new (which count from #312), 4 STRUCK (the arrow, up-is-bad, the dark ground, the review route)**, `_CARRIES.md` § `residual → #311` `carries:residual-311`. PROBE `PYTHONPATH=knowledge python3 -c "import _capture_gate as c;print(len(c._carry_items([l for l in open('_CARRIES.md') if '#311:**' in l][0])))"` = 436.
++> - ★★★ ① **EIGHT RULINGS, `_rulings.json` 841 → 849 (`s310-D1`..`D8`).** the thin library direction arrow stays (D1, 14:03); Net FX exposure is the first up-is-bad metric: colour means good or bad news, not direction (D2, 14:07); dark mirrors light by default, black tiles; the reverse an option; Supercharge the same, #13110E (D3..D4, 14:43 export); the interim pressed tile #25211C, *"lets do that for now"*; the option named and homed in the theme register (D5..D6, 16:24); the white ink softens to #E1E1E1; Supercharge keeps #F7F6F4; the tab strip takes its container's colour (D7..D8, 17:35 export, RULED NOT ENACTED).
++> - ★★ ② **BUILT:** black tiles by default and grey tiles as an option, recorded in the theme register (51 of 137 components change in dark), and the interim pressed tile. Three review pages reached you through the artifact "Apollo 304 review" (v18 to v20). The repo's halation tool (`reviews/_rag_bloom_model.py`) showed the ink, not the tile, is what cuts the glare. A dark tiles (Opus 5.5, `8db81543`..`3b47aa5d`) · B white ink and tab strip (Opus 5.5, `896b2b0e`..`44696966`).
++> - ⚠ ③ **ONE CI RED:** `93cdb12a` RED at step 88 (`_node_titles.json` stale after the inscription; the conductor pushed without its pre-push check), fixed by `7e4602db`. ⛔ The fill crossed the hard line at 17:17, unseen until 17:35: the conductor did not read it between lanes. ⛔ **FILL 372,194 at his "wrap" (hand sum, `_wrap_facts.py`), past the hard 350,000 by 22,194, crossed at 17:17.** 17 commits since `7608504f`; 16 pushed through `44696966`; `69173275` rides the wrap push. **`_HANDOFF-161-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md` OUTRANKS `_CHAIN.md`.**
++> **residual → #311:** ⬛ **BUILD THE SOFT WHITE AND THE TAB STRIP, THEN SHOW HIM BEFORE THEY STAND** [NEW — 0] — put it first. `s225-D2`. **429 items at the wrap, 6 new, 4 STRUCK**, `_CARRIES.md` § `residual → #311` `carries:residual-311`. PROBE `python3 knowledge/_wrap_carries.py count --section 311` (new items count from #312).
+ {{ROLL_STATE}}
+```

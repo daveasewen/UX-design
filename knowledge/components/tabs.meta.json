@@ -144,5 +144,257 @@
         "ref": "ruling:s123-D4"
       }
     ]
+  },
+  "anatomy": {
+    "part": "tabs",
+    "tag": "div",
+    "attrs": {
+      "class": "tabs"
+    },
+    "$sel": "body > div.tabs",
+    "children": [
+      {
+        "part": "tablist",
+        "tag": "div",
+        "attrs": {
+          "class": "tablist"
+        },
+        "aria": {
+          "role": "tablist",
+          "aria-label": "Account views"
+        },
+        "$sel": "body > div.tabs > div.tablist",
+        "children": [
+          {
+            "part": "tab",
+            "tag": "button",
+            "attrs": {
+              "class": "tab",
+              "id": "t1",
+              "tabindex": "0",
+              "disabled": "{state.disabled}"
+            },
+            "aria": {
+              "role": "tab",
+              "aria-selected": "{state.selected}",
+              "aria-controls": "p1"
+            },
+            "text": "Overview",
+            "$sel": "body > div.tabs > div.tablist > button.tab",
+            "$repeat": 6
+          },
+          {
+            "part": "overflow",
+            "tag": "div",
+            "attrs": {
+              "class": "overflow",
+              "hidden": "{state.hidden}"
+            },
+            "$sel": "body > div.tabs > div.tablist > div.overflow",
+            "children": [
+              {
+                "part": "overflow-trigger",
+                "tag": "button",
+                "attrs": {
+                  "class": "overflow__trigger",
+                  "id": "ovTrigger"
+                },
+                "aria": {
+                  "aria-haspopup": "true",
+                  "aria-expanded": "{state.expanded}",
+                  "aria-label": "More tabs"
+                },
+                "text": "More ▾",
+                "$sel": "body > div.tabs > div.tablist > div.overflow > button.overflow__trigger"
+              },
+              {
+                "part": "overflow-menu",
+                "tag": "ul",
+                "attrs": {
+                  "class": "overflow__menu",
+                  "id": "ovMenu"
+                },
+                "aria": {
+                  "role": "menu",
+                  "aria-labelledby": "ovTrigger"
+                },
+                "$sel": "body > div.tabs > div.tablist > div.overflow > ul.overflow__menu"
+              }
+            ]
+          },
+          {
+            "part": "indicator",
+            "tag": "span",
+            "attrs": {
+              "class": "indicator"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "$sel": "body > div.tabs > div.tablist > span.indicator"
+          }
+        ]
+      },
+      {
+        "part": "panel",
+        "tag": "div",
+        "attrs": {
+          "class": "panel",
+          "id": "p1",
+          "tabindex": "0",
+          "hidden": "{state.hidden}"
+        },
+        "aria": {
+          "role": "tabpanel",
+          "aria-labelledby": "t1"
+        },
+        "$sel": "body > div.tabs > div.panel",
+        "children": [
+          {
+            "part": "p",
+            "tag": "p",
+            "text": "A summary of balances, recent activity, and quick actions for the selected ac…",
+            "$sel": "body > div.tabs > div.panel > p"
+          }
+        ],
+        "$repeat": 6
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "focus",
+      "active",
+      "selected",
+      "expanded",
+      "open",
+      "disabled",
+      "hidden"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      }
+    ],
+    "keys": {
+      "ArrowDown": "next",
+      "ArrowLeft": "previous",
+      "ArrowRight": "next",
+      "ArrowUp": "previous",
+      "End": "last",
+      "Escape": "close",
+      "Home": "first"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "hidden": [
+        "attribute hidden on a twin of body > div.tabs > div.panel",
+        "attribute hidden on body > div.tabs > div.tablist > div.overflow",
+        "style .overflow[hidden]",
+        "style .panel[hidden]",
+        "style .tab[hidden]"
+      ],
+      "hover": [
+        "style .overflow__item:hover",
+        "style .overflow__trigger:hover",
+        "style .tab:hover"
+      ],
+      "active": [
+        "style .tab:active"
+      ],
+      "selected": [
+        "attribute aria-selected on body > div.tabs > div.tablist > button.tab",
+        "style .tab[aria-selected=\"true\"]"
+      ],
+      "disabled": [
+        "attribute disabled on a twin of body > div.tabs > div.tablist > button.tab",
+        "style .overflow__item:disabled",
+        "style .tab:disabled"
+      ],
+      "focus": [
+        "style .overflow__item:focus-visible",
+        "style .overflow__trigger:focus-visible",
+        "style .tab:focus-visible"
+      ],
+      "open": [
+        "style .overflow__menu[data-open=\"true\"]"
+      ],
+      "expanded": [
+        "attribute aria-expanded on body > div.tabs > div.tablist > div.overflow > button.overflow__trigger"
+      ],
+      "$initial": "no stateModel, no `state` prop, no open state: rest state named default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--tabs-active": "{tabs.active}",
+    "--tabs-background": "{tabs.background}",
+    "--tabs-standard-border": "{tabs.standard-border}",
+    "--tabs-overflow-border": "{tabs.overflow-border}",
+    "--tabs-overflow-background": "{tabs.overflow-background}",
+    "--text-default": "{text.default}",
+    "--text-reverse": "{text.reverse}",
+    "--tertiary-hover": "{tertiary.background.hover}",
+    "--tertiary-pressed": "{tertiary.background.pressed}",
+    "--focus-ring": "{focus.ring}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}",
+    "--border-radius-surface": "{border-radius.surface}",
+    "--border-radius-indicator": "{border-radius.indicator}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Tabs.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "name affinity 3 (div.tabs)",
+    "$listeners": [
+      "click",
+      "keydown"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }

@@ -26,8 +26,10 @@ FIGURES:
            and the first message over each window line of `_gauge_tokens` (IMPORTED). `--until`
            cuts at an ISO time (the message that launched the wrap seat). Cross-checked against
            `_checkin.read_fill()` on the same file: a disagreement REFUSES, never averages.
-  subs     from --subagents-dir: the final FILL of each sub transcript, summed. UNIT: real
-           tokens, QUOTA not window FILL — never added to `fill`.
+  subs     from --subagents-dir: the final FILL of each sub transcript, summed, and `each` by file
+           (★ #312 E-replay). UNIT: real tokens, QUOTA not window FILL — never added to `fill`.
+  fill.launch  with --launched-at ISO (★ #312 E-replay): the same hand sum cut at the message that
+           launched the wrap seat, {fill, message, at} — the "N at the launch of this seat" figure.
 
 ★ PHASE 3 (#312 lane E-build, 2026-10-01, by addition; `s306-D4`, design `notes/_lanes/312/E/DESIGN.md` § 3):
 the keys the generated views (`_wrap_views.py`) read, each a small reader, none typed:
@@ -40,8 +42,10 @@ the keys the generated views (`_wrap_views.py`) read, each a small reader, none 
   git      + `commits[]` = {sha8, at, subject} over `since.range` (git log) · `pushed_through` (origin/master, sha8)
   handoff  `prev_no`, `prev_name` (the newest `_HANDOFF-*.md` by number), `no` = prev_no + 1
   ci       `owed` parsed from `--ci-owed FILE` (a saved `_ci_readback.py` summary: run id, verdict, sha8);
-           `reds[]` from `--ci-red SHA8:STEP:FIXED_BY` (the story seat names them; each sha is checked
-           against `git.commits` and refused when absent)
+           `reds[]` from `--ci-red SHA8:STEP:FIXED_BY[:cause]` (the story seat names them; each sha is checked
+           against `git.commits` and refused when absent); ★ E-replay: `owed_at_wrap` from `--ci-owed-at-wrap FILE`
+           (a run still owed when the seat sat, read before the commit, #309's case), `pushes[]` from
+           `--ci-push SHA8:GREEN|RED[:STEP]` (#311's three pushes), `fill.source` from `--fill-source PATH`
   chain    cl100k of `_CHAIN.md` by `_capture_gate.measure_tokens()` (IMPORTED, its method label travels),
            with `warn`/`block` from `CHAIN_BUDGET_TK`
   gate     `open` = the last `capture gate [wrap]: … in scope · … fail · … warn` line of `--gate-log`
@@ -117,6 +121,18 @@ def rulings_facts(doc):
         st[r.get("status", "?")] = st.get(r.get("status", "?"), 0) + 1
     return {"total": len(rs), "newest": max(keyed)[2] if keyed else None, "last_in_file": ids[-1] if ids else None,
             "by_status": dict(sorted(st.items())), "unit": "rulings (entries in _rulings.json)"}
+
+
+def rulings_by_date(doc, session):
+    """★ #312 E-replay (by addition): {date: [ids]} for this session's rulings, from each entry's own `date` — the
+    date-split line says which day he ruled each."""
+    rs = doc["rulings"] if isinstance(doc, dict) else doc
+    out = {}
+    for r in rs:
+        m = RID.match(r.get("id", ""))
+        if m and int(m.group(1)) == session and r.get("date"):
+            out.setdefault(r["date"], []).append(r["id"])
+    return {k: sorted(v, key=lambda i: int(RID.match(i).group(2))) for k, v in sorted(out.items())}
 
 
 def store_facts(doc):
@@ -221,6 +237,15 @@ def fill_facts(path, until=None):
     return out
 
 
+def launch_fill(path, launched_at):
+    """★ #312 E-replay (by addition): the FILL at the message that launched the wrap seat — the same hand sum cut at
+    `launched_at` — so the handoff, the stratum and the report can say "N at the launch of this seat" from a
+    measurement, not from the brief. {fill, message, at, until}."""
+    y = fill_facts(path, launched_at)
+    return {"fill": y["now"], "message": y["turns"], "at": y["now_at"], "until": launched_at,
+            "unit": "real tokens, the same hand sum as `fill`, cut at the launch message"}
+
+
 def subs_facts(d, exclude=()):
     import _checkin
     rows = []
@@ -234,7 +259,8 @@ def subs_facts(d, exclude=()):
         raise FactsError(f"no sub transcript with usage under {d}")
     return {"unit": "real tokens, QUOTA not window FILL — never added to `fill`", "n": len(rows),
             "total": sum(r[1] for r in rows), "largest": max(r[1] for r in rows), "smallest": min(r[1] for r in rows),
-            "excluded": list(exclude)}
+            "excluded": list(exclude),
+            "each": {name: fill for name, fill in rows}}     # ★ #312 E-replay: per-sub fills, by file (the stratum names them)
 
 
 # ------------------------------------------------------------------------------ phase-3 readers
@@ -371,7 +397,7 @@ def ci_summary(path):
     return out
 
 
-def ci_facts(owed_file=None, reds=(), commits=None, owed_typed=None):
+def ci_facts(owed_file=None, reds=(), commits=None, owed_typed=None, owed_at_wrap=None, pushes=()):
     owed = ci_summary(owed_file) if owed_file else None
     if owed is None and owed_typed:
         parts = owed_typed.split(":")
@@ -383,14 +409,34 @@ def ci_facts(owed_file=None, reds=(), commits=None, owed_typed=None):
            "unit": "the opener's owed read (parsed from its saved summary, or typed and marked so); reds typed by the seat, shas checked"}
     known = {c["sha8"] for c in (commits or [])}
     for r in reds:
-        parts = r.split(":", 2)
-        if len(parts) != 3:
-            raise FactsError(f"--ci-red wants SHA8:STEP:FIXED_BY, got {r!r}")
-        sha, step, fixed = parts
+        parts = r.split(":", 3)
+        if len(parts) not in (3, 4):
+            raise FactsError(f"--ci-red wants SHA8:STEP:FIXED_BY[:cause], got {r!r}")
+        sha, step, fixed = parts[:3]
         for x in (sha, fixed):
             if commits is not None and x[:8] not in known:
                 raise FactsError(f"--ci-red names `{x}`, which is not in git.commits {len(known)} — refused")
-        out["reds"].append({"sha8": sha[:8], "step": step, "fixed_by": fixed[:8]})
+        red = {"sha8": sha[:8], "step": step, "fixed_by": fixed[:8]}
+        if len(parts) == 4 and parts[3].strip():
+            red["cause"] = parts[3].strip()           # ★ E-replay: the cause in one clause, typed by the seat (the banner's ③ prints it)
+        out["reds"].append(red)
+    if owed_at_wrap:                                  # ★ E-replay: a CI run still owed when the seat sat, read by the seat before the commit (#309)
+        c = ci_summary(owed_at_wrap)
+        out["owed_at_wrap"] = {"sha8": c["sha8"], "run_id": c["run_id"], "verdict": c["verdict"], "jobs": c["jobs"], "file": owed_at_wrap,
+                               "unit": "a CI run still owed when the wrap seat sat, read by the seat before the commit (`_ci_readback.py --sha`)"}
+    if pushes:                                        # ★ E-replay: the session's pushes and their verdicts (#311 had three), typed by the seat
+        out["pushes"] = []
+        for pz in pushes:
+            parts = pz.split(":")
+            if len(parts) < 2 or parts[1] not in ("GREEN", "RED"):
+                raise FactsError(f"--ci-push wants SHA8:GREEN|RED[:STEP], got {pz!r}")
+            if commits is not None and parts[0][:8] not in known:
+                raise FactsError(f"--ci-push names `{parts[0]}`, which is not in git.commits — refused")
+            x = {"sha8": parts[0][:8], "verdict": parts[1]}
+            if len(parts) > 2:
+                x["step"] = parts[2]
+            out["pushes"].append(x)
+        out["pushes_unit"] = "the session's pushes and their CI verdicts, typed by the seat from the conductor's reads (shas checked against git.commits)"
     return out
 
 
@@ -415,7 +461,8 @@ def gate_facts(gate_log):
 
 
 def prepush_facts(d):
-    tot = {"pass": 0, "fail": 0, "advisory": 0, "could_not_ask": 0, "tests": None, "test_failures": None, "surveys": 0}
+    tot = {"pass": 0, "fail": 0, "advisory": 0, "could_not_ask": 0, "tests": None, "test_failures": None, "surveys": 0,
+           "steps": None, "advisory_steps": [], "could_not_ask_steps": []}      # ★ E-replay: the step ids too (the handoff names them)
     for p in sorted(glob.glob(os.path.join(d, "_prepush-survey-*.txt"))):
         for ln in open(p, encoding="utf-8"):
             m = SURVEY_RE.search(ln)
@@ -423,6 +470,28 @@ def prepush_facts(d):
                 tot["surveys"] += 1
                 for k, g in zip(("pass", "fail", "advisory", "could_not_ask"), m.groups()):
                     tot[k] += int(g)
+            m2 = re.match(r"— (\d+) steps read from", ln)
+            if m2:
+                tot["steps"] = int(m2.group(1))
+            m3 = re.match(r"\s*⚠ \[(\d+)\].*ADVISORY exit", ln)
+            if m3 and int(m3.group(1)) not in tot["advisory_steps"]:
+                tot["advisory_steps"].append(int(m3.group(1)))
+            m4 = re.match(r"\s*⊘ \[(\d+)\].*COULD-NOT-ASK", ln)
+            if m4 and int(m4.group(1)) not in tot["could_not_ask_steps"]:
+                tot["could_not_ask_steps"].append(int(m4.group(1)))
+    com = {"pass": 0, "fail": 0, "advisory": 0, "could_not_ask": 0, "surveys": 0, "passed_steps": []}      # ★ E-replay: the committed-tree half (no mutating steps), #311's two-half form
+    for p in sorted(glob.glob(os.path.join(d, "_prepush-committed-*.txt"))):
+        for ln in open(p, encoding="utf-8"):
+            m = SURVEY_RE.search(ln)
+            if m:
+                com["surveys"] += 1
+                for k, g in zip(("pass", "fail", "advisory", "could_not_ask"), m.groups()):
+                    com[k] += int(g)
+            m5 = re.match(r"\s*✅ \[(\d+)\]", ln)
+            if m5:
+                com["passed_steps"].append(int(m5.group(1)))
+    if com["surveys"]:
+        tot["committed"] = com
     tg = os.path.join(d, "_prepush-test-gates.txt")
     if os.path.exists(tg):
         for ln in open(tg, encoding="utf-8"):
@@ -478,7 +547,8 @@ def add_post(path, **kw):
 
 
 def measure(repo=REPO, at=None, rulings_base=None, since=None, session=None, transcript=None, until=None,
-            subagents_dir=None, exclude=(), ci_owed=None, ci_reds=(), gate_log=None, tz="Europe/London", ci_owed_typed=None):
+            subagents_dir=None, exclude=(), ci_owed=None, ci_reds=(), gate_log=None, tz="Europe/London", ci_owed_typed=None,
+            launched_at=None, owed_at_wrap=None, pushes=(), fill_source=None):
     f = {"measured_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
          "tree": at or "working tree", "tool": "knowledge/_wrap_facts.py"}
     f["rulings"] = rulings_facts(json.loads(read(repo, "knowledge/_rulings.json", at)))
@@ -494,11 +564,13 @@ def measure(repo=REPO, at=None, rulings_base=None, since=None, session=None, tra
         f["fill"] = fill_facts(transcript, until)
     if subagents_dir:
         f["subs"] = subs_facts(subagents_dir, exclude)
-    return extend_facts(f, repo, at, transcript, until, ci_owed, ci_reds, gate_log, tz, None, ci_owed_typed)
+    return extend_facts(f, repo, at, transcript, until, ci_owed, ci_reds, gate_log, tz, None, ci_owed_typed, launched_at, session,
+                        owed_at_wrap, pushes, fill_source)
 
 
 def extend_facts(f, repo=REPO, at=None, transcript=None, until=None, ci_owed=None, ci_reds=(), gate_log=None,
-                 tz="Europe/London", now=None, ci_owed_typed=None):
+                 tz="Europe/London", now=None, ci_owed_typed=None, launched_at=None, session=None, owed_at_wrap=None, pushes=(),
+                 fill_source=None):
     """★ phase 3, by addition: the keys the views read. Also the `--extend` path for a FACTS.json measured
     before these readers existed (the #309–#311 fixtures): the old keys are kept byte-identical."""
     if f["git"].get("since"):
@@ -507,9 +579,16 @@ def extend_facts(f, repo=REPO, at=None, transcript=None, until=None, ci_owed=Non
         f["git"]["pushed_through"] = f["git"]["origin_master"][:8]
     if transcript:
         f["dates"] = dates_facts(transcript, until or f.get("fill", {}).get("until"), repo, tz, at, now)
+        if launched_at and "fill" in f:
+            f["fill"]["launch"] = launch_fill(transcript, launched_at)
+        if fill_source and "fill" in f:                  # ★ E-replay: where the copy came from (the handoff names it), typed by the seat
+            f["fill"]["source"] = fill_source
+            f["fill"]["source_unit"] = "the transcript the copy was taken from, typed by the wrap seat when it copied it (not measured)"
     f["handoff"] = handoff_facts(repo, at)
-    if ci_owed or ci_reds or ci_owed_typed:
-        f["ci"] = ci_facts(ci_owed, ci_reds, f["git"].get("commits"), ci_owed_typed)
+    if session:
+        f["rulings"]["by_date"] = rulings_by_date(json.loads(read(repo, "knowledge/_rulings.json", at)), session)
+    if ci_owed or ci_reds or ci_owed_typed or owed_at_wrap or pushes:
+        f["ci"] = ci_facts(ci_owed, ci_reds, f["git"].get("commits"), ci_owed_typed, owed_at_wrap, pushes)
     f["chain"] = chain_facts(repo, at)
     if gate_log:
         f["gate"] = gate_facts(gate_log)
@@ -589,6 +668,8 @@ def selftest():
              next(v for k, v in x["crossings"].items() if k.startswith("BUDGET_AMBER"))["fill"] == 170115)
         y = fill_facts(p, until="2026-01-01T10:03:30Z")
         bite("fill --until cuts at the launch time (now 170,115, 2 messages)", y["now"] == 170115 and y["turns"] == 2)
+        lf = launch_fill(p, "2026-01-01T10:03:30Z")
+        bite("fill.launch: the launch cut as its own block (170,115 at the 2nd)", lf["fill"] == 170115 and lf["message"] == 2)
         e = os.path.join(td, "empty.jsonl"); open(e, "w").write('{"message": {}}\n')
         try:
             fill_facts(e); bite("fill refuses a transcript with no usage (never 0)", False)
@@ -599,6 +680,7 @@ def selftest():
             open(os.path.join(sd, name), "w").write(json.dumps({"message": {"id": "q", "model": "c", "usage": u(0, n, 0)}}) + "\n")
         s = subs_facts(sd, exclude=("self.jsonl",))
         bite("subs: summed final FILL per sub, the named one excluded (3,500, n=2)", s["total"] == 3500 and s["n"] == 2)
+        bite("subs.each: every sub's own fill kept by file name", s["each"] == {"a.jsonl": 1000, "b.jsonl": 2500})
         g = lambda *a: subprocess.run(["git", *a], cwd=td, capture_output=True, env={**ENV, "GIT_AUTHOR_NAME": "t",
                                       "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t"})
         g("init", "-q")
@@ -644,6 +726,9 @@ def selftest():
             bite("ci: a red's fix sha not in git.commits is refused", True)
         r = ci_facts(None, ("93cdb12a:88:7e4602db",), [{"sha8": "93cdb12a"}, {"sha8": "7e4602db"}])
         bite("ci: a red with both shas known is recorded", r["reds"] == [{"sha8": "93cdb12a", "step": "88", "fixed_by": "7e4602db"}])
+        r = ci_facts(None, ("93cdb12a:88:7e4602db:titles stale",), [{"sha8": "93cdb12a"}, {"sha8": "7e4602db"}], None, ci, ("7e4602db:GREEN", "93cdb12a:RED:88"))
+        bite("ci: a red's cause, the owed-at-wrap read and the pushes are recorded (★ E-replay)",
+             r["reds"][0]["cause"] == "titles stale" and r["owed_at_wrap"]["sha8"] == "4ece47a5" and r["pushes"][1] == {"sha8": "93cdb12a", "verdict": "RED", "step": "88"})
         gl = os.path.join(td, "g.log")
         open(gl, "w").write("noise\ncapture gate [wrap]: 247 in scope · 0 fail · 33 warn\n")
         bite("gate: the last verdict line parsed", gate_facts(gl)["open"] == "247 in scope · 0 fail · 33 warn")
@@ -692,6 +777,9 @@ def main(argv=None):
     ap.add_argument("--gate-wrap", help="--post: the wrap commit's gate verdict `N in scope · N fail · N warn`, typed from the committer's log when no --gate-log was saved")
     ap.add_argument("--extend", action="store_true", help="add the phase-3 keys to --facts (an older FACTS.json), written to --out")
     ap.add_argument("--ritual-at", help="--extend only: the ritual's clock (ISO), for a fixture measured after the day")
+    ap.add_argument("--ci-owed-at-wrap", help="★ a saved _ci-runs file for a CI run still owed when this seat sat (read before the commit, as at #309)")
+    ap.add_argument("--ci-push", action="append", default=[], help="★ SHA8:GREEN|RED[:STEP] — a push of the session and its CI verdict (repeatable)")
+    ap.add_argument("--fill-source", help="★ the transcript the copy was taken from (the handoff names it); typed, marked so")
     a = ap.parse_args(argv)
     if a.selftest:
         return selftest()
@@ -719,7 +807,8 @@ def main(argv=None):
         try:
             now = _iso(a.ritual_at) if a.ritual_at else None
             f = extend_facts(json.load(open(a.facts, encoding="utf-8")), a.repo, a.at, a.transcript, a.until,
-                             a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, now, a.ci_owed_typed)
+                             a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, now, a.ci_owed_typed, a.launched_at, a.session,
+                             a.ci_owed_at_wrap, tuple(a.ci_push), a.fill_source)
         except FactsError as e:
             print("⛔ REFUSED:", e); return 1
         with open(a.out, "w", encoding="utf-8") as fh:
@@ -730,7 +819,8 @@ def main(argv=None):
         return 0
     try:
         f = measure(a.repo, a.at, a.rulings_base, a.since, a.session, a.transcript, a.until, a.subagents_dir,
-                    tuple(a.exclude), a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, a.ci_owed_typed)
+                    tuple(a.exclude), a.ci_owed, tuple(a.ci_red), a.gate_log, a.tz, a.ci_owed_typed, a.launched_at,
+                    a.ci_owed_at_wrap, tuple(a.ci_push), a.fill_source)
     except FactsError as e:
         print("⛔ REFUSED:", e); return 1
     with open(a.out, "w", encoding="utf-8") as fh:

@@ -142,5 +142,249 @@
         "part": "tab-dropdown-items"
       }
     ]
+  },
+  "anatomy": {
+    "part": "dd",
+    "tag": "div",
+    "attrs": {
+      "class": "dd"
+    },
+    "$sel": "body > div.row > div > div.dd",
+    "children": [
+      {
+        "part": "label",
+        "tag": "label",
+        "attrs": {
+          "id": "ddLabel1",
+          "for": "ddTrigger1"
+        },
+        "text": "Country of residence",
+        "$sel": "body > div.row > div > div.dd > label"
+      },
+      {
+        "part": "trigger",
+        "tag": "button",
+        "attrs": {
+          "class": "trigger",
+          "id": "ddTrigger1"
+        },
+        "aria": {
+          "role": "combobox",
+          "aria-haspopup": "listbox",
+          "aria-expanded": "{state.expanded}",
+          "aria-controls": "ddMenu1",
+          "aria-labelledby": "ddLabel1 ddTrigger1"
+        },
+        "$sel": "body > div.row > div > div.dd > button.trigger",
+        "children": [
+          {
+            "part": "ddval",
+            "tag": "span",
+            "attrs": {
+              "class": "ddval"
+            },
+            "text": "United Kingdom",
+            "$sel": "body > div.row > div > div.dd > button.trigger > span.ddval"
+          },
+          {
+            "part": "chev",
+            "tag": "span",
+            "attrs": {
+              "class": "chev"
+            },
+            "aria": {
+              "aria-hidden": "true"
+            },
+            "text": "▾",
+            "$sel": "body > div.row > div > div.dd > button.trigger > span.chev"
+          }
+        ]
+      },
+      {
+        "part": "menu",
+        "tag": "ul",
+        "attrs": {
+          "class": "menu",
+          "id": "ddMenu1",
+          "tabindex": "-1"
+        },
+        "aria": {
+          "role": "listbox",
+          "aria-labelledby": "ddLabel1"
+        },
+        "$sel": "body > div.row > div > div.dd > ul.menu",
+        "children": [
+          {
+            "part": "opt",
+            "tag": "li",
+            "attrs": {
+              "class": "opt",
+              "tabindex": "-1"
+            },
+            "aria": {
+              "role": "option",
+              "aria-selected": "{state.selected}"
+            },
+            "text": "United Kingdom",
+            "$sel": "body > div.row > div > div.dd > ul.menu > li.opt",
+            "children": [
+              {
+                "part": "tick",
+                "tag": "svg",
+                "attrs": {
+                  "data-bespoke": "neutral selection checkmark (library only has teal status ticks)",
+                  "class": "tick",
+                  "viewbox": "0 0 18 18"
+                },
+                "aria": {
+                  "aria-hidden": "true"
+                },
+                "$sel": "body > div.row > div > div.dd > ul.menu > li.opt > svg.tick"
+              }
+            ],
+            "$repeat": 5
+          },
+          {
+            "part": "sep",
+            "tag": "li",
+            "attrs": {
+              "class": "sep"
+            },
+            "aria": {
+              "role": "presentation"
+            },
+            "$sel": "body > div.row > div > div.dd > ul.menu > li.sep"
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "default",
+      "hover",
+      "active",
+      "active-message",
+      "completed",
+      "disabled",
+      "error",
+      "focus",
+      "selected",
+      "expanded",
+      "open"
+    ],
+    "initial": "default",
+    "transitions": [
+      {
+        "from": "default",
+        "on": "pointerenter",
+        "to": "hover"
+      },
+      {
+        "from": "hover",
+        "on": "pointerleave",
+        "to": "default"
+      },
+      {
+        "from": "hover",
+        "on": "pointerdown",
+        "to": "active"
+      },
+      {
+        "from": "active",
+        "on": "pointerup",
+        "to": "hover"
+      },
+      {
+        "from": "*",
+        "on": "focus",
+        "to": "focus"
+      },
+      {
+        "from": "focus",
+        "on": "blur",
+        "to": "default"
+      },
+      {
+        "from": "*",
+        "on": "props.disabled",
+        "to": "disabled",
+        "guard": "{props.disabled}"
+      },
+      {
+        "from": "expanded",
+        "on": "click",
+        "to": "default"
+      }
+    ],
+    "keys": {
+      "Space": "activate",
+      "ArrowDown": "next",
+      "ArrowUp": "previous",
+      "Enter": "activate",
+      "Escape": "close"
+    },
+    "$keys-source": "key names read from the snippet's script; action words are the APG defaults for those keys, not read from the snippet",
+    "$sources": {
+      "hover": [
+        "style .opt:hover",
+        "style .trigger:hover"
+      ],
+      "expanded": [
+        "attribute aria-expanded on body > div.row > div > div.dd > button.trigger",
+        "style .dd.boxed .trigger[aria-expanded=\"true\"]",
+        "style .trigger[aria-expanded=\"true\"]",
+        "style .trigger[aria-expanded=\"true\"] .chev"
+      ],
+      "focus": [
+        "style .opt:focus-visible",
+        "style .trigger:focus-visible"
+      ],
+      "open": [
+        "style .menu[data-open=\"true\"]"
+      ],
+      "selected": [
+        "attribute aria-selected on body > div.row > div > div.dd > ul.menu > li.opt",
+        "style .opt[aria-selected=\"true\"]",
+        "style .opt[aria-selected=\"true\"] .tick"
+      ],
+      "$initial": "meta prop `state` enum; initial = its default"
+    }
+  },
+  "emits": [],
+  "bindings": {
+    "--focus": "{focus.ring}",
+    "--field-bg-hover": "{form.background.hover}",
+    "--border": "{form.border.default}",
+    "--border-active": "{form.border.active}",
+    "--menu-surface": "{background.default}",
+    "--menu-border": "{elevation.border}",
+    "--shadow": "{elevation.functional}",
+    "--divider": "{divider.border.section}",
+    "--text": "{text.default}",
+    "--icon": "{icon.default}",
+    "--error": "{rag.error}",
+    "--page": "{background.default}",
+    "--border-radius-control": "{border-radius.control}",
+    "--border-radius-surface": "{border-radius.surface}"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2",
+    "date": "2026-10-01",
+    "reviewed": false,
+    "source": "knowledge/snippets/Dropdown.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "first non-harness candidate",
+    "$listeners": [
+      "click",
+      "keydown"
+    ],
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a"
   }
 }
