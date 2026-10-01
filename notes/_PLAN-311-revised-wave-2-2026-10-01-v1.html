@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wave 2 revised plan</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s3);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.record{font-size:12px;color:var(--g6);line-height:1.5;margin:var(--s2) 0 0}
+/* pictures */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair figcaption b{font-weight:500;color:var(--fg)}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair .note{font-size:13px;color:var(--g7);line-height:1.55;margin:0}
+.swatch{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px;border:1px solid var(--g3)}
+/* the arrow grid */
+.agrid{margin:var(--s3) 0 var(--s2);border-top:1px solid var(--fg)}
+.agrid .hd,.agrid .row{display:grid;grid-template-columns:190px 1fr;gap:var(--s3);align-items:center}
+.agrid .hd{padding:var(--s1) 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);font-weight:500;border-bottom:1px solid var(--g3)}
+.agrid .hd .cols{display:grid;grid-template-columns:1fr 1fr}
+.agrid .row{padding:var(--s2) 0;border-bottom:1px solid var(--g3)}
+.agrid .k{font-size:15px;font-weight:500;line-height:1.4}
+.agrid .k small{display:block;font-size:12px;font-weight:400;color:var(--g7);line-height:1.6;margin-top:4px}
+.agrid img{display:block;width:100%;height:auto;border:1px solid var(--g3)}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+/* comment boxes and calls */
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s1)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair{grid-template-columns:1fr}
+  .agrid .hd{display:none}
+  .agrid .row{grid-template-columns:1fr;gap:var(--s1)}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab tr.rec td{background:var(--g1)}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+</style>
+</head>
+<body>
+<a id="rv-back" href="../index.html" target="_self" style="position:fixed;top:12px;left:12px;z-index:2147483647;background:#000;color:#fff;font:500 13px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:.04em;padding:10px 14px;text-decoration:none;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.25)">&larr; All review pages</a>
+
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#changed">01 What changed</a>
+  <a href="#jobs">02 The jobs</a>
+  <a href="#day">03 The day</a>
+  <a href="#out">04 Deferred</a>
+  <a href="#calls">05 The calls</a>
+</div></nav>
+
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 311 · plan · wave 2, revised at noon Thursday 1 October</p>
+      <h1>Your seven rulings go first. Today spends the Fable you would otherwise lose on the three pieces you said could start now; the seat-heavy builds wait for the fresh week at 23:00.</h1>
+      <p class="sub">You ruled the multi-library proposal at 11:10 and asked how it rolls into the other plans. This page is that revision: the Thursday burn re-cut around the seven rulings, the two-lane seat rule from the night review, and the fuel left on the panel.</p>
+    </div>
+    <div class="meta">
+      <span>Written Thursday 1 October 2026 at noon, lane R (Fable), for the #311 conductor. Supersedes the running order in the Thursday burn plan.</span>
+      <span>Your panel at 08:04: all models 80% used, Fable 50% used, both reset tonight at 23:00. Five Fable lanes have run since, so the noon reading is about 83% and 58%, estimated, not read.</span>
+      <span>Every fuel figure is an estimate on the same unit as yesterday's plan: about 0.6M sub tokens per 1% of the all-models week, about 2.5% of the Fable week per Fable lane.</span>
+    </div>
+  </div>
+</header>
+
+<section id="changed">
+  <div class="wrap">
+    <p class="label">01 · What changed, and why, on one screen</p>
+    <h2>Three jobs are new, one is dead, five are moved to Friday, and the seat takes two lanes at a time.</h2>
+    <p class="lead">Yesterday's plan had eight jobs and forty-eight lanes burning 28% of the week from 07:30. Twelve of those lanes ran overnight and the night review showed why they crawled: your Mac runs one command at a time, and twelve lanes queued for it. This morning you ruled seven calls that open a new strand and said three of its pieces can start now. With about 12% of the all-models week left before a 95% stop, the day holds eleven lanes, nine of them Fable, almost all of them in the cloud.</p>
+
+    <ul class="facts">
+      <li><span class="k">New · J</span><span><b>Tokens to DTCG, now.</b> Your call 6. One generator rewrites the token files into the W3C format with the extras kept under <code>$extensions</code>; the proof is that the token spine in canon.css and every snippet's theme block come out byte for byte the same. Cloud, Fable, landed by the committer.</span></li>
+      <li><span class="k">New · L</span><span><b>The spec into the metas.</b> Your calls 2 and 7. The schema gains the four fields (anatomy, states, emits, bindings), an extraction script lifts a first draft out of the snippets for a first cohort of fifteen parts, and a review page shows you each tree beside its part so you can rule the drafts by eye. The snippets are not edited. Cloud, Fable; the page verified at the seat in one call.</span></li>
+      <li><span class="k">New · N</span><span><b>The adapter schema for a client's library.</b> Your call 5. <code>adapters/schema.json</code>, its gate, and the four existing Sutherland bindings rewritten as the first manifest with the unmapped list it must carry. The theme-file export waits for J's tokens. Cloud, Fable.</span></li>
+      <li><span class="k">Dead · C2</span><span><b>The Launchpad renderer grown from dv-render.js is dropped,</b> not deferred. Your call 7 says the renderer that draws an A2UI screen is the HTML emitter of the new architecture, so growing a second one from the chart script would build the thing the ruling retires. The catalogue (C1) stays and gets richer when the anatomy lands.</span></li>
+      <li><span class="k">Moved · meta ownership</span><span><b>The schema lane is L today.</b> Yesterday the schema went C0 in the morning and D4 in the afternoon. C0 landed overnight; L owns <code>meta.schema.json</code> and the metas from noon to its commit; D4 (the consumers reading the edge register) moves to Friday on L's sha, so one owner at a time holds the file.</span></li>
+      <li><span class="k">Kept · snippets</span><span><b>B's reworks are not superseded, they are the fixture's truth.</b> Your call 1 makes the snippet a generated fixture, cohort by cohort, in phase 2. Until a cohort converts, the snippet is still hand-edited, and whatever B lands becomes what the emitter must reproduce byte for byte. The date picker is in phase 2's first five, so B1 lands before that cohort converts. B runs Friday for fuel reasons, not for this one.</span></li>
+      <li><span class="k">Kept · Launchpad</span><span><b>C1, the catalogue, is the fifth emitter already.</b> It reads the same metas; nothing about it changes today. C3 and C4 (gates as a service, the chooser) move to Friday because nothing today needs them and their four Fable lanes are the fuel L needs.</span></li>
+      <li><span class="k">Friday</span><span><b>A2 to A6 and their verifiers, B1 to B7, C3 and C4, D4 and D5, G and H3</b> start Friday 07:30 on the fresh week. They are ruled or owed work and lose nothing by waiting eleven hours; they are also the seat-render work the two-lane rule cannot take beside the committer and F today. Section 04 has each one's reason.</span></li>
+      <li><span class="k">Seat rule</span><span><b>Two lanes on the Mac, one of them the single committer.</b> From the night review: with three or fewer lanes calling, one call in 539 was cut; from four up the cuts begin. Today the seat holds the committer and F's render lane; every other lane works in the cloud on a clone of the GitHub repo and hands named paths to the committer. The conductor pushes at noon so the clones are current.</span></li>
+    </ul>
+    <p class="record">Sources: your export at 11:10 (<code>notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md</code>, inscribed s311-D3 to D9); the proposal's phases (<code>notes/_PROPOSAL-311-apollo-for-other-libraries-2026-10-01-v1.html</code> § 06); the night review's two-lane cap (<code>notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html</code> § 02); the wave-1 bridge (<code>notes/_lanes/312/WAVE-2-START.md</code>); the eight briefs under <code>notes/_lanes/312/</code>.</p>
+  </div>
+</section>
+
+<section id="jobs" class="grey">
+  <div class="wrap">
+    <p class="label">02 · The jobs, ranked</p>
+    <h2>Nine jobs, eleven lanes, one committer. Ranked by how fresh your word is and how little the seat they need.</h2>
+
+    <div class="scroll"><table class="ctab">
+      <tr><th>Rank</th><th>Job</th><th>Lanes × model</th><th>Where</th><th>Committer</th><th>Sub tokens (est.)</th><th>All-models (est.)</th><th>Fable (est.)</th></tr>
+      <tr><td class="n">1</td><td>AC · the single committer</td><td>1 Opus 5.5</td><td>seat</td><td>itself</td><td class="n">0.8M</td><td class="n">1.3%</td><td class="n">0</td></tr>
+      <tr><td class="n">2</td><td>J · tokens to DTCG (phase 0)</td><td>1 Fable</td><td>cloud</td><td>AC</td><td class="n">0.4M</td><td class="n">0.7%</td><td class="n">2.5%</td></tr>
+      <tr><td class="n">3</td><td>L · the spec into the metas (phase 1, cohort one)</td><td>3 Fable</td><td>cloud; page verified at the seat by AC</td><td>AC</td><td class="n">1.2M</td><td class="n">2%</td><td class="n">7.5%</td></tr>
+      <tr><td class="n">4</td><td>N · the adapter schema (S2)</td><td>1 Fable</td><td>cloud</td><td>AC</td><td class="n">0.4M</td><td class="n">0.7%</td><td class="n">2.5%</td></tr>
+      <tr><td class="n">5</td><td>F · the pictures you are owed</td><td>1 Opus 5.5 (F3+F4+F5 in series)</td><td>seat</td><td>AC</td><td class="n">0.6M</td><td class="n">1%</td><td class="n">0</td></tr>
+      <tr><td class="n">6</td><td>E · the wrap, phase 3</td><td>2 Fable (build; replay)</td><td>cloud</td><td>AC</td><td class="n">0.8M</td><td class="n">1.3%</td><td class="n">5%</td></tr>
+      <tr><td class="n">7</td><td>C1 · the Launchpad catalogue</td><td>1 Fable</td><td>cloud</td><td>AC</td><td class="n">0.4M</td><td class="n">0.7%</td><td class="n">2.5%</td></tr>
+      <tr><td class="n">8</td><td>V · one verifier for J, L, N and C1</td><td>1 Fable</td><td>cloud</td><td>AC</td><td class="n">0.4M</td><td class="n">0.7%</td><td class="n">2.5%</td></tr>
+      <tr><td class="n">9</td><td>the conductor and the wrap</td><td>Opus 5.5</td><td>seat (the wrap)</td><td>the wrap seat</td><td class="n">1.2M</td><td class="n">2%</td><td class="n">0</td></tr>
+      <tr><td></td><td>Total</td><td>11 lanes: 9 Fable, 2 Opus</td><td>2 seat, 9 cloud</td><td></td><td class="n">6.2M</td><td class="n">about 10.5%, ending near 93%</td><td class="n">about 22.5%, ending near 80%</td></tr>
+    </table></div>
+    <p class="record">Stop lines: all models 95%, Fable 90%. If the all-models line reads 90% at 16:00 the conductor drops, in this order: V's check of C1, E's replay lane, L3's page (the cohort's trees still land; the page is built Friday). Nothing in J, L1, L2 or N is dropped: it is this morning's word.</p>
+
+    <div class="sub3" id="jobAC">
+      <h3>1 · AC · The single committer, noon to the wrap</h3>
+      <p class="lead">One Opus lane at the seat all day. It owns every file the hard rules name as single-writer: canon.css, the chart receipts, the store, the rulings, and from noon the token files and the schema. Lanes hand it named, changed paths; it runs the regen serial once per wave, surveys in a /tmp clone, commits, and hands the sha to the conductor for the push and the CI read-back.</p>
+      <p>Two commit waves, 15:00 and 20:00, and one small one when L1's schema lands so L2 can write into the metas. Before each commit it checks <code>.git</code> for stale locks and moves them aside. It also runs the one seat call L3 needs: the cohort review page rendered at 1440 and 390 with Copy as text returning every call.</p>
+    </div>
+
+    <div class="sub3" id="jobJ">
+      <h3>2 · J · Tokens to DTCG 2025.10, now</h3>
+      <p class="lead">Your call 6. One generator rewrites <code>knowledge/tokens/*.json</code> and the four theme override files into the W3C format: <code>$alias</code> becomes a <code>{group.token}</code> reference, light and dark leave the path and become resolver sets, the Apollo-only keys (<code>$note</code>, <code>$contrast</code>, <code>$confidence</code>, <code>$label</code>) move under <code>$extensions.apollo</code>, dimensions become value objects. The three readers (<code>gen_canon_tokens</code>, <code>gen_snippet_tokens</code>, <code>gen_theme_cascade</code>) are re-fed.</p>
+      <p>Proof, and the gate <code>_validate_tokens_dtcg.py</code>: the canon.css token spine byte-equal before and after; every snippet's generated theme block byte-equal across all 137 (the snippets are not touched today, so this is the gate that says so); every moved key recoverable from <code>$extensions</code>; Style Dictionary v4 parses the files with zero warnings, or the lane reports that proof as unmeasured with the reason. One Fable lane in the cloud; the committer lands it in the 15:00 wave and runs the regen serial, where the byte-equal spine is checked again on the mount.</p>
+      <p>Risk. Three readers, not one: the proposal priced the token re-feed as one generator; <code>gen_snippet_tokens</code> writes into the snippets and <code>gen_theme_cascade</code> reads their manifests, so J must leave both outputs identical or stop and say which one moved. If the resolver-set shape for the four themes does not land cleanly by 15:00, J ships the format move for the base tokens and names the themes as owed; your ruling is kept, the day is not.</p>
+    </div>
+
+    <div class="sub3" id="jobL">
+      <h3>3 · L · The spec into the metas: the schema, the extraction, the first cohort for your eye</h3>
+      <p class="lead">Your calls 2 and 7. Three Fable lanes in the cloud. L1 adds the four fields to <code>meta.schema.json</code> with an <code>$extracted</code> marker, extends the schema selftest, and writes the ADR addendum that records your call 1 (ADR-0013's ruling 4 is reversed by s311-D3, enacted in phase 2, not today). L2 writes the extraction script: it reads each snippet's markup, state selectors, script and token manifest and drafts anatomy, states, emits and bindings into the meta, refusing to mark a meta done below full coverage, so the count has a reader from day one. L3 builds the review page for cohort one.</p>
+      <p>Cohort one is fifteen parts: the five M2 sampled because they span every gap (button, tabs, table, date picker, metric) and ten interactive neighbours (call 2 below puts the choice to you). L1 commits first; L2 writes drafts into the metas only on L1's sha; L3 starts when L2's first drafts exist. Gates: every part name in a tree resolves to an element in the snippet; every binding resolves to a token; <code>gen_kg_sources.py --check</code> then <code>--land</code> after the metas change; ASSERT-009 is untouched because no meta is added or removed.</p>
+      <p>What you get back. One page tonight, read now, rule Friday: each of the fifteen parts with its drafted tree, states and events beside a link to the part itself, a does-this-tree-describe-the-part call each, and the coverage count. Nothing in the pipeline changes; the snippets are not edited.</p>
+    </div>
+
+    <div class="sub3" id="jobN">
+      <h3>4 · N · The adapter schema, and Sutherland as the first manifest</h3>
+      <p class="lead">Your call 5. One Fable lane in the cloud writes <code>adapters/schema.json</code> (role or meta to their component and import; prop to prop with typed holes; slot to slot; a status of unverified, rendered or accepted; their tokens onto Apollo's semantic tokens; a required unmapped list), <code>knowledge/_validate_adapter.py</code> with a selftest and the help-gate line, wired into <code>test_gates</code> so it has a consumer, and the first manifest <code>adapters/sutherland-react.json</code> rewritten from the four <code>codeBindings</code> spokes in the metas, every binding unverified as today.</p>
+      <p>Not today: the theme-file export for their library (it reads J's DTCG tokens and is the day-one win the proposal names; N files it as owed to Friday), and the side-by-side render that moves a binding to rendered (that needs their parts). The four <code>codeBindings</code> blocks stay in the metas until the manifest has been read by a gate for a release; N says so in its report rather than deleting them.</p>
+    </div>
+
+    <div class="sub3" id="jobF">
+      <h3>5 · F · The pictures you are owed, in one seat lane</h3>
+      <p class="lead">Unchanged in intent: the page that turns your stalled questions into calls with a recommendation each, for Friday morning. Changed in shape: F3 and F4's renders and F5's page run as one Opus lane in series at the seat, the one seat slot beside the committer, from 12:30. F1 and F2's explorations landed overnight and feed it.</p>
+      <p>If the renders run long, F5 ships the page with the items it has pictures for and names the rest as plain calls; nothing is built or inscribed from it until you answer.</p>
+    </div>
+
+    <div class="sub3" id="jobE">
+      <h3>6 · E · The wrap redesign, phase 3, proven on tonight's wrap</h3>
+      <p class="lead">Unchanged in intent, leaner in lanes. Two Fable lanes in the cloud: one builds <code>_wrap_views.py</code> and the story file against E0's design (E1 and E2 together), the other replays it over #309, #310 and #311's real inputs and tries to make a generated view lie about a figure (E3 and EV together). The inputs under <code>knowledge/_tmp/</code> are not in the GitHub clone; the replay lane stages them from the seat.</p>
+      <p>The proof is tonight's wrap: the wrap seat runs the new path if the replay is green on all three fixtures, the phase-1 path if not. You see it as a shorter wait for your summary.</p>
+    </div>
+
+    <div class="sub3" id="jobC">
+      <h3>7 · C1 · The Launchpad catalogue, the fifth emitter</h3>
+      <p class="lead">One Fable lane in the cloud on CS's spec and C0's schema sha: the catalogue generator from the metas of the ~15 dashboard parts to A2UI entries with their when-rules, versioned like an API. Your call 7 names it as the emitter E5 of the new architecture; it reads the same metas L is enriching, and gets the anatomy and typed slots when phase 1 lands them, with no change to its shape today.</p>
+      <p>C2 is dropped (section 01). C3, C4 and CV move to Friday.</p>
+    </div>
+
+    <div class="sub3" id="jobV">
+      <h3>8 · V · One verifier for the four cloud builds</h3>
+      <p class="lead">One Fable lane from 16:30, built nothing, tries to make each of J, L, N and C1 lie: a token whose moved key is not recoverable; a part name in a tree that resolves to nothing; a manifest with no unmapped list that the gate accepts; a catalogue entry whose when-rule the metas do not carry. PASS, PASS WITH FIXES or FAIL per job, filed before the 20:00 wave.</p>
+    </div>
+  </div>
+</section>
+<section id="day">
+  <div class="wrap">
+    <p class="label">03 · The day, noon to the wrap</p>
+    <h2>Push at noon so the clones are current. Two commit waves, 15:00 and 20:00. Wrap from 21:00 so it lands before the 23:00 reset.</h2>
+    <p class="lead">The seat holds two lanes: the committer all day, F's render lane until about 18:30, then the wrap seat. Everything else runs in the cloud on a clone of the GitHub repo taken after the noon push, and hands named paths to the committer. A cloud lane never commits.</p>
+
+    <div class="scroll">
+    <svg viewBox="0 0 1100 470" width="100%" style="min-width:860px;display:block;margin:var(--s3) 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif" role="img" aria-label="Timeline of the revised wave 2, noon to 23:00">
+<defs><style>.t{font-size:12px;fill:var(--g7)} .h{font-size:11px;letter-spacing:.12em;fill:var(--g6)} .j{font-size:12px;fill:#fff;font-weight:500} .bar-o{fill:#333} .bar-f{fill:#DA1A00} .bar-s{fill:#9B9B9B} .grid{stroke:var(--g3);stroke-width:1} .seat{stroke:#333;stroke-width:1;stroke-dasharray:3 3;fill:none}</style></defs>
+<g class="grid"><line x1="240" y1="40" x2="240" y2="420"/><line x1="469" y1="40" x2="469" y2="420"/><line x1="545" y1="40" x2="545" y2="420"/><line x1="851" y1="40" x2="851" y2="420"/><line x1="927" y1="40" x2="927" y2="420"/><line x1="1080" y1="40" x2="1080" y2="420"/></g>
+<text x="240" y="30" class="h">12:00 PUSH, LAUNCH</text>
+<text x="469" y="30" class="h">15:00 WAVE</text>
+<text x="545" y="18" class="h">16:00 PUSH</text>
+<text x="851" y="30" class="h">20:00 WAVE</text>
+<text x="927" y="18" class="h">21:00 WRAP</text>
+<text x="1080" y="30" class="h" text-anchor="end">23:00 RESET</text>
+<text x="0" y="74" class="t">AC · the committer · seat</text>
+<rect x="240" y="60" width="764" height="22" class="bar-o"/><text x="248" y="75" class="j">1 Opus · regen serial at 15:00 and 20:00 · survey in a clone · one seat slot</text>
+<text x="0" y="110" class="t">F · the pictures · seat</text>
+<rect x="278" y="96" width="458" height="22" class="bar-o"/><text x="286" y="111" class="j">1 Opus · renders (F3, F4) then the page (F5) · the other seat slot</text>
+<text x="0" y="146" class="t">J · tokens to DTCG</text>
+<rect x="259" y="132" width="210" height="22" class="bar-f"/><text x="267" y="147" class="j">1 Fable · cloud</text>
+<text x="0" y="182" class="t">L · the spec into the metas</text>
+<rect x="259" y="168" width="210" height="22" class="bar-f"/><text x="267" y="183" class="j">L1 schema + L2 extractor · cloud</text>
+<rect x="507" y="168" width="306" height="22" class="bar-f"/><text x="515" y="183" class="j">L2 drafts cohort one · L3 the page · cloud</text>
+<text x="0" y="218" class="t">N · the adapter schema</text>
+<rect x="259" y="204" width="210" height="22" class="bar-f"/><text x="267" y="219" class="j">1 Fable · cloud</text>
+<text x="0" y="254" class="t">C1 · the catalogue</text>
+<rect x="259" y="240" width="286" height="22" class="bar-f"/><text x="267" y="255" class="j">1 Fable · cloud</text>
+<text x="0" y="290" class="t">E · the wrap, phase 3</text>
+<rect x="259" y="276" width="286" height="22" class="bar-f"/><text x="267" y="291" class="j">build · cloud</text>
+<rect x="545" y="276" width="268" height="22" class="bar-f"/><text x="553" y="291" class="j">replay + mutation · cloud</text>
+<text x="0" y="326" class="t">V · the verifier</text>
+<rect x="583" y="312" width="268" height="22" class="bar-f"/><text x="591" y="327" class="j">1 Fable · J, L, N, C1 · cloud</text>
+<text x="0" y="362" class="t">the wrap seat</text>
+<rect x="927" y="348" width="115" height="22" class="bar-o"/><text x="935" y="363" class="j">E's path if green</text>
+<text x="0" y="398" class="t">the conductor</text>
+<rect x="240" y="384" width="840" height="22" class="bar-s"/><text x="248" y="399" class="j">push + CI read-back at 12:00, 16:00 and 20:30 · headlines only · the summary to Dave after the wrap</text>
+<rect x="240" y="440" width="14" height="10" class="bar-o"/><text x="260" y="449" class="t">Opus lanes</text><rect x="360" y="440" width="14" height="10" class="bar-f"/><text x="380" y="449" class="t">Fable lanes</text><text x="490" y="449" class="t">at most two bars at the seat at any hour: the committer and one other</text>
+</svg>
+    </div>
+
+    <ul class="facts">
+      <li><span class="k">12:00</span><span>The conductor pushes HEAD (the inscription commit, this page, the briefs) and reads CI back, so the cloud clones hold wave 1. Then launches J, L1, L2, N, C1 and E's build lane in the cloud, and AC and F at the seat.</span></li>
+      <li><span class="k">about 14:00</span><span>L1 hands the schema to AC; a small commit so L2 can write into the metas. D4 would have taken the schema here yesterday; it waits for Friday.</span></li>
+      <li><span class="k">15:00</span><span>First wave: AC lands J (regen serial, spine byte-equal), N, C1's generator, E's build. Survey in the clone. The conductor pushes about 16:00 and reads CI back; V and E's replay lane start on that sha.</span></li>
+      <li><span class="k">15:30</span><span>L3 starts the cohort page on L2's first drafts; AC renders it at 1440 and 390 when it is ready, the one seat call L needs.</span></li>
+      <li><span class="k">18:30</span><span>F hands its page and pictures to AC. The second seat slot frees; if E's replay needs the staged inputs re-read it may use it, nothing else does.</span></li>
+      <li><span class="k">20:00</span><span>Second wave: AC lands L2's drafts, L3's page, E's replay diffs, V's report, F. Survey, push about 20:30, CI read-back.</span></li>
+      <li><span class="k">21:00</span><span>The wrap seat opens on E's path if the replay is green on all three fixtures, else the phase-1 path. The wrap lands by 22:30, before the reset; your short bulleted summary follows under Decisions, Outputs, Problems.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="out" class="grey">
+  <div class="wrap">
+    <p class="label">04 · Dropped, deferred, and newly owed</p>
+    <h2>One dropped. Fourteen lanes to Friday, each with its reason. Six gates and two phases now owed.</h2>
+    <p class="lead">Nothing you ruled is removed. Deferred means Friday 07:30 on the fresh week, in the order the briefs already give, unless you say otherwise on the page below.</p>
+    <ul class="facts">
+      <li><span class="k">Dropped</span><span><b>C2, the renderer spike.</b> Superseded by your call 7: the renderer is the HTML emitter, not a second script grown from dv-render.js.</span></li>
+      <li><span class="k">Friday · A</span><span><b>A2 to A6, AV1, AV2.</b> Six Opus build lanes rendering charts and the dashboard at the seat, plus two verifiers. Seat-render heavy against a two-lane cap, and 5% of the all-models week against the 12% left. The order you have not said no to stands; A1 and A7 landed overnight.</span></li>
+      <li><span class="k">Friday · B</span><span><b>B1 to B4, B6, B7, BV.</b> Reworks rendered in four themes at the seat. Their hand edits stay the fixture's truth under your call 1; B1's date picker lands before phase 2's first cohort converts it. B7 loses one item to phase 2: the showroom pane that cannot project an option is the emitter's job once snippets are generated. B5's picks are still a proposal; nothing from rows 9, 10 and 29 is built before you answer.</span></li>
+      <li><span class="k">Friday · C</span><span><b>C3, C4, CV.</b> Gates as a service and the chooser. Nothing today needs them; their Fable fuel goes to L. CV joins V's shape on Friday.</span></li>
+      <li><span class="k">Friday · D</span><span><b>D4, D5, DV.</b> D4 edits <code>meta.schema.json</code>, which L owns today; it runs on L1's sha. D5 needs your Jev key and the 107-second explorer rebuild at the seat. No moment of yours is in D.</span></li>
+      <li><span class="k">Friday · G</span><span><b>The re-cut candidate.</b> Your words were "towards the end of the week"; the cold runs are fresh sessions and the candidate should carry Friday morning's A and B work. The cut stays yours, on your machine, through the frozen-release gate.</span></li>
+      <li><span class="k">Friday or later · H3</span><span><b>Studio on paper, the page.</b> H1 and H2's research landed overnight. The page was yesterday's first drop when the line ran hot; it still is.</span></li>
+      <li><span class="k">Owed · phase 2</span><span><b>The reversal, cohort by cohort.</b> After you have ruled cohort one's trees by eye: CSS and behaviour move out of each snippet, the emitter renders it, the round-trip gate <code>_validate_roundtrip.py</code> refuses any byte of drift, canon.css's component block byte-equal per cohort. Start with the five, as a weekend run (call 4 below).</span></li>
+      <li><span class="k">Owed · phases 3 and 4</span><span><b>Lit elements and the wrappers,</b> after phase 2's first three cohorts, with <code>_validate_apg_keys.py</code> and <code>_validate_wrappers.py</code>. Light DOM, as you ruled. Not priced today.</span></li>
+      <li><span class="k">Owed · gates</span><span><code>_validate_tokens_dtcg.py</code> (J, today), <code>_validate_spec_coverage.py</code> (L's extraction refusal today; the dashboard count after), <code>_validate_adapter.py</code> (N, today), <code>_validate_roundtrip.py</code> (phase 2), the two above (phases 3 and 4). Each is wired to a reader the day it is built or it is named as unwired in the report.</span></li>
+      <li><span class="k">Owed · questions</span><span>The seven questions the overnight lanes raised for you stand in <code>WAVE-2-START.md</code> § 5 (the mono grey sub-line, the outline border, the data grid's "terms", the bento wall's accepted parts, the canon gallery, F1's top nav, F2's wording and lock-up). F's page carries the ones a picture answers.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="calls">
+  <div class="wrap">
+    <p class="label">05 · The calls · five, recommendation first</p>
+    <h2>Rule these in plain words. Silence by 12:30 takes the recommendation on each.</h2>
+
+    <div class="call" data-id="c1" data-q="1. The day's shape" data-rec="Your seven rulings and your pictures today; A, B, C3, C4, D, G Friday">
+      <p class="q">1. What does today spend its fuel on?</p>
+      <p class="rec">The recommendation: this morning's rulings (J, L, N), the pictures you are owed (F), the wrap's phase 3 and the catalogue, in the cloud with one committer; the seat-render builds start Friday at 07:30 on the fresh week. The other way round burns the all-models line on renders and leaves your fresh word untouched until Friday.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Your seven rulings and your pictures today; A, B, C3, C4, D, G Friday">Your seven rulings and your pictures today; A, B, C3, C4, D, G Friday<em>the recommendation</em></button><button type="button" class="chip" data-v="A and B today as yesterday's plan; the seven rulings start Friday">A and B today as yesterday's plan; the seven rulings start Friday</button><button type="button" class="chip" data-v="Both, halved: J and N, A2 charts and B1 only; L Friday">Both, halved: J and N, A2 charts and B1 only; L Friday</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c2" data-q="2. Phase 1's first cohort" data-rec="The five M2 sampled plus ten interactive neighbours">
+      <p class="q">2. Which fifteen parts does the extraction draft first, for your eye tonight?</p>
+      <p class="rec">The recommendation: the five M2 sampled (button, tabs, table, date picker, metric) because they span every gap the measurement found, plus ten interactive neighbours (menus, accordion, slider, switch, text input, select, dialog, tooltip, pagination, notification). The dashboard set would make Launchpad's catalogue richer sooner but misses the behaviour-heavy parts phase 2 has to prove on.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The five M2 sampled plus ten interactive neighbours">The five M2 sampled plus ten interactive neighbours<em>the recommendation</em></button><button type="button" class="chip" data-v="The ~15 dashboard parts Launchpad's catalogue needs">The ~15 dashboard parts Launchpad's catalogue needs</button><button type="button" class="chip" data-v="The first fifteen alphabetically">The first fifteen alphabetically</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c3" data-q="3. Git's locks" data-rec="Allow deletion in the repo folder for the session, so git clears its own locks">
+      <p class="q">3. The lock git leaves behind: allow deletion in the repo folder for the session?</p>
+      <p class="rec">The recommendation: yes, for the session. The night review traced 948 stale locks since session 263 to the mounted folder refusing every delete; git cannot remove a lock it took and did not use. Moving them aside by hand works and costs every lane a check before every commit. A delete in the mount is permanent, so the alternative is to keep the mv and accept the cost.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Allow deletion in the repo folder for the session, so git clears its own locks">Allow deletion in the repo folder for the session, so git clears its own locks<em>the recommendation</em></button><button type="button" class="chip" data-v="Keep moving the locks aside by hand">Keep moving the locks aside by hand</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c4" data-q="4. Phase 2's start" data-rec="Saturday, as a weekend run, after you have ruled cohort one's trees Friday">
+      <p class="q">4. When does phase 2 (the snippets regenerated, cohort one) start?</p>
+      <p class="rec">The recommendation: Saturday as a weekend run you can leave running, after you have ruled cohort one's trees by eye on Friday. It is the reversal, it should not share a diff with the extraction, and the round-trip gate needs a ruled tree to aim at. Starting Friday alongside A and B puts three canon.css writers on one day.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Saturday, as a weekend run, after you have ruled cohort one's trees Friday">Saturday, as a weekend run, after you have ruled cohort one's trees Friday<em>the recommendation</em></button><button type="button" class="chip" data-v="Friday, alongside A and B">Friday, alongside A and B</button><button type="button" class="chip" data-v="After all 139 metas are extracted">After all 139 metas are extracted</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="c5" data-q="5. The first library for the adapter manifest" data-rec="Sutherland React from the four existing bindings, the theme export when J lands">
+      <p class="q">5. Which library is the first adapter manifest written for?</p>
+      <p class="rec">The recommendation: Sutherland React, rewritten from the four bindings already in the metas, every one still unverified, with the generated theme file for it following on Friday once J's tokens are in. Waiting for a real client library leaves the schema with no example to prove it on.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Sutherland React from the four existing bindings, the theme export when J lands">Sutherland React from the four existing bindings, the theme export when J lands<em>the recommendation</em></button><button type="button" class="chip" data-v="Wait for a real client library">Wait for a real client library</button><button type="button" class="chip" data-v="A MUI theme export only, no manifest yet">A MUI theme export only, no manifest yet</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+
+    <div class="call" data-id="page" data-q="Note on the page" data-rec="">
+      <p class="q">Anything else for the afternoon.</p>
+      <label class="field"><span>Your note</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Apollo · plan · #311 lane R · 2026-10-01 noon · notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html · briefs at notes/_lanes/312/{A..H,J,L,N}/BRIEF.md · supersedes the order in notes/_PLAN-311-thursday-burn-2026-10-01-v1.html · nothing here is decided until you say so.</div></footer>
+
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your calls</b><span id="count">0 of 6 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+<script>
+(function(){
+  var KEY='plan-311-revised-wave-2-v1';
+  var PATH='notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    document.getElementById('count').textContent = n+' of '+calls.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 311 · Wave 2 revised · your calls','','Page: '+PATH,'Copied: '+now(),''];
+    var page=null;
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      if(id==='page'){ page=s; return; }
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    L.push('Note on the page: '+(page && (page.note||'').trim()? page.note.trim() : 'none'));
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='plan-311-revised-wave-2.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>

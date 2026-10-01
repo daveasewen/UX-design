@@ -1,5 +1,15 @@
 # Lane B — #312 — The reworks from his picture page — nine parts, the third red, the 29 forks, the loose ends
 
+## REVISED 2026-10-01 12:00 BST by #311 lane R — supersedes the lanes and timing below
+
+From Dave's 11:10 rulings (`s311-D3..D9`, `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`), the two-lane seat rule (`notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html`) and the fuel left (all models about 83%, Fable about 58% at noon, estimated). The revised plan: `notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html`. Seat rule for every lane: at most two lanes on the Mac, one of them the single committer AC; text and research lanes work in the cloud on a clone of the GitHub repo taken after the noon push and hand named paths to AC; a cloud lane never commits.
+
+B1–B4, B6, B7, BV DEFERRED to Friday 2026-10-02 07:30 (renders in four themes at the seat; the Fable fuel goes to L today). Not superseded by `s311-D3`: the hand edits become what the emitter must reproduce byte for byte; B1's date picker lands before phase 2's first cohort (button, tabs, table, date picker, metric) converts. B7 loses one item to phase 2: `snippet_theme_css()` projecting an option is the emitter's job once snippets are generated. B5's picks remain a proposal (rows 9, 10, 29 wait on Dave). Committer Friday: AC (seat).
+
+The text below is the draft as written on 2026-09-30; its intent stands, its lanes and times are superseded where this section says so.
+
+---
+
 Draft brief written by #311 lane P (Fable) on 2026-09-30 for the Thursday burn (`notes/_PLAN-311-thursday-burn-2026-10-01-v1.html`, job B). The #312 conductor launches it on Dave's yes and may amend lane splits; nothing here is his ruling.
 
 ## The ask

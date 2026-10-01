@@ -1,5 +1,15 @@
 # Lane C — #312 — Launchpad, day one — the schema calls in the tree, then the catalogue, gates as a service and the chooser
 
+## REVISED 2026-10-01 12:00 BST by #311 lane R — supersedes the lanes and timing below
+
+From Dave's 11:10 rulings (`s311-D3..D9`, `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`), the two-lane seat rule (`notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html`) and the fuel left (all models about 83%, Fable about 58% at noon, estimated). The revised plan: `notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html`. Seat rule for every lane: at most two lanes on the Mac, one of them the single committer AC; text and research lanes work in the cloud on a clone of the GitHub repo taken after the noon push and hand named paths to AC; a cloud lane never commits.
+
+C2 (the renderer spike grown from `dv-render.js`) is DROPPED, superseded by `s311-D9`: the renderer that draws an A2UI screen is the HTML emitter E1 of the new architecture. C1 (the catalogue) RUNS TODAY as one Fable lane in the CLOUD on CS's spec and C0's sha (`5227ccc4`), committer AC, 15:00 wave; it is emitter E5 and reads the metas L enriches. C3, C4, CV DEFERRED to Friday. C0 landed overnight (`7eaae613`, stamps `5227ccc4`); the metas and `meta.schema.json` are L's today, D4's on Friday.
+
+The text below is the draft as written on 2026-09-30; its intent stands, its lanes and times are superseded where this section says so.
+
+---
+
 Draft brief written by #311 lane P (Fable) on 2026-09-30 for the Thursday burn (`notes/_PLAN-311-thursday-burn-2026-10-01-v1.html`, job C). The #312 conductor launches it on Dave's yes and may amend lane splits; nothing here is his ruling.
 
 ## The ask

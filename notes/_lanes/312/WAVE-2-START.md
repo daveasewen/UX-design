@@ -1,5 +1,36 @@
 # Wave 2 start — the bridge from #311's overnight wave 1 (lane K, 04:35–05:30 BST Thu 2026-10-01)
 
+## REVISED 2026-10-01 12:00 BST by #311 lane R — this section supersedes § 2 below
+
+Dave ruled the multi-library proposal at 11:10 (`s311-D3..D9`, inscribed at `2fbc8184`; export at `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`) and asked how it rolls into the other plans. The night review (`notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html`) set the seat rule. The panel at 08:04 read 80% all-models and 50% Fable, both resetting 23:00. The revised plan page: `notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html` (five calls for Dave; silence by 12:30 takes each recommendation). New briefs: `notes/_lanes/312/J/BRIEF.md`, `L/BRIEF.md`, `N/BRIEF.md`; every A–H brief carries a REVISED header.
+
+### Seat rule, every lane
+At most TWO lanes on the Mac at once, one of them the single committer AC. Text and research lanes work in the CLOUD on a clone of the GitHub repo taken after the noon push, and hand named, changed paths to AC. A cloud lane never commits, never regenerates, never runs the survey on the mount. The conductor pushes and reads CI back at 12:00, about 16:00 and about 20:30.
+
+### The revised order (ranked)
+1. **AC** · Opus · SEAT, 12:00 → the wrap · the single committer: canon.css, the chart receipts, `_state.json`, `_rulings.json`, the token files (from J) and the schema (from L). Regen serial once per wave (15:00, 20:00) plus a small commit about 14:00 for L1's schema. Survey in a /tmp clone. Checks `.git` for stale locks before every commit and moves them into `.git/_stale-locks/`. Stamps `s311-D4`, `D7`, `D8` enacted by `--set-status` with the landing shas, each checked against the tree. Renders L3's page at 1440/390 (the one seat call L needs).
+2. **J** · Fable · CLOUD · tokens to DTCG 2025.10 (`s311-D8`): `knowledge/tokens/gen_dtcg.py` + `_validate_tokens_dtcg.py`; spine byte-equal, 137 snippet theme blocks byte-equal, moved keys recoverable. AC, 15:00 wave.
+3. **L1, L2, L3** · Fable · CLOUD · the spec into the metas (`s311-D4`): L1 the four fields in `meta.schema.json` + ADR-0013 addendum (AC ~14:00); L2 `extract_spec.py` and cohort one's drafts on L1's sha; L3 the review page `notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html` for Dave's eye (read tonight, rule Friday). L owns the metas and the schema from noon to its 20:00 commit.
+4. **N1** · Fable · CLOUD · the adapter schema (`s311-D7`): `adapters/schema.json`, `_validate_adapter.py` in `test_gates`, `adapters/sutherland-react.json` from the four `codeBindings` (unverified; `codeBindings` blocks stay). AC, 15:00 wave.
+5. **F** · Opus · SEAT (the second slot), 12:30 → ~18:30 · F3 + F4 renders then F5 the page, in series. AC, 20:00 wave.
+6. **E-build, E-replay** · Fable · CLOUD · wrap phase 3: E1+E2 in one lane (AC 15:00), E3+EV in one lane (AC 20:00); `knowledge/_tmp/` inputs staged from the seat. The wrap at 21:00 takes E's path if the replay is green on all three fixtures.
+7. **C1** · Fable · CLOUD · the Launchpad catalogue on CS + C0 (`a4198fc3`, `5227ccc4`). AC, 15:00 wave. **C2 is DROPPED** (superseded by `s311-D9`: the renderer is emitter E1).
+8. **V** · Fable · CLOUD, from 16:30 · one verifier for J, L, N, C1: PASS / PASS WITH FIXES / FAIL per job, filed before 20:00.
+9. **The conductor** · push + CI read-back at each wave; the wrap seat opens 21:00; wrap landed by 22:30; Dave's short bulleted summary (Decisions / Outputs / Problems) after.
+
+### Dropped, deferred
+- DROPPED: C2 (the renderer spike).
+- FRIDAY 2026-10-02 07:30, fresh week, same order as the briefs: A2–A6 + AV1/AV2; B1–B4, B6, B7, BV (B7's "showroom pane cannot project an option" item moves to phase 2); C3, C4, CV; D4 (on L1's sha), D5, DV; G1–G3, GV; H3 (Friday or later).
+- LATER, per `s311-D9`: phase 2 (snippets regenerated, cohort one of five, behind `_validate_roundtrip.py`; recommended Saturday as a weekend run after Dave rules cohort one's trees); phases 3 and 4 (Lit, light DOM, wrappers; `_validate_apg_keys.py`, `_validate_wrappers.py`).
+
+### Fuel
+Eleven lanes (9 Fable, 2 Opus) plus the conductor and the wrap: about 6.2M sub tokens, about 10.5% of the all-models week (ending near 93%) and about 22.5% of the Fable week (ending near 80%). Stop lines 95% / 90%. If all-models reads 90% at 16:00, drop in order: V's check of C1, E-replay, L3's page.
+
+### Still Dave's
+The seven questions in § 5 below stand; F's page carries the ones a picture answers. New today: the five calls on the revised plan page; cohort one's fifteen trees, Friday.
+
+---
+
 Read with `notes/_lanes/312/OVERNIGHT-CHAINS.md` (its addendum still governs) and each job's `notes/_lanes/312/<job>/BRIEF.md`. Every wave-2 lane starts from the HEAD named in § 4, not from the wave-1 shas below; those say which work it builds on.
 
 ## 1. What wave 1 landed (nothing pushed)

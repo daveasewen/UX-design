@@ -1,5 +1,15 @@
 # Lane E — #312 — The wrap redesign, phase 3 — one story written once, every view generated
 
+## REVISED 2026-10-01 12:00 BST by #311 lane R — supersedes the lanes and timing below
+
+From Dave's 11:10 rulings (`s311-D3..D9`, `notes/_lanes/311/DAVE-RULINGS-2026-10-01-1110-apollo-for-other-libraries.md`), the two-lane seat rule (`notes/_REVIEW-311-X-why-the-night-was-slow-2026-10-01-v1.html`) and the fuel left (all models about 83%, Fable about 58% at noon, estimated). The revised plan: `notes/_PLAN-311-revised-wave-2-2026-10-01-v1.html`. Seat rule for every lane: at most two lanes on the Mac, one of them the single committer AC; text and research lanes work in the cloud on a clone of the GitHub repo taken after the noon push and hand named paths to AC; a cloud lane never commits.
+
+RUNS TODAY, leaner: two Fable lanes in the CLOUD. E-build (E1 + E2 in one lane) builds `_wrap_views.py` and the story file against E0's `notes/_lanes/312/E/DESIGN.md` (`3756e3ec`); E-replay (E3 + EV in one lane) replays over #309, #310 and #311 and tries to make a view lie. Inputs under `knowledge/_tmp/` are not in the GitHub clone: the replay lane stages them from the seat (device_stage_files) rather than running at the seat. Committer AC, 15:00 (build) and 20:00 (replay) waves. The proof is tonight's wrap at 21:00: E's path if the replay is green on all three fixtures, else the phase-1 path.
+
+The text below is the draft as written on 2026-09-30; its intent stands, its lanes and times are superseded where this section says so.
+
+---
+
 Draft brief written by #311 lane P (Fable) on 2026-09-30 for the Thursday burn (`notes/_PLAN-311-thursday-burn-2026-10-01-v1.html`, job E). The #312 conductor launches it on Dave's yes and may amend lane splits; nothing here is his ruling.
 
 ## The ask
