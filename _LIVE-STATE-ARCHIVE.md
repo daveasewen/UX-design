@@ -1,5 +1,23 @@
 # _LIVE-STATE archive — rolled PRIOR DELTAs (verbatim, newest-first)
 
+## Rolled 2026-10-01 #313 (2d, at the #313 wrap, ritual 2026-10-02) — via the mover
+
+*The 1 oldest ⏱ delta block(s), moved VERBATIM by `_gm_move.py`.*
+
+## ⏱ PRIOR DELTA — 2026-09-30 (Wed from `date`) (**#310**, ONE DAY — OPENED 14:02 BST, "wrap" AT 17:38, conductor **OPUS 5.5 IN THE CLOUD**, **2 DELEGATED SUBS — Opus 5.5 lanes A and B**, DELEGATED wrap on **Opus 5.5**)
+
+> ★★ **THE ARROW AND UP-IS-BAD.** The opener read #309's owed CI on `7608504f`: GREEN. 14:03 BST, *"the rhin arrow from the icon assets"*: `s310-D1`, the thin library direction arrow stays (lane D's drawing at `d6d570bf`, byte-matched). The seat found the receipt page's arrow draws nothing (`#metric-up`, no symbol). 14:07, *"I think your logic is sound, its positive and negative news, not up and down"*: `s310-D2`, Net FX exposure on the banking demo is the first live up-is-bad metric, built in the seat (`7bc6b0c5`).
+
+> ★★ **THE DARK GROUND.** Measured: the ground equalled the tiles in every theme (#1F1F1F; Supercharge #2A2621). 14:14, *"go"*: the review page, published into the artifact "Apollo 304 review" as v18 (`fce11443`, `24865ab8`). 14:43 export: `s310-D3` (mirror by default, black tiles on the dark grey ground; the reverse an option) and `s310-D4` (Supercharge the same, #13110E). Lane A built both at the token source, the option `data-dark-tiles="grey"` in the theme register's new `options`, which the fork-ban gate reads as a sanctioned axis; 51 of 137 components change in dark; 27 chart receipts fresh; review page v19 (`8db81543`..`3b47aa5d`).
+
+> ★★ **THE WHITE INK AND THE TAB STRIP.** 16:24, four answers: *"lets do that for now, I have some proper specs for this but cant access the figma files at teh moment"* (`s310-D5`, interim #25211C, lane B `896b2b0e`), a review of the white-ink options, *"I need to see this"* for the tab strip, and *"yes"* (`s310-D6`, the option named and homed). 16:56, *"there is a halation tool in the repo that might help us select the white ink btw"*: `reviews/_rag_bloom_model.py` says the ink is the lever (#FFF 29 on black or grey, #E1E1E1 16.5). Page v20. 17:35 export: `s310-D7` (#E1E1E1, Supercharge keeps #F7F6F4) and `s310-D8` (the strip takes its container's colour), RULED NOT ENACTED; his page note, *"i need to see this"*. **`_rulings.json` 841 → 849.**
+
+> ⚠ **CI AND THE FILL.** Red on `93cdb12a` (step 88, `_node_titles.json` stale after the inscription; the conductor pushed without its pre-push check); lane B's `7e4602db` fixed it; `44696966` GREEN, all three jobs. ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **135,179** (over the ceiling by 179) · 160,000 at 14:03 · **300,000 at 14:47** · 320,000 at 16:24 · ⛔ **350,000 at 17:17** · **372,194 at his "wrap"** (17:38), past the hard line by 22,194. subs 647,656 (n=2).
+
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`b40bddc2`** (`--wrap`, gate `248 in scope · 0 fail · 31 warn`) and **`4ece47a5`** (the seat's files); the pre-push check on the wrap's tree first (155 pass, 0 FAIL, 32 tests); pushed `44696966..4ece47a5` at 17:01:30 UTC, carrying `69173275`. **CI on `4ece47a5`, run `36748452503`: GREEN, all three jobs.** `_CHAIN.md` 7,824 cl100k after the wrap's regen, over the 7,700 warn by 124. This addendum's CI is owed to #311.
+
+> **WHY/HOW: `_DECISION-HISTORY/2026-09-30-310-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md`. Handoff: `_HANDOFF-161-the-dark-tiles-were-built-and-the-soft-white-waits-to-be-seen.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/310/DAVE-*.md`. Lane reports: `notes/_subreports/2026-09-30-310-A-dark-tiles.md`, `notes/_subreports/2026-09-30-310-B-white-ink-and-tab-strip.md`. Wrap: `notes/_subreports/2026-09-30-310-W-wrap.md`.**
+
 ## Rolled 2026-10-01 #312 (2d, at the #312 wrap, ritual 2026-10-01) — via the mover
 
 *The 1 oldest ⏱ delta block(s), moved VERBATIM by `_gm_move.py`.*
