@@ -1012,6 +1012,11 @@ ROUTE_ROWS = [
      "\n❌ type-composites ratchet failed (exit {code}) — NEW violation(s) above the declared debt in knowledge/_type_ratchet.json; the ratchet only shrinks (s119-D1). Fix the new violations; do NOT raise the baseline."),
     ("type-composites selftest", ABORT, None),
     ("coverage gate", GATE, "\n❌ coverage gate failed (exit {code}) — see knowledge/_COVERAGE-GATE.md"),
+    # ROUTED #314 AC3: lane TP2 wired the two example-fence STEPS without ROUTE_ROWS rows; the pre-push
+    # survey caught it ([138] STEPS <-> ROUTE_ROWS join, 2 unrouted). Routed as the coverage gate and its kin.
+    ("example-fence gate — page templates are looked at, never built from (Dave 14:55 2026-10-02, call 7)", GATE,
+     "\n❌ example-fence gate failed (exit {code}) — see knowledge/_EXAMPLE-FENCE-GATE.md"),
+    ("example-fence gate selftest (7 bites)", ABORT, None),
     ("pro-forma universal gate", GATE,
      "\n❌ pro-forma universal gate failed (exit {code}) — see knowledge/_PROFORMA-GATE.md"),
     ("pro-forma CSS-governed motion gate (DEF-003)", GATE,
