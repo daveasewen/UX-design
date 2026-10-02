@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Borders, switches, templates</title>
+<style>
+:root{--accent:#DA1A00;--fg:#000;--bg:#fff;--g1:#F3F3F3;--g2:#EDEDED;--g3:#D7D8D6;--g5:#9B9B9B;--g6:#767676;--g7:#545454;--g8:#333;--card:#fff;--code:#F3F3F3;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2rem;--s5:3rem;--s6:4rem;--s7:6rem;--max:1180px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}}
+:root[data-theme="dark"]{--accent:#FF6A55;--fg:#F2F2F2;--bg:#0E0E0E;--g1:#1A1A1A;--g2:#262626;--g3:#3A3A3A;--g5:#8A8A8A;--g6:#A3A3A3;--g7:#BDBDBD;--g8:#D6D6D6;--card:#141414;--code:#1F1F1F}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:64px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.label{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;margin:0 0 var(--s3);line-height:1.5}
+.label::before{content:"";width:20px;height:1px;background:var(--accent);flex:none}
+p{margin:0 0 var(--s2)}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.86em;background:var(--code);padding:.08em .35em;overflow-wrap:anywhere}
+nav.toc{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--g2)}
+nav.toc .wrap{display:flex;gap:var(--s2);align-items:center;height:52px;overflow-x:auto;scrollbar-width:none;padding-left:200px}
+nav.toc .wrap::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;letter-spacing:.04em;color:var(--g6);text-decoration:none;white-space:nowrap}
+nav.toc a:hover{color:var(--fg)}
+header{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--g2)}
+header .grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);align-items:end}
+h1{font-size:57px;font-weight:200;line-height:1.06;margin:0}
+.sub{font-size:24px;font-weight:300;line-height:1.4;margin:var(--s3) 0 0;max-width:30em}
+.meta{font-size:13px;line-height:1.7;color:var(--g7)}
+.meta span{display:block}
+h2{font-size:34px;font-weight:300;line-height:1.18;margin:0 0 var(--s3)}
+section{padding:var(--s6) 0;border-bottom:1px solid var(--g2)}
+section.grey{background:var(--g1)}
+.lead{font-size:21px;font-weight:300;line-height:1.5;max-width:34em}
+.lead a,.facts a,.sub3 a,.waiting a{color:inherit}
+.call .cnum{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem;line-height:1.5}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.pair.one{grid-template-columns:1fr}
+.pair.three{grid-template-columns:repeat(3,1fr)}
+.pair figure{margin:0;background:var(--card);padding:var(--s2);display:flex;flex-direction:column;gap:var(--s1);min-width:0}
+.pair figcaption{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5}
+.pair img{display:block;width:100%;height:auto;border:1px solid var(--g2);background:#fff}
+.pair a{display:block}
+.pair.narrow{max-width:760px}
+.facts{margin:var(--s3) 0 0;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:150px 1fr;gap:var(--s3);padding:var(--s2) 0;border-top:1px solid var(--g3);font-size:15px;line-height:1.6;color:var(--g8)}
+.facts li:last-child{border-bottom:1px solid var(--g3)}
+.facts .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g6);line-height:1.5;padding-top:3px}
+.facts li b{font-weight:500;color:var(--fg)}
+.call{border:1px solid var(--g3);background:var(--card);padding:var(--s3);margin-top:var(--s3)}
+.call .q{font-size:21px;font-weight:300;line-height:1.35;margin:0 0 var(--s1)}
+.call .rec{font-size:14px;color:var(--g7);margin:0 0 var(--s2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:var(--s2)}
+.chip{font:inherit;font-size:12px;letter-spacing:.06em;padding:.5rem .8rem;border:1px solid var(--g3);background:var(--bg);color:var(--g8);cursor:pointer;border-radius:0;text-align:left;line-height:1.35}
+.chip:hover{border-color:var(--fg);color:var(--fg)}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip em{font-style:normal;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+.chip.on em{color:var(--bg)}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500;line-height:1.5}
+.field textarea{font:inherit;font-size:15px;line-height:1.5;color:var(--fg);background:var(--g1);border:0;border-bottom:1px solid var(--g3);padding:.6rem .75rem;min-height:4.5rem;resize:vertical;width:100%;border-radius:0}
+section.grey .field textarea{background:var(--bg)}
+.field textarea:focus{outline:none;border-bottom-color:var(--accent)}
+.stamp{font-size:11px;color:var(--g6);margin-top:.4rem;min-height:1em}
+.sub3{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--g3)}
+.sub3 h3{font-size:24px;font-weight:300;line-height:1.3;margin:0 0 var(--s2)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:99;background:#000;color:#fff;font-size:12px;letter-spacing:.04em;border-top:1px solid #333}
+.bar .in{max-width:var(--max);margin:0 auto;padding:.6rem 32px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bar b{font-weight:500}
+.bar button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .9rem;border:1px solid #767676;background:transparent;color:#fff;cursor:pointer;border-radius:0;line-height:1.4}
+.bar button:hover{border-color:#fff}
+.bar button.pri{background:#DA1A00;border-color:#DA1A00}
+.bar .msg{color:#B7B7B7;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.tech{font-size:13px;color:var(--g7);margin-top:var(--s2)}
+details.tech summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:500;padding:var(--s1) 0}
+details.tech ol{padding-left:1.6em;margin:var(--s2) 0 0}
+details.tech li{margin:0 0 8px;line-height:1.6;overflow-wrap:anywhere}
+footer{padding:var(--s5) 0;font-size:12px;color:var(--g6)}
+.ctab{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45;margin:var(--s3) 0 var(--s2);min-width:720px}
+.ctab th,.ctab td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--g3);vertical-align:top}
+.ctab th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g6);font-weight:500}
+.ctab td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctab a{color:var(--fg)}
+.ctab td.st{color:var(--g6);white-space:nowrap}
+.scroll{overflow-x:auto;max-width:100%}
+.quote{border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:0 0 var(--s3);font-size:18px;font-weight:300;line-height:1.5;max-width:40em}
+.quote small{display:block;font-size:12px;color:var(--g6);margin-top:.3rem}
+/* specimens drawn in the page from hex values */
+.spec{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 var(--s2)}
+.spec .cell{padding:var(--s3);min-width:0}
+.spec .cap{font-size:11px;letter-spacing:.12em;text-transform:uppercase;line-height:1.5;margin:0 0 var(--s2);opacity:.8}
+.spec .hero-t{font-size:30px;font-weight:300;line-height:1.15;margin:0 0 .4rem}
+.spec .hero-s{font-size:16px;line-height:1.5;margin:0}
+.spec .btn{display:inline-block;font-size:14px;font-weight:500;padding:.6rem 1.1rem;margin:.2rem .6rem .2rem 0;border-radius:0}
+.spec .hex{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;margin-top:var(--s2);opacity:.85}
+.spec.three{grid-template-columns:repeat(3,1fr)}
+.spec.four{grid-template-columns:repeat(4,1fr)}
+.spec .disc{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;margin-right:12px;vertical-align:middle}
+.spec .row{display:flex;align-items:center;padding:12px 0}
+.spec .sw{display:inline-block;width:28px;height:28px;margin:0 6px 6px 0;vertical-align:middle}
+.spec .roundel{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-right:10px;vertical-align:middle;font-size:16px;font-weight:700}
+.spec .msg{display:flex;align-items:center;font-size:15px;padding:8px 0}
+.waiting{list-style:none;margin:var(--s3) 0 0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3)}
+.waiting li{background:var(--card);padding:var(--s3);font-size:15px;line-height:1.6;color:var(--g8)}
+.waiting li b{display:block;font-weight:400;font-size:19px;line-height:1.3;color:var(--fg);margin-bottom:.4rem}
+.waiting li a{text-decoration:none;border-bottom:1px solid var(--g5)}
+.waiting li small{display:block;font-size:12px;color:var(--g6);margin-top:.6rem;letter-spacing:.04em}
+ul.plain{margin:var(--s2) 0 0;padding-left:1.2em;font-size:15px;color:var(--g8)}
+ul.plain li{margin:0 0 .6rem}
+@media(max-width:760px){
+  .wrap{padding:0 16px}
+  nav.toc .wrap{padding-left:180px}
+  body{padding-bottom:112px}
+  .bar .in>b{display:none}
+  header{padding-top:72px}
+  header .grid{grid-template-columns:1fr;gap:var(--s3)}
+  h1{font-size:38px}.sub{font-size:19px}h2{font-size:27px}.lead{font-size:18px}
+  .pair,.pair.three{grid-template-columns:1fr}
+  .spec,.spec.three,.spec.four{grid-template-columns:1fr}
+  .waiting{grid-template-columns:1fr}
+  .facts li{grid-template-columns:1fr;gap:4px}
+  .call{padding:var(--s2)}
+  .bar .in{padding:.55rem 16px;gap:.5rem}
+  .bar .msg{flex-basis:100%;order:3}
+  section{padding:var(--s5) 0}
+  #glance-table{min-width:0}
+  #glance-table thead{display:none}
+  #glance-table tr{display:grid;grid-template-columns:2.2em 1fr;border-bottom:1px solid var(--g3);padding:.5rem 0}
+  #glance-table td{border:0;padding:.15rem .3rem}
+  #glance-table td.n{grid-row:1 / span 3}
+  #glance-table td:nth-child(3)::before{content:"Recommended: ";color:var(--g6)}
+  #glance-table td:nth-child(4)::before{content:"Your answer: "}
+}
+@media print{.bar,nav.toc,#rv-back{display:none}body{padding-bottom:0}}
+
+.saw{font-size:14px;color:var(--g8);border-left:2px solid var(--g3);padding:.1rem 0 .1rem .9rem;margin:0 0 var(--s2)}
+.saw b{font-weight:500}
+details.dark{margin:0 0 var(--s2)}
+details.dark summary{cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g7);padding:var(--s1) 0}
+.tall img{max-height:none}
+.find{margin:var(--s3) 0 0;padding-left:1.4em}
+.find li{margin:0 0 .6rem;font-size:15px;line-height:1.55;color:var(--g8)}
+.state{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--g3);border:1px solid var(--g3);margin:var(--s3) 0 0}
+.state div{background:var(--card);padding:var(--s3);font-size:15px;line-height:1.55;color:var(--g8)}
+.state b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:.4rem}
+@media (max-width:760px){header .grid,.pair,.state{grid-template-columns:1fr}.wrap{padding:0 16px}nav.toc .wrap{padding-left:16px}h1{font-size:40px}}
+</style>
+</head><body>
+<nav class="toc"><div class="wrap">
+  <a href="../index.html">All review pages</a><a href="#glance">At a glance</a><a href="#borders">Borders</a><a href="#switch">Switch family</a><a href="#templates">Templates</a><a href="#questions">Choices</a><a href="#findings">Findings</a>
+</div></nav>
+<header id="top">
+  <div class="wrap grid">
+    <div>
+      <p class="label">Session 314 · review page · The borders, the switch family, the templates</p>
+      <h1>Today's three jobs, each with its pictures and its questions.</h1>
+      <p class="sub">28 calls. Most need one click. Leave a comment wherever you want to say more.</p>
+    </div>
+    <div class="meta">
+      <span>Friday 2 October 2026, afternoon</span>
+      <span>The borders are committed at your seat and not pushed yet. The switch family and the templates are built and checked, and have not landed.</span>
+      <span>Border pictures are seat renders. Template pictures are cloud renders in a fallback face.</span>
+      <span>A recommendation is not a ruling. Nothing is written into the record until you answer.</span>
+    </div>
+  </div>
+</header>
+<section id="glance">
+  <div class="wrap">
+    <p class="label">At a glance · every call and its recommendation</p>
+    <h2>If you take every recommendation, this is what you are saying.</h2>
+    <p class="lead">One row per call, in page order. The answer column fills as you click. Each row jumps to its section.</p>
+    <div class="scroll"><table class="ctab" id="glance-table"><thead><tr><th>#</th><th>The call</th><th>Recommended</th><th>Your answer</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="borders">
+  <div class="wrap">
+    <p class="label">01–03 · The borders · three calls</p>
+    <h2>The floating surfaces have their border all round again. Only the mega menu keeps the bottom edge.</h2>
+    <p class="quote">"only the mega menu has a border on the bottom edge because it bleeds off the edge anyway, the rest of the floating surfaces all have borders all round"<small>Your comment on call 2, Thursday 1 October, 23:18</small></p>
+    <p class="lead">Thirteen surfaces were restored, and popover, tooltip and the rail's flyout never lost theirs. Each surface is drawn open, in the four themes. These are seat renders, in the real face.</p>
+    <div class="pair one"><figure><figcaption>Dark · fifteen surfaces open × four themes · seat render</figcaption><a href="_lanes/314/RV/img/borders-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/borders-dark.jpg" alt="Dark · fifteen surfaces open × four themes · seat render" loading="lazy"></a></figure></div>
+    <div class="pair one"><figure><figcaption>Light · fifteen surfaces open × four themes · seat render</figcaption><a href="_lanes/314/RV/img/borders-light.jpg" target="_blank"><img src="_lanes/314/RV/img/borders-light.jpg" alt="Light · fifteen surfaces open × four themes · seat render" loading="lazy"></a></figure></div>
+    
+    <div class="call" data-id="light-edge" data-q="1. The edge in light mode" data-rec="Keep it as ruled: invisible in light, grey in dark">
+      <p class="cnum">Call 1</p>
+      <p class="q">In light mode the edge token is transparent in all four themes, so a menu has no line at all, only its shadow. You said "it needs an edge". Is the shadow enough in light?</p>
+      <p class="rec">Recommended: Keep it as ruled: invisible in light, grey in dark. The page you answered at 17:49 described this edge as "invisible in light, a grey line in dark", and you said yes to it. A visible light line would be a new value for the token in all four themes.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep it as ruled: invisible in light, grey in dark">Keep it: shadow only in light<em>Recommended</em></button><button type="button" class="chip" data-v="Give light a visible hairline too">Give light a visible hairline</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="account-line" data-q="2. The account menu&#x27;s old grey line" data-rec="The same edge as every other floating surface">
+      <p class="cnum">Call 2</p>
+      <p class="q">Before last night the account menu had a light grey line all round, in light mode too. It now uses the floating edge, so in light it has no line. Keep it with the others, or give it back its grey line?</p>
+      <p class="rec">Recommended: The same edge as every other floating surface. One rule for every floating surface, and the mega menu is the only exception you named.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The same edge as every other floating surface">Same as the others<em>Recommended</em></button><button type="button" class="chip" data-v="Give it back its grey line">Give it back its grey line</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="account-fault" data-q="3. The banking dashboard&#x27;s account menu draws plain browser buttons" data-rec="Fix it at the source">
+      <p class="cnum">Call 3</p>
+      <p class="q">Found while rendering: on the banking dashboard, the account menu's items ("Switch to dark theme", "Secure session") draw as unstyled browser buttons, in every theme and both modes. The bottom row of both sheets shows it. Fix it at the source?</p>
+      <p class="rec">Recommended: Fix it at the source. It is a defect, not a design choice. The menu should draw its items the way the top nav's account menu does.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Fix it at the source">Fix it at the source<em>Recommended</em></button><button type="button" class="chip" data-v="Leave it for now">Leave it for now</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Ruling s313-D58 (your 23:18 comment), narrowing s313-D26. Row W-313e1. Lane BD's patch; committed at the seat as <code>4d62f3c0</code> by the other chat (same CSS byte for byte). Not yet pushed.</li>
+      <li>The edge token <code>--menu-border</code>: <code>#FFFFFF00</code> in light in all four themes; in dark <code>#808080</code> (Mono, Legacy, Console) and <code>#524842</code> (Supercharge). The nav uses <code>--nav-elev-border</code>.</li>
+      <li>Renders: lane AC1, 120 crops and two sheets at <code>notes/_lanes/314/AC1/renders/</code>. Report <code>notes/_subreports/2026-10-02-314-AC1.md</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="switch" class="grey">
+  <div class="wrap">
+    <p class="label">04–06 · The switch family · three calls</p>
+    <h2>Switch, checkbox, radio and chip are four parts now, each with its own tree.</h2>
+    <p class="quote">"Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip"<small>Your chat line, Thursday 1 October, 17:58; then "Four parts" at 23:17</small></p>
+    <p class="lead">Each tree is the one you passed at 23:17, moved unchanged, so your review stands. Selection controls stays as the family name and keeps the snippet, but no longer holds a tree. Built and checked in the cloud; it has not landed yet. Three questions came out of the split. None of them is a look, so there are no pictures.</p>
+    
+    <div class="call" data-id="sw-role" data-q="4. Are the four offered for the input role" data-rec="Yes, each of the four is offered for input">
+      <p class="cnum">Call 4</p>
+      <p class="q">Should switch, checkbox, radio and chip each be offered as a way for a person to give a value (the input role), beside selection controls? Today only the family is, so a client library looking up "switch" finds it with no role.</p>
+      <p class="rec">Recommended: Yes, each of the four is offered for input. A client library asks for the switch by name. It should find what the switch is for there, not one level up.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, each of the four is offered for input">Yes, each is offered<em>Recommended</em></button><button type="button" class="chip" data-v="No, only the family">No, only the family</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="sw-borrow" data-q="5. Do the parts that borrow a control name it" data-rec="Yes, point at the control by name">
+      <p class="cnum">Call 5</p>
+      <p class="q">The data grid's row checkbox, the transfer list, rating and settings all borrow a control. Should each one point at the checkbox, radio or chip by name, instead of at selection controls?</p>
+      <p class="rec">Recommended: Yes, point at the control by name. It is the same reason as the split itself: what the part uses becomes something a library can look up.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, point at the control by name">Yes, by name<em>Recommended</em></button><button type="button" class="chip" data-v="No, keep pointing at the family">No, keep the family</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="sw-settings" data-q="6. What the family keeps" data-rec="Keep only what the four share">
+      <p class="cnum">Call 6</p>
+      <p class="q">Should the family keep its own copy of the control settings (which control, which checkbox kind, which chip kind), or keep only what the four share?</p>
+      <p class="rec">Recommended: Keep only what the four share. Two copies of one setting drift apart. Each member now carries its own.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Keep only what the four share">Only what they share<em>Recommended</em></button><button type="button" class="chip" data-v="Keep its own copy as well">Keep its own copy too</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Rulings s313-D10, s313-D54, s313-D56; s311-D4 (the four fields). Row W-313e7. Lane SW, patch <code>SW.patch</code> (14 files); report <code>notes/_subreports/2026-10-02-314-SW.md</code>.</li>
+      <li>New metas <code>switch</code>, <code>checkbox</code>, <code>radio</code>, <code>chip</code>; <code>selection-controls.meta.json</code> gains a <code>$split</code> record. ASSERT-009 re-based 139 → 143. Gate guards added in <code>extract_spec.py</code>, <code>_validate_coverage.py</code>, <code>gen_kg_edges.py</code>.</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="templates">
+  <div class="wrap">
+    <p class="label">07–18 · The templates · twelve calls · Fable</p>
+    <h2>Eleven of the twelve page templates, rebuilt from the library's own parts. The bento dashboard waits for its own lane.</h2>
+    <p class="quote">"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system"<small>Your comment on call 16, Thursday 1 October, 23:18</small></p>
+    <p class="lead">"A valid element" was your phrase, not a defined term, so the lane settled what it means before building (call 7). The old templates were mostly copies: about four in five of their style rules repeated other parts, and canon.css carried every copy a second time. Rebuilt, each page links the shared stylesheet and only places parts. It never restyles them. canon.css shrinks by about 307 KB. Every before-and-after pair below is a cloud render in a fallback face. The seat renders come when it lands.</p>
+    <div class="state">
+      <div><b>What changed</b>Each page is now its parts, by their current names (Metric, not the KPI tile), placed by a few layout rules of its own.</div>
+      <div><b>What it shows up</b>A page can't patch a part any more, so a part that is wrong now shows on the page. The lane listed fourteen of these as library findings (call 28).</div>
+      <div><b>What is not done</b>The bento dashboard: three gates and two generators read it by its old class names. It needs its own lane (call 27).</div>
+    </div>
+    
+    <div class="call" data-id="premise" data-q="7. What &quot;a valid element&quot; means for a template" data-rec="Yes: a template is a page made only of parts">
+      <p class="cnum">Call 7</p>
+      <p class="q">The lane read your phrase as: a template is a page, and a page is made only of parts. It places them, never sizes or restyles them, and carries a meta like any other component. The other reading was to keep each template a self-contained component that copies the rules it needs. Is the first reading yours?</p>
+      <p class="rec">Recommended: Yes: a template is a page made only of parts. Your own words say it three times: "the page never sizes a part", "rebuild the shared stylesheet rather than carrying the rules on the page", and the twelve are "whole composed pages". Under the other reading a template could only ever be a copy.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes: a template is a page made only of parts">Yes, a page made of parts<em>Recommended</em></button><button type="button" class="chip" data-v="No: a template stays a self-contained component">No, a self-contained component</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="sub3"><h3>Dashboard</h3></div>
+    <div class="pair"><figure><figcaption>Dashboard · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/dashboard-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/dashboard-before-light.jpg" alt="Dashboard · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Dashboard · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/dashboard-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/dashboard-after-light.jpg" alt="Dashboard · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Dashboard · before · dark</figcaption><a href="_lanes/314/RV/img/dashboard-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/dashboard-before-dark.jpg" alt="Dashboard · before · dark" loading="lazy"></a></figure><figure><figcaption>Dashboard · after · dark</figcaption><a href="_lanes/314/RV/img/dashboard-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/dashboard-after-dark.jpg" alt="Dashboard · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-dashboard" data-q="8. Dashboard: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 8</p>
+      <p class="q">Is the rebuilt dashboard page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I looked at this pair. The four headline figures fill the row, the chart is drawn by the library's own engine, and the recent transactions are the data grid with sort marks, page size and pages. The footer is the app footer.</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>List index</h3></div>
+    <div class="pair"><figure><figcaption>List index · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/list-index-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/list-index-before-light.jpg" alt="List index · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>List index · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/list-index-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/list-index-after-light.jpg" alt="List index · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>List index · before · dark</figcaption><a href="_lanes/314/RV/img/list-index-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/list-index-before-dark.jpg" alt="List index · before · dark" loading="lazy"></a></figure><figure><figcaption>List index · after · dark</figcaption><a href="_lanes/314/RV/img/list-index-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/list-index-after-dark.jpg" alt="List index · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-list-index" data-q="9. List index: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 9</p>
+      <p class="q">Is the rebuilt list index page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I looked at the first pass of this pair and sent it back: the empty-result example, the select-all state and the grey band had gone. The lane says the second pass restores all three, and has one primary button again. I have not looked at the second pass.</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Detail</h3></div>
+    <div class="pair"><figure><figcaption>Detail · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/detail-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/detail-before-light.jpg" alt="Detail · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Detail · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/detail-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/detail-after-light.jpg" alt="Detail · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Detail · before · dark</figcaption><a href="_lanes/314/RV/img/detail-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/detail-before-dark.jpg" alt="Detail · before · dark" loading="lazy"></a></figure><figure><figcaption>Detail · after · dark</figcaption><a href="_lanes/314/RV/img/detail-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/detail-after-dark.jpg" alt="Detail · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-detail" data-q="10. Detail: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 10</p>
+      <p class="q">Is the rebuilt detail page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. Tabs sit in the page header's foot, as you ruled.</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Create and edit</h3></div>
+    <div class="pair"><figure><figcaption>Create and edit · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/create-edit-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/create-edit-before-light.jpg" alt="Create and edit · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Create and edit · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/create-edit-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/create-edit-after-light.jpg" alt="Create and edit · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Create and edit · before · dark</figcaption><a href="_lanes/314/RV/img/create-edit-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/create-edit-before-dark.jpg" alt="Create and edit · before · dark" loading="lazy"></a></figure><figure><figcaption>Create and edit · after · dark</figcaption><a href="_lanes/314/RV/img/create-edit-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/create-edit-after-dark.jpg" alt="Create and edit · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-create-edit" data-q="11. Create and edit: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 11</p>
+      <p class="q">Is the rebuilt create and edit page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. Its own finding: the pair row in the form runs wider than its column (in the form layout part itself, not the page).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Settings</h3></div>
+    <div class="pair"><figure><figcaption>Settings · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/settings-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/settings-before-light.jpg" alt="Settings · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Settings · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/settings-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/settings-after-light.jpg" alt="Settings · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Settings · before · dark</figcaption><a href="_lanes/314/RV/img/settings-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/settings-before-dark.jpg" alt="Settings · before · dark" loading="lazy"></a></figure><figure><figcaption>Settings · after · dark</figcaption><a href="_lanes/314/RV/img/settings-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/settings-after-dark.jpg" alt="Settings · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-settings" data-q="12. Settings: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 12</p>
+      <p class="q">Is the rebuilt settings page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I looked at this pair. Sections sit on rules, not cards (see call 20). The disabled customer number is very faint, label included: that is the disabled state of the field part, worth a look.</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Wizard</h3></div>
+    <div class="pair"><figure><figcaption>Wizard · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/wizard-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/wizard-before-light.jpg" alt="Wizard · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Wizard · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/wizard-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/wizard-after-light.jpg" alt="Wizard · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Wizard · before · dark</figcaption><a href="_lanes/314/RV/img/wizard-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/wizard-before-dark.jpg" alt="Wizard · before · dark" loading="lazy"></a></figure><figure><figcaption>Wizard · after · dark</figcaption><a href="_lanes/314/RV/img/wizard-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/wizard-after-dark.jpg" alt="Wizard · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-wizard" data-q="13. Wizard: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 13</p>
+      <p class="q">Is the rebuilt wizard page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. The stepper only shows its dots because the page widens it; the fix belongs in the stepper (finding F4).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Sign in</h3></div>
+    <div class="pair"><figure><figcaption>Sign in · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/auth-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/auth-before-light.jpg" alt="Sign in · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Sign in · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/auth-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/auth-after-light.jpg" alt="Sign in · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Sign in · before · dark</figcaption><a href="_lanes/314/RV/img/auth-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/auth-before-dark.jpg" alt="Sign in · before · dark" loading="lazy"></a></figure><figure><figcaption>Sign in · after · dark</figcaption><a href="_lanes/314/RV/img/auth-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/auth-after-dark.jpg" alt="Sign in · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-auth" data-q="14. Sign in: the rebuilt page, by eye" data-rec="Change it">
+      <p class="cnum">Call 14</p>
+      <p class="q">Is the rebuilt sign in page right?</p>
+      <p class="rec">Recommended: Change it. The calendar glyph is a fault in the part; I would fix it there before this lands.</p>
+      <p class="saw">I looked at this pair. The code entry's label carries a calendar glyph, which is the wrong mark for a passcode. "Show password" is a quiet button under the box, because no field draws a reveal yet (call 24).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right</button><button type="button" class="chip" data-v="Change it">Change it (say below)<em>Recommended</em></button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Confirmation</h3></div>
+    <div class="pair"><figure><figcaption>Confirmation · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/confirmation-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/confirmation-before-light.jpg" alt="Confirmation · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Confirmation · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/confirmation-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/confirmation-after-light.jpg" alt="Confirmation · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Confirmation · before · dark</figcaption><a href="_lanes/314/RV/img/confirmation-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/confirmation-before-dark.jpg" alt="Confirmation · before · dark" loading="lazy"></a></figure><figure><figcaption>Confirmation · after · dark</figcaption><a href="_lanes/314/RV/img/confirmation-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/confirmation-after-dark.jpg" alt="Confirmation · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-confirmation" data-q="15. Confirmation: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 15</p>
+      <p class="q">Is the rebuilt confirmation page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. A pending outcome is carried by the status chip (call 26).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Empty</h3></div>
+    <div class="pair"><figure><figcaption>Empty · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/empty-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/empty-before-light.jpg" alt="Empty · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Empty · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/empty-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/empty-after-light.jpg" alt="Empty · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Empty · before · dark</figcaption><a href="_lanes/314/RV/img/empty-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/empty-before-dark.jpg" alt="Empty · before · dark" loading="lazy"></a></figure><figure><figcaption>Empty · after · dark</figcaption><a href="_lanes/314/RV/img/empty-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/empty-after-dark.jpg" alt="Empty · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-empty" data-q="16. Empty: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 16</p>
+      <p class="q">Is the rebuilt empty page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. One heading greys out because the empty-state part leaks a demo rule (finding F1).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Error</h3></div>
+    <div class="pair"><figure><figcaption>Error · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/error-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/error-before-light.jpg" alt="Error · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Error · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/error-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/error-after-light.jpg" alt="Error · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Error · before · dark</figcaption><a href="_lanes/314/RV/img/error-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/error-before-dark.jpg" alt="Error · before · dark" loading="lazy"></a></figure><figure><figcaption>Error · after · dark</figcaption><a href="_lanes/314/RV/img/error-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/error-after-dark.jpg" alt="Error · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-error" data-q="17. Error: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 17</p>
+      <p class="q">Is the rebuilt error page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. The column is the empty-state part (call 19).</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <div class="sub3"><h3>Report</h3></div>
+    <div class="pair"><figure><figcaption>Report · before · light · cloud render</figcaption><a href="_lanes/314/RV/img/report-before-light.jpg" target="_blank"><img src="_lanes/314/RV/img/report-before-light.jpg" alt="Report · before · light · cloud render" loading="lazy"></a></figure><figure><figcaption>Report · after · light · cloud render</figcaption><a href="_lanes/314/RV/img/report-after-light.jpg" target="_blank"><img src="_lanes/314/RV/img/report-after-light.jpg" alt="Report · after · light · cloud render" loading="lazy"></a></figure></div>
+    <details class="dark"><summary>Dark mode</summary><div class="pair"><figure><figcaption>Report · before · dark</figcaption><a href="_lanes/314/RV/img/report-before-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/report-before-dark.jpg" alt="Report · before · dark" loading="lazy"></a></figure><figure><figcaption>Report · after · dark</figcaption><a href="_lanes/314/RV/img/report-after-dark.jpg" target="_blank"><img src="_lanes/314/RV/img/report-after-dark.jpg" alt="Report · after · dark" loading="lazy"></a></figure></div></details>
+    <div class="call" data-id="t-report" data-q="18. Report: the rebuilt page, by eye" data-rec="Looks right">
+      <p class="cnum">Call 18</p>
+      <p class="q">Is the rebuilt report page right?</p>
+      <p class="rec">Recommended: Looks right. Composed from current parts, and nothing from the old page was dropped without a ruling the lane quotes.</p>
+      <p class="saw">I have not looked at this pair; the lane has. Both charts are drawn by the engine with the old page's own numbers.</p><div class="chips"><button type="button" class="chip" data-v="Looks right">Looks right<em>Recommended</em></button><button type="button" class="chip" data-v="Change it">Change it (say below)</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol>
+      <li>Row W-313e4; rulings s313-D72 (his comment), s305-D57, s307-D75, s313-D46. Lane TP on Fable 5.1, two passes; patch <code>TP.patch</code> (29 files, cut against <code>8d8e91da</code>); report <code>notes/_subreports/2026-10-02-314-TP.md</code>, with the affordance-parity table in §3·P.</li>
+      <li>Measured at HEAD: 1,218 of the twelve's 1,542 CSS rules were copies; 2,113 rules in canon under <code>.cn-template-*</code>. After: 3 to 16 placement rules each.</li>
+      <li>The gallery break was <code>gen_gallery.py</code>'s body locator matching a <code>&lt;body</code> inside a head comment (auth, wizard), not the templates. Fixed. The shipped gallery stays component-only (s313-D72).</li>
+      <li>Every in-button glyph removed under s313-D49 ("type, words, and the spinner only while processing").</li>
+    </ol></details>
+  </div>
+</section>
+
+<section id="questions" class="grey">
+  <div class="wrap">
+    <p class="label">19–27 · Choices the rebuild made without your word · nine calls</p>
+    <h2>Where the old page and the current rules disagreed, the lane picked one and asked. Each is a choice it made without your word.</h2>
+    
+    <div class="call" data-id="q-error" data-q="19. The error page&#x27;s column" data-rec="The empty-state part">
+      <p class="cnum">Call 19</p>
+      <p class="q">The error page now uses the empty-state part (a quiet dashed box, smaller heading, faint glyph) with two buttons under it. The old page was half that and half the confirmation part (no box, a bigger title, a success roundel). Which is the error page's column?</p>
+      <p class="rec">Recommended: The empty-state part. The confirmation part only knows success, and its roundel would be wrong on an error.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The empty-state part">Empty state<em>Recommended</em></button><button type="button" class="chip" data-v="The confirmation part">Confirmation</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-surface" data-q="20. Do sections on ordinary pages get a surface" data-rec="Sections sit on rules; the settings wording is amended">
+      <p class="cnum">Call 20</p>
+      <p class="q">The old templates put page sections on a borrowed card. Since your container rulings, a card is one of a set of like records, and sections are landmarks. The rebuilt pages draw sections on a rule above each. The settings rule still says "sections are grouped on card surfaces". Which wins?</p>
+      <p class="rec">Recommended: Sections sit on rules; the settings wording is amended. It follows your later word, and a page of one-off cards is what the lone-card rule warns about.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Sections sit on rules; the settings wording is amended">Rules; amend the wording<em>Recommended</em></button><button type="button" class="chip" data-v="Sections get a surface of their own">A surface of their own</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-frame" data-q="21. Does every template carry the app frame" data-rec="Yes, every page template carries the frame">
+      <p class="cnum">Call 21</p>
+      <p class="q">The bento dashboard carries the top nav and the footer. The plain dashboard and the report now end with the footer but have no nav. The other nine show the page body only. Should every page template carry the app frame?</p>
+      <p class="rec">Recommended: Yes, every page template carries the frame. You called them whole composed pages, and the standing rule is that every app page ends with the app footer.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, every page template carries the frame">Yes, the frame on every one<em>Recommended</em></button><button type="button" class="chip" data-v="No, the body only is enough">No, the body only</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-list" data-q="22. The list index: one form or both" data-rec="Both stay, each chosen by its job">
+      <p class="cnum">Call 22</p>
+      <p class="q">The list index still draws both forms: the data grid for bulk approval, and the plain list as the default. For a payments index, is one of them the template, or do both stay as the drawn choice?</p>
+      <p class="rec">Recommended: Both stay, each chosen by its job. Your list rule already decides between them: the grid when rows are selected in bulk, the list otherwise.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Both stay, each chosen by its job">Both, chosen by the job<em>Recommended</em></button><button type="button" class="chip" data-v="The list only">The list only</button><button type="button" class="chip" data-v="The grid only">The grid only</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-mark" data-q="23. The sign-in page&#x27;s logo size" data-rec="40 stands">
+      <p class="cnum">Call 23</p>
+      <p class="q">The largest logo master you ruled is 40px. The old sign-in page showed the wordmark at 85px. Is a hero-size master wanted, or is 40 right for sign-in?</p>
+      <p class="rec">Recommended: 40 stands. Only ruled masters are drawn, and a new size is a new drawing for you to rule by eye.</p>
+      <div class="chips"><button type="button" class="chip" data-v="40 stands">40 stands<em>Recommended</em></button><button type="button" class="chip" data-v="Draw a hero-size master">Draw a hero-size master</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-reveal" data-q="24. A password reveal" data-rec="Yes, the library gains a reveal in the field">
+      <p class="cnum">Call 24</p>
+      <p class="q">No part draws a password reveal inside the field, and the icon library has no eye. The sign-in page shows a quiet "Show password" button under the box instead. Should the library gain a reveal: an eye in the text field's end slot?</p>
+      <p class="rec">Recommended: Yes, the library gains a reveal in the field. It is the expected pattern on a banking sign-in, and a reveal under the box costs a line of space on every password field.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, the library gains a reveal in the field">Yes, a reveal in the field<em>Recommended</em></button><button type="button" class="chip" data-v="No, the button under the box is the rule">No, the button under the box</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-rowaction" data-q="25. A download on each transaction row" data-rec="The download lives on the detail page">
+      <p class="cnum">Call 25</p>
+      <p class="q">The old list index drew each payment with a download at the end of the row. The plain list's transaction row has no slot for a row action. Does the row gain one, or does the advice download live on the detail page, where the document row already carries it?</p>
+      <p class="rec">Recommended: The download lives on the detail page. A list is for finding the payment; the document belongs with the payment.</p>
+      <div class="chips"><button type="button" class="chip" data-v="The download lives on the detail page">On the detail page<em>Recommended</em></button><button type="button" class="chip" data-v="The row gains an action">The row gains an action</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-pending" data-q="26. A pending confirmation" data-rec="No pending kind; the chip carries it">
+      <p class="cnum">Call 26</p>
+      <p class="q">The old page drew a pending outcome with a clipboard glyph. The confirmation part has one kind, success. Should it gain a pending kind, or does the status chip carry pending, as it does now?</p>
+      <p class="rec">Recommended: No pending kind; the chip carries it. One more glyph for one state the chip already says in words.</p>
+      <div class="chips"><button type="button" class="chip" data-v="No pending kind; the chip carries it">The chip carries it<em>Recommended</em></button><button type="button" class="chip" data-v="Confirmation gains a pending kind">Gain a pending kind</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    
+    <div class="call" data-id="q-bento" data-q="27. The bento dashboard&#x27;s own lane" data-rec="Yes, its own lane, rebuilt the same way">
+      <p class="cnum">Call 27</p>
+      <p class="q">The bento dashboard was left as it is: three gates and two generators read it by its old class names (KPI tile), and the move to Metric has to happen in all of them in one go. Give it its own lane, rebuilt the same way?</p>
+      <p class="rec">Recommended: Yes, its own lane, rebuilt the same way. Doing half of it would leave a red build that nobody can review.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, its own lane, rebuilt the same way">Yes, its own lane<em>Recommended</em></button><button type="button" class="chip" data-v="Leave the bento dashboard as it is">Leave it as it is</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="wrap">
+    <p class="label">28 · What the rebuilt pages show up in the library · one call</p>
+    <h2>A page can't patch a part any more, so where a part is wrong, the page now shows it. Fourteen of these were found.</h2>
+    <ol class="find"><li>The empty-state part leaks a demo rule: any heading placed inside it greys.</li><li>The form layout&#x27;s pair row runs wider than its own column. You can see it in the part&#x27;s own snippet too.</li><li>The segmented control shows its pressed label white on white until its script has run, in every place it is used.</li><li>The stepper&#x27;s default width is its own collapse point, so on its own it never shows its dots.</li><li>An engine-drawn chart cannot carry the static hover hook the chart rules asked for, so the hook moved to each chart that draws baked.</li><li>No part draws a password reveal, and the icon library has no eye (call 24).</li><li>Confirmation and empty state each carry their own button styles instead of using the button part, so a button placed inside them is restyled.</li><li>Summary is fixed at 420px wide, a dropdown wraps a long value at its own width, and the document row truncates titles in a narrow rail.</li><li>The line chart&#x27;s &quot;target line&quot; and &quot;last year&quot; toggles are author controls, so the report dropped them rather than show dead controls.</li><li>Metric caps its row at 1040px, so four figures stop 80px short in a full-width page. The pages place them on the layout grid instead.</li><li>The anchor nav has no slot for a glyph and truncates long links.</li><li>The text field has no reveal slot (as finding 6).</li><li>The action bar knows only three button weights; a quiet fourth sits inside it as a nested button. It draws correctly.</li><li>Confirmation has only a success kind; pending rides the status chip (call 26).</li></ol>
+    
+    <div class="call" data-id="findings" data-q="28. Fix the library findings at the part" data-rec="Yes, one lane fixes them at the part">
+      <p class="cnum">Call 28</p>
+      <p class="q">Should one lane fix these at the part (not on any page), and bring you the ones that change a look as pictures?</p>
+      <p class="rec">Recommended: Yes, one lane fixes them at the part. Each fix lands once and every page that uses the part gets it.</p>
+      <div class="chips"><button type="button" class="chip" data-v="Yes, one lane fixes them at the part">Yes, fix at the part<em>Recommended</em></button><button type="button" class="chip" data-v="Not now">Not now</button><button type="button" class="chip" data-v="None of these (comment)">None of these (say below)</button></div>
+      <label class="field"><span>Your comment</span><textarea data-f="note"></textarea></label>
+      <div class="stamp"></div>
+    </div>
+    <details class="tech"><summary>Technical</summary><ol><li>Lane TP report §6, F1 to F14, in that order.</li></ol></details>
+  </div>
+</section>
+<footer><div class="wrap">Session 314 · notes/_REVIEW-314-the-borders-the-switch-family-the-templates-2026-10-02-v1.html · built by the conductor from the lane reports BD, SW, TP and AC1.</div></footer>
+<div class="bar" role="region" aria-label="Your decisions"><div class="in">
+  <b>Your decisions</b><span id="count">0 of 28 answered</span><span class="msg" id="msg">Saves in this browser as you go</span>
+  <button type="button" class="pri" id="copy">Copy as text</button><button type="button" id="export">Export</button><button type="button" id="clear">Clear</button>
+</div></div>
+<script>
+(function(){
+  var KEY='review-314-borders-switch-templates-v1';
+  var PATH='notes/_REVIEW-314-the-borders-the-switch-family-the-templates-2026-10-02-v1.html';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} refresh(); }
+  function now(){ var d=new Date(),p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+  var calls=[].slice.call(document.querySelectorAll('.call'));
+  var asked=calls.filter(function(el){ return el.dataset.id!=='page'; });
+  function has(s){ return s && (s.v || (s.note||'').trim()); }
+  // the at-a-glance table, built from the calls themselves so it cannot drift from them
+  var tb=document.querySelector('#glance-table tbody');
+  asked.forEach(function(el){
+    var sec=el.closest('section'), q=el.dataset.q, n=q.split('.')[0], t=q.slice(n.length+1).trim();
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="n"></td><td><a></a></td><td></td><td class="st"></td>';
+    tr.children[0].textContent=n; tr.children[1].firstChild.textContent=t; tr.children[1].firstChild.href='#'+(sec?sec.id:'');
+    tr.children[2].textContent=el.dataset.rec; tr.dataset.id=el.dataset.id;
+    tb.appendChild(tr);
+  });
+  function refresh(){
+    var n=0;
+    calls.forEach(function(el){
+      var s=state[el.dataset.id]||{};
+      if(el.dataset.id!=='page' && has(s)) n++;
+      [].forEach.call(el.querySelectorAll('.chip'),function(c){ c.classList.toggle('on', c.dataset.v===s.v); c.setAttribute('aria-pressed', c.dataset.v===s.v?'true':'false'); });
+      el.querySelector('.stamp').textContent = s.at ? 'saved '+s.at : '';
+    });
+    [].forEach.call(tb.children,function(tr){
+      var s=state[tr.dataset.id]||{}, el=document.querySelector('.call[data-id="'+tr.dataset.id+'"]');
+      tr.children[3].textContent = s.v ? (s.v===el.dataset.rec ? 'Recommended' : s.v) : ((s.note||'').trim() ? 'Comment only' : 'Not answered');
+    });
+    document.getElementById('count').textContent = n+' of '+asked.length+' answered';
+  }
+  calls.forEach(function(el){
+    var id=el.dataset.id, s=state[id]||{};
+    var ta=el.querySelector('textarea'); if(ta) ta.value=s.note||'';
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.chip'); if(!b) return;
+      var cur=state[id]||{}; cur.v=(cur.v===b.dataset.v)?'':b.dataset.v; cur.at=now(); state[id]=cur; save();
+    });
+    el.addEventListener('input',function(e){
+      if(!e.target.dataset || e.target.dataset.f!=='note') return;
+      var cur=state[id]||{}; cur.note=e.target.value; cur.at=now(); state[id]=cur; save();
+    });
+  });
+  function text(){
+    var L=['Session 314 · The borders, the switch family, the templates · comments','','Page: '+PATH,'Copied: '+now(),''];
+    calls.forEach(function(el){
+      var id=el.dataset.id, s=state[id]||{}, rec=el.dataset.rec||'', opts=el.querySelector('.chip');
+      L.push(el.dataset.q);
+      if(opts){
+        L.push('   Recommended: '+rec);
+        L.push('   Chose: '+(s.v? s.v+(rec?(s.v===rec?' (the recommendation)':' (not the recommendation)'):'') : 'not answered'));
+      }
+      L.push('   Comment: '+((s.note||'').trim()? s.note.trim() : 'none'));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  window.__reviewText=text;
+  function msg(t){ document.getElementById('msg').textContent=t; }
+  function fallback(t){
+    var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Copied. Paste it into the chat'); }catch(e){ msg('Copy blocked. Use Export instead'); }
+    ta.remove();
+  }
+  document.getElementById('copy').onclick=function(){
+    var t=text();
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into the chat');},function(){fallback(t);}); } else fallback(t); }catch(e){ fallback(t); }
+  };
+  document.getElementById('export').onclick=function(){
+    try{
+      var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='review-314-borders-switch-templates.txt';
+      document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+      msg('Exported as a text file');
+    }catch(e){ msg('Export blocked. Use Copy as text'); }
+  };
+  document.getElementById('clear').onclick=function(){
+    if(!confirm('Clear every answer on this page?')) return;
+    state={}; save(); [].forEach.call(document.querySelectorAll('.call textarea'),function(t){t.value='';}); msg('Cleared');
+  };
+  refresh();
+})();
+</script>
+</body></html>
