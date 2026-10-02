@@ -6,10 +6,7 @@
   "provides": "input",
   "$family": "Covers the 'Selection controls' canvas: Checkbox, Radio buttons, Chips, Switch (+ List/Card 'select' compositions of existing components).",
   "props": [
-    { "name": "control", "type": "enum", "values": ["checkbox", "radio", "chip", "switch"], "default": "checkbox", "binds": ["form.background.default", "form.border.default"], "$status": "s142-D1 (Dave, 2026-08-10) class C12 -- confirm-set. co-mentioned array CONFIRMED as the PROP's (not the component's), Dave's set-confirm sitting. Existing binds array verified to match the ruled proposed_binds exactly. Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
     { "name": "state", "type": "enum", "values": ["default", "hover", "pressed", "selected", "disabled", "error"], "default": "default", "$status": "s142-D1 (Dave, 2026-08-10) class C1 -- no-bind:state-selector. A state enum selects among per-state token SETS (colour-semantic); per-state maps are the colour-spine lane's job (not yet migrated). Record: reviews/BINDS-AUTHORING-VERDICTS-2026-08-10-s142-v3.json."},
-    { "name": "checkboxKind", "type": "enum", "values": ["checked", "indeterminate"], "default": "checked", "$note": "Checkbox supports an indeterminate (mixed) state." },
-    { "name": "chipType", "type": "enum", "values": ["toggle", "single-selection", "multiple-selection", "delete"], "default": "toggle" },
     {
       "name": "label",
       "type": "string",
@@ -157,13 +154,6 @@
       {
         "ref": "ruling:s130-D5"
       }
-    ],
-    "containedBy": [
-      {
-        "ref": "component:data-grid",
-        "$note": "part selection-checkbox of data-grid — selection-checkbox: COMPOSED from Selection-controls (s258-D4), not re-drawn: the wrapper carries the canon scope class .cn-selection-controls and Selection-controls' own pattern — visually-hidden <input> + sibling <label> holding <span class=\"box\"> with the tick/mixed bespoke control glyphs — so a verbatim copy into a canon.css page inherits the reviewed control and passes the composition gate. 22×22 box inside a 44px label target; checked = secondary/background/default + text/on-inverse; the select-all also carries :indeterminate (the mixed dash). Colour states only — no scale physics (form-control precedent).",
-        "part": "selection-checkbox"
-      }
     ]
   },
   "$split": {
@@ -177,7 +167,13 @@
     "why": "s313-D56 (#313, Dave by click, Thu 2026-10-01 23:17 BST, seven-trees-redone page call 9): 'Four parts (the recommendation)', comment: none. The page, verbatim: 'Four parts, or four trees in one part? Recommendation: four parts. A client library looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls.' Export: notes/_lanes/313/DAVE-RULINGS-2026-10-01-2317-seven-trees-redone.md.",
     "instruction": "s313-D10, the page's recommendation Dave took: 'Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. One tree for four controls will not describe any of them to a client library.'",
     "moved": "anatomy, states, emits, bindings and $extracted: each control's tree, machine and bindings now live once, on its own meta (switch, checkbox, radio, chip), moved unchanged by 314-SW (notes/_lanes/314/SW/split_four.py); the four-tree draft is at 8d8e91da:knowledge/components/selection-controls.meta.json",
-    "kept": "the catalogue entry (props incl. the control setting, variants, tokens, relationships, accessibility, tokenValidation, build, edges), the reference snippet's manifest name, the `input` role (knowledge/roles.json) and data-grid's selection-checkbox line",
+    "kept": "the catalogue entry (props, variants, tokens, relationships, accessibility, tokenValidation, build, edges), the reference snippet's manifest name and the `input` role (knowledge/roles.json), which the four now share beside it (Dave 2026-10-02 14:55, call 4: 'Yes, each of the four is offered for input')",
+    "trimmed": {
+      "ruling": "Dave 2026-10-02 14:55, call 6, by click: 'Keep only what the four share' (the recommendation), comment: none. The page, verbatim: 'Should the family keep its own copy of the control settings (which control, which checkbox kind, which chip kind), or keep only what the four share? Recommended: Keep only what the four share. Two copies of one setting drift apart. Each member now carries its own.' Export: notes/_lanes/314/DAVE-RULINGS-2026-10-02-1455-borders-switch-templates.md.",
+      "removed": "three settings left `props`, by 314-SW2: `control` (which control: checkbox, radio, chip, switch; each is now its own part), `checkboxKind` (now only on checkbox.meta.json) and `chipType` (now only on chip.meta.json). Their text as it stood is at 3c717370:knowledge/components/selection-controls.meta.json.",
+      "kept": "`label`, which all four carry; and `state`, which his call did not name (see the open question in notes/_subreports/2026-10-02-314-SW2.md)",
+      "$binds": "`control` carried the only `binds` on this meta, form.background.default and form.border.default, confirmed as the setting's own at s142-D1 (class C12). No member setting carries them yet; where they go is Dave's (the same report)."
+    },
     "$fence": "extract_spec.py refuses to draft a spec onto a meta carrying $split (the spec lives on the members)"
   }
 }

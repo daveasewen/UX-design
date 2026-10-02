@@ -213,7 +213,7 @@ def build():
     parts_doc = {
         "$model": "The Apollo parts to map, pulled from their metas by adapters/kits/_build_sutherland_kit.py (nothing typed by hand). Each part: its slug (the binding key), role, props with the hole each becomes, slots, states, events, and the meta file they came from. `allSlugs` is every Apollo part by slug so the checker can hold the unmapped list complete; `provides` is slug -> role for every part that has one; `roles` is the fenced role vocabulary (s252-D1).",
         "written": TODAY,
-        "order": "The first four once carried an empty codeBindings placeholder slot (2026-06-22, every field TODO, no Sutherland name); nothing about them is known on the Sutherland side. Then cohort one in Dave's order; `askedAs` records the name he used when it differs from the slug: 'menus' and 'select' both resolve to dropdown (the non-native family and the native variant of one meta), 'switch' to selection-controls (its switch variant), 'text input' to input-fields, 'dialog' to modals (its dialog variant), 'notification' to notifications.",
+        "order": "The first four once carried an empty codeBindings placeholder slot (2026-06-22, every field TODO, no Sutherland name); nothing about them is known on the Sutherland side. Then cohort one in Dave's order; `askedAs` records the name he used when it differs from the slug: 'menus' and 'select' both resolve to dropdown (the non-native family and the native variant of one meta), 'text input' to input-fields, 'dialog' to modals (its dialog variant), 'notification' to notifications.",
         "roles": roles,
         "parts": parts,
         "provides": provides,
