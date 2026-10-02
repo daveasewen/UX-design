@@ -102,3 +102,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-10-02-314-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-10-02-314-the-templates-were-fenced-as-examples-and-the-conductor-ran-past-every-line.md`. Memory hook: `notes/_lanes/314/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/314/W/FACTS.json`. Story: `notes/_lanes/314/W/STORY.md`.*
 
 *Title the next chat:* `Apollo - #315: the templates' second look, and the cold runs on Opus`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **974, newest `s314-D28`**.
+
+1. ✅ **CI IS GREEN.** `871e0fa8` run `37053110553`, render completed/success, gates completed/success, release completed/success, read by `_ci_readback.py` (`notes/_lanes/314/W/_ci-runs-871e0fa8.txt`).
+2. ✅ **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST, IN TWO HALVES** (Worker checklist step 5): first the committed tree as CI's gates job runs it, no mutating steps, 88 pass, 0 FAIL, 2 advisory, 4 could-not-ask over 2 chunks; then the writer gates with `--include-mutating`, the survey over 180 steps in 5 chunks, 167 pass, 0 FAIL, 4 advisory (146, 156, 169, 170), 9 could-not-ask; `test_gates` 40 with 0 failure(s). Logs: `notes/_lanes/314/W/_prepush-*.txt`.
+3. ⛔ **THE WRAP COMMIT IS `d4ac2b7a`, ON THE `--wrap` PATH** (gate `252 in scope · 0 fail · 67 warn`); **`871e0fa8` carries the seat's files.**
+4. **THE PUSH: `8628b8c5..871e0fa8`** at 2026-10-02T19:17:09Z, **33.4 minutes from the launch** (2026-10-02T18:43:43Z).
+5. **Phase-3 counts:** hand-written files **2** (`STORY.md`, and nothing else; `FACTS.json` is measured) · views generated **15** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b**.
+6. ✅ **`_CHAIN.md` IS 6,552 cl100k** at the wrap's regen, under the 7,700 warn, under the 10,000 fail (`CHAIN_BUDGET_TK`, `s212-D11`). The figure after this addendum's own regen is not re-taken (the #241 rule).
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the story's `Apollo - #315: the templates' second look, and the cold runs on Opus`. `_gen_titles.py` derived `Apollo - #315: the templates' second look, from the seat renders`. Declared, not reconciled.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** The one hook file is `notes/_lanes/314/WRAP-MEMORY-HOOK.md` (the index line, the front block and the body, each once).
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

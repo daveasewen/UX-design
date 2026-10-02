@@ -10,6 +10,7 @@
 - The borders are back all round, with only the mega menu keeping its bottom edge. Switch, checkbox, radio and chip are four parts.
 - The account menu is fixed, and a click never draws a focus ring now. Eleven templates are rebuilt and fenced, and a new gate keeps them out of builds.
 - One review page (v32), answered. Two pushes, CI green on both. The current Sutherland zip is `outputs/sutherland-react-kit-314-at-0677a95c.zip`.
+- The wrap is committed and pushed (`d4ac2b7a`, plus `871e0fa8` for the wrap seat's files). The full pre-push check ran on the wrap first and came back clean. CI is green on all three jobs.
 - Next chat: `Apollo - #315: the templates' second look, and the cold runs on Opus`.
 
 ## Problems

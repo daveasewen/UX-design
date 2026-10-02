@@ -62,3 +62,12 @@ See `## 3`; nothing above was changed by this seat.
 - The cloud-credit answer (sessions inside a Project are excluded) comes from the help page; the conductor did not test it.
 
 REPLAY-THESE: `python3 knowledge/_wrap_views.py --check --session 314` · `python3 knowledge/_wrap_carries.py count --section 315` · `python3 knowledge/_wrap_facts.py --selftest` · `python3 knowledge/_wrap_views.py --selftest`
+
+## POST-COMMIT (by addition, 5b)
+
+- **The wrap commit is `d4ac2b7a`**, on the `--wrap` path, gate `252 in scope · 0 fail · 67 warn`, the named paths plus `notes/_REHEARSAL-LOG.jsonl` auto-staged; **`871e0fa8`** carries the seat's files.
+- **The pre-push check, before the push, in two halves:** the committed tree first, 88 pass · 0 FAIL · 2 advisory · 4 could-not-ask; then the writer gates, 167 pass · 0 FAIL · 4 advisory (146, 156, 169, 170) · 9 could-not-ask over 5 chunks of 180 steps; `test_gates` 40 (0 failures). Logs `notes/_lanes/314/W/_prepush-*.txt`.
+- **The push:** `8628b8c5..871e0fa8` at 2026-10-02T19:17:09Z, 33.4 minutes from the launch.
+- **CI:** `871e0fa8`, run `37053110553`, GREEN (render completed/success, gates completed/success, release completed/success). 
+- **`_CHAIN.md` 6,552 cl100k** at the wrap's regen, under the 7,700 warn (fail 10,000). Declared.
+- **Title:** the story's `Apollo - #315: the templates' second look, and the cold runs on Opus`; `_gen_titles.py` derived `Apollo - #315: the templates' second look, from the seat renders`. Declared.

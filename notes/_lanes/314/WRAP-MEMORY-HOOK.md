@@ -56,3 +56,6 @@ provenance: 314 · 2026-10-02 · status: observed · repo record: `_HANDOFF-165-
 3. **Mine:** will the four things the seat renders found be fixed?
 4. **Mine:** will the whole-library audit against his rulings run, on Opus?
 5. **Mine:** will the cold runs G1 to G3 and the verdict GV run, on Opus?
+
+### After the wrap
+- Wrap commit `d4ac2b7a`, seat files `871e0fa8`; CI on `871e0fa8` GREEN (run `37053110553`).

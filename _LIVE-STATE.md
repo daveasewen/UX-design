@@ -104,7 +104,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI AND THE FILL.** ⛔ The conductor crossed the 300,000 stop at 14:07, the 320,000 limit at 14:09 and the 350,000 hard line at 14:10, and ended at 424,257; it first read its fill at 19:33. ⚠ Two chats conducted one seat until 14:16: the second committed the borders (`4d62f3c0`) with AC1's staged files, and a lock was moved under a live commit. ⚠ CI: no red; every push read GREEN (`8c2b038d`, `3c717370`, `8628b8c5`). ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **135,729** (over the 135,000 ceiling by 729) · 160,000 at 11:17 · **300,000 at 14:07** · 320,000 at 14:09 · ⛔ **350,000 at 14:10** · **424,257 at his "wrap."** (19:42), past the hard 350,000 by 74,257 · 435,985 at the launch of this seat. subs 2,418,874 (n=8).
 
-> ⛔★ **5b —** PLACEHOLDER-314W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`d4ac2b7a`** (`--wrap`, gate `252 in scope · 0 fail · 67 warn`) and **`871e0fa8`** (the seat's files); the pre-push check first: committed tree 88 pass, 0 FAIL; writer gates 167 pass, 0 FAIL; 40 tests; pushed `8628b8c5..871e0fa8` at 19:17:09 UTC. **CI on `871e0fa8`, run `37053110553`: GREEN, all three jobs.** `_CHAIN.md` 6,552 cl100k after the wrap's regen, under the 7,700 warn by 1,148. This addendum's CI is owed to #315.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-10-02-314-the-templates-were-fenced-as-examples-and-the-conductor-ran-past-every-line.md`. Handoff: `_HANDOFF-165-the-templates-were-fenced-as-examples-and-the-conductor-ran-past-every-line.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/314/DAVE-*.md`. Lane reports: `notes/_subreports/2026-10-02-314-*.md`. Wrap: `notes/_subreports/2026-10-02-314-W-wrap.md`.**
 
