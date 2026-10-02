@@ -19,3 +19,8 @@ Apollo is Dave's governed design-system engine. The repo is the record. Dave rul
 ## Hand-back
 - Write your report INSIDE your patch at `notes/_subreports/2026-10-02-314-<lane>.md` (what changed, file by file; what you checked and how; what is left; Dave's open questions in plain words; a `CITES:` line with the ruling ids you obeyed; a `MODEL:` line naming the model you actually ran on, if you can tell).
 - Your final message to the conductor is SHORT (under 250 words): what the patch holds (path, files, line counts), what you checked, failures stated flat, open questions for Dave in plain words, and exactly what the committer must run after applying (generators, renders).
+
+## WAVE 2 (from 15:50 BST) — base sha changed
+- HEAD is now `3c717370` (pushed, CI GREEN). The cloud clone `/home/claude/apollo` is checked out at `3c717370`. Wave-2 lanes cut their worktree and their patch against `3c717370`, never `8d8e91da`: `git -C /home/claude/apollo worktree add --detach /home/claude/w-<lane> 3c717370` and `git -C /home/claude/w-<lane> diff --binary 3c717370 > /home/claude/patches/<lane>.patch`.
+- Dave's 14:55 answers to the #314 review page are verbatim at `/mnt/user-data/outputs/314/DAVE-RULINGS-2026-10-02-1455-borders-switch-templates.md` (also at the seat `notes/_lanes/314/DAVE-RULINGS-2026-10-02-1455-borders-switch-templates.md`). Quote them; never paraphrase. They are not yet inscribed in `_rulings.json` (the committer does that at the end); cite them as "Dave 14:55, call N".
+- Renders that open a menu or field do it by CLICK (pointer), never by focus + key, so no keyboard focus ring shows unless the render is about keyboard focus (Dave 14:55, call 1: "we never have a focus state unless the user is using keybord controls").
