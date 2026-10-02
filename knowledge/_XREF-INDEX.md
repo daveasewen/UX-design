@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 142 components · 21 with deprecated bindings · 46 god-nodes (blast≥7).
+**Totals:** 142 components · 21 with deprecated bindings · 44 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -47,7 +47,7 @@
 | Combo chart | org | 6 | background/default, border-radius/surface, series/1, elevation/border… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Combobox | mol | 18 | background/default, border-radius/control, border-radius/surface, border/section… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.4.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
 | Command palette | org | 14 | background/default, border-radius/surface, border/subsection, elevation/border… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
-| Confirmation | org | 8 | background/default, rag/success, background/hover, text/default… | 1.3.1, 1.4.1, 1.4.3 | — |  |
+| Confirmation | org | 9 | background/default, rag/success, rag/warning, background/hover… | 1.3.1, 1.4.1, 1.4.3 | — |  |
 | Countdown timer | mol | 4 | text/default, font-family/default | 1.4.1, 2.2.1, 2.3.3, 4.1.3 | time-based-indicators |  |
 | Coverage / runway bar | mol | 10 | border-radius/indicator, border/subtle, rag/success, rag/success-tint… | 1.3.1, 1.4.1, 1.4.11, 2.3.3, 4.1.2 | — |  |
 | Data grid | org | 16 | background/default, border-radius/control, background/hover, border/active… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 4.1.2 | — |  |
@@ -66,7 +66,7 @@
 | Filter-toolbar-bar | org | 6 | background/hover, border/default, rag/error-ink, rag/success-ink… | 1.4.1, 1.4.10, 2.5.8, 4.1.2 | — |  |
 | Footer | org | 17 | background/default, border-radius/control, border/section, border/subsection… | 1.3.1, 1.4.1, 1.4.10, 1.4.3, 2.4.1, 2.4.4, 2.4.7, 2.4.8, 2.5.8 | — |  |
 | Footer-doormat-lockup | org | 0 | — | 1.3.1, 1.4.1, 1.4.10, 1.4.3, 2.4.1, 2.4.4, 2.4.7, 2.4.8, 2.5.8 | — |  |
-| Form layout | org | 5 | border-radius/control, rag/error, rag/error-tint, rag/success… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
+| Form layout | org | 5 | border-radius/control, rag/error, rag/success, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Grid / stack utilities | ato | 11 | background/default, border-radius/surface, border/subtle, focus/ring… | 1.3.2, 1.4.10, 1.4.12, 2.5.8 | — |  |
 | Headers | mol | 3 | icon/default, text/default, font-family/default | 1.3.1, 2.4.6, 2.5.8, 4.1.3 | typography-usage, platform-web, logos | 3 |
 | Hero | org | 11 | border/subtle, color/primary, icon/default-reverse, background/default… | 1.3.1, 1.4.3, 2.2.2, 2.3.3, 2.4.6 | imagery, hexagon-masks, calls-to-action, typography-usage | 8 |
@@ -119,7 +119,7 @@
 | Standing-order / mandate row | mol | 19 | border-radius/indicator, border-radius/surface, border/subtle, border/section… | 1.3.1, 1.4.1, 1.4.10, 2.4.7, 2.5.5, 4.1.2 | — |  |
 | Stat card | mol | 0 | — | 1.3.1, 1.4.1, 1.4.11 | — |  |
 | Stats-band-lockup | org | 2 | background/default, text/default | 1.3.1, 1.4.1, 1.4.11, 2.4.6 | — |  |
-| Status indicator | ato | 9 | rag/error, rag/error-tint, rag/success, rag/success-tint… | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
+| Status indicator | ato | 9 | rag/error, rag/success, rag/success-tint, rag/warning… | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Stepper | org | 11 | background/default, border-radius/control, border-radius/indicator, rag/error… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Summary | mol | 4 | border/subsection, text/default, text/secondary, font-family/default | 1.3.1, 1.4.10, 1.4.3 | — |  |
 | Switch | mol | 9 | background/default, icon/default-reverse, rag/error, background/default… | — | — | 5 |
@@ -128,17 +128,17 @@
 | Tabs | mol | 14 | background/default, color/primary, border/section, border/subsection… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | platform-web | 2 |
 | Tags | ato | 3 | border/default, text/default, text/reverse | 1.4.1, 1.4.3, 2.4.4, 2.5.8 | typography-usage | 9 |
 | Tags input | mol | 12 | border-radius/control, focus/ring, background/default, background/hover… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.4.7, 2.5.8, 3.3.1, 4.1.2, 4.1.3 | — |  |
-| Template confirmation | tem | 11 | background/default, border/subsection, rag/error-ink, rag/success… | 1.3.1, 1.4.1, 1.4.11, 2.3.3, 2.4.3, 2.4.6, 2.4.7, 4.1.3 | — |  |
-| Template dashboard | tem | 27 | background/default, border-radius/surface, border/subtle, series/1… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
+| Template confirmation | tem | 7 | border/section, focus/ring, app/margin, rag/error-ink… | 1.3.1, 1.4.1, 1.4.11, 2.3.3, 2.4.3, 2.4.6, 2.4.7, 4.1.3 | — |  |
+| Template dashboard | tem | 5 | border/section, focus/ring, app/margin, rag/error-ink… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
 | Template dashboard (bento) | tem | 27 | border/subtle, series/1, border/section, focus/ring… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
-| Template detail | tem | 19 | background/default, border-radius/surface, border/subtle, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
-| Template empty | tem | 10 | background/default, border-radius/control, border-radius/surface, border/subtle… | 1.3.1, 1.4.1, 2.4.3, 2.4.4, 2.4.6, 2.4.7, 4.1.3 | — |  |
-| Template error | tem | 6 | background/default, border-radius/control, border/section, text/default… | 1.3.1, 1.4.1, 2.4.2, 2.4.3, 2.4.6, 2.4.7, 3.2.3 | — |  |
-| Template list index | tem | 22 | background/default, border-radius/surface, border/subtle, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
-| Template report | tem | 10 | background/default, border/subtle, series/1, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.4.7, 4.1.2 | — |  |
-| Template settings | tem | 13 | background/default, border-radius/control, border-radius/surface, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.4.7, 2.5.5, 2.5.8, 3.3.1, 3.3.2, 4.1.2, 4.1.3 | — |  |
-| Template — auth (log on / register / OTP) | tem | 10 | background/default, border-radius/control, border/section, rag/error… | 1.1.1, 1.3.1, 1.3.5, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.5.8, 3.3.1, 3.3.2, 4.1.2, 4.1.3 | — |  |
-| Template — create / edit form | tem | 13 | background/default, border-radius/control, border-radius/surface, border/subtle… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.5.8, 3.3.1, 3.3.2, 3.3.3, 4.1.2, 4.1.3 | — |  |
+| Template detail | tem | 5 | border/section, focus/ring, app/margin, rag/error-ink… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
+| Template empty | tem | 3 | border/section, focus/ring, app/margin | 1.3.1, 1.4.1, 2.4.3, 2.4.4, 2.4.6, 2.4.7, 4.1.3 | — |  |
+| Template error | tem | 3 | border/section, focus/ring, app/margin | 1.3.1, 1.4.1, 2.4.2, 2.4.3, 2.4.6, 2.4.7, 3.2.3 | — |  |
+| Template list index | tem | 6 | border/section, focus/ring, background/hover, app/margin… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 4.1.2 | — |  |
+| Template report | tem | 5 | border/section, focus/ring, app/margin, rag/error-ink… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.4.7, 4.1.2 | — |  |
+| Template settings | tem | 3 | border/section, focus/ring, app/margin | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.4.7, 2.5.5, 2.5.8, 3.3.1, 3.3.2, 4.1.2, 4.1.3 | — |  |
+| Template — auth (log on / register / OTP) | tem | 3 | border/section, focus/ring, app/margin | 1.1.1, 1.3.1, 1.3.5, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.5.8, 3.3.1, 3.3.2, 4.1.2, 4.1.3 | — |  |
+| Template — create / edit form | tem | 3 | border/section, focus/ring, app/margin | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.4.3, 2.4.6, 2.5.8, 3.3.1, 3.3.2, 3.3.3, 4.1.2, 4.1.3 | — |  |
 | Template — multi-step wizard | tem | 14 | background/default, border-radius/control, border-radius/indicator, border/section… | 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.3.3, 2.4.3, 2.4.6, 2.5.8, 3.3.1, 3.3.2, 3.3.3, 4.1.2, 4.1.3 | — |  |
 | Textarea | ato | 3 | border-radius/control, rag/error, text/default | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Time picker | mol | 9 | background/default, border-radius/control, border-radius/surface, elevation/border… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.2 | — |  |
