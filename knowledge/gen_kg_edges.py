@@ -430,6 +430,12 @@ def build_edges_for_meta(data, stem, comp_idx, snip_idx, pattern_registry, conte
         # prefer exact/near-exact stem match over substring scan for short targets
         exact = comp_idx.get(norm(target)) or comp_idx.get(norm(target.replace("-", " ")))
         ref = exact or cref
+        # #314 SW (s313-D56): a word that names the meta ITSELF ("Settings (switch)" on switch) or one of its own
+        # split members (the same words on the selection-controls family) is the place's qualifier, not a
+        # container: a part is never containedBy itself, and a family is never containedBy its own member.
+        # The words stay a context, exactly as they read before the member metas existed.
+        if ref and (ref == f"component:{stem}" or ref in set((data.get("$split") or {}).get("into") or [])):
+            ref = None
         if ref:
             contained.append({"ref": ref, "$note": target})
         else:

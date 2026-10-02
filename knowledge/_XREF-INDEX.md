@@ -2,7 +2,7 @@
 
 > One traversable record per component joining **tokens · god-nodes · WCAG SCs · guidelines · anti-patterns · deprecated bindings**. Generated derived view over the canon (Graphify-borrow #4); regenerate after editing metas/tokens/compliance KG/the guideline map: `python3 knowledge/_build_xref_index.py`. Machine-readable detail in `_XREF-INDEX.json`.
 
-**Totals:** 138 components · 19 with deprecated bindings · 46 god-nodes (blast≥7).
+**Totals:** 142 components · 21 with deprecated bindings · 46 god-nodes (blast≥7).
 
 **Global guidelines (apply to every component):** accessibility, digital-accessibility-standards, colour-usage, dark-mode, focus-indicators.
 
@@ -42,6 +42,8 @@
 | Cards | mol | 14 | background/default, border/subtle, color/primary, icon/default… | 1.4.11, 1.4.3, 2.1.1, 2.4.7 | elevation, imagery, hexagon-masks, icons | 1 |
 | Carousel | mol | 8 | border/subtle, focus/ring, icon/default, background/default… | 2.1.1, 2.2.2, 2.3.3, 4.1.3 | — |  |
 | Cascader | mol | 17 | background/default, border-radius/control, border-radius/surface, border/section… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.4.3, 2.4.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
+| Checkbox | mol | 11 | background/default, border/default, icon/default, icon/default-reverse… | — | — |  |
+| Chip | mol | 9 | background/default, border/default, icon/default-reverse, background/default… | — | — | 12 |
 | Combo chart | org | 6 | background/default, border-radius/surface, series/1, elevation/border… | 1.3.1, 1.4.1, 1.4.11, 1.4.13, 2.1.1, 4.1.2 | — |  |
 | Combobox | mol | 18 | background/default, border-radius/control, border-radius/surface, border/section… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.4.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
 | Command palette | org | 14 | background/default, border-radius/surface, border/subsection, elevation/border… | 1.3.1, 1.4.1, 1.4.11, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
@@ -97,6 +99,7 @@
 | Progress tracker | mol | 8 | background/default, rag/success, text/default, text/on-inverse | 1.3.1, 1.4.1, 4.1.3 | time-based-indicators |  |
 | QR code | ato | 5 | focus/ring, text/default, text/reverse | 1.1.1, 1.4.1, 1.4.11, 2.4.4 | — |  |
 | Quick actions | mol | 3 | icon/default, text/default, text/disabled | 1.1.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | calls-to-action, icons | 6 |
+| Radio | mol | 10 | border/default, icon/default, icon/default-reverse, icon/disabled… | — | — |  |
 | Range slider | mol | 8 | background/default, border/subtle, focus/ring, border/default… | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2, 4.1.3 | — |  |
 | Rating | mol | 3 | focus/ring, border/default, text/default | 1.4.1, 2.1.1, 2.5.8, 4.1.2, 4.1.3 | — |  |
 | Reorder | ato | 3 | icon/default, rag/success, background/hover | 1.4.1, 2.1.1, 2.5.7, 2.5.8, 4.1.2 | icons |  |
@@ -119,6 +122,7 @@
 | Status indicator | ato | 9 | rag/error, rag/error-tint, rag/success, rag/success-tint… | 1.4.1, 1.4.11, 1.4.3, 4.1.3 | tone-of-voice, time-based-indicators, icons | 1 |
 | Stepper | org | 11 | background/default, border-radius/control, border-radius/indicator, rag/error… | 1.3.1, 1.4.1, 1.4.3, 2.1.1, 2.4.3, 2.4.7, 3.3.1, 3.3.2, 4.1.3 | — |  |
 | Summary | mol | 4 | border/subsection, text/default, text/secondary, font-family/default | 1.3.1, 1.4.10, 1.4.3 | — |  |
+| Switch | mol | 9 | background/default, icon/default-reverse, rag/error, background/default… | — | — | 5 |
 | Tab-bar | mol | 9 | border/subtle, elevation/functional, focus/ring, background/default… | 1.3.1, 1.4.1, 1.4.3, 2.4.3 | — |  |
 | Table | org | 5 | background/default, text/default | 1.3.1, 1.3.2, 1.4.10 | horizontal-scroll, typography-usage, view-controls-sort |  |
 | Tabs | mol | 14 | background/default, color/primary, border/section, border/subsection… | 1.3.1, 1.4.1, 2.1.1, 2.4.11, 2.4.7, 2.5.8, 4.1.2 | platform-web | 2 |

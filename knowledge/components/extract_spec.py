@@ -38,7 +38,7 @@ THE COVERAGE RULE (s311-D4 phase-1 gate, brief L2): a meta is at FULL coverage o
 fields are present, every anatomy node's `$sel` resolves to an element in the snippet, and every
 binding resolves to a token in knowledge/tokens/. Below that the extractor REFUSES to write the
 meta (a draft is all-or-nothing per part; nothing partial lands) and names the refusal.
-`--report` prints `COUNTS: n of 139 at full coverage` and the refusals by name.
+`--report` prints `COUNTS: n of <metas on disk> at full coverage` and the refusals by name.
 
 HOW THE ROOT IS FOUND (declared, so the next session does not re-derive it): candidates are body
 descendants with a styled class or a role, tag not a heading/paragraph/inline-text tag; the first
@@ -58,6 +58,14 @@ never overwritten without `--force`; nor is a meta whose `$extracted` carries `$
 by hand on Dave's ruling, #313 lane L4 — a re-run would put the extractor's guess back over his
 answer). An `aliasOf` meta is refused (s210-D5 fence). The snippet is NEVER edited.
 
+A FAMILY SPLIT INTO ITS MEMBERS (#314 lane SW, s313-D56 — Dave: "Four parts", the page: "A client library
+looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls"):
+the family meta carries `$split` and NO spec of its own — each member meta (switch, checkbox, radio, chip)
+carries its own four fields. The extractor refuses to draft onto a `$split` meta (a re-run would put the
+one-tree draft back), and the report counts it as fenced. A member is drawn by its family's snippet, which
+its name does not match, so the snippet is found through the meta's own `edges.renderedBy` line when no
+snippet file matches the name.
+
 PARTS WITH NO ELEMENT (#313 L4, on Dave's 2026-10-01 rulings: the slider's thumb and track, the date
 picker's day cell): a node marked `$visual` (why it has no element in the static markup) resolves
 through `$host`, the element that draws or builds it; the coverage reader checks `$host` instead of
@@ -67,7 +75,7 @@ USAGE
   python3 knowledge/components/extract_spec.py --only button tabs …          # dry run: drafts + coverage to stdout
   python3 knowledge/components/extract_spec.py --only button tabs … --write  # write the drafts into the metas
   python3 knowledge/components/extract_spec.py --only button --json          # print the draft block as JSON
-  python3 knowledge/components/extract_spec.py --report                      # n of 139 at full coverage + refusals
+  python3 knowledge/components/extract_spec.py --report                      # n of N at full coverage + refusals
   python3 knowledge/components/extract_spec.py --selftest                    # proofs (schema, refusal, idempotence, no field changed)
 EXIT: 0 clean · 1 a refusal or a failed proof · 2 bad invocation.
 """
@@ -912,6 +920,13 @@ def snippet_for(meta, meta_id):
         stem = re.sub(r"[^a-z0-9]+", "-", f[:-len(".reference.html")].lower()).strip("-")
         if stem in want:
             return os.path.join(SNIPPETS, f)
+    # #314 SW: a family member (s313-D56) is drawn by its family's snippet — read the meta's own renderedBy line
+    for e in ((meta.get("edges") or {}).get("renderedBy") or []):
+        ref = e.get("ref") if isinstance(e, dict) else None
+        if isinstance(ref, str) and ref.startswith("snippet:"):
+            p = os.path.join(SNIPPETS, ref[len("snippet:"):])
+            if os.path.isfile(p):
+                return p
     return None
 
 
@@ -922,6 +937,9 @@ def draft(meta_path, date=None, sha=None):
     cov = {"id": meta_id, "refusals": [], "found": {}}
     if meta.get("aliasOf"):
         cov["refusals"].append("aliasOf meta — the s210-D5 fence bans the four fields")
+        return None, cov
+    if meta.get("$split"):
+        cov["refusals"].append("$split family — its spec lives on its members (s313-D56), never drafted here")
         return None, cov
     snip = snippet_for(meta, meta_id)
     if not snip:
@@ -1059,7 +1077,7 @@ def coverage_of_meta(meta_path):
     """Re-check a meta ON DISK: full | partial(reasons) | undrafted | fenced."""
     meta = json.load(open(meta_path, encoding="utf-8"))
     meta_id = os.path.basename(meta_path)[:-len(".meta.json")]
-    if meta.get("aliasOf"):
+    if meta.get("aliasOf") or meta.get("$split"):
         return "fenced", []
     present = [k for k in FIELDS if k in meta]
     if not present:
@@ -1099,9 +1117,9 @@ def report(components_dir=HERE, quiet=False):
         for mid, reasons in tally["partial"]:
             print("  ⛔ %s — %s" % (mid, "; ".join(reasons)))
         print("full coverage: " + (", ".join(m for m, _ in tally["full"]) or "none"))
-        print("fenced (aliasOf): " + (", ".join(m for m, _ in tally["fenced"]) or "none"))
+        print("fenced (aliasOf, or a $split family): " + (", ".join(m for m, _ in tally["fenced"]) or "none"))
         print("undrafted: %d" % len(tally["undrafted"]))
-    print("COUNTS: %d of %d at full coverage · %d refused by name · %d undrafted · %d fenced (aliasOf) · %d exempt (%s)"
+    print("COUNTS: %d of %d at full coverage · %d refused by name · %d undrafted · %d fenced (aliasOf or $split) · %d exempt (%s)"
           % (len(tally["full"]), n, len(tally["partial"]), len(tally["undrafted"]), len(tally["fenced"]),
              len(tally["exempt"]), ", ".join(m for m, _ in tally["exempt"]) or "-"))
     return tally
@@ -1171,6 +1189,25 @@ def selftest():
         if alias:
             block, cov = draft(alias)
             check("alias meta %s refused (%s)" % (os.path.basename(alias), cov["refusals"][:1]), block is None)
+        # #314 SW: a $split family is fenced, and a member finds its family's snippet through renderedBy
+        split = next((p for p in sorted(glob.glob(os.path.join(HERE, "*.meta.json"))) if json.load(open(p)).get("$split")), None)
+        if split:
+            block, cov = draft(split)
+            check("split family %s refused (%s)" % (os.path.basename(split), cov["refusals"][:1]), block is None)
+            check("split family %s reads fenced" % os.path.basename(split), coverage_of_meta(split)[0] == "fenced")
+            for member in json.load(open(split))["$split"]["into"]:
+                mp = os.path.join(HERE, member.split(":", 1)[1] + ".meta.json")
+                md = json.load(open(mp))
+                check("member %s: snippet found through renderedBy (%s)" % (os.path.basename(mp), os.path.basename(snippet_for(md, os.path.basename(mp)[:-10]) or "none")),
+                      snippet_for(md, os.path.basename(mp)[:-len(".meta.json")]) is not None)
+                kind, reasons = coverage_of_meta(mp)
+                check("member %s: on-disk coverage reads full (%s)" % (os.path.basename(mp), reasons or "-"), kind == "full")
+            d = json.load(open(mp))
+            d["edges"]["renderedBy"] = [{"ref": "snippet:No-such.reference.html"}]
+            dst = os.path.join(tmp, "member.meta.json")
+            open(dst, "w", encoding="utf-8").write(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
+            check("planted: a member whose renderedBy names no snippet is REFUSED (no snippet)",
+                  coverage_of_meta(dst)[0] == "partial" and "no snippet" in coverage_of_meta(dst)[1])
         # a hand-edited meta (a spec key outside the block) refuses the write
         src = os.path.join(HERE, "button.meta.json")
         dst = os.path.join(tmp, "hand.meta.json")

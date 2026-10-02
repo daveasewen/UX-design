@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 138 components · 1048 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
+**Totals:** 142 components · 1048 tokens defined · 140 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -10,10 +10,10 @@ Change one of these and the listed number of components is affected. Use before 
 
 | Token | Blast | Example components |
 |---|---|---|
-| `text/default` | 108 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
-| `background/default` | 73 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
+| `text/default` | 112 | Accordion, Account card, Alert, Amount display, Amount input, Anchor nav… |
+| `background/default` | 75 | Accordion, Account selector, Amount display, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page… |
 | `tertiary/background/default` | 50 | Account card, Action bar, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column… |
-| `icon/default` | 46 | Accordion, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
+| `icon/default` | 48 | Accordion, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `border-radius/surface` | 42 | Alert, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
 | `focus/ring` | 40 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `border/subtle` | 38 | Accordion, Account card, Action bar, Amount display, Avatar, Avatar group… |
@@ -21,22 +21,22 @@ Change one of these and the listed number of components is affected. Use before 
 | `divider/border/section` | 35 | Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
 | `tertiary/background/hover` | 35 | Accordion, Anchor nav, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail… |
 | `border-radius/control` | 34 | Amount input, App shell — doormat (mega-footer) nav, App shell — focused / full-page, App shell — multi-column, App shell — nav rail, App shell — side nav… |
-| `form/border/default` | 30 | Account card, Account selector, App shell — split, Cascader, Combobox, Command palette… |
+| `form/border/default` | 33 | Account card, Account selector, App shell — split, Cascader, Checkbox, Chip… |
 | `elevation/functional` | 29 | Account selector, App shell — nav rail, Bar chart, Butterfly chart (horizontal), Butterfly chart (vertical), Card-header-lockup… |
+| `rag/error` | 29 | Amount input, Bar chart, Checkbox, Combobox, Date picker, Date-range picker… |
 | `rag/success` | 28 | Account card, Amount input, Bar chart, Button, Card-header-lockup, Confirmation… |
-| `rag/error` | 26 | Amount input, Bar chart, Combobox, Date picker, Date-range picker, Dropdown… |
 
 ## Token-group reach (components using each group)
 
 | Group | Components |
 |---|---|
-| `text/` | 113 |
-| `background/` | 73 |
-| `tertiary/` | 63 |
+| `text/` | 117 |
+| `background/` | 75 |
+| `tertiary/` | 67 |
 | `border-radius/` | 62 |
-| `rag/` | 49 |
-| `icon/` | 48 |
-| `form/` | 44 |
+| `icon/` | 52 |
+| `rag/` | 52 |
+| `form/` | 47 |
 | `border/` | 42 |
 | `divider/` | 41 |
 | `focus/` | 40 |
@@ -44,8 +44,8 @@ Change one of these and the listed number of components is affected. Use before 
 | `primary/` | 22 |
 | `target/` | 21 |
 | `data/` | 19 |
+| `secondary/` | 17 |
 | `typography/` | 13 |
-| `secondary/` | 13 |
 | `surface/` | 13 |
 | `overlay/` | 10 |
 | `scale/` | 7 |
@@ -76,7 +76,9 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 | Tags | 6 |
 | Quick actions | 5 |
 | Selection controls | 5 |
+| Chip | 4 |
 | Links | 4 |
+| Switch | 4 |
 | Button | 3 |
 | Headers | 3 |
 | Pagination | 3 |

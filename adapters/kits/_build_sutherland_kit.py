@@ -30,12 +30,14 @@ ADAPTERS = os.path.join(ROOT, "adapters")
 TODAY = "2026-10-01"
 
 # the four metas that carried an empty codeBindings placeholder slot (2026-06-22, all TODO, no Sutherland
-# name in any of them) first, then cohort one (L's brief, #312) by nearest slug
+# name in any of them) first, then cohort one (L's brief, #312) by nearest slug. #314 SW: "switch" now finds
+# its own meta (s313-D56, Dave: "Four parts" — "it asks for a switch, not for the second tree inside
+# selection controls"); it pointed at the selection-controls family before the split
 BOUND = ["cards", "list-items", "status-indicator", "table"]
 COHORT_ONE = [
     ("button", "button"), ("tabs", "tabs"), ("table", "table"), ("date picker", "date-picker"),
     ("metric", "metric"), ("menus", "dropdown"), ("accordion", "accordion"), ("slider", "slider"),
-    ("switch", "selection-controls"), ("text input", "input-fields"), ("select", "dropdown"),
+    ("switch", "switch"), ("text input", "input-fields"), ("select", "dropdown"),
     ("dialog", "modals"), ("tooltip", "tooltip"), ("pagination", "pagination"),
     ("notification", "notifications"),
 ]

@@ -2,16 +2,19 @@
 
 > Every assertion in the component metas that is **not** directly observed canon. Formalises the in-prose confidence convention (Graphify-borrow #1). 🔴 **review** = verify before trusting; 🟡 **inferred** = reasoned, lower urgency. `asserted` items (the default) are not listed. Generated — regenerate after editing metas: `python3 knowledge/_build_review_queue.py`. Vocabulary in `_CONFIDENCE.md`; machine detail in `_REVIEW-QUEUE.json`.
 
-**Totals:** 224 items across 87 components — 188 🔴 review, 36 🟡 inferred. By category: other 94, anti-pattern 65, accessibility 36, token-rebind 29.
+**Totals:** 235 items across 90 components — 192 🔴 review, 43 🟡 inferred. By category: other 104, anti-pattern 65, accessibility 34, token-rebind 32.
 
-Most-flagged components: Confirmation (10), Account card (9), Action bar (8), Tab-bar (7), Badge (6), Eyebrow (6), Meter (6), Avatar (5).
+Most-flagged components: Confirmation (10), Account card (9), Action bar (8), Button (7), Tab-bar (7), Tags (7), Badge (6), Eyebrow (6).
 
-## Token-rebind — verify before the Sutherland migration (29)
+## Token-rebind — verify before the Sutherland migration (32)
 
 These gate the deprecated-token rebind: each names a best-guess replacement that must be confirmed against the real Sutherland values. Cross-ref `tokens/_manifests/depricate-replacement-map.json` and `_blast-radius.json`.
 
 **Button**
 - 🟡 `tokenValidation.depricateUsage.on-dark.auditedNodes` — On Dark primary 641:103685 (representative — tertiary/quaternary on-dark likely similar, not exhaustively queried)
+
+**Chip**
+- 🔴 `tokenValidation.depricateUsage.tokens.rebind` — REVIEW — no clean live #333 surface
 
 **Dropdown**
 - 🔴 `tokenValidation.depricateUsage.tokens.rebind` — REVIEW (form/border/default or scrollbar/foreground — same value)
@@ -62,6 +65,10 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Status indicator**
 - 🔴 `tokenValidation.depricateUsage.tokens.rebind` — REVIEW — no rag/neutral-tint exists. Approved/declined/pending disabled use rag/*-tint; cancelled has no tint sibling, so it falls back to neutral-3. PROPER FIX: add a rag/neutral-tint token, then rebind.
 
+**Switch**
+- 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live subtle-surface
+- 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live subtle-surface
+
 **Tags**
 - 🔴 `tokenValidation.depricateUsage.tokens.rebind` — REVIEW — on-dark surface, no clean live equivalent
 - 🔴 `tokenValidation.depricateUsage.tokens.rebind` — REVIEW — on-dark surface
@@ -69,7 +76,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live subtle-surface (Avatar/Headers/List/Nav/Quick-actions gap family)
 - 🔴 `tokenValidation.depricateUsage.blockersNoEquivalent.rebind` — REVIEW — no live on-dark surface (Avatar/Hero/List gap)
 
-## Accessibility — verify in code/with the a11y team (36)
+## Accessibility — verify in code/with the a11y team (34)
 
 **Accordion**
 - 🔴 `accessibility.focus` — REVIEW: the Figma component set defines default/hover/pressed but no explicit focus-visible state — confirm a visible focus indicator exists in code
@@ -117,9 +124,6 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Eyebrow**
 - 🔴 `accessibility.screenReader` — REVIEW (inferred): read inline before the heading it precedes. If purely decorative it may be redundant with the heading — confirm it adds meaning, otherwise consider aria-hidden.
 
-**Footer**
-- 🟡 `accessibility.targetSize` — Every link is a >= 44px target at every width. MEASURED, not assumed; no gate reads the target token for hit area.
-
 **Headers**
 - 🔴 `accessibility.headingSemantics` — REVIEW (inferred): map header titles to the correct heading level (h1/h2…) for screen-reader structure; display header is typically the screen's h1
 - 🔴 `accessibility.processing` — REVIEW (inferred): the Headers Display processing state should announce status (aria-live)
@@ -130,9 +134,6 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Input fields**
 - 🔴 `accessibility.datePicker` — REVIEW (inferred): calendar must be keyboard-navigable (arrow keys, Esc), day cells expose selected/disabled/unavailable states to AT
-
-**KPI tile**
-- 🟡 `accessibility.targetSize` — The optional table CTA is 44x44, the ruled min-hit-area, enforced BY HAND — no gate reads the target token (measured and stated, not assumed).
 
 **List items**
 - 🔴 `accessibility.processing` — REVIEW (inferred): processing state should announce status (aria-live/aria-busy)
@@ -195,7 +196,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW Never drop the group onto a card without deciding the separator ring first — the ring binds the page colour and will be wrong (see $finding-ring).
 
 **Back to top**
-- 🔴 `antiPatterns` — REVIEW (inferred): shipping WITHOUT ever naming a scroll threshold value, leaving every consuming team to invent its own (the meta deliberately does not propose one either — see decisionsForDave).
+- 🔴 `antiPatterns` — Inventing a page-local scroll threshold instead of the ruled four viewport-heights (s272-D73; this line was a REVIEW (inferred) warning about the unnamed threshold before that ruling).
 
 **Badge**
 - 🔴 `antiPatterns` — REVIEW (inferred): using a badge to convey critical information that must not be missed — it's a passive indicator, not an alert
@@ -242,7 +243,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `antiPatterns` — REVIEW (inferred): using a FAB where the action already has an obvious home in the page header / toolbar (a FAB should be reserved for contexts where no such chrome exists, e.g. a full-bleed list).
 
 **Footer**
-- 🔴 `antiPatterns` — REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the 44px trade and the band colour are all open.
+- 🔴 `antiPatterns` — REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #261, and the name, the 24px floor and the RAG-in-a-footer position are all open.
 
 **Grid / stack utilities**
 - 🔴 `antiPatterns` — REVIEW Never promote, gate or register this component without Dave's word. It is PROPOSED #204, and the name, the ramp, the default floor and the auto-fill/auto-fit default are all open.
@@ -256,11 +257,11 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Icon button**
 - 🔴 `antiPatterns` — REVIEW (inferred): using an icon button where a labelled Button is clearer (unfamiliar action)
 
-**KPI tile**
-- 🔴 `antiPatterns` — REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it.
-
 **Loading indicator**
 - 🔴 `antiPatterns` — REVIEW (inferred): using an indeterminate spinner where a determinate progress bar (known duration) would be clearer
+
+**Metric**
+- 🔴 `antiPatterns` — REVIEW Never promote, gate or register this component without Dave's word — s182-D2 floated it and never ruled it.
 
 **Modals**
 - 🔴 `antiPatterns` — REVIEW (inferred): stacking multiple modals/dialogs at once
@@ -304,7 +305,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Timeline**
 - 🔴 `antiPatterns` — REVIEW Never present the 90-day empty-state window as a product rule; it is invented specimen copy standing in for one.
 
-## Other (94)
+## Other (104)
 
 **Account card**
 - 🔴 `tokens.$balance-type-finding` — REVIEW: the balance uses a display/amount type (30px / line-height 1.1 / tabular-nums / -0.01em) with NO dedicated typography token. The gap report flagged 'display/amount type + money-format' as missing — confirm the size/role and add a…
@@ -314,7 +315,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by knowledge/_PAYMENTS-JOURNEY-GAPS.md. Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Account selector**
-- 🔴 `slots.accounts.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Action bar**
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-actionbar hand-util) and Button.meta commonPatterns. Needs a design owner + Figma source before promotion from candidate to gated.
@@ -349,41 +350,43 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Bar chart**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Box plot**
-- 🔴 `slots.categories.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.outliers.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Bullet chart**
-- 🔴 `slots.rows.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.ranges.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Butterfly chart (horizontal)**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Butterfly chart (vertical)**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Button**
 - 🟡 `props.$note` — default height 44px; 'Large' variant exists for primary (and likely all types) — confirm Large height.
 - 🟡 `props.$status` — s142-D1 (Dave, 2026-08-10) class UNMAPPED -- bind. Surface enum selects a single mode-adaptive token directly (background.default self-resolves light/dark within the spine). ADDRESS-INTENT -- colour spine not yet DTCG-migrated, value lan…
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
+- 🔴 `edges.obeys.why` — OPEN: the quaternary-inline contradiction between the guide and the app standard. Destiny REVIEW, deferred by Dave 2026-07-03 — recorded here because it binds this atom and is unresolved, not because it is settled.
 
 **Candlestick chart**
-- 🔴 `slots.sessions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Cards**
 - 🔴 `slots.content.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Combo chart**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Combobox**
 - 🔴 `tokenValidation.$scope` — The gate reads the MONO base only. The Legacy/Console/Supercharge legs are NOT measured by it. They are shown, not measured, in reviews/REVIEW-203-combobox-four-themes-v1.html — Dave's eye is the instrument there.
@@ -401,7 +404,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🟡 `provenance.$sourceNarrative` — ⚠ PROVENANCE NARRATIVE, MOVED HERE BY THE #204 FIX SUB. It was authored into `provenance.source`, which meta.schema.json constrains to an enum of five values, so the file failed the schema. Nothing is deleted: the paragraph is preserved …
 
 **Data grid**
-- 🔴 `slots.columns.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 - 🔴 `slots.filters.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Divider**
@@ -411,7 +414,7 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `build.review` — reviews/REVIEW-204-document-row-four-themes-v1.html — 4 themes × light/dark, 8 panes, verified at 1400px and 480px
 
 **Donut chart**
-- 🔴 `slots.slices.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Drawer**
 - 🔴 `slots.actions.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
@@ -420,22 +423,26 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `tokens.$type-finding` — REVIEW: uses 13px / line-height 1 / 500, sentence case, with NO dedicated 'eyebrow' type token — confirm the size/role or bind to a label type token if one exists.
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-eyebrow hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
 
-**Footer**
-- 🟡 `$finding-44px-cost` — ⚠ EVERY footer link is a >= 44px target at EVERY width, not only when stacked. That is STRICTER than the gated Links .related pattern, which grows its targets only at <=420px, and it is a visible design cost: a four-column doormat with f…
+**Filter-toolbar-bar**
+- 🟡 `edges.$contract.$ruling` — s258-D1 — cross-component wiring (filter->grid/KPI/chart) is the author's to write. s258-D2 — every interactive element is assumed to work, on rich seeded data.
 
 **Histogram**
-- 🔴 `slots.bins.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Icon button**
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
 
 **Input fields**
+- 🟡 `when` — entry = free text AND expected answer fits ONE line AND no fixed option list exists AND the value is not money, a date, a time or a secret — the default text-entry field; beats textarea (proposed "the answer may span multiple lines") whe…
 - 🟡 `dimensions.$description` — Geometry. BOXED captured from node 65570:211753 (2026-06-22): box padding 9px top / 11px bottom / 16px inline, 16px gap (prefix·value·icon), 1px form/border, ~46px standard height, Large ~+10px. UNDERLINE geometry below was INFERRED 2026…
 
-**KPI tile**
-- 🔴 `not-with.$note` — The DESK example, kept: reviews/ROLES-REVIEW-2026-09-07-v1.html §01. A KPI tile with no series is a Stat card (s247-D3 / DP-08), so a slot that wanted a status-surface reading is not served by this tile.
-
 **Line chart**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Links**
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
 
 **Meter**
 - 🟡 `$foldEnacted` — ✅ THE CATALOGUE FOLD IS ENACTED — s210-D5, Option C. knowledge/components/progress-bar.meta.json and knowledge/components/limits-meter.meta.json were rewritten at #210 as THIN CATEGORY ALIASES pointing at component:meter; each keeps its …
@@ -444,8 +451,11 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `provenance.$sourceNarrative` — Dave's unification instruction at #210, given after looking at reviews/REVIEW-210-existence-side-by-side-v1.html (store row W-64, the Progress-bar vs Limits-meter existence question). His words are carried verbatim in $daveVerbatim and i…
 - 🟡 `$differsFrom.Runway-bar` — NOT MERGED AND NOT ASSUMED — deliberately out of scope. Runway asks 'does my money cover what is scheduled, and until when?' (max = my balance, horizon = a date discovered); an allowance meter asks 'how much am I allowed to move, and whe…
 
+**Metric**
+- 🔴 `props.$note` — RULED BY DAVE'S REVIEW at #261 K2, verbatim: "please use the arrow from the assets I think its called 'direction' there is only up down left and right, maybe we can rotate to get the 45 degree angle". So the glyph is the LIBRARY directio…
+
 **Modal lightbox**
-- 🔴 `slots.items.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Modals**
 - 🔴 `build.a11y` — role=dialog + aria-modal + aria-labelledby + aria-describedby; focus moves in + Tab trapped within + Esc closes + focus returns to trigger; background inert; trigger disabled while open. Closes the meta's focus-trap REVIEW item.
@@ -453,8 +463,12 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 **Multi-select**
 - 🔴 `tokenValidation.$scope` — MONO base only. The other three themes are shown, not measured, in reviews/REVIEW-203-multi-select-four-themes-v1.html.
 
+**Notifications**
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
+- 🟡 `edges.obeys.why` — ctkn-008's severity order and ctkn-010's one-container-per-type exist to cut the number of equally likely things a user must triage.
+
 **Pie chart**
-- 🔴 `slots.slices.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Popover**
 - 🔴 `slots.content.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
@@ -466,8 +480,8 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🟡 `tokenValidation.$scope` — MONO base only. Console, Legacy and Supercharge are NOT measured by this file and were NOT rendered by this lane. The fixed-plate variant is the one most likely to survive a theme unchanged, because its two tokens are mode-invariant — bu…
 
 **Scatter plot**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Sidebar nav**
 - 🟡 `tokenValidation.$collision` — CHECKED FIRST-HAND, NOT ASSUMED (#203 step 0). Navigations.reference.html is 64 lines and renders one <header> — a horizontal web masthead. Its meta CLAIMS a family (anchors, nav-bar-bottom, nav-bar-top) the artefact does not contain, an…
@@ -478,11 +492,11 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 
 **Sparkline**
 - 🔴 `when` — answers=change-over-time AND series=1 AND axes=absent AND span.cols ≤ 4 (inline, or a trend cell in a table) — yields to chart-line (88, "change-over-time") whenever the panel can carry axes, and is normally a complement of headline-metr…
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Stacked area chart**
-- 🔴 `slots.series.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
-- 🔴 `slots.data.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 
 **Status indicator**
 - 🔴 `build.$g17.$status` — ENACTED (uncommitted at authoring) per s212-D2 (Dave, #212): 'The RAG status canon pick, open since 2026-07-19, is A+B+C — all three manifestations are canon.' Store row W-99a. Artefact judged: reviews/RAG-STATUS-MANIFESTATION-2026-07-19…
@@ -495,11 +509,16 @@ These gate the deprecated-token rebind: each names a best-guess replacement that
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-summary hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
 
 **Tab-bar**
+- 🔴 `props.$wasSlot.slot.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
 - 🔴 `provenance.$note` — REVIEW: no Figma node yet — surfaced by the journey gap report (the .c-tabbar hand-util). Needs a design owner + Figma source before promotion from candidate to gated.
-- 🔴 `slots.items.$status` — ruled s140-D2 (Dave, 2026-08-09, via SLOTS-DRAFT-REVIEW s140-v1 export)
+
+**Tags**
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
+- 🟡 `edges.obeys.why` — ctkt-003 orders a group alphabetically or by priority and keeps that order; Hick is why a consistent order shortens the scan through N equally likely keywords.
 
 **Tags input**
 - 🔴 `tokenValidation.$scope` — MONO base only. The other three themes are shown, not measured, in reviews/REVIEW-203-tags-input-four-themes-v1.html.
+- 🟡 `edges.$obeys-contract` — AUTHORED, not inferred (P-274-3 + s275-D5, lane TO #276). `rule:` refs are joined by FILENAME from knowledge/guidelines/_rules-index.json — never by a regex over rule prose. `ux:` refs are the six grade-A laws s269-D5 names. Each $why is…
 
 **Template dashboard (bento)**
 - 🟡 `$tokenGaps` — layout/bento/columns CANNOT be manifest-bound today: gen_snippet_tokens._unitless() does not know the path, so resolve('layout/bento/columns','light') returns the STRING '6px' and grid-template-columns:repeat(6px,...) is invalid CSS. MEA…

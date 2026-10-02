@@ -1,0 +1,323 @@
+{
+  "name": "Checkbox",
+  "category": "molecule",
+  "kind": "block",
+  "purpose": "A square box the user ticks to choose an option, with its label; it can also show a dash for a partly chosen set (indeterminate). One of the four selection controls (s313-D56); drawn by the Checkbox rows of the Selection-controls reference.",
+  "$memberOf": {
+    "family": "component:selection-controls",
+    "ruling": "s313-D56",
+    "$note": "one of the family's four parts; the family meta keeps the catalogue entry, the reference snippet and the `input` role; this meta holds this control's spec"
+  },
+  "props": [
+    {
+      "name": "checkboxKind",
+      "type": "enum",
+      "values": [
+        "checked",
+        "indeterminate"
+      ],
+      "default": "checked",
+      "$note": "Checkbox supports an indeterminate (mixed) state."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "ownText": true,
+      "$note": "The control's label (reference snippet: 'Email notifications'); absent means no visible label, as the old switch's false did (the control still needs an accessible name). s305-D17 (Dave, #305 call 16, \"yes\"): a part's own words are a field on the part, not a separate text part inside it, so the gate checks them with the part (length, wrap, the 44px target, the name a screen reader hears). Added #311 lane C0."
+    }
+  ],
+  "variants": [
+    {
+      "name": "checkbox",
+      "use": "Square box; checked/indeterminate fill with reverse check glyph. Supports error + disabled. CLEAN (form/*)."
+    }
+  ],
+  "tokens": {
+    "box/control-surface": "form/background/default (transparent) / hover #f3f3f3 / pressed #767676",
+    "box/control-border": "form/border/default #767676 / active #000 / pressed #767676 / disabled #d7d8d6",
+    "check-radio-glyph": "icon/default-reverse (#fff on filled) / icon/default; disabled icon/disabled",
+    "label": "text/default @ font-5 medium (checkbox/radio) / font-6 medium (chip); disabled text/disabled",
+    "error": "rag/error (#a8000b)",
+    "$darkDecision-selected-fill": "(Dave 2026-06-19) The SELECTED/ON fill (checkbox checked, radio dot, chip selected, switch on) should rebind to the INVERTING secondary/background/default (#000 light / #FFF dark) with the glyph in text/on-inverse (#FFF light / #333 dark) — NOT tertiary/background/active (dark value #1D1D1D is near-black → checked control invisible on the dark page) and NOT icon/default-reverse (flat white → vanishes on the inverted white fill in dark). Same inverting pair that fixed the secondary Button. See snippets/Selection-controls.reference.html.",
+    "$from": "the family meta's `tokens` entries that name this control (selection-controls.meta.json), copied verbatim"
+  },
+  "relationships": {
+    "livesInside": [
+      "Form",
+      "Field set",
+      "List/Card select"
+    ],
+    "mustNotNeighbour": [],
+    "commonPatterns": [
+      "checkbox/radio group",
+      "selectable list/card"
+    ]
+  },
+  "accessibility": {
+    "semantics": "Use native input semantics (checkbox/radio/switch) with a programmatic label; group radios/checkboxes in a fieldset/role=group with a legend",
+    "indeterminate": "Checkbox indeterminate must expose aria-checked='mixed'",
+    "error": "Error state pairs rag/error with a text message + aria-invalid, not colour alone (1.4.1)",
+    "focus": "Visible focus outline; controls and their labels are both click targets (44px)",
+    "relatedSC": [
+      "1.3.1",
+      "4.1.2 Name Role Value",
+      "3.3.1 Error Identification",
+      "1.4.1 Use of Color",
+      "2.4.7 Focus Visible",
+      "2.5.8 Target Size (Minimum)"
+    ],
+    "$from": "the family meta's `accessibility` entries that bear on this control, copied verbatim"
+  },
+  "antiPatterns": [
+    "Conveying selected/on by colour alone without a label or check/thumb position",
+    "Checkbox/radio without an associated label or group legend"
+  ],
+  "tokenValidation": {
+    "date": "2026-06-18",
+    "against": "token store re-based on Figma native variable export",
+    "result": "PASS (values resolve) — Checkbox + Radio CLEAN (form/*); Chips + Switch carry deprecated tokens. NEW recurring token: interactive (depricate)/on-light/surface/active/* = the selected/'on' dark fill.",
+    "depricateUsage": {
+      "tokens": [],
+      "blockersNoEquivalent": [],
+      "auditedNodes": [
+        "Checkbox 811:68448 (clean)"
+      ]
+    },
+    "$from": "the family meta's tokenValidation (2026-06-18), sliced to the rows whose usedBy names this control; the result line is the family's, verbatim"
+  },
+  "provenance": {
+    "source": "figma",
+    "figma_node": "Cgbtrmfp15ruNFkIAClpkI:45105:252063",
+    "code_path": "",
+    "$control-node": "the family canvas node; this control's own audited node(s), as the family's tokenValidation records them: Checkbox 811:68448 (clean)"
+  },
+  "edges": {
+    "renderedBy": [
+      {
+        "ref": "snippet:Selection-controls.reference.html"
+      }
+    ],
+    "usedInContext": [
+      {
+        "ref": "context:form",
+        "$note": "Form"
+      },
+      {
+        "ref": "context:field-set",
+        "$note": "Field set"
+      },
+      {
+        "ref": "context:list-card-select",
+        "$note": "List/Card select"
+      }
+    ],
+    "commonPattern": [
+      {
+        "ref": "pattern:checkbox-radio-group"
+      },
+      {
+        "ref": "pattern:selectable-list-card"
+      }
+    ]
+  },
+  "anatomy": {
+    "part": "checkbox",
+    "tag": "div",
+    "attrs": {
+      "class": "field"
+    },
+    "$stateClasses": [
+      "is-disabled",
+      "is-error"
+    ],
+    "$sel": "body > div.sc > div.field",
+    "$message": {
+      "part": "message",
+      "tag": "p",
+      "attrs": {
+        "class": "err-msg",
+        "id": "c5e"
+      },
+      "$sel": "body > div.sc > p.err-msg",
+      "$when": "{state.error}",
+      "$note": "a sibling after the row, tied to the control by aria-describedby"
+    },
+    "children": [
+      {
+        "part": "input",
+        "tag": "input",
+        "attrs": {
+          "type": "checkbox",
+          "checked": "{state.checked}",
+          "disabled": "{state.disabled}"
+        },
+        "aria": {
+          "aria-checked": "{state.indeterminate}",
+          "aria-invalid": "{state.error}"
+        },
+        "$sel": "body > div.sc > div.field > input",
+        "$aria-checked": "the value is the word mixed while indeterminate, set by the script",
+        "$note": "the native checkbox under the drawing: hidden, it carries the state and the name"
+      },
+      {
+        "part": "label",
+        "tag": "label",
+        "text": "{props.label}",
+        "$sel": "body > div.sc > div.field > label",
+        "children": [
+          {
+            "part": "box",
+            "tag": "span",
+            "attrs": {
+              "class": "box"
+            },
+            "$sel": "body > div.sc > div.field > label > span.box",
+            "children": [
+              {
+                "part": "tick",
+                "tag": "svg",
+                "attrs": {
+                  "viewbox": "0 0 18 18"
+                },
+                "$sel": "body > div.sc > div.field > label > span.box > svg",
+                "$note": "the tick path, or the dash when indeterminate (checkboxKind); drawn by stroke"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "states": {
+    "states": [
+      "unchecked",
+      "checked",
+      "indeterminate",
+      "hover",
+      "active",
+      "focus",
+      "disabled",
+      "error"
+    ],
+    "initial": "unchecked",
+    "transitions": [
+      {
+        "from": "unchecked",
+        "on": "change",
+        "to": "checked"
+      },
+      {
+        "from": "checked",
+        "on": "change",
+        "to": "unchecked"
+      },
+      {
+        "from": "indeterminate",
+        "on": "change",
+        "to": "checked"
+      }
+    ],
+    "$sources": {
+      "checked": [
+        "attribute checked on a twin input",
+        "style input:checked + label .box"
+      ],
+      "indeterminate": [
+        "script: input.indeterminate = true, aria-checked mixed",
+        "style input:indeterminate + label .box"
+      ],
+      "hover": [
+        "style label:hover .box"
+      ],
+      "active": [
+        "style input:active + label .box"
+      ],
+      "focus": [
+        "style input:focus-visible + label .box"
+      ],
+      "disabled": [
+        "class .is-disabled on a twin row",
+        "attribute disabled on its input"
+      ],
+      "error": [
+        "class .is-error on a twin row (.field.is-error)",
+        "attribute aria-invalid=\"true\" on its input",
+        "style .field.is-error .box"
+      ]
+    },
+    "$moved": "this machine sat on the control's root inside the family tree ($states, $initial, $transitions); moved here unchanged by 314-SW, as the family's $split note said"
+  },
+  "emits": [],
+  "bindings": {
+    "--focus": "{focus.ring}",
+    "--ctrl-border": "{form.border.default}",
+    "--ctrl-border-active": "{form.border.active}",
+    "--ctrl-border-disabled": "{form.border.disabled}",
+    "--checked": "{secondary.background.default}",
+    "--glyph": "{text.on-inverse}",
+    "--label": "{text.default}",
+    "--label-disabled": "{text.disabled}",
+    "--error": "{rag.error}",
+    "--error-atom": "{rag.error-ink}",
+    "--chip-hover": "{form.background.hover}",
+    "--border-radius-control": "{border-radius.control}",
+    "$source": "the family's bindings, kept for the variables this control's rules read (the family's $by-member list for checkbox, plus --error for its message line, read from the snippet's <style> by 313-L4)",
+    "$left-with-family": "--page (the reference page's own background, demo chrome) and --reverse (in the manifest, read by no rule) are not this control's"
+  },
+  "$extracted": {
+    "by": "extract_spec.py @ 312-L2 · hand-set @ 313-L4 · split into four parts @ 314-SW",
+    "date": "2026-10-02",
+    "reviewed": true,
+    "$why": "s313-D54 (#313, Dave by click, Thu 2026-10-01 23:17 BST, seven-trees-redone page call 7): 'Yes, it describes the part' (the recommendation), comment: none, on the four-tree page, which drew this control's tree; then s313-D56 (#313, Dave by click, Thu 2026-10-01 23:17 BST, seven-trees-redone page call 9): 'Four parts (the recommendation)', comment: none. The page, verbatim: 'Four parts, or four trees in one part? Recommendation: four parts. A client library looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls.' Export: notes/_lanes/313/DAVE-RULINGS-2026-10-01-2317-seven-trees-redone.md. The tree moved here from the family unchanged, so his review stands.",
+    "source": "knowledge/snippets/Selection-controls.reference.html",
+    "fields": [
+      "anatomy",
+      "states",
+      "emits",
+      "bindings"
+    ],
+    "$root": "the checkbox tree, a root of its own (was the family's child of that name, hand-set 313-L4)",
+    "$listeners": [
+      "change"
+    ],
+    "$listeners-note": "the one listener is the indeterminate specimen's change handler (it clears the dash)",
+    "$emits-note": "the snippet dispatches no CustomEvent, so `emits` is the positive empty list; what the part should fire is Dave's call on the review page",
+    "sha": "97c7793a",
+    "$hand": [
+      {
+        "what": "the family's 29-node tree replaced by four trees, one per control (switch, checkbox, radio, chip), each a root under the family wrapper",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave."
+      },
+      {
+        "what": "the switch's tree: switch (the row), input (role switch), label, knob, thumb; states off, on, disabled, error on the switch and on knob and thumb",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave. · 18c, Dave took the recommendation: each piece carries its own states (phase 2)"
+      },
+      {
+        "what": "plain words for the numbered names (field-3, label-3, span-2, input-2, button-2, chips-2 …): knob, ring, tick, remove, chip-group, radio-group",
+        "why": "18a, Dave took the recommendation: plain words where the markup has none, set by hand per part"
+      },
+      {
+        "what": "each control rests in its own word: off (switch, chip), unchecked (checkbox, radio)",
+        "why": "18b, Dave took the recommendation: the rest state takes each part's own word, initial names it"
+      },
+      {
+        "what": "every label's words are the label field {props.label}; the demo's sentences removed",
+        "why": "s305-D17 (a part's own words are a field on the part), as on the button"
+      },
+      {
+        "what": "the family's one state list replaced by the union of the four, each control's own machine on its root",
+        "why": "18c, Dave took the recommendation: each piece carries its own states (phase 2)"
+      },
+      {
+        "what": "bindings unchanged (15); a $by-member list says which control reads each, for the split",
+        "why": "Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave."
+      },
+      {
+        "what": "this control's tree, machine and bindings moved out of the family meta into a meta of its own; nothing in the tree renamed, added or removed",
+        "why": "s313-D56: 'Four parts (the recommendation)' — 'A client library looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls.'"
+      }
+    ],
+    "$hand-source": "Dave, review page notes/_REVIEW-312-L-cohort-one-trees-2026-10-01-v1.html call 11, 'Change it (comment)' on the page's recommendation, no comment of his own; export notes/_lanes/313/DAVE-RULINGS-2026-10-01-1752-cohort-one-trees-complete.md (2026-10-01 17:52). The recommendation, verbatim: \"Give the switch its own tree (switch, label, knob, thumb; states off, on, disabled, error), and the same for checkbox, radio and chip. … Whether that is four metas or four roots in one is the comment to leave.\" Split: s313-D56 (#313, Dave by click, Thu 2026-10-01 23:17 BST, seven-trees-redone page call 9): 'Four parts (the recommendation)', comment: none. The page, verbatim: 'Four parts, or four trees in one part? Recommendation: four parts. A client library looks each one up by its own name: it asks for a switch, not for the second tree inside selection controls.' Export: notes/_lanes/313/DAVE-RULINGS-2026-10-01-2317-seven-trees-redone.md.",
+    "$hand-note": "set by hand (the extractor has no override input); extract_spec.py refuses to overwrite a meta carrying $hand without --force"
+  }
+}
