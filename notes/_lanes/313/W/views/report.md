@@ -61,3 +61,12 @@ See `## 3`; nothing above was changed by this seat.
 - The patch rule has run one night with one committer; with two committers at once it is unproven.
 
 REPLAY-THESE: `python3 knowledge/_wrap_views.py --check --session 313` · `python3 knowledge/_wrap_carries.py count --section 314` · `python3 knowledge/_wrap_facts.py --selftest` · `python3 knowledge/_wrap_views.py --selftest`
+
+## POST-COMMIT (by addition, 5b)
+
+- **The wrap commit is `5da857da`**, on the `--wrap` path, gate `251 in scope · 0 fail · 155 warn`, the named paths plus `notes/_REHEARSAL-LOG.jsonl` auto-staged; **`62220b24`** carries the seat's files.
+- **The pre-push check, before the push, in two halves:** the committed tree first, 87 pass · 0 FAIL · 2 advisory · 4 could-not-ask; then the writer gates, 165 pass · 0 FAIL · 4 advisory (144, 154, 167, 168) · 9 could-not-ask over 4 chunks of 178 steps; `test_gates` 39 (0 failures). Logs `notes/_lanes/313/W/_prepush-*.txt`.
+- **The push:** `aa49a4ef..62220b24` at 2026-10-02T07:06:07Z, 43.3 minutes from the launch.
+- **CI:** `62220b24`, run `36976832661`, GREEN (gates completed/success, render completed/success, release completed/success). 
+- **`_CHAIN.md` 6,678 cl100k** at the wrap's regen, under the 7,700 warn (fail 10,000). Declared.
+- **Title:** the story's `Apollo - #314: the borders back all round, and the switch family in four parts`; `_gen_titles.py` derived `Apollo - #314: restore the all-round borders on the floating surfaces, the mega menu alone`. Declared.

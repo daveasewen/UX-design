@@ -103,7 +103,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI AND THE FILL.** ⛔ The conductor crossed the 300,000 stop at 23:18 and ended at 308,938; its "about 295,000" was read before. ⚠ The bottom-only edge went past the surfaces he named; at 23:18 he kept it for the mega menu alone (row W-313e1). ⚠ CI: two reds, both fixed: `cdf17a12` render, a runner download timeout; `9c8729c3` gates, the help gate, fixed by `b6259882`. ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **134,612** (under the 135,000 ceiling by 388) · 160,000 at 16:59 · **300,000 at 23:18** · 320,000 at not crossed · **308,938 at his "wrap"** (07:22), past the 300,000 stop, under the 320,000 limit · 316,363 at the launch of this seat. subs 8,111,211 (n=31).
 
-> ⛔★ **5b —** PLACEHOLDER-313W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`5da857da`** (`--wrap`, gate `251 in scope · 0 fail · 155 warn`) and **`62220b24`** (the seat's files); the pre-push check first: committed tree 87 pass, 0 FAIL; writer gates 165 pass, 0 FAIL; 39 tests; pushed `aa49a4ef..62220b24` at 07:06:07 UTC. **CI on `62220b24`, run `36976832661`: GREEN, all three jobs.** `_CHAIN.md` 6,678 cl100k after the wrap's regen, under the 7,700 warn by 1,022. This addendum's CI is owed to #314.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-10-01-313-his-four-pages-were-ruled-and-the-night-ran-on-one-conductor.md`. Handoff: `_HANDOFF-164-his-four-pages-were-ruled-and-the-night-ran-on-one-conductor.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/313/DAVE-*.md`. Lane reports: `notes/_subreports/2026-10-01-313-*.md`. Wrap: `notes/_subreports/2026-10-02-313-W-wrap.md`.**
 

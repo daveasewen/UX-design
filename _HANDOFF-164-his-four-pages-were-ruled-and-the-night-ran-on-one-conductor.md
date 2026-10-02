@@ -103,3 +103,21 @@ status: observed
 *Filed report: `notes/_subreports/2026-10-02-313-W-wrap.md`. Dossier: `_DECISION-HISTORY/2026-10-01-313-his-four-pages-were-ruled-and-the-night-ran-on-one-conductor.md`. Memory hook: `notes/_lanes/313/WRAP-MEMORY-HOOK.md`. Figures: `notes/_lanes/313/W/FACTS.json`. Story: `notes/_lanes/313/W/STORY.md`.*
 
 *Title the next chat:* `Apollo - #314: the borders back all round, and the switch family in four parts`
+
+---
+
+## ⬛ POST-WRAP ADDENDUM (5b) — BY ADDITION; NOTHING ABOVE IS REWRITTEN
+
+**No ruling landed after the wrap gate ran**, so no banner addendum is owed. The `s271-D4` re-read strikes nothing: `_rulings.json` reads **946, newest `s313-D81`**.
+
+1. ✅ **CI IS GREEN.** `62220b24` run `36976832661`, gates completed/success, render completed/success, release completed/success, read by `_ci_readback.py` (`notes/_lanes/313/W/_ci-runs-62220b24.txt`).
+2. ✅ **THE PRE-PUSH CHECK RAN ON THE WRAP'S OWN TREE FIRST, IN TWO HALVES** (Worker checklist step 5): first the committed tree as CI's gates job runs it, no mutating steps, 87 pass, 0 FAIL, 2 advisory, 4 could-not-ask over 2 chunks; then the writer gates with `--include-mutating`, the survey over 178 steps in 4 chunks, 165 pass, 0 FAIL, 4 advisory (144, 154, 167, 168), 9 could-not-ask; `test_gates` 39 with 0 failure(s). Logs: `notes/_lanes/313/W/_prepush-*.txt`.
+3. ⛔ **THE WRAP COMMIT IS `5da857da`, ON THE `--wrap` PATH** (gate `251 in scope · 0 fail · 155 warn`); **`62220b24` carries the seat's files.**
+4. **THE PUSH: `aa49a4ef..62220b24`** at 2026-10-02T07:06:07Z, **43.3 minutes from the launch** (2026-10-02T06:22:48Z).
+5. **Phase-3 counts:** hand-written files **2** (`STORY.md`, and nothing else; `FACTS.json` is measured) · views generated **15** · move files **1 + the 5b** · rebuilds **1 for the wrap, 1 for this 5b**.
+6. ✅ **`_CHAIN.md` IS 6,678 cl100k** at the wrap's regen, under the 7,700 warn, under the 10,000 fail (`CHAIN_BUDGET_TK`, `s212-D11`). The figure after this addendum's own regen is not re-taken (the #241 rule).
+7. ⚠ **The next title.** `GOOD-MORNING.md` carries the story's `Apollo - #314: the borders back all round, and the switch family in four parts`. `_gen_titles.py` derived `Apollo - #314: restore the all-round borders on the floating surfaces, the mega menu alone`. Declared, not reconciled.
+8. ⛔ **MEMORY — NOT WRITTEN BY THIS SEAT.** The one hook file is `notes/_lanes/313/WRAP-MEMORY-HOOK.md` (the index line, the front block and the body, each once).
+9. ⚠ **STEP 4c runs LAST, after the 5b commit and push.**
+
+CI owed: this addendum's own commit — read by the next opener with python3 knowledge/_ci_readback.py --owed

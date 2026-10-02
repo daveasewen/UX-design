@@ -9,6 +9,7 @@
 - Four pushes, all green in the end: wave three, wave four, the render fixes, your answers.
 - Two new pages, both answered (v30, v31); 174 renders at the seat.
 - `s311-D4` is enacted.
+- The wrap is committed and pushed (`5da857da`, plus `62220b24` for the wrap seat's files). The full pre-push check ran on the wrap first and came back clean. CI is green on all three jobs.
 - Next chat: `Apollo - #314: the borders back all round, and the switch family in four parts`.
 
 ## Problems

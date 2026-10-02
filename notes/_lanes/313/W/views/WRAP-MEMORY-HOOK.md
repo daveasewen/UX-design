@@ -56,3 +56,6 @@ provenance: 313 · 2026-10-01 · status: observed · repo record: `_HANDOFF-164-
 3. **Mine:** will the deferred seat lanes run: D5 (the explorer rebuild and the Jev re-run) and G1 to G3 with GV?
 4. **Mine:** will his other 23:18 comments be built, or put to him as pictures?
 5. **Mine:** can QQ's hit-area regen be made to fit one seat call?
+
+### After the wrap
+- Wrap commit `5da857da`, seat files `62220b24`; CI on `62220b24` GREEN (run `36976832661`).
