@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo · It started with a button · cut __CUTNAME__</title>
+<!--
+  Film B, "It started with a button" (313-sq, 2026-10-01). Inspired by the shape of Apple's "Intention":
+  short lines on screen, a form that answers each line. Original lines; none of Apple's copy.
+  Rule of every beat: the red dot opens into the idea and folds back to the dot. The dot is the only red;
+  everything else is ink-to-grey dots. Words on screen in Univers (HSBC_MtUnivers_Latin Light/Regular,
+  embedded from knowledge/assets/fonts/_desktop/TTF by build_button_film.py).
+  Cut A = script v1 as drafted. Cut B = the single-word run plus "room for what matters".
+  One self-contained file, no network, deterministic: window.__anim.renderAt(t) draws any t exactly.
+  Controls: click / space = play-pause with sound, left / right = beats. ?export=1 hides chrome, ?t=12 jumps.
+-->
+<style>
+@font-face { font-family: "Univers House"; font-weight: 300; src: url(data:font/ttf;base64,__FONT_LT__) format("truetype"); }
+@font-face { font-family: "Univers House"; font-weight: 400; src: url(data:font/ttf;base64,__FONT_RG__) format("truetype"); }
+html, body { margin: 0; height: 100%; background: #FFFFFF; overflow: hidden; }
+canvas { display: block; position: absolute; left: 0; top: 0; }
+#hint { position: fixed; left: 16px; top: 14px; font: 300 13px/1.4 "Univers House", Helvetica, Arial, sans-serif;
+        color: #9B9B9B; letter-spacing: .02em; pointer-events: none; transition: opacity .6s; }
+body.export #hint { display: none; }
+body.playing #hint { opacity: 0; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">cut __CUTNAME__ &nbsp;·&nbsp; click or space · play / pause, with sound &nbsp;·&nbsp; ← → · beats</div>
+<script>
+(function () {
+'use strict';
+var CUT = '__CUT__';
+var W = 1920, H = 1080, CX = 960, CY = 430, N = 2600;
+var EXPORT = /[?&]export=1/.test(location.search);
+var FONT = '"Univers House", "Univers Next for HSBC", Helvetica, Arial, sans-serif';
+var INK = [12, 12, 12], LIGHT = [208, 208, 208], RED = [218, 26, 0];
+var PHI = 0.6180339887498949, TAU = Math.PI * 2;
+
+/* ---- helpers ------------------------------------------------------------------------------ */
+function hr(i, s) {
+  var x = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul((s | 0) + 0x632be5ab, 0xc2b2ae35);
+  x ^= x >>> 16; x = Math.imul(x, 0x7feb352d); x ^= x >>> 15; x = Math.imul(x, 0x846ca68b); x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+function clamp(v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; }
+function ease(t) { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function smooth(a, b, t) { t = clamp((t - a) / (b - a)); return t * t * (3 - 2 * t); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function P(x, y, r, g, o) { o = o || {};
+  return { x: x, y: y, r: r, g: g || 0, a: o.a === undefined ? 1 : o.a, w: o.w || 0, amp: o.amp || 0, ph: o.ph || 0, fq: o.fq || 0 }; }
+
+/* ---- shape makers (coordinates relative to the stage centre) ------------------------------ */
+function colourRing() {
+  var a = [];
+  [96, 150, 204, 258].forEach(function (R, j) {
+    var n = Math.round(TAU * R / 17);
+    for (var k = 0; k < n; k++) { var f = k / n, t = f * TAU - Math.PI / 2;
+      a.push(P(R * Math.cos(t), R * Math.sin(t), 4.6 - j * .35, .94 * f)); }
+  });
+  return a;
+}
+function rrPoint(w, h, rad, s) {
+  var hw = w / 2, hh = h / 2, sw = w - 2 * rad, sh = h - 2 * rad, q = Math.PI * rad / 2;
+  var segs = [['l', -hw + rad, -hh, 1, 0, sw], ['a', hw - rad, -hh + rad, -Math.PI / 2, q],
+              ['l', hw, -hh + rad, 0, 1, sh], ['a', hw - rad, hh - rad, 0, q],
+              ['l', hw - rad, hh, -1, 0, sw], ['a', -hw + rad, hh - rad, Math.PI / 2, q],
+              ['l', -hw, hh - rad, 0, -1, sh], ['a', -hw + rad, -hh + rad, Math.PI, q]];
+  for (var i = 0; i < segs.length; i++) { var g = segs[i], len = g[0] === 'l' ? g[5] : g[4];
+    if (s <= len || i === segs.length - 1) {
+      if (g[0] === 'l') return [g[1] + g[3] * s, g[2] + g[4] * s];
+      var ang = g[3] + (rad > 0 ? s / rad : 0); return [g[1] + rad * Math.cos(ang), g[2] + rad * Math.sin(ang)];
+    }
+    s -= len; }
+}
+function rectOutline(w, h, rad, sp, r, g, ox, oy) {
+  ox = ox || 0; oy = oy || 0;
+  var L = 2 * (w - 2 * rad) + 2 * (h - 2 * rad) + TAU * rad, n = Math.round(L / sp), a = [];
+  for (var k = 0; k < n; k++) { var p = rrPoint(w, h, rad, k * L / n); a.push(P(p[0] + ox, p[1] + oy, r, g)); }
+  return a;
+}
+function fillRect(x0, y0, w, h, step, r, g) {
+  var a = [];
+  for (var y = y0 + step / 2; y < y0 + h; y += step) for (var x = x0 + step / 2; x < x0 + w; x += step) a.push(P(x, y, r, g));
+  return a;
+}
+function line(x0, y0, x1, y1, sp, r, g) {
+  var L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / sp)), a = [];
+  for (var k = 0; k <= n; k++) a.push(P(lerp(x0, x1, k / n), lerp(y0, y1, k / n), r, g));
+  return a;
+}
+function disc(cx, cy, R, step, r, g, cut) {
+  var a = [];
+  for (var y = -R; y <= R; y += step) for (var x = -R; x <= R; x += step)
+    if (x * x + y * y <= R * R && (!cut || cut(x, y))) a.push(P(cx + x, cy + y, r, g));
+  return a;
+}
+function phyllo(n, R, r, g) {
+  var a = [];
+  if (n === 1) return [P(0, 0, r, g)];
+  if (n === 2) return [P(-26, 0, r, g), P(26, 0, r, g)];
+  if (n === 4) return [P(-26, -26, r, g), P(26, -26, r, g), P(26, 26, r, g), P(-26, 26, r, g)];
+  if (n === 8) { for (var k = 0; k < 8; k++) a.push(P(52 * Math.cos(k / 8 * TAU), 52 * Math.sin(k / 8 * TAU), r, g)); return a; }
+  var c = R / Math.sqrt(n);
+  for (var j = 0; j < n; j++) { var rad = c * Math.sqrt(j + .5), t = j * 2.399963229728653;
+    a.push(P(rad * Math.cos(t), rad * Math.sin(t), r, g * (rad / R))); }
+  return a;
+}
+var TD = {};
+function textDots(str, px, weight, step, r, g) {
+  var key = str + px + weight + step; if (TD[key]) return TD[key].map(function (p) { return P(p.x, p.y, r, g); });
+  var c = document.createElement('canvas'), x = c.getContext('2d');
+  x.font = weight + ' ' + px + 'px ' + FONT;
+  var w = Math.ceil(x.measureText(str).width) + 20, h = Math.ceil(px * 1.4);
+  c.width = w; c.height = h; x.font = weight + ' ' + px + 'px ' + FONT; x.fillStyle = '#000';
+  x.textBaseline = 'alphabetic'; x.fillText(str, 10, px);
+  var d = x.getImageData(0, 0, w, h).data, pts = [], minx = 1e9, maxx = -1e9, miny = 1e9, maxy = -1e9;
+  for (var yy = 0; yy < h; yy += step) for (var xx = 0; xx < w; xx += step)
+    if (d[(yy * w + xx) * 4 + 3] > 120) { pts.push([xx, yy]); minx = Math.min(minx, xx); maxx = Math.max(maxx, xx); miny = Math.min(miny, yy); maxy = Math.max(maxy, yy); }
+  var cx = (minx + maxx) / 2, cy = (miny + maxy) / 2;
+  TD[key] = pts.map(function (p) { return { x: p[0] - cx, y: p[1] - cy }; });
+  return textDots(str, px, weight, step, r, g);
+}
+function person(cx, s, g, red) {
+  var hx = cx, a = [];
+  a = a.concat(disc(hx, -62 * s, 30 * s, 7, 2.6, g));
+  a = a.concat(disc(hx, 95 * s, 80 * s, 8, 2.6, g, function (x, y) {
+    var px = hx + x, py = 95 * s + y; return y <= 0 && py >= 14 * s && Math.hypot(px - red[0], py - red[1]) > 15; }));
+  return a;
+}
+
+/* ---- layouts: each is { groups: [[points]...], red: {x,y,r}, breathe } ---------------------- */
+var LAY = {};
+function def(name, fn, red, extra) { LAY[name] = { fn: fn, red: red || { x: 0, y: 0, r: 10 }, extra: extra || {} }; }
+
+def('button', function () { return []; });
+def('dot', function () { return []; });
+def('ring', function () { return [colourRing()]; });
+def('words', function () { return [textDots('Get started', 150, 400, 7, 2.7, 0)]; });
+def('rectA', function () { return [rectOutline(380, 104, 0, 13, 3.2, 0)]; });
+def('rectB', function () { return [rectOutline(540, 146, 0, 13, 3.2, 0)]; });
+def('rectC', function () { return [rectOutline(540, 146, 73, 13, 3.2, 0)]; });
+def('rest', function () { return [rectOutline(380, 104, 14, 13, 3.2, 0)]; });
+def('pressed', function () { return [fillRect(-190, -52, 380, 104, 12, 2.9, 0)]; });
+def('busy', function () { var a = [];
+  for (var k = 0; k < 12; k++) { var t = k / 12 * TAU; a.push(P(46 * Math.cos(t), 46 * Math.sin(t), 5.4, .86 * k / 12, { w: 2.6 })); }
+  return [a]; });
+def('done', function () { return [line(-58, 0, -18, 40, 11, 4, 0).concat(line(-18, 40, 62, -44, 11, 4, 0).slice(1))]; });
+def('crowd', function () { var a = [];
+  for (var k = 0; a.length < 760; k++) { var u = Math.sqrt(hr(k, 11)), v = hr(k, 12) * TAU, x = u * 650 * Math.cos(v), y = u * 280 * Math.sin(v);
+    if (Math.hypot(x, y) < 26) continue;
+    a.push(P(x, y, 1.4 + 6.2 * Math.pow(hr(k, 13), 3), .78 * hr(k, 14))); }
+  return [a]; });
+function chainPts() { var a = [], X0 = -560, X1 = 560, fy = function (x) { return 90 * Math.sin((x - X0) / (X1 - X0) * TAU * .75); };
+  for (var x = X0; x <= X1 + .1; x += 14) { var node = Math.abs(((x - X0) % 140)) < .1; a.push(P(x, fy(x), node ? 7.5 : 1.8, node ? 0 : .5)); }
+  return a; }
+def('chain', function () { return [chainPts()]; });
+def('balance', function () {
+  var a = [], ang = -5 * Math.PI / 180, ca = Math.cos(ang), sa = Math.sin(ang), py = -70;
+  function rot(x) { return [x * ca, py + x * sa]; }
+  for (var x = -300; x <= 300; x += 12) { var p = rot(x); a.push(P(p[0], p[1], 3, 0)); }
+  a = a.concat(line(0, py, -58, 76, 12, 2.6, .35), line(-58, 76, 58, 76, 12, 2.6, .35).slice(1), line(58, 76, 0, py, 12, 2.6, .35).slice(1, -1));
+  [-300, 300].forEach(function (x) { var e = rot(x);
+    a = a.concat(line(e[0], e[1] + 12, e[0], e[1] + 70, 12, 1.8, .5));
+    for (var k = 0; k <= 14; k++) { var t = k / 14 * Math.PI; a.push(P(e[0] + 66 * Math.cos(t), e[1] + 70 + 40 * Math.sin(t), 3, 0)); } });
+  return [a]; });
+[2, 4, 8, 32, 128, 512, 2000].forEach(function (n) {
+  def('d' + n, function () { return [phyllo(n, n <= 8 ? 52 : Math.min(330, 13 * Math.sqrt(n) + 40), Math.max(1.9, 9 / Math.pow(n, .22)), n <= 8 ? 0 : .5)]; });
+});
+def('islands', function () {
+  var C = [[-760, -200, 'grid', 0], [-470, 170, 'disc', .3], [-160, -250, 'line', .5], [120, 210, 'scatter', .15], [420, -180, 'ring', .6],
+           [760, 140, 'grid', .25], [-760, 230, 'ring', .4], [740, -250, 'scatter', .1], [-120, 40, 'disc', .55]];
+  var a = [], per = Math.floor(2000 / C.length);
+  C.forEach(function (c, j) {
+    var cx = c[0], cy = c[1], ty = c[2], g = c[3], pts = [], o = { amp: 9, fq: .45 + .13 * j, ph: j * 1.37 };
+    if (ty === 'grid') { var side = Math.ceil(Math.sqrt(per)); for (var k = 0; k < per; k++) pts.push([(k % side - side / 2) * 9, (Math.floor(k / side) - side / 2) * 9]); }
+    if (ty === 'disc') { phyllo(per, 82, 1, 0).forEach(function (p) { pts.push([p.x, p.y]); }); }
+    if (ty === 'line') { for (var k2 = 0; k2 < per; k2++) { var row = k2 % 3, col = Math.floor(k2 / 3); var lx = (col - per / 6) * 7, ly = (row - 1) * 9;
+      pts.push([lx * Math.cos(-.35) - ly * Math.sin(-.35), lx * Math.sin(-.35) + ly * Math.cos(-.35)]); } }
+    if (ty === 'scatter') { for (var k3 = 0; k3 < per; k3++) { var u = 95 * Math.sqrt(hr(k3, 40 + j)), v = hr(k3, 60 + j) * TAU; pts.push([u * Math.cos(v), u * 0.8 * Math.sin(v)]); } }
+    if (ty === 'ring') { for (var k4 = 0; k4 < per; k4++) { var R = k4 % 2 ? 62 : 84, v2 = k4 / per * TAU * 1.0 + (k4 % 2) * .05; pts.push([R * Math.cos(v2), R * Math.sin(v2)]); } }
+    pts.forEach(function (p) { a.push(P(cx + p[0], cy + p[1], 2.3, g, o)); });
+  });
+  return [a]; });
+function shells(radii, total, r) {
+  var a = [], sum = radii.reduce(function (s, x) { return s + x; }, 0);
+  radii.forEach(function (R, j) {
+    var n = Math.round(total * R / sum), w = (j % 2 ? -1 : 1) * .05;
+    for (var k = 0; k < n; k++) { var sub = k % 3, rr = R + (sub - 1) * 9, t = k / n * TAU + sub * .03;
+      a.push(P(rr * Math.cos(t), rr * Math.sin(t), r, j * .14, { w: w })); }
+  });
+  return a;
+}
+def('shells', function () { return [shells([70, 130, 190, 250, 310], 2000, 2.4)]; }, null, { breathe: .025 });
+def('room', function () { return [shells(ROOM, 2000, 2.1)]; }, null, { breathe: .012 });
+var ROOM = [200, 228, 256, 284, 312];
+function roomPlus(more, red) { return function () { return [shells(ROOM, 2000, 2.1)].concat(more(red)); }; }
+var RU = { x: 0, y: 52, r: 9 }, RE = { x: 0, y: 60, r: 9 };
+def('user', roomPlus(function (red) { return [person(0, 1, 0, [red.x, red.y])]; }, RU), RU, { breathe: .012 });
+def('needs', roomPlus(function (red) {
+  var orb = [];
+  [[120, 6, .32], [148, 9, -.24], [176, 12, .17]].forEach(function (o) {
+    for (var k = 0; k < o[1]; k++) { var t = k / o[1] * TAU; orb.push(P(o[0] * Math.cos(t), 10 + o[0] * Math.sin(t), 3.6, .4, { w: o[2] })); } });
+  return [person(0, 1, 0, [red.x, red.y]), orb]; }, RU), RU, { breathe: .012 });
+def('empathy', roomPlus(function (red) {
+  return [person(-74, .82, 0, [red.x, red.y]).concat(person(74, .82, .42, [red.x, red.y]))]; }, RE), RE, { breathe: .012 });
+def('craft', roomPlus(function () {
+  var grid = [];
+  for (var gx = -176; gx <= 176; gx += 22) for (var gy = -176; gy <= 176; gy += 22) if (Math.hypot(gx, gy) < 180) grid.push(P(gx, gy, 1.7, .55));
+  return [grid.concat(rectOutline(264, 66, 16, 11, 3, 0))]; }), null, { breathe: .012 });
+def('screen', function () {
+  var a = [];
+  a = a.concat(rectOutline(820, 460, 18, 12, 2.4, .55));
+  a = a.concat(fillRect(-396, -216, 792, 34, 10, 2.5, 0));
+  a = a.concat(fillRect(-380, -164, 300, 20, 10, 3, 0));
+  [-380, -120, 140].forEach(function (x, j) {
+    a = a.concat(rectOutline(240, 170, 10, 12, 2.2, .45, x + 120, -25));
+    [180, 150, 110].forEach(function (w, k) { a = a.concat(fillRect(x + 20, -90 + k * 22 + (k ? 50 : 0) - (k ? 30 : 0), w, 10, 10, 2.3, k ? .62 : .1)); });
+  });
+  for (var k = 0; k < 4; k++) a = a.concat(fillRect(-380, 92 + k * 26, [460, 420, 480, 300][k], 10, 12, 2.2, .7));
+  a = a.concat(fillRect(220, 150, 160, 46, 9, 2.6, 0));
+  return [a]; });
+def('apollo', function () { return []; }, { x: 0, y: -40, r: 13 });
+
+/* assignment: dots in a group's index range take points by angle, each dot keeping its own golden-ratio
+   angle fraction across every layout, so morphs read as radial and coherent */
+var HFR = new Float32Array(N); for (var hi = 0; hi < N; hi++) HFR[hi] = (hi * PHI) % 1;
+var CACHE = {};
+function assign(name) {
+  if (CACHE[name]) return CACHE[name];
+  var groups = LAY[name].fn(), out = new Array(N), base = 0;
+  groups.forEach(function (pts) {
+    var n = Math.min(pts.length, N - base);
+    var srt = pts.slice(0, n).sort(function (p, q) { return Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x) || (p.x * p.x + p.y * p.y) - (q.x * q.x + q.y * q.y); });
+    var idx = []; for (var i = base; i < base + n; i++) idx.push(i);
+    idx.sort(function (i, j) { return HFR[i] - HFR[j]; });
+    for (var k = 0; k < n; k++) out[idx[k]] = srt[k];
+    base += n;
+  });
+  CACHE[name] = out; return out;
+}
+
+/* ---- timeline -------------------------------------------------------------------------------- */
+var KF = [], TX = [], T = 0, BEATS = [];
+function kf(name, move, hold) { KF.push({ L: name, t0: T, move: move, hold: hold }); T += move + hold; return KF.length - 1; }
+function arr(i) { return KF[i].t0 + KF[i].move; }
+function end(i) { return KF[i].t0 + KF[i].move + KF[i].hold; }
+function say(parts, until, opt) { opt = opt || {}; if (typeof parts === 'string') parts = [[parts, opt.at]];
+  TX.push({ parts: parts, end: until, size: opt.size || 46, weight: opt.weight || 300, y: opt.y || 830, nofade: opt.nofade });
+  BEATS.push(parts[0][1]); }
+function bloom(name, move, hold, back, rest) { var i = kf(name, move, hold); kf('dot', back, rest); return i; }
+var BIG = { size: 84, weight: 300, y: 850 };
+
+kf('button', 0, 4.0);
+say([['It started with a button.', .8]], 4.4);
+var i0 = kf('dot', .01, CUT === 'a' ? 2.9 : 2.6); say([['One small thing.', 4.6]], end(i0) - .1);
+
+if (CUT === 'a') {
+  var i = bloom('ring', 1.1, 1.7, .9, .5); say([['But it has a colour.', KF[i].t0 + .25]], end(i) + .6);
+  i = bloom('words', 1.1, 1.7, .9, .5); say([['It has words.', KF[i].t0 + .25]], end(i) + .6);
+  var a = kf('rectA', 1.0, .9), b = kf('rectB', .8, .8), c = kf('rectC', .8, 1.1); kf('dot', .9, .5);
+  say([['A shape.', arr(a) - .4], [' A size.', arr(b) - .3], [' A corner.', arr(c) - .3]], end(c) + .6);
+  a = kf('rest', 1.0, .8); b = kf('pressed', .45, .8); c = kf('busy', .6, 1.2); var d = kf('done', .6, 1.0); kf('dot', .9, .5);
+  say([['It waits.', arr(a) - .4], [' It listens.', arr(b) - .2], [' It answers.', arr(c) - .2]], end(d) + .6);
+  i = bloom('crowd', 1.5, 2.0, 1.1, .5); say([['It has to work for everyone who will ever touch it.', KF[i].t0 + .25]], end(i) + .7);
+  i = bloom('chain', 1.3, 1.7, 1.0, .6); say([['And every choice has a reason.', KF[i].t0 + .25]], end(i) + .6);
+} else {
+  [['ring', 'Colour.'], ['words', 'Words.'], ['rectC', 'Shape.'], ['busy', 'State.'], ['chain', 'Reason.'], ['balance', 'Judgement.']].forEach(function (w) {
+    var j = kf(w[0], .55, .8); kf('dot', .45, .15); say([[w[1], KF[j].t0 + .05]], end(j) + .3, BIG);
+  });
+  kf('dot', .01, .6);
+}
+
+var s0 = T; ['d2', 'd4', 'd8', 'd32', 'd128', 'd512'].forEach(function (n, k) { kf(n, [.55, .45, .45, .5, .55, .6][k], [.3, .25, .25, .25, .25, .3][k]); });
+var e = kf('d2000', .8, 1.6); say([['Now think of everything else.', s0 + .2]], end(e) + .3); kf('dot', 1.0, .3);
+var il = kf('islands', 1.8, 3.6);
+say([['Most of it lives in a hundred places.', KF[il].t0 + .4], [' In files.', arr(il) + .5], [' In heads.', arr(il) + 1.3], [' In habits.', arr(il) + 2.1]], end(il) + .3);
+var one = kf('dot', 1.8, 1.6); say([['What if it lived in one?', KF[one].t0 + .6]], end(one) + .1);
+var sh = kf('shells', 1.7, CUT === 'a' ? 2.8 : 3.0);
+say([['One place that knows what everything is.', KF[sh].t0 + .3], [' And why.', arr(sh) + 1.4]], end(sh) + (CUT === 'a' ? .6 : .2));
+
+if (CUT === 'a') {
+  kf('dot', 1.1, .4);
+  var sc = bloom('screen', 1.5, 2.6, 1.3, .2); say([['So the next thing begins with everything we know.', KF[sc].t0 + .3]], end(sc) + .9);
+} else {
+  var rm = kf('room', 1.6, 2.2); say([['So you have room for what matters.', KF[rm].t0 + .3]], end(rm) + .1);
+  [['user', 'The user.', 1.1, 1.5], ['needs', 'Their needs.', 1.0, 1.5], ['empathy', 'Your empathy.', 1.1, 1.6], ['craft', 'Your craft.', 1.2, 1.9]].forEach(function (w) {
+    var j = kf(w[0], w[2], w[3]); say([[w[1], KF[j].t0 + .2]], end(j) + .1, BIG); });
+  kf('dot', 1.6, .3);
+}
+var mt = kf('dot', .01, 2.6); say([['Many things.', KF[mt].t0 + .3], [' In one.', KF[mt].t0 + 1.2]], end(mt));
+var ap = kf('apollo', 1.2, 4.5); say([['Apollo', arr(ap) - .5]], end(ap) + 1, { size: 140, weight: 400, y: CY + 175, nofade: true });
+var DUR = T;
+
+/* ---- state at t ------------------------------------------------------------------------------ */
+var BX = [new Float32Array(N), new Float32Array(N)], BY = [new Float32Array(N), new Float32Array(N)],
+    BR = [new Float32Array(N), new Float32Array(N)], BG = [new Float32Array(N), new Float32Array(N)],
+    BA = [new Float32Array(N), new Float32Array(N)], BP = [new Uint8Array(N), new Uint8Array(N)];
+function evalInto(b, k, tl) {
+  var L = LAY[KF[k].L], pts = assign(KF[k].L), br = L.extra.breathe ? 1 + L.extra.breathe * Math.sin(TAU * tl / 3.2) : 1;
+  for (var i = 0; i < N; i++) { var p = pts[i]; if (!p) { BP[b][i] = 0; continue; }
+    var x = p.x, y = p.y;
+    if (p.w) { var c = Math.cos(p.w * tl), s = Math.sin(p.w * tl), nx = x * c - y * s; y = x * s + y * c; x = nx; }
+    if (p.amp) { x += p.amp * Math.sin(TAU * p.fq * tl + p.ph); y += p.amp * Math.cos(TAU * p.fq * .8 * tl + p.ph); }
+    BX[b][i] = x * br; BY[b][i] = y * br; BR[b][i] = p.r; BG[b][i] = p.g; BA[b][i] = p.a; BP[b][i] = 1; }
+}
+function kfAt(t) { var k = 0; for (var i = 0; i < KF.length; i++) if (KF[i].t0 <= t) k = i; return k; }
+
+/* ---- drawing --------------------------------------------------------------------------------- */
+var cv = document.getElementById('c'), ctx = cv.getContext('2d'), SC = 1, OX = 0, OY = 0;
+function fit() { var dpr = window.devicePixelRatio || 1, vw = window.innerWidth, vh = window.innerHeight;
+  if (EXPORT) { vw = W; vh = H; dpr = 1; }
+  cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+  SC = Math.min(vw / W, vh / H) * dpr; OX = (vw * dpr - W * SC) / 2; OY = (vh * dpr - H * SC) / 2; }
+var GREY = []; for (var q = 0; q <= 32; q++) { var f = q / 32;
+  GREY.push('rgb(' + [0, 1, 2].map(function (c) { return Math.round(lerp(INK[c], LIGHT[c], f)); }).join(',') + ')'); }
+function rgb(c) { return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')'; }
+
+function drawButton(t) {
+  if (t >= 3.5) return;
+  var fade = smooth(0, .5, t), press = (t > 1.8 && t < 2.15) ? 1 - .04 * Math.sin((t - 1.8) / .35 * Math.PI) : 1, m = ease((t - 2.3) / 1.2);
+  var w = lerp(380, 20, m) * press, h = lerp(104, 20, m) * press, rad = lerp(14, 10, m);
+  var mc = smooth(.62, .95, m); ctx.globalAlpha = fade; ctx.fillStyle = rgb([lerp(INK[0], RED[0], mc), lerp(INK[1], RED[1], mc), lerp(INK[2], RED[2], mc)]);
+  ctx.beginPath(); ctx.roundRect(CX - w / 2, CY - h / 2, w, h, Math.min(rad, w / 2, h / 2)); ctx.fill();
+  var la = fade * (1 - smooth(2.3, 2.6, t));
+  if (la > 0) { ctx.globalAlpha = la; ctx.fillStyle = '#FFFFFF'; ctx.font = '400 ' + (34 * press) + 'px ' + FONT;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Get started', CX, CY + 2); }
+  ctx.globalAlpha = 1;
+}
+function drawText(t) {
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'; ctx.fillStyle = '#0C0C0C';
+  TX.forEach(function (it) {
+    if (t < it.parts[0][1] - .01 || t > it.end + .01) return;
+    ctx.font = it.weight + ' ' + it.size + 'px ' + FONT;
+    var full = it.parts.map(function (p) { return p[0]; }).join(''), x = CX - ctx.measureText(full).width / 2, pre = '';
+    var out = it.nofade ? 1 : 1 - smooth(it.end - .45, it.end, t);
+    it.parts.forEach(function (p) {
+      var a = smooth(p[1], p[1] + .55, t) * out, rise = (1 - smooth(p[1], p[1] + .7, t)) * 10;
+      if (a > .003) { ctx.globalAlpha = a; ctx.fillText(p[0], x + ctx.measureText(pre).width, it.y + rise); }
+      pre += p[0];
+    });
+  });
+  ctx.globalAlpha = 1;
+}
+function renderAt(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(SC, 0, 0, SC, OX, OY);
+  var k = kfAt(t), cur = KF[k], u = cur.move > 0 ? clamp((t - cur.t0) / cur.move) : 1;
+  if (k > 0) evalInto(0, k - 1, KF[k - 1].move + KF[k - 1].hold); else BP[0].fill(0);
+  evalInto(1, k, t - cur.t0);
+  for (var i = 0; i < N; i++) {
+    var pa = BP[0][i], pb = BP[1][i]; if (!pa && !pb) continue;
+    var d = hr(i, k * 7 + 1), p = ease((u - d * .32) / .68);
+    var ax = pa ? BX[0][i] : 0, ay = pa ? BY[0][i] : 0, ar = pa ? BR[0][i] : 0, ag = pa ? BG[0][i] : BG[1][i], aa = pa ? BA[0][i] : 0;
+    var bx = pb ? BX[1][i] : 0, by = pb ? BY[1][i] : 0, br = pb ? BR[1][i] : 0, bg = pb ? BG[1][i] : ag, ba = pb ? BA[1][i] : 0;
+    var r = lerp(ar, br, p), al = lerp(aa, ba, p); if (r < .15 || al < .01) continue;
+    ctx.globalAlpha = al; ctx.fillStyle = GREY[Math.round(clamp(lerp(ag, bg, p)) * 32)];
+    ctx.beginPath(); ctx.arc(CX + lerp(ax, bx, p), CY + lerp(ay, by, p), r, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  var ra = k > 0 ? LAY[KF[k - 1].L].red : LAY[cur.L].red, rb = LAY[cur.L].red, ue = ease(u);
+  if (t >= 3.5) { var rr = lerp(ra.r, rb.r, ue);
+    if (rr > .2) { ctx.fillStyle = rgb(RED); ctx.beginPath(); ctx.arc(CX + lerp(ra.x, rb.x, ue), CY + lerp(ra.y, rb.y, ue), rr, 0, TAU); ctx.fill(); } }
+  drawButton(t);
+  drawText(t);
+}
+
+/* ---- sound: a quiet pad, a soft bell as each idea opens, a low touch on the press ----------- */
+var AC = null;
+function bell(ac, out, when, f, g, dec) {
+  [[1, g], [2.76, g * .22], [5.4, g * .06]].forEach(function (h) {
+    var o = ac.createOscillator(), e = ac.createGain(); o.type = 'sine'; o.frequency.value = f * h[0];
+    e.gain.setValueAtTime(0, when); e.gain.linearRampToValueAtTime(h[1], when + .012); e.gain.exponentialRampToValueAtTime(.0001, when + dec / h[0] * 1.2);
+    o.connect(e); e.connect(out); o.start(when); o.stop(when + dec + .1); });
+}
+function startSound(from) {
+  stopSound(); var ac = new (window.AudioContext || window.webkitAudioContext)(); AC = ac;
+  var now = ac.currentTime + .05, master = ac.createGain(); master.gain.value = .55; master.connect(ac.destination);
+  var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 820; lp.connect(master);
+  var pad = ac.createGain(); pad.gain.setValueAtTime(0, now); pad.gain.linearRampToValueAtTime(.06, now + 3); pad.connect(lp);
+  [73.42, 110, 164.81, 220.5].forEach(function (f, j) { var o = ac.createOscillator(); o.type = j % 2 ? 'triangle' : 'sine';
+    o.frequency.value = f; o.detune.value = (j - 1.5) * 4; o.connect(pad); o.start(now); o.stop(now + DUR - from + 4); });
+  pad.gain.setValueAtTime(.06, now + Math.max(0, DUR - from - 3)); pad.gain.linearRampToValueAtTime(0, now + DUR - from + 3);
+  var NOTES = [587.33, 659.25, 880, 987.77, 1174.66, 880, 739.99], n = 0;
+  KF.forEach(function (K, j) {
+    var at = K.t0 + .05 - from; if (K.L === 'dot' || K.L === 'button' || at < 0) { n++; return; }
+    var big = K.L === 'apollo';
+    bell(ac, master, now + at, big ? 587.33 : NOTES[n++ % NOTES.length], big ? .07 : (/^d\d/.test(K.L) ? .025 : .04), big ? 5 : 2.4);
+    if (big) bell(ac, master, now + at + .02, 1174.66, .025, 5);
+  });
+  if (from < 1.8) { var o = ac.createOscillator(), e = ac.createGain(), w = now + 1.8 - from; o.frequency.value = 98;
+    e.gain.setValueAtTime(0, w); e.gain.linearRampToValueAtTime(.12, w + .01); e.gain.exponentialRampToValueAtTime(.0001, w + .5);
+    o.connect(e); e.connect(master); o.start(w); o.stop(w + .6); }
+}
+function stopSound() { if (AC) { try { AC.close(); } catch (e) {} AC = null; } }
+
+/* ---- playback -------------------------------------------------------------------------------- */
+var playing = false, tNow = 0, wall0 = 0, t0 = 0;
+function frame() { if (!playing) return; tNow = t0 + (performance.now() - wall0) / 1000;
+  if (tNow >= DUR) { tNow = DUR; pause(); } renderAt(tNow); if (playing) requestAnimationFrame(frame); }
+function play() { if (tNow >= DUR - .05) tNow = 0; playing = true; t0 = tNow; wall0 = performance.now(); document.body.classList.add('playing');
+  startSound(tNow); requestAnimationFrame(frame); }
+function pause() { playing = false; stopSound(); document.body.classList.remove('playing'); }
+function jump(dir) { var bs = BEATS.slice().sort(function (a, b) { return a - b; }), tgt = 0;
+  if (dir > 0) { tgt = DUR; for (var i = 0; i < bs.length; i++) if (bs[i] > tNow + .05) { tgt = bs[i]; break; } }
+  else { for (var j = bs.length - 1; j >= 0; j--) if (bs[j] < tNow - .6) { tgt = bs[j]; break; } }
+  tNow = Math.max(0, tgt - .2); if (playing) { t0 = tNow; wall0 = performance.now(); startSound(tNow); } else renderAt(tNow + 1.0); }
+
+function keys() { var out = [];
+  KF.forEach(function (K, j) {
+    if (K.L === 'dot' && K.hold < 1) return;
+    var t = K.L === 'button' ? 1.2 : arr(j) + Math.min(K.hold * .6, Math.max(0, K.hold - .05));
+    var words = TX.filter(function (it) { return t >= it.parts[0][1] && t <= it.end; }).map(function (it) {
+      return it.parts.filter(function (p) { return t >= p[1]; }).map(function (p) { return p[0]; }).join(''); }).join(' / ');
+    out.push({ t: +t.toFixed(3), layout: K.L, words: words });
+    if (K.L === 'button') out.push({ t: 2.9, layout: 'button → dot', words: 'It started with a button.' });
+  });
+  return out; }
+
+if (EXPORT) document.body.classList.add('export');
+Promise.all([document.fonts.load('300 46px "Univers House"'), document.fonts.load('400 46px "Univers House"')]).then(function () {
+  Object.keys(LAY).forEach(assign);
+  fit(); var m = /[?&]t=([\d.]+)/.exec(location.search); tNow = m ? +m[1] : 1.2; renderAt(tNow);
+  window.addEventListener('resize', function () { fit(); renderAt(tNow); });
+  if (!EXPORT) {
+    cv.addEventListener('click', function () { playing ? pause() : play(); });
+    window.addEventListener('keydown', function (ev) {
+      if (ev.code === 'Space') { ev.preventDefault(); playing ? pause() : play(); }
+      if (ev.code === 'ArrowRight') jump(1); if (ev.code === 'ArrowLeft') jump(-1); });
+  }
+  window.__anim = { duration: DUR, cut: CUT, keys: keys(), renderAt: function (t) { tNow = t; renderAt(t); },
+    fontOk: document.fonts.check('300 46px "Univers House"') };
+});
+})();
+</script>
+</body>
+</html>

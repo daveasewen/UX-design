@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo · It started with a single button · v5</title>
+<!--
+  Film B v5 (313-sq, 2026-10-02 12:35): v4 rebuilt on Dave's 18 scrub-bar comments (verbatim in notes/_lanes/313-sq/button-film/DAVE-COMMENTS-v4.md).
+  v4 (08:42) = v3 plus Dave's: "the effect I'm going for is the red dot emitting the others and dissolving rather than
+  just moving" · "the red full-stops have to be about half the size, remove the easing upwards animation" · "the fullstop just appears at
+  the end, no need for it to move from teh centre". v3 was built on Dave's words:
+   - "the button becomes one of the particles and become black on every case, it dissolves onto the graphics and then
+     returns to the centre as a red dot"
+   - "The start is just the text, the text appears as singe words in the centre, the sentence stays centred and centre
+     justified. the last word has a red full-stop. the text fades and the fullstop moves to the centre of the screen and
+     becomes a button."
+   - "lets keep the text in the centre of the screen the graphics will have to make space for the text."
+  Seat's reading, his to reverse: on the lines spoken over the dot alone, the red dot is the line's full stop (it rides
+  the end of the line as the words arrive); the close mirrors the open (the full stop becomes the button) and Apollo signs
+  beneath it. Colour beat = the Supercharge palette (color/supporting/*), injected at build. Univers embedded at build.
+  Deterministic: window.__anim.renderAt(t). ?export=1 hides all chrome, ?t=12 jumps. Review chrome: scrub bar + comments.
+-->
+<style>
+@font-face { font-family: "Univers House"; font-weight: 300; src: url(data:font/ttf;base64,__FONT_LT__) format("truetype"); }
+@font-face { font-family: "Univers House"; font-weight: 400; src: url(data:font/ttf;base64,__FONT_RG__) format("truetype"); }
+:root { --ink: #0C0C0C; --g: #767676; --g2: #B7B7B7; --rule: #E2E2E2; --red: #DA1A00; }
+html, body { margin: 0; height: 100%; background: #FFFFFF; overflow: hidden; }
+canvas { display: block; position: absolute; left: 0; top: 0; }
+body, input, button, textarea { font-family: "Univers House", Helvetica, Arial, sans-serif; }
+body.export #bar, body.export #panel, body.export #hint { display: none !important; }
+#hint { position: fixed; left: 16px; top: 14px; font-weight: 300; font-size: 13px; color: #9B9B9B; pointer-events: none; transition: opacity .6s; }
+body.playing #hint { opacity: 0; }
+#bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 20px 14px; background: rgba(255,255,255,.94);
+       border-top: 1px solid var(--rule); display: flex; align-items: center; gap: 14px; transition: opacity .4s; font-weight: 300; font-size: 13px; color: var(--ink); }
+body.playing.idle #bar { opacity: 0; }
+#bar button { font-size: 13px; font-weight: 400; background: none; border: 1px solid var(--ink); color: var(--ink); border-radius: 4px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+#bar button.solid { background: var(--ink); color: #fff; }
+#bar button:hover { background: #F0F0F0; } #bar button.solid:hover { background: #333; }
+#play { width: 64px; }
+#time { font-variant-numeric: tabular-nums; min-width: 104px; color: var(--g); }
+#track { position: relative; flex: 1; height: 34px; cursor: pointer; touch-action: none; }
+#rail { position: absolute; left: 0; right: 0; top: 20px; height: 2px; background: var(--rule); }
+#fill { position: absolute; left: 0; top: 20px; height: 2px; background: var(--ink); width: 0; }
+#head { position: absolute; top: 14px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--red); }
+.tick { position: absolute; top: 16px; width: 1px; height: 10px; background: var(--g2); }
+.pin { position: absolute; top: 0; width: 10px; height: 10px; margin-left: -5px; background: var(--ink); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); cursor: pointer; }
+.pin:hover { background: var(--red); }
+#tip { position: fixed; bottom: 62px; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 12px; padding: 5px 8px; border-radius: 3px;
+       max-width: 360px; pointer-events: none; display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#compose { position: fixed; bottom: 66px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); background: #fff;
+           border: 1px solid var(--ink); border-radius: 6px; padding: 12px; display: none; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+#compose p { margin: 0 0 8px; font-size: 12px; color: var(--g); }
+#compose textarea { width: 100%; box-sizing: border-box; min-height: 64px; font-size: 15px; font-weight: 300; border: 1px solid var(--rule); border-radius: 4px; padding: 8px; resize: vertical; }
+#compose .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+#compose button { font-size: 13px; background: none; border: 1px solid var(--ink); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+#compose button.solid { background: var(--ink); color: #fff; }
+#panel { position: fixed; right: 16px; bottom: 66px; width: min(380px, calc(100vw - 32px)); max-height: 60vh; overflow: auto; background: #fff;
+         border: 1px solid var(--ink); border-radius: 6px; display: none; font-weight: 300; }
+#panel header { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--rule); font-size: 13px; font-weight: 400; gap: 8px; }
+#panel header button { font-size: 12px; background: none; border: 1px solid var(--ink); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+#panel ol { list-style: none; margin: 0; padding: 0; }
+#panel li { padding: 10px 12px; border-bottom: 1px solid var(--rule); font-size: 14px; display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: start; }
+#panel li .t { color: var(--red); cursor: pointer; font-variant-numeric: tabular-nums; }
+#panel li .w { color: var(--g); font-size: 12px; display: block; margin-top: 2px; }
+#panel li .x { background: none; border: 0; color: var(--g); cursor: pointer; font-size: 16px; line-height: 1; }
+#toast { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 13px; padding: 7px 12px; border-radius: 4px; display: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">v5 &nbsp;·&nbsp; space · play / pause &nbsp;·&nbsp; ← → · beats &nbsp;·&nbsp; M · comment here</div>
+<div id="bar">
+  <button id="play" class="solid">Play</button>
+  <span id="time">0:00.0 / 0:00</span>
+  <div id="track"><div id="rail"></div><div id="fill"></div><div id="ticks"></div><div id="pins"></div><div id="head"></div></div>
+  <button id="add">Comment here</button>
+  <button id="list">Comments (0)</button>
+</div>
+<div id="tip"></div>
+<div id="compose"><p id="cwhen"></p><textarea id="ctext" placeholder="What should change here?"></textarea>
+  <div class="row"><button id="ccancel">Cancel</button><button id="csave" class="solid">Save comment</button></div></div>
+<div id="panel"><header><span>Comments</span><span><button id="copy">Copy</button> <button id="export">Export .md</button></span></header><ol id="clist"></ol></div>
+<div id="toast"></div>
+<script>
+(function () {
+'use strict';
+var W = 1920, H = 1080, CX = 960, CY = 540, N = 4700;
+var EXPORT = /[?&]export=1/.test(location.search);
+var FONT = '"Univers House", "Univers Next for HSBC", Helvetica, Arial, sans-serif';
+var INK = [12, 12, 12], LIGHT = [208, 208, 208], RED = [218, 26, 0];
+var SUPPORT = __SUPPORT__;
+var PHI = 0.6180339887498949, TAU = Math.PI * 2;
+var UP = -200;          /* compact drawings sit above the words */
+var BAND = 64;          /* half-height of the clear band the words need */
+var TS = 46, TW = 300;  /* line size and weight */
+var BW = 190, BH = 52, BRAD = 10;   /* the button, half its v4 size (Dave, 0:07.0) */
+
+/* ---- helpers ------------------------------------------------------------------------------ */
+function hr(i, s) {
+  var x = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul((s | 0) + 0x632be5ab, 0xc2b2ae35);
+  x ^= x >>> 16; x = Math.imul(x, 0x7feb352d); x ^= x >>> 15; x = Math.imul(x, 0x846ca68b); x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+function clamp(v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; }
+function ease(t) { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function smooth(a, b, t) { t = clamp((t - a) / (b - a)); return t * t * (3 - 2 * t); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function hex(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+function grey(g) { return [lerp(INK[0], LIGHT[0], g), lerp(INK[1], LIGHT[1], g), lerp(INK[2], LIGHT[2], g)]; }
+function mix(a, b, m) { return [lerp(a[0], b[0], m), lerp(a[1], b[1], m), lerp(a[2], b[2], m)]; }
+function P(x, y, r, g, o) { o = o || {};
+  var p = { x: x, y: y, r: r, c: o.c || grey(g || 0), w: o.w || 0, amp: o.amp || 0, ph: o.ph || 0, fq: o.fq || 0 };
+  for (var k in o) if (!(k in p)) p[k] = o[k]; return p; }
+function up(pts, dy) { dy = dy === undefined ? UP : dy; pts.forEach(function (p) { p.y += dy; }); return pts; }
+var MC = document.createElement('canvas').getContext('2d');
+function tw(s, size, weight) { MC.font = (weight || TW) + ' ' + (size || TS) + 'px ' + FONT; return MC.measureText(s).width; }
+
+/* ---- shape makers ---------------------------------------------------------------------------- */
+function rrPoint(w, h, rad, s) {
+  var hw = w / 2, hh = h / 2, sw = w - 2 * rad, sh = h - 2 * rad, q = Math.PI * rad / 2;
+  var segs = [['l', -hw + rad, -hh, 1, 0, sw], ['a', hw - rad, -hh + rad, -Math.PI / 2, q],
+              ['l', hw, -hh + rad, 0, 1, sh], ['a', hw - rad, hh - rad, 0, q],
+              ['l', hw - rad, hh, -1, 0, sw], ['a', -hw + rad, hh - rad, Math.PI / 2, q],
+              ['l', -hw, hh - rad, 0, -1, sh], ['a', -hw + rad, -hh + rad, Math.PI, q]];
+  for (var i = 0; i < segs.length; i++) { var g = segs[i], len = g[0] === 'l' ? g[5] : g[4];
+    if (s <= len || i === segs.length - 1) {
+      if (g[0] === 'l') return [g[1] + g[3] * s, g[2] + g[4] * s];
+      var ang = g[3] + (rad > 0 ? s / rad : 0); return [g[1] + rad * Math.cos(ang), g[2] + rad * Math.sin(ang)];
+    }
+    s -= len; }
+}
+function rectOutline(w, h, rad, sp, r, g, ox, oy) {
+  ox = ox || 0; oy = oy || 0; rad = Math.min(rad, w / 2, h / 2);
+  var L = 2 * (w - 2 * rad) + 2 * (h - 2 * rad) + TAU * rad, n = Math.max(4, Math.round(L / sp)), a = [];
+  for (var k = 0; k < n; k++) { var p = rrPoint(w, h, rad, k * L / n); a.push(P(p[0] + ox, p[1] + oy, r, g)); }
+  return a;
+}
+function inRR(x, y, w, h, rad) { var dx = Math.max(Math.abs(x) - (w / 2 - rad), 0), dy = Math.max(Math.abs(y) - (h / 2 - rad), 0); return dx * dx + dy * dy <= rad * rad; }
+function fillRR(w, h, rad, step, r, g, ox, oy) { var a = [];
+  for (var y = -h / 2 + step / 2; y < h / 2; y += step) for (var x = -w / 2 + step / 2; x < w / 2; x += step)
+    if (inRR(x, y, w, h, rad)) a.push(P(x + (ox || 0), y + (oy || 0), r, g));
+  return a; }
+function fillRect(x0, y0, w, h, step, r, g) { var a = [];
+  for (var y = y0 + step / 2; y < y0 + h; y += step) for (var x = x0 + step / 2; x < x0 + w; x += step) a.push(P(x, y, r, g));
+  return a; }
+function line(x0, y0, x1, y1, sp, r, g) {
+  var L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / sp)), a = [];
+  for (var k = 0; k <= n; k++) a.push(P(lerp(x0, x1, k / n), lerp(y0, y1, k / n), r, g));
+  return a; }
+function circle(cx, cy, R, sp, r, g) { var n = Math.max(6, Math.round(TAU * R / sp)), a = [];
+  for (var k = 0; k < n; k++) a.push(P(cx + R * Math.cos(k / n * TAU), cy + R * Math.sin(k / n * TAU), r, g)); return a; }
+/* sunflower spiral; tw0 > 0 turns it, slower towards the edge, so it twists */
+function phyllo(n, R, r, g, tw0) {
+  var a = [];
+  if (n === 2) return [P(-26, 0, r, g), P(26, 0, r, g)];
+  if (n === 4) return [P(-26, -26, r, g), P(26, -26, r, g), P(26, 26, r, g), P(-26, 26, r, g)];
+  if (n === 8) { for (var k = 0; k < 8; k++) a.push(P(52 * Math.cos(k / 8 * TAU + Math.PI), 52 * Math.sin(k / 8 * TAU + Math.PI), r, g)); return a; }
+  var c = R / Math.sqrt(n);
+  for (var j = 0; j < n; j++) { var rad = c * Math.sqrt(j + .5), t = j * 2.399963229728653, f = rad / R;
+    a.push(P(rad * Math.cos(t), rad * Math.sin(t), r * (1 + .25 * f), g * f, { tw: tw0 ? tw0 * (1 - .8 * f) : 0 })); }
+  return a; }
+
+/* ---- layouts --------------------------------------------------------------------------------- */
+var LAY = {};
+function def(name, fn, extra) { LAY[name] = { fn: fn, extra: extra || {} }; }
+var LINES = {
+  open: 'It started with a single button.', simple: 'One simple thing.', colour: 'But it needs colour.', label: 'It has a label.',
+  crowd: 'It has to work for everyone who will ever touch it.', reason: 'Every choice has a reason.',
+  divide: 'But what about everything else.', map: 'Most of them live in many places.',
+  one: 'What if it lived in one place?', shells: 'One place that knows what everything is.',
+  screen: 'So every project starts with everything we know.', pieces: 'of pieces, in one place.' };
+
+['button', 'dot', 'end', 'home'].forEach(function (n) { def(n, function () { return []; }, { home: true }); });
+
+/* colour: the full Supercharge palette as rings that fill the screen and twist, slower towards the edge (Dave, 0:11.8) */
+def('ring', function () {
+  var a = [], F = SUPPORT.length, J = 22;
+  for (var j = 0; j < J; j++) {
+    var R = 96 + j * 48, sp = 15 + R * .022, n = Math.round(TAU * R / sp), step = Math.min(4, Math.floor(j / J * 5)), w = .34 * (1 - .82 * j / (J - 1));
+    for (var k = 0; k < n; k++) { var f = k / n, t = f * TAU - Math.PI / 2, fam = Math.floor(f * F);
+      a.push(P(R * Math.cos(t), R * Math.sin(t), 4.4 + j * .14, 0, { c: hex(SUPPORT[fam][1][step]), tw: w })); }
+  }
+  return [a]; }, { band: LINES.colour });
+/* the label: back to the button, made of dots, with Continue on it (Dave, 0:17.8) */
+def('labelBtn', function () { return [up(fillRR(BW, BH, BRAD, 4.6, 2.7, 0))]; }, { overlay: 'Continue' });
+/* a shape: several flash up (Dave, 0:22.0) */
+def('tooltip', function () { return [up(rectOutline(240, 70, 10, 9, 2.6, 0, 0, -10).concat(line(-16, 25, 0, 44, 8, 2.6, 0), line(0, 44, 16, 25, 8, 2.6, 0).slice(1)))]; });
+def('square', function () { return [up(rectOutline(104, 104, 10, 9, 2.6, 0))]; });
+def('circleS', function () { return [up(circle(0, 0, 62, 9, 2.6, 0))]; });
+def('toggle', function () { return [up(rectOutline(150, 72, 36, 9, 2.6, 0).concat(fillRR(54, 54, 27, 6, 2.4, 0, -38, 0)))]; });
+def('card', function () { return [up(rectOutline(320, 200, 14, 10, 2.4, .2).concat(fillRect(-136, -76, 160, 14, 9, 2.2, .1), fillRect(-136, -40, 260, 9, 9, 1.9, .6), fillRect(-136, -20, 220, 9, 9, 1.9, .6), fillRR(110, 34, 8, 6, 2.2, 0, 89, 64)))]; });
+def('pill', function () { return [up(rectOutline(260, 64, 32, 9, 2.6, 0))]; });
+/* a size: the button grows and shrinks to underline it (Dave, 0:25.7) */
+def('sizeS', function () { return [up(rectOutline(110, 30, 8, 8, 2.4, 0))]; });
+def('sizeL', function () { return [up(rectOutline(400, 110, 14, 11, 3, 0))]; });
+def('sizeM', function () { return [up(rectOutline(BW, BH, BRAD, 9, 2.7, 0))]; });
+/* a corner: square to fully rounded */
+def('corner0', function () { return [up(rectOutline(320, 88, 0, 10, 2.8, 0))]; });
+def('corner1', function () { return [up(rectOutline(320, 88, 18, 10, 2.8, 0))]; });
+def('corner2', function () { return [up(rectOutline(320, 88, 44, 10, 2.8, 0))]; });
+/* state: a deeper box with a line across its middle; the red scans it, a blip answers, then the tick (Dave, 0:30.4) */
+function stateBox() { return rectOutline(470, 210, 14, 11, 2.7, 0).concat(line(-200, 0, 200, 0, 9, 2.1, .45).map(function (p) { p.blip = 1; return p; })); }
+def('sWait', function () { return [up(stateBox())]; });
+def('sListen', function () { return [up(stateBox())]; });
+def('sAnswer', function () { return [up(stateBox())]; }, { blip: true });
+def('done', function () { return [up(line(-58, 0, -18, 40, 11, 4, 0).concat(line(-18, 40, 62, -44, 11, 4, 0).slice(1)))]; });
+def('crowd', function () { var a = [];
+  for (var k = 0; a.length < 900; k++) { var u = Math.sqrt(hr(k, 11)), v = hr(k, 12) * TAU, x = u * 720 * Math.cos(v), y = u * 340 * Math.sin(v);
+    a.push(P(x, y, 1.4 + 6.2 * Math.pow(hr(k, 13), 3), .78 * hr(k, 14))); }
+  return [a]; }, { band: LINES.crowd });
+function fy(x) { return 90 * Math.sin((x + 560) / 1120 * TAU * .75); }
+def('chain', function () { var a = [];
+  for (var x = -560; x < 561; x += 14) { var node = Math.abs((x + 560) % 140) < .1; a.push(P(x, fy(x) + UP, node ? 7.5 : 1.8, node ? 0 : .5)); }
+  return [a]; });
+[2, 4, 8, 32, 128, 512, 2000].forEach(function (n) {
+  var R = n <= 8 ? 52 : Math.min(380, 13 * Math.sqrt(n) + 70), r = Math.max(1.9, 9 / Math.pow(n, .22)), big = n >= 512;
+  def('d' + n, function () { return [phyllo(n, R, r, n <= 8 ? 0 : .5, n >= 128 ? .28 : 0)]; }, big ? { band: LINES.divide } : {});
+});
+/* many places: a map — towns, a faint grid, and every road feeding one hub (Dave, 0:55.9) */
+var HUB = [0, -262];
+var TOWNS = [[-800, -300], [-520, -130], [-720, 240], [-330, 330], [330, 320], [730, 230], [560, -120], [810, -320], [-270, -420], [300, -430]];
+function road(j) { var t0 = TOWNS[j], dx = HUB[0] - t0[0], dy = HUB[1] - t0[1], L = Math.hypot(dx, dy), s = j % 2 ? 1 : -1;
+  return { a: t0, c: [(t0[0] + HUB[0]) / 2 - dy / L * L * .18 * s, (t0[1] + HUB[1]) / 2 + dx / L * L * .18 * s], b: HUB }; }
+function bez(R, s) { var u = 1 - s; return [u * u * R.a[0] + 2 * u * s * R.c[0] + s * s * R.b[0], u * u * R.a[1] + 2 * u * s * R.c[1] + s * s * R.b[1]]; }
+def('map', function () {
+  var a = [];
+  for (var gx = -900; gx <= 900; gx += 60) for (var gy = -480; gy <= 480; gy += 60) a.push(P(gx, gy, 1.2, .86));
+  TOWNS.forEach(function (t, j) {
+    a = a.concat(circle(t[0], t[1], 20, 9, 1.9, .25)); a.push(P(t[0], t[1], 4.2, 0));
+    for (var k = 0; k < 22; k++) { var u = 30 + 30 * hr(k, 300 + j), v = hr(k, 400 + j) * TAU; a.push(P(t[0] + u * Math.cos(v), t[1] + u * .8 * Math.sin(v), 1.5, .55)); }
+    for (var q = 0; q < 30; q++) a.push(P(t[0], t[1], 2.2, .3, { road: j, s0: q / 30 }));
+  });
+  [[16, 10], [30, 16], [46, 24]].forEach(function (c, i) { a = a.concat(circle(HUB[0], HUB[1], c[0], TAU * c[0] / c[1], 2.4 - i * .3, i * .2)); });
+  a.push(P(HUB[0], HUB[1], 6.5, 0));
+  return [a]; }, { band: LINES.map, roads: true });
+function shells(radii, total, r) {
+  var a = [], sum = radii.reduce(function (s, x) { return s + x; }, 0);
+  radii.forEach(function (R, j) {
+    var n = Math.round(total * R / sum), w = (j % 2 ? -1 : 1) * .07;
+    for (var k = 0; k < n; k++) { var sub = k % 3, rr = R + (sub - 1) * 9, t = k / n * TAU + sub * .03;
+      a.push(P(rr * Math.cos(t), rr * Math.sin(t), r, j * .14, { w: w })); }
+  });
+  return a; }
+def('shells', function () { return [shells([110, 170, 230, 290, 350], 2000, 2.4)]; }, { breathe: .02, band: LINES.shells });
+var SS = .66, SY = -222;
+def('screen', function () {
+  var a = [];
+  a = a.concat(rectOutline(820, 460, 18, 12, 2.4, .55));
+  a = a.concat(fillRect(-396, -216, 792, 34, 10, 2.5, 0));
+  a = a.concat(fillRect(-380, -164, 300, 20, 10, 3, 0));
+  [-380, -120, 140].forEach(function (x) {
+    a = a.concat(rectOutline(240, 170, 10, 12, 2.2, .45, x + 120, -25));
+    [[-90, 180, .1], [-48, 150, .62], [-26, 110, .62]].forEach(function (r) { a = a.concat(fillRect(x + 20, r[0], r[1], 10, 10, 2.3, r[2])); });
+  });
+  for (var k = 0; k < 4; k++) a = a.concat(fillRect(-380, 92 + k * 26, [460, 420, 480, 300][k], 10, 12, 2.2, .7));
+  a = a.concat(fillRect(220, 150, 160, 46, 9, 2.6, 0));
+  a.forEach(function (p) { p.x *= SS; p.y = p.y * SS + SY; p.r = Math.max(1.5, p.r * .86); });
+  return [a]; });
+/* thousands, and thousands (Dave, 1:19.3) */
+def('th1', function () { return [phyllo(2000, 430, 2.2, .45, .3)]; }, { band: LINES.pieces });
+def('th2', function () { return [phyllo(4600, 1120, 2.3, .55, .22)]; }, { band: LINES.pieces });
+def('stopHome', function () { return []; }, { home: true });
+
+/* assignment: every dot keeps its own golden-ratio angle fraction across layouts */
+var HFR = new Float32Array(N); for (var hi = 0; hi < N; hi++) HFR[hi] = (hi * PHI) % 1;
+var CACHE = {};
+function assign(name) {
+  if (CACHE[name]) return CACHE[name];
+  var groups = LAY[name].fn(), out = new Array(N), base = 0;
+  groups.forEach(function (pts) {
+    var n = Math.min(pts.length, N - base);
+    var srt = pts.slice(0, n).sort(function (p, q) { return Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x) || (p.x * p.x + p.y * p.y) - (q.x * q.x + q.y * q.y); });
+    var idx = []; for (var i = base; i < base + n; i++) idx.push(i);
+    idx.sort(function (i, j) { return HFR[i] - HFR[j]; });
+    for (var k = 0; k < n; k++) out[idx[k]] = srt[k];
+    base += n;
+  });
+  CACHE[name] = out; return out;
+}
+
+/* ---- words: centred on the screen; one message at a time ------------------------------------- */
+var TX = [], BEATS = [];
+function say(words, until, opt) { opt = opt || {};
+  var it = { words: words, end: until, size: opt.size || TS, weight: opt.weight || TW, y: opt.y, nofade: opt.nofade, stop: opt.stop, out: opt.out || .4, hold: opt.hold };
+  TX.push(it); BEATS.push({ t: words[0][1], words: words.map(function (w) { return w[0]; }).join(' ') }); return it; }
+function wordsAt(s, t0, gap) { return s.split(' ').map(function (w, k) { return [w, t0 + k * gap]; }); }
+/* separate messages, each alone in the centre, each giving way to the next */
+function msgs(list, lastEnd, opt) { return list.map(function (m, k) { var nxt = list[k + 1]; return say([[m[0], m[1]]], nxt ? nxt[1] - .08 : lastEnd, opt); }); }
+function baseY(it) { return it.y !== undefined ? it.y : CY + it.size * .35; }
+function layoutText(it, t) {
+  MC.font = it.weight + ' ' + it.size + 'px ' + FONT;
+  var sp = MC.measureText(' ').width, n = it.words.length, last = it.words[n - 1][0], mark = it.stop ? last.slice(-1) : '';
+  var ws = it.words.map(function (w, k) { var s = (k === n - 1 && it.stop) ? w[0].slice(0, -1) : w[0]; return { s: s, w: MC.measureText(s).width, at: w[1] }; });
+  var markW = it.stop ? MC.measureText(mark === '?' ? '?' : '.').width : 0;
+  var es = ws.map(function (w) { return ease((t - w.at) / .45); }), ss = ws.map(function (w) { return n === 1 ? (t >= w.at ? 1 : 0) : ease((t - w.at) / .3); });
+  var vis = 0; ws.forEach(function (w, k) { vis += ss[k] * (w.w + (k ? sp : 0)); });
+  var eLast = es[n - 1]; vis += markW * (it.stop ? 1 : 0);
+  var x = CX - vis / 2, xs = [], cur = x;
+  ws.forEach(function (w, k) { if (k) cur += sp * ss[k]; xs.push(cur); cur += w.w * ss[k]; });
+  return { ws: ws, es: es, xs: xs, endX: cur, markW: markW, mark: mark, eLast: eLast, y: baseY(it), sp: sp };
+}
+function stopPos(it, t) {
+  var L = layoutText(it, Math.min(t, it.end)), size = it.size;
+  return { x: L.endX + L.markW * (L.mark === '?' ? .44 : .5) - CX, y: L.y - size * .065 - CY, r: (size * .068 + 1.6) / 2 };
+}
+function drawText(t) {
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'; ctx.fillStyle = '#0C0C0C';
+  TX.forEach(function (it) {
+    if (t < it.words[0][1] - .01 || t > it.end + .01) return;
+    var L = layoutText(it, t), out = it.nofade ? 1 : 1 - smooth(it.end - it.out, it.end, t);
+    ctx.font = it.weight + ' ' + it.size + 'px ' + FONT;
+    L.ws.forEach(function (w, k) { var a = L.es[k] * out; if (a < .003) return; ctx.globalAlpha = a; ctx.fillText(w.s, L.xs[k], L.y); });
+    if (L.mark === '?' && L.eLast > .003) {
+      ctx.save(); ctx.beginPath(); ctx.rect(L.endX - 2, L.y - it.size, L.markW + 6, it.size * .78); ctx.clip();
+      ctx.globalAlpha = L.eLast * out; ctx.fillText('?', L.endX, L.y); ctx.restore(); }
+  });
+  ctx.globalAlpha = 1;
+}
+
+/* ---- the timeline: drawings (KF) + the red dot's own track (RK) ------------------------------- */
+var KF = [], T = 0, RK = [];
+function isHome(name) { return !!LAY[name].extra.home; }
+var CENTRE = function () { return { x: 0, y: 0, r: 10, c: RED, a: 1 }; };
+var GONE = function () { return { x: 0, y: 0, r: 0, c: RED, a: 0 }; };
+function at(x, y, r, a) { return function () { return { x: x, y: y, r: r, c: RED, a: a === undefined ? 1 : a }; }; }
+function rk(t, f, arc) { RK.push({ t: t, f: f, arc: arc }); }
+function stopF(it) { return function (t) { var s = stopPos(it, t), e = clamp((t - it.words[it.words.length - 1][1]) / .45);
+  return { x: s.x, y: s.y, r: s.r, c: RED, a: e }; }; }
+var lastF = null;
+function kf(name, move, hold, home) { var k = KF.length; KF.push({ L: name, t0: T, move: move, hold: hold, home: home });
+  var f = isHome(name) ? CENTRE : GONE;
+  if (lastF) rk(T, lastF); rk(T + move, f); lastF = f; T += move + hold; return k; }
+function arr(i) { return KF[i].t0 + KF[i].move; }
+function end(i) { return KF[i].t0 + KF[i].move + KF[i].hold; }
+/* a line over the dot alone: the dot dissolves, the line builds, its full stop appears with the last word, then travels home in an arc */
+function dotLine(str, gap, hold) {
+  var k = kf('dot', .01, .1), t0 = T + .1, words = wordsAt(str, t0, gap), last = words[words.length - 1][1];
+  var it = say(words, last + .45 + hold, { stop: 'red' });
+  rk(t0 - .1, CENTRE); rk(t0 + .4, GONE); rk(last, GONE); rk(last + .001, stopF(it)); rk(it.end, stopF(it)); rk(it.end + .9, CENTRE, true);
+  KF[k].hold += (it.end + 1.1) - T; T = it.end + 1.1; lastF = CENTRE; return it; }
+function bloom(name, move, hold, back, rest, line, lead) { var i = kf(name, move, hold);
+  if (line) say([[line, KF[i].t0 + (lead === undefined ? move * .6 : lead)]], end(i)); kf('dot', back, rest); return i; }
+
+/* the open: words alone, centred; the red full stop travels to the centre in an arc and becomes the button */
+var OPEN = say(wordsAt(LINES.open, .5, .36), 4.4, { stop: 'red', out: .6 });
+var OW = OPEN.words[OPEN.words.length - 1][1], STOP_GO = 4.3, BTN_IN = 5.3, PRESS = 6.8, SHRINK = 7.4, OPEN_END = 8.6;
+KF.push({ L: 'button', t0: 0, move: 0, hold: OPEN_END }); T = OPEN_END;
+rk(0, stopF(OPEN)); rk(STOP_GO, stopF(OPEN)); rk(BTN_IN, at(0, 0, 2.6), true); rk(OPEN_END, CENTRE); lastF = CENTRE;
+
+dotLine(LINES.simple, .32, 1.4);
+bloom('ring', 1.8, 4.0, 1.6, .4, LINES.colour, 1.2);
+var lb = kf('labelBtn', 1.1, 2.1); say([[LINES.label, KF[lb].t0 + .9]], end(lb)); kf('dot', 1.0, .4);
+/* a shape (several flash up) · a size · a corner — one message each */
+var sh0 = T, flash = ['tooltip', 'square', 'circleS', 'toggle', 'card', 'pill'];
+flash.forEach(function (n, k) { var q = kf(n, k ? .3 : .9, .5); if (k) KF[q].cross = true; });
+var shapeEnd = T;
+['sizeS', 'sizeL', 'sizeM'].forEach(function (n) { kf(n, .55, .45); });
+var sizeEnd = T;
+['corner0', 'corner1', 'corner2'].forEach(function (n, k) { kf(n, .55, k === 2 ? 1.0 : .45); });
+var cornerEnd = T;
+msgs([['A shape.', sh0 + .5], ['A size.', shapeEnd + .1], ['A corner.', sizeEnd + .1]], cornerEnd);
+kf('dot', .9, .4);
+/* it waits · it listens (the red scans the line) · it answers (a blip, then the tick) */
+var sw = kf('sWait', 1.0, 1.3), sl = kf('sListen', .01, 2.3), sa = kf('sAnswer', .01, 1.2), dn = kf('done', .7, 1.1);
+msgs([['It waits.', arr(sw) - .3], ['It listens.', KF[sl].t0 + .1], ['It answers.', KF[sa].t0 + .1]], end(dn));
+var SX0 = -200, SX1 = 200, SYL = UP;
+rk(KF[sl].t0 + .2, at(SX0, SYL, 5, 0)); rk(KF[sl].t0 + .5, at(SX0, SYL, 5, 1)); rk(end(sl) - .3, at(SX1, SYL, 5, 1)); rk(end(sl), at(SX1, SYL, 0, 0));
+kf('dot', .9, .4);
+bloom('crowd', 1.5, 2.4, 1.3, .4, LINES.crowd);
+bloom('chain', 1.3, 2.0, 1.1, .4, LINES.reason);
+['d2', 'd4', 'd8', 'd32', 'd128'].forEach(function (n, k) { kf(n, [.55, .45, .45, .5, .55][k], [.3, .25, .25, .25, .25][k]); });
+var d5 = kf('d512', .7, .3), d6 = kf('d2000', .8, 2.6); say([[LINES.divide, KF[d5].t0 + .5]], end(d6)); kf('dot', 1.4, .3);
+var mp = kf('map', 1.9, 6.4);
+msgs([[LINES.map, KF[mp].t0 + 1.2], ['In files.', arr(mp) + 1.9], ['In heads.', arr(mp) + 3.2], ['In habits.', arr(mp) + 4.5]], end(mp));
+kf('dot', 1.9, .2); dotLine(LINES.one, .28, 1.3);
+var sh = kf('shells', 1.7, 4.6);
+say([['One place', KF[sh].t0 + 1.0], ['that knows what everything is.', KF[sh].t0 + 2.3]], arr(sh) + 3.0);
+msgs([['And why.', arr(sh) + 3.15]], end(sh));
+kf('dot', 1.3, .4);
+bloom('screen', 1.5, 2.9, 1.4, .3, LINES.screen);
+/* thousands · and thousands · of pieces, in one place — the pieces coalesce into its full stop */
+var t1 = kf('th1', 1.5, 1.3), t2 = kf('th2', 1.5, 1.6);
+msgs([['Thousands', KF[t1].t0 + .9], ['and thousands', KF[t2].t0 + .5]], end(t2) - .1);
+var PIECES = say([[LINES.pieces, end(t2) + .05]], 0, { stop: 'red' });
+var hm = kf('stopHome', 2.6, .2); KF[hm].home = function () { var s = stopPos(PIECES, arr(hm)); return s; };
+PIECES.words[0][1] = KF[hm].t0 + .1; PIECES.end = end(hm) + 1.6; BEATS[BEATS.length - 1].t = PIECES.words[0][1];
+/* the stop is formed by the pieces (no fade-up), then travels home in an arc and becomes the Get started button, pressed, back to the dot */
+var STOPF = stopF(PIECES), PF = function (t) { var s = STOPF(t); s.a = 1; return s; };
+RK = RK.filter(function (k) { return k.t < KF[hm].t0 - .001; });
+rk(KF[hm].t0, GONE); rk(arr(hm), PF); rk(PIECES.end, PF);
+var END0 = PIECES.end + .9;
+rk(END0, at(0, 0, 2.6), true);
+var EBTN = END0, EPRESS = EBTN + 2.6, ESHRINK = EPRESS + .55, EEND = ESHRINK + 1.2;
+KF.push({ L: 'end', t0: T, move: 0, hold: (EEND + 2.0) - T }); T = EEND + 2.0;
+rk(EEND, CENTRE); rk(T, CENTRE);
+var DUR = T;
+RK.sort(function (p, q) { return p.t - q.t; });
+function redAt(t) {
+  if (!RK.length) return null; var i = 0; while (i < RK.length - 1 && RK[i + 1].t <= t) i++;
+  var A = RK[i], Bk = RK[i + 1], a0 = A.f(t); if (!Bk || t < A.t) return a0;
+  var u = ease((t - A.t) / Math.max(1e-6, Bk.t - A.t)), b0 = Bk.f(t);
+  var x = lerp(a0.x, b0.x, u), y = lerp(a0.y, b0.y, u);
+  if (Bk.arc) {   /* travel in a gentle arc, bowing upwards: the dot is the guide, it moves like something alive */
+    var dx = b0.x - a0.x, dy = b0.y - a0.y, L = Math.hypot(dx, dy) || 1, px = -dy / L, py = dx / L; if (py > 0) { px = -px; py = -py; }
+    var bow = Math.sin(Math.PI * u) * L * .24; x += px * bow; y += py * bow; }
+  return { x: x, y: y, r: lerp(a0.r, b0.r, u), c: RED, a: lerp(a0.a, b0.a, u) };
+}
+
+/* ---- state at t ------------------------------------------------------------------------------ */
+function buf() { return { x: new Float32Array(N), y: new Float32Array(N), r: new Float32Array(N), cr: new Float32Array(N), cg: new Float32Array(N), cb: new Float32Array(N), a: new Float32Array(N), p: new Uint8Array(N) }; }
+var B = [buf(), buf()];
+function bandHW(L) { if (L.hw === undefined) L.hw = L.extra.band ? tw(L.extra.band) / 2 + 44 : 0; return L.hw; }
+function evalInto(B1, k, tl) {
+  var L = LAY[KF[k].L], pts = assign(KF[k].L), br = L.extra.breathe ? 1 + L.extra.breathe * Math.sin(TAU * tl / 3.2) : 1, hw = bandHW(L);
+  var blipA = L.extra.blip ? Math.sin(Math.PI * clamp((tl - .25) / .8)) : 0;
+  for (var i = 0; i < N; i++) { var p = pts[i]; if (!p) { B1.p[i] = 0; continue; }
+    var x = p.x, y = p.y, a = 1;
+    if (p.tw) { var c1 = Math.cos(p.tw * tl), s1 = Math.sin(p.tw * tl), n1 = x * c1 - y * s1; y = x * s1 + y * c1; x = n1; }
+    if (p.w) { var c = Math.cos(p.w * tl), s = Math.sin(p.w * tl), nx = x * c - y * s; y = x * s + y * c; x = nx; }
+    if (p.amp) { x += p.amp * Math.sin(TAU * p.fq * tl + p.ph); y += p.amp * Math.cos(TAU * p.fq * .8 * tl + p.ph); }
+    if (p.blip && blipA) { var bx = x; y += (-74 * Math.exp(-Math.pow(bx / 14, 2)) + 34 * Math.exp(-Math.pow((bx - 22) / 12, 2)) + 22 * Math.exp(-Math.pow((bx + 24) / 12, 2))) * blipA; }
+    if (p.road !== undefined) { var R = road(p.road), s2 = (p.s0 + tl * .16) % 1, q = bez(R, s2); x = q[0]; y = q[1]; a = smooth(0, .12, s2) * (1 - smooth(.88, 1, s2)); }
+    x *= br; y *= br;
+    if (hw && Math.abs(x) < hw + 14) a *= 1 - (1 - smooth(BAND - 14, BAND + 8, Math.abs(y))) * (1 - smooth(hw - 6, hw + 14, Math.abs(x)));
+    B1.x[i] = x; B1.y[i] = y; B1.r[i] = p.r; B1.cr[i] = p.c[0]; B1.cg[i] = p.c[1]; B1.cb[i] = p.c[2]; B1.a[i] = a; B1.p[i] = 1; }
+}
+function kfAt(t) { var k = 0; for (var i = 0; i < KF.length; i++) if (KF[i].t0 <= t) k = i; return k; }
+function homeOf(K) { return K.home ? K.home() : { x: 0, y: 0, r: 10 }; }
+
+/* ---- drawing --------------------------------------------------------------------------------- */
+var cv = document.getElementById('c'), ctx = cv.getContext('2d'), SC = 1, OX = 0, OY = 0;
+function fit() { var dpr = window.devicePixelRatio || 1, vw = window.innerWidth, vh = window.innerHeight;
+  if (EXPORT) { vw = W; vh = H; dpr = 1; }
+  cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+  SC = Math.min(vw / W, vh / H) * dpr; OX = (vw * dpr - W * SC) / 2; OY = (vh * dpr - H * SC) / 2; }
+function rgb(c) { return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')'; }
+function roundBox(w, h, rad, col, cy) { cy = cy === undefined ? CY : cy; ctx.fillStyle = rgb(col); ctx.beginPath(); ctx.roundRect(CX - w / 2, cy - h / 2, w, h, Math.min(rad, w / 2, h / 2)); ctx.fill(); }
+function label(s, a, cy, scale) { if (a < .01) return; ctx.globalAlpha = a; ctx.fillStyle = '#FFFFFF'; ctx.font = '400 ' + (19 * (scale || 1)) + 'px ' + FONT;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(s, CX, (cy === undefined ? CY : cy) + 1); ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; }
+/* the button: grows from the red stop, is pressed, becomes the dot; at the close the same, with Get started on it */
+function buttonAt(t, tIn, tPress, tShrink, end, lab) {
+  if (t < tIn || t >= end) return false;
+  var g = ease((t - tIn) / .9), press = (t > tPress && t < tPress + .35) ? 1 - .05 * Math.sin((t - tPress) / .35 * Math.PI) : 1, m = ease((t - tShrink) / 1.2);
+  var w = lerp(lerp(5.2, BW, g), 20, m) * press, h = lerp(lerp(5.2, BH, g), 20, m) * press, rad = lerp(lerp(2.6, BRAD, g), 10, m);
+  roundBox(w, h, rad, mix(mix(RED, INK, smooth(0, .4, g)), RED, smooth(.62, .95, m)));
+  if (lab) label(lab, smooth(.55, 1, g) * (1 - smooth(0, .25, m)), CY, press);
+  return true;
+}
+function drawButtons(t) { return buttonAt(t, BTN_IN, PRESS, SHRINK, OPEN_END, '') || buttonAt(t, EBTN, EPRESS, ESHRINK, EEND, 'Get started'); }
+function renderAt(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(SC, 0, 0, SC, OX, OY);
+  var k = kfAt(t), cur = KF[k], prev = k > 0 ? KF[k - 1] : null, u = cur.move > 0 ? clamp((t - cur.t0) / cur.move) : 1;
+  if (prev) evalInto(B[0], k - 1, prev.move + prev.hold); else B[0].p.fill(0);
+  evalInto(B[1], k, t - cur.t0);
+  var homeA = prev ? isHome(prev.L) : true, homeB = isHome(cur.L), hA = prev ? homeOf(prev) : homeOf(cur), hB = homeOf(cur);
+  var nOut = 0, nGone = 0, nIn = 0, nHome = 0, A0 = B[0], A1 = B[1];
+  for (var i = 0; i < N; i++) {
+    var pa = A0.p[i], pb = A1.p[i]; if (!pa && !pb) continue;
+    var dd = hr(i, k * 7 + 1), x, y, r, c, al;
+    if (pa && pb && cur.cross) {   /* a flash: the old shape goes, the new one is simply there */
+      var pk = ease((u - dd * .3) / .7), oa = A0.a[i] * (1 - pk), r0 = A0.r[i] * (1 - pk * .5);
+      if (oa > .01) { ctx.globalAlpha = oa; ctx.fillStyle = rgb([A0.cr[i], A0.cg[i], A0.cb[i]]); ctx.beginPath(); ctx.arc(CX + A0.x[i], CY + A0.y[i], r0, 0, TAU); ctx.fill(); }
+      x = A1.x[i]; y = A1.y[i]; r = A1.r[i] * (.5 + .5 * pk); c = [A1.cr[i], A1.cg[i], A1.cb[i]]; al = A1.a[i] * pk;
+    } else if (pa && pb) {           /* drawing to drawing */
+      var p = ease((u - dd * .14) / .86);
+      x = lerp(A0.x[i], A1.x[i], p); y = lerp(A0.y[i], A1.y[i], p); r = lerp(A0.r[i], A1.r[i], p);
+      c = mix([A0.cr[i], A0.cg[i], A0.cb[i]], [A1.cr[i], A1.cg[i], A1.cb[i]], p); al = lerp(A0.a[i], A1.a[i], p);
+    } else if (pb) {          /* born */
+      var own = [A1.cr[i], A1.cg[i], A1.cb[i]];
+      if (homeA) {            /* given off by the red dot: they leave red and cool as they travel */
+        var pe = ease((u - dd * .5) / .5); nOut++; if (pe > 0) nGone++;
+        x = lerp(hA.x, A1.x[i], pe); y = lerp(hA.y, A1.y[i], pe);
+        var dist = Math.hypot(x - hA.x, y - hA.y); r = A1.r[i] * (.35 + .65 * Math.max(smooth(0, 90, dist), pe)); c = mix(RED, own, Math.max(smooth(10, 150, dist), smooth(.55, 1, pe))); al = A1.a[i] * clamp(pe * 6);
+      } else { var pf = ease((u - dd * .4) / .6); x = A1.x[i]; y = A1.y[i]; r = A1.r[i] * pf; c = own; al = A1.a[i] * pf; }
+    } else {                  /* leaving */
+      var ownA = [A0.cr[i], A0.cg[i], A0.cb[i]];
+      if (homeB) {            /* coalescing: they turn red as they near the point and are taken into it */
+        var pc = ease((u - dd * .45) / .55); nIn++; if (pc >= .999) nHome++;
+        x = lerp(A0.x[i], hB.x, pc); y = lerp(A0.y[i], hB.y, pc);
+        var d2 = Math.hypot(x - hB.x, y - hB.y); r = A0.r[i] * (.3 + .7 * smooth(0, 70, d2)); c = mix(RED, ownA, smooth(10, 170, d2)); al = A0.a[i] * (pc >= .999 ? 0 : 1);
+        if (cur.L === 'stopHome' && d2 > 12) { var hw2 = bandHW(LAY[prev.L]); if (Math.abs(x) < hw2 + 14) al *= 1 - (1 - smooth(BAND - 14, BAND + 8, Math.abs(y))) * (1 - smooth(hw2 - 6, hw2 + 14, Math.abs(x))); }
+      } else { var pg = ease((u - dd * .4) / .6); x = A0.x[i]; y = A0.y[i]; r = A0.r[i] * (1 - pg); c = ownA; al = A0.a[i] * (1 - pg); }
+    }
+    if (r < .15 || al < .01) continue;
+    ctx.globalAlpha = al; ctx.fillStyle = rgb(c); ctx.beginPath(); ctx.arc(CX + x, CY + y, r, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  /* overlay: the label on the dotted button */
+  var ov = cur.L === 'labelBtn' ? smooth(arr(k) - .2, arr(k) + .4, t) : (prev && prev.L === 'labelBtn') ? 1 - smooth(cur.t0, cur.t0 + .3, t) : 0;
+  if (ov > 0) label('Continue', ov, CY + UP);
+  drawText(t);
+  if (!drawButtons(t)) {
+    var R = redAt(t);
+    if (homeA && !homeB && nOut) R = { x: hA.x, y: hA.y, r: 10 * Math.sqrt(Math.max(0, 1 - nGone / nOut)), c: RED, a: 1 };           /* the dot spends itself */
+    else if (!homeA && homeB && nIn && u < 1) R = { x: hB.x, y: hB.y, r: (hB.r || 10) * Math.sqrt(nHome / nIn), c: RED, a: 1 };   /* the dot is made of what arrives */
+    if (R && R.r > .2 && R.a > .005) { ctx.globalAlpha = R.a; ctx.fillStyle = rgb(R.c); ctx.beginPath(); ctx.arc(CX + R.x, CY + R.y, R.r, 0, TAU); ctx.fill(); ctx.globalAlpha = 1; }
+  }
+}
+
+/* ---- sound ----------------------------------------------------------------------------------- */
+var AC = null;
+function bell(ac, out, when, f, g, dec) {
+  [[1, g], [2.76, g * .22], [5.4, g * .06]].forEach(function (h) {
+    var o = ac.createOscillator(), e = ac.createGain(); o.type = 'sine'; o.frequency.value = f * h[0];
+    e.gain.setValueAtTime(0, when); e.gain.linearRampToValueAtTime(h[1], when + .012); e.gain.exponentialRampToValueAtTime(.0001, when + dec / h[0] * 1.2);
+    o.connect(e); e.connect(out); o.start(when); o.stop(when + dec + .1); });
+}
+function thump(ac, out, when) { var o = ac.createOscillator(), e = ac.createGain(); o.frequency.value = 98;
+  e.gain.setValueAtTime(0, when); e.gain.linearRampToValueAtTime(.12, when + .01); e.gain.exponentialRampToValueAtTime(.0001, when + .5);
+  o.connect(e); e.connect(out); o.start(when); o.stop(when + .6); }
+function startSound(from) {
+  stopSound(); var AX = window.AudioContext || window.webkitAudioContext; if (!AX) return; var ac = new AX(); AC = ac;
+  var now = ac.currentTime + .05, master = ac.createGain(); master.gain.value = .55; master.connect(ac.destination);
+  var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 820; lp.connect(master);
+  var pad = ac.createGain(); pad.gain.setValueAtTime(0, now); pad.gain.linearRampToValueAtTime(.06, now + 3); pad.connect(lp);
+  [73.42, 110, 164.81, 220.5].forEach(function (f, j) { var o = ac.createOscillator(); o.type = j % 2 ? 'triangle' : 'sine';
+    o.frequency.value = f; o.detune.value = (j - 1.5) * 4; o.connect(pad); o.start(now); o.stop(now + DUR - from + 4); });
+  pad.gain.setValueAtTime(.06, now + Math.max(0, DUR - from - 3)); pad.gain.linearRampToValueAtTime(0, now + DUR - from + 3);
+  var NOTES = [587.33, 659.25, 880, 987.77, 1174.66, 880, 739.99], n = 0;
+  if (OW - from > 0) bell(ac, master, now + OW - from, 587.33, .035, 2.4);
+  KF.forEach(function (K) {
+    var at0 = K.t0 + .05 - from; if (isHome(K.L) || at0 < 0) { n++; return; }
+    bell(ac, master, now + at0, NOTES[n++ % NOTES.length], /^(d\d|tooltip|square|circleS|toggle|card|pill|size|corner)/.test(K.L) ? .022 : .04, 2.4);
+  });
+  if (KF[0] && EBTN - from > 0) { bell(ac, master, now + EBTN - from + .4, 587.33, .06, 5); bell(ac, master, now + EBTN - from + .42, 1174.66, .02, 5); }
+  [PRESS, EPRESS].forEach(function (p) { if (p - from > 0) thump(ac, master, now + p - from); });
+}
+function stopSound() { if (AC) { try { AC.close(); } catch (e) {} AC = null; } }
+
+
+/* ---- playback + review chrome ---------------------------------------------------------------- */
+var playing = false, tNow = 0, wall0 = 0, t0 = 0;
+var $ = function (id) { return document.getElementById(id); };
+function fmtT(t) { var m = Math.floor(t / 60), s = t - m * 60; return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1); }
+function sync() { if (EXPORT) return; var f = clamp(tNow / DUR) * 100;
+  $('fill').style.width = f + '%'; $('head').style.left = f + '%';
+  $('time').textContent = fmtT(tNow) + ' / ' + fmtT(DUR).replace(/\.\d$/, ''); $('play').textContent = playing ? 'Pause' : 'Play'; }
+function frame() { if (!playing) return; tNow = t0 + (performance.now() - wall0) / 1000;
+  if (tNow >= DUR) { tNow = DUR; pause(); } renderAt(tNow); sync(); if (playing) requestAnimationFrame(frame); }
+function play() { if (tNow >= DUR - .05) tNow = 0; playing = true; t0 = tNow; wall0 = performance.now(); document.body.classList.add('playing');
+  startSound(tNow); poke(); requestAnimationFrame(frame); }
+function pause() { playing = false; stopSound(); document.body.classList.remove('playing'); sync(); }
+function seek(t) { tNow = clamp(t, 0, DUR); if (playing) { t0 = tNow; wall0 = performance.now(); startSound(tNow); } renderAt(tNow); sync(); }
+function jump(dir) { var bs = BEATS.map(function (b) { return b.t; }).sort(function (a, b) { return a - b; }), tgt = 0;
+  if (dir > 0) { tgt = DUR; for (var i = 0; i < bs.length; i++) if (bs[i] > tNow + .3) { tgt = bs[i]; break; } }
+  else { for (var j = bs.length - 1; j >= 0; j--) if (bs[j] < tNow - .6) { tgt = bs[j]; break; } }
+  seek(dir > 0 && !playing ? tgt + 1.0 : Math.max(0, tgt - .2)); }
+function wordsAtT(t) { var w = ''; BEATS.forEach(function (b) { if (b.t <= t + .3) w = b.words; }); return w; }
+var idleT = 0; function poke() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(function () { document.body.classList.add('idle'); }, 2500); }
+var KEY = 'apollo-button-film-v5-comments', COM = [];
+function load() { try { COM = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { COM = []; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(COM)); } catch (e) {} }
+function toast(s) { var el = $('toast'); el.textContent = s; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { el.style.display = 'none'; }, 1800); }
+function tip(s, x) { var tp = $('tip'); tp.textContent = s; tp.style.left = x + 'px'; tp.style.display = 'block'; }
+function untip() { $('tip').style.display = 'none'; }
+function renderPins() {
+  $('pins').innerHTML = ''; COM.sort(function (a, b) { return a.t - b.t; });
+  COM.forEach(function (c) { var el = document.createElement('div'); el.className = 'pin'; el.style.left = (c.t / DUR * 100) + '%';
+    el.addEventListener('pointerdown', function (ev) { ev.stopPropagation(); });
+    el.addEventListener('click', function (ev) { ev.stopPropagation(); if (playing) pause(); seek(c.t); $('panel').style.display = 'block'; });
+    el.addEventListener('mouseenter', function () { var r = el.getBoundingClientRect(); tip(fmtT(c.t) + ' · ' + c.text, r.left + r.width / 2); }); el.addEventListener('mouseleave', untip);
+    $('pins').appendChild(el); });
+  $('list').textContent = 'Comments (' + COM.length + ')';
+  var ol = $('clist'); ol.innerHTML = '';
+  if (!COM.length) { var e0 = document.createElement('li'); e0.style.display = 'block'; e0.style.color = '#767676'; e0.textContent = 'No comments yet. Pause where you want one and press Comment here (or M).'; ol.appendChild(e0); }
+  COM.forEach(function (c, n) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="t"></span><span><span class="tx"></span><span class="w"></span></span><button class="x" title="Delete">×</button>';
+    li.querySelector('.t').textContent = fmtT(c.t); li.querySelector('.tx').textContent = c.text; li.querySelector('.w').textContent = c.words || '';
+    li.querySelector('.t').onclick = function () { if (playing) pause(); seek(c.t); };
+    li.querySelector('.x').onclick = function () { COM.splice(n, 1); save(); renderPins(); };
+    ol.appendChild(li); });
+}
+var draftT = 0;
+function compose() { if (playing) pause(); draftT = tNow; $('cwhen').textContent = 'At ' + fmtT(draftT) + (wordsAtT(draftT) ? ' · ' + wordsAtT(draftT) : '');
+  $('compose').style.display = 'block'; $('ctext').value = ''; $('ctext').focus(); }
+function closeCompose() { $('compose').style.display = 'none'; }
+function commit() { var s = $('ctext').value.trim(); if (!s) { closeCompose(); return; }
+  COM.push({ t: +draftT.toFixed(2), text: s, words: wordsAtT(draftT), at: new Date().toISOString() }); save(); renderPins(); closeCompose(); toast('Comment saved at ' + fmtT(draftT)); }
+function asMarkdown() {
+  var L = ['# Button film v5 — comments', '', 'film: notes/_lanes/313-sq/button-film/button-film-a-v5.html · exported ' + new Date().toISOString(), ''];
+  COM.forEach(function (c) { L.push('- ' + fmtT(c.t) + ' (' + (c.words || '—') + ') — ' + c.text); });
+  return L.join('\n') + '\n'; }
+
+function keys() { var out = [];
+  [[1.4, 'words arriving'], [3.4, 'the line, red full stop'], [4.8, 'the stop travels home in an arc'], [6.3, 'the button'], [7.9, 'the button becomes the dot']].forEach(function (k) {
+    out.push({ t: k[0], layout: k[1], words: k[0] < 4.4 ? LINES.open : '' }); });
+  TX.forEach(function (it, j) { if (j === 0) return; var last = it.words[it.words.length - 1][1], t = Math.min(it.end - .45, last + 1.0);
+    out.push({ t: +t.toFixed(3), layout: KF[kfAt(t)].L, words: it.words.map(function (w) { return w[0]; }).join(' ') }); });
+  out.push({ t: +(EBTN + 1.6).toFixed(3), layout: 'the Get started button', words: '' });
+  out.push({ t: +(DUR - .5).toFixed(3), layout: 'back to the dot', words: '' });
+  return out.sort(function (a, b) { return a.t - b.t; }); }
+
+if (EXPORT) document.body.classList.add('export');
+Promise.all([document.fonts.load('300 46px "Univers House"'), document.fonts.load('400 46px "Univers House"')]).then(function () {
+  Object.keys(LAY).forEach(assign);
+  fit(); var m = /[?&]t=([\d.]+)/.exec(location.search); tNow = m ? +m[1] : 3.4; renderAt(tNow);
+  window.addEventListener('resize', function () { fit(); renderAt(tNow); });
+  window.__anim = { duration: DUR, keys: keys(), renderAt: function (t) { tNow = t; renderAt(t); }, fontOk: document.fonts.check('300 46px "Univers House"') };
+  if (EXPORT) return;
+  BEATS.forEach(function (b) { var el = document.createElement('div'); el.className = 'tick'; el.style.left = (b.t / DUR * 100) + '%'; $('ticks').appendChild(el); });
+  load(); renderPins(); sync();
+  cv.addEventListener('click', function () { playing ? pause() : play(); });
+  $('play').onclick = function () { playing ? pause() : play(); };
+  $('add').onclick = compose; $('ccancel').onclick = closeCompose; $('csave').onclick = commit;
+  $('list').onclick = function () { var p = $('panel'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; };
+  $('copy').onclick = function () { var md = asMarkdown();
+    (navigator.clipboard ? navigator.clipboard.writeText(md) : Promise.reject()).then(function () { toast('Copied — paste it into the chat'); }, function () {
+      var ta = document.createElement('textarea'); ta.value = md; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copied'); } catch (e) {} ta.remove(); }); };
+  $('export').onclick = function () { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([asMarkdown()], { type: 'text/markdown' }));
+    a.download = 'DAVE-COMMENTS-button-film-v5-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '') + '.md'; document.body.appendChild(a); a.click(); a.remove(); };
+  $('ctext').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); commit(); } if (ev.key === 'Escape') closeCompose(); ev.stopPropagation(); });
+  var tr = $('track'), drag = false, was = false;
+  function tAt(ev) { var r = tr.getBoundingClientRect(); return clamp((ev.clientX - r.left) / r.width) * DUR; }
+  tr.addEventListener('pointerdown', function (ev) { drag = true; was = playing; if (playing) pause(); tr.setPointerCapture(ev.pointerId); seek(tAt(ev)); });
+  tr.addEventListener('pointermove', function (ev) { var t = tAt(ev); if (drag) seek(t); tip(fmtT(t) + (wordsAtT(t) ? ' · ' + wordsAtT(t) : ''), ev.clientX); });
+  tr.addEventListener('pointerup', function () { drag = false; if (was) play(); });
+  tr.addEventListener('pointerleave', untip);
+  window.addEventListener('mousemove', poke);
+  window.addEventListener('keydown', function (ev) {
+    if (ev.target.tagName === 'TEXTAREA') return;
+    if (ev.code === 'Space') { ev.preventDefault(); playing ? pause() : play(); }
+    if (ev.code === 'ArrowRight') jump(1); if (ev.code === 'ArrowLeft') jump(-1);
+    if (ev.code === 'KeyM') { ev.preventDefault(); compose(); } poke(); });
+});
+})();
+</script>
+</body>
+</html>

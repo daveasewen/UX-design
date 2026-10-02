@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apollo · It started with a single button · v2</title>
+<!--
+  Film B v2, "It started with a single button" (313-sq, 2026-10-01 19:24), built from Dave's edit of SCRIPT-v1.md.
+  His rules: the red dot always transforms into the subject (it does not stay in the centre on the beats);
+  everything resolves back into the button; mono dots throughout except the colour beat, which uses the full
+  Supercharge palette (the 2026 supporting palette, color/supporting/* in knowledge/tokens/colour.json, injected at build).
+  Words on screen in Univers (HSBC_MtUnivers_Latin Light/Regular, embedded at build).
+  Review chrome: a scrub bar with beat ticks, and comments pinned to a moment (kept in this browser; Export / Copy).
+  Deterministic: window.__anim.renderAt(t). ?export=1 hides all chrome, ?t=12 jumps.
+-->
+<style>
+@font-face { font-family: "Univers House"; font-weight: 300; src: url(data:font/ttf;base64,__FONT_LT__) format("truetype"); }
+@font-face { font-family: "Univers House"; font-weight: 400; src: url(data:font/ttf;base64,__FONT_RG__) format("truetype"); }
+:root { --ink: #0C0C0C; --g: #767676; --g2: #B7B7B7; --rule: #E2E2E2; --red: #DA1A00; }
+html, body { margin: 0; height: 100%; background: #FFFFFF; overflow: hidden; }
+canvas { display: block; position: absolute; left: 0; top: 0; }
+body, input, button, textarea { font-family: "Univers House", Helvetica, Arial, sans-serif; }
+body.export #bar, body.export #panel, body.export #hint { display: none !important; }
+#hint { position: fixed; left: 16px; top: 14px; font-weight: 300; font-size: 13px; color: #9B9B9B; pointer-events: none; transition: opacity .6s; }
+body.playing #hint { opacity: 0; }
+#bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 20px 14px; background: rgba(255,255,255,.94);
+       border-top: 1px solid var(--rule); display: flex; align-items: center; gap: 14px; transition: opacity .4s; font-weight: 300; font-size: 13px; color: var(--ink); }
+body.playing.idle #bar { opacity: 0; }
+#bar button { font-size: 13px; font-weight: 400; background: none; border: 1px solid var(--ink); color: var(--ink); border-radius: 4px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+#bar button.solid { background: var(--ink); color: #fff; }
+#bar button:hover { background: #F0F0F0; } #bar button.solid:hover { background: #333; }
+#play { width: 64px; }
+#time { font-variant-numeric: tabular-nums; min-width: 104px; color: var(--g); }
+#track { position: relative; flex: 1; height: 34px; cursor: pointer; touch-action: none; }
+#rail { position: absolute; left: 0; right: 0; top: 20px; height: 2px; background: var(--rule); }
+#fill { position: absolute; left: 0; top: 20px; height: 2px; background: var(--ink); width: 0; }
+#head { position: absolute; top: 14px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--red); }
+.tick { position: absolute; top: 16px; width: 1px; height: 10px; background: var(--g2); }
+.pin { position: absolute; top: 0; width: 10px; height: 10px; margin-left: -5px; background: var(--ink); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); cursor: pointer; }
+.pin:hover, .pin.on { background: var(--red); }
+#tip { position: fixed; bottom: 62px; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 12px; padding: 5px 8px; border-radius: 3px;
+       max-width: 360px; pointer-events: none; display: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#compose { position: fixed; bottom: 66px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); background: #fff;
+           border: 1px solid var(--ink); border-radius: 6px; padding: 12px; display: none; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+#compose p { margin: 0 0 8px; font-size: 12px; color: var(--g); }
+#compose textarea { width: 100%; box-sizing: border-box; min-height: 64px; font-size: 15px; font-weight: 300; border: 1px solid var(--rule); border-radius: 4px; padding: 8px; resize: vertical; }
+#compose .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+#compose button { font-size: 13px; background: none; border: 1px solid var(--ink); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+#compose button.solid { background: var(--ink); color: #fff; }
+#panel { position: fixed; right: 16px; bottom: 66px; width: min(380px, calc(100vw - 32px)); max-height: 60vh; overflow: auto; background: #fff;
+         border: 1px solid var(--ink); border-radius: 6px; display: none; font-weight: 300; }
+#panel header { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--rule); font-size: 13px; font-weight: 400; gap: 8px; }
+#panel header button { font-size: 12px; background: none; border: 1px solid var(--ink); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+#panel ol { list-style: none; margin: 0; padding: 0; }
+#panel li { padding: 10px 12px; border-bottom: 1px solid var(--rule); font-size: 14px; display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: start; }
+#panel li .t { color: var(--red); cursor: pointer; font-variant-numeric: tabular-nums; }
+#panel li .w { color: var(--g); font-size: 12px; display: block; margin-top: 2px; }
+#panel li .x { background: none; border: 0; color: var(--g); cursor: pointer; font-size: 16px; line-height: 1; }
+#panel .empty { padding: 14px 12px; color: var(--g); font-size: 13px; }
+#toast { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 13px; padding: 7px 12px; border-radius: 4px; display: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">v2 &nbsp;·&nbsp; space · play / pause &nbsp;·&nbsp; ← → · beats &nbsp;·&nbsp; M · comment here</div>
+<div id="bar">
+  <button id="play" class="solid">Play</button>
+  <span id="time">0:00.0 / 0:00</span>
+  <div id="track"><div id="rail"></div><div id="fill"></div><div id="ticks"></div><div id="pins"></div><div id="head"></div></div>
+  <button id="add">Comment here</button>
+  <button id="list">Comments (0)</button>
+</div>
+<div id="tip"></div>
+<div id="compose"><p id="cwhen"></p><textarea id="ctext" placeholder="What should change here?"></textarea>
+  <div class="row"><button id="ccancel">Cancel</button><button id="csave" class="solid">Save comment</button></div></div>
+<div id="panel"><header><span>Comments</span><span><button id="copy">Copy</button> <button id="export">Export .md</button></span></header><ol id="clist"></ol></div>
+<div id="toast"></div>
+<script>
+(function () {
+'use strict';
+var W = 1920, H = 1080, CX = 960, CY = 430, N = 2600;
+var EXPORT = /[?&]export=1/.test(location.search);
+var FONT = '"Univers House", "Univers Next for HSBC", Helvetica, Arial, sans-serif';
+var INK = [12, 12, 12], LIGHT = [208, 208, 208], RED = [218, 26, 0];
+var SUPPORT = __SUPPORT__;   /* [family, [5 hexes]] from color/supporting/*, ordered round the wheel at build */
+var PHI = 0.6180339887498949, TAU = Math.PI * 2;
+
+/* ---- helpers ------------------------------------------------------------------------------ */
+function hr(i, s) {
+  var x = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul((s | 0) + 0x632be5ab, 0xc2b2ae35);
+  x ^= x >>> 16; x = Math.imul(x, 0x7feb352d); x ^= x >>> 15; x = Math.imul(x, 0x846ca68b); x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+function clamp(v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; }
+function ease(t) { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function smooth(a, b, t) { t = clamp((t - a) / (b - a)); return t * t * (3 - 2 * t); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+function hex(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+function grey(g) { return [lerp(INK[0], LIGHT[0], g), lerp(INK[1], LIGHT[1], g), lerp(INK[2], LIGHT[2], g)]; }
+function P(x, y, r, g, o) { o = o || {};
+  return { x: x, y: y, r: r, c: o.c || (g === -1 ? RED.slice() : grey(g || 0)), a: o.a === undefined ? 1 : o.a,
+           w: o.w || 0, amp: o.amp || 0, ph: o.ph || 0, fq: o.fq || 0 }; }
+function far(x, y, cx, cy, d) { return Math.hypot(x - cx, y - cy) > d; }
+
+/* ---- shape makers (stage coordinates, centre 0,0) ------------------------------------------- */
+function paletteWheel() {
+  var a = [], F = SUPPORT.length;
+  [112, 152, 192, 232, 272].forEach(function (R, j) {
+    var n = Math.round(TAU * R / 15);
+    for (var k = 0; k < n; k++) { var f = k / n, t = f * TAU - Math.PI / 2, fam = Math.floor(f * F);
+      a.push(P(R * Math.cos(t), R * Math.sin(t), 4.8 - j * .3, 0, { c: hex(SUPPORT[fam][1][j]) })); }
+  });
+  return a;
+}
+function rrPoint(w, h, rad, s) {
+  var hw = w / 2, hh = h / 2, sw = w - 2 * rad, sh = h - 2 * rad, q = Math.PI * rad / 2;
+  var segs = [['l', -hw + rad, -hh, 1, 0, sw], ['a', hw - rad, -hh + rad, -Math.PI / 2, q],
+              ['l', hw, -hh + rad, 0, 1, sh], ['a', hw - rad, hh - rad, 0, q],
+              ['l', hw - rad, hh, -1, 0, sw], ['a', -hw + rad, hh - rad, Math.PI / 2, q],
+              ['l', -hw, hh - rad, 0, -1, sh], ['a', -hw + rad, -hh + rad, Math.PI, q]];
+  for (var i = 0; i < segs.length; i++) { var g = segs[i], len = g[0] === 'l' ? g[5] : g[4];
+    if (s <= len || i === segs.length - 1) {
+      if (g[0] === 'l') return [g[1] + g[3] * s, g[2] + g[4] * s];
+      var ang = g[3] + (rad > 0 ? s / rad : 0); return [g[1] + rad * Math.cos(ang), g[2] + rad * Math.sin(ang)];
+    }
+    s -= len; }
+}
+function rectOutline(w, h, rad, sp, r, g, ox, oy, skip) {
+  ox = ox || 0; oy = oy || 0;
+  var L = 2 * (w - 2 * rad) + 2 * (h - 2 * rad) + TAU * rad, n = Math.round(L / sp), a = [];
+  for (var k = 0; k < n; k++) { var p = rrPoint(w, h, rad, k * L / n);
+    if (skip && !far(p[0] + ox, p[1] + oy, skip[0], skip[1], skip[2])) continue;
+    a.push(P(p[0] + ox, p[1] + oy, r, g)); }
+  return a;
+}
+function fillRect(x0, y0, w, h, step, r, g, skip) {
+  var a = [];
+  for (var y = y0 + step / 2; y < y0 + h; y += step) for (var x = x0 + step / 2; x < x0 + w; x += step)
+    if (!skip || far(x, y, skip[0], skip[1], skip[2])) a.push(P(x, y, r, g));
+  return a;
+}
+function line(x0, y0, x1, y1, sp, r, g) {
+  var L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / sp)), a = [];
+  for (var k = 0; k <= n; k++) a.push(P(lerp(x0, x1, k / n), lerp(y0, y1, k / n), r, g));
+  return a;
+}
+function phyllo(n, R, r, g) {
+  var a = [];
+  if (n === 2) return [P(-26, 0, r, g), P(26, 0, r, g)];
+  if (n === 4) return [P(-26, -26, r, g), P(26, -26, r, g), P(26, 26, r, g), P(-26, 26, r, g)];
+  if (n === 8) { for (var k = 0; k < 8; k++) a.push(P(52 * Math.cos(k / 8 * TAU + Math.PI), 52 * Math.sin(k / 8 * TAU + Math.PI), r, g)); return a; }
+  var c = R / Math.sqrt(n);
+  for (var j = 0; j < n; j++) { var rad = c * Math.sqrt(j + .5), t = j * 2.399963229728653;
+    a.push(P(rad * Math.cos(t), rad * Math.sin(t), r, g * (rad / R))); }
+  return a;
+}
+/* the label, sampled from Univers into dots; the red dot takes the place of the i's dot */
+var LABEL = null;
+function labelDots() {
+  if (LABEL) return LABEL;
+  var str = 'Continue', px = 170, step = 7, c = document.createElement('canvas'), x = c.getContext('2d');
+  x.font = '400 ' + px + 'px ' + FONT;
+  var w = Math.ceil(x.measureText(str).width) + 20, h = Math.ceil(px * 1.4);
+  c.width = w; c.height = h; x.font = '400 ' + px + 'px ' + FONT; x.fillStyle = '#000'; x.fillText(str, 10, px);
+  var ix = 10 + x.measureText('Cont').width + x.measureText('i').width / 2;
+  var d = x.getImageData(0, 0, w, h).data, pts = [], minx = 1e9, maxx = -1e9, miny = 1e9, maxy = -1e9;
+  for (var yy = 0; yy < h; yy += step) for (var xx = 0; xx < w; xx += step)
+    if (d[(yy * w + xx) * 4 + 3] > 120) { pts.push([xx, yy]); minx = Math.min(minx, xx); maxx = Math.max(maxx, xx); miny = Math.min(miny, yy); maxy = Math.max(maxy, yy); }
+  /* the tittle: the topmost run of ink in the i's column, above the x-height of the 'o' */
+  var col = pts.filter(function (p) { return Math.abs(p[0] - ix) <= step * 1.6; });
+  var top = Math.min.apply(null, col.map(function (p) { return p[1]; }));
+  var tit = col.filter(function (p) { return p[1] <= top + px * .11; });
+  var tx = tit.reduce(function (s, p) { return s + p[0]; }, 0) / tit.length, ty = tit.reduce(function (s, p) { return s + p[1]; }, 0) / tit.length;
+  var cx = (minx + maxx) / 2, cy = (miny + maxy) / 2;
+  LABEL = { pts: pts.filter(function (p) { return Math.hypot(p[0] - tx, p[1] - ty) > px * .085; }).map(function (p) { return P(p[0] - cx, p[1] - cy, 2.8, 0); }),
+            red: { x: tx - cx, y: ty - cy, r: 11 } };
+  return LABEL;
+}
+
+/* ---- layouts: groups of points + where the red dot is (it becomes part of the subject) ----------- */
+var LAY = {};
+function def(name, fn, red, extra) { LAY[name] = { fn: fn, red: red || { x: 0, y: 0, r: 10 }, extra: extra || {} }; }
+function redOf(name, tl) { var L = LAY[name], r = typeof L.red === 'function' ? L.red(tl) : L.red; return r; }
+
+def('button', function () { return []; });
+def('dot', function () { return []; });
+def('ring', function () { return [paletteWheel()]; }, { x: 0, y: 0, r: 13 });
+def('label', function () { return [labelDots().pts]; }, function () { return labelDots().red; });
+def('rectA', function () { return [rectOutline(380, 104, 0, 13, 3.2, 0, 0, 0, [190, -52, 9])]; }, { x: 190, y: -52, r: 8 });
+def('rectB', function () { return [rectOutline(540, 146, 0, 13, 3.2, 0, 0, 0, [270, -73, 9])]; }, { x: 270, y: -73, r: 8 });
+var PILL = [197 + 73 * Math.cos(-Math.PI / 4), 73 * Math.sin(-Math.PI / 4)];
+def('rectC', function () { return [rectOutline(540, 146, 73, 13, 3.2, 0, 0, 0, [PILL[0], PILL[1], 9])]; }, { x: PILL[0], y: PILL[1], r: 8 });
+def('rest', function () { return [rectOutline(380, 104, 14, 13, 3.2, 0, 0, 0, [-190, 0, 9])]; }, { x: -190, y: 0, r: 8 });
+def('pressed', function () { return [fillRect(-190, -52, 380, 104, 12, 2.9, 0, [44, 6, 18])]; }, { x: 44, y: 6, r: 13 });
+var SPIN = 2.6;
+def('busy', function () { var a = [];
+  for (var k = 1; k < 12; k++) { var t = k / 12 * TAU; a.push(P(46 * Math.cos(t), 46 * Math.sin(t), 5.4, .86 * (12 - k) / 12 + .0, { w: SPIN })); }
+  return [a]; }, function (tl) { return { x: 46 * Math.cos(SPIN * tl), y: 46 * Math.sin(SPIN * tl), r: 6.5 }; });
+def('done', function () { var a = line(-58, 0, -18, 40, 11, 4, 0).concat(line(-18, 40, 62, -44, 11, 4, 0).slice(1)); a.pop(); return [a]; }, { x: 62, y: -44, r: 7 });
+var CROWD_RED = [236, -96];
+def('crowd', function () { var a = [];
+  for (var k = 0; a.length < 760; k++) { var u = Math.sqrt(hr(k, 11)), v = hr(k, 12) * TAU, x = u * 650 * Math.cos(v), y = u * 280 * Math.sin(v);
+    if (!far(x, y, CROWD_RED[0], CROWD_RED[1], 22)) continue;
+    a.push(P(x, y, 1.4 + 6.2 * Math.pow(hr(k, 13), 3), .78 * hr(k, 14))); }
+  return [a]; }, { x: CROWD_RED[0], y: CROWD_RED[1], r: 8 });
+function fy(x) { return 90 * Math.sin((x + 560) / 1120 * TAU * .75); }
+def('chain', function () { var a = [];
+  for (var x = -560; x < 560 - 1; x += 14) { var node = Math.abs((x + 560) % 140) < .1; a.push(P(x, fy(x), node ? 7.5 : 1.8, node ? 0 : .5)); }
+  return [a]; }, { x: 560, y: fy(560), r: 9 });
+[2, 4, 8, 32, 128, 512, 2000].forEach(function (n) {
+  var R = n <= 8 ? 52 : Math.min(330, 13 * Math.sqrt(n) + 40), r = Math.max(1.9, 9 / Math.pow(n, .22));
+  var first = phyllo(n, R, r, 0)[0];
+  def('d' + n, function () { return [phyllo(n, R, r, n <= 8 ? 0 : .5).slice(1)]; }, { x: first.x, y: first.y, r: Math.max(5, r * 1.15) });
+});
+var ISL = [[-760, -200, 'grid', 0], [-470, 170, 'disc', .3], [-160, -250, 'line', .5], [120, 210, 'scatter', .15], [420, -180, 'ring', .6],
+           [760, 140, 'grid', .25], [-760, 230, 'ring', .4], [740, -250, 'scatter', .1], [-120, 40, 'disc', .55]];
+function islDrift(j, tl) { return [9 * Math.sin(TAU * (.45 + .13 * j) * tl + j * 1.37), 9 * Math.cos(TAU * (.45 + .13 * j) * .8 * tl + j * 1.37)]; }
+def('islands', function () {
+  var a = [], per = Math.floor(2000 / ISL.length);
+  ISL.forEach(function (c, j) {
+    var cx = c[0], cy = c[1], ty = c[2], g = c[3], pts = [], o = { amp: 9, fq: .45 + .13 * j, ph: j * 1.37 };
+    if (ty === 'grid') { var side = Math.ceil(Math.sqrt(per)); for (var k = 0; k < per; k++) pts.push([(k % side - side / 2) * 9, (Math.floor(k / side) - side / 2) * 9]); }
+    if (ty === 'disc') { phyllo(per, 82, 1, 0).forEach(function (p) { pts.push([p.x, p.y]); }); if (j === 1) pts.shift(); }
+    if (ty === 'line') { for (var k2 = 0; k2 < per; k2++) { var row = k2 % 3, cl = Math.floor(k2 / 3); var lx = (cl - per / 6) * 7, ly = (row - 1) * 9;
+      pts.push([lx * Math.cos(-.35) - ly * Math.sin(-.35), lx * Math.sin(-.35) + ly * Math.cos(-.35)]); } }
+    if (ty === 'scatter') { for (var k3 = 0; k3 < per; k3++) { var u = 95 * Math.sqrt(hr(k3, 40 + j)), v = hr(k3, 60 + j) * TAU; pts.push([u * Math.cos(v), u * .8 * Math.sin(v)]); } }
+    if (ty === 'ring') { for (var k4 = 0; k4 < per; k4++) { var R = k4 % 2 ? 62 : 84, v2 = k4 / per * TAU + (k4 % 2) * .05; pts.push([R * Math.cos(v2), R * Math.sin(v2)]); } }
+    pts.forEach(function (p) { a.push(P(cx + p[0], cy + p[1], 2.3, g, o)); });
+  });
+  return [a]; }, function (tl) { var d = islDrift(1, tl); return { x: -470 + d[0], y: 170 + d[1], r: 7 }; });
+function shells(radii, total, r) {
+  var a = [], sum = radii.reduce(function (s, x) { return s + x; }, 0);
+  radii.forEach(function (R, j) {
+    var n = Math.round(total * R / sum), w = (j % 2 ? -1 : 1) * .05;
+    for (var k = 0; k < n; k++) { var sub = k % 3, rr = R + (sub - 1) * 9, t = k / n * TAU + sub * .03;
+      if (j === 0 && sub === 1 && k < 3) continue;
+      a.push(P(rr * Math.cos(t), rr * Math.sin(t), r, j * .14, { w: w })); }
+  });
+  return a;
+}
+var BR = .025;
+def('shells', function () { return [shells([70, 130, 190, 250, 310], 2000, 2.4)]; },
+  function (tl) { var b = 1 + BR * Math.sin(TAU * tl / 3.2), t = .05 * tl; return { x: 70 * Math.cos(t) * b, y: 70 * Math.sin(t) * b, r: 7 }; }, { breathe: BR });
+var BTN = [300, 173];
+def('screen', function () {
+  var a = [];
+  a = a.concat(rectOutline(820, 460, 18, 12, 2.4, .55));
+  a = a.concat(fillRect(-396, -216, 792, 34, 10, 2.5, 0));
+  a = a.concat(fillRect(-380, -164, 300, 20, 10, 3, 0));
+  [-380, -120, 140].forEach(function (x) {
+    a = a.concat(rectOutline(240, 170, 10, 12, 2.2, .45, x + 120, -25));
+    [[-90, 180, .1], [-48, 150, .62], [-26, 110, .62]].forEach(function (r) { a = a.concat(fillRect(x + 20, r[0], r[1], 10, 10, 2.3, r[2])); });
+  });
+  for (var k = 0; k < 4; k++) a = a.concat(fillRect(-380, 92 + k * 26, [460, 420, 480, 300][k], 10, 12, 2.2, .7));
+  a = a.concat(fillRect(220, 150, 160, 46, 9, 2.6, -1));   /* the button on the screen: the red, become the subject */
+  return [a]; }, { x: BTN[0], y: BTN[1], r: 0 });
+def('end', function () { return []; });
+
+/* assignment: every dot keeps its own golden-ratio angle fraction across layouts, so morphs read radially */
+var HFR = new Float32Array(N); for (var hi = 0; hi < N; hi++) HFR[hi] = (hi * PHI) % 1;
+var CACHE = {};
+function assign(name) {
+  if (CACHE[name]) return CACHE[name];
+  var groups = LAY[name].fn(), out = new Array(N), base = 0;
+  groups.forEach(function (pts) {
+    var n = Math.min(pts.length, N - base);
+    var srt = pts.slice(0, n).sort(function (p, q) { return Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x) || (p.x * p.x + p.y * p.y) - (q.x * q.x + q.y * q.y); });
+    var idx = []; for (var i = base; i < base + n; i++) idx.push(i);
+    idx.sort(function (i, j) { return HFR[i] - HFR[j]; });
+    for (var k = 0; k < n; k++) out[idx[k]] = srt[k];
+    base += n;
+  });
+  CACHE[name] = out; return out;
+}
+
+/* ---- timeline: Dave's v2 script ------------------------------------------------------------- */
+var KF = [], TX = [], T = 0, BEATS = [];
+function kf(name, move, hold) { KF.push({ L: name, t0: T, move: move, hold: hold }); T += move + hold; return KF.length - 1; }
+function arr(i) { return KF[i].t0 + KF[i].move; }
+function end(i) { return KF[i].t0 + KF[i].move + KF[i].hold; }
+function say(parts, until, opt) { opt = opt || {};
+  TX.push({ parts: parts, end: until, size: opt.size || 46, weight: opt.weight || 300, y: opt.y || 830, nofade: opt.nofade });
+  BEATS.push({ t: parts[0][1], words: parts.map(function (p) { return p[0]; }).join('') }); }
+function bloom(name, move, hold, back, rest) { var i = kf(name, move, hold); kf('dot', back, rest); return i; }
+
+kf('button', 0, 4.0); say([['It started with a single button.', .8]], 4.4);
+var i0 = kf('dot', .01, 2.9); say([['One simple thing.', 4.6]], end(i0) - .1);
+var i = bloom('ring', 1.2, 2.0, .9, .5); say([['But it needs colour.', KF[i].t0 + .25]], end(i) + .6);
+i = bloom('label', 1.1, 1.8, .9, .5); say([['It has a label.', KF[i].t0 + .25]], end(i) + .6);
+var a = kf('rectA', 1.0, .9), b = kf('rectB', .8, .8), c = kf('rectC', .8, 1.1); kf('dot', .9, .5);
+say([['A shape.', arr(a) - .4], [' A size.', arr(b) - .3], [' A corner.', arr(c) - .3]], end(c) + .6);
+a = kf('rest', 1.0, .8); b = kf('pressed', .45, .8); c = kf('busy', .6, 1.2); var d = kf('done', .6, 1.0); kf('dot', .9, .5);
+say([['It waits.', arr(a) - .4], [' It listens.', arr(b) - .2], [' It answers.', arr(c) - .2]], end(d) + .6);
+i = bloom('crowd', 1.5, 2.0, 1.1, .5); say([['It has to work for everyone who will ever touch it.', KF[i].t0 + .25]], end(i) + .7);
+i = bloom('chain', 1.3, 1.7, 1.0, .6); say([['Every choice has a reason.', KF[i].t0 + .25]], end(i) + .6);
+var s0 = T; ['d2', 'd4', 'd8', 'd32', 'd128', 'd512'].forEach(function (n, k) { kf(n, [.55, .45, .45, .5, .55, .6][k], [.3, .25, .25, .25, .25, .3][k]); });
+var e = kf('d2000', .8, 1.6); say([['But what about everything else.', s0 + .2]], end(e) + .3); kf('dot', 1.0, .3);
+var il = kf('islands', 1.8, 3.6);
+say([['Most of them live in many places.', KF[il].t0 + .4], [' In files.', arr(il) + .5], [' In heads.', arr(il) + 1.3], [' In habits.', arr(il) + 2.1]], end(il) + .3);
+var one = kf('dot', 1.8, 1.6); say([['What if it lived in one?', KF[one].t0 + .6]], end(one) + .1);
+var sh = kf('shells', 1.7, 2.8); say([['One place that knows what everything is.', KF[sh].t0 + .3], [' And why.', arr(sh) + 1.4]], end(sh) + .6);
+kf('dot', 1.1, .4);
+var sc = bloom('screen', 1.5, 2.6, 1.3, .2); say([['So the next thing begins with everything we know.', KF[sc].t0 + .3]], end(sc) + .9);
+var mt = kf('dot', .01, 2.6); say([['Many things.', KF[mt].t0 + .3], [' In one.', KF[mt].t0 + 1.2]], end(mt));
+var en = kf('end', 0, 5.6); var END0 = KF[en].t0;
+say([['Apollo', END0 + 1.5]], END0 + 7, { size: 140, weight: 400, y: CY + 215, nofade: true });
+var DUR = T;
+
+/* ---- state at t ------------------------------------------------------------------------------ */
+function buf() { return { x: new Float32Array(N), y: new Float32Array(N), r: new Float32Array(N), cr: new Float32Array(N), cg: new Float32Array(N), cb: new Float32Array(N), a: new Float32Array(N), p: new Uint8Array(N) }; }
+var B = [buf(), buf()];
+function evalInto(B1, k, tl) {
+  var L = LAY[KF[k].L], pts = assign(KF[k].L), br = L.extra.breathe ? 1 + L.extra.breathe * Math.sin(TAU * tl / 3.2) : 1;
+  for (var i = 0; i < N; i++) { var p = pts[i]; if (!p) { B1.p[i] = 0; continue; }
+    var x = p.x, y = p.y;
+    if (p.w) { var c = Math.cos(p.w * tl), s = Math.sin(p.w * tl), nx = x * c - y * s; y = x * s + y * c; x = nx; }
+    if (p.amp) { x += p.amp * Math.sin(TAU * p.fq * tl + p.ph); y += p.amp * Math.cos(TAU * p.fq * .8 * tl + p.ph); }
+    B1.x[i] = x * br; B1.y[i] = y * br; B1.r[i] = p.r; B1.cr[i] = p.c[0]; B1.cg[i] = p.c[1]; B1.cb[i] = p.c[2]; B1.a[i] = p.a; B1.p[i] = 1; }
+}
+function kfAt(t) { var k = 0; for (var i = 0; i < KF.length; i++) if (KF[i].t0 <= t) k = i; return k; }
+
+/* ---- drawing --------------------------------------------------------------------------------- */
+var cv = document.getElementById('c'), ctx = cv.getContext('2d'), SC = 1, OX = 0, OY = 0;
+function fit() { var dpr = window.devicePixelRatio || 1, vw = window.innerWidth, vh = window.innerHeight;
+  if (EXPORT) { vw = W; vh = H; dpr = 1; }
+  cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+  SC = Math.min(vw / W, vh / H) * dpr; OX = (vw * dpr - W * SC) / 2; OY = (vh * dpr - H * SC) / 2; }
+function rgb(c) { return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')'; }
+function mix(a, b, m) { return [lerp(a[0], b[0], m), lerp(a[1], b[1], m), lerp(a[2], b[2], m)]; }
+function roundBox(w, h, rad, col, label) {
+  ctx.fillStyle = rgb(col); ctx.beginPath(); ctx.roundRect(CX - w / 2, CY - h / 2, w, h, Math.min(rad, w / 2, h / 2)); ctx.fill();
+}
+/* the opening button (pressed, becomes the dot) and the closing one (the dot becomes the button) */
+function drawButtons(t) {
+  if (t < 3.5) {
+    var fade = smooth(0, .5, t), press = (t > 1.8 && t < 2.15) ? 1 - .04 * Math.sin((t - 1.8) / .35 * Math.PI) : 1, m = ease((t - 2.3) / 1.2);
+    ctx.globalAlpha = fade; roundBox(lerp(380, 20, m) * press, lerp(104, 20, m) * press, lerp(14, 10, m), mix(INK, RED, smooth(.62, .95, m)));
+    ctx.globalAlpha = 1; return true;
+  }
+  if (t >= END0) {
+    var u = ease((t - END0 - .3) / 1.3);
+    roundBox(lerp(20, 380, u), lerp(20, 104, u), lerp(10, 14, u), mix(RED, INK, smooth(0, .35, u)));
+    return true;
+  }
+  return false;
+}
+function drawText(t) {
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left'; ctx.fillStyle = '#0C0C0C';
+  TX.forEach(function (it) {
+    if (t < it.parts[0][1] - .01 || t > it.end + .01) return;
+    ctx.font = it.weight + ' ' + it.size + 'px ' + FONT;
+    var full = it.parts.map(function (p) { return p[0]; }).join(''), x = CX - ctx.measureText(full).width / 2, pre = '';
+    var out = it.nofade ? 1 : 1 - smooth(it.end - .45, it.end, t);
+    it.parts.forEach(function (p) {
+      var al = smooth(p[1], p[1] + .55, t) * out, rise = (1 - smooth(p[1], p[1] + .7, t)) * 10;
+      if (al > .003) { ctx.globalAlpha = al; ctx.fillText(p[0], x + ctx.measureText(pre).width, it.y + rise); }
+      pre += p[0];
+    });
+  });
+  ctx.globalAlpha = 1;
+}
+function renderAt(t) {
+  t = clamp(t, 0, DUR);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(SC, 0, 0, SC, OX, OY);
+  var k = kfAt(t), cur = KF[k], u = cur.move > 0 ? clamp((t - cur.t0) / cur.move) : 1;
+  if (k > 0) evalInto(B[0], k - 1, KF[k - 1].move + KF[k - 1].hold); else B[0].p.fill(0);
+  evalInto(B[1], k, t - cur.t0);
+  var A0 = B[0], A1 = B[1];
+  for (var i = 0; i < N; i++) {
+    var pa = A0.p[i], pb = A1.p[i]; if (!pa && !pb) continue;
+    var p = ease((u - hr(i, k * 7 + 1) * .32) / .68);
+    var ax = pa ? A0.x[i] : 0, ay = pa ? A0.y[i] : 0, ar = pa ? A0.r[i] : 0, aa = pa ? A0.a[i] : 0;
+    var bx = pb ? A1.x[i] : 0, by = pb ? A1.y[i] : 0, br = pb ? A1.r[i] : 0, ba = pb ? A1.a[i] : 0;
+    var c0 = pa ? [A0.cr[i], A0.cg[i], A0.cb[i]] : [A1.cr[i], A1.cg[i], A1.cb[i]], c1 = pb ? [A1.cr[i], A1.cg[i], A1.cb[i]] : c0;
+    var r = lerp(ar, br, p), al = lerp(aa, ba, p); if (r < .15 || al < .01) continue;
+    ctx.globalAlpha = al; ctx.fillStyle = rgb(mix(c0, c1, p));
+    ctx.beginPath(); ctx.arc(CX + lerp(ax, bx, p), CY + lerp(ay, by, p), r, 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (!drawButtons(t)) {
+    var ra = k > 0 ? redOf(KF[k - 1].L, KF[k - 1].move + KF[k - 1].hold) : redOf(cur.L, 0), rb = redOf(cur.L, t - cur.t0), ue = ease(u);
+    var rr = lerp(ra.r, rb.r, ue);
+    if (rr > .2) { ctx.fillStyle = rgb(RED); ctx.beginPath(); ctx.arc(CX + lerp(ra.x, rb.x, ue), CY + lerp(ra.y, rb.y, ue), rr, 0, TAU); ctx.fill(); }
+  }
+  drawText(t);
+}
+
+/* ---- sound ----------------------------------------------------------------------------------- */
+var AC = null;
+function bell(ac, out, when, f, g, dec) {
+  [[1, g], [2.76, g * .22], [5.4, g * .06]].forEach(function (h) {
+    var o = ac.createOscillator(), e = ac.createGain(); o.type = 'sine'; o.frequency.value = f * h[0];
+    e.gain.setValueAtTime(0, when); e.gain.linearRampToValueAtTime(h[1], when + .012); e.gain.exponentialRampToValueAtTime(.0001, when + dec / h[0] * 1.2);
+    o.connect(e); e.connect(out); o.start(when); o.stop(when + dec + .1); });
+}
+function startSound(from) {
+  stopSound(); var AX = window.AudioContext || window.webkitAudioContext; if (!AX) return; var ac = new AX(); AC = ac;
+  var now = ac.currentTime + .05, master = ac.createGain(); master.gain.value = .55; master.connect(ac.destination);
+  var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 820; lp.connect(master);
+  var pad = ac.createGain(); pad.gain.setValueAtTime(0, now); pad.gain.linearRampToValueAtTime(.06, now + 3); pad.connect(lp);
+  [73.42, 110, 164.81, 220.5].forEach(function (f, j) { var o = ac.createOscillator(); o.type = j % 2 ? 'triangle' : 'sine';
+    o.frequency.value = f; o.detune.value = (j - 1.5) * 4; o.connect(pad); o.start(now); o.stop(now + DUR - from + 4); });
+  pad.gain.setValueAtTime(.06, now + Math.max(0, DUR - from - 3)); pad.gain.linearRampToValueAtTime(0, now + DUR - from + 3);
+  var NOTES = [587.33, 659.25, 880, 987.77, 1174.66, 880, 739.99], n = 0;
+  KF.forEach(function (K) {
+    var at = K.t0 + .05 - from; if (K.L === 'dot' || K.L === 'button' || at < 0) { n++; return; }
+    var big = K.L === 'end';
+    bell(ac, master, now + at + (big ? 1.5 : 0), big ? 587.33 : NOTES[n++ % NOTES.length], big ? .07 : (/^d\d/.test(K.L) ? .025 : .04), big ? 5 : 2.4);
+    if (big) bell(ac, master, now + at + 1.52, 1174.66, .025, 5);
+  });
+  if (from < 1.8) { var o = ac.createOscillator(), e = ac.createGain(), w = now + 1.8 - from; o.frequency.value = 98;
+    e.gain.setValueAtTime(0, w); e.gain.linearRampToValueAtTime(.12, w + .01); e.gain.exponentialRampToValueAtTime(.0001, w + .5);
+    o.connect(e); e.connect(master); o.start(w); o.stop(w + .6); }
+}
+function stopSound() { if (AC) { try { AC.close(); } catch (e) {} AC = null; } }
+
+/* ---- playback + review chrome ---------------------------------------------------------------- */
+var playing = false, tNow = 0, wall0 = 0, t0 = 0;
+var $ = function (id) { return document.getElementById(id); };
+function fmtT(t) { var m = Math.floor(t / 60), s = t - m * 60; return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1); }
+function sync() {
+  var f = clamp(tNow / DUR) * 100;
+  $('fill').style.width = f + '%'; $('head').style.left = f + '%';
+  $('time').textContent = fmtT(tNow) + ' / ' + fmtT(DUR).replace(/\.\d$/, '');
+  $('play').textContent = playing ? 'Pause' : 'Play';
+}
+function frame() { if (!playing) return; tNow = t0 + (performance.now() - wall0) / 1000;
+  if (tNow >= DUR) { tNow = DUR; pause(); } renderAt(tNow); sync(); if (playing) requestAnimationFrame(frame); }
+function play() { if (tNow >= DUR - .05) tNow = 0; playing = true; t0 = tNow; wall0 = performance.now(); document.body.classList.add('playing');
+  startSound(tNow); poke(); requestAnimationFrame(frame); }
+function pause() { playing = false; stopSound(); document.body.classList.remove('playing'); sync(); }
+function seek(t) { tNow = clamp(t, 0, DUR); if (playing) { t0 = tNow; wall0 = performance.now(); startSound(tNow); } renderAt(tNow); sync(); }
+function jump(dir) { var bs = BEATS.map(function (b) { return b.t; }).sort(function (a, b) { return a - b; }), tgt = 0;
+  if (dir > 0) { tgt = DUR; for (var i = 0; i < bs.length; i++) if (bs[i] > tNow + .3) { tgt = bs[i]; break; } }
+  else { for (var j = bs.length - 1; j >= 0; j--) if (bs[j] < tNow - .6) { tgt = bs[j]; break; } }
+  seek(dir > 0 && !playing ? tgt + 1.0 : Math.max(0, tgt - .2)); }
+function wordsAt(t) { var w = ''; BEATS.forEach(function (b) { if (b.t <= t + .3) w = b.words; }); return w; }
+
+var idleT = 0; function poke() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(function () { document.body.classList.add('idle'); }, 2500); }
+
+/* comments: kept in this browser, exportable */
+var KEY = 'apollo-button-film-v2-comments', COM = [];
+function load() { try { COM = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { COM = []; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(COM)); } catch (e) {} }
+function toast(s) { var el = $('toast'); el.textContent = s; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { el.style.display = 'none'; }, 1800); }
+function renderPins() {
+  $('pins').innerHTML = ''; COM.sort(function (a, b) { return a.t - b.t; });
+  COM.forEach(function (c, n) { var el = document.createElement('div'); el.className = 'pin'; el.style.left = (c.t / DUR * 100) + '%';
+    el.addEventListener('pointerdown', function (ev) { ev.stopPropagation(); });
+    el.addEventListener('click', function (ev) { ev.stopPropagation(); if (playing) pause(); seek(c.t); openList(); });
+    el.addEventListener('mouseenter', function () { tip(fmtT(c.t) + ' · ' + c.text, el); }); el.addEventListener('mouseleave', untip);
+    $('pins').appendChild(el); });
+  $('list').textContent = 'Comments (' + COM.length + ')';
+  var ol = $('clist'); ol.innerHTML = '';
+  if (!COM.length) ol.innerHTML = '<li class="empty" style="display:block">No comments yet. Pause where you want one and press Comment here (or M).</li>';
+  COM.forEach(function (c, n) {
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="t"></span><span><span class="tx"></span><span class="w"></span></span><button class="x" title="Delete">×</button>';
+    li.querySelector('.t').textContent = fmtT(c.t); li.querySelector('.tx').textContent = c.text; li.querySelector('.w').textContent = c.words || '';
+    li.querySelector('.t').onclick = function () { if (playing) pause(); seek(c.t); };
+    li.querySelector('.x').onclick = function () { COM.splice(n, 1); save(); renderPins(); };
+    ol.appendChild(li); });
+}
+function tip(s, el) { var r = el.getBoundingClientRect(), tp = $('tip'); tp.textContent = s; tp.style.left = (r.left + r.width / 2) + 'px'; tp.style.display = 'block'; }
+function untip() { $('tip').style.display = 'none'; }
+var draftT = 0;
+function compose() { if (playing) pause(); draftT = tNow; $('cwhen').textContent = 'At ' + fmtT(draftT) + (wordsAt(draftT) ? ' · ' + wordsAt(draftT) : '');
+  $('compose').style.display = 'block'; $('ctext').value = ''; $('ctext').focus(); }
+function closeCompose() { $('compose').style.display = 'none'; }
+function commit() { var s = $('ctext').value.trim(); if (!s) { closeCompose(); return; }
+  COM.push({ t: +draftT.toFixed(2), text: s, words: wordsAt(draftT), at: new Date().toISOString() }); save(); renderPins(); closeCompose(); toast('Comment saved at ' + fmtT(draftT)); }
+function openList() { $('panel').style.display = 'block'; }
+function asMarkdown() {
+  var L = ['# Button film v2 — comments', '', 'film: notes/_lanes/313-sq/button-film/button-film-a-v2.html · exported ' + new Date().toISOString(), ''];
+  COM.forEach(function (c) { L.push('- **' + fmtT(c.t) + '** (' + (c.words || '—') + ') — ' + c.text); });
+  return L.join('\n') + '\n';
+}
+
+if (EXPORT) document.body.classList.add('export');
+Promise.all([document.fonts.load('300 46px "Univers House"'), document.fonts.load('400 46px "Univers House"')]).then(function () {
+  Object.keys(LAY).forEach(assign);
+  fit(); var m = /[?&]t=([\d.]+)/.exec(location.search); tNow = m ? +m[1] : 1.2; renderAt(tNow);
+  window.addEventListener('resize', function () { fit(); renderAt(tNow); });
+  window.__anim = { duration: DUR, keys: keys(), renderAt: function (t) { tNow = t; renderAt(t); }, fontOk: document.fonts.check('300 46px "Univers House"') };
+  if (EXPORT) return;
+  /* ticks */
+  BEATS.forEach(function (b) { var el = document.createElement('div'); el.className = 'tick'; el.style.left = (b.t / DUR * 100) + '%'; $('ticks').appendChild(el); });
+  load(); renderPins(); sync();
+  cv.addEventListener('click', function () { playing ? pause() : play(); });
+  $('play').onclick = function () { playing ? pause() : play(); };
+  $('add').onclick = compose; $('ccancel').onclick = closeCompose; $('csave').onclick = commit;
+  $('list').onclick = function () { var p = $('panel'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; };
+  $('copy').onclick = function () { var md = asMarkdown();
+    (navigator.clipboard ? navigator.clipboard.writeText(md) : Promise.reject()).then(function () { toast('Copied — paste it into the chat'); }, function () {
+      var ta = document.createElement('textarea'); ta.value = md; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copied'); } catch (e) {} ta.remove(); }); };
+  $('export').onclick = function () { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([asMarkdown()], { type: 'text/markdown' }));
+    a.download = 'DAVE-COMMENTS-button-film-v2-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '') + '.md'; document.body.appendChild(a); a.click(); a.remove(); };
+  $('ctext').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); commit(); } if (ev.key === 'Escape') closeCompose(); ev.stopPropagation(); });
+  /* scrub */
+  var tr = $('track'), drag = false, was = false;
+  function tAt(ev) { var r = tr.getBoundingClientRect(); return clamp((ev.clientX - r.left) / r.width) * DUR; }
+  tr.addEventListener('pointerdown', function (ev) { drag = true; was = playing; if (playing) pause(); tr.setPointerCapture(ev.pointerId); seek(tAt(ev)); });
+  tr.addEventListener('pointermove', function (ev) { var t = tAt(ev); if (drag) seek(t);
+    var r = tr.getBoundingClientRect(), tp = $('tip'); tp.textContent = fmtT(t) + (wordsAt(t) ? ' · ' + wordsAt(t) : ''); tp.style.left = ev.clientX + 'px'; tp.style.display = 'block'; });
+  tr.addEventListener('pointerup', function () { drag = false; if (was) play(); });
+  tr.addEventListener('pointerleave', untip);
+  window.addEventListener('mousemove', poke);
+  window.addEventListener('keydown', function (ev) {
+    if (ev.target.tagName === 'TEXTAREA') return;
+    if (ev.code === 'Space') { ev.preventDefault(); playing ? pause() : play(); }
+    if (ev.code === 'ArrowRight') jump(1); if (ev.code === 'ArrowLeft') jump(-1);
+    if (ev.code === 'KeyM') { ev.preventDefault(); compose(); } poke(); });
+});
+
+function keys() { var out = [];
+  KF.forEach(function (K, j) {
+    if (K.L === 'dot' && K.hold < 1) return;
+    var t = K.L === 'button' ? 1.2 : K.L === 'end' ? DUR - .2 : arr(j) + Math.min(K.hold * .6, Math.max(0, K.hold - .05));
+    var words = TX.filter(function (it) { return t >= it.parts[0][1] && t <= it.end; }).map(function (it) {
+      return it.parts.filter(function (p) { return t >= p[1]; }).map(function (p) { return p[0]; }).join(''); }).join(' / ');
+    out.push({ t: +t.toFixed(3), layout: K.L, words: words });
+    if (K.L === 'button') out.push({ t: 2.9, layout: 'button → dot', words: 'It started with a single button.' });
+    if (K.L === 'end') out.splice(out.length - 1, 0, { t: +(K.t0 + .9).toFixed(3), layout: 'dot → button', words: '' });
+  });
+  return out; }
+})();
+</script>
+</body>
+</html>
