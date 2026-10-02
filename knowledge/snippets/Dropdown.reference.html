@@ -9,8 +9,9 @@
   TWO trigger styles (both kept): UNDERLINE (bottom-stroke) and BOXED (full form/border, matches the boxed
   Input field — open = border/active + 4px bottom-stroke). Colours = resolved canonical tokens. Elevation is
   mode-aware: LIGHT separates the floating menu with a shadow (elevation/functional #00000033); DARK with a
-  grey line (elevation/border) because shadows are invisible on a near-black page — on the BOTTOM EDGE
-  ONLY since #313 (s313-D26, Dave verbatim: 'it needs an edge but only a bottom edge').
+  grey line (elevation/border) because shadows are invisible on a near-black page — ALL ROUND (s313-D26
+  gave it the bottom edge only; s313-D58, Dave verbatim: 'only the mega menu has a border on the bottom
+  edge because it bleeds off the edge anyway, the rest of the floating surfaces all have borders all round').
   Combobox/listbox ARIA + keyboard nav included. Focus: :focus-visible ring (focus/ring).
   #261 F2 adds a third variant, GROUPED, on Dave's ruling: "can we have a variant of this dropdown
   that has the category of selection as a heading so that it isn't repeated, eg. 'Currency'. The
@@ -89,7 +90,7 @@
   .dd.boxed .trigger[aria-expanded="true"]{border-color:var(--border-active); border-bottom-width:1px; box-shadow:inset 0 -4px 0 0 var(--border-active);}
 
   .menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);   /* elevation/functional: X0 Y0 blur16 */
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
   .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}

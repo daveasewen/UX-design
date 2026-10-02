@@ -1717,7 +1717,7 @@
      The 44px item height is the ruled min-hit-area, enforced by hand (no gate reads that token). */
 :where(.cn-headers) .hdr-menuwrap{position:relative; display:inline-flex;}
 :where(.cn-headers) .hdr-menu{position:absolute; right:0; top:calc(100% + 4px); z-index:20; min-width:200px;
-    margin:0; padding:4px 0; background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */
+    margin:0; padding:4px 0; background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */
     box-shadow:0 4px 16px var(--shadow); opacity:0; transform:translateY(-4px); pointer-events:none;
     transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-headers) .hdr-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -1736,7 +1736,7 @@
    Navigations  (from snippets/Navigations.reference.html)
    Aria: <nav, aria-current, aria-label, aria-haspopup="menu", aria-expanded, aria-controls, role="menu", role="menuitem", role="search", type="search", aria-disabled
    Finding: #261 NAV DESIGN PASS (Dave's ask: 'tackle the nav design'). This masthead is now the TOP-NAV member of a three-surface family with Sidebar-nav and Tab-bar. The SHARED ITEM block is byte-identical in all three snippets, and so is the NAV FAMILY TOKEN SET block except that Navigations extends it by exactly two vars (--field-border, --field-active) for the search field it alone contains, and .nv-item / .nv-ic / .nv-label / .nv-count / .nv-chev mean the same thing in all three. The masthead's primary row is literally the sidebar's row laid horizontally.
-   Finding: #313 (s313-D22, s313-D23, s313-D26): a destination with children is a DISCLOSURE — the APG disclosure navigation menu, a <button aria-expanded aria-controls> whose panel follows it in the DOM. Up to six links in one column with no headings opens a FLYOUT under its trigger (Cards, three links); over six, or grouped under headings, the MEGA MENU, full width under the masthead, up to four columns, heading = level 2, link = level 3, a column never over six (Payments, ten links in three groups — the page's own example; item copy INVENTED, Dave's). Every floating panel (account menu, flyout, mega menu) carries elevation/border on its BOTTOM EDGE ONLY ('it needs an edge but only a bottom edge'). NOT YET BUILT: the compact sheet's accordion form of the mega menu (below 768px the drawer still lists the destinations flat), and the mega menu's driven receipt and four-theme render at the seat.
+   Finding: #313 (s313-D22, s313-D23, s313-D26, s313-D58): a destination with children is a DISCLOSURE — the APG disclosure navigation menu, a <button aria-expanded aria-controls> whose panel follows it in the DOM. Up to six links in one column with no headings opens a FLYOUT under its trigger (Cards, three links); over six, or grouped under headings, the MEGA MENU, full width under the masthead, up to four columns, heading = level 2, link = level 3, a column never over six (Payments, ten links in three groups — the page's own example; item copy INVENTED, Dave's). Every floating panel carries elevation/border (s313-D26); the account menu and the flyout carry it ALL ROUND and only the mega menu on its BOTTOM EDGE ONLY (s313-D58: 'only the mega menu has a border on the bottom edge because it bleeds off the edge anyway, the rest of the floating surfaces all have borders all round'). NOT YET BUILT: the compact sheet's accordion form of the mega menu (below 768px the drawer still lists the destinations flat), and the mega menu's driven receipt and four-theme render at the seat.
    Finding: THE INDICATOR RULE: the 3px current-location bar sits on the edge the nav touches the content — block-end here, inline-start in the sidebar, block-start in the tab bar. Note what that implies for the compact drawer: when the masthead collapses below 768px the panel hangs BESIDE its content, so the bar moves to inline-start in the drawer. The rule, not the pixel, is what is shared.
    Finding: COLLAPSE AT 768px is a REPLACEMENT, not a shrink: the primary row is hidden and a hamburger discloses the same destinations stacked. Squeezing five labels into a phone width is the failure this avoids.
    Finding: COUNTS are new at #261: the same .nv-count chip as the sidebar, parked on the notification glyph. It is aria-hidden because the button's own accessible name already carries the number — a count read twice is a count read wrong.
@@ -1915,12 +1915,14 @@
 :where(.cn-navigations) .nv-acct{width:auto; padding:0 8px; gap:8px;}
 /* ---- account menu (APG menu button; Dropdown's panel skin) ---- */
 :where(.cn-navigations) .nav-menuwrap{position:relative; display:inline-flex;}
-/* s313-D26 (#313, Dave by click, verbatim: 'Yes', with his comment, verbatim: 'it needs an edge
-     but only a bottom edge'): a surface that floats over the page carries the ELEVATION BORDER on
-     its BOTTOM EDGE ONLY — invisible in light, where the shadow carries the lift; a grey line in
-     dark, where a black shadow on black reads as nothing. Was a 1px divider rule on all four. */
+/* s313-D26 (#313, Dave by click, verbatim: 'Yes'): a surface that floats over the page carries
+     the ELEVATION BORDER — invisible in light, where the shadow carries the lift; a grey line in
+     dark, where a black shadow on black reads as nothing. s313-D58 (verbatim: 'only the mega menu
+     has a border on the bottom edge because it bleeds off the edge anyway, the rest of the
+     floating surfaces all have borders all round'): this menu carries it on ALL FOUR sides.
+     Was a 1px --nav-rule divider on all four before #313. */
 :where(.cn-navigations) .nav-menu{position:absolute; right:0; top:calc(100% + 4px); z-index:20; min-width:220px;
-    margin:0; padding:4px 0; background:var(--nav-surface); border:0; border-bottom:1px solid var(--nav-elev-border);
+    margin:0; padding:4px 0; background:var(--nav-surface); border:1px solid var(--nav-elev-border);
     box-shadow:0 4px 16px var(--nav-shadow); opacity:0; transform:translateY(-4px);
     pointer-events:none; transition:opacity var(--nav-ease), transform var(--nav-ease);}
 :where(.cn-navigations) .nav-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -1937,13 +1939,14 @@
      so every one stays reachable by Tab, the trigger is a <button aria-expanded aria-controls>, and
      the panel FOLLOWS its trigger in the DOM so Tab walks from one into the other. Escape closes and
      returns focus; a click or focus outside closes; opening one closes the others.
-     The panel skin is the account menu's: the nav surface, the elevation shadow, and s313-D26's one
-     edge — the elevation border on the BOTTOM only. */
+     The panel skin is the account menu's: the nav surface, the elevation shadow, and s313-D26's
+     elevation border — ALL ROUND on the flyout; on the BOTTOM EDGE ONLY on the mega menu, because,
+     s313-D58, verbatim, 'it bleeds off the edge anyway'. */
 :where(.cn-navigations) .nv-dest{display:flex;}
 :where(.cn-navigations) .nv-dest.is-flyout{position:relative;}
 :where(.cn-navigations) .nv-panel[hidden]{display:none;}
-:where(.cn-navigations) .nv-panel{position:absolute; z-index:20; background:var(--nav-surface); border:0;
-    border-bottom:1px solid var(--nav-elev-border); box-shadow:0 4px 16px var(--nav-shadow);}
+:where(.cn-navigations) .nv-panel{position:absolute; z-index:20; background:var(--nav-surface);
+    border:1px solid var(--nav-elev-border); box-shadow:0 4px 16px var(--nav-shadow);}
 :where(.cn-navigations) .nv-panel ul{list-style:none; margin:0; padding:0;}
 /* the li is a flex box so the trimmed list item cannot collapse under its 44px link (the
      .sh-legal li{display:flex} repair, App-shell-top-nav) — measured: 10.5px li, 64px links
@@ -1957,7 +1960,9 @@
 /* a destination whose panel holds the current page wears the masthead's own block-end rule */
 :where(.cn-navigations) nav.main .nv-dest:has(.nv-panel [aria-current="page"]) > .nv-item{box-shadow:inset 0 -3px 0 var(--nav-indicator);}
 :where(.cn-navigations) .nav-flyout{left:0; top:100%; min-width:240px; padding:4px 0;}
-:where(.cn-navigations) .nav-mega{left:0; right:0; top:100%; padding:16px 2rem 24px;}
+/* s313-D58: only the mega menu keeps the bottom edge alone — it runs the full width, so its
+     sides bleed off the page and its top meets the masthead */
+:where(.cn-navigations) .nav-mega{left:0; right:0; top:100%; padding:16px 2rem 24px; border-width:0 0 1px;}
 :where(.cn-navigations) .nav-mega-cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0 24px;}
 :where(.cn-navigations) .nav-mega-h{margin:0; padding:0 16px; min-height:var(--nav-row); display:flex; align-items:center;
     color:var(--nav-muted); border-bottom:1px solid var(--nav-sub-rule);}
@@ -3711,7 +3716,7 @@
 :where(.cn-dropdown) .dd.boxed .trigger{border:1px solid var(--border);}
 :where(.cn-dropdown) .dd.boxed .trigger[aria-expanded="true"]{border-color:var(--border-active); border-bottom-width:1px; box-shadow:inset 0 -4px 0 0 var(--border-active);}
 :where(.cn-dropdown) .menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);   /* elevation/functional: X0 Y0 blur16 */
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-dropdown) .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -4194,7 +4199,7 @@
 :where(.cn-account-selector) .as-trigger[aria-expanded="true"] .chev{transform:rotate(180deg);}
 /* the menu — listbox; elevation mode-aware (shadow light, outline dark) */
 :where(.cn-account-selector) .as-menu{position:absolute; top:100%; left:0; right:0; margin:4px 0 0; padding:4px 0; list-style:none;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow); z-index:20; display:none;}
 :where(.cn-account-selector) .as-menu.open{display:block;}
 :where(.cn-account-selector) .as-opt{display:flex; align-items:center; gap:8px; padding:12px; cursor:pointer;}
@@ -6595,7 +6600,7 @@
 :where(.cn-avatar-group) .avg-popwrap{position:relative; display:inline-block;}
 :where(.cn-avatar-group) .avg-pop[hidden]{display:none;}
 :where(.cn-avatar-group) .avg-pop{position:absolute; left:0; top:calc(100% + 8px); z-index:20; min-width:200px;
-    padding:8px 0; background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */
+    padding:8px 0; background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */
     border-radius:var(--border-radius-surface); box-shadow:0 4px 16px var(--shadow);}
 :where(.cn-avatar-group) .avg-pop ul{list-style:none; margin:0; padding:0;}
 :where(.cn-avatar-group) .avg-pop li{display:flex; align-items:center; gap:12px; min-height:44px; padding:0 12px;
@@ -7204,7 +7209,7 @@
 :where(.cn-card-header-lockup) .chip .dot{width:8px; height:8px; border-radius:50%; flex:none; background:var(--chip-ok-dot);}
 /* ---- borrowed verbatim: Dropdown `.menu`/`.opt`/`.sep` positioning CSS, ARIA deviation declared above ---- */
 :where(.cn-card-header-lockup) .menu{position:absolute; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow); min-width:180px;
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-card-header-lockup) .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -7419,7 +7424,7 @@
 :where(.cn-cascader) .cs-panel{position:absolute; left:0; right:auto; min-width:100%; width:max-content;
     max-width:100%; top:calc(100% + 6px); z-index:20;
     display:flex; align-items:stretch; overflow:hidden;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */
     border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none;
     transition:opacity var(--ease), transform var(--ease);}
@@ -10384,7 +10389,7 @@
 /* ---------- the popup: gated Dropdown menu grammar, copied ---------- */
 :where(.cn-combobox) .cb-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0;
     list-style:none; z-index:20; max-height:296px; overflow:auto;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */
     border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none;
     transition:opacity var(--ease), transform var(--ease);}
@@ -12191,7 +12196,7 @@
 :where(.cn-filter-toolbar-bar) .dd.boxed .trigger{border:1px solid var(--border);}
 :where(.cn-filter-toolbar-bar) .dd.boxed .trigger[aria-expanded="true"]{border-color:var(--border-active); border-bottom-width:1px; box-shadow:inset 0 -4px 0 0 var(--border-active);}
 :where(.cn-filter-toolbar-bar) .menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-filter-toolbar-bar) .menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -14516,7 +14521,7 @@
 /* ---------- the list: Dropdown menu grammar, copied ---------- */
 :where(.cn-multi-select) .ms-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0;
     list-style:none; z-index:20; max-height:296px; overflow:auto;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */
     border-radius:var(--border-radius-surface); box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none;
     transition:opacity var(--ease), transform var(--ease);}
@@ -16230,7 +16235,7 @@
 :where(.cn-split-button) .split-btn.tertiary .sb-main.is-disabled, :where(.cn-split-button) .split-btn.tertiary .sb-caret.is-disabled{background:transparent; color:var(--ter-label-disabled); border-color:var(--ter-border-disabled); cursor:not-allowed;}
 /* the flyout menu — Dropdown.reference's `.menu`/`.opt` shell, verbatim, role swapped to menu/menuitem */
 :where(.cn-split-button) .sb-menu{position:absolute; left:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20; min-width:200px;
-    background:var(--menu-surface); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only (Dropdown precedent) */ border-radius:var(--border-radius-surface);
+    background:var(--menu-surface); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);
     opacity:0; transform:translateY(-6px); pointer-events:none; transition:opacity var(--ease), transform var(--ease);}
 :where(.cn-split-button) .sb-menu[data-open="true"]{opacity:1; transform:none; pointer-events:auto;}
@@ -21833,7 +21838,7 @@
 /* message text stays INK */
 /* ---------- slot list — Dropdown's listbox language (change it THERE) ---------- */
 :where(.cn-time-picker) .tp-menu{position:absolute; left:0; right:0; top:calc(100% + 6px); margin:0; padding:4px 0; list-style:none; z-index:20;
-    background:var(--page); border:0; border-bottom:1px solid var(--menu-border); /* s313-D26: the elevation border, bottom edge only */ border-radius:var(--border-radius-surface);
+    background:var(--page); border:1px solid var(--menu-border); /* s313-D58: border all round; only the mega menu keeps the bottom edge */ border-radius:var(--border-radius-surface);
     box-shadow:0 0 16px var(--shadow);   /* elevation/functional: X0 Y0 blur16 */
     max-height:248px; overflow-y:auto;
     /* ⛔ visibility IS NOT DECORATION HERE — MEASURED #218 lane cB. The closed menu was
