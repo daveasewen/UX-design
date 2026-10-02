@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cold runs #315 — the frozen prompt against the v1.0.15 candidate</title>
+<style>
+  :root{
+    --accent:#DB0011; --accent-3:#730014;
+    --black:#000; --white:#fff;
+    --grey-1:#F3F3F3; --grey-2:#EDEDED; --grey-3:#D7D8D6; --grey-5:#9B9B9B;
+    --grey-6:#767676; --grey-7:#545454; --grey-8:#333;
+    --s1:.5rem; --s2:1rem; --s3:1.5rem; --s4:2rem; --s5:3rem; --s6:4rem; --s7:6rem;
+    --max:1200px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--white); color:var(--black);
+    font:400 16px/1.75 "Helvetica Neue", Helvetica, Arial, sans-serif;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 var(--s4);}
+  nav.top{position:sticky; top:0; z-index:10; background:var(--white); border-bottom:1px solid var(--grey-2);}
+  nav.top .wrap{display:flex; align-items:center; justify-content:space-between; height:56px; gap:var(--s4);}
+  nav.top a{font-size:14px; letter-spacing:.05em; color:var(--grey-6); text-decoration:none;}
+  nav.top a:hover{color:var(--black);}
+  nav.top .back{color:var(--black); font-weight:500;}
+  section{padding:var(--s7) 0; border-bottom:1px solid var(--grey-2);}
+  section.tight{padding:var(--s5) 0;}
+  section.band{background:var(--grey-1);}
+  .label{font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); display:flex; align-items:center; gap:var(--s1); margin:0 0 var(--s3);}
+  .label::before{content:''; display:inline-block; width:20px; height:1px; background:var(--accent);}
+  h1{font-size:57px; line-height:1.04; font-weight:400; letter-spacing:0; margin:0 0 var(--s3);}
+  h2{font-size:34px; line-height:1.15; font-weight:400; margin:0 0 var(--s3);}
+  h3{font-size:19px; line-height:1.2; font-weight:500; margin:0 0 var(--s2);}
+  p{margin:0 0 var(--s2); max-width:68ch;}
+  .meta{font-size:14px; color:var(--grey-7);}
+  code, .mono{font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size:13px;}
+  .dim{display:grid; grid-template-columns:1fr 2fr; gap:var(--s6); align-items:start;}
+  .idx{font-size:84px; line-height:1; font-weight:200; color:var(--grey-3); margin:0 0 var(--s2);}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s4); margin:var(--s4) 0 0;}
+  .stat .n{font-size:43px; line-height:1.05; font-weight:200;}
+  .stat .k{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--grey-6);}
+  table{border-collapse:collapse; width:100%; margin:var(--s3) 0 0; font-size:14px;}
+  th,td{border-bottom:1px solid var(--grey-2); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{font-weight:500; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-7);}
+  td.num{text-align:right; font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace;}
+  .scroll{overflow-x:auto;}
+  .ok{color:var(--grey-8); font-weight:500;}
+  .bad{color:var(--accent); font-weight:500;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--grey-3);}
+  .grid2 > div{background:var(--white); padding:var(--s3);}
+  .renders{display:grid; grid-template-columns:1fr 1fr; gap:var(--s4);}
+  .renders figure{margin:0;}
+  .renders img{width:100%; border:1px solid var(--grey-2); display:block;}
+  .renders figcaption{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey-6); padding-top:var(--s1);}
+  ol.findings{padding-left:0; list-style:none; counter-reset:f;}
+  ol.findings > li{counter-increment:f; padding:var(--s3) 0; border-top:1px solid var(--grey-2);}
+  ol.findings > li::before{content:'F' counter(f,decimal-leading-zero); display:block;
+    font-size:12px; letter-spacing:.14em; color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  ol.rsq{padding-left:0; list-style:none; counter-reset:q;}
+  ol.rsq > li{counter-increment:q; padding:var(--s3) 0; border-top:1px solid var(--grey-3);}
+  ol.rsq > li::before{content:'Q' counter(q); display:block; font-size:12px; letter-spacing:.14em;
+    color:var(--accent); font-weight:500; margin-bottom:var(--s1);}
+  .quote{border-top:1px solid var(--grey-3); padding-top:var(--s3); font-size:19px; max-width:68ch;}
+  footer{padding:var(--s5) 0; font-size:14px; color:var(--grey-6);}
+  @media (max-width:860px){ .dim,.renders,.grid2,.stats{grid-template-columns:1fr;} h1{font-size:40px;} }
+  @media (max-width:600px){ nav.top .wrap a:not(#rv-back){display:none;} }
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <a id="rv-back" href="../index.html" target="_self" style="color:var(--black);font-weight:500">&larr; All review pages</a>
+  <a href="#answer">Answer</a><a href="#scores">Scores</a><a href="#renders">Renders</a><a href="#delta">Delta</a><a href="#findings">Findings</a><a href="#questions">Questions</a>
+  <span class="meta">session 315 · lane CR</span>
+</div></nav>
+
+<section id="answer"><div class="wrap">
+  <p class="label">Cold runs G1–G3 · 2026-10-02 · the v1.0.15 candidate pack</p>
+  <h1>One fresh session built a full-marks dashboard and another came within a point. All three were then refused by the pack's own gate for doing what the skill told them.</h1>
+  <p>Three blind runs of the frozen prompt, each a fresh headless Claude Code session on Opus 5.5 with nothing but the unzipped pack: G1 with every grill question skipped (Mono, the #307 condition), G2 and G3 with the theme answered <strong>Console</strong> (the <code>s308-D15</code> protocol, his click: <em>"Take the three fixes, then run it again on the next cut"</em>). The pack is a <strong>candidate, not a cut</strong>: <code>Apollo-Spider-v1.0.15.zip</code> baked by the house builder in a scratch clone at <code>853d7f56</code> (candidate commit <code>06b27b57</code>, version literals 1.0.14&rarr;1.0.15 only), sha256 <code>829c6748…1b43e2</code>, 1,803 files, <code>--check</code> GREEN against its manifest.</p>
+  <p>Against #307's single run on v1.0.14 (3/3/2/2) the candidate's runs score <strong>2/3/3/3</strong>, <strong>3/3/1/2</strong> and <strong>3/3/3/3</strong>. Two pages load and drive with no error at all. G2 repeats #307's wiring bug in a new place: its Liquidity and Payments nav clicks throw, so its view never reaches the address bar. The two old defects F01 and F02 stay closed in all three. What blocks a cut is the pack, not the pages: rule 7a hands every build the scope class that rule 1a and <code>_validate_example_fence.py</code> refuse, and the "one headless load" step he took on 29 September is not in the skill.</p>
+  <div class="stats">
+    <div class="stat"><div class="n">11 · 9 · 12</div><div class="k">G1 · G2 · G3 out of 12</div></div>
+    <div class="stat"><div class="n">62</div><div class="k">driven steps, 62 moved something</div></div>
+    <div class="stat"><div class="n">0 · 4 · 0</div><div class="k">pageerrors G1 · G2 · G3</div></div>
+    <div class="stat"><div class="n">3 of 3</div><div class="k">refused by the example-fence gate</div></div>
+  </div>
+</div></section>
+
+<section id="scores" class="band"><div class="wrap">
+  <p class="label">01 · Twelve scores, each with the one fact that earned it</p>
+  <div class="scroll"><table>
+    <tr><th>Arm</th><th>Rich</th><th>Full</th><th>Persistent</th><th>Interactive</th></tr>
+    <tr><td>#307 · v1.0.14 · Mono</td><td class="num">3</td><td class="num">3</td><td class="num">2</td><td class="num">2</td></tr>
+    <tr><td>G1 · Mono (all skipped)</td><td class="num">2</td><td class="num">3</td><td class="num">3</td><td class="num">3</td></tr>
+    <tr><td>G2 · Console</td><td class="num">3</td><td class="num">3</td><td class="num">1</td><td class="num">2</td></tr>
+    <tr><td>G3 · Console</td><td class="num">3</td><td class="num">3</td><td class="num">3</td><td class="num">3</td></tr>
+  </table></div>
+  <div class="scroll"><table>
+    <tr><th>Arm · score</th><th>The fact</th></tr>
+    <tr><td>G1 rich 2</td><td>11 canon scopes but <strong>one chart</strong> on the whole page (<code>inventory.json</code>: <code>chart_count 1</code>); Accounts and Payments are lists only. The session declined a second chart because it would reuse the series colours for different data.</td></tr>
+    <tr><td>G1 full 3</td><td>871 payments, 16 accounts, 6 entities, 6 currencies, footer; <code>scrollWidth = innerWidth</code> at 1440 and 820 (<code>render.json</code>).</td></tr>
+    <tr><td>G1 persistent 3</td><td>Reload restored all 10 measured keys (view, filter chip, range, sort, page, theme…); a cold load of the URL in a fresh browser restored 8, losing only the theme, which lives in local storage (<code>G1/drive.json → persistence</code>).</td></tr>
+    <tr><td>G1 interactive 3</td><td>19 of 19 steps moved what they should, 0 pageerrors, 0 console errors; the drawer takes focus; CSV downloads; the 820 menu sheet navigates.</td></tr>
+    <tr><td>G2 rich 3</td><td>13 scopes; stacked area and stacked bar drawn by <code>dvRender</code>; list/table switch; approving a payment in the drawer changes the headline figures (<code>probe2.json → G2.approve.kpi_changed true</code>).</td></tr>
+    <tr><td>G2 full 3</td><td>395 payments, 11 accounts, 5 entities, 5 currencies, footer; no horizontal overflow at either width.</td></tr>
+    <tr><td>G2 persistent 1</td><td>Filters, range, sort and page survive a reload, but <strong>the view does not</strong>: on Payments, reload returns to Overview with the URL unchanged (<code>probe2.json → G2.view_persist</code>). <code>setView()</code> throws before it reaches <code>writeURL()</code>.</td></tr>
+    <tr><td>G2 interactive 2</td><td>21 of 21 steps moved something, but <strong>4 pageerrors</strong>: the first Liquidity click throws <code>Cannot set properties of null (setting 'hidden')</code> at <code>renderPayments</code> (dashboard line 2440) and every Payments click throws <code>…reading 'isConnected'</code> at <code>chart()</code> (line 2327).</td></tr>
+    <tr><td>G3 rich 3</td><td>17 scopes, the most of any cold run: line and donut by the engine, runway bar, data grid with sort, column filters, selection and approve, drawer.</td></tr>
+    <tr><td>G3 full 3</td><td>359 payments in view, 16 accounts, 7 entities, 5 currencies, footer, no overflow. Blemishes: the grid's keyboard-help paragraph prints under the table and "Value date" truncates (as at #307).</td></tr>
+    <tr><td>G3 persistent 3</td><td>Reload and a cold URL in a fresh browser both restored view, filter, range, sort and page (<code>G3/drive.json</code>); only the row selection is not kept.</td></tr>
+    <tr><td>G3 interactive 3</td><td>22 of 22 steps, 0 pageerrors, 0 console errors; grid sort both ways, rows per page, page 2, and selecting a pending row enables <em>Approve selected</em>.</td></tr>
+  </table></div>
+</div></section>
+
+<section id="renders"><div class="wrap">
+  <p class="label">02 · The renders — default state, 1440 and 820, light then dark</p>
+  <p class="meta">Cloud Chromium, Univers substituted: colours exact, type not. Mode set by the system colour scheme, which all three pages follow.</p>
+  <h3>G1 · Mono</h3>
+  <div class="renders">
+    <figure><img src="coldrun-315/g1-1440-light.jpg" alt="G1 1440 light"><figcaption>1440 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g1-1440-dark.jpg" alt="G1 1440 dark"><figcaption>1440 · dark</figcaption></figure>
+    <figure><img src="coldrun-315/g1-820-light.jpg" alt="G1 820 light"><figcaption>820 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g1-820-dark.jpg" alt="G1 820 dark"><figcaption>820 · dark</figcaption></figure>
+  </div>
+  <h3 style="margin-top:var(--s5)">G2 · Console</h3>
+  <div class="renders">
+    <figure><img src="coldrun-315/g2-1440-light.jpg" alt="G2 1440 light"><figcaption>1440 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g2-1440-dark.jpg" alt="G2 1440 dark"><figcaption>1440 · dark</figcaption></figure>
+    <figure><img src="coldrun-315/g2-820-light.jpg" alt="G2 820 light"><figcaption>820 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g2-820-dark.jpg" alt="G2 820 dark"><figcaption>820 · dark</figcaption></figure>
+  </div>
+  <h3 style="margin-top:var(--s5)">G3 · Console</h3>
+  <div class="renders">
+    <figure><img src="coldrun-315/g3-1440-light.jpg" alt="G3 1440 light"><figcaption>1440 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g3-1440-dark.jpg" alt="G3 1440 dark"><figcaption>1440 · dark</figcaption></figure>
+    <figure><img src="coldrun-315/g3-820-light.jpg" alt="G3 820 light"><figcaption>820 · light</figcaption></figure>
+    <figure><img src="coldrun-315/g3-820-dark.jpg" alt="G3 820 dark"><figcaption>820 · dark</figcaption></figure>
+  </div>
+  <h3 style="margin-top:var(--s5)">The other views, by nav click, 1440 light</h3>
+  <div class="renders">
+    <figure><img src="coldrun-315/g1-view-payments-1440-light.jpg" alt="G1 payments view"><figcaption>G1 · Payments</figcaption></figure>
+    <figure><img src="coldrun-315/g2-view-payments-1440-light.jpg" alt="G2 payments view"><figcaption>G2 · Payments (reached with a thrown error)</figcaption></figure>
+    <figure><img src="coldrun-315/g3-view-liquidity-1440-light.jpg" alt="G3 liquidity view"><figcaption>G3 · Liquidity</figcaption></figure>
+    <figure><img src="coldrun-315/g3-view-payments-1440-light.jpg" alt="G3 payments view"><figcaption>G3 · Payments</figcaption></figure>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <p class="label">03 · Gates, inventory, charts — run after each freeze on a copy inside that arm's pack</p>
+  <div class="scroll"><table>
+    <tr><th>Check</th><th>G1</th><th>G2</th><th>G3</th></tr>
+    <tr><td><code>_validate_receipt.py</code></td><td class="bad">FAIL:NO-RECEIPT</td><td class="bad">FAIL:NO-RECEIPT</td><td class="bad">FAIL:NO-RECEIPT</td></tr>
+    <tr><td><code>_validate_screen.py</code></td><td class="bad">FAIL — compose: hex <code>#218</code> (a comment)</td><td class="ok">PASS</td><td class="ok">PASS</td></tr>
+    <tr><td><code>_validate_screen.py --load</code> (B6's fix)</td><td class="ok">load clean, 0 / 0</td><td class="ok">load clean, 0 / 0</td><td class="ok">load clean, 0 / 0</td></tr>
+    <tr><td><code>_validate_example_fence.py</code></td><td class="bad">3 fails (TRACE ×2, SKILL missing)</td><td class="bad">3 fails</td><td class="bad">3 fails</td></tr>
+    <tr><td><code>ci-template/run-gates.py</code> (pack root)</td><td>41 pass · 7 FAIL</td><td>41 pass · 7 FAIL</td><td>41 pass · 7 FAIL</td></tr>
+    <tr><td>canon scopes used</td><td class="num">11</td><td class="num">13</td><td class="num">17</td></tr>
+    <tr><td>charts (engine-drawn)</td><td>line ×1</td><td>stacked area, bar</td><td>line, donut</td></tr>
+    <tr><td>engine script blocks byte-equal to a pack snippet</td><td class="num">4 of 7</td><td class="num">6 of 10</td><td class="num">6 of 7</td></tr>
+    <tr><td><code>dv-behaviour.js</code> carried verbatim</td><td class="ok">yes</td><td class="ok">yes</td><td class="ok">yes</td></tr>
+    <tr><td>data</td><td>fictional "Arden Maritime Group", plausible; straight-through rate a flat 100.0%</td><td>fictional "Halden Group", plausible</td><td>fictional "Meridian Northwind", plausible; scheduled payments run to 1 Nov</td></tr>
+  </table></div>
+  <p class="meta" style="margin-top:var(--s3)">Unused from the dashboard set in all three: runway-bar (except G3), limits-meter, quick-actions, stats-band-lockup, sidebar-nav. The receipt FAIL is the skill's own instruction going unmet: the arms were told not to run gates, the #307 discipline, and minting is a gate step.</p>
+</div></section>
+
+<section id="delta"><div class="wrap">
+  <p class="label">04 · #307 (v1.0.14) &rarr; G1 · G2 · G3 (v1.0.15 candidate)</p>
+  <h2>Four columns, same rows.</h2>
+  <div class="scroll"><table>
+    <tr><th>Row</th><th>#307</th><th>G1</th><th>G2</th><th>G3</th></tr>
+    <tr><td>Theme</td><td>Mono (grill unanswered)</td><td>Mono (grill skipped)</td><td>Console (answered)</td><td>Console (answered)</td></tr>
+    <tr><td>Scores</td><td>3/3/2/2</td><td>2/3/3/3</td><td>3/3/1/2</td><td>3/3/3/3</td></tr>
+    <tr><td>Canon scopes</td><td>10</td><td>11</td><td>13</td><td>17</td></tr>
+    <tr><td>Engine charts</td><td>2</td><td class="bad">1</td><td>2</td><td>2</td></tr>
+    <tr><td>Pageerrors in the drive</td><td class="bad">25 (one message)</td><td class="ok">0</td><td class="bad">4 (two messages)</td><td class="ok">0</td></tr>
+    <tr><td>Wrote to a detached node</td><td class="bad">yes, on load</td><td class="ok">no</td><td class="bad">yes, on nav</td><td class="ok">no</td></tr>
+    <tr><td>Screen gate</td><td class="bad">FAIL on a comment (a11y)</td><td class="bad">FAIL on a comment (compose)</td><td class="ok">PASS</td><td class="ok">PASS</td></tr>
+    <tr><td>Example-fence gate</td><td>did not exist</td><td class="bad">refused</td><td class="bad">refused</td><td class="bad">refused</td></tr>
+    <tr><td>Traced a template body</td><td class="ok">no</td><td class="ok">no (never opened one)</td><td class="ok">no</td><td class="ok">no</td></tr>
+  </table></div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <p class="label">05 · F01 and F02, by Playwright assertion</p>
+  <div class="scroll"><table>
+    <tr><th>Defect</th><th>Assertion</th><th>Status</th></tr>
+    <tr><td>F01 — <code>data-theme</code> on <code>&lt;body&gt;</code> beside a <code>.cn-*</code> scope kills dark</td><td>All three: <code>data-theme</code> only on <code>html.canon</code>, <code>null</code> on body, body carries no <code>cn-</code> class; light&rarr;dark moves page <code>rgb(255,255,255)&rarr;rgb(26,26,26)</code> and the metric tile <code>rgb(240,240,240)&rarr;rgb(26,26,26)</code>; G1's <em>Dark mode</em> button by click does the same (<code>f01.json</code>)</td><td class="ok">does not reproduce (3 of 3)</td></tr>
+    <tr><td>F02 — controls rendered after load are dead</td><td>The served HTML holds 0 <code>[data-action=open-payment]</code> rows, the live page 6 / 10 / 15; clicking the first rendered row opens the drawer with focus inside it in all three (<code>drive.json → F02_premise</code>, step "F02 open…")</td><td class="ok">does not reproduce (3 of 3)</td></tr>
+    <tr><td>#307's F01 class — a render writes a node the view detached</td><td>G2 throws on Liquidity and Payments nav; a headless load of G2 is clean (<code>gates/screen-load.log</code>), so B6's load check cannot see it</td><td class="bad">reproduces in G2</td></tr>
+  </table></div>
+</div></section>
+
+<section id="findings"><div class="wrap">
+  <p class="label">06 · Findings</p>
+  <ol class="findings">
+    <li><strong>The skill prescribes the scope its own gate refuses.</strong> <code>skills/generate-from-canon/SKILL.md:154</code> (rule 7a's code block) opens with <code>&lt;div class="cn-template-dashboard-bento"&gt;</code>; <code>:58–68</code> (rule 1a) says <code>_validate_example_fence.py</code> refuses a page that wears a template's scope. All three arms followed 7a, and all three named the contradiction in their own Gaps (G1 <code>Gaps.md:20</code>, G2 <code>:28</code>, G3 <code>:84</code>). The gate refused all three.</li>
+    <li><strong>The fence gate's scope match is a word-boundary slip.</strong> <code>knowledge/_validate_example_fence.py:145</code> builds <code>\bcn-(template-dashboard|…)\b</code>; <code>\b</code> matches at the hyphen, so a page wearing <code>cn-template-dashboard-bento</code> (which the same gate reports as UNFENCED) is reported as wearing the fenced <code>cn-template-dashboard</code>. Its shingle check also counts the <code>tpl-*</code> grammar that rule 7a prescribes (36 / 127 / 280 shared runs).</li>
+    <li><strong>The fence gate cannot find the skill inside a pack.</strong> <code>_validate_example_fence.py:49</code> looks for <code>apollo-spider/skills/generate-from-canon/SKILL.md</code>; the pack ships it at <code>skills/generate-from-canon/SKILL.md</code>, so the gate prints <code>SKILL missing</code> and FAILs on every pack, pages or not (<code>run-gates.log</code>: 0 pages judged, still 1 failure).</li>
+    <li><strong>The headless-load step he took on 29 September is not in the skill.</strong> <code>s308-D15</code> fix 1's skill half, <code>notes/_lanes/313/B6/skill-step9.diff</code>, still passes <code>git apply --check</code> at <code>853d7f56</code>, so it never landed; the candidate's SKILL.md has 0 lines matching "headless" and still says, at <code>:334</code>, "No eyes, no browser… stop". The gate half did land (<code>_screen_load.py</code> ships, <code>--load</code> runs clean on all three).</li>
+    <li><strong>A clean load is not a clean page.</strong> G2 loads with 0 errors and throws on the first two nav clicks (<code>G2/drive.json → pageerrors</code>, stacks at dashboard lines 2440 and 2327); <code>setView()</code> (lines 2516–2521) calls <code>renderAll()</code> before <code>writeURL()</code>, so the throw also costs the view its place in the URL and its reload. This is #307 F01's class, moved from load to navigation, where B6's one load cannot reach.</li>
+    <li><strong>The compose gate still reads comments.</strong> G1 fails <code>_validate_screen.py</code> on <code>#218</code>, the session number inside a CSS comment it copied from <code>Filter-toolbar-bar.reference.html:123</code> (G1 <code>dashboard.html:23</code>). <code>_validate_compose.py:282–284</code> takes the raw <code>&lt;style&gt;</code> text, though the module has <code>strip_css_comments()</code> at <code>:89</code>. B6 fixed this class in the a11y check only.</li>
+    <li><strong>The compose door offered the template rule 1a says it cannot name.</strong> G1's first seed (<code>G1/seed.json</code>, <code>components[24].id</code>) is <code>component:template-dashboard-bento</code>. Consistent with the fence gate's own "UNFENCED, owed" line, inconsistent with 1a's "the seed cannot name it". No arm opened the template.</li>
+    <li><strong>The pack's own runner is red before any page exists.</strong> <code>python3 ci-template/run-gates.py</code> at each pack root: <code>41 pass · 7 FAIL · 0 could-not-ask</code>, identical in all three. The seven: <code>_validate_composition</code>, <code>_validate_example_fence</code> (F03), <code>_validate_fit_physics</code>, <code>_validate_geometry</code> and <code>_validate_own_size</code> ("no input files"), <code>_validate_polarities</code> (refuses with no argv), <code>_validate_receipt</code> ("needs at least one page path"). The design contract ends on this command.</li>
+    <li><strong>Theme answered, theme delivered.</strong> G2 and G3 set <code>data-apollo-theme="console"</code> and render Console's grey wall and rounded groups; G1 announced Mono and square before building. The widest #307 gap (theme) is closed by the protocol, not by the pack.</li>
+  </ol>
+</div></section>
+
+<section id="questions" class="band"><div class="wrap">
+  <p class="label">07 · Ruling-shaped questions — his, not answered here</p>
+  <ol class="rsq">
+    <li>Is <code>cn-template-dashboard-bento</code> the bento <em>grammar's</em> scope, which every dashboard may wear, or a <em>template's</em> scope, which no build may wear? Rule 7a and rule 1a say opposite things today, and every cold build lands on one side of the gate.</li>
+    <li>Should the "one headless load and a console read" step go into the skill now, before the cut, as the 29 September answer asked, and should it also click each nav item once, since G2's fault only shows on a click?</li>
+    <li>Should the pack's runner, which the design contract tells every designer to run, be green on a pack with no pages, or is a red there acceptable while the gates wait for a page?</li>
+    <li>Is G1's choice of one chart (it declined a second as reusing series colours for different data) the behaviour he wants from a blind build, or should a dashboard always carry two?</li>
+    <li>Does this candidate become v1.0.15 after those fixes and one confirming run, or does he want to see the three pages first?</li>
+  </ol>
+</div></section>
+
+<section><div class="wrap">
+  <p class="label">08 · Recommendation — not a ruling</p>
+  <p class="quote"><strong>HOLD.</strong> The fact: all three fresh sessions followed rule 7a's code block (SKILL.md:154) and all three were refused by the pack's own <code>_validate_example_fence.py</code>, so as shipped every on-canon dashboard fails a gate it is told to run; and the headless-load step from <code>s308-D15</code> is not in the skill. The pages themselves earned 11, 9 and 12 of 12.</p>
+  <p class="meta">How it ran: three headless <code>claude -p</code> sessions (Opus 5.5) with an empty HOME and the Project, memory and skill environment stripped (checked: the session reported no project instructions, no CLAUDE.md beyond the pack's, no memory); each forbidden-read rule audited over its transcript: 0 reads of <code>_*.py</code> source, of <code>notes/</code> or outside the pack; the reader <code>_compose_slice.py</code> was run, as at #307. Prompts, transcripts audit, drivers: <code>notes/_lanes/315/CR/</code>.</p>
+</div></section>
+
+<footer><div class="wrap">Apollo · session 315 · lane CR · Opus 5.5 · cold runs G1–G3 and verdict GV · 2026-10-02</div></footer>
+</body>
+</html>
