@@ -139,7 +139,7 @@
   .icn{width:18px; height:18px; display:block; flex-shrink:0;}
   .sr-live{position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;}
 
-  .st{ --st-w:520px; width:var(--st-w); max-width:100%; container-type:inline-size; }
+  .st{ --st-w:100%; width:var(--st-w); max-width:100%; container-type:inline-size; }   /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part) F4: the default was 520px = the collapse threshold below, so the dots never showed at rest; the part now FILLS its container and the dial stays for a page that wants it narrower */
 
   /* ── DOTS — Progress-tracker's reworked visuals, interactive deltas only (change visuals THERE) ── */
   .st ol.steps{list-style:none; display:flex; margin:0 0 4px; padding:0;}
@@ -167,8 +167,8 @@
   .st .title{color:var(--muted);}
   .st .track{position:relative; width:100%; height:4px; background:var(--incomplete); border-radius:var(--border-radius-indicator); overflow:hidden;}
   .st .track .fill{position:absolute; left:0; top:0; height:100%; width:0; background:var(--step-fill); transition:width var(--ease);}
-  @container (max-width: 520px){
-    .st ol.steps{display:none;} .st .collapse{display:block;}   /* dots→line collapse */
+  @container (max-width: 519px){
+    .st ol.steps{display:none;} .st .collapse{display:block;}   /* dots→line collapse — strictly BELOW 520 (#314 TP2 F4) */
   }
 
   /* ── step content panels ── */

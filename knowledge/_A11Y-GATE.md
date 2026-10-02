@@ -1,8 +1,8 @@
 # A11y gate — _validate_a11y.py
 
-**137 snippet(s)** · **0 failure(s)** · **204 warning(s)** · **732 note(s)**
+**137 snippet(s)** · **0 failure(s)** · **158 warning(s)** · **998 note(s)**
 
-Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1458 control(s)** and **68 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
+Measured MARKUP-DRIVEN (s114-D5, rebuilt #116): **1631 control(s)** and **32 focusable data mark(s)** enumerated from the markup, sized through a subject-aware cascade with `var()` resolved. Engine + declared gaps: `knowledge/_a11y_target.py`.
 
 Gating: reduced-motion (2.3.3) · unknown ARIA role · CONTROL target under the 24px floor (2.5.8, aid-009). Reported: CONTROL 24–43 vs the 44 HSBC default (axs-003; `s114-D6` promotes this to blocking, ordered after this rebuild) · DATA MARK under 24 (`s116-D1`) · UNMEASURED boxes.
 
@@ -10,9 +10,8 @@ Library bar (aqa-003, ruled 2026-07-03): the canon is LIBRARY-GRADE — guidelin
 
 ## Owed measurement — data marks below 24 (`s116-D1`, for Dave)
 
-**24 focusable data mark(s) fall below the 24px dense-case minimum**, across 1 snippet(s):
+**0 focusable data mark(s) fall below the 24px dense-case minimum**, across 0 snippet(s):
 
-- `Template-report` — 24
 
 NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the mark tier goes blocking. `MARK_TIER` in this file is the single switch.
 
@@ -622,6 +621,7 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 
 ## Input-fields
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
+- 🟡 warn — `button.reveal.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
 - 🟡 warn — `button.tail-btn` — ::before hit-expander 36x36 — under the 44 default
@@ -685,8 +685,21 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 ## Navigations
 - 🟡 warn — `button.clear` — 24x24 is under the 44 default (aid-009)
 - ⚪ note — `a.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `a.nv-item.t-cm-label` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `a.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `a.nv-item.t-cm-button` — UNMEASURED: one axis declared (autox64), the other layout-determined (a @media-conditioned size exists and is NOT measured)
 - ⚪ note — `button#navAcctTrig.nv-acct.nv-btn` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
@@ -913,20 +926,82 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 - 🟡 warn — `button.x` — ::before hit-expander 24x24 — under the 44 default
 
 ## Template-auth
-- ⚪ note — `button.fl-reveal.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.auth-link.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.fl-reveal.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.auth-link.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.auth-link.t-ed-body-small` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `button.reveal.tail-btn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.reveal.tail-btn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#resend.se-btn.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.is-disabled.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-confirmation
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.ghost` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.full.ghost` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-create-edit
-- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
-- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
-- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
-- 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)
+- 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.fl-tip` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.fl-tip` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-dashboard-bento
 - 🟡 warn — `button#themeBtn` — autox36 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
@@ -944,126 +1019,270 @@ NOT WAIVED and NOT REMEDIED here: `s116-D1` orders this measurement BEFORE the m
 
 ## Template-dashboard
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button.dgs-clear` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-caption.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.metric-cta` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.dv-act.dv-csv.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `summary.dv-dd.dv-tbl-toggle.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.clear` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#ftbRangeT.t-cm-button.trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.lnk.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-detail
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button#tab-det.t-cm-button.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button#tab-app.t-cm-button.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button#tab-doc.t-cm-button.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button#tab-aud.t-cm-button.tab` — UNMEASURED: one axis declared (autox48), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.crumb.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#tab-det.t-cm-button.tab` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#tab-app.t-cm-button.tab` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#tab-doc.t-cm-button.tab` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#tab-aud.t-cm-button.tab` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#phOvTrigger.overflow__trigger.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.dr-dl` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.dr-dl` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-empty
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button.dgs-clear` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.ebtn.t-cm-button.t-cm-slot` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-ctl-16.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.clear` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.lnk.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-error
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- ⚪ note — `a.t-cm-ctl-14.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-ctl-14.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-ctl-14` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-ctl-14` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-list-index
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button.dgs-clear` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
-- 🟡 warn — `button.x` — 24x24 is under the 44 default (aid-009)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button.clearbtn.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `a.dr-title.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.clearbtn.t-cm-button` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.clear` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#ftbAddT.t-cm-button.trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button#ftbRangeT.t-cm-button.trigger` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.x` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.lnk.t-cm-caption` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn.t-cm-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.pbtn` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.row` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.row` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.row` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.row` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.row` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.ctrl` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.ctrl` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.full.sort.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.clearbtn.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-report
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — `button` — autox40 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
-- 🟡 warn — DATA MARK `g.dv-marker` — 11.0x11.0 — under the 24 dense-case minimum (<g> wrapper measured from its circle child (circle diameter 2r)) (s116-D1: marks carry the 24 floor, not the 44 target)
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `button.sort.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
-- ⚪ note — `button.sort.t-cm-ctl-14` — UNMEASURED: one axis declared (autox44), the other layout-determined (a @media-conditioned size exists and is NOT measured)
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.tertiary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.dv-act.dv-csv.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `summary.dv-dd.dv-tbl-toggle.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.dv-act.dv-csv.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `summary.dv-dd.dv-tbl-toggle.dv-vt.t-cm-chart-label` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-settings
 - 🟡 warn — `button#themeBtn.t-cm-legal` — autox32 — the declared axis is under the 44 default (aid-009); the other axis is layout-determined
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.t-cm-button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 - ⚪ note — `a.crumb` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-label.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-label.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-label.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
-- ⚪ note — `a.t-cm-label.tpl-link` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.fl-tip` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.quaternary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `button.btn.primary` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
+- ⚪ note — `a.lnk.t-cm-legal` — UNMEASURED: no declared box (layout-determined) and no hit-expander — this gate must not guess a size
 
 ## Template-wizard
 - 🟡 warn — `button` — 40x40 is under the 44 default (aid-009)

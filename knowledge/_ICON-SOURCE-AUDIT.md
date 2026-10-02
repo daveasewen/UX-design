@@ -23,7 +23,7 @@
 | 15 | App-shell-top-nav | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 16 | Avatar-group | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 17 | Avatar | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 18 | Back-to-top | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 18 | Back-to-top | 2 | 2 | 0 | 0 | — | ✅ verified |
 | 19 | Badge | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 20 | Banner | 9 | 9 | 0 | 0 | yes | ✅ verified |
 | 21 | Breadcrumbs | 1 | 1 | 0 | 0 | yes | ✅ verified |
@@ -50,7 +50,7 @@
 | 42 | Chart-stacked-area | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 43 | Combobox | 15 | 4 | 11 | 0 | yes | ✅ verified · 11 bespoke |
 | 44 | Command-palette | 6 | 6 | 0 | 0 | — | ✅ verified |
-| 45 | Confirmation | 1 | 1 | 0 | 0 | — | ✅ verified |
+| 45 | Confirmation | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 46 | Countdown-timer | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 47 | Data-grid | 15 | 11 | 4 | 0 | yes | ✅ verified · 4 bespoke |
 | 48 | Date-picker | 11 | 11 | 0 | 0 | yes | ✅ verified |
@@ -73,7 +73,7 @@
 | 65 | Hero | 1 | 1 | 0 | 0 | — | ✅ verified |
 | 66 | Icon-button | 5 | 5 | 0 | 0 | — | ✅ verified |
 | 67 | Image-block | 1 | 1 | 0 | 0 | — | ✅ verified |
-| 68 | Input-fields | 6 | 6 | 0 | 0 | yes | ✅ verified |
+| 68 | Input-fields | 8 | 8 | 0 | 0 | yes | ✅ verified |
 | 69 | Layout-utilities | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 70 | Legend | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 71 | Limits-meter | 0 | 0 | 0 | 0 | — | — no inline svg paths |
@@ -121,16 +121,16 @@
 | 113 | Tabs | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 114 | Tags-input | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 115 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
-| 116 | Template-auth | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 116 | Template-auth | 6 | 6 | 0 | 0 | yes | ✅ verified |
 | 117 | Template-confirmation | 4 | 4 | 0 | 0 | yes | ✅ verified |
-| 118 | Template-create-edit | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 118 | Template-create-edit | 11 | 11 | 0 | 0 | yes | ✅ verified |
 | 119 | Template-dashboard-bento | 7 | 7 | 0 | 0 | yes | ✅ verified |
-| 120 | Template-dashboard | 13 | 13 | 0 | 0 | yes | ✅ verified |
-| 121 | Template-detail | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 122 | Template-empty | 5 | 5 | 0 | 0 | yes | ✅ verified |
+| 120 | Template-dashboard | 19 | 19 | 0 | 0 | yes | ✅ verified |
+| 121 | Template-detail | 7 | 7 | 0 | 0 | yes | ✅ verified |
+| 122 | Template-empty | 7 | 7 | 0 | 0 | yes | ✅ verified |
 | 123 | Template-error | 3 | 3 | 0 | 0 | yes | ✅ verified |
-| 124 | Template-list-index | 25 | 13 | 12 | 0 | yes | ✅ verified · 12 bespoke |
-| 125 | Template-report | 9 | 9 | 0 | 0 | yes | ✅ verified |
+| 124 | Template-list-index | 27 | 15 | 12 | 0 | yes | ✅ verified · 12 bespoke |
+| 125 | Template-report | 12 | 12 | 0 | 0 | yes | ✅ verified |
 | 126 | Template-settings | 6 | 4 | 2 | 0 | yes | ✅ verified · 2 bespoke |
 | 127 | Template-wizard | 7 | 7 | 0 | 0 | yes | ✅ verified |
 | 128 | Textarea | 3 | 3 | 0 | 0 | yes | ✅ verified |
@@ -139,7 +139,7 @@
 | 131 | Toast | 6 | 6 | 0 | 0 | yes | ✅ verified |
 | 132 | Tooltip | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 133 | Transaction-row | 0 | 0 | 0 | 0 | — | — no inline svg paths |
-| 134 | Transfer-list | 11 | 4 | 7 | 0 | — | ✅ verified · 7 bespoke |
+| 134 | Transfer-list | 13 | 6 | 7 | 0 | — | ✅ verified · 7 bespoke |
 | 135 | Tree | 2 | 2 | 0 | 0 | yes | ✅ verified |
 | 136 | Video-player | 4 | 4 | 0 | 0 | — | ✅ verified |
 | 137 | View-options | 2 | 2 | 0 | 0 | — | ✅ verified |

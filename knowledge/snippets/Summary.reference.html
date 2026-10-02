@@ -23,7 +23,10 @@
   .stateLabel{/* type: t-cm-legal (bound in canon/type.css - T-D9/T-D12) */ color:var(--muted); margin:1.75rem 0 .5rem;}
 
   /* ---- Summary (key/value list) ---- */
-  .summary{ display:flex; flex-direction:column; max-width:420px; margin:0; }
+  .summary{ display:flex; flex-direction:column; margin:0; }   /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part): FILLS its container — the 420px that was here is the showroom's wrap below (s210-D3: no width declared by the part; the container gives it one). Dave 14:55 call 15: "the summary table doesn't fill its container" */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-wrap{ max-width:420px; }   /* the showroom's column — not the part's width */
+/* ===== APOLLO-DEMO css END ===== */
   .summary__row{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--divider); }
   .summary__row:last-child{ border-bottom:0; }
   .summary__k{ color:var(--muted); font:400 16px/1.4 var(--font); margin:0; }
@@ -40,6 +43,9 @@
 </head>
 <body data-theme="light">
   
+<!-- ===== APOLLO-DEMO wrapper-open START (showroom harness — never copy) ===== -->
+  <div class="demo-wrap">
+<!-- ===== APOLLO-DEMO wrapper-open END ===== -->
   <div class="stateLabel">default · key / value rows</div>
   <dl class="summary">
     <div class="summary__row"><dt class="summary__k">To</dt><dd class="summary__v">Jane Smith</dd></div>
@@ -54,6 +60,10 @@
     <div class="summary__row"><dt class="summary__k">Fee</dt><dd class="summary__v">£10.00</dd></div>
     <div class="summary__row summary__row--total"><dt class="summary__k">Total</dt><dd class="summary__v">£250.00</dd></div>
   </dl>
+
+<!-- ===== APOLLO-DEMO wrapper-close START (showroom harness — never copy) ===== -->
+  </div>
+<!-- ===== APOLLO-DEMO wrapper-close END ===== -->
 
   <script type="application/json" id="token-manifest">
   {

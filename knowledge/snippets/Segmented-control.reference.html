@@ -91,6 +91,12 @@
   /* NO inter-button divider — one border frames the whole track; the fill floats + slides. */
   .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}      /* hover only on inactive (active sits over the fill) */
   .seg button[aria-pressed="true"]{color:var(--on-sel);}                      /* fill comes from the sliding .ind behind */
+  /* #314 TP2 F3 (Dave 14:55 call 28): AT REST the fill is the pressed button's OWN - before the script has measured
+     the thumb (or with no script at all, in canon's consumers) the pressed label used to sit white on white. The
+     button paints the selected fill itself until .seg carries is-measured; from then on the sliding .ind is the
+     fill and the button's own goes transparent so the slide shows. Same colours, same geometry, no second thumb. */
+  .seg:not(.is-measured) button[aria-pressed="true"]{background:var(--sel); border-radius:var(--seg-thumb);}
+  .seg:not(.is-measured) .ind{display:none;}
   .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
   .seg svg{width:16px; height:16px; fill:currentColor;}
 
@@ -287,7 +293,8 @@
       /* rect-based so the 2px inset padding + 1px border don't offset the measurement
          (the .ind containing block is .seg's PADDING box — subtract seg.clientLeft). */
       const sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
-      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px'; }
+      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px';
+      seg.classList.add('is-measured');   /* #314 TP2 F3: from here the .ind is the fill, the button's own rest fill lets go */ }
     function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
     document.querySelectorAll('.seg').forEach(seg=>{
       seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{

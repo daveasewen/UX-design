@@ -35,6 +35,21 @@ def remove_div_by_class(html, cls):
         i = j
     return "".join(out)
 
+def snippet_body(html):
+    """The snippet's REAL <body>, located on a comment-masked copy (#314 lane TP).
+
+    The old `re.search(r"<body[^>]*>(.*?)</body>")` ran on the raw bytes, so the first literal
+    `<body` won - and in Template-auth and Template-wizard that literal sat inside a <head> prose
+    comment ("the face arrives via <body class="t-ed-body">"). The match therefore began in the
+    head and swept the whole <style> into the section, which is what #313 A6 saw as "two of them
+    bring their own page styles" (145 hexes, 35 sized parts): a locator defect, not a template
+    defect. Same class as gen_token_ramp's #211 fix: HTML comments are not markup. The slice is
+    taken from the ORIGINAL bytes at the span the masked copy located, so masking cannot corrupt
+    what it helped find."""
+    masked = re.sub(r"<!--.*?-->", lambda m: " " * len(m.group(0)), html, flags=re.S)
+    m = re.search(r"<body[^>]*>(.*?)</body>", masked, re.S)
+    return html[m.start(1):m.end(1)]
+
 def extract_sprite(body):
     """Pull an inline <svg ...position:absolute...> sprite out; return (body_without, sprite)."""
     m = re.search(r'<svg[^>]*position:absolute[^>]*>.*?</svg>', body, re.S)
@@ -58,7 +73,7 @@ for nm in _order:
     f = os.path.join(SNIP, nm + ".reference.html")
     if not os.path.exists(f): continue
     html = open(f).read()
-    body = re.search(r"<body[^>]*>(.*?)</body>", html, re.S).group(1)
+    body = snippet_body(html)
     body = re.sub(r"<script.*?</script>", "", body, flags=re.S)
     body = remove_div_by_class(body, "demo-controls")
     body, sprite = extract_sprite(body)

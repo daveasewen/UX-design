@@ -3,49 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Template — report — reference candidate (Layer 2, PROPOSED)</title>
+<title>Template — report (a period, a moment, a source, every chart with its table) — composed from canon (rebuilt #314)</title>
 <!--
-  CANONICAL-SHAPED REFERENCE for Template — report (Layer 2, itinerary row 113). PROPOSED, NOT
-  RULED: Layer-2 rows have no ruled artefact form, and this pair ships in the library's grammar on
-  the wave-5/wave-6 brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). Nothing here is
-  registered — no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json
-  membership, no canon.css block, no _rulings.json line.
+TEMPLATE — REPORT (a claim about a PERIOD, made at a stated MOMENT, from a stated SOURCE, with an
+  auditable table under every chart - s272-D88). Layer 2, itinerary row 114.
 
-  WHAT A REPORT IS, AND WHY A DASHBOARD IS NOT ONE. A dashboard answers "how are things right
-  now"; a report is a CLAIM ABOUT A PERIOD, made at a MOMENT, from a stated SOURCE, and it has to
-  be checkable. That is the whole design argument of this page and it shows up in three places a
-  dashboard has no need for: the provenance row under the header (period / prepared / source /
-  currency), the table that carries the SAME five routes the charts draw so the reader can add
-  them up, and the footnote block. None of the three is a component; all three are what a template
-  contributes.
+  REBUILT #314 lane TP on Dave's #313 word (s313-D72 comment, verbatim): "We need to regenerate the
+  templates too BTW, everything in the library should be a valid 'element' of the design system".
+  A template is a PAGE: it places parts and never sizes them (s305-D57; s307-D75). Before #314 this
+  file carried 149 rules copied from Data-grid, Chart-sparkline, View-options, Action-bar,
+  Document-row, Stat-card and Kpi-tile (the names Metric replaced at s308-D42), Summary, Chart-bar,
+  Chart-line and more, plus two chart canvases baked by hand; canon.css projected that second copy
+  under .cn-template-report.
 
-  COMPOSED FROM, declaration-for-declaration:
-    Breadcrumbs+Headers — the page-header lock-up
-    Button              — print / export, with Button's own press-physics partial
-    View-options `.seg` — the period switcher
-    Kpi-tile+Stat-card  — the five-tile stats band and every panel surface
-    Chart-bar           — the column specimen, BYTE-LIFTED from the gated file
-    Chart-line          — the twelve-month line specimen, BYTE-LIFTED from the gated file
-    Data-grid           — the table, its sort headers and its scroll frame
-    Summary             — the quarter total, including its emphasised total row
-    Status-indicator    — the settlement chips (form B: the word always carries the meaning)
-    Layout-utilities    — `.l-container` / `.l-stack` / `.l-row` / `.l-grid`
+  HOW IT IS BUILT NOW - canon.css linked, each part placed as its own scope + its own markup:
+    Layout-utilities        .cn-layout-utilities        .l-container / .l-stack  (the frame)
+    Page-header-lockup      .cn-page-header-lockup      breadcrumb, title, meta line, Print / Export
+    Segmented-control       .cn-segmented-control       the reporting period (s305-D60 4c-17)
+    Status-indicator        .cn-status-indicator        the reconciliation state
+    Summary                 .cn-summary                 the report's provenance (period, prepared,
+                                                        source, currency - the s272-D88 facts, stated)
+                                                        and the quarter total
+    Section-heading-lockup  .cn-section-heading-lockup  each section's label
+    Metric                  .cn-metric                  the four figures on Metric's OWN board (4 -> 2x2 -> 1 by its media queries,
+                                                        Dave 14:55 call 18: no orphan; the fifth #210 figure, open exceptions, is a state, so it is a chip)
+    Chart-bar               .cn-chart-bar               the column figure, drawn by the LIBRARY'S engine
+    Chart-line              .cn-chart-line              the twelve-month line, drawn by the same engine
+                                                        (both carry dv-behaviour + dv-render + their
+                                                        renderer, injected by gen_component_partials.py;
+                                                        the data specs are written on this page -
+                                                        generate-from-canon rule 2a)
+    Table                   .cn-table                   receipts by route, read down the columns
+    Footer                  .cn-footer                  after the main area (4c-2)
+  The page's own <style> is PLACEMENT ONLY (.tpl-*). The segmented control's thumb script is carried
+  VERBATIM. Every chart has its auditable table (the engine writes the figure's own table from the
+  same numbers; the Table under the charts is the full ledger).
 
-  ⛔ TWO CHARTS MEANS TWO VAR CONTRACTS. Chart-line's specimen carries two HIDDEN baked views — a
-  ghost series and a target line — which consume `--data-target`, `--target-alpha` and
-  `--alpha-44`, and which paint over the chart if `.dv-off` is not carried with them. Nothing in
-  this repo checks that a template carried every var its borrowed markup reads; a dangling
-  `var()` in an SVG paint property falls back to BLACK, in silence
-  [[dangling-dataviz-var-renders-silent-black]]. Both contracts are declared in the theme blocks
-  above and the absence of any dangling var is PROVEN in the browser, with a mutation control, in
-  the receipt.
-
-  ⛔ NEITHER CHART IS MADE FLUID. `dv-fit` is dropped from both specimens because the fit is a
-  RUNTIME measurement (`data-pl-fit`) performed by an engine this static file does not host —
-  #210 wave-5 lane B watched an h-bar's category labels clip to "oceries" / "nsport" for exactly
-  that reason. The charts keep their 580px canvas and scroll inside `.dv-stage`.
+  WHAT CHANGED TO THE EYE, for Dave: Metric replaces the Kpi-tile copies (five on a 12-column board,
+  so the fifth wraps); the two charts are engine-drawn with the chart parts' own tool rows; the
+  ledger is a Table, not a Data-grid with sort buttons; no borrowed Stat-card surfaces; a Footer
+  ends the page.
 -->
 <link rel="stylesheet" href="../canon/type.css">
+<link rel="stylesheet" href="../canon/canon.css">
 <style>
 /* ===== AUTO-TOKENS START (generated by gen_token_ramp.py from canon/canon.css — DO NOT EDIT; edit the TOKENS source atoms in canon.css and regenerate, s121-D1) ===== */
 :root{
@@ -75,441 +75,59 @@
   --alpha-96: 0.96;
 }
 /* ===== AUTO-TOKENS END ===== */
-/* leading-trim (label alignment) — native text-box-trim, metric-aware, progressive
-   enhancement; headings/body excluded. BYTE-IDENTICAL to Command-palette line 36. */
-:where(button,a,label,span,small,strong,em,b,i,th,td,dt,dd,li,figcaption,legend,caption,summary,output,time,input[type=text],input[type=search],input[type=email],input[type=tel],input[type=url],input[type=password],input[type=number],input:not([type]),textarea):not(:has(svg)){text-box-trim:trim-both;text-box-edge:cap alphabetic;}
-
-
-  /* ============================================================================================
-     THEME BLOCKS. Every value COPIED from the source snippet named beside it. Nothing is new.
-     ⛔ THE DATAVIZ LEG IS THE DANGEROUS ONE AND IT IS WHY THIS BLOCK IS LONG. A template inherits
-     a VAR CONTRACT from every component it composes, and nothing in this repo checks that it
-     carried them all: `fill:var(--undefined)` does not fall back to the previous value, it falls
-     back to the SVG initial value, BLACK, in silence [[dangling-dataviz-var-renders-silent-black]].
-     #210 wave-5 lane B reproduced that at composition time with every gate green. This file
-     composes TWO chart specimens from TWO different gated charts, so it carries BOTH contracts —
-     including `--data-target` / `--target-alpha`, which only the line chart's hidden target view
-     consumes, and which a reader would never guess were needed. The browser-side dangling-var
-     probe in the receipt is the instrument that proves it, and it is mutation-controlled.
-     ============================================================================================ */
-  :root{
-    --ease:140ms ease;                                  /* Kpi-tile / Summary / Data-grid */
-    --move:220ms cubic-bezier(.4,0,.2,1);               /* View-options / Tabs */
-    --spring:300ms cubic-bezier(.5,1.6,.4,1);           /* Button / Data-grid */
-    --press:90ms cubic-bezier(0,0,.58,1);               /* Button / Data-grid */
-    --phys-size:120;                                    /* Button — text-button characteristic size */
-    --cell-py:10px; --cell-px:12px;                     /* Data-grid — Table's gated cell padding */
-    --draw-slow:2400ms cubic-bezier(.33,0,.3,1);        /* Chart-line — the draw-in duration */
-  }
+  /* THEME BLOCKS - only what the page's OWN rules read. Every part paints itself from canon.css.
+     Values are projected by gen_snippet_tokens.py from the #token-manifest below. */
   [data-theme="light"]{
-    --page:#FFFFFF; --surface:#FFFFFF; --text:#1A1A1A; --icon:#1A1A1A;
-    --border:#E1E1E1; --divider:#E1E1E1; --hover:#F0F0F0; --focus:#305A85;
-    --header:#F0F0F0; --cell:#FFFFFF; --fborder:#808080; --bar:#000000;
-    --disabled:#E1E1E1; --pressedbg:#626262; --onpressed:#FFFFFF; --currentbd:#1A1A1A;
-    /* buttons — Button.reference.html */
-    --pri-default:#1A1A1A; --pri-label:#FFFFFF; --pri-hover:#636363;
-    --ter-border:#1A1A1A; --ter-label:#1A1A1A; --ter-hover:#F0F0F0;
-    --quat-label:#1A1A1A; --quat-hover:#F0F0F0;
-    /* segmented switcher — View-options.reference.html (via Template-dashboard) */
-    --sel:#000000; --on-sel:#FFFFFF;
-    /* KPI delta arrow FILL seat — Stat-card via Kpi-tile. DAVE'S, flagged at source, not resolved here. */
-    --up:#66CC8D; --down:#F6604C;
-    /* sparkline INK seat — s182-D3, background-keyed; this is the on-white leg (Kpi-tile) */
-    --spark-up:#137F3C; --spark-down:#DA1A00; --spark-flat:#1A1A1A;
-    --spark-base-alpha:.10;                             /* W-59 collision rename, carried from wave 5 */
-    /* RAG chip — Status-indicator form B, via Document-row */
-    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
-    --success-tint:#D4F1DF; --warning-tint:#F6E6C0; --error-tint:#FDD9D4; --info-tint:#DFEAF9;
-    /* dataviz — Chart-bar.reference.html AND Chart-line.reference.html (identical where shared) */
-    --ink:#1A1A1A; --baseline:#1A1A1A; --line:#E1E1E1;
-    --data-series-1:#766682; --data-axis:#626262; --axis-alpha:1;
-    --data-grid:#E1E1E1; --grid-alpha:1;
-    --data-target:#313131; --target-alpha:1;            /* Chart-line ONLY — the hidden target view */
-    --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
-    --seg-rad-s:0; --seg-thumb-s:0;   /* Segmented-control.reference.html, verbatim (s229) */
-    --press-travel:2; --press-darken:0.94;
-    --target-min:44px;
-    --l-margin:16px; --l-gutter:16px;
+    --divider:#E1E1E1;   /* divider/border/section - the rule above each section */
+    --focus:#305A85;   /* focus/ring - the demo bar only */
+    --l-margin:16px;   /* layout/app/margin */
   }
   [data-theme="dark"]{
-    --page:#1A1A1A; --surface:#000000; --text:#E1E1E1; --icon:#E1E1E1;
-    --border:#808080; --divider:#808080; --hover:#232323; --focus:#4587A7;
-    --header:#1F1F1F; --cell:#1A1A1A; --fborder:#808080; --bar:#FFFFFF;
-    --disabled:#808080; --pressedbg:#1A1A1A; --onpressed:#FFFFFF; --currentbd:#808080;
-    --pri-default:#FAFAFA; --pri-label:#333333; --pri-hover:#B2B2B2;
-    --ter-border:#FFFFFF; --ter-label:#E1E1E1; --ter-hover:#232323;
-    --quat-label:#E1E1E1; --quat-hover:#232323;
-    --sel:#FFFFFF; --on-sel:#333333;
-    --up:#66CC8D; --down:#F6604C;
-    --spark-up:#66CC8D; --spark-down:#F6604C; --spark-flat:#E1E1E1;
-    --spark-base-alpha:.16;
-    --success:#66CC8D; --warning:#E0A61F; --error:#F6604C; --info:#78A7E8;
-    --success-tint:#32533F; --warning-tint:#614C1C; --error-tint:#60302A; --info-tint:#38475C;
-    --ink:#E1E1E1; --baseline:#FFFFFF; --line:#808080;
-    --data-series-1:#766682; --data-axis:#9D9D9D; --axis-alpha:1;
-    --data-grid:#484848; --grid-alpha:1;
-    --data-target:#B7B7B7; --target-alpha:1;
-    --border-radius-surface:0; --border-radius-control:0; --border-radius-indicator:0;
-    --seg-rad-s:0; --seg-thumb-s:0;   /* Segmented-control.reference.html, verbatim (s229) */
-    --press-travel:2; --press-darken:0.94;
-    --target-min:44px;
-    --l-margin:16px; --l-gutter:16px;
+    --divider:#808080;
+    --focus:#4587A7;
+    --l-margin:16px;
   }
-
-  *{box-sizing:border-box;}
-  /* NO font-family on body — every text element carries a canon composite. TYPE-002: 0. */
-  body{margin:0; padding:0; background:var(--page); color:var(--text);
-    -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
-    clip:rect(0,0,0,0); white-space:nowrap; border:0;}
-  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0; border:0;
-    clip:rect(0 0 0 0); clip-path:inset(50%); overflow:hidden; white-space:nowrap;}
-
-  .l-stack, .l-row, .l-grid, .l-split{
-    --l-gap-xxs:2px; --l-gap-xs:4px; --l-gap-s:8px; --l-gap-m:12px;
-    --l-gap-l:24px; --l-gap-xl:32px; --l-gap-xxl:48px;
-    --l-gap:var(--l-gap-m);
-  }
-  .l-stack[data-gap="s"], .l-row[data-gap="s"], .l-grid[data-gap="s"], .l-split[data-gap="s"]{--l-gap:var(--l-gap-s);}
-  .l-stack[data-gap="l"], .l-row[data-gap="l"], .l-grid[data-gap="l"], .l-split[data-gap="l"]{--l-gap:var(--l-gap-l);}
-  .l-stack[data-gap="xl"],.l-row[data-gap="xl"],.l-grid[data-gap="xl"],.l-split[data-gap="xl"]{--l-gap:var(--l-gap-xl);}
-  .l-stack[data-gap="xxl"],.l-row[data-gap="xxl"],.l-grid[data-gap="xxl"],.l-split[data-gap="xxl"]{--l-gap:var(--l-gap-xxl);}
-  .l-container{ --l-max:1120px; width:100%; max-width:var(--l-max); margin-inline:auto;
-    padding-inline:var(--l-margin); }
-  .l-stack{ display:flex; flex-direction:column; gap:var(--l-gap); }
-  .l-stack > *{ margin-block:0; }
-  .l-row{ display:flex; flex-direction:row; flex-wrap:wrap; gap:var(--l-gap); align-items:center; }
-  .l-row[data-align="baseline"]{ align-items:baseline; }
-  .l-row[data-justify="between"]{ justify-content:space-between; }
-  .l-row[data-justify="end"]{ justify-content:flex-end; }
-  .l-grid{ display:grid; --l-min:240px;
-    grid-template-columns:repeat(auto-fill, minmax(min(var(--l-min), 100%), 1fr));
-    gap:var(--l-gap); }
-  .l-split{ display:grid; gap:var(--l-gap); grid-template-columns:minmax(0, 1fr) 280px;
-    container-type:inline-size; }
-  .l-measure{ max-width:64ch; }
-  /* #211 — REPAIRED AT CAUSE IN Layout-utilities.reference.html, copied faithfully here.
-     WAS: `@container (max-width:760px){ .l-split{ grid-template-columns:minmax(0,1fr); } }`.
-     `.l-split` declares `container-type:inline-size` on itself, so that rule was aimed at the one
-     element it could never match — a container query resolves against the nearest ANCESTOR
-     container and an element is never its own. The split never collapsed. The collapse is now
-     expressed on the CHILDREN, where the query does resolve. */
-  @container (max-width: 760px){          /* breakpoint/ms, measured against the CONTAINER */
-    .l-split > *{ grid-column:1 / -1; }   /* #211: the collapse, driven from the CHILDREN */
-  }
-  nav.tpl-crumbs ol{list-style:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0; padding:0;}
-  nav.tpl-crumbs li{display:inline-flex; align-items:center; gap:8px;}
-  .sep{color:var(--text); opacity:var(--alpha-52); display:inline-flex; align-items:center;}
-  .sep .chev{width:11px; height:11px; display:block; fill:currentColor;}
-  a.crumb{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;}
-  a.crumb:hover{text-decoration-thickness:2px;}
-  a.crumb:focus-visible{outline:none; text-decoration:none; box-shadow:inset 0 -2px 0 var(--text);}
-  /* ⚠ Breadcrumbs' own rule here is `{font-weight:500; opacity:var(--alpha-84)}`. The WEIGHT half
-     is a raw font declaration and the TYPE gate catches it — correctly. It is NOT re-declared:
-     the current crumb carries `.t-cm-ctl-14` (14px/500) in the markup instead of the siblings'
-     `.t-cm-caption` (14px/400), which is the same 14/500 through the canon ramp. Same pixels,
-     zero TYPE-002 contribution. The opacity half is copied unchanged. */
-  nav.tpl-crumbs [aria-current="page"]{opacity:var(--alpha-84);}
-  /* Headers `.display`: the h1 + subtitle pair. GEOMETRY copied; its `font:400 32px/1.1` and
-     `font:400 16px/1.5` are NOT copied — `.t-ed-heading-2` (28/36) and `.t-ed-body` (16/24) carry
-     the type from the canon ramp instead. 32px is on the ramp too (`.t-cm-heading`) but it is a
-     SINGLE-LINE component composite and a page title wraps, so the deciding rule (wrapping ⇒
-     Editorial) sends it to heading-2. ⬛ THE SIZE STEP DOWN, 32 → 28, IS VISIBLE AND IS DAVE'S. */
-  .tpl-display h1{margin:0; letter-spacing:-.01em;}
-  .tpl-display p{margin:8px 0 0; opacity:var(--alpha-80);}
-
-  .btn{height:44px; min-width:96px; padding:0 20px; border:0; border-radius:var(--border-radius-control);
-    cursor:pointer; justify-content:center; gap:8px;
-    transition:background var(--ease), border-color var(--ease), transform var(--spring), filter var(--press);}
-  .btn:focus-visible{outline:2px solid var(--ter-label); outline-offset:2px;}
-  /* ===== PARTIAL press-physics (button-family — Button.reference.html is the source of truth) ===== */
-  .btn:hover{transform:scale(calc(1 + var(--press-travel)/var(--phys-size)));}
-  .btn.full:hover{transform:none;}
-  .btn:active{transform:scale(calc(1 - var(--press-travel)/var(--phys-size))); filter:brightness(var(--press-darken)); transition:transform var(--press), filter var(--press);}
-  @media (prefers-reduced-motion: reduce){ .btn:hover,.btn:active{ transform:none !important; filter:none !important; } }
-  /* ===== PARTIAL press-physics END ===== */
-  .btn.primary{background:var(--pri-default); color:var(--pri-label);}
-  .btn.primary:hover{background:color-mix(in srgb, var(--pri-default) 68%, var(--page));}
-  .btn.tertiary{background:transparent; color:var(--ter-label); border:1px solid var(--ter-border);}
-  .btn.tertiary:hover{background:var(--ter-hover);}
-  .btn.quaternary{background:transparent; color:var(--quat-label);}
-  .btn.quaternary:hover{background:var(--quat-hover);}
-  .btn svg{width:16px; height:16px; fill:currentColor; flex:none;}
-
-
-  /* ---- the period switcher — View-options `.seg`, via Template-dashboard ---- */
-  /* A1 REPAIR (#227 class), COMPLETED s229 — this file RE-DECLARES `.seg` locally, and until now
-     it declared NO radius at all: no `--seg-rad`/`--seg-thumb` locals, no manifest binding, so the
-     WHOLE control (track, sliding thumb and the button that paints hover/focus) rendered square in
-     every theme including Console, on any page carrying this component's scope class rather than
-     `.cn-segmented-control`. #227's sweep repaired eight files by hand and missed this one; #229's
-     F1 repaired the button in those eight and could not reach here. The permanent fix is the
-     `segmented` PARTIAL group (registry knowledge/component-types.json): the three radii are now
-     INJECTED from the atom, and a membership scan fails the build if a snippet grows a `.seg` rule
-     without joining. This rule only SELECTS the scale into the shared locals.
-     ⛔ NEVER hardcode a radius here — mint-time derivation (s200-D1) puts concrete numbers on disk
-     and the CSS only READS them. GEOMETRY NOTE, stated not assumed: this construction is FLUSH
-     (no track padding; the thumb is inset only by the 1px frame), where the atom and the chart
-     toolbars carry a 2px inset. The minted pair is a TUNED dial (container − 2, s202-D2), not a
-     strict derivation, so a flush thumb lands 1px under exact concentricity and an inset thumb
-     1px over — the same tolerance the eight repaired files already ship. Adopting the atom's 2px
-     inset here would MOVE PIXELS and is Dave's call, flagged not taken. */
-  .seg{--seg-rad:var(--seg-rad-s); --seg-thumb:var(--seg-thumb-s);
-    position:relative; display:inline-flex; border:1px solid var(--fborder); background:var(--surface);}
-  .seg .ind{position:absolute; top:0; bottom:0; left:0; width:0; background:var(--sel); z-index:0;
-    transition:left var(--move), width var(--move);}
-  .seg button{position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px;
-    border:0; background:transparent; color:var(--text); cursor:pointer; transition:color var(--move);}
-  .seg button:not([aria-pressed="true"]):hover{background:var(--hover);}
-  .seg button[aria-pressed="true"]{color:var(--on-sel);}
-  .seg button:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; z-index:2;}
-  .seg svg{width:16px; height:16px; fill:currentColor;}
-  /* THE CONCENTRIC CONTRACT is INJECTED below from Segmented-control.reference.html
-     (partial "seg-concentric", group segmented — registry knowledge/component-types.json,
-     ADR-0013). ⛔ Never author a segmented border-radius anywhere else in this file: the
-     group is the ONE source and gen_component_partials.py --check fails the build on drift. */
-  /* ===== AUTO-PARTIAL seg-concentric START (segmented) ===== */
-/* INJECTED from Segmented-control.reference.html (partial "seg-concentric", group segmented —
-   registry knowledge/component-types.json, ADR-0013). DO NOT hand-edit between the
-   AUTO-PARTIAL markers: edit the source PARTIAL block in the atom and regenerate:
-   python3 knowledge/gen_component_partials.py */
-  .seg{border-radius:var(--seg-rad);}
-  .seg .ind{border-radius:var(--seg-thumb);}
-  .seg button{border-radius:var(--seg-thumb);}
-  /* ===== AUTO-PARTIAL seg-concentric END ===== */
-  @media (prefers-reduced-motion: reduce){ .seg .ind{ transition:none !important; } }
-
-
-  /* ---- KPI tiles + the card surface — Kpi-tile / Stat-card ---- */
-  .kpi-tile{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
-    padding:16px; display:flex; flex-direction:column; gap:8px; position:relative;}
-  .kpi-tile .lbl16{margin:0; opacity:var(--alpha-60);}
-  .amt{color:var(--text); display:inline-flex; align-items:baseline; white-space:nowrap;
-    font-variant-numeric:tabular-nums; letter-spacing:-.01em;}
-  .delta{display:flex; align-items:center; gap:4px;}
-  .delta .arrow{flex:none; width:16px; height:16px; display:inline-flex; align-items:center;}
-  .delta .arrow svg{width:16px; height:16px; display:block; fill:currentColor;}
-  .delta.up .arrow{color:var(--up);}
-  .delta.down .arrow{color:var(--down);}
-  .delta .per{opacity:var(--alpha-60); margin-left:4px;}
-  .kpi-spark{margin-top:4px; width:100%;}
-  .spark-inline{display:block; width:100%; height:44px; overflow:visible;}
-  .spark-inline .dv-base{stroke:var(--text); stroke-opacity:var(--spark-base-alpha); stroke-width:1; vector-effect:non-scaling-stroke;}
-  .spark-inline .dv-series{fill:none; stroke:var(--spark-flat); stroke-width:2;
-    stroke-linejoin:round; stroke-linecap:round; vector-effect:non-scaling-stroke;}
-  .spark-inline .dv-end{fill:var(--spark-flat);}
-  .spark-inline[data-trend="up"] .dv-series{stroke:var(--spark-up);}
-  .spark-inline[data-trend="up"] .dv-end{fill:var(--spark-up);}
-  .spark-inline[data-trend="down"] .dv-series{stroke:var(--spark-down);}
-  .spark-inline[data-trend="down"] .dv-end{fill:var(--spark-down);}
-  .kpi-cta{position:absolute; top:8px; right:8px; width:44px; height:44px; flex:none;
-    display:inline-flex; align-items:center; justify-content:center; padding:0;
-    background:transparent; border:0; border-radius:var(--border-radius-surface);
-    color:var(--text); opacity:var(--alpha-60); cursor:pointer; transition:opacity var(--ease);}
-  .kpi-cta svg{width:18px; height:18px; display:block; fill:currentColor;}
-  .kpi-cta:hover{opacity:var(--alpha-96);}
-  .kpi-cta:focus-visible{outline:2px solid var(--focus); outline-offset:-2px; opacity:var(--alpha-96);}
-  .kpi-tile.has-cta .lbl16{padding-right:40px;}
-
-  /* ---- the card surface — Stat-card's recipe (the SAME three declarations Kpi-tile uses).
-     A panel on this page is a Stat-card that happens to hold a chart or a list. ---- */
-  .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--border-radius-surface);
-    padding:16px; display:flex; flex-direction:column; gap:8px;}
-
-
-  /* ---- Summary — Summary.reference.html, minus its two raw font declarations ---- */
-  .summary{ display:flex; flex-direction:column; margin:0; }
-  .summary__row{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--divider); }
-  .summary__row:last-child{ border-bottom:0; }
-  .summary__k{ color:var(--text); opacity:var(--alpha-60); margin:0; }
-  .summary__v{ color:var(--text); font-variant-numeric:tabular-nums; text-align:right; margin:0; }
-
-
-  /* ---- RAG status chip — Status-indicator form B, via Document-row ---- */
-  .status{flex:none; display:inline-flex; align-items:center; gap:8px; height:24px; padding:0 8px;
-    border-radius:var(--border-radius-indicator); color:var(--text); white-space:nowrap;}
-  .status .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-  .status.ok{background:var(--success-tint);}   .status.ok .dot{background:var(--success);}
-  .status.warn{background:var(--warning-tint);} .status.warn .dot{background:var(--warning);}
-  .status.err{background:var(--error-tint);}    .status.err .dot{background:var(--error);}
-  .status.inf{background:var(--info-tint);}     .status.inf .dot{background:var(--info);}
-
-
-  /* ---- charts — Chart-bar.reference.html (the shared dv spine) ---- */
-  figure.dv{margin:0; position:relative;}
-  .dv-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin:0 0 12px;}
-  .dv-title{margin:0;}
-  .dv-stage{overflow-x:auto; padding-bottom:4px;}
-  .dv-chart-area{width:580px;}
-  .dv-svg{display:block; width:580px; height:260px; overflow:visible;}
-  .dv-grid{stroke:var(--data-grid); stroke-opacity:var(--grid-alpha); stroke-width:1;}
-  line.dv-axis{stroke:var(--baseline); stroke-width:1;}
-  text.dv-axis,text.dv-label{opacity:var(--axis-alpha);}
-  rect.dv-series{transition:filter var(--ease), opacity var(--ease), visibility var(--ease);}
-  rect.dv-series:hover{filter:brightness(1.12);}
-  [data-theme="dark"] rect.dv-series:hover{filter:brightness(1.22);}
-  .dv-series[tabindex]:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
-
-
-  /* ---- Chart-line — Chart-line.reference.html, declaration-for-declaration, for the parts the
-     borrowed specimen actually uses. `.dv-off` is NOT decoration: the specimen carries two HIDDEN
-     baked views (a ghost series and a target line) and without that one rule they both paint. ---- */
-  .dv-off{display:none !important;}
-  .dv-ghost{stroke:var(--data-series-1); fill:none; opacity:var(--alpha-44); stroke-width:2; stroke-dasharray:8 4;}
-  .dv-target{stroke:var(--data-target); opacity:var(--target-alpha); stroke-width:1.5; stroke-dasharray:8 4;}
-  .dv-target-label{fill:var(--data-target);}
-  .dv-mk{fill:var(--sc); stroke:var(--page); stroke-width:2.5; vector-effect:non-scaling-stroke;}
-  .dv-marker{outline-offset:2px;}
-  .dv-marker:focus-visible{outline:2px solid var(--ink);}
-  polyline.dv-series,g.dv-marker,text.dv-endkey{transition:opacity var(--ease), visibility var(--ease);}
-
-  /* ---- the table — Data-grid.reference.html ---- */
-  .dg{width:100%; max-width:100%;}
-  .dg-head{display:flex; align-items:baseline; gap:12px; margin-bottom:12px;}
-  .dg-count{opacity:var(--alpha-60); margin-left:auto;}
-  .dg-toolbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
-  /* ===== FIELD-CHROME-COPY (Search-field boxed + Input-fields active recipe, via Data-grid) ===== */
-  .dgsearch{position:relative; display:flex; align-items:center; height:48px; flex:1 1 240px; max-width:360px;
-    border:1px solid var(--fborder); border-radius:var(--border-radius-control); padding:0 8px;
-    transition:background var(--ease), border-color var(--ease), box-shadow var(--ease);}
-  .dgsearch .mag{flex:none; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
-    color:var(--icon); margin:0 12px 0 2px;}
-  .dgsearch .mag svg{width:20px; height:20px; fill:currentColor;}
-  .dgsearch input{flex:1; min-width:0; height:100%; border:0; background:transparent; color:var(--text); outline:none;}
-  .dgsearch input::placeholder{color:var(--text); opacity:var(--alpha-48);}
-  .dgsearch input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none; appearance:none;}
-  .dgsearch:hover{background:var(--hover);}
-  .dgsearch:focus-within{border-color:var(--bar); box-shadow:inset 0 -4px 0 0 var(--bar); background:var(--page);}
-  /* ===== FIELD-CHROME-COPY END ===== */
-  .dgs-clear{flex:none; width:24px; height:24px; border:0; background:transparent; color:var(--icon); cursor:pointer;
-    display:inline-flex; align-items:center; justify-content:center;}
-  .dgs-clear svg{width:12px; height:12px; fill:currentColor;}
-  .dgs-clear:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .dgsearch input:placeholder-shown ~ .dgs-clear{display:none;}
-  .fbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
-  .fchip{display:inline-flex; align-items:center; gap:.46em; height:2.15em; padding:0 .77em;
-    border:1px solid var(--fborder); border-radius:var(--border-radius-control); background:transparent; color:var(--text);
-    max-width:100%; white-space:nowrap;}
-  .fchip .x{position:relative; display:inline-flex; width:24px; height:24px; padding:0; border:0; background:transparent;
-    color:var(--icon); cursor:pointer; align-items:center; justify-content:center; flex:0 0 auto;
-    transition:color var(--ease), transform var(--spring);}
-  .fchip .x svg{width:12px; height:12px; fill:currentColor;}
-  .fchip .x:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
-  .dg-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--border-radius-surface);}
-  .dg table{border-collapse:collapse; width:100%; min-width:640px; background:var(--cell);}
-  .dg th,.dg td{padding:var(--cell-py) var(--cell-px); border:1px solid var(--border); text-align:left; vertical-align:middle;
-    color:var(--text);}
-  .dg thead th{background:var(--header); position:sticky; top:0; z-index:2; padding:0;}
-  .dg td.num{text-align:right;}
-  .sort{display:flex; width:100%; min-height:44px; align-items:center; gap:8px; padding:var(--cell-py) var(--cell-px);
-    border:0; background:transparent; color:var(--text); cursor:pointer; text-align:left;
-    transition:background var(--ease), transform var(--spring), filter var(--press);}
-  .sort:hover{background:var(--hover);}
-  .sort:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .sort .ic{display:none; flex:none; width:16px; height:16px; margin-left:auto;}
-  .sort .ic svg{width:16px; height:16px; display:block; fill:currentColor;}
-  .dg th[aria-sort="none"] .ic-none{display:inline-flex;}
-  .dg th[aria-sort="ascending"] .ic-asc{display:inline-flex;}
-  .dg th[aria-sort="descending"] .ic-desc{display:inline-flex;}
-  .dg tbody tr{transition:background var(--ease);}
-  .dg tbody tr:hover td{background:var(--hover);}
-  .dg-foot{display:flex; gap:12px 16px; align-items:center; flex-wrap:wrap; margin-top:12px;}
-  .dg-range{opacity:var(--alpha-60);}
-  .dg-pp{display:flex; gap:8px; align-items:center; margin-left:auto;}
-  nav.dgpg ul{list-style:none; display:flex; gap:4px; align-items:center; margin:0; padding:0;}
-  .pbtn{min-width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 8px;
-    color:var(--text); cursor:pointer; border:1px solid transparent; border-radius:var(--border-radius-control); background:transparent;
-    --phys-size:44;
-    transition:background var(--ease), color var(--ease), transform var(--spring), filter var(--press);}
-  .pbtn:not([disabled]):hover{background:var(--hover);}
-  .pbtn:not([disabled]):active{background:var(--pressedbg); color:var(--onpressed);}
-  .pbtn:focus-visible{outline:2px solid var(--focus); outline-offset:-2px;}
-  .pbtn[aria-current="page"]{border-color:var(--currentbd);}
-  .pbtn[disabled]{color:var(--disabled); cursor:not-allowed;}
-  .pbtn svg{width:16px; height:16px; fill:currentColor;}
-
 
   /* ============================================================================================
-     THE COMPOSITION RULES — each is a RELATIONSHIP, never an atom's appearance.
+     PLACEMENT RULES - each is a RELATIONSHIP between parts, never a part's appearance
+     (s305-D57 rule 3a: the page arranges parts; it never resizes them).
      ============================================================================================ */
-  .tpl-page{ --l-max:1120px; padding-block:32px 48px; }                       /* 1 · the page frame */
-  .tpl-header{ border-bottom:1px solid var(--divider); padding-bottom:24px; } /* 2 · lock-up rule */
-  .tpl-actions{ margin-left:auto; }                                           /* 3 · actions far end */
-  .tpl-display h1{margin:0; letter-spacing:-.01em;}                           /* 4 · Headers .display */
-  .tpl-display p{margin:8px 0 0; opacity:var(--alpha-80);}                    /* 5 */
-  .tpl-section > .tpl-section-head{ margin-bottom:12px; }                     /* 6 · section rhythm */
-  .tpl-panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px; }  /* 7 */
-  .tpl-panel{ padding:24px; }                                                 /* 8 · a panel is roomier than a tile */
-  .tpl-panel-body{ flex:1; min-width:0; }                                     /* 9 · panels stretch equally */
-  .tpl-link{ color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }  /* 10 */
-  .tpl-link:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }                                        /* 11 */
-  .tpl-stats{ --l-min:200px; }                                                /* 12 · the stats band's min track */
-  /* 13 · ⛔ THE REPORT HEADER IS THE ONE THING NO COMPONENT SUPPLIES. A report is a claim about a
-     PERIOD, made at a MOMENT, from a stated SOURCE, and every one of those three has to be on the
-     page or the numbers cannot be checked. The row is Summary's key/value rhythm laid horizontally;
-     the type is the canon ramp; the SEMANTICS are the template's whole contribution. */
-  .tpl-report-meta{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(180px,100%),1fr));
-    gap:12px 24px; padding:16px 0 0; border-top:1px solid var(--divider); }
-  .tpl-report-meta dt{ margin:0 0 4px; opacity:var(--alpha-60); }
-  .tpl-report-meta dd{ margin:0; font-variant-numeric:tabular-nums; }
-  /* 14 · ⛔ ONE CHART PER ROW — AND THE FIRST DRAFT PUT TWO, WHICH MEASURING KILLED.
-     The obvious layout for a report is two chart panels side by side, and that is what this file
-     was built with. Then it was driven, and the numbers said no. A gated chart's canvas is a
-     FIXED 580px (`.dv-chart-area{width:580px}`) because the fit is a runtime measurement this
-     static file does not host; its answer to a container narrower than that is its own
-     `.dv-stage{overflow-x:auto}`. MEASURED with the two-column draft in place:
-       · 1400px viewport — page container 1088px, each chart panel 528px, stage clientWidth 478px
-         against scrollWidth 580 ⇒ `scrolls: true`. BOTH CHARTS SCROLLED AT FULL DESKTOP WIDTH.
-       · 820px viewport — same, one column, `scrolls: false`.
-     A desktop report whose every chart has to be dragged sideways is a defect, and no gate can
-     see it: GRID, TYPE, SNIPPETS, A11Y, DESCENDER and ICONS were all green over it, and it looks
-     entirely plausible in a screenshot until you notice the axis is cut.
-     The arithmetic is the whole argument: two panels need 2 x (580 + 48 panel padding) + 32 gap =
-     1288px of container. This page's own frame caps at `--l-max:1120px`. Two-up is therefore not
-     a narrow-screen problem, it is IMPOSSIBLE AT ANY WIDTH THIS PAGE CAN REACH — so writing it as
-     a container query with a 1288px threshold would have been a rule that can never fire, which
-     is the [[instrument-without-a-consumer]] shape. One chart per row, stated as arithmetic.
-     ⬛ FOR DAVE: the alternative is a NARROW chart specimen (a second canvas width in the chart
-     components themselves) so reports can put two side by side. That is a dataviz decision. */
-  .tpl-charts{ display:grid; grid-template-columns:1fr; gap:32px; align-items:start; }
-  /* 15 · the footnote block. A report that cannot say where its numbers came from is decoration. */
-  .tpl-notes{ border-top:1px solid var(--divider); padding-top:16px; }
-  .tpl-notes ol{ margin:0; padding-left:20px; }
-  .tpl-notes li{ margin:0 0 4px; opacity:var(--alpha-72); }
-  .tpl-notes li:last-child{ margin-bottom:0; }
+
+  .tpl-page{ --l-max:1120px; padding-block:32px 48px; }
+  .tpl-section{ border-top:1px solid var(--divider); padding-top:24px; display:flex; flex-direction:column; gap:16px; }  /* 2 */
+  .tpl-controls{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }        /* 3 */
+  .tpl-states{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }                                           /* 3a · the two states beside the period switch */
+  /* 4 · the two charts side by side from 960px, stacked below; the gap is the page's. */
+  .tpl-charts{ display:grid; grid-template-columns:minmax(0,1fr); gap:32px; }
+  @media (min-width:960px){ .tpl-charts{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); } }
+  .tpl-total{ align-self:flex-end; }                                            /* 5 · the total sits under the ledger's right edge */
+  .tpl-notes ol{ margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px; }  /* 6 */
 
 /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
   /* ---- DEMO CHROME below this line. NOT the template. ---- */
   .demo-bar{display:flex; gap:16px; align-items:center; flex-wrap:wrap; padding:12px 16px;
-    border-bottom:1px solid var(--divider); background:var(--header); color:var(--text);}
-  .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--fborder); background:transparent;
-    color:var(--text); cursor:pointer;}
+    border-bottom:1px solid var(--divider);}
+  .demo-bar button{height:32px; padding:0 12px; border:1px solid var(--divider); background:transparent;
+    color:inherit; cursor:pointer;}
   .demo-bar button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .demo-h{margin:0; padding:12px 16px; border-top:1px solid var(--divider); opacity:var(--alpha-60);}
+  .demo-note{margin:8px 16px 24px; opacity:var(--alpha-60);}
 /* ===== APOLLO-DEMO css END ===== */
-  @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important;
-      animation-iteration-count:1 !important; scroll-behavior:auto !important; }
-  }
 </style>
 </head>
-<body data-theme="light">
+<body class="canon" data-theme="light">
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <!-- Every glyph BYTE-LIFTED from knowledge/assets/icons/ at build time, never retyped:
-         arrows-and-chevrons/chevron-right · arrow-up · arrow-down · chevron-up · chevron-down ·
-         global-controls/export · print · sort. -->
+    <!-- Every glyph BYTE-LIFTED from the part's own snippet (itself lifted from knowledge/assets/icons/), never retyped. -->
+    <symbol id="ic-search" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.19675 12.803C3.66075 14.268 5.58075 15 7.49975 15C9.23175 15 10.9598 14.398 12.3577 13.206L17.1257 17.973L17.9748 17.125L13.2067 12.357C15.7197 9.41 15.5898 4.981 12.8048 2.196C11.3388 0.732 9.41875 0 7.49975 0C5.58075 0 3.66075 0.732 2.19675 2.197C-0.73225 5.126 -0.73225 9.874 2.19675 12.803ZM1.19975 7.5C1.19975 5.817 1.85575 4.235 3.04475 3.045C4.23375 1.855 5.81675 1.2 7.49975 1.2C9.18275 1.2 10.7648 1.855 11.9548 3.045C14.4108 5.501 14.4108 9.498 11.9548 11.955C10.7648 13.145 9.18275 13.8 7.49975 13.8C5.81675 13.8 4.23475 13.145 3.04475 11.955C1.85475 10.765 1.19975 9.183 1.19975 7.5Z" fill="currentColor"/></symbol>
+    <symbol id="ic-account" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.191 12.775C15.993 12.286 15.713 11.831 15.345 11.453C14.47 10.552 13.375 9.87 12.083 9.451L9.01 12.524L5.932 9.445C4.633 9.864 3.533 10.548 2.654 11.453C2.286 11.832 2.006 12.286 1.808 12.775L0 17.25H18L16.191 12.775ZM2.921 13.225C3.07 12.857 3.27 12.542 3.515 12.29C4.11 11.677 4.82 11.191 5.63 10.84L9.012 14.221L12.386 10.847C13.19 11.197 13.894 11.681 14.485 12.29C14.73 12.542 14.93 12.857 15.079 13.226L16.221 16.051H1.779L2.921 13.225ZM9.01 9.25C11.459 9.25 12.5 6.952 12.5 4.891C12.5 2.751 11.479 0.75 9.01 0.75C6.541 0.75 5.5 2.732 5.5 4.891C5.5 7.011 6.52 9.25 9.01 9.25ZM9.01 1.95C11.077 1.95 11.3 4.007 11.3 4.891C11.3 6.064 10.818 8.05 9.01 8.05C6.811 8.05 6.7 5.419 6.7 4.891C6.7 4.007 6.925 1.95 9.01 1.95Z" fill="currentColor"/></symbol>
     <symbol id="ic-chevron" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
-    <symbol id="kpi-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 12L2 12L9 5L16 12Z" fill="currentColor"/></symbol>
-    <symbol id="kpi-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6H16L9 13L2 6Z" fill="currentColor"/></symbol>
-    <symbol id="ic-export" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.3 15.8H1.7V2.2H7.5V1H0.5V17H16.5V11H15.3V15.8ZM6.9 13H8.1V8.5C8.1 7.177 9.177 6.1 10.5 6.1H15.202L11.302 10H12.998L17.499 5.5L12.998 1H11.301L15.201 4.9H10.5C8.515 4.9 6.9 6.514 6.9 8.5V13Z" fill="currentColor"/></symbol>
-    <symbol id="ic-print" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 8C18 6.896 17.104 6 16 6H15V0H3V6H2C0.895 6 0 6.896 0 8V16H3V18H15V16H18V8ZM4.2 1.2H13.8V6H4.2V1.2ZM13.8 16.8H4.2V12.2H13.8V16.8ZM16.8 14.8H15V11H3V14.8H1.2V8C1.2 7.559 1.559 7.2 2 7.2H16C16.441 7.2 16.8 7.559 16.8 8V14.8Z" fill="currentColor"/></symbol>
-    <symbol id="dg-sort" viewBox="0 0 18 18"><path d="M1.5 7.5L9 0L16.5 7.5H1.5Z" fill="currentColor"/><path d="M16.5 10.5L9 18L1.5 10.5H16.5Z" fill="currentColor"/></symbol>
-    <symbol id="dg-cup" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 13.848L9 5.84998L17 13.848V12.152L9 4.15198L1 12.152V13.848Z" fill="currentColor"/></symbol>
-    <symbol id="dg-cdown" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M17 4.15198L9 12.15L1 4.15198V5.84798L9 13.848L17 5.84798V4.15198Z" fill="currentColor"/></symbol>
+    <symbol id="metric-up" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 7.06124L9 0L2 7.06124V8.77158L8.4 2.31744V18H9.6V2.31744L16 8.77158V7.06124Z" fill="currentColor"/></symbol>
+    <symbol id="metric-down" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 10.9388L9 18L16 10.9388V9.22842L9.6 15.6826V0H8.4V15.6826L2 9.22842V10.9388Z" fill="currentColor"/></symbol>
+    <symbol id="metric-flat" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9388 2L18 9L10.9388 16H9.22842L15.6826 9.6H0V8.4H15.6826L9.22842 2H10.9388Z" fill="currentColor"/></symbol>
   </svg>
 
 <!-- ===== APOLLO-DEMO harness-bar START (showroom harness — never copy) ===== -->
-  <!-- ⚑ DEMO CHROME — the theme + width harness. NOT part of the template. -->
   <div class="demo-bar">
     <span class="t-cm-legal">Reference harness — not part of the template</span>
     <button type="button" id="themeBtn" class="t-cm-legal">Toggle light / dark</button>
@@ -517,290 +135,284 @@
   </div>
 <!-- ===== APOLLO-DEMO harness-bar END ===== -->
 
-  <main class="tpl-page l-container" id="tplMain">
-    <div class="l-stack" data-gap="xxl">
-
-      <!-- ==================================================================================
-           1 · THE REPORT HEADER. Breadcrumbs + Headers `.display` + Button + `.seg` for the
-           period, and then the piece no component supplies: the report's own PROVENANCE ROW.
-           A report is a claim about a PERIOD, made at a MOMENT, from a stated SOURCE.
-           ================================================================================== -->
-      <header class="tpl-header l-stack" data-gap="l">
-        <nav class="tpl-crumbs" aria-label="Breadcrumb">
-          <ol class="t-cm-caption">
-            <li><a class="crumb" href="#">Home</a></li>
-            <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><a class="crumb" href="#">Reporting</a></li>
-            <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><span class="t-cm-ctl-14" aria-current="page">Receipts and settlement</span></li>
-          </ol>
-        </nav>
-
-        <div class="l-row" data-align="end" data-gap="l">
-          <div class="tpl-display l-measure">
-            <h1 class="t-ed-heading-2">Receipts and settlement</h1>
-            <p class="t-ed-body">Every amount received into the business current account ending 8841, by the route it arrived on.</p>
+  <div class="cn-app-shell-top-nav">
+    <header class="sh-masthead">
+      <span class="sh-logo"><img class="sh-mark" data-mode="light" src="../assets/logos/masterbrand-light-colour.svg" alt="HSBC" width="315" height="85"><img class="sh-mark" data-mode="dark" src="../assets/logos/masterbrand-dark-colour.svg" alt="HSBC" width="315" height="85"></span>
+          <nav class="sh-nav" aria-label="Primary">
+            <a class="t-cm-button" href="#">Accounts</a>
+            <a class="t-cm-button" href="#">Payments</a>
+            <a class="t-cm-button" href="#">Cards</a>
+            <a class="t-cm-button" href="#" aria-current="page">Insights</a>
+            <a class="t-cm-button" href="#">Support</a>
+          </nav>
+      <div class="sh-actions">
+        <button type="button" aria-label="Search"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-search"/></svg></button>
+        <button type="button" aria-label="Your profile"><svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-account"/></svg></button>
+      </div>
+    </header>
+  </div>
+  <main class="cn-layout-utilities" id="tplMain">
+    <div class="tpl-page l-container l-stack" data-gap="xl">
+      <header class="cn-page-header-lockup">
+        <div class="ph-outer"><div class="ph">
+          <nav class="ph-crumb" aria-label="Breadcrumb">
+            <ol class="t-cm-caption">
+              <li><a class="crumb" href="#">Home</a></li>
+              <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><a class="crumb" href="#">Reporting</a></li>
+              <li><span class="sep" aria-hidden="true"><svg class="chev" viewBox="0 0 18 18"><use href="#ic-chevron"/></svg></span><span class="t-cm-ctl-14" aria-current="page">Receipts and settlement</span></li>
+            </ol>
+          </nav>
+          <div class="ph-row">
+            <div class="ph-titleblock">
+              <h1 class="ph-title t-cm-heading">Receipts and settlement</h1>
+              <p class="ph-lede t-ed-body">Every amount received into the business current account ending 8841, by the route it arrived on.</p>
+              <div class="ph-meta t-cm-legal">Prepared 20 August 2026, 14:32</div>
+            </div>
+            <div class="ph-actions">
+              <button class="btn quaternary" type="button">Print</button>
+              <button class="btn tertiary" type="button">Export</button>
+            </div>
           </div>
-          <div class="tpl-actions l-row" data-gap="m">
-            <button type="button" class="btn quaternary">Print<svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-print"/></svg></button>
-            <button type="button" class="btn tertiary">Export<svg viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-export"/></svg></button>
-          </div>
-        </div>
+        </div></div>
+      </header>
 
-        <div class="l-row" data-justify="between" data-gap="m">
-          <div class="seg" role="group" aria-label="Reporting period">
+      <div class="tpl-controls">
+        <div class="cn-segmented-control">
+          <div class="seg md" role="group" aria-label="Reporting period">
             <span class="ind" aria-hidden="true"></span>
             <button type="button" aria-pressed="false">This month</button>
             <button type="button" aria-pressed="true">Last quarter</button>
             <button type="button" aria-pressed="false">Year to date</button>
           </div>
-          <span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">All feeds reconciled</span></span>
         </div>
+        <div class="tpl-states"><span class="cn-status-indicator"><span class="chip warn" data-carries="label"><span class="dot" aria-hidden="true"></span>2 exceptions open &middot; Direct Debits, raised 28 June</span></span><span class="cn-status-indicator"><span class="chip ok" data-carries="label"><span class="dot" aria-hidden="true"></span>All feeds reconciled</span></span></div>
+      </div>
 
-        <dl class="tpl-report-meta">
-          <div><dt class="t-cm-caption">Period covered</dt><dd class="t-cm-label">1 April &ndash; 30 June 2026</dd></div>
-          <div><dt class="t-cm-caption">Prepared</dt><dd class="t-cm-label">20 August 2026, 14:32</dd></div>
-          <div><dt class="t-cm-caption">Source</dt><dd class="t-cm-label">Settlement ledger, close of day</dd></div>
-          <div><dt class="t-cm-caption">Currency</dt><dd class="t-cm-label">Pounds sterling</dd></div>
-        </dl>
-      </header>
+      <section class="tpl-section" aria-labelledby="prov-h">
+        <div class="cn-section-heading-lockup"><div class="l-stack" data-gap="xxs"><h2 id="prov-h" class="t-cm-section-label">About these figures</h2></div></div>
+        <div class="cn-summary">
+          <dl class="summary">
+            <div class="summary__row"><dt class="summary__k t-cm-label">Period covered</dt><dd class="summary__v t-cm-label">1 April &ndash; 30 June 2026</dd></div>
+            <div class="summary__row"><dt class="summary__k t-cm-label">Prepared</dt><dd class="summary__v t-cm-label">20 August 2026, 14:32</dd></div>
+            <div class="summary__row"><dt class="summary__k t-cm-label">Source</dt><dd class="summary__v t-cm-label">Settlement ledger, close of day</dd></div>
+            <div class="summary__row"><dt class="summary__k t-cm-label">Currency</dt><dd class="summary__v t-cm-label">Pounds sterling</dd></div>
+          </dl>
+        </div>
+      </section>
 
-      <!-- ==================================================================================
-           2 · THE STATS BAND — Kpi-tiles in a Layout-utilities `.l-grid`. Five figures, so
-           the auto-fill grid has a reflow worth measuring rather than one worth asserting.
-           ================================================================================== -->
       <section class="tpl-section" aria-labelledby="stats-h">
-        <h2 id="stats-h" class="tpl-section-head t-cm-section-label">The quarter in five figures</h2>
-        <div class="l-grid tpl-stats" data-gap="l">
-          <div class="kpi-tile" role="group" aria-label="Gross receipts">
-            <p class="lbl16 t-cm-caption">Gross receipts</p>
-            <span class="amt t-cm-figure-4"><span>&pound;</span><span>1,013,884.10</span></span>
-            <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+8.2% up</span><span class="per t-cm-legal">vs Q1</span></span>
-            <div class="kpi-spark">
-              <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-                <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
-                <circle class="dv-end" cx="197" cy="3.0" r="3"/>
-              </svg>
+        <div class="cn-section-heading-lockup"><div class="l-stack" data-gap="xxs"><h2 id="stats-h" class="t-cm-section-label">The quarter in four figures</h2></div></div>
+        <div class="cn-metric">
+          <div class="board">
+            <div class="metric" role="group" aria-label="Gross receipts">
+              <p class="metric-lbl t-cm-caption">Gross receipts</p>
+              <span class="metric-val t-cm-figure-4"><span class="unit">&pound;</span><span>1,013,884.10</span></span>
+              <span class="metric-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-up"/></svg></span><span class="t-cm-figure-6">+8.2% up</span><span class="metric-per t-cm-legal">vs Q1</span></span>
+              <div class="metric-spark">
+                <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                  <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                  <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
+                  <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="kpi-tile" role="group" aria-label="Receipts counted">
-            <p class="lbl16 t-cm-caption">Receipts counted</p>
-            <span class="amt t-cm-figure-4"><span></span><span>3,800</span></span>
-            <span class="delta up" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-up"/></svg></span><span class="t-cm-figure-6">+312 up</span><span class="per t-cm-legal">vs Q1</span></span>
-            <div class="kpi-spark">
-              <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-                <polyline class="dv-series" points="3.0,38.0 20.6,36.5 38.3,34.0 55.9,35.2 73.5,31.0 91.2,29.5 108.8,27.0 126.5,25.5 144.1,22.0 161.7,20.5 179.4,16.0 197.0,11.0"/>
-                <circle class="dv-end" cx="197" cy="11.0" r="3"/>
-              </svg>
+            <div class="metric" role="group" aria-label="Receipts counted">
+              <p class="metric-lbl t-cm-caption">Receipts counted</p>
+              <span class="metric-val t-cm-figure-4"><span class="unit"></span><span>3,800</span></span>
+              <span class="metric-delta up" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-up"/></svg></span><span class="t-cm-figure-6">+312 up</span><span class="metric-per t-cm-legal">vs Q1</span></span>
+              <div class="metric-spark">
+                <svg class="spark-inline" data-trend="up" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                  <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                  <polygon class="dv-area" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0 197.0,45 3.0,45"/>
+                  <polyline class="dv-series" points="3.0,41.5 20.6,45.0 38.3,36.2 55.9,39.8 73.5,31.0 91.2,27.5 108.8,32.8 126.5,24.0 144.1,18.8 161.7,22.2 179.4,13.5 197.0,3.0"/>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="kpi-tile" role="group" aria-label="Average receipt">
-            <p class="lbl16 t-cm-caption">Average receipt</p>
-            <span class="amt t-cm-figure-4"><span>&pound;</span><span>266.81</span></span>
-            <span class="delta down" data-carries="symbol label"><span class="arrow" aria-hidden="true"><svg><use href="#kpi-down"/></svg></span><span class="t-cm-figure-6">&minus;2.4% down</span><span class="per t-cm-legal">vs Q1</span></span>
-            <div class="kpi-spark">
-              <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-                <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
-                <circle class="dv-end" cx="197" cy="38.5" r="3"/>
-              </svg>
+            <div class="metric" role="group" aria-label="Average receipt">
+              <p class="metric-lbl t-cm-caption">Average receipt</p>
+              <span class="metric-val t-cm-figure-4"><span class="unit">&pound;</span><span>266.81</span></span>
+              <span class="metric-delta down" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-down"/></svg></span><span class="t-cm-figure-6">&minus;2.4% down</span><span class="metric-per t-cm-legal">vs Q1</span></span>
+              <div class="metric-spark">
+                <svg class="spark-inline" data-trend="down" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                  <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                  <polygon class="dv-area" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5 197.0,45 3.0,45"/>
+                  <polyline class="dv-series" points="3.0,8.0 20.6,14.5 38.3,11.2 55.9,18.8 73.5,16.0 91.2,23.5 108.8,21.0 126.5,28.5 144.1,26.0 161.7,33.5 179.4,31.0 197.0,38.5"/>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="kpi-tile" role="group" aria-label="Charges">
-            <p class="lbl16 t-cm-caption">Charges</p>
-            <span class="amt t-cm-figure-4"><span>&pound;</span><span>4,118.62</span></span>
-            <span class="delta "><span class="t-cm-figure-6">0.41% of gross</span><span class="per t-cm-legal">Unchanged band</span></span>
-            <div class="kpi-spark">
-              <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-                <polyline class="dv-series" points="3.0,24.0 20.6,25.5 38.3,23.0 55.9,25.0 73.5,22.5 91.2,26.0 108.8,23.5 126.5,25.0 144.1,22.0 161.7,24.5 179.4,23.0 197.0,24.0"/>
-                <circle class="dv-end" cx="197" cy="24.0" r="3"/>
-              </svg>
-            </div>
-          </div>
-          <div class="kpi-tile" role="group" aria-label="Open exceptions">
-            <p class="lbl16 t-cm-caption">Open exceptions</p>
-            <span class="amt t-cm-figure-4"><span></span><span>2</span></span>
-            <span class="delta "><span class="t-cm-figure-6">Both Direct Debits</span><span class="per t-cm-legal">Raised 28 June</span></span>
-            <div class="kpi-spark">
-              <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
-                <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
-                <polyline class="dv-series" points="3.0,23.0 20.6,23.0 38.3,23.0 55.9,23.0 73.5,23.0 91.2,23.0 108.8,23.0 126.5,23.0 144.1,23.0 161.7,23.0 179.4,23.0 197.0,23.0"/>
-                <circle class="dv-end" cx="197" cy="23.0" r="3"/>
-              </svg>
+            <div class="metric" role="group" aria-label="Charges">
+              <p class="metric-lbl t-cm-caption">Charges</p>
+              <span class="metric-val t-cm-figure-4"><span class="unit">&pound;</span><span>4,118.62</span></span>
+              <span class="metric-delta flat" data-carries="symbol label"><span class="glyph" aria-hidden="true"><svg><use href="#metric-flat"/></svg></span><span class="t-cm-figure-6">0.41% of gross</span><span class="metric-per t-cm-legal">no change</span></span>
+              <div class="metric-spark">
+                <svg class="spark-inline" data-trend="flat" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)">
+                  <line class="dv-base" x1="3" y1="45" x2="197" y2="45"/>
+                  <polygon class="dv-area" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0 197.0,45 3.0,45"/>
+                  <polyline class="dv-series" points="3.0,24.0 20.6,27.5 38.3,21.0 55.9,25.5 73.5,20.0 91.2,26.0 108.8,22.5 126.5,27.0 144.1,21.5 161.7,25.0 179.4,23.0 197.0,24.0"/>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ==================================================================================
-           3 · THE CHARTS — two specimens, byte-lifted from TWO different gated components.
-           Neither is made fluid: a chart's answer to a narrow container is its own
-           `.dv-stage{overflow-x:auto}` around a fixed 580px canvas. Setting `width:100%` on
-           the SVG would stretch the viewBox and scale the text and strokes with the pane,
-           which is the banned physics `_RUNBOOK-render-verify.md` records Dave catching in his
-           own browser. So the charts SCROLL inside their panels. Declared, not smoothed.
-           ================================================================================== -->
       <section class="tpl-section" aria-labelledby="charts-h">
-        <h2 id="charts-h" class="tpl-section-head t-cm-section-label">How the quarter moved</h2>
+        <div class="cn-section-heading-lockup"><div class="l-stack" data-gap="xxs"><h2 id="charts-h" class="t-cm-section-label">How the quarter moved</h2></div></div>
         <div class="tpl-charts">
-
-          <div class="stat-card tpl-panel tpl-panel-body">
-            <figure class="dv" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="rep-cb-h">
-              <figcaption id="rep-cb-h" class="sr-only">Six largest payers this quarter, by number of receipts</figcaption>
-              <div class="dv-head">
-                <h3 class="dv-title t-cm-section-label">Six largest payers</h3>
-                <span class="t-cm-caption" style="opacity:.6">By number of receipts &middot; Q2 2026</span>
-              </div>
-              <div class="dv-stage"><div class="dv-chart-area">
-      <svg class="dv-svg" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Six largest payers by number of receipts. Ashcombe 420, Delta 180, Northgate 950, Pemberton 260, Riverside 210, Vale 300, receipts.">
-        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
-        <line class="dv-grid" x1="46" y1="176" x2="568" y2="176" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="179" text-anchor="end" data-fx="0" data-dx="-8">250</text>
-        <line class="dv-grid" x1="46" y1="122" x2="568" y2="122" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="125" text-anchor="end" data-fx="0" data-dx="-8">500</text>
-        <line class="dv-grid" x1="46" y1="68" x2="568" y2="68" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="71" text-anchor="end" data-fx="0" data-dx="-8">750</text>
-        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">1000</text>
-        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
-        <g data-dv-view="orig">
-        <rect class="dv-series" data-grow="up" style="animation-delay:0ms" fill="var(--data-series-1)" x="65.1" y="139.3" width="48.7" height="90.7" data-fx="0.0366" data-fw="0.0933" tabindex="0" role="img" aria-label="Ashcombe: 420" data-tip="Ashcombe: 420"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:45ms" fill="var(--data-series-1)" x="152.1" y="191.1" width="48.7" height="38.9" data-fx="0.2033" data-fw="0.0933" tabindex="0" role="img" aria-label="Delta: 180" data-tip="Delta: 180"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:90ms" fill="var(--data-series-1)" x="239.1" y="24.8" width="48.7" height="205.2" data-fx="0.3699" data-fw="0.0933" tabindex="0" role="img" aria-label="Northgate: 950" data-tip="Northgate: 950"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:135ms" fill="var(--data-series-1)" x="326.1" y="173.8" width="48.7" height="56.2" data-fx="0.5366" data-fw="0.0933" tabindex="0" role="img" aria-label="Pemberton: 260" data-tip="Pemberton: 260"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:180ms" fill="var(--data-series-1)" x="413.1" y="184.6" width="48.7" height="45.4" data-fx="0.7033" data-fw="0.0933" tabindex="0" role="img" aria-label="Riverside: 210" data-tip="Riverside: 210"></rect>
-        <rect class="dv-series" data-grow="up" style="animation-delay:225ms" fill="var(--data-series-1)" x="500.1" y="165.2" width="48.7" height="64.8" data-fx="0.8699" data-fw="0.0933" tabindex="0" role="img" aria-label="Vale: 300" data-tip="Vale: 300"></rect>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="89.4" y="246" text-anchor="middle" data-fx="0.0832">Ashcombe</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="176.4" y="246" text-anchor="middle" data-fx="0.2499">Delta</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="263.4" y="246" text-anchor="middle" data-fx="0.4166">Northgate</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="350.5" y="246" text-anchor="middle" data-fx="0.5832">Pemberton</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="437.5" y="246" text-anchor="middle" data-fx="0.7499">Riverside</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="524.5" y="246" text-anchor="middle" data-fx="0.9166">Vale</text>
-        </g>
-      </svg>
-              </div></div>
-            </figure>
+          <div class="cn-chart-bar">
+<figure class="dv dv-animate" data-dv-type="column" data-domain-min="0" data-surface="page" role="group" aria-labelledby="rep-cb-h" data-lockup-title="Northgate sent a quarter of the receipts from the six largest payers" data-lockup-table="rep-cb-tbl">
+    <figcaption id="rep-cb-h" class="sr-only">Six largest payers this quarter, by number of receipts</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Northgate sent a quarter of the receipts from the six largest payers</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Sort order — one of three"><span class="ind" aria-hidden="true"></span><button type="button" data-dv-view-btn="orig" aria-pressed="true" class="t-cm-chart-label">Original</button><button type="button" data-dv-view-btn="asc" aria-pressed="false" class="t-cm-chart-label">Ascending</button><button type="button" data-dv-view-btn="desc" aria-pressed="false" class="t-cm-chart-label">Descending</button></div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="rep-cb-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="rep-cb-tbl" role="region" aria-label="Spend by category, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Six largest payers this quarter, by number of receipts (order follows the chart)</caption>
+          <thead><tr><th scope="col">Category</th><th scope="col">Amount (£)</th></tr></thead>
+          <tbody data-dv-view="orig"><tr><th scope="row">Groceries</th><td>420</td></tr><tr><th scope="row">Transport</th><td>180</td></tr><tr><th scope="row">Housing</th><td>950</td></tr><tr><th scope="row">Leisure</th><td>260</td></tr><tr><th scope="row">Utilities</th><td>210</td></tr><tr><th scope="row">Savings</th><td>300</td></tr></tbody>
+          <tbody data-dv-view="asc" class="dv-off"><tr><th scope="row">Transport</th><td>180</td></tr><tr><th scope="row">Utilities</th><td>210</td></tr><tr><th scope="row">Leisure</th><td>260</td></tr><tr><th scope="row">Savings</th><td>300</td></tr><tr><th scope="row">Groceries</th><td>420</td></tr><tr><th scope="row">Housing</th><td>950</td></tr></tbody>
+          <tbody data-dv-view="desc" class="dv-off"><tr><th scope="row">Housing</th><td>950</td></tr><tr><th scope="row">Groceries</th><td>420</td></tr><tr><th scope="row">Savings</th><td>300</td></tr><tr><th scope="row">Leisure</th><td>260</td></tr><tr><th scope="row">Utilities</th><td>210</td></tr><tr><th scope="row">Transport</th><td>180</td></tr></tbody>
+          </table>
           </div>
-
-          <div class="stat-card tpl-panel tpl-panel-body">
-            <figure class="dv" data-dv-type="line" data-surface="page" role="group" aria-labelledby="rep-cl-h">
-              <figcaption id="rep-cl-h" class="sr-only">Closing balance across the twelve months to June 2026, pounds thousands</figcaption>
-              <div class="dv-head">
-                <h3 class="dv-title t-cm-section-label">Closing balance, twelve months</h3>
-                <span class="t-cm-caption" style="opacity:.6">Thousands</span>
-              </div>
-              <div class="dv-stage"><div class="dv-chart-area">
-<svg class="dv-svg" data-pl="46" data-pr="12" data-h="260" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Balance over the year. January 82 rising to December 104, pounds thousands.">
-        <line class="dv-grid" x1="46" y1="230" x2="568" y2="230" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <line class="dv-grid" x1="46" y1="158" x2="568" y2="158" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <line class="dv-grid" x1="46" y1="86" x2="568" y2="86" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <line class="dv-grid" x1="46" y1="14" x2="568" y2="14" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>
-        <line class="dv-axis" x1="46" y1="230" x2="568" y2="230" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>
-        <g data-dv-view="discrete">
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="161" text-anchor="end" data-fx="0" data-dx="-8">50</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="89" text-anchor="end" data-fx="0" data-dx="-8">100</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">150</text>
-        <g data-dv-view="ghost" class="dv-off"><polyline class="dv-ghost" points="46.0,120.6 93.5,122.0 140.9,117.7 188.4,114.8 235.8,111.9 283.3,107.6 330.7,109.0 378.2,106.2 425.6,103.3 473.1,104.7 520.5,100.4 568.0,93.2" data-fxs="0 .091 .1818 .2728 .3636 .4546 .5454 .6364 .7272 .8182 .909 1" data-ys="120.6 122.0 117.7 114.8 111.9 107.6 109.0 106.2 103.3 104.7 100.4 93.2" data-tip="Last year, full series in the table"/></g>
-        <g data-dv-view="target" class="dv-off"><line class="dv-target" x1="46" y1="100.4" x2="568" y2="100.4" data-fx="0" data-fx2="1"/><text class="dv-target-label t-cm-chart-label" x="564" y="96" text-anchor="end" data-fx="1" data-dx="-4">Target 90</text></g>
-        <polyline class="dv-series" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,111.9 93.5,114.8 140.9,107.6 188.4,110.5 235.8,103.3 283.3,100.4 330.7,104.7 378.2,97.5 425.6,93.2 473.1,96.1 520.5,88.9 568.0,80.2" data-fxs="0 .091 .1818 .2728 .3636 .4546 .5454 .6364 .7272 .8182 .909 1" data-ys="111.9 114.8 107.6 110.5 103.3 100.4 104.7 97.5 93.2 96.1 88.9 80.2"/>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jan: 82" data-tip="Jan: 82" data-fx="0" data-x0="46.0" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="111.9" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Feb: 80" data-tip="Feb: 80" data-fx=".091" data-x0="93.5" style="animation-delay:369ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="114.8" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Mar: 85" data-tip="Mar: 85" data-fx=".1818" data-x0="140.9" style="animation-delay:507ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="107.6" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Apr: 83" data-tip="Apr: 83" data-fx=".2728" data-x0="188.4" style="animation-delay:616ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="110.5" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="May: 88" data-tip="May: 88" data-fx=".3636" data-x0="235.8" style="animation-delay:716ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="103.3" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jun: 90" data-tip="Jun: 90" data-fx=".4546" data-x0="283.3" style="animation-delay:815ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="100.4" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jul: 87" data-tip="Jul: 87" data-fx=".5454" data-x0="330.7" style="animation-delay:921ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="104.7" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Aug: 92" data-tip="Aug: 92" data-fx=".6364" data-x0="378.2" style="animation-delay:1041ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="97.5" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Sep: 95" data-tip="Sep: 95" data-fx=".7272" data-x0="425.6" style="animation-delay:1183ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="93.2" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Oct: 93" data-tip="Oct: 93" data-fx=".8182" data-x0="473.1" style="animation-delay:1365ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="96.1" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Nov: 98" data-tip="Nov: 98" data-fx=".909" data-x0="520.5" style="animation-delay:1628ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="88.9" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Dec: 104" data-tip="Dec: 104" data-fx="1" data-x0="568.0" style="animation-delay:2400ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="80.2" r="5.5"/></g>
-        </g>
-        <g data-dv-view="cumulative" class="dv-off">
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="233" text-anchor="end" data-fx="0" data-dx="-8">0</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="161" text-anchor="end" data-fx="0" data-dx="-8">400</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="89" text-anchor="end" data-fx="0" data-dx="-8">800</text>
-        <text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="38" y="17" text-anchor="end" data-fx="0" data-dx="-8">1200</text>
-        <!-- ADDITIVE overlays, year-to-date variants (Dave: the overlays are additive — each view
-             carries its OWN baked copy; the toggle governs both). Target = the 90-a-month RAMP
-             (straight line to 1080 by Dec); last year = its running total. -->
-        <g data-dv-view="ghost" class="dv-off"><polyline class="dv-ghost" points="46.0,216.3 93.5,202.8 140.9,188.8 188.4,174.4 235.8,159.6 283.3,144.3 330.7,129.2 378.2,113.7 425.6,97.9 473.1,82.2 520.5,66.0 568.0,48.9" data-fxs="0 .091 .1818 .2728 .3636 .4546 .5454 .6364 .7272 .8182 .909 1" data-ys="216.3 202.8 188.8 174.4 159.6 144.3 129.2 113.7 97.9 82.2 66.0 48.9" data-tip="Last year to date, monthly values in the table"/></g>
-        <g data-dv-view="target" class="dv-off"><line class="dv-target" x1="46" y1="213.8" x2="568" y2="35.6" data-fx="0" data-fx2="1"/><text class="dv-target-label t-cm-chart-label" x="564" y="31.6" text-anchor="end" data-fx="1" data-dx="-4">Target 90 a month</text></g>
-        <polyline class="dv-series" pathLength="2400" fill="none" stroke="var(--data-series-1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="46.0,215.2 93.5,200.8 140.9,185.5 188.4,170.6 235.8,154.8 283.3,138.6 330.7,122.9 378.2,106.3 425.6,89.2 473.1,72.5 520.5,54.9 568.0,36.1" data-fxs="0 .091 .1818 .2728 .3636 .4546 .5454 .6364 .7272 .8182 .909 1" data-ys="215.2 200.8 185.5 170.6 154.8 138.6 122.9 106.3 89.2 72.5 54.9 36.1"/>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jan: 82 year to date" data-tip="Jan: 82 year to date" data-fx="0" data-x0="46.0" style="animation-delay:0ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="46.0" cy="215.2" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Feb: 162 year to date" data-tip="Feb: 162 year to date" data-fx=".091" data-x0="93.5" style="animation-delay:369ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="93.5" cy="200.8" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Mar: 247 year to date" data-tip="Mar: 247 year to date" data-fx=".1818" data-x0="140.9" style="animation-delay:507ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="140.9" cy="185.5" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Apr: 330 year to date" data-tip="Apr: 330 year to date" data-fx=".2728" data-x0="188.4" style="animation-delay:616ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="188.4" cy="170.6" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="May: 418 year to date" data-tip="May: 418 year to date" data-fx=".3636" data-x0="235.8" style="animation-delay:716ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="235.8" cy="154.8" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jun: 508 year to date" data-tip="Jun: 508 year to date" data-fx=".4546" data-x0="283.3" style="animation-delay:815ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="283.3" cy="138.6" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Jul: 595 year to date" data-tip="Jul: 595 year to date" data-fx=".5454" data-x0="330.7" style="animation-delay:921ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="330.7" cy="122.9" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Aug: 687 year to date" data-tip="Aug: 687 year to date" data-fx=".6364" data-x0="378.2" style="animation-delay:1041ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="378.2" cy="106.3" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Sep: 782 year to date" data-tip="Sep: 782 year to date" data-fx=".7272" data-x0="425.6" style="animation-delay:1183ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="425.6" cy="89.2" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Oct: 875 year to date" data-tip="Oct: 875 year to date" data-fx=".8182" data-x0="473.1" style="animation-delay:1365ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="473.1" cy="72.5" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Nov: 973 year to date" data-tip="Nov: 973 year to date" data-fx=".909" data-x0="520.5" style="animation-delay:1628ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="520.5" cy="54.9" r="5.5"/></g>
-        <g class="dv-marker" tabindex="0" role="img" aria-label="Dec: 1077 year to date" data-tip="Dec: 1077 year to date" data-fx="1" data-x0="568.0" style="animation-delay:2400ms"><circle class="dv-mk" style="--sc:var(--data-series-1)" cx="568.0" cy="36.1" r="5.5"/></g>
-        </g>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="46" y="246" text-anchor="middle" data-fx="0">Jan</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="93.5" y="246" text-anchor="middle" data-fx=".091">Feb</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="140.9" y="246" text-anchor="middle" data-fx=".1818">Mar</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="188.4" y="246" text-anchor="middle" data-fx=".2728">Apr</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="235.8" y="246" text-anchor="middle" data-fx=".3636">May</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="283.3" y="246" text-anchor="middle" data-fx=".4546">Jun</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="330.7" y="246" text-anchor="middle" data-fx=".5454">Jul</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="378.2" y="246" text-anchor="middle" data-fx=".6364">Aug</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="425.6" y="246" text-anchor="middle" data-fx=".7272">Sep</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="473.1" y="246" text-anchor="middle" data-fx=".8182">Oct</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="520.5" y="246" text-anchor="middle" data-fx=".909">Nov</text>
-        <text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="568" y="246" text-anchor="middle" data-fx="1">Dec</text>
-      </svg>
-              </div></div>
-            </figure>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30" data-h-min="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Spend by category. Groceries 420, Transport 180, Housing 950, Leisure 260, Utilities 210, Savings 300, pounds."></svg>
+    </div></div>
+  </figure>
           </div>
-
+          <div class="cn-chart-line">
+<figure class="dv dv-animate" data-dv-type="line" data-surface="page" role="group" aria-labelledby="rep-cl-h" data-lockup-title="Closing balance climbed through the twelve months" data-lockup-table="rep-cl-tbl">
+    <figcaption id="rep-cl-h" class="sr-only">Closing balance, twelve months, pounds thousands</figcaption>
+    <div class="dv-head">
+      <!-- ===== AUTO-MARKUP dv-lockup-title START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-title", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+      <h3 class="dv-title t-cm-section-label">Closing balance climbed through the twelve months</h3>
+      <!-- ===== AUTO-MARKUP dv-lockup-title END ===== -->
+      <div class="dv-controls" role="group" aria-label="Chart tools">
+        <div class="seg sm" role="group" aria-label="Chart view — one of two scales">
+          <span class="ind" aria-hidden="true"></span>
+          <button type="button" data-dv-view-btn="discrete" aria-pressed="true">Monthly</button>
+          <button type="button" data-dv-view-btn="cumulative" aria-pressed="false">Year to date</button>
+        </div>
+        <button type="button" class="dv-vt dv-act dv-csv t-cm-chart-label"><svg class="dv-ico dv-ico-copy" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M0 18H10.8V7.2H0V18ZM1.2 8.4H9.6V16.8H1.2V8.4ZM8.4 3.6H7.2V6H8.4V3.6ZM8.4 1.2H9.6V0H7.2V2.4H8.4V1.2ZM15.6 0V1.2H16.8V2.4H18V0H15.6ZM12 10.8H14.4V9.6H12V10.8ZM16.8 9.6H15.6V10.8H18V8.4H16.8V9.6ZM16.8 7.2H18V3.6H16.8V7.2ZM10.8 1.2H14.4V0H10.8V1.2Z" fill="currentColor"/></svg><svg class="dv-ico dv-ico-tick" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z" fill="currentColor"/></svg><span>Copy data (CSV)</span></button>
+        <details class="dv-tbl">
+        <!-- ===== AUTO-MARKUP dv-lockup-table START (dataviz) ===== -->
+      <!-- INJECTED from Chart-combo.reference.html (markup "dv-lockup-table", group dataviz —
+     registry knowledge/component-types.json, dv-lockup extension #68). DO NOT hand-edit
+     between the AUTO-MARKUP markers: edit the source MARKUP block in the atom and
+     regenerate: python3 knowledge/gen_component_partials.py -->
+          <summary class="dv-tbl-toggle dv-vt dv-dd t-cm-chart-label" aria-controls="rep-cl-tbl"><span>View as table</span><svg class="dv-ico dv-ico-arrow" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M2 6H16L9 13L2 6Z" fill="currentColor"/></svg></summary>
+      <!-- ===== AUTO-MARKUP dv-lockup-table END ===== -->
+          <div class="dv-tablepanel" id="rep-cl-tbl" role="region" aria-label="Account balance by month, data table" tabindex="-1">
+          <table class="dv-table t-cm-legal">
+          <caption>Closing balance, twelve months, pounds thousands († above the 90 target)</caption>
+          <thead><tr><th scope="col">Month</th><th scope="col">Balance</th><th scope="col">Last year</th><th scope="col">Year to date</th></tr></thead>
+          <tbody>
+          <tr><th scope="row">Jan</th><td>82</td><td>76</td><td>82</td></tr>
+          <tr><th scope="row">Feb</th><td>80</td><td>75</td><td>162</td></tr>
+          <tr><th scope="row">Mar</th><td>85</td><td>78</td><td>247</td></tr>
+          <tr><th scope="row">Apr</th><td>83</td><td>80</td><td>330</td></tr>
+          <tr><th scope="row">May</th><td>88</td><td>82</td><td>418</td></tr>
+          <tr><th scope="row">Jun</th><td>90</td><td>85</td><td>508</td></tr>
+          <tr><th scope="row">Jul</th><td>87</td><td>84</td><td>595</td></tr>
+          <tr><th scope="row">Aug</th><td>92 †</td><td>86</td><td>687</td></tr>
+          <tr><th scope="row">Sep</th><td>95 †</td><td>88</td><td>782</td></tr>
+          <tr><th scope="row">Oct</th><td>93 †</td><td>87</td><td>875</td></tr>
+          <tr><th scope="row">Nov</th><td>98 †</td><td>90</td><td>973</td></tr>
+          <tr><th scope="row">Dec</th><td>104 †</td><td>95</td><td>1077</td></tr>
+          </tbody>
+          </table>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="dv-stage"><div class="dv-chart-area">
+      <svg class="dv-svg dv-fit" data-pl="46" data-pr="12" data-h="260" data-pt="14" data-pb="30" data-h-min="200" data-bespoke="chart canvas — dataviz geometry, not an icon (validate-dataviz territory)" viewBox="0 0 580 260" role="group" aria-label="Account balance by month. Drawn by dvRender from the DATA below."></svg>
+    </div></div>
+  </figure>
+          </div>
         </div>
       </section>
 
-      <!-- ==================================================================================
-           4 · THE TABLE — Data-grid.reference.html. A report's table is the AUDITABLE form of
-           the two charts above it: same five routes, same quarter, values you can add up.
-           ================================================================================== -->
       <section class="tpl-section" aria-labelledby="tbl-h">
-        <div class="stat-card tpl-panel">
-          <div class="dg">
-            <div class="dg-head">
-              <h2 class="t-cm-section-label" id="tbl-h">Receipts by route, in full</h2>
-              <span class="dg-count t-cm-caption">5 routes &middot; 3,800 receipts</span>
-            </div>
-            <div class="dg-scroll">
-              <table aria-labelledby="tbl-h">
-                <thead>
+        <div class="cn-section-heading-lockup"><div class="l-row" data-justify="between" data-align="baseline"><h2 id="tbl-h" class="t-cm-section-label">Receipts by route, in full</h2><span class="t-cm-caption">5 routes &middot; 3,800 receipts</span></div></div>
+        <div class="cn-table">
+          <div class="scroll" role="region" aria-label="Receipts by route, scrollable" tabindex="0">
+            <table data-headers="both">
+              <caption class="sr-only">Receipts by route<span class="sub">Q2 2026 · all figures in GBP</span></caption>
+              <thead>
+                <tr>
+                  <th scope="col">Route</th>
+                  <th scope="col" class="num">Receipts</th>
+                  <th scope="col" class="num">Value</th>
+                  <th scope="col" class="num">Average</th>
+                  <th scope="col">Settlement</th>
+                </tr>
+              </thead>
+              <tbody>
                   <tr>
-                    <th scope="col" aria-sort="none"><button class="sort t-cm-ctl-14" type="button">Route<span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span><span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span><span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-                    <th scope="col" aria-sort="none"><button class="sort t-cm-ctl-14" type="button">Receipts<span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span><span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span><span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-                    <th scope="col" aria-sort="descending"><button class="sort t-cm-ctl-14" type="button">Value<span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span><span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span><span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-                    <th scope="col" aria-sort="none"><button class="sort t-cm-ctl-14" type="button">Average<span class="ic ic-none" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-sort"/></svg></span><span class="ic ic-asc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cup"/></svg></span><span class="ic ic-desc" aria-hidden="true"><svg viewBox="0 0 18 18"><use href="#dg-cdown"/></svg></span></button></th>
-                    <th scope="col"><span class="sort t-cm-ctl-14" style="cursor:default">Settlement</span></th>
+                    <th scope="row" data-first data-label="Route"><span class="v">Card acquiring</span></th>
+                    <td data-label="Receipts" class="num"><span class="v">1,842</span></td>
+                    <td data-label="Value" class="num"><span class="v">&pound;418,220.55</span></td>
+                    <td data-label="Average" class="num"><span class="v">&pound;227.05</span></td>
+                    <td data-label="Settlement"><span class="cn-status-indicator"><span class="chip ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Settled T+1</span></span></td>
                   </tr>
-                </thead>
-                <tbody>
-                <tr><td><span class="t-cm-label">Card acquiring</span></td><td class="num"><span class="t-cm-figure-5">1,842</span></td><td class="num"><span class="t-cm-figure-5">&pound;418,220.55</span></td><td class="num"><span class="t-cm-figure-5">&pound;227.05</span></td><td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Reconciled</span></span></td></tr>
-                <tr><td><span class="t-cm-label">Faster Payments</span></td><td class="num"><span class="t-cm-figure-5">964</span></td><td class="num"><span class="t-cm-figure-5">&pound;286,411.00</span></td><td class="num"><span class="t-cm-figure-5">&pound;297.11</span></td><td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Reconciled</span></span></td></tr>
-                <tr><td><span class="t-cm-label">Direct Debits</span></td><td class="num"><span class="t-cm-figure-5">612</span></td><td class="num"><span class="t-cm-figure-5">&pound;151,904.20</span></td><td class="num"><span class="t-cm-figure-5">&pound;248.21</span></td><td><span class="status warn" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Two exceptions</span></span></td></tr>
-                <tr><td><span class="t-cm-label">Standing orders</span></td><td class="num"><span class="t-cm-figure-5">308</span></td><td class="num"><span class="t-cm-figure-5">&pound;96,140.00</span></td><td class="num"><span class="t-cm-figure-5">&pound;312.14</span></td><td><span class="status ok" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Reconciled</span></span></td></tr>
-                <tr><td><span class="t-cm-label">International</span></td><td class="num"><span class="t-cm-figure-5">74</span></td><td class="num"><span class="t-cm-figure-5">&pound;61,208.35</span></td><td class="num"><span class="t-cm-figure-5">&pound;827.14</span></td><td><span class="status inf" data-carries="label"><span class="dot" aria-hidden="true"></span><span class="t-cm-legal">Awaiting value date</span></span></td></tr>
-                </tbody>
-              </table>
-            </div>
+                  <tr>
+                    <th scope="row" data-first data-label="Route"><span class="v">Faster Payments</span></th>
+                    <td data-label="Receipts" class="num"><span class="v">964</span></td>
+                    <td data-label="Value" class="num"><span class="v">&pound;286,411.00</span></td>
+                    <td data-label="Average" class="num"><span class="v">&pound;297.11</span></td>
+                    <td data-label="Settlement"><span class="cn-status-indicator"><span class="chip ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Settled same day</span></span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" data-first data-label="Route"><span class="v">Direct Debits</span></th>
+                    <td data-label="Receipts" class="num"><span class="v">612</span></td>
+                    <td data-label="Value" class="num"><span class="v">&pound;151,904.20</span></td>
+                    <td data-label="Average" class="num"><span class="v">&pound;248.21</span></td>
+                    <td data-label="Settlement"><span class="cn-status-indicator"><span class="chip warn" data-carries="label"><span class="dot" aria-hidden="true"></span>2 exceptions open</span></span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" data-first data-label="Route"><span class="v">Standing orders</span></th>
+                    <td data-label="Receipts" class="num"><span class="v">308</span></td>
+                    <td data-label="Value" class="num"><span class="v">&pound;96,140.00</span></td>
+                    <td data-label="Average" class="num"><span class="v">&pound;312.14</span></td>
+                    <td data-label="Settlement"><span class="cn-status-indicator"><span class="chip ok" data-carries="label"><span class="dot" aria-hidden="true"></span>Settled same day</span></span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row" data-first data-label="Route"><span class="v">International</span></th>
+                    <td data-label="Receipts" class="num"><span class="v">74</span></td>
+                    <td data-label="Value" class="num"><span class="v">&pound;61,208.35</span></td>
+                    <td data-label="Average" class="num"><span class="v">&pound;827.14</span></td>
+                    <td data-label="Settlement"><span class="cn-status-indicator"><span class="chip inf" data-carries="label"><span class="dot" aria-hidden="true"></span>Settled T+2</span></span></td>
+                  </tr>
+              </tbody>
+            </table>
           </div>
-
-          <!-- the total — Summary.reference.html's key/value rhythm, with its emphasised total row -->
-          <div class="tpl-panel-head" style="margin-top:24px;margin-bottom:0">
-            <h3 class="t-cm-section-label">Quarter total</h3>
-          </div>
-          <dl class="summary" style="max-width:420px;margin-left:auto">
+        </div>
+        <div class="cn-section-heading-lockup"><div class="l-stack" data-gap="xxs"><h3 id="total-h" class="t-cm-section-label">Quarter total</h3></div></div>
+        <div class="tpl-total cn-summary" role="group" aria-labelledby="total-h">
+          <dl class="summary">
             <div class="summary__row"><dt class="summary__k t-cm-label">Receipts</dt><dd class="summary__v t-cm-figure-5">3,800</dd></div>
             <div class="summary__row"><dt class="summary__k t-cm-label">Gross value</dt><dd class="summary__v t-cm-figure-5">&pound;1,013,884.10</dd></div>
             <div class="summary__row"><dt class="summary__k t-cm-label">Charges</dt><dd class="summary__v t-cm-figure-5">&minus;&pound;4,118.62</dd></div>
@@ -809,143 +421,1287 @@
         </div>
       </section>
 
-      <!-- ==================================================================================
-           5 · THE NOTES. A report that cannot say where its numbers came from is decoration.
-           ================================================================================== -->
-      <section class="tpl-notes tpl-section" aria-labelledby="notes-h">
-        <h2 class="tpl-section-head t-cm-section-label" id="notes-h">Notes on these figures</h2>
-        <ol class="t-cm-caption">
+      <section class="tpl-section tpl-notes" aria-labelledby="notes-h">
+        <div class="cn-section-heading-lockup"><div class="l-stack" data-gap="xxs"><h2 id="notes-h" class="t-cm-section-label">Notes on these figures</h2></div></div>
+        <ol class="t-ed-body-small">
           <li>Figures are taken at close of day and exclude anything received after 18:00 on 30 June 2026.</li>
           <li>Averages are the gross value divided by the number of receipts, rounded to the penny.</li>
           <li>International receipts are converted at the rate applied on the value date, not on the date received.</li>
           <li>Two Direct Debit exceptions are still open and are counted in the gross value.</li>
         </ol>
       </section>
-
     </div>
   </main>
 
+  <div class="cn-footer">
+    <footer class="ft" role="contentinfo" aria-label="Application footer" data-env="prod" data-system="ok" data-updated="2026-08-20T14:32:00+01:00" data-now="2026-08-20T14:35:00+01:00">
+      <div class="ft-inner">
+        <div class="ft-id">
+          <span class="ft-prod t-ed-body-small em">HSBC Business banking</span>
+          <span class="ft-ver t-cm-legal">v4.2.1 &middot; build 8317</span>
+          <span class="ft-env t-cm-legal">Production</span>
+          <span class="ft-status t-cm-legal" role="status"><span class="ft-dot" aria-hidden="true"></span><span>All systems normal</span></span>
+        </div>
+        <span class="ft-pip" aria-hidden="true"></span>
+        <div class="ft-meta t-cm-legal">
+          <span>Data as of <time datetime="2026-08-20T14:32:00+01:00">14:32</time><span data-freshness-rel> &middot; 3 minutes ago</span></span>
+          <span class="ft-pip" aria-hidden="true"></span>
+          <span>en-GB &middot; Europe/London (GMT+1)</span>
+        </div>
+        <div class="ft-end">
+          <nav class="ft-links" aria-label="Legal and support">
+            <ul>
+              <li><a class="lnk t-cm-legal" href="#">Privacy</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Terms</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Accessibility</a></li>
+              <li><a class="lnk t-cm-legal" href="#">Support</a></li>
+            </ul>
+          </nav>
+          <span class="ft-copy t-cm-legal">&copy; HSBC Group 2026. All rights reserved.</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
   <script type="application/json" id="token-manifest">
-  {
-    "component": "Template report",
-    "type": "template",
-    "layer": "2 Template",
-    "vars": {
-      "--page": "background/default",
-      "--surface": "tertiary/background/default",
-      "--text": "text/default",
-      "--icon": "icon/default",
-      "--border": "border/subtle",
-      "--divider": "divider/border/section",
-      "--hover": "form/background/hover",
-      "--focus": "focus/ring",
-      "--header": "table/header/background",
-      "--cell": "background/default",
-      "--fborder": "form/border/default",
-      "--bar": "form/border/active",
-      "--disabled": "text/disabled",
-      "--pressedbg": "tertiary/background/pressed",
-      "--onpressed": "text/reverse",
-      "--currentbd": "tertiary/border/default",
-      "--pri-default": "button/primary/background/default",
-      "--pri-label": "button/primary/label/default",
-      "--pri-hover": "button/primary/background/hover",
-      "--ter-border": "button/tertiary/border/default",
-      "--ter-label": "button/tertiary/label/default",
-      "--ter-hover": "button/tertiary/background/hover",
-      "--quat-label": "button/quaternary/label/default",
-      "--quat-hover": "button/quaternary/background/hover",
-      "--sel": "secondary/background/default",
-      "--on-sel": "text/on-inverse",
-      "--seg-rad-s": "border-radius/segmented-container/s",
-      "--seg-thumb-s": "border-radius/segmented-thumb/s",
-      "--up": "rag/success",
-      "--down": "rag/error",
-      "--spark-up": "rag/success-ink",
-      "--spark-down": "rag/error-ink",
-      "--spark-flat": "text/default",
-      "--success": "rag/success",
-      "--warning": "rag/warning",
-      "--error": "rag/error",
-      "--info": "rag/information",
-      "--success-tint": "rag/success-tint",
-      "--warning-tint": "rag/warning-tint",
-      "--error-tint": "rag/error-tint",
-      "--info-tint": "rag/information-tint",
-      "--ink": "text/default",
-      "--baseline": "border/action-strong",
-      "--line": "border/subtle",
-      "--data-series-1": "data/series/1",
-      "--data-axis": "data/axis/color",
-      "--data-grid": "data/grid/color",
-      "--axis-alpha": "data/axis/alpha",
-      "--grid-alpha": "data/grid/alpha",
-      "--target-min": "target/min",
-      "--press-travel": "component-type/button-family/press-travel",
-      "--press-darken": "component-type/button-family/press-darken",
-      "--l-margin": "layout/app/margin",
-      "--l-gutter": "layout/app/gutter",
-      "--border-radius-surface": "border-radius/surface",
-      "--border-radius-control": "border-radius/control",
-      "--border-radius-indicator": "border-radius/indicator"
+{
+  "component": "Template report",
+  "type": "template",
+  "layer": "2 Template",
+  "vars": {
+    "--divider": "divider/border/section",
+    "--focus": "focus/ring",
+    "--l-margin": "layout/app/margin"
+  },
+  "contrastPairs": [
+    {
+      "fg": "text/default",
+      "bg": "background/default",
+      "context": "text"
     },
-    "contrastPairs": [
-      { "fg": "text/default", "bg": "background/default", "context": "text" },
-      { "fg": "text/default", "bg": "tertiary/background/default", "context": "text" },
-      { "fg": "button/primary/label/default", "bg": "button/primary/background/default", "context": "text" },
-      { "fg": "text/on-inverse", "bg": "secondary/background/default", "context": "text" },
-      { "fg": "text/default", "bg": "rag/success-tint", "context": "text" },
-      { "fg": "text/default", "bg": "rag/warning-tint", "context": "text" },
-      { "fg": "text/default", "bg": "rag/information-tint", "context": "text" },
-      { "fg": "form/border/default", "bg": "background/default", "context": "ui" },
-      { "fg": "icon/default", "bg": "background/default", "context": "ui" }
-    ],
-    "icons": {
-      "chevron-right": "arrows-and-chevrons/chevron-right.svg",
-      "chevron-up": "arrows-and-chevrons/chevron-up.svg",
-      "chevron-down": "arrows-and-chevrons/chevron-down.svg",
-      "arrow-up": "arrows-and-chevrons/arrow-up.svg",
-      "arrow-down": "arrows-and-chevrons/arrow-down.svg",
-      "export": "global-controls/export.svg",
-      "print": "global-controls/print.svg",
-      "sort": "global-controls/sort.svg"
-    },
-    "requiredAria": ["<nav", "<main", "<h1", "aria-label", "aria-labelledby", "aria-current", "aria-pressed", "aria-sort", "role=\"group\""],
-    "$note": "PROPOSED, NOT RULED. A report page: a provenance-bearing report header, a five-tile stats band, TWO chart specimens byte-lifted from two different gated components (Chart-bar's column and Chart-line's twelve-month line), a Data-grid table carrying the same five routes the charts show, a Summary total, and a footnote block. ⛔ NO MONETARY FIGURE ON THIS PAGE IS COLOURED. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3); binding them to money here would be ruling on Dave's behalf. The only RAG on the page is the settlement status chip, which always carries its word."
+    {
+      "fg": "text/secondary",
+      "bg": "background/default",
+      "context": "text"
+    }
+  ],
+  "icons": {
+    "chevron": "via Page-header-lockup",
+    "metric glyphs": "via Metric (direction, rotated)",
+    "chart tools": "via Chart-bar / Chart-line (inline paths)"
+  },
+  "composes": [
+    "App-shell-top-nav",
+    "Layout-utilities",
+    "Page-header-lockup",
+    "Segmented-control",
+    "Status-indicator",
+    "Summary",
+    "Section-heading-lockup",
+    "Metric",
+    "Chart-bar",
+    "Chart-line",
+    "Table",
+    "Footer"
+  ],
+  "requiredAria": [
+    "<main",
+    "<h1",
+    "aria-labelledby",
+    "aria-hidden=\"true\"",
+    "role=\"group\"",
+    "role=\"status\"",
+    "role=\"region\"",
+    "role=\"contentinfo\""
+  ],
+  "$note": "REBUILT #314 (s313-D72): a composed page, not a copy. Every part is placed as its own .cn-<slug> scope with its own markup, painted by canon.css; the page's style is placement only. Both charts are drawn by the library's engine from data written on this page; every chart has its auditable table (s272-D88)."
+}
+  </script>
+
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-behaviour.js (behaviour "dv-behaviour", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-behaviour — the dataviz interaction layer (ADR-0015, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   Modules: value POPOVER (dvTip) · responsive FIT reflow, BOTH axes (DV-D02: text never scales) ·
+   TABLE-VIEW POPOVER panel · LEGEND-AS-FILTER. Performance contract (GATED by
+   _validate_behaviour.py): source ≤16KB raw · no setInterval/network/polling · ONE
+   rAF-debounced resize listener · events DELEGATED (document-level, not per-element) ·
+   progressive enhancement — every entry wrapped; the baked SVG renders if this never runs.
+   DEF-003 boundary: behaviour + data-driven geometry ONLY — no JS scale-physics. */
+(function () {
+  'use strict';
+  if (window.__dvBehaviour) { return; } window.__dvBehaviour = true;
+
+  /* ---------- FIT — responsive reflow on BOTH axes (proforma fitCharts, ported; s248-D2/D3
+     + s249-D4 carried the tile-height axis in from the bento template's stub — ONE engine).
+     x relayouts to the container width, y/height to the TILE's slack (VFIT below); text and
+     strokes never scale — the viewBox is re-pinned 1:1 and every position is RE-DERIVED from
+     cached fractions of the baked plot. Geometry rides data-fx/data-fw/data-dx/data-x0/
+     data-fx2 + polyline data-fxs/data-ys; plot frame per-svg via data-pl/data-pr/data-h/
+     data-pt/data-pb/data-h-min (defaults = the kit's 46/12/260/14/30/200).
+     JS-ON opt-in: .dv-fit-on lands on the figure, releasing the fixed-width CSS —
+     JS-off keeps the DV-D02 static answer (fixed geometry + horizontal scroll). */
+  /* #304 W5a — two one-line readers, paid for by the right-edge fit below (the Chart-combo page sat
+     112 code-only bytes under its 34KB budget). Same semantics as the expressions they replace:
+     num() is parseFloat(attr || default), NaN when absent with no default; up() guards .closest. */
+  function num(el, k, d) { return parseFloat(el.getAttribute(k) || d); }
+  function up(e, s) { return e.target.closest && e.target.closest(s); }
+  /* #304 W6 — fitCharts and placeSegs walk their NodeList with forEach (as thinLabels already
+     does): the same static list, the same order, one call per element; the extra (index, list)
+     arguments are ignored by fitOne/moveSeg. Pays for the transitionend re-fit below. */
+  function fitCharts() { document.querySelectorAll('svg.dv-fit').forEach(fitOne); }
+  /* ---------- ds-012(b) GUTTER-RELATIVE PLOT AREA — RULED by Dave 2026-07-27 (ds-012 in
+     _DS-IMPROVEMENTS.md). The left gutter is COMPUTED from the WIDEST LABEL AS RENDERED,
+     never baked: the clipping was driven by label length and face looseness (the licensed
+     HSBC cut is looser than Helvetica), neither a design property — a build-time constant
+     is (a) wearing (b)'s clothes. data-pl is the FLOOR, so no gutter ends up NARROWER than
+     its reviewed geometry.
+     #304 W4a — ON BY DEFAULT. Until #304 the fit was opt-in per svg (data-pl-fit="<selector>"),
+     and a cold page that copied a canvas without the attribute shipped "00 £m": 5 of 6 cold-run
+     overviews had y labels cut at the left (W3b §2 item 2). The RULING is the plot area computed
+     from the widest label; opt-in was only how it was first shipped. Absent the attribute, the
+     gutter now measures the labels that LIVE in it — every text pinned to the plot's left edge
+     and growing leftward (data-fx="0" + text-anchor="end": value ticks, h-bar categories, bullet
+     names). An authored selector still wins; data-pl-fit="none" is the opt-out (it matches no
+     element, so nothing is measured and the floor stands).
+     PROVISIONAL-AWAITING-DAVE — the two constants below guard ds-012 point 3 ("do not let
+     the plot area collapse"); the narrow-width trade is Dave's eye, not a formula. */
+  var PL_MAX_FRAC = 0.42;   /* PROVISIONAL-AWAITING-DAVE — gutter ceiling as a share of width */
+  var PL_EDGE_PAD = 2;      /* PROVISIONAL-AWAITING-DAVE — clearance left of the longest label */
+  function gutterPL(svg, floorPL, W) {
+    var sel = svg.getAttribute('data-pl-fit') || '[data-fx="0"][text-anchor=end]';
+    var labs = svg.querySelectorAll(sel), maxW = 0, pad = 0, i, bb, dx;
+    for (i = 0; i < labs.length; i++) {
+      try { bb = labs[i].getBBox(); } catch (e) { continue; }
+      if (bb.width > maxW) { maxW = bb.width; }
+      dx = Math.abs(num(labs[i], 'data-dx', 0));
+      if (dx > pad) { pad = dx; }
+    }
+    if (!maxW) { return floorPL; }                       /* nothing measurable — leave the bake */
+    var need = Math.ceil(maxW + pad + PL_EDGE_PAD);
+    var cap  = Math.max(floorPL, Math.round(W * PL_MAX_FRAC));
+    return Math.min(Math.max(floorPL, need), cap);
   }
+  /* ---------- VFIT — the height axis (s248-D2: the chart fills its tile; s248-D3: probe at
+     data-h FIRST so the row never ratchets; s249-D4: one engine, here). H = data-h + the
+     empty ground under the figure inside its .c-bento__tile (no tile: the figure's parent),
+     floored at data-h-min. y is re-derived from cached plot fractions (data-fy/fh/fy1/fy2)
+     — a bar re-scales, a MARK (.dv-mk circle/rect/polygon) keeps its glyph and moves its
+     centre, a text keeps its data-dy offset. The .dv-mk CLASS is the mark contract for now
+     (settled #313, s307-D60). H_MIN_DEFAULT 200 is RULED: s307-D60 keeps the floor. */
+  /* #304 W5a — THE RIGHT-HAND TWIN OF ds-012(b). A label placed on a fraction of the plot and
+     growing rightward (centred category labels, the last value tick, start-anchored end labels)
+     ran up to 19px past the svg's right edge in every cold-run set ("Middle East and Afric",
+     "1500 £") — the right padding was a fixed data-pr, the (a) that ds-012 ruled out. The right
+     gutter is now COMPUTED from the labels as rendered: the smallest PR at which every such
+     label's ink ends PL_EDGE_PAD inside the box, since a label at fraction f moves left by f
+     for every px of PR. data-pr stays the FLOOR (a gutter only grows) and the same provisional
+     ceiling guards ds-012 point 3 (do not let the plot collapse). Nothing scales (DV-D02). */
+  function gutterPR(svg, PL, PR, W) {
+    var t = svg.querySelectorAll('text[data-fx]'), c = Math.max(PR, Math.round(W * PL_MAX_FRAC)), i, f, b, r;
+    for (i = 0; i < t.length; i++) {   /* ink right of the anchor = box right - x: any anchor, as rendered */
+      f = num(t[i], 'data-fx');
+      try { b = t[i].getBBox(); r = W - PL - (W - PL - PL_EDGE_PAD - num(t[i], 'data-dx', 0) - b.x - b.width + num(t[i], 'x')) / f; } catch (e) { continue; }
+      if (f > 0 && r > PR) { PR = Math.ceil(r); }
+    }
+    return Math.min(PR, c);
+  }
+  var H_MIN_DEFAULT = 200;
+  function slackBelow(svg) {
+    var fig = svg.closest('figure.dv'); if (!fig) { return 0; }
+    var tile = fig.closest('.c-bento__tile') || fig.parentElement, cs = getComputedStyle(tile);
+    var edge = tile.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom || '0') - parseFloat(cs.borderBottomWidth || '0');
+    return edge - fig.getBoundingClientRect().bottom;
+  }
+  function fitHeight(svg, W) {
+    var H0 = num(svg, 'data-h', 260);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H0);   /* probe at the preferred height */
+    var H = Math.max(Math.round(H0 + slackBelow(svg)), parseFloat(svg.getAttribute('data-h-min') || String(H_MIN_DEFAULT)));
+    if (H === H0) { return H0; }
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);    /* the box must FOLLOW the viewBox (height:auto released) — */
+    if (Math.abs(svg.getBoundingClientRect().height - H) > 1) { return H0; }   /* a CSS-pinned box would SCALE: keep the bake */
+    return H;
+  }
+  function fitY(svg, H) {
+    var PT = num(svg, 'data-pt', 14), PB = num(svg, 'data-pb', 30);
+    var plot0 = num(svg, 'data-h', 260) - PT - PB, plot = H - PT - PB;
+    if (plot0 <= 0 || plot <= 0) { return null; }
+    var Y = function (f) { return PT + parseFloat(f) * plot; };
+    Y.f = function (px) { return ((px - PT) / plot0).toFixed(4); };   /* px -> plot fraction (#304 W4a: shared with the polyline branch) */
+    var frac = function (el, key, px) {                   /* cache the bake ONCE, as a plot fraction */
+      if (el.getAttribute(key) === null) { el.setAttribute(key, Y.f(px)); }
+      return el.getAttribute(key);
+    };
+    var els = svg.querySelectorAll('rect[y],line[y1],text[y],circle[cy],polygon[points]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], tag = el.tagName.toLowerCase(), mark = /\bdv-mk\b/.test(el.getAttribute('class') || '');
+      if (tag === 'rect' && mark) {
+        var hh = num(el, 'height') / 2;
+        el.setAttribute('y', (Y(frac(el, 'data-fy', num(el, 'y') + hh)) - hh).toFixed(1));
+      } else if (tag === 'polygon') {
+        if (el.getAttribute('data-pts0') === null) { el.setAttribute('data-pts0', el.getAttribute('points')); }
+        var p0 = el.getAttribute('data-pts0').trim().split(/\s+/).map(function (s) { return s.split(',').map(parseFloat); });
+        var cy0 = 0; for (var q = 0; q < p0.length; q++) { cy0 += p0[q][1] / p0.length; }
+        var dyp = Y(frac(el, 'data-fy', cy0)) - cy0;
+        el.setAttribute('points', p0.map(function (pt) { return pt[0].toFixed(1) + ',' + (pt[1] + dyp).toFixed(1); }).join(' '));
+      } else if (tag === 'rect') {
+        if (el.getAttribute('data-fh') === null) { el.setAttribute('data-fh', (num(el, 'height') / plot0).toFixed(4)); }
+        el.setAttribute('y', Y(frac(el, 'data-fy', num(el, 'y'))).toFixed(1));
+        el.setAttribute('height', (num(el, 'data-fh') * plot).toFixed(1));
+      } else if (tag === 'line') {
+        el.setAttribute('y1', Y(frac(el, 'data-fy1', num(el, 'y1'))).toFixed(1));
+        el.setAttribute('y2', Y(frac(el, 'data-fy2', num(el, 'y2'))).toFixed(1));
+      } else if (tag === 'circle') {
+        el.setAttribute('cy', Y(frac(el, 'data-fy', num(el, 'cy'))).toFixed(1));
+      } else if (tag === 'text') {
+        var dy = num(el, 'data-dy', 0);
+        if (el.getAttribute('data-fy') === null) {          /* below the baseline = a fixed offset, not a fraction */
+          var a = num(el, 'y') - dy, b0 = PT + plot0;
+          if (a > b0 + 0.5) { dy += a - b0; a = b0; el.setAttribute('data-dy', dy.toFixed(1)); }
+          el.setAttribute('data-fy', ((a - PT) / plot0).toFixed(4));
+        }
+        el.setAttribute('y', (Y(el.getAttribute('data-fy')) + dy).toFixed(1));
+      }
+    }
+    return Y;
+  }
+  function fitOne(svg) {
+    try {
+      var PL = num(svg, 'data-pl', 46);
+      var PR = num(svg, 'data-pr', 12);
+      var W = Math.round(svg.getBoundingClientRect().width);
+      if (!W) { return; }
+      var H = fitHeight(svg, W);                          /* s248-D2 — the tile's height, floored */
+      PL = gutterPL(svg, PL, W);                          /* ds-012(b) — measured, not baked */
+      PR = gutterPR(svg, PL, PR, W);                      /* #304 W5a — its right-hand twin */
+      var plotW = W - PL - PR; if (plotW < 90) { plotW = 90; }
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);   /* 1:1 pin — no proportional scaling */
+      var Y = fitY(svg, H);                               /* s248-D2 — y from data, after the pin */
+      var X = function (f) { return PL + parseFloat(f) * plotW; };
+      var els = svg.querySelectorAll('[data-fx]');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i], x = X(el.getAttribute('data-fx')), tag = el.tagName.toLowerCase();
+        if (tag === 'rect') {
+          el.setAttribute('x', x.toFixed(1));
+          var fw = el.getAttribute('data-fw');
+          if (fw !== null) { el.setAttribute('width', (parseFloat(fw) * plotW).toFixed(1)); }
+        } else if (tag === 'text') {
+          var dx = num(el, 'data-dx', 0);
+          el.setAttribute('x', (x + dx).toFixed(1));
+        } else if (tag === 'line') {
+          el.setAttribute('x1', x.toFixed(1));
+          var fx2 = el.getAttribute('data-fx2');
+          if (fx2 !== null) { el.setAttribute('x2', X(fx2).toFixed(1)); }
+        } else if (tag === 'g') {
+          var x0 = num(el, 'data-x0', 0);
+          el.setAttribute('transform', 'translate(' + (x - x0).toFixed(1) + ',0)');
+        }
+      }
+      /* #96-D1 ⑤: path[data-fxs] = .dv-band fill — same pairs, emitted M…L…Z. */
+      var pls = svg.querySelectorAll('polyline[data-fxs],path[data-fxs]');
+      for (var j = 0; j < pls.length; j++) {
+        var pl = pls[j], isP = pl.tagName === 'path';
+        var fxs = pl.getAttribute('data-fxs').trim().split(/\s+/);
+        var ys = pl.getAttribute('data-ys').trim().split(/\s+/), fys = null;
+        if (Y) {                                          /* VFIT: y from cached plot fractions */
+          if (pl.getAttribute('data-fys') === null) { pl.setAttribute('data-fys', ys.map(function (y) { return Y.f(parseFloat(y)); }).join(' ')); }
+          fys = pl.getAttribute('data-fys').trim().split(/\s+/);
+        }
+        var pts = [];
+        for (var k = 0; k < fxs.length; k++) { pts.push(X(fxs[k]).toFixed(1) + ',' + (fys ? Y(fys[k]).toFixed(1) : ys[k])); }
+        pl.setAttribute(isP ? 'd' : 'points', isP ? 'M' + pts.join(' L') + ' Z' : pts.join(' '));
+      }
+      /* #304 W4a — after x is final */
+      thinLabels(svg);
+    } catch (e) { /* leave the baked SVG intact */ }
+  }
+  /* ---------- CATEGORY LABELS NEVER COLLIDE (#304 W4a). The type partials label EVERY category,
+     so thirty daily labels collide at dashboard widths (W3b §2 item 3; four of six cold runs).
+     Candlestick (first + last past a dozen) and histogram (a stride from an estimated width)
+     already thin at DRAW time, which freezes the choice at first-render width (#260 A7). This
+     thins at FIT time, from the labels' MEASURED boxes, on every resize: the smallest stride
+     at which the visible labels clear each other, anchored on the LAST category (the latest
+     period) — every n-th label keeps its place and the rest are hidden, never moved or scaled
+     (DV-D02). The table and every mark's tip still carry every category (dv-005). The 8px
+     clearance is the kit's own label clearance (the data-dx="8" offset every partial rides),
+     borrowed, not ruled (the +8 in each box). Only a ROW of centred, fraction-placed labels is
+     touched (grouped by baseline); the gutter's end-anchored labels are never thinned, and a lone
+     caption has no neighbour to clear. A label in a hidden view measures 0 wide and is skipped. */
+  function thinLabels(svg) {
+    var R = {}, k, L, n, s, p, i, b;
+    svg.querySelectorAll('.dv-label[text-anchor=middle]').forEach(function (t) { (R[k = t.getAttribute('y')] = R[k] || []).push(t); });
+    for (k in R) {
+      for (L = R[k], n = L.length, s = 1; s < n; s++) {
+        for (p = 1e9, i = n - 1; i >= 0; i -= s) {
+          b = L[i].getBBox();
+          if (b.width) { if (b.x + b.width + 8 > p) { break; } p = b.x; }
+        }
+        if (i < 0) { break; }
+      }
+      L.forEach(function (t, j) { t.setAttribute('visibility', (n - 1 - j) % s ? 'hidden' : 'visible'); });
+    }
+  }
+  var dvRAF;   /* the ONE resize listener, rAF-debounced (ADR-0015) */
+  function refit() { cancelAnimationFrame(dvRAF); dvRAF = requestAnimationFrame(function () { fitCharts(); placeSegs(); }); }
+  window.addEventListener('resize', refit);
+  /* #304 W6 — RE-FIT WHEN A CHART'S BOX FINISHES MOVING. The fit reads the svg's width once per
+     pass; a CSS width transition in flight at that moment hands it the START width, and nothing
+     re-fits when the box lands. The JS-on release itself is such a change (.dv-fit-on: the baked
+     580px -> 100%), and under reduced motion canon.css's own reset (.canon * {transition-duration:
+     .01ms}) turns it into a transition: the fit pinned 580 in a 990px box and every glyph drew
+     x1.7 (cand2-r1 7/8 loads, W5a Q3). Same family as W4a's ring race. transitionend on the canvas
+     or on anything holding one = the box is final: one more rAF-debounced pass through the same
+     path. Marks inside the svg never match, so a fit's own attribute writes do not loop. */
+  document.addEventListener('transitionend', function (e) { if (e.target.matches('svg.dv-fit,:has(svg.dv-fit)')) { refit(); } });
+
+  /* ---------- POPOVER — real value tip on hover AND keyboard focus of any [data-tip].
+     Replaces native <title> tooltips (values stay in sync with the table — one source).
+     Edge-flips at the viewport bounds. role=status/aria-live=polite (proforma posture). */
+  var dvTip = document.createElement('div');
+  dvTip.className = 'dv-tip t-cm-chart-value'; dvTip.id = 'dvTip';   /* type via composite (T-D14 markup class) */
+  dvTip.setAttribute('role', 'status'); dvTip.setAttribute('aria-live', 'polite');
+  document.body.appendChild(dvTip);
+  function tipAt(text, x, y, src) {
+    /* #230 T4 — .dv-tip is cn-chart-scoped: re-home, then write */
+    var h = src.closest('[class*=cn-chart-]') || document.body;
+    if (dvTip.parentNode !== h) { h.appendChild(dvTip); }
+    dvTip.textContent = text; dvTip.classList.add('on');
+    var r = dvTip.getBoundingClientRect();
+    if (x + r.width  > window.innerWidth  - 8) { x = x - r.width  - 28; }
+    if (y + r.height > window.innerHeight - 8) { y = y - r.height - 28; }
+    dvTip.style.left = x + 'px'; dvTip.style.top = y + 'px';
+  }
+  function tipHide() { dvTip.classList.remove('on'); }
+  document.addEventListener('pointermove', function (e) {
+    var el = up(e, '[data-tip]');
+    if (el) { tipAt(el.getAttribute('data-tip'), e.clientX + 14, e.clientY + 14, el); }
+    else { tipHide(); }
+  });
+  document.addEventListener('focusin', function (e) {
+    var el = up(e, '[data-tip]');
+    if (!el) { return; }
+    var b = el.getBoundingClientRect();
+    tipAt(el.getAttribute('data-tip'), b.left + b.width / 2, b.top - 40, el);
+  });
+  document.addEventListener('focusout', function () { tipHide(); });
+
+  /* ---------- TABLE-VIEW POPOVER — floating card panel (Dave's mock, 2026-07-23:
+     surface ground + border + soft shadow, NOT a frosted drawer).
+     s116-D2 (#116): the disclosure is NATIVE <details>/<summary>, panel = its child,
+     so THE FALLBACK WORKS WITH JS OFF — which is what makes s116-D1's 24px mark floor
+     honest. All of this is PROGRESSIVE ENHANCEMENT and none of it may become
+     load-bearing: clamp, focus hand-off, Escape. Delete it and the table still works. */
+  function clampPanel(det) {
+    var sum = det.querySelector('summary');
+    var panel = det.querySelector('.dv-tablepanel');
+    if (!sum || !panel) { return null; }
+    /* anchor just BELOW the trigger, never over it — a fixed top was brittle once a title
+       pushed the toolbar down (Dave 2026-07-24). Measured after open so offsetParent
+       resolves; falls back to the CSS anchor. */
+    var op = panel.offsetParent;
+    if (op) {
+      var bt = sum.getBoundingClientRect(), ot = op.getBoundingClientRect();
+      panel.style.top = (bt.bottom - ot.top + 6) + 'px';
+      /* horizontally UNDER the trigger too — right:0 pinned it to the figure edge, wrong when
+         the trigger sits mid-figure (donut + side legend); clamped to the right edge. */
+      var lx = Math.max(0, Math.min(bt.left - ot.left, op.clientWidth - panel.offsetWidth));
+      panel.style.left = lx + 'px'; panel.style.right = 'auto';
+    }
+    return panel;
+  }
+  /* `toggle` does NOT bubble: delegation rides capture. Still ONE document listener. */
+  document.addEventListener('toggle', function (e) {
+    var det = e.target;
+    if (!det.classList || !det.classList.contains('dv-tbl')) { return; }
+    var panel = det.open ? clampPanel(det) : det.querySelector('.dv-tablepanel');
+    if (!panel) { return; }
+    if (det.open) { panel.focus(); }
+    else { panel.style.top = ''; panel.style.left = ''; panel.style.right = ''; }
+  }, true);
+  document.addEventListener('click', function (e) {
+    var vt = up(e, 'button[data-dv-toggle]');
+    if (vt) { viewToggle(vt); return; }
+    var sw = up(e, 'button[data-dv-view-btn]');
+    if (sw) { segView(sw); return; }
+    var cp = up(e, 'button.dv-csv');
+    if (cp) { copyCsv(cp); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') { return; }
+    var det = up(e, 'details.dv-tbl');
+    if (!det || !det.open) { return; }
+    det.open = false;                                  /* fires `toggle` -> cleanup above */
+    var sum = det.querySelector('summary');
+    if (sum) { sum.focus(); }                          /* label static (Dave 2026-07-24) */
+  });
+
+  /* VIEW TOGGLES (menu picks 6/7/9): baked-variant switching — geometry is generated, never
+     computed here; behaviour only shows/hides [data-dv-view] groups (.dv-off = display:none). */
+  function setView(fig, name, show) {
+    var els = fig.querySelectorAll('[data-dv-view~="' + name + '"]');
+    for (var i = 0; i < els.length; i++) { els[i].classList.toggle('dv-off', !show); }
+  }
+  function viewToggle(btn) {
+    var on = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', String(!on));
+    setView(btn.closest('figure') || document, btn.getAttribute('data-dv-toggle'), !on);
+  }
+  /* SEGMENTED INDICATOR (Dave, 2026-07-24): the view switch CONSUMES the Segmented-control atom —
+     behaviour drives the sliding fill (.ind) the atom's way: measure the pressed button's box and
+     slide. rect-based so the 2px inset + 1px border don't offset the measurement (the .ind
+     containing block is .seg's padding box — subtract seg.clientLeft). */
+  function moveSeg(seg) {
+    if (!seg) { return; }
+    var ind = seg.querySelector('.ind'); if (!ind) { return; }
+    var a = seg.querySelector('button[aria-pressed="true"]'); if (!a) { return; }
+    var sr = seg.getBoundingClientRect(), br = a.getBoundingClientRect();
+    ind.style.left = (br.left - sr.left - seg.clientLeft) + 'px';
+    ind.style.width = br.width + 'px';
+  }
+  function placeSegs() { document.querySelectorAll('.seg').forEach(moveSeg); }
+  /* VIEW SWITCH (Dave, 2026-07-23, both messages read together): the scale pair (monthly ⇄ year
+     to date) is EXCLUSIVE — two scales can't share a canvas — but the overlays are fully ADDITIVE:
+     each view carries its OWN baked variant of every overlay (nested [data-dv-view] groups), and
+     an overlay's toggle governs both copies, so it works in whichever view is up. Nothing ever
+     disables. */
+  function segView(btn) {
+    if (btn.getAttribute('aria-pressed') === 'true') { return; }
+    var fig = btn.closest('figure') || document;
+    var active = btn.getAttribute('data-dv-view-btn');
+    var segs = fig.querySelectorAll('button[data-dv-view-btn]');
+    for (var i = 0; i < segs.length; i++) {
+      var v = segs[i].getAttribute('data-dv-view-btn');
+      segs[i].setAttribute('aria-pressed', String(v === active));
+      setView(fig, v, v === active);
+    }
+    moveSeg(btn.closest('.seg'));                 /* slide the indicator to the newly active view */
+  }
+  /* COPY CSV (menu pick 10): the figure's real table, serialised — no network, table = truth. */
+  function copyCsv(btn) {
+    var fig = btn.closest('figure') || document;
+    var rows = fig.querySelectorAll('table tr');
+    var out = [];
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].querySelectorAll('th,td'), line = [];
+      for (var j = 0; j < cells.length; j++) { line.push('"' + cells[j].textContent.trim().replace(/"/g, '""') + '"'); }
+      out.push(line.join(','));
+    }
+    var csv = out.join('\n');
+    function done() {
+      /* label stays put; the copy icon swaps to a tick briefly (Dave 2026-07-24) */
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(csv).then(done, done);
+    } else { done(); }
+  }
+
+  /* ---------- INIT — opt the page into fit (JS-on releases the fixed width), first pass. */
+  var figs = document.querySelectorAll('figure.dv');
+  for (var i = 0; i < figs.length; i++) { figs[i].classList.add('dv-fit-on'); }
+  fitCharts();
+  placeSegs();                                    /* initial indicator position (widths depend on layout) */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeSegs); }   /* re-place once the web font settles */
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-behaviour END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render.js (behaviour "dv-render", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render — THE DATA-DRIVEN CHART ENGINE, core (s249-D4, built #259, hand-authored SOURCE).
+   ONE file, injected into registered chart snippets between AUTO-BEHAVIOUR markers by
+   gen_component_partials.py (registry: knowledge/component-types.json, group "dataviz").
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   WHAT IT IS. `window.dvRender(figureEl, spec)` turns a DATA SPEC into exactly the SVG grammar
+   `canon/dv-behaviour.js` already fits — rect `data-fx`+`data-fw`, line `data-fx`+`data-fx2`,
+   text `data-fx`+`data-dx`, g `data-fx`+`data-x0`, `.dv-mk` for glyphs that must keep their
+   size — plus `data-tip` on every mark and a real `<table>` spine. It REPLACES rule 18 of
+   `ADS-generate-from-canon` (the interim "author the geometry yourself" recipe): the library
+   owns the arithmetic, the author owns the data.
+   ⚠ THE TWO FIT PASSES ARE NOT SYMMETRIC (#260 A9, reported by scatter and boxplot): dv-behaviour's
+   `fitOne` moves rect/text/line/g and NOT `circle`, while `fitY` moves `circle` and NOT `g` — so a
+   POINT-MARK type must wrap its glyphs in `g[data-fx][data-x0]` and let the circle inside carry its
+   own y; a bare `<circle data-fx>` will not move in x, and a `<g>` alone will not move in y.
+
+   THE SPEC (the whole contract):
+     { type:       "column" | "bar" | "grouped-column" | "stacked-column" | …   (a registered type)
+       categories: ["Q1", "Q2", …],                     (the band axis, ≥1)
+       series:     [{ name: "Savings", values: [40, 45, …], role?: "positive" }, …],
+       format?:    "plain" | "compact" | "percent",     (default "plain")
+       unit?:      "£" | "%" | "k" | …,                 (1 char ⇒ prefix, else suffix)
+       caption?:   "…",  categoryLabel?: "…",  label?:  "…"   (a11y sentence; derived if absent) }
+
+   THE DIVISION OF LABOUR. This file owns everything that is the same for every chart: spec
+   VALIDATION (fail loud, named), the linear value SCALE with nice ticks, the band axis, the
+   AXIS/GRIDLINE/TICK-LABEL furniture, the `<table>` spine, the accessible name, the single
+   `resize` dispatch that hands the fresh marks to dv-behaviour, and the TYPE REGISTRY. A type
+   partial (`dv-render-bar` and its siblings) owns the MARKS only, and registers itself as
+   `dvRender.types["<name>"] = fn(ctx)`. That seam is why six type partials can be built in
+   parallel without any of them touching this file or each other.
+
+   PERFORMANCE CONTRACT (ADR-0015 §4, gated by _validate_behaviour.py): ≤16 KB code-only per
+   source · no setInterval / network / polling · NO NEW RESIZE LISTENER — re-fit is
+   `dispatchEvent(new Event('resize'))`, dv-behaviour's one rAF-debounced listener does the work ·
+   no external <script src> · events stay delegated at the document (dv-behaviour's, not ours).
+
+   PROGRESSIVE ENHANCEMENT (ADR-0015 §4). The SVG a consumer ships is EMPTY and this fills it, so
+   with JS off there is no chart — which is why the `<table>` spine is not optional and not
+   generated: the consumer ships a real `<table class="dv-table">` inside the figure (dv-005),
+   and this engine REWRITES its rows to match the render. JS off ⇒ the table is the answer.
+
+   DEF-004 / dv-017 — NO HARDCODED STYLING. Every colour this file emits is a var() token:
+   `--data-grid`, `--data-axis`, `--baseline`, `--data-series-1…5` (ds-026 solid palette) and the
+   s184-D3 status vocabulary `--status-positive|negative|monitor|neutral`. The two-red law
+   (s151-D1, #DA1A00-on-white / #F6604C-else) rides `--status-negative` → `--rag-error-graphic`,
+   which is where the per-theme pair already lives; this file never names a red.
+
+   DEF-003 boundary: data-driven geometry ONLY. No press-physics custom properties, no scale
+   transform assignment, no scale-physics of any kind — every number this file writes is an SVG
+   attribute derived from the data. Entry motion stays CSS (`.dv-animate` + `data-grow`). */
+(function () {
+  'use strict';
+  if (window.dvRender) { return; }
+
+  /* ---------- the type registry. A type partial does `dvRender.types.column = fn` and may hang
+     two optional properties on its own function:
+       fn.axis   — "y" (default: value runs UP, categories along x) or "x" (value runs ACROSS,
+                   categories down y — the horizontal bar). Decides which furniture is drawn.
+       fn.domain — fn(spec) -> [lo, hi]. Only stacked types need it (the domain is the stack
+                   TOTAL, not the largest single value). Absent ⇒ the min/max of every value.
+       fn.furniture — THE DIAL, not the switch (#260 A1, FIVE reporters: donut, sparkline, bullet,
+                   butterfly, histogram). true/absent (default) ⇒ gridlines + tick labels + baseline,
+                   exactly as before. "axis" ⇒ tick labels + baseline, NO gridlines. false ⇒ nothing,
+                   the plot is the partial's alone. `fn.axis = "none"` is the same as false, because
+                   that is the spelling four of the five reporters asked for. The four copies of
+                   `ctx.out.length = 0` in donut/sparkline/bullet/butterfly are what this replaces —
+                   they stay legal (the buffer is still theirs) and are their own lanes' to remove. */
+  var TYPES = {};
+
+  var ROLES = { positive: 1, negative: 1, monitor: 1, neutral: 1 };   /* s184-D3 status vocabulary */
+  var FORMATS = { plain: 1, compact: 1, percent: 1 };
+  var PAL = 5;        /* ds-026 — data/series/1…5, the solid categorical palette */
+  /* dv-004 — 2px between adjacent filled blocks, REAL geometry, never a painted stroke. The rule
+     is 2px MINIMUM RENDERED, and the constant carries a 0.2px rounding budget on top of it: the
+     fit re-derives a mark's x and its width INDEPENDENTLY from data-fx/data-fw and rounds each to
+     one decimal, so up to 0.15px can vanish out of the gap between them. MEASURED at #259 — an
+     authored 2.0 landed at 1.90px in the browser and the driven check went red, which is the whole
+     reason this is 2.2 and not 2. It is not a fudge of the rule; it is the rule stated in the
+     coordinate space the rule is actually judged in. */
+  var GAP = 2.2;
+  var HIT = 24;       /* s116-D1 — a mark that is a hit target wants 24px, where the band allows */
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&quot;';
+    });
+  }
+  function n1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+  function f4(v) { return v.toFixed(4); }
+  function attr(el, key, dflt) { var v = parseFloat(el.getAttribute(key)); return isFinite(v) ? v : dflt; }
+
+  /* ---------- NICE TICKS. A 1 / 2 / 2.5 / 5 / 10 × 10ⁿ step chosen against a target tick count,
+     then the domain WIDENED to whole steps. dv-bar-009's zero baseline is enforced by the caller
+     (bar-family domains floor at 0); a domain that genuinely spans zero keeps zero as a tick. */
+  function nice(lo, hi, want) {
+    if (!(hi > lo)) { hi = lo + (Math.abs(lo) || 1); }
+    var step = Math.pow(10, Math.floor(Math.log((hi - lo) / want) / Math.LN10));
+    var k = (hi - lo) / want / step;
+    step *= k <= 1 ? 1 : k <= 2 ? 2 : k <= 2.5 ? 2.5 : k <= 5 ? 5 : 10;
+    var min = Math.floor(lo / step) * step, max = Math.ceil(hi / step) * step;
+    var ticks = [], v = min;
+    while (v <= max + step * 1e-9) { ticks.push(Math.round(v * 1e9) / 1e9); v += step; }
+    return { min: min, max: max, step: step, ticks: ticks };
+  }
+
+  /* ---------- VALUE FORMATTING. Display only — the table's <td> always carries the RAW number,
+     because _validate_dataviz.py reads the table for dv-bar-007 (no negative horizontals) and
+     dv-pie-010 (slice sum), and a "£1.2k" cell would read as 1.2 to that gate. */
+  function fmt(spec, v) {
+    var s;
+    if (spec.format === 'percent') { s = (Math.round(v * 10) / 10) + '%'; }
+    else if (spec.format === 'compact' && Math.abs(v) >= 1000) {
+      s = (Math.round(v / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'k';
+    } else { s = String(Math.round(v * 1000) / 1000); }
+    var u = spec.unit || '';
+    return !u ? s : u.length === 1 ? u + s : s + ' ' + u;
+  }
+
+  /* ---------- FILL. A series with a `role` takes the status vocabulary (s184-D3) — that is the
+     salience ramp, and it is NEVER the isoluminant categorical set (R-D9). Everything else takes
+     data/series/N, wrapping at 5. Both are var() tokens: dv-017 has no other legal answer. */
+  function fillOf(s, i) {
+    if (s.role) { return 'var(--status-' + s.role + ')'; }
+    return 'var(--data-series-' + ((i % PAL) + 1) + ')';
+  }
+
+  /* ---------- VALIDATION — fail loud and NAMED. Every message says the field and what it wanted,
+     because this is the surface a build gets wrong and the only place it can be told so. */
+  function bad(msg) { throw new Error('dv-render: ' + msg); }
+
+  function validate(spec) {
+    if (!spec || typeof spec !== 'object') { bad('spec must be an object'); }
+    if (typeof spec.type !== 'string' || !spec.type) { bad('spec.type must be a non-empty string'); }
+    var c = spec.categories;
+    if (!Array.isArray(c) || !c.length) { bad('spec.categories must be a non-empty array'); }
+    var s = spec.series;
+    if (!Array.isArray(s) || !s.length) { bad('spec.series must be a non-empty array'); }
+    if (spec.format && !FORMATS[spec.format]) {
+      bad('spec.format "' + spec.format + '" is not one of plain|compact|percent');
+    }
+    for (var i = 0; i < s.length; i++) {
+      var one = s[i], at = 'spec.series[' + i + ']';
+      if (!one || typeof one !== 'object') { bad(at + ' must be an object'); }
+      if (typeof one.name !== 'string' || !one.name) { bad(at + '.name must be a non-empty string'); }
+      if (!Array.isArray(one.values)) { bad(at + '.values must be an array'); }
+
+      if (one.values.length !== c.length) {
+        bad(at + '.values has ' + one.values.length + ' for ' + c.length +
+            ' categories — one value per category, always');
+      }
+      for (var j = 0; j < one.values.length; j++) {
+        if (typeof one.values[j] !== 'number' || !isFinite(one.values[j])) {
+          bad(at + '.values[' + j + '] is not a finite number');
+        }
+      }
+      if (one.role && !ROLES[one.role]) {
+        bad(at + '.role "' + one.role + '" is not s184-D3 (positive|negative|monitor|neutral)');
+      }
+    }
+  }
+
+  /* ---------- THE TABLE SPINE (dv-005 + the a11y spine). Written into the figure's EXISTING
+     <table class="dv-table">, so the consumer's caption/lockup/table-popover chrome is untouched;
+     created inside .dv-tablepanel (else the figure) only when the consumer shipped none. The rows
+     are the render's own numbers, so popover value == table value by construction, not by care. */
+  function writeTable(fig, spec) {
+    var t = fig.querySelector('table.dv-table');
+    if (!t) {
+      t = document.createElement('table');
+      t.className = 'dv-table t-cm-legal';
+      (fig.querySelector('.dv-tablepanel') || fig).appendChild(t);
+    }
+    var cap = spec.caption;
+    if (!cap) { var fc = fig.querySelector('figcaption'); cap = fc ? fc.textContent.trim() : 'Chart data'; }
+    var head = '<caption>' + esc(cap) + '</caption><thead><tr><th scope="col">' +
+               esc(spec.categoryLabel || 'Category') + '</th>';
+    var i, j;
+    for (i = 0; i < spec.series.length; i++) {
+      head += '<th scope="col">' + esc(spec.series[i].name) +
+              (spec.unit ? ' (' + esc(spec.unit) + ')' : '') + '</th>';
+    }
+    head += '</tr></thead><tbody>';
+    for (i = 0; i < spec.categories.length; i++) {
+      head += '<tr><th scope="row">' + esc(spec.categories[i]) + '</th>';
+      for (j = 0; j < spec.series.length; j++) { head += '<td>' + spec.series[j].values[i] + '</td>'; }
+      head += '</tr>';
+    }
+    t.innerHTML = head + '</tbody>';
+    return t;
+  }
+
+  /* ---------- THE ACCESSIBLE NAME. A full sentence, the way the baked snippets read: the subject,
+     then every category and its value. Capped so a 40-category chart does not read for a minute;
+     the table is the complete answer past that point. */
+  function autoLabel(spec) {
+    var out = [], i, j, ns = spec.series.length, n = Math.min(spec.categories.length, 12);
+    for (i = 0; i < n; i++) {
+      for (j = 0; j < ns; j++) {
+        out.push((ns > 1 ? spec.series[j].name + ' ' : '') + spec.categories[i] + ' ' +
+                 fmt(spec, spec.series[j].values[i]));
+      }
+    }
+    return (spec.caption || 'Chart') + '. ' + out.join(', ') +
+           (n < spec.categories.length ? ', and more in the table' : '') + '.';
+  }
+
+  /* ---------- AXIS FURNITURE. Emitted by the CORE, identically for every type, in the fit
+     grammar: gridlines are lines with data-fx/data-fx2, tick labels are texts with data-fx/data-dx,
+     the baseline is a line in --baseline. `axis === "x"` swaps the two roles for horizontal bars. */
+  function furniture(ctx, axis, bare) {
+    var i, t, p, x, y;
+    if (axis === 'x') {
+      for (i = 0; i < ctx.ticks.length; i++) {
+        t = ctx.ticks[i]; p = ctx.vf(t); x = ctx.PL + p * ctx.plotW;
+        if (!bare) {
+          ctx.push('<line class="dv-grid" x1="' + n1(x) + '" y1="' + ctx.PT + '" x2="' + n1(x) +
+                   '" y2="' + ctx.y0 + '" stroke="var(--data-grid)" data-fx="' + f4(p) +
+                   '" data-fx2="' + f4(p) + '"/>');
+        }
+        ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + n1(x) +
+                 '" y="' + (ctx.y0 + 16) + '" text-anchor="middle" data-fx="' + f4(p) + '">' +
+                 esc(ctx.fmt(t)) + '</text>');
+      }
+      ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + ctx.PT + '" x2="' + ctx.PL +
+               '" y2="' + ctx.y0 + '" stroke="var(--baseline)" data-fx="' + f4(ctx.vf(0)) +
+               '" data-fx2="' + f4(ctx.vf(0)) + '"/>');
+      return;
+    }
+    for (i = 0; i < ctx.ticks.length; i++) {
+      t = ctx.ticks[i]; y = ctx.vy(t);
+      if (!bare) {
+        ctx.push('<line class="dv-grid" x1="' + ctx.PL + '" y1="' + n1(y) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+                 '" y2="' + n1(y) + '" stroke="var(--data-grid)" data-fx="0" data-fx2="1"/>');
+      }
+      ctx.push('<text class="dv-axis t-cm-chart-value" fill="var(--data-axis)" x="' + (ctx.PL - 8) +
+               '" y="' + n1(y + 3) + '" text-anchor="end" data-fx="0" data-dx="-8" data-dy="3">' +
+               esc(ctx.fmt(t)) + '</text>');
+    }
+    var zy = ctx.vy(Math.min(Math.max(0, ctx.min), ctx.max));
+    ctx.push('<line class="dv-axis" x1="' + ctx.PL + '" y1="' + n1(zy) + '" x2="' + n1(ctx.PL + ctx.plotW) +
+             '" y2="' + n1(zy) + '" stroke="var(--baseline)" data-fx="0" data-fx2="1"/>');
+  }
+
+  /* ★ s307-D59 (Dave 2026-09-28, 'ship the cap now and the expandable "Other" after') — DV-D16c,
+     THE CATEGORY CAP, IN THE ENGINE. A type that declares `fn.cap = {of: 'series'|'categories',
+     max: 6}` (and every `stacked-*` type, below) draws at most `max` parts: the first max−1 AS AUTHORED, and every part after them
+     summed into ONE part named "Other" — a bucket, never a silent drop. The <table> spine is
+     written from the AUTHORED spec, so every bucketed value stays reachable in the table view
+     until the expandable "Other" lands (DV-D16c's rider: the cap is acceptable only because the
+     bucketed data stays reachable). Authored order, not largest-first: the author's order is the
+     reading order of the legend and the letters. */
+  function capped(spec, cap) {
+    var of = cap && cap.of, max = cap && cap.max, out = {}, k, i, j, s;
+    var n = of === 'series' ? spec.series.length : of === 'categories' ? spec.categories.length : 0;
+    if (!(max > 1) || n <= max) { return spec; }
+    for (k in spec) { if (Object.prototype.hasOwnProperty.call(spec, k)) { out[k] = spec[k]; } }
+    function sum(vs) { for (s = 0, j = 0; j < vs.length; j++) { s += vs[j]; } return Math.round(s * 1000) / 1000; }
+    if (of === 'series') {
+      var rest = spec.series.slice(max - 1), vals = [];
+      for (i = 0; i < spec.categories.length; i++) { vals.push(sum(rest.map(function (r) { return r.values[i]; }))); }
+      out.series = spec.series.slice(0, max - 1).concat([{ name: 'Other', values: vals }]);
+    } else {
+      out.categories = spec.categories.slice(0, max - 1).concat(['Other']);
+      out.series = spec.series.map(function (r) {
+        var o = {}; for (k in r) { if (Object.prototype.hasOwnProperty.call(r, k)) { o[k] = r[k]; } }
+        o.values = r.values.slice(0, max - 1).concat([sum(r.values.slice(max - 1))]);
+        return o;
+      });
+    }
+    return out;
+  }
+
+  /* ---------- THE ENGINE. Idempotent by construction: everything inside the <svg> and everything
+     inside the <table> is REPLACED, so a filter re-render (rule 14) is one more call with a
+     smaller spec, never a diff. The cached fit fractions (data-fy/data-fh) go with the old marks,
+     which is exactly right — they described geometry that no longer exists. */
+  function dvRender(fig, spec) {
+    if (!fig || !fig.querySelector) { bad('first argument must be the <figure> element'); }
+    validate(spec);
+    var draw = TYPES[spec.type];
+    if (typeof draw !== 'function') {
+      bad('no type partial registered for "' + spec.type + '" — have: ' +
+          (Object.keys(TYPES).sort().join(', ') || '(none)'));
+    }
+    var authored = spec;
+    /* s307-D59 — the cap; the table below keeps `authored`. DV-D16c binds every STACKED type, so
+       the core names that family itself (no stacked partial carries a byte for it: dv-render-bar
+       sits 7 code bytes under the page budget on Chart-combo); a ring declares its own. */
+    spec = capped(spec, draw.cap || (/^stacked-/.test(spec.type) ? { of: 'series', max: 6 } : 0));
+    var svg = fig.querySelector('svg.dv-fit') || fig.querySelector('svg.dv-svg');
+    if (!svg) { bad('figure has no <svg class="dv-fit"> canvas to render into'); }
+
+    /* Geometry comes from the canvas's own data-* frame (the kit's 46/12/14/30/260 defaults), and
+       the value axis is authored in the data-h coordinate space — NEVER the live viewBox height.
+       dv-behaviour's fitY caches every y as a fraction of `data-h − PT − PB`; authoring into a
+       already-fitted taller box would cache fractions that describe the wrong plot. */
+    var PL = attr(svg, 'data-pl', 46), PR = attr(svg, 'data-pr', 12);
+    var PT = attr(svg, 'data-pt', 14), PB = attr(svg, 'data-pb', 30);
+    var VH = attr(svg, 'data-h', 260);
+    /* ⛔ THE WIDTH IS THE RENDERED ONE, not the authored viewBox. fitOne re-pins the viewBox 1:1
+       to the element's CSS width, so one viewBox unit IS one device-independent pixel after a fit
+       — and only then is a 2px dv-004 gap actually 2px. Authoring into a 580-wide box that then
+       fits to 496 shrank every constant by 5%: MEASURED at #259, the grouped gap landed at 1.90px
+       and the driven check went red. Read the box first, author into it, and the constant survives
+       the fit. Falls back to the authored viewBox when the element has no layout yet (display:none,
+       an unattached figure) — then the first resize does the honest thing. */
+    var vb = (svg.getAttribute('viewBox') || '').trim().split(/\s+/);
+    var VW = Math.round(svg.getBoundingClientRect().width);
+    if (!(VW > 0)) { VW = parseFloat(vb[2]); }
+    if (!isFinite(VW) || VW <= 0) { VW = 580; }
+
+    var lo = Infinity, hi = -Infinity, i, j, v;
+    if (typeof draw.domain === 'function') { v = draw.domain(spec); lo = v[0]; hi = v[1]; }
+    else {
+      for (i = 0; i < spec.series.length; i++) {
+        for (j = 0; j < spec.series[i].values.length; j++) {
+          v = spec.series[i].values[j];
+          if (v < lo) { lo = v; } if (v > hi) { hi = v; }
+        }
+      }
+    }
+    /* dv-bar-009 — the zero baseline. THE RULE IS A BAR RULE (#260 A2, three reporters at #260 —
+       candlestick, boxplot, scatter — and two before them, line and sparkline): a bar's LENGTH is
+       its value, so it must start at zero; a price is a POSITION on a scale, and a series of
+       90.41–108.52 held to a zero floor spends the top 17% of the plot on hairlines.
+       `_validate_dataviz.py` already scopes its own dv-bar-009 check to BAR_FAMILY; only the engine
+       did not. A type may now say `fn.zeroBaseline = false` and scale to its own extent. Default
+       true — every type registered before this line is unchanged, and no type in the tree opts out
+       today: which types SHOULD is each type partial's own call, not the core's. */
+    if (draw.zeroBaseline !== false && lo > 0) { lo = 0; }
+    var sc = nice(lo, hi, 4);
+    var plotW = VW - PL - PR, plotH = VH - PT - PB, y0 = VH - PB;
+    var span = sc.max - sc.min || 1;
+
+    var ctx = {
+      fig: fig, svg: svg, spec: spec, cats: spec.categories, series: spec.series,
+      PL: PL, PR: PR, PT: PT, PB: PB, VW: VW, VH: VH,
+      plotW: plotW, plotH: plotH, y0: y0,
+      min: sc.min, max: sc.max, step: sc.step, ticks: sc.ticks,
+      GAP: GAP, HIT: HIT, esc: esc, n1: n1, f4: f4,
+      fmt: function (n) { return fmt(spec, n); },
+      fill: function (k) { return fillOf(spec.series[k] || {}, k); },
+      vy: function (n) { return y0 - (n - sc.min) / span * plotH; },   /* value -> px, y axis */
+      vf: function (n) { return (n - sc.min) / span; },                /* value -> plot FRACTION */
+      fx: function (px) { return (px - PL) / plotW; },                 /* px -> data-fx fraction */
+      out: []
+    };
+    ctx.push = function (s) { ctx.out.push(s); };
+
+    /* #260 A1 — the dial. Default true: every type registered before this line is unchanged. */
+    var fu = draw.furniture === undefined ? draw.axis !== 'none' : draw.furniture;
+    if (fu) { furniture(ctx, draw.axis === 'x' ? 'x' : 'y', fu === 'axis'); }
+    draw(ctx);
+
+    /* #304 W4a — ctx.VW, not VW: a FIXED-FRAME type (the ring, ds-030) sets its own frame width
+       inside draw() instead of taking the measured one. Every other type leaves ctx.VW alone. */
+    svg.setAttribute('viewBox', '0 0 ' + ctx.VW + ' ' + VH);
+    svg.innerHTML = ctx.out.join('\n');
+    /* #260 A6 — a type may name itself. `autoLabel` enumerates every series x category, which is
+       48 phrases for a 40-session candlestick; the partial's workaround was to write ctx.spec.label
+       behind a private flag, MUTATING the caller's spec — "which nothing forbids and nothing
+       sanctions". A registered `fn.label = fn(spec) -> string` is the sanctioned seam. Precedence
+       is unchanged where it matters: an AUTHORED spec.label still wins over both. */
+    svg.setAttribute('aria-label', spec.label ||
+      (typeof draw.label === 'function' ? draw.label(spec) : autoLabel(spec)) || autoLabel(spec));
+    writeTable(fig, authored);
+
+    /* #260 A7 — the spec is REMEMBERED on the figure so a caller can ask for a real re-render.
+       dvRender dispatches one `resize`, which re-FITS; it never re-DRAWS, so any decision a partial
+       took from the plot width (scatter's tick strategy, histogram's label thinning — measured: 11
+       of 20 bin labels at 1074px stay 11 at 654px) is frozen at first-render width. */
+    fig.__dvSpec = authored;
+
+    /* THE ONLY re-fit hook (ADR-0015 §4: no second resize listener anywhere in the group).
+       dv-behaviour's one rAF-debounced listener re-derives x from data-fx and caches y. */
+    window.dispatchEvent(new Event('resize'));
+    return fig;
+  }
+
+  /* #260 A7 — the re-entry point, and deliberately NOT an automatic width watcher: ADR-0015 §4
+     allows exactly one rAF-debounced resize listener in this group and it is dv-behaviour's. A
+     caller that wants width-sensitive marks calls this from inside its own existing handler. */
+  dvRender.redraw = function (fig) {
+    if (!fig || !fig.__dvSpec) { bad('redraw: this figure has not been rendered yet'); }
+    return dvRender(fig, fig.__dvSpec);
+  };
+
+  dvRender.types = TYPES;
+  dvRender.util = { esc: esc, n1: n1, f4: f4, nice: nice, fmt: fmt, fill: fillOf };
+  window.dvRender = dvRender;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bar START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render-bar.js (behaviour "dv-render-bar", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render-bar — the BAR TYPE PARTIAL for the dv-render engine (s249-D4, built #259).
+   Hand-authored SOURCE; injected between AUTO-BEHAVIOUR markers by gen_component_partials.py.
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   REGISTERS FOUR TYPES, all four of the Chart-bar meta's `orientation` enum:
+     column            — vertical, single series
+     grouped-column    — vertical, n series side by side in each band (D-Q3)
+     stacked-column    — vertical, n series stacked to the band total (D-Q3)
+     bar               — HORIZONTAL, value runs across x (axis "x")
+
+   ONE ROUTINE, TWO FLAGS. All four are `bars(ctx, horiz, stack)`. That is not compression: a
+   grouped column and a horizontal bar are the SAME arithmetic with the band axis and the value
+   axis exchanged, and writing them twice is how the two copies drift. `column` and
+   `grouped-column` are literally the same registration — one series or six is a band count, not
+   a different chart — but both names are registered because `data-dv-type` and the dataviz gate
+   both read the author's word for what they meant.
+
+   THE REFERENCE IMPLEMENTATION. This is the file the five sibling type partials are written
+   against: it touches nothing in dv-render.js, registers through `dvRender.types`, and takes
+   everything it needs — scale, formatting, palette, escaping, the plot frame — off `ctx`.
+
+   RULES ENACTED HERE:
+     dv-004    2px of REAL geometry between adjacent filled blocks (grouped neighbours AND
+               stacked segments) — a gap, never a painted surface-coloured stroke. The gap is cut
+               off the segment BELOW the join, so the topmost segment still reads its true total.
+     s116-D1   a bar is a hit target (tabindex=0 + data-tip), so its THICKNESS is floored at 24px
+               wherever the band can afford it; below that the band wins, because overlapping
+               marks are a worse answer than a small one. Bar LENGTH is the data and is floored
+               only at 1px of visible ink.
+     DV-D09    the horizontal default fill is data/series/3 — orientation-distinct from the
+               column's series/1 — for a single unroled series only; a roled series keeps the
+               s184-D3 status ramp and a multi-series bar keeps the palette order.
+     dv-bar-007 negatives are for VERTICAL columns only: a negative value on a horizontal bar
+               throws, named, rather than drawing left of the baseline.
+     §04.3     ≥2 series ⇒ an on-chart LETTER key (.dv-barkey, A/B/C…) per mark, so colour is
+               never the only channel. Bar marks are rects; letters are their non-colour channel.
+     DEF-003   entry motion is CSS: `.dv-animate` on the figure + data-grow="up"/"right" and a
+               45ms stagger in animation-delay. No JS geometry animation. */
+(function () {
+  'use strict';
+  if (!window.dvRender) { return; }   /* core absent — dvRender's "no type partial" error is the loud one */
+  var T = window.dvRender.types, U = window.dvRender.util;
+  var n1 = U.n1, f4 = U.f4, esc = U.esc;
+  var KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  /* The mark's words. `sep` is the only difference between the popover text (· separated, the
+     kit's) and the accessible name (comma separated, so a screen reader reads a sentence). */
+  function words(ctx, si, ci, v, sep) {
+    return (ctx.series.length > 1 ? KEYS[si % 26] + sep + ctx.series[si].name + sep : '') +
+      ctx.cats[ci] + ': ' + ctx.fmt(v);
+  }
+  /* The thickness of one mark inside one band: share the band between n lanes with a 2px gap
+     between neighbours (dv-004), lift to the 24px hit floor when the band can pay for it
+     (s116-D1), and keep a 28% band gutter so neighbouring CATEGORIES read as separate. */
+  function thickness(ctx, band, n) {
+    var t = (band * 0.72 - ctx.GAP * (n - 1)) / n;
+    if (t < ctx.HIT && ctx.HIT * n + ctx.GAP * (n - 1) <= band) { t = ctx.HIT; }
+    return t < 1 ? 1 : t;
+  }
+  /* An on-chart series key. `inset` = drawn INSIDE a horizontal bar, where the 8px offset from
+     the baseline must stay 8px on every width — hence data-fx="0" + data-dx, not a fraction. */
+  function letter(ctx, si, x, y, inset) {
+    return '<text class="dv-barkey t-cm-chart-key" data-series-group="' + (si + 1) +
+      '" fill="var(--ink)" x="' + n1(x) + '" y="' + n1(y) + '" text-anchor="' +
+      (inset ? 'start" data-fx="0" data-dx="8' : 'middle" data-fx="' + f4(ctx.fx(x))) +
+      '">' + KEYS[si % 26] + '</text>';
+  }
+
+  /* ---------- THE GEOMETRY. horiz = the value axis runs across x (the core has already drawn
+     vertical gridlines for it); stack = the series pile up to the band total instead of sitting
+     side by side. Bars grow from the ZERO line, not from the frame edge, so a domain that spans
+     zero draws negatives downward with no special case (dv-bar-009 keeps zero in the domain). */
+  function bars(ctx, horiz, stack) {
+    ctx.horiz = horiz;                  /* picks data-grow="right" over "up" for the CSS entry */
+    var ns = ctx.series.length, nc = ctx.cats.length;
+    var band = (horiz ? ctx.plotH : ctx.plotW) / nc;
+    var lanes = stack ? 1 : ns;
+    var th = thickness(ctx, band, lanes);
+    var pad = (band - (th * lanes + ctx.GAP * (lanes - 1))) / 2;
+    var keys = [], order = 0, ci, si;
+    for (ci = 0; ci < nc; ci++) {
+      var b0 = (horiz ? ctx.PT : ctx.PL) + ci * band + pad, run = 0;
+      for (si = 0; si < ns; si++) {
+        var v = ctx.series[si].values[ci];
+        if (horiz && v < 0) {
+          throw new Error('dv-render-bar: dv-bar-007 — "' + ctx.cats[ci] + '" is ' + v +
+            ' and negatives are for VERTICAL columns only; use type "column" for signed data');
+        }
+        var lane = b0 + (stack ? 0 : si * (th + ctx.GAP));
+        var from = stack ? run : 0, to = stack ? run + v : v;
+        var cut = stack && si < ns - 1 ? ctx.GAP : 0;   /* dv-004 — 2px off the block BELOW a join */
+        var x, y, w, h, cx, cy;
+        if (horiz) {
+          y = lane; h = th;
+          x = ctx.PL + ctx.vf(from) * ctx.plotW;
+          w = (ctx.vf(to) - ctx.vf(from)) * ctx.plotW;
+          if (w - cut > 1) { w -= cut; }
+          if (w < 1) { w = 1; }
+          cx = stack ? x + w / 2 : ctx.PL + 8;
+          cy = y + th / 2 + 4;
+        } else {
+          x = lane; w = th;
+          var top = ctx.vy(to), foot = ctx.vy(from);
+          y = Math.min(top, foot); h = Math.abs(foot - top);
+          if (h - cut > 1) { h -= cut; y += cut; }
+          if (h < 1) { h = 1; y = v < 0 ? foot : foot - 1; }   /* a real zero keeps a hairline */
+          cx = x + th / 2;
+          cy = stack ? y + h / 2 + 4 : y - 4;
+        }
+        /* DV-D09 — the horizontal single-series default is series/3, not the column's series/1 */
+        var fill = (horiz && ns === 1 && !ctx.series[0].role) ? 'var(--data-series-3)' : ctx.fill(si);
+        ctx.push('<rect class="dv-series"' +
+          (ns > 1 ? ' data-series-group="' + (si + 1) + '" data-series-i="' + (si + 1) + '"' : '') +
+          ' data-grow="' + (horiz ? 'right' : 'up') + '" style="animation-delay:' + (order++ * 45) + 'ms"' +
+          ' fill="' + fill + '" x="' + n1(x) + '" y="' + n1(y) + '" width="' + n1(w) +
+          '" height="' + n1(h) + '" data-fx="' + f4(ctx.fx(x)) + '" data-fw="' + f4(w / ctx.plotW) +
+          '" tabindex="0" role="img" aria-label="' + esc(words(ctx, si, ci, v, ', ')) +
+          '" data-tip="' + esc(words(ctx, si, ci, v, ' · ')) + '"></rect>');
+        if (ns > 1 && (!stack || (horiz ? w : h) >= 14)) {
+          keys.push(letter(ctx, si, cx, cy, horiz && !stack));
+        }
+        run += v;
+      }
+      /* The category name: under its band on a column, in the LEFT GUTTER on a horizontal bar —
+         where it rides data-dx so ds-012(b)'s measured gutter (data-pl-fit) sizes itself off it. */
+      var lx = horiz ? ctx.PL - 8 : ctx.PL + ci * band + band / 2;
+      ctx.push('<text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="' + n1(lx) +
+        '" y="' + n1(horiz ? b0 - pad + band / 2 + 4 : ctx.y0 + 16) + '" text-anchor="' +
+        (horiz ? 'end" data-fx="0" data-dx="-8' : 'middle" data-fx="' + f4(ctx.fx(lx))) + '">' +
+        esc(ctx.cats[ci]) + '</text>');
+    }
+    for (ci = 0; ci < keys.length; ci++) { ctx.push(keys[ci]); }   /* keys LAST — above the fills */
+  }
+
+  /* The stacked domain is the stack TOTAL, not the largest single value — the one thing the core
+     cannot infer from the spec, which is why `fn.domain` exists at all. */
+  function stackDomain(spec) {
+    var lo = 0, hi = 0, ci, si;
+    for (ci = 0; ci < spec.categories.length; ci++) {
+      var pos = 0, neg = 0;
+      for (si = 0; si < spec.series.length; si++) {
+        var v = spec.series[si].values[ci];
+        if (v < 0) { neg += v; } else { pos += v; }
+      }
+      if (pos > hi) { hi = pos; }
+      if (neg < lo) { lo = neg; }
+    }
+    return [lo, hi];
+  }
+
+  function mk(horiz, stack) {
+    var f = function (ctx) { bars(ctx, horiz, stack); };
+    f.axis = horiz ? 'x' : 'y';
+    if (stack) { f.domain = stackDomain; }
+    return f;
+  }
+
+  T.column = T['grouped-column'] = mk(false, false);
+  T['stacked-column'] = mk(false, true);
+  T.bar = mk(true, false);
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render-bar END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR dv-render-line START (dataviz) ===== -->
+<script>
+/* INJECTED from knowledge/canon/dv-render-line.js (behaviour "dv-render-line", group dataviz —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* dv-render-line — the LINE TYPE PARTIAL for the dv-render engine (s249-D4, built #259).
+   Hand-authored SOURCE; injected between AUTO-BEHAVIOUR markers by gen_component_partials.py.
+   Edit HERE and regenerate — never between a consumer's markers.
+
+   REGISTERS TWO TYPES, both of Chart-line's `data-dv-type` vocabulary:
+     line       — the cartesian value path, one series
+     multiline  — the same routine with n series overlaid (Chart-line's second canvas)
+   ONE ROUTINE. A single line and three overlaid lines are a SERIES COUNT, not a different chart —
+   the same reason dv-render-bar registers `column` and `grouped-column` off one function. Both
+   names are registered because `data-dv-type` and _validate_dataviz.py both read the author's own
+   word for what the figure means.
+
+   THE CATEGORY BAND IS THE COLUMN'S. A point sits at the CENTRE of its band — PL + i·band +
+   band/2, band = plotW/nc — which is exactly where dv-render-bar puts a column's centre. That is
+   not a detail: it is the whole reason a COMBO can hand this function a ctx and overlay a line on
+   its own columns and have the two agree about where "Q3" is. Edge-to-edge point placement (the
+   pre-engine baked geometry, PL → PL+plotW) would put every line point half a band left of its
+   column, and the combo lane would have to re-implement this file to fix it.
+
+   RULES ENACTED HERE:
+     s116-D1   a marker is a hit target, so it carries a 24px HIT TIER — a transparent
+               `circle.dv-hit` sized min(24, band), clamped so neighbouring categories cannot
+               swallow each other. The VISIBLE glyph stays the kit's 11px shape (the promoted
+               Chart-line receipt: "markers are focus/read points, not click targets"); the tier is
+               the invisible target around it, which is what WCAG 2.5.8 actually measures and what
+               `_validate_a11y.py` reads off the `<g>` wrapper (union of its shape children).
+     §04.3     ≥2 series ⇒ TWO non-colour channels, both mirrored by the snippet's legend: the
+               marker SHAPE cycles circle · square · diamond (the legend's sw-circle/sw-square/
+               sw-diamond swatches are the same three), and a LETTER end-key lands at the end of
+               each line (DV-D10 keeps Chart-line's end-key; only the combo's was ruled off).
+     ds-026    every stroke and glyph fill is a SOLID palette token via ctx.fill(i) — var() only,
+               no tint, no alpha (dv-017 / DEF-004 have no other legal answer).
+     ds-030 /  the x of every mark is a FRACTION (data-fx on the marker <g>, data-fxs on the
+     s248-D2   polyline) and its y is re-derived from the cached plot fraction, so the chart is
+               responsive in BOTH axes with the viewBox pinned 1:1 — reflow, never viewBox stretch.
+               Text and strokes keep their size: the glyphs are `.dv-mk` (dv-behaviour's
+               size-preserving mark contract) and the strokes are vector-effect non-scaling.
+     dv-line-011 straight lines: a <polyline>, which cannot carry a curve command.
+     DEF-003   entry motion is CSS — `.dv-animate` draws the pathLength=2400 dash and fades each
+               marker in on an authored animation-delay. The cadence below is the kit's OBSERVED
+               Batch-8 easing, resampled to whatever category count the data actually has. No JS
+               geometry animation, no scale physics, no press physics.
+
+   ⚠ CORE REQUEST (reported, NOT worked around): dv-render.js clamps `if (lo > 0) { lo = 0; }`
+   for every type. That is dv-bar-009's zero baseline, and dv-line-001's asymmetry says it MUST
+   NOT fire on lines — a balance series of 82…104 should be free to fill the plot. A type's own
+   `fn.domain` cannot escape it either, because the clamp runs after the domain call. Left alone;
+   the zero-based line matches the promoted snippet, so nothing regressed. */
+(function () {
+  'use strict';
+  if (!window.dvRender) { return; }   /* core absent — dvRender's "no type partial" error is the loud one */
+  var T = window.dvRender.types, U = window.dvRender.util;
+  var n1 = U.n1, f4 = U.f4, esc = U.esc;
+  var KEYS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var R = 5.5;    /* the kit's marker glyph radius — 11px across, receipted sub-24 by design */
+  /* #305 call 7 (Dave, 2026-09-27: "yes") — ABOVE 12 POINTS, THE END MARKER ONLY. dv-line-008 gives the
+     behaviour ("end-line markers + key when markers would obscure small intervals"); 12 is the count the
+     cadence below was authored at and the geometry gate's G11 line (MARK_MAX). A dense series keeps
+     every point's focusable, tipped hit group — only the painted glyph goes, so the table, the tips and
+     the keyboard still reach every value. The 12 is inline (not a named var) for the combo page's
+     byte budget (ADR-0015, 34,816 code-only bytes). */
+  /* The kit's Batch-8 EASED marker cadence, promoted verbatim from the proforma at twelve points.
+     Resampled by fraction so eight categories or twenty keep the same shape of entry rather than
+     a linear stagger; the last marker always lands with the 2400ms draw. */
+  var CAD = [0, 369, 507, 616, 716, 815, 921, 1041, 1183, 1365, 1628, 2400];
+  function delay(i, n) {
+    if (n < 2) { return 0; }
+    var t = i / (n - 1) * (CAD.length - 1), k = Math.floor(t);
+    if (k >= CAD.length - 1) { return CAD[CAD.length - 1]; }
+    return Math.round(CAD[k] + (CAD[k + 1] - CAD[k]) * (t - k));
+  }
+
+  /* The mark's words. `sep` is the only difference between the popover text (· separated, the
+     kit's) and the accessible name (comma separated, so a screen reader reads a sentence). */
+  function words(ctx, si, ci, v, sep) {
+    return (ctx.series.length > 1 ? KEYS[si % 26] + sep + ctx.series[si].name + sep : '') +
+      ctx.cats[ci] + ': ' + ctx.fmt(v);
+  }
+  /* The glyph: circle · square · diamond, cycling with the series index, mirroring the legend's
+     swatch shapes. `.dv-mk` is dv-behaviour's size-preserving contract — the fit moves the centre
+     and leaves the shape alone, which is why a square is authored as x/y and not width-fractions. */
+  function glyph(si, x, y, fill) {
+    var a = ' class="dv-mk" style="--sc:' + fill + '"', k = si % 3;
+    if (k === 1) {
+      return '<rect' + a + ' x="' + n1(x - R) + '" y="' + n1(y - R) + '" width="11" height="11"/>';
+    }
+    if (k === 2) {
+      return '<polygon' + a + ' points="' + n1(x) + ',' + n1(y - 6.5) + ' ' + n1(x + 6.5) + ',' +
+        n1(y) + ' ' + n1(x) + ',' + n1(y + 6.5) + ' ' + n1(x - 6.5) + ',' + n1(y) + '"/>';
+    }
+    return '<circle' + a + ' cx="' + n1(x) + '" cy="' + n1(y) + '" r="' + R + '"/>';
+  }
+
+  /* ---------- THE GEOMETRY. One polyline per series in the fit grammar's path form
+     (data-fxs + data-ys), one focusable marker group per point. Order matters: the lines go down
+     first, then the labels, then the markers and the end-keys on top — SVG has no z-index. */
+  function line(ctx) {
+    var ns = ctx.series.length, nc = ctx.cats.length;
+    var band = ctx.plotW / nc;                      /* THE COLUMN'S BAND — see the header */
+    var hit = Math.min(ctx.HIT, band) / 2;          /* s116-D1, clamped so bands don't overlap */
+    if (hit < R) { hit = R; }
+    var cx = [], marks = [], keys = [], i, si, ci;
+    for (ci = 0; ci < nc; ci++) { cx.push(ctx.PL + ci * band + band / 2); }
+
+    for (si = 0; si < ns; si++) {
+      var fill = ctx.fill(si), pts = [], fxs = [], ys = [], sg = ' data-series-group="' + (si + 1) + '"';
+      for (ci = 0; ci < nc; ci++) {
+        var v = ctx.series[si].values[ci], x = cx[ci], y = ctx.vy(v), fx = f4(ctx.fx(x));
+        pts.push(n1(x) + ',' + n1(y)); fxs.push(fx); ys.push(n1(y));
+        marks.push('<g class="dv-marker"' + sg + ' tabindex="0" role="img" aria-label="' +
+          esc(words(ctx, si, ci, v, ', ')) + '" data-tip="' + esc(words(ctx, si, ci, v, ' · ')) +
+          '" data-fx="' + fx + '" data-x0="' + n1(x) + '" style="animation-delay:' +
+          delay(ci, nc) + 'ms"><circle class="dv-hit" fill="none" pointer-events="all" cx="' +
+          n1(x) + '" cy="' + n1(y) + '" r="' + n1(hit) + '"/>' + (nc > 12 && ci < nc - 1 ? '' : glyph(si, x, y, fill)) + '</g>');
+      }
+      ctx.push('<polyline class="dv-series"' + sg + ' data-series-i="' + (si + 1) +
+        '" pathLength="2400" fill="none" stroke="' + fill + '" stroke-width="2.5" ' +
+        'stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="' +
+        pts.join(' ') + '" data-fxs="' + fxs.join(' ') + '" data-ys="' + ys.join(' ') + '"/>');
+      /* The end-key rides the LAST point's fraction with a fixed 10px offset, so it stays 10px
+         from the line end on every width — and inside the plot, where the old baked x=580 sat on
+         the frame edge. INK, not the series hue: 12px text in a series colour sits below the AA
+         floor on dark, which is the day's own a11y line. */
+      if (ns > 1) {
+        var ly = ctx.vy(ctx.series[si].values[nc - 1]);
+        keys.push('<text class="dv-endkey t-cm-chart-key"' + sg + ' fill="var(--ink)" x="' +
+          n1(cx[nc - 1] + 10) + '" y="' + n1(ly + 4) + '" text-anchor="start" data-fx="' +
+          f4(ctx.fx(cx[nc - 1])) + '" data-dx="10" data-dy="4">' + KEYS[si % 26] + '</text>');
+      }
+    }
+    for (ci = 0; ci < nc; ci++) {
+      ctx.push('<text class="dv-label t-cm-chart-label" fill="var(--data-axis)" x="' + n1(cx[ci]) +
+        '" y="' + n1(ctx.y0 + 16) + '" text-anchor="middle" data-fx="' + f4(ctx.fx(cx[ci])) + '">' +
+        esc(ctx.cats[ci]) + '</text>');
+    }
+    for (i = 0; i < marks.length; i++) { ctx.push(marks[i]); }
+    for (i = 0; i < keys.length; i++) { ctx.push(keys[i]); }
+  }
+
+  line.axis = 'y';
+  T.line = T.multiline = line;
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR dv-render-line END ===== -->
+  <script>
+  /* THE ENGINE CALLS (s249-D4): the page writes the data and calls the library's renderer once per
+     figure - generate-from-canon rule 2a. The engine writes each figure's <table> rows from the same
+     numbers. JS off: the canvases stay empty and the authored tables are the answer. */
+  (function () {
+    var PAYERS = ['Ashcombe', 'Delta', 'Northgate', 'Pemberton', 'Riverside', 'Vale'];
+    var COUNT  = [410, 175, 950, 255, 205, 295];
+    var BAR = { type: 'column', categories: PAYERS, series: [{ name: 'Receipts', values: COUNT }],
+                categoryLabel: 'Payer', caption: 'Six largest payers, Q2 2026, by number of receipts (order follows the chart)' };
+    var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var BAL    = [82, 80, 85, 82, 87, 88, 86, 92, 94, 93, 97, 104];
+    function spec1(view) {
+      var ytd = view === 'cumulative', c = [], t = 0, i;
+      for (i = 0; i < BAL.length; i++) { t += BAL[i]; c.push(t); }
+      return { type: 'line', categories: MONTHS, categoryLabel: 'Month',
+               series: [{ name: ytd ? 'Year to date' : 'Closing balance', values: ytd ? c : BAL }],
+               caption: ytd ? 'Closing balance year to date, pounds thousands' : 'Closing balance by month, pounds thousands' };
+    }
+    function fig(id) { return document.querySelector('figure.dv[aria-labelledby="' + id + '"]'); }
+    var cb = fig('rep-cb-h'), cl = fig('rep-cl-h');
+    function sorted(order) {
+      var ix = PAYERS.map(function (c, i) { return i; });
+      if (order !== 'orig') { ix.sort(function (a, b) { return order === 'asc' ? COUNT[a] - COUNT[b] : COUNT[b] - COUNT[a]; }); }
+      var s = {}, k; for (k in BAR) { s[k] = BAR[k]; }
+      s.categories = ix.map(function (i) { return PAYERS[i]; });
+      s.series = [{ name: 'Receipts', values: ix.map(function (i) { return COUNT[i]; }) }];
+      return s;
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('button[data-dv-view-btn]');
+      if (!b || !window.dvRender) { return; }
+      if (cb && cb.contains(b)) { dvRender(cb, sorted(b.getAttribute('data-dv-view-btn'))); }
+      if (cl && cl.contains(b)) { dvRender(cl, spec1(b.getAttribute('data-dv-view-btn'))); }
+    });
+    if (window.dvRender) {
+      if (cb) { dvRender(cb, sorted('orig')); }
+      if (cl) { dvRender(cl, spec1('discrete')); }
+    }
+  }());
   </script>
 
   <script>
-    /* COMPONENT behaviour — kept out of the demo fence on purpose. The indicator
-       position must be MEASURED after layout: widths depend on font metrics and
-       trim, so they cannot be authored. */
-    function moveInd(seg){
-      var ind = seg.querySelector('.ind'), a = seg.querySelector('button[aria-pressed="true"]');
-      if (!ind || !a) return;
-      ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px';
-    }
-    document.querySelectorAll('.seg').forEach(function(seg){
-      seg.querySelectorAll('button').forEach(function(b){
-        b.addEventListener('click', function(){
-          seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
-          moveInd(seg);
-        });
-      });
-      moveInd(seg);
+    /* COPIED VERBATIM from Segmented-control.reference.html (generate-from-canon rule 2a): the thumb of every .seg is measured by the atom's own handler; a segmented control at rest needs it. Not demo chrome. */
+    /* SLIDING INDICATOR — one handler for every .seg on the page. Single-select: click sets
+       aria-pressed on the group, the indicator measures the pressed button's box and slides. */
+    function moveInd(seg){ const ind=seg.querySelector('.ind'); if(!ind) return;
+      const a=seg.querySelector('button[aria-pressed="true"]'); if(!a) return;
+      /* rect-based so the 2px inset padding + 1px border don't offset the measurement
+         (the .ind containing block is .seg's PADDING box — subtract seg.clientLeft). */
+      const sr=seg.getBoundingClientRect(), br=a.getBoundingClientRect();
+      ind.style.left=(br.left - sr.left - seg.clientLeft)+'px'; ind.style.width=br.width+'px';
+      seg.classList.add('is-measured');   /* #314 TP2 F3: from here the .ind is the fill, the button's own rest fill lets go */ }
+    function placeAll(){ document.querySelectorAll('.seg').forEach(moveInd); }
+    document.querySelectorAll('.seg').forEach(seg=>{
+      seg.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+        seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b))); moveInd(seg); }));
     });
-    document.querySelectorAll('.seg').forEach(moveInd);
-    addEventListener('resize', function(){ document.querySelectorAll('.seg').forEach(moveInd); });
+    addEventListener('resize', placeAll);
+    placeAll();   /* initial position (widths depend on font/trim, so measure after layout) */
   </script>
+
 <!-- ===== APOLLO-DEMO script START (showroom harness — never copy) ===== -->
   <script>
-    /* ⚑ DEMO CHROME ONLY — theme toggle + the viewport / main width read-out.
-       Fenced: this is showroom harness, never part of the template. */
+    /* ⚑ DEMO CHROME ONLY — theme toggle + a width read-out. Behaviour on this page: the two engine calls above and the segmented control's own thumb script, copied verbatim. */
     document.getElementById('themeBtn').addEventListener('click', function(){
       var b = document.body; b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
     });
     function reportWidth(){
       document.getElementById('wOut').textContent =
-        'viewport ' + window.innerWidth + 'px · main ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
+        'viewport ' + window.innerWidth + 'px · page ' + Math.round(document.getElementById('tplMain').getBoundingClientRect().width) + 'px';
     }
     addEventListener('resize', reportWidth);
     reportWidth();

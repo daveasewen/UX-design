@@ -12,7 +12,8 @@
        emphasis (inner-shadow: black active / rag-error red) layered on the box — this is where the old
        "bottom stroke" lived. Error message is text/default (legible), NOT rag/error red.  Standard + Large.
     2) UNDERLINE — the prior canon (bottom-stroke only), kept as a second style.
-  OPTIONAL slots (per Figma props): prefix, trailing icon, (?) help — shown present AND absent.
+  OPTIONAL slots (per Figma props): prefix, trailing icon, (?) help — shown present AND absent. The trailing
+  slot also carries the PASSWORD REVEAL (#314 TP2, Dave 14:55 call 24): view / hidden, the library's own eye.
   ICONS: real HSBC library SVGs (assets/icons/) defined ONCE as a <symbol> sprite + <use> — NOT invented.
     calendar=media/calendar.svg · help=informative/help.svg · error=status-icons/error.svg · success=status-icons/success.svg
   Focus = two-tier: aesthetic active treatment (all users) + keyboard ring via :focus-visible (suppressed
@@ -113,7 +114,10 @@
   .icn{width:18px; height:18px; display:block; flex-shrink:0;}
 
   /* ---------- shared field scaffold ---------- */
-  .field{max-width:380px;}
+  .field{width:100%;}   /* #314 TP2 F8 (Dave 14:55 call 28): the field FILLS the group it is given (s210-D3); the 380 that capped it is the showroom's wrap below */
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  body > .field, .gallery .field{max-width:380px;}   /* the showroom's column — not the part's width */
+/* ===== APOLLO-DEMO css END ===== */
   .field + .field{margin-top:32px;}
   .lbl{display:flex; gap:8px; align-items:center; font:500 16px/24px var(--font); color:var(--text); margin:0 0 4px;}
   .help-text{font:400 16px/24px var(--font); color:var(--text); margin:0 0 8px;}
@@ -157,6 +161,13 @@
   .box .tail-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
   .field.is-disabled .tail-btn{color:var(--icon-disabled); cursor:not-allowed;}
   .field.is-disabled .tail-btn:hover, .field.is-disabled .tail-btn:active{transform:none;}
+  /* THE PASSWORD REVEAL (#314 TP2, Dave 14:55 call 24: "The icon library does have an eye, it might be labeled visible
+     and hidden i think") - a tail-btn that flips the field's type. Two library glyphs, one shown per aria-pressed
+     state: view (eye) while the password is masked = "show it"; hidden while it is shown = "hide it". The label
+     states the NEXT action; nothing here is a focus style (focus-visible above, keyboard only). */
+  .box .tail-btn.reveal .icn-on{display:none;}
+  .box .tail-btn.reveal[aria-pressed="true"] .icn-off{display:none;}
+  .box .tail-btn.reveal[aria-pressed="true"] .icn-on{display:block;}
 
   /* hover (pointer): grey fill, only while not focused */
   .box:hover:not(:focus-within){background:var(--field-bg-hover);}
@@ -238,6 +249,9 @@
          shape flips WHITE per policy (white shape + black mark, 21:1). -->
     <symbol id="ic-error" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.30911 1.68194L0.109113 15.7999C-0.199887 16.3319 0.184113 16.9999 0.800113 16.9999H17.2001C17.8161 16.9999 18.2001 16.3319 17.8911 15.7999L9.69111 1.68194C9.38311 1.15094 8.61711 1.15094 8.30911 1.68194Z" fill="currentColor"/><path style="fill:var(--mark)" d="M9.9001 5H8.1001V11H9.9001V5Z"/><path style="fill:var(--mark)" d="M9 14.8259C9.69036 14.8259 10.25 14.2663 10.25 13.5759C10.25 12.8856 9.69036 12.3259 9 12.3259C8.30964 12.3259 7.75 12.8856 7.75 13.5759C7.75 14.2663 8.30964 14.8259 9 14.8259Z"/></symbol>
     <symbol id="ic-success" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="currentColor"/><path style="fill:var(--mark)" d="M7.21594 13.553L3.58594 9.92401L4.85894 8.65001L7.21594 11.008L13.1409 5.08301L14.4139 6.35601L7.21594 13.553Z"/></symbol>
+    <!-- byte-matched: knowledge/assets/icons/global-controls/view.svg + hidden.svg - the password reveal's two states (hidden.svg's clipPath is a no-op rect the full 18x18 viewBox already bounds; dropped, path bytes kept) -->
+    <symbol id="ic-view" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3C4.973 3 1.516 5.469 0 9C1.516 12.53 4.973 15 9 15C13.027 15 16.484 12.53 18 9C16.484 5.469 13.027 3 9 3ZM12.551 7.75C12.551 9.708 10.958 11.3 9 11.3C7.042 11.3 5.449 9.708 5.449 7.75C5.449 5.792 7.042 4.2 9 4.2C10.958 4.2 12.551 5.792 12.551 7.75ZM9 13.8C5.75 13.8 2.791 11.933 1.323 9C2.144 7.36 3.44 6.072 4.983 5.238C4.525 5.968 4.25 6.825 4.25 7.75C4.25 10.373 6.377 12.5 9 12.5C11.623 12.5 13.75 10.373 13.75 7.75C13.75 6.825 13.474 5.968 13.017 5.238C14.56 6.071 15.857 7.36 16.677 9C15.209 11.933 12.25 13.8 9 13.8Z" fill="currentColor"/></symbol>
+    <symbol id="ic-hidden" viewBox="0 0 18 18"><path d="M14.2996 8.41005L15.8296 12.2L14.7196 12.65L13.2496 9.01005C12.1396 9.56005 10.9096 9.89005 9.60961 9.97005V14H8.40961V9.97005C7.10961 9.89005 5.87961 9.56005 4.76961 9.01005L3.29961 12.65L2.18961 12.2L3.71961 8.41005C2.69961 7.74005 1.80961 6.90005 1.09961 5.91005L1.95961 5.05005C3.54961 7.37005 6.17961 8.80005 9.01961 8.80005C11.8596 8.80005 14.4896 7.37005 16.0796 5.05005L16.9396 5.91005C16.2296 6.90005 15.3296 7.74005 14.3196 8.41005H14.2996Z" fill="currentColor"/></symbol>
   </svg>
 
   
@@ -272,6 +286,16 @@
     <div class="box">
       <input id="b2" type="text" placeholder="Placeholder" aria-describedby="b2help">
     </div>
+  </div>
+
+  <!-- live, password: the reveal in the tail slot (view / hidden, the library's eye) -->
+  <div class="field">
+    <div class="lbl"><label for="b4">Password</label></div>
+    <div class="box">
+      <input id="b4" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" aria-describedby="b4help">
+      <button type="button" class="tail-btn reveal" aria-pressed="false" aria-controls="b4" data-reveal="b4" aria-label="Show password"><svg class="icn icn-off" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-view"/></svg><svg class="icn icn-on" viewBox="0 0 18 18" aria-hidden="true"><use href="#ic-hidden"/></svg></button>
+    </div>
+    <p class="help-text" id="b4help">At least 12 characters.</p>
   </div>
 
   <!-- full state set (standard size) -->
@@ -379,7 +403,8 @@
     "icons": {
       "$source": "assets/icons/ (HSBC library) via <symbol> sprite — not invented",
       "calendar": "media/calendar.svg", "help": "informative/help.svg",
-      "error": "status-icons/error.svg", "success": "status-icons/success.svg"
+      "error": "status-icons/error.svg", "success": "status-icons/success.svg",
+      "view": "global-controls/view.svg", "hidden": "global-controls/hidden.svg"
     }
   }
   </script>
@@ -389,6 +414,13 @@
     // live character counter on the featured boxed field
     const f = document.getElementById('b1'), c = document.getElementById('b1count');
     f.addEventListener('input', () => { c.textContent = f.value.length + '/100'; });
+    // the password reveal: flip the controlled field's type; the label states the next action
+    document.querySelectorAll('.tail-btn.reveal[data-reveal]').forEach(b => b.addEventListener('click', () => {
+      const t = document.getElementById(b.dataset.reveal), show = t.type === 'password';
+      t.type = show ? 'text' : 'password';
+      b.setAttribute('aria-pressed', show ? 'true' : 'false');
+      b.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    }));
     // input-modality: show the prominent keyboard ring for keyboard users only
     const root = document.documentElement;
     addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });

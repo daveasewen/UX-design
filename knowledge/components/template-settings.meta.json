@@ -1,6 +1,8 @@
 {
   "name": "Template settings",
   "category": "template",
+  "fence": "example",
+  "$fence": "EXAMPLE, NOT A PART. Dave, 14:55 2026-10-02, call 7, verbatim: \"the page templates are only example or inspiration in the library for designers. automated build need to ignore these, I don't want builds to trace pages. However we probably need to create some standardised templates for some programs. They all need to be properly built. for now we have the prepped properly but we ignore them until we are working with programs to define them.\" So: this page is properly composed of parts (s313-D72) AND fenced — the compose door (_compose_slice.py load_graph) skips it, the generate-from-canon skill never starts from it, and _validate_example_fence.py refuses a build that reads or traces it.",
   "kind": "layout",
   "purpose": "The page where a person changes how their account behaves for them. It is an organism-of-organisms: a page-header lock-up, a column of SECTIONED form groups each on its own card surface, a rail carrying in-page navigation and the save state, and an action bar that stays reachable. It contributes page-scale LAYOUT, section RHYTHM and the setting-row relationship - every control inside it is a gated component, borrowed.",
   "$provenance-note": "NEW at #210 (wave 6, lane B) against the Layer-2 P3 fan-out brief - itinerary row 108. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no gen_kg_edges.py run, no git operation. Deleting this pair costs nothing because nothing points at it.",
@@ -42,20 +44,11 @@
     }
   ],
   "tokens": {
-    "page": "background/default",
-    "surface": "tertiary/background/default (every section card)",
-    "rules": "divider/border/section (header, action bar, setting rows)",
-    "text": "text/default",
-    "disabled": "text/disabled",
-    "field": "the whole form/* set - background/hover, border/default, border/active, border/disabled",
-    "selection": "secondary/background/default (checked) + text/on-inverse (glyph), via Selection-controls",
-    "error": "rag/error + rag/error-ink, bound ONLY through the borrowed Selection-controls regions",
-    "segmented": "secondary/background/default + text/on-inverse, via the Segmented-control ATOM",
-    "chip": "rag/information + rag/information-tint, via Status-indicator form B",
-    "buttons": "the full button/primary/* and button/quaternary/* Mono ladder",
-    "shape": "border-radius/control (fields, buttons, segments) and border-radius/surface (section cards)",
-    "motion": "component-type/button-family/press-travel + press-darken (B-D7, theme-dialable)",
-    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. Every hex in both theme blocks appears in the theme block of a source component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "divider": "divider/border/section - the page's own section rules",
+    "focus": "focus/ring - read only by the demo bar",
+    "layout": "layout/app/margin - the container's inline margin",
+    "$parts": "Every other colour, radius, size and face on the page belongs to a part and is bound in THAT part's #token-manifest; the page binds nothing for them (s307-D75: the rules live in the shared stylesheet, not on the page).",
+    "$mono": "MONO base rendered; the other themes reach the page through canon.css's theme cascade on each part's scope.",
     "$noNewWidths": "s210-D3 discipline: the template asserts page-scale layout only. No molecule inside it receives a new fixed width."
   },
   "relationships": {
@@ -71,16 +64,17 @@
       "grouped form sections"
     ]
   },
-  "$composes": "Form-layout (the boxed-field anatomy, the label row, the (?) tip, the disabled field, the .fl-actions bar - class names KEPT so a diff proves the borrow), Selection-controls (switch, radio, checkbox, the error atom, .err-msg, the scale physics), Segmented-control (the ATOM: 2px inset track, sliding indicator, sizes md and sm, the 44px ::before hit expander), Stat-card (the section surface), Breadcrumbs + Headers (the page-header lock-up), Button (every action, with its injected press-physics partial), Status-indicator (the rail's save-state chip), Layout-utilities (.l-container / .l-stack / .l-row / .l-split and the split's HOST).",
+  "$composes": ["component:app-shell-top-nav", "component:footer", "component:layout-utilities", "component:page-header-lockup", "component:section-heading-lockup", "component:form-layout", "component:switch", "component:radio", "component:checkbox", "component:segmented-control", "component:action-bar", "component:button", "component:anchor-nav", "component:status-indicator"],
+  "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies. FIX ROUND #314 TP: Discard changes is a quaternary Button in the Action-bar's slot (the bar lays actions out, never authors them); Reset to defaults is quaternary; email and mobile share Form-layout's own .fl-row; the lede is page prose under the lock-up.",
   "accessibility": {
     "roles": "No invented roles. Each section is a <section> holding a <fieldset> with a real <legend>; the rail is an <aside>; the jump list is a <nav>; the field error is role=\"alert\".",
     "keyboard": "Tab order follows source order: breadcrumb, page action, form sections top to bottom, rail, action bar. Every switch, radio and checkbox is a real native input driving state and announcement; the (?) help control is a real <button> with an accessible name.",
     "announcements": "The field-level error message is role=\"alert\". The save-state chip is a passive chip, not a live region - a settings page is a STATE, not a stream of events.",
     "states": "aria-pressed on every segmented control; role=\"switch\" on the notification toggles; the locked field carries the real disabled attribute so AT reports it, and the REASON sits in its help text rather than only in the visual dimming.",
-    "targets": "Every action-bar button is 44px tall. Every selection control's <label> is 44px tall - MEASURED at 44x44 for the bare switches and 44px tall for the text labels. Segment buttons are 32px (md) and 28px (sm) VISIBLE and carry Segmented-control's invisible >=44px ::before target. The (?) help control is 18px visible with the canon aid-009 ::before expander to 44.",
+    "targets": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. Every action-bar button is 44px tall. Every selection control's <label> is 44px tall - MEASURED at 44x44 for the bare switches and 44px tall for the text labels. Segment buttons are 32px (md) and 28px (sm) VISIBLE and carry Segmented-control's invisible >=44px ::before target. The (?) help control is 18px visible with the canon aid-009 ::before expander to 44.",
     "$colourIsNeverAlone": "The error channel is a red ATOM plus a symbol plus a sentence in default ink (1.4.1). The save-state chip carries its word; the dot is aria-hidden.",
     "$knownDelta": "Form-layout bumps an errored or completed input to font-weight:500 and Selection-controls sets its labels at 500. Both are raw font declarations, both are ABSENT here, because the canon ramp has no 16/500 INPUT or LABEL composite and a raw declaration would breach the shrink-only type ratchet. The error channel is unharmed but the WEIGHT cue is gone. Named for Dave, not smoothed over.",
-    "$measuredDefect": "The type ratchet ALSO clipped every field's descenders: .t-cm-input is 16px at line-height 1, an <input> clips to its own box, and the canon leading-trim :is() list includes input[type=text|email|tel]. MEASURED 9px clipped on the email field, VISIBLE in a 4x crop, and PASSED by _validate_descender_clip.py (a textual gate). Repaired with ds-005's TWO-CLASS form and re-measured to 0px with the computed text-box-edge reading `text`.",
+    "$measuredDefect": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. The type ratchet ALSO clipped every field's descenders: .t-cm-input is 16px at line-height 1, an <input> clips to its own box, and the canon leading-trim :is() list includes input[type=text|email|tel]. MEASURED 9px clipped on the email field, VISIBLE in a 4x crop, and PASSED by _validate_descender_clip.py (a textual gate). Repaired with ds-005's TWO-CLASS form and re-measured to 0px with the computed text-box-edge reading `text`.",
     "relatedSC": [
       "1.3.1",
       "1.4.1",
@@ -103,14 +97,14 @@
     "Assuming position:sticky sticks to the template. It sticks to the nearest SCROLLPORT. If a template is not the page, give it a scrollport - and measure the non-overlap AT THE SCROLL END, not at the initial scroll position, because a sticky bar is SUPPOSED to pass over content mid-scroll.",
     "Treating a locked field as merely dimmed. A field the user may not change must say WHY in its help text.",
     "REVIEW Adding a RAG hue to the unsaved-changes chip beyond rag/information. Whether an unsaved state is a WARNING is Dave's and touches the two-red law.",
-    "Declaring container-type on the element you then try to query. An element is a query container for its DESCENDANTS and never for itself; the rule silently never fires and the screenshot looks fine."
+    "Declaring container-type on the element you then try to query. An element is a query container for its DESCENDANTS and never for itself; the rule silently never fires and the screenshot looks fine.",
+    "Copying a part's rules onto the page. The page places parts (its own .cn-<slug> scope + the part's own markup) and never resizes or restyles them (s305-D57 rule 3a, s307-D75). A template that re-declares a Button ladder, a Summary row or a Data-grid toolbar forks the part the moment the part moves."
   ],
   "tokenValidation": {
-    "date": "2026-08-20",
-    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
-    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 6, lane B).",
-    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first, and [[four-themes-flexibility-is-the-requirement]] says test PER THEME - that test has NOT been run and is not claimed.",
-    "$notGenerated": "canon.css carries NO .cn-template-settings scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's and is a precondition of any four-theme claim.",
+    "date": "2026-10-02",
+    "against": "knowledge/tokens/* via _validate_snippets.py + gen_snippet_tokens.py --check (MONO base) in the #314 cloud worktree",
+    "result": "PASS - the three page vars resolve in light and dark and both contrast pairs clear 4.5:1; canon.css carries the .cn-template-settings scope with the page's placement rules only (gen_canon_components.py regenerated and --check green).",
+    "$scope": "MONO base rendered in the cloud (fallback face, Chromium); the seat render with the real face is the reading of record. Console, Common and Supercharge are not rendered by this lane.",
     "$deprecated": "No deprecated tokens bound."
   },
   "provenance": {
@@ -119,7 +113,7 @@
     "code_path": "",
     "$note": "Wave-6 Layer-2 P3 fan-out (notes/_briefs/2026-08-20-210-wave6-layer2-p3-fanout-brief-v1.md), lane B, itinerary row 108. No Figma node."
   },
-  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file:// with the real HSBC cut (canvas-width assertion against TWO controls per _RUNBOOK-render-verify.md: target 346.88, both aliases 346.88, DejaVu 375.39, nonexistent face 301.07), light AND dark, at 1400 / 820 / 420 CSS px, screenshots LOOKED AT. Zero horizontal page overflow in all 6 runs. COLLAPSE MEASURED, not eyeballed: .l-split computed grid-template-columns read '776px 280px' -> '476px 280px' -> '388px'; .fl-row read '355px 355px' -> '228px 228px' -> '338px'; .tpl-setting read '658px 44px' -> '426px' -> '338px'; .fl-actions flex-direction read row -> row -> column-reverse. STICKY MEASURED AT THE SCROLL END: the frame scrolls and zero live controls remain behind the bar at all three widths. TWO DEFECTS FOUND, both with every gate green: the crushed setting row (repaired with a container query on a dedicated HOST, mutation-controlled) and the clipped field descenders (repaired with ds-005's two-class form, re-measured 9px -> 0px).",
+  "$render-verification": "#314 lane TP: rendered in cloud Chromium from file:// (never set_content), light and dark, 1280 wide, before (HEAD 8d8e91da) and after; PNGs under notes/_lanes/314/TP/renders are NOT in the repo (lane files) - the committer re-renders at the seat with the real face. The #210 measurements that stood here (target sizes, collapse widths) predate the rebuild and are retired; nothing below them is claimed.",
   "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN. knowledge/components/_nodes-context.json and _nodes-pattern.json were read and every ref below already exists in them: this lane mints ZERO new context or pattern node-ids, which is the #210 wave-5 lane C discipline carried forward (that lane's first draft invented 6 of 8 patterns and 3 of 4 contexts). _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - a generated, shared file, and the conductor's.",
   "stateModel": "full",
   "edges": {

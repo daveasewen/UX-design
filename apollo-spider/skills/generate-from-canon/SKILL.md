@@ -59,11 +59,14 @@ bento, logos, photography).
     answer (procedure step 2), not inherited from a page that already exists. A template —
     anything at `level: template` in `showroom/index.json`, including
     `Template-dashboard-bento.reference.html` and `Template-dashboard.reference.html` — is a
-    **reference fixture**: read it to see the grammar used once, correctly; never copy its body,
-    its choice of modules, its groups, its headings or its data. If the seed names a template in
-    `components`, read that template's **meta** for its grammar and its rulings, and still choose
-    every module yourself. A page whose structure is a template's with the words changed has
-    traced it, however it was produced.
+    **fenced example** (meta `fence: "example"`). Dave, 14:55 2026-10-02, verbatim: "the page
+    templates are only example or inspiration in the library for designers. automated build need
+    to ignore these, I don't want builds to trace pages." So a build does not open a template at
+    all — not its snippet, not its meta: the compose door never offers one (the seed cannot name
+    it), and `knowledge/_validate_example_fence.py` refuses a built page that wears a template's
+    scope or shares its body. Choose every module yourself from the parts the graph answers with.
+    A page whose structure is a template's with the words changed has traced it, however it was
+    produced.
 2. **Copy the component's snippet, don't re-draw it.** Once the graph has chosen a component, take
    its markup and classes from its own `knowledge/snippets/<Slug>.reference.html`, whole. Hand-
    rolling a component from its screenshot invents defects that the gates then catch as yours

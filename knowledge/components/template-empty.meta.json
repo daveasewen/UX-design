@@ -1,6 +1,8 @@
 {
   "name": "Template empty",
   "category": "template",
+  "fence": "example",
+  "$fence": "EXAMPLE, NOT A PART. Dave, 14:55 2026-10-02, call 7, verbatim: \"the page templates are only example or inspiration in the library for designers. automated build need to ignore these, I don't want builds to trace pages. However we probably need to create some standardised templates for some programs. They all need to be properly built. for now we have the prepped properly but we ignore them until we are working with programs to define them.\" So: this page is properly composed of parts (s313-D72) AND fenced — the compose door (_compose_slice.py load_graph) skips it, the generate-from-canon skill never starts from it, and _validate_example_fence.py refuses a build that reads or traces it.",
   "kind": "layout",
   "purpose": "What a whole PAGE says when it has nothing to show. Empty-state draws the empty REGION; this template supplies the three things only a page can know: the HEIGHT the region must hold, the page FURNITURE that stays visible around it (on a no-results page the search box and the filter chips are the entire recovery route), and the COUNT LINE that says what the page is empty OF.",
   "$provenance-note": "NEW at #210 (wave 6, lane B) against the Layer-2 P3 fan-out brief - itinerary row 110. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no gen_kg_edges.py run, no git operation. Deleting this pair costs nothing because nothing points at it.",
@@ -36,14 +38,11 @@
     }
   ],
   "tokens": {
-    "page": "background/default",
-    "surface": "tertiary/background/default (the results panel)",
-    "emptyFrame": "border/subtle - Empty-state's 1px DASHED frame, carried unchanged",
-    "glyph": "text/default at alpha/40 - decorative, aria-hidden",
-    "toolbar": "form/border/default + form/background/hover + form/border/active, via Data-grid",
-    "buttons": "the button/primary/* and button/tertiary/* Mono ladder",
-    "shape": "border-radius/control (search box, chips, buttons) and border-radius/surface (panel + empty frame)",
-    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. Every hex in both theme blocks appears in the theme block of a source component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "divider": "divider/border/section - the page's own section rules",
+    "focus": "focus/ring - read only by the demo bar",
+    "layout": "layout/app/margin - the container's inline margin",
+    "$parts": "Every other colour, radius, size and face on the page belongs to a part and is bound in THAT part's #token-manifest; the page binds nothing for them (s307-D75: the rules live in the shared stylesheet, not on the page).",
+    "$mono": "MONO base rendered; the other themes reach the page through canon.css's theme cascade on each part's scope.",
     "$noNewWidths": "s210-D3 discipline: the template asserts page-scale layout only. No molecule inside it receives a new fixed width."
   },
   "relationships": {
@@ -59,13 +58,14 @@
       "first payee goal document"
     ]
   },
-  "$composes": "Empty-state (.empty, .glyph, .gap and the link treatment - raw font-weight dropped), Data-grid (.dg-toolbar, .dgsearch, .dgs-clear, .fbar, .fchip), Stat-card (the results panel surface), Breadcrumbs + Headers (the page-header lock-up), Button (the page action and the first-run action, with its injected press-physics partial), Layout-utilities (.l-container / .l-stack / .l-row).",
+  "$composes": ["component:app-shell-top-nav", "component:footer", "component:layout-utilities", "component:page-header-lockup", "component:section-heading-lockup", "component:filter-toolbar-bar", "component:empty-state"],
+  "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies. FIX ROUND #314 TP: the Results heading is a Section-heading-lockup; the lede is page prose under the lock-up.",
   "accessibility": {
     "roles": "No invented roles. Each specimen is a <main> with an <h1>; the empty regions are <section aria-labelledby>; the filter chip bar is role=\"group\" with an accessible name.",
     "keyboard": "Tab order follows source order: breadcrumb, page action, search box, clear-search, each chip's remove control, then the single recovery action. Every chip remove control has a purposeful accessible name ('Remove the March 2026 filter').",
     "announcements": "The count line is role=\"status\" so a filter that empties the page announces the new count once. The empty region itself announces NOTHING - Empty-state's own rule: an empty region is a STATE, not an event.",
     "states": "None. Nothing on this page is interactive beyond navigation.",
-    "targets": "MEASURED at 1400px: page and empty-block buttons 159x44, 135x44, 121x44. INHERITED SHORTFALLS, measured and NOT silently enlarged: Data-grid's .dgs-clear and .fchip .x are 24x24 - the source components' shipped geometry, reported for Dave rather than quietly changed by a template.",
+    "targets": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. MEASURED at 1400px: page and empty-block buttons 159x44, 135x44, 121x44. INHERITED SHORTFALLS, measured and NOT silently enlarged: Data-grid's .dgs-clear and .fchip .x are 24x24 - the source components' shipped geometry, reported for Dave rather than quietly changed by a template.",
     "$colourIsNeverAlone": "Nothing on this page carries meaning by colour. The glyphs are aria-hidden decoration and every title carries the meaning in words.",
     "$knownDelta": "Empty-state namespaces its action button `.ebtn` precisely so the `.btn` classname's type.css blast radius does not escape. This template uses `.btn`, because the page around it already carries Button atoms and two button families on one page is the collision class this wave keeps finding. The blast radius is DECLARED to the conductor rather than avoided.",
     "relatedSC": [
@@ -84,14 +84,14 @@
     "Offering more than one action. Empty-state's own rule: an empty region is not a menu.",
     "Making the no-results action a primary button. A no-results state offers the CHEAP way back, which is a link.",
     "Writing a count line the page cannot substantiate. '0 of 1,284' is a claim about the unfiltered set and only the page knows it.",
-    "Inventing a spot illustration. The icon library has no spot-illustration set; the glyphs here are real library glyphs used decoratively, which is Empty-state's own declared compromise and its logged icon gap."
+    "Inventing a spot illustration. The icon library has no spot-illustration set; the glyphs here are real library glyphs used decoratively, which is Empty-state's own declared compromise and its logged icon gap.",
+    "Copying a part's rules onto the page. The page places parts (its own .cn-<slug> scope + the part's own markup) and never resizes or restyles them (s305-D57 rule 3a, s307-D75). A template that re-declares a Button ladder, a Summary row or a Data-grid toolbar forks the part the moment the part moves."
   ],
   "tokenValidation": {
-    "date": "2026-08-20",
-    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
-    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 6, lane B).",
-    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first, and [[four-themes-flexibility-is-the-requirement]] says test PER THEME - that test has NOT been run and is not claimed.",
-    "$notGenerated": "canon.css carries NO .cn-template-empty scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's and is a precondition of any four-theme claim.",
+    "date": "2026-10-02",
+    "against": "knowledge/tokens/* via _validate_snippets.py + gen_snippet_tokens.py --check (MONO base) in the #314 cloud worktree",
+    "result": "PASS - the three page vars resolve in light and dark and both contrast pairs clear 4.5:1; canon.css carries the .cn-template-empty scope with the page's placement rules only (gen_canon_components.py regenerated and --check green).",
+    "$scope": "MONO base rendered in the cloud (fallback face, Chromium); the seat render with the real face is the reading of record. Console, Common and Supercharge are not rendered by this lane.",
     "$deprecated": "No deprecated tokens bound."
   },
   "provenance": {
@@ -100,7 +100,7 @@
     "code_path": "",
     "$note": "Wave-6 Layer-2 P3 fan-out (notes/_briefs/2026-08-20-210-wave6-layer2-p3-fanout-brief-v1.md), lane B, itinerary row 110. No Figma node."
   },
-  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file:// with the real HSBC cut (canvas-width assertion against TWO controls: target 346.88, both aliases 346.88, DejaVu 375.39, nonexistent face 301.07), light AND dark, at 1400 / 820 / 420 CSS px, screenshots LOOKED AT. Zero horizontal page overflow in all 6 runs. Zero dangling CSS vars in all 6 runs, asked in the browser's own grammar and mutation-controlled on the sibling report template. ONE DEFECT FOUND AND REPAIRED: the borrowed Data-grid search input clipped its descenders (the ds-005 class the sibling settings template measured at 9px); repaired with the TWO-CLASS form and re-measured to 0px with the computed text-box-edge reading `text`.",
+  "$render-verification": "#314 lane TP: rendered in cloud Chromium from file:// (never set_content), light and dark, 1280 wide, before (HEAD 8d8e91da) and after; PNGs under notes/_lanes/314/TP/renders are NOT in the repo (lane files) - the committer re-renders at the seat with the real face. The #210 measurements that stood here (target sizes, collapse widths) predate the rebuild and are retired; nothing below them is claimed.",
   "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN. knowledge/components/_nodes-context.json and _nodes-pattern.json were read and every ref below already exists in them: this lane mints ZERO new context or pattern node-ids, which is the #210 wave-5 lane C discipline carried forward (that lane's first draft invented 6 of 8 patterns and 3 of 4 contexts). _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - a generated, shared file, and the conductor's.",
   "edges": {
     "renderedBy": [

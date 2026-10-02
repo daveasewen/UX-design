@@ -348,6 +348,12 @@ STEPS = [
      "_validate_type_composites.py", ["--ratchet"]),
     ("type-composites selftest", "_validate_type_composites.py", ["--selftest"]),
     ("coverage gate", "_validate_coverage.py"),
+    # WIRED #314 lane TP2 (Dave 14:55 call 7: "automated build need to ignore these, I don't want builds
+    # to trace pages"): the page templates are fenced examples - the door skips them, the skill never
+    # starts from them, and a built page that wears or shares one is refused.
+    ("example-fence gate — page templates are looked at, never built from (Dave 14:55 2026-10-02, call 7)",
+     "_validate_example_fence.py"),
+    ("example-fence gate selftest (7 bites)", "_validate_example_fence.py", ["--selftest"]),
     ("pro-forma universal gate", "_validate_proforma.py"),
     ("pro-forma CSS-governed motion gate (DEF-003)", "_validate_css_governed.py"),
     ("pro-forma no-hardcode styling gate (DEF-004)", "_validate_no_hardcode.py"),

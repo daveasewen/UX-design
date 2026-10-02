@@ -43,6 +43,10 @@
         "Empty-state": {
           "selector": ".ebtn"
         },
+        "Confirmation": {
+          "selector": ".confirm .btn",
+          "$note": "#314 TP2 F7 (Dave 14:55 call 28): the end-of-flow ladder joins the family; its press physics come from Button's partial, not a private brightness(.9)."
+        },
         "Data-grid": {
           "selector": ":is(.dg .sort, .dg .fchip .x, .dg .clearbtn, .dg .pbtn)"
         },
@@ -112,6 +116,7 @@
               "--grid-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "data-fxs=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
@@ -145,6 +150,7 @@
               "--grid-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
@@ -177,6 +183,7 @@
               "--grid-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "data-fxs=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
@@ -207,6 +214,7 @@
               "--axis-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel",
               "class=\"dv-leg-sw",
@@ -231,6 +239,11 @@
         },
         "Chart-sparkline": {
           "selector": "figure.dv",
+          "extraContract": {
+            "declarations": [
+              "data-tip=\""
+            ]
+          },
           "consumes": [
             "dv-behaviour",
             "dv-render",
@@ -256,6 +269,7 @@
           ],
           "extraContract": {
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel",
               "class=\"dv-leg-sw"
@@ -282,6 +296,7 @@
               "--data-grid"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
@@ -306,6 +321,7 @@
               "--data-grid"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
@@ -329,6 +345,7 @@
               "--data-axis"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel"
             ]
@@ -351,6 +368,7 @@
               "--data-grid"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel"
             ]
@@ -372,6 +390,7 @@
               "--data-axis"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel"
             ]
@@ -394,6 +413,7 @@
               "--data-grid"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel"
             ]
@@ -416,6 +436,7 @@
               "--axis-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-tablepanel",
               "class=\"dv-leg-sw",
@@ -447,6 +468,7 @@
               "--grid-alpha"
             ],
             "declarations": [
+              "data-tip=\"",
               "class=\"dv-tbl-toggle",
               "class=\"dv-leg-sw",
               "class=\"dv-tablepanel"
@@ -471,6 +493,11 @@
         },
         "Template-dashboard-bento": {
           "selector": "figure.dv",
+          "extraContract": {
+            "declarations": [
+              "data-tip=\""
+            ]
+          },
           "consumes": [
             "dv-behaviour",
             "dp08-anchor"
@@ -479,6 +506,33 @@
             "dv-lockup-title"
           ],
           "$note": "s249-D4 (#249, FIT lane) — the dashboard role REGISTERED so the template carries the real dv-behaviour partial (both axes) instead of the #248 hand-carried fit stub (two engines on one svg.dv-fit selector = the DP18 collision). Its one figure is a Chart-bar column block; the title lockup rides data-lockup-title. No dv-legend (no legend on the page)."
+        },
+        "Template-dashboard": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-bar"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ],
+          "$note": "#314 lane TP (s313-D72, the twelve templates rebuilt as composed pages): the plain dashboard places Chart-bar's column figure as a part and carries the LIBRARY'S engine (s249-D4) the way Chart-bar itself does - dv-behaviour + dv-render + dv-render-bar injected, one dvRender(figure, spec) call written on the page. Before #314 the template baked a copy of the column geometry by hand. No dv-legend (one series)."
+        },
+        "Template-report": {
+          "selector": "figure.dv",
+          "consumes": [
+            "dv-behaviour",
+            "dv-render",
+            "dv-render-bar",
+            "dv-render-line"
+          ],
+          "markup": [
+            "dv-lockup-title",
+            "dv-lockup-table"
+          ],
+          "$note": "#314 lane TP (s313-D72): the report places a Chart-bar column figure and a Chart-line figure as parts and carries the library's engine for both (dv-render-bar + dv-render-line), with the data specs written on the page. Before #314 the template baked both canvases by hand. No dv-legend (one series per figure)."
         },
         "Legend": {
           "selector": ".dv-leg",
@@ -498,9 +552,8 @@
           "requires": {
             "vars": [],
             "matchValues": [],
-            "declarations": [
-              "data-tip=\""
-            ]
+            "declarations": [],
+            "$declarations-note": "#314 lane TP: the one universal hook, data-tip=\", MOVED from here into every existing member's extraContract.declarations, unchanged for each of them. It was universal when every canvas was baked; since the engine (s249-D4, dv-render #259) writes data-tip on every mark at RUN TIME, a consumer whose figures are engine-drawn has no static mark, and the two composed page templates (Template-dashboard, Template-report) are exactly that. The check reads source bytes, so the hook is now declared where it is really authored."
           },
           "$manifestBinds": {},
           "$description": "The Layer-2 interaction layer (ADR-0015). NO LONGER SINGLE-SOURCED as of 2026-07-26 — see the sibling dv-legend entry: the deferred cap question recorded at the end of this description was RULED by Dave (split the source AND re-scope the gate to a per-page sum), so this file now carries fit/tip/table/seg/csv only and the legend model lives next door. ORIGINAL NOTE FOLLOWS, kept because the deferral is part of the record: The Layer-2 interaction layer, single-sourced (ADR-0015). PER-CAPABILITY SPLIT ENACTED 2026-07-24 (conductor absorb, chart-revisit wave — the exemplar's pre-authorised 'split from observed need' trigger; the wave landed 4 more members, whose real hook/chrome sets diverge from the line exemplar's). The UNIVERSAL contract now holds only the one hook every member carries (popover data-tip=); everything capability-specific lives in each member's $members[…].extraContract {vars · declarations · manifestBinds}, merged by check_contracts. Observed capability tiers: CARTESIAN CHROME (DV-D07 two-channel axis/grid — vars + manifestBinds) = line/bar/combo carry axis+grid, donut carries axis only (radial, no gridlines), sparkline carries neither (axis-free idiom). POLYLINE FIT (data-fxs=) = line+combo only (bar/donut/sparkline fit by rect/arc/CSS). TABLE+LEGEND (dv-tbl-toggle · data-series-toggle · dv-tablepanel) = all but sparkline (sparkline is compact: popover only). NOTE: the donut SWEEP animation hook is a SEPARATE future addition that would push dv-behaviour.js past the 16KB cap (measured 17,360B) — DEFERRED to Dave: amend the cap vs modularise per family. The existing under-cap module (14,620B) injects into all members as-is; sweep stays baked-static."
@@ -771,62 +824,6 @@
             "manifestBinds": {
               "--seg-rad-s": "border-radius/segmented-container/s",
               "--seg-thumb-s": "border-radius/segmented-thumb/s"
-            }
-          }
-        },
-        "Template-dashboard": {
-          "selector": ".seg",
-          "extraContract": {
-            "vars": [
-              "--seg-rad-s",
-              "--seg-thumb-s"
-            ],
-            "manifestBinds": {
-              "--seg-rad-s": "border-radius/segmented-container/s",
-              "--seg-thumb-s": "border-radius/segmented-thumb/s"
-            }
-          }
-        },
-        "Template-list-index": {
-          "selector": ".seg",
-          "extraContract": {
-            "vars": [
-              "--seg-rad-s",
-              "--seg-thumb-s"
-            ],
-            "manifestBinds": {
-              "--seg-rad-s": "border-radius/segmented-container/s",
-              "--seg-thumb-s": "border-radius/segmented-thumb/s"
-            }
-          }
-        },
-        "Template-report": {
-          "selector": ".seg",
-          "extraContract": {
-            "vars": [
-              "--seg-rad-s",
-              "--seg-thumb-s"
-            ],
-            "manifestBinds": {
-              "--seg-rad-s": "border-radius/segmented-container/s",
-              "--seg-thumb-s": "border-radius/segmented-thumb/s"
-            }
-          }
-        },
-        "Template-settings": {
-          "selector": ".seg",
-          "extraContract": {
-            "vars": [
-              "--seg-rad-s",
-              "--seg-thumb-s",
-              "--seg-rad-xs",
-              "--seg-thumb-xs"
-            ],
-            "manifestBinds": {
-              "--seg-rad-s": "border-radius/segmented-container/s",
-              "--seg-thumb-s": "border-radius/segmented-thumb/s",
-              "--seg-rad-xs": "border-radius/segmented-container/xs",
-              "--seg-thumb-xs": "border-radius/segmented-thumb/xs"
             }
           }
         },

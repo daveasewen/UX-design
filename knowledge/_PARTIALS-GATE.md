@@ -7,7 +7,7 @@ generated AUTO-PARTIAL block. STRICT = registry members on their mapped control 
 
 ## ✅ STRICT clean — no member re-implements a registered partial
 
-## ⚠ CENSUS — press-physics outside the registry (67 rule(s))
+## ⚠ CENSUS — press-physics outside the registry (46 rule(s))
 
 *Candidates for future group membership (accrete from OBSERVED duplication —
 ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
@@ -54,28 +54,7 @@ ADR-0013 ruling 3). Joining = markers + vars + manifest binds + registry entry.*
 - `Tags` → `.tag.link:active`
 - `Tags` → `.tag .x:hover`
 - `Tags` → `.tag .x:active`
-- `Template-confirmation` → `.btn:hover`
-- `Template-confirmation` → `.btn:active`
 - `Template-dashboard-bento` → `.btn:hover`
 - `Template-dashboard-bento` → `.btn:active`
-- `Template-dashboard` → `.btn:hover`
-- `Template-dashboard` → `.btn:active`
-- `Template-detail` → `.btn:hover`
-- `Template-detail` → `.btn:active`
-- `Template-empty` → `.btn:hover`
-- `Template-empty` → `.btn:active`
-- `Template-error` → `.btn:hover`
-- `Template-error` → `.btn:active`
-- `Template-list-index` → `.btn:hover`
-- `Template-list-index` → `.btn:active`
-- `Template-list-index` → `.pg a:active, .pg .ctrl:not([disabled]):active`
-- `Template-report` → `.btn:hover`
-- `Template-report` → `.btn:active`
-- `Template-settings` → `.btn:hover`
-- `Template-settings` → `.btn:active`
-- `Template-settings` → `label:hover .box,label:hover .radio`
-- `Template-settings` → `label:hover .switch`
-- `Template-settings` → `input:active + label .box,input:active + label .radio`
-- `Template-settings` → `input:active + label .switch`
 - `Video-player` → `.bigplay:hover`
 - `Video-player` → `.bigplay:active`

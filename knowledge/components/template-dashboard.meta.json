@@ -1,8 +1,10 @@
 {
   "name": "Template dashboard",
   "category": "template",
+  "fence": "example",
+  "$fence": "EXAMPLE, NOT A PART. Dave, 14:55 2026-10-02, call 7, verbatim: \"the page templates are only example or inspiration in the library for designers. automated build need to ignore these, I don't want builds to trace pages. However we probably need to create some standardised templates for some programs. They all need to be properly built. for now we have the prepped properly but we ignore them until we are working with programs to define them.\" So: this page is properly composed of parts (s313-D72) AND fenced — the compose door (_compose_slice.py load_graph) skips it, the generate-from-canon skill never starts from it, and _validate_example_fence.py refuses a build that reads or traces it.",
   "kind": "layout",
-  "purpose": "A PAGE-SCALE ORGANISM for an overview screen: a page header lock-up, a board of Kpi-tiles, a chart panel beside a summary rail, and a Data-grid of recent records. Its question is 'how are things, and what needs me?', which is a question about SEVERAL records at once — that is what separates it from the detail template. Composed entirely from existing components; the only new CSS is thirteen composition rules, each a relationship between panels.",
+  "purpose": "A PAGE-SCALE ORGANISM for an overview screen on a plain grid: a page header lock-up, a board of Metrics (s308-D42), a chart beside a summary rail, one filter bar and a Table of recent records, an app footer. Its question is 'how are things, and what needs me?'. Rebuilt #314 as a composed page (see $composes).",
   "$status": "PROPOSED #210 under the WAVE-5 Layer-2 fan-out brief (notes/_briefs/2026-08-20-210-wave5-layer2-p2-fanout-brief-v1.md, LANE B). ⛔ NOT GATED, NOT RULED, NOT REGISTERED — absent from CATEGORIES, MIGRATED_SNIPPETS, component-types.json, canon.css, gen_showroom.py and _rulings.json. Dave's eye is owed on every semantic below.",
   "$artefactClass": "The Layer-2 artefact class is itself a PROPOSED convention, stated once in the brief: Layer-2 rows have no ruled artefact form, so each ships in the SAME grammar as the component library — knowledge/snippets/<Name>.reference.html + knowledge/components/<slug>.meta.json with a `layer` field — because the one grammar keeps every existing gate watching these files for free, where a parallel pipeline would be born ungated. Dave may re-home the class.",
   "$cardinalRule": "COMPOSE, NEVER RE-DRAW. Every visible atom traces to a source component file and every borrowed region is diff-proven in notes/_receipts/2026-08-20-210-wave5-laneB-templates.md. The Meter precedent (s210-D1) is the model: zero new CSS is the ideal, a COMPOSITION class is legal, a re-drawn atom is the #202 defect.",
@@ -50,16 +52,11 @@
     }
   ],
   "tokens": {
-    "surfaces": "tertiary/background/default (tiles + panels) · background/default (the page and the table body) · table/header/background (the column heads)",
-    "ink": "text/default everywhere; text/secondary is expressed as text/default at alpha/60, which is the source components' own idiom",
-    "lines": "border/subtle (tile and panel borders) · divider/border/section (the header rule)",
-    "controls": "button/primary/* · button/tertiary/* · button/quaternary/* · form/border/default · form/border/active · focus/ring",
-    "status": "rag/success + rag/warning + rag/error + rag/information with their tints — chip only, never a figure",
-    "delta": "rag/success + rag/error as the KPI ARROW FILL seat only, inherited verbatim from Stat-card via Kpi-tile, where it is already flagged as Dave's call. NOT resolved here.",
-    "spark": "rag/success-ink + rag/error-ink + text/default, background-keyed, ruled for this atom by s182-D3 and inherited",
-    "dataviz": "data/series/1 · data/axis/color + data/axis/alpha · data/grid/color + data/grid/alpha · border/action-strong (the baseline)",
-    "layout": "layout/app/margin · layout/app/gutter · target/min",
-    "radius": "border-radius/surface + /control + /indicator. 0 in Mono and Legacy; Console forks surface through the cascade.",
+    "divider": "divider/border/section - the page's own section rules",
+    "focus": "focus/ring - read only by the demo bar",
+    "layout": "layout/app/margin - the container's inline margin",
+    "$parts": "Every other colour, radius, size and face on the page belongs to a part and is bound in THAT part's #token-manifest; the page binds nothing for them (s307-D75: the rules live in the shared stylesheet, not on the page).",
+    "$mono": "MONO base rendered; the other themes reach the page through canon.css's theme cascade on each part's scope.",
     "$note": "NO NEW TOKEN IS WANTED OR MINTED. Every value bound here already exists and is already bound by a gated component; the template's token manifest is the UNION of the manifests of the components it composes. ⛔ NO MONETARY COLOUR TOKEN IS BOUND ANYWHERE. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3) and binding them to money on a page template would be ruling on Dave's behalf — the #209 Lane A restraint, carried. The only RAG on any of these pages is a Status-indicator chip, which always carries its WORD (1.4.1)."
   },
   "relationships": {
@@ -85,7 +82,7 @@
     "colourIsNeverAlone": "Every RAG chip carries its word; the dot is decorative and aria-hidden. Table selection is tint + an inset start bar + a checked box. Sparkline trend is declared as data-trend as well as coloured. (1.4.1)",
     "reducedMotion": "Every borrowed region brings its own prefers-reduced-motion override, plus the page-level kill. (2.3.3)",
     "reflow": "Proven by DRIVING at 1400 / 820 / 420 CSS px in light and dark: zero horizontal page overflow at every width. Wide, fixed-canvas regions (the chart, the table) scroll INSIDE their own region rather than the page. (1.4.10)",
-    "targetSize": "⚠ DECLARED, NOT CLAIMED. Buttons, tabs, pager cells and row download controls measure ≥ 44px. THREE INHERITED SHORTFALLS ARE MEASURED AND REPORTED, NOT SILENTLY FIXED: Breadcrumbs' .crumb links measure 39.4x10.1 (the leading-trim cap box is the link box); View-options' .seg buttons are 40px tall; Data-grid's .dgs-clear and .fchip .x are 24x24. All three are the SOURCE components' shipped geometry and are Dave's to rule. The a11y gate reports the first as 'UNMEASURED: no declared box'; this lane measured it in a browser.",
+    "targetSize": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. ⚠ DECLARED, NOT CLAIMED. Buttons, tabs, pager cells and row download controls measure ≥ 44px. THREE INHERITED SHORTFALLS ARE MEASURED AND REPORTED, NOT SILENTLY FIXED: Breadcrumbs' .crumb links measure 39.4x10.1 (the leading-trim cap box is the link box); View-options' .seg buttons are 40px tall; Data-grid's .dgs-clear and .fchip .x are 24x24. All three are the SOURCE components' shipped geometry and are Dave's to rule. The a11y gate reports the first as 'UNMEASURED: no declared box'; this lane measured it in a browser.",
     "relatedSC": [
       "1.3.1",
       "1.4.1",
@@ -108,24 +105,15 @@
     "⛔ Do not assume a `@container` rule you copied will fire. `container-type` makes an element a container for its DESCENDANTS, never for itself. Measured at #210: without a host, Layout-utilities' `.l-split` stayed two columns at 420px and its content column measured 26px, with every gate green.",
     "⛔ Do not assume a copied `text-box-edge: text text` override wins. Measured at #210: the single-class form computes `cap alphabetic` and clips 3.88px of every descender, because the canon trim rule's `:is()` list contains attribute selectors and therefore weighs 0-1-2. Use the two-class form AND measure the computed edge (ds-005).",
     "⛔ Do not namespace a borrowed rule without re-checking what used to beat it. Scoping `th,td` to `.dg th,.dg td` raised it from 0-0-1 to 0-1-1 and silently un-centred the borrowed `.dg-empty` panel.",
-    "Do not invent a domain semantic. Every status word, column, facet and section order on these pages is PROPOSED (s182-D2) and is Dave's."
+    "Do not invent a domain semantic. Every status word, column, facet and section order on these pages is PROPOSED (s182-D2) and is Dave's.",
+    "Copying a part's rules onto the page. The page places parts (its own .cn-<slug> scope + the part's own markup) and never resizes or restyles them (s305-D57 rule 3a, s307-D75). A template that re-declares a Button ladder, a Summary row or a Data-grid toolbar forks the part the moment the part moves."
   ],
   "tokenValidation": {
-    "$method": "Every gate below was RUN at #210 and its own last line is quoted. A green gate means THAT PROBE RAN; it does not mean the tree is clean [[green-tests-cannot-see-scope]].",
-    "gates": [
-      "python3 knowledge/_validate_grid.py <file> → 'GRID GATE PASS — all layout dimensions on the 4px grid'",
-      "python3 knowledge/_validate_type_composites.py <file> → 'TYPE GATE PASS — all component text bound to canon composites'; repo-wide run still reports '1097 violation(s)', the #203 baseline, UNCHANGED",
-      "python3 knowledge/_validate_snippets.py → 'snippet gate: 119 snippet(s), 0 failure(s)'",
-      "python3 knowledge/_validate_a11y.py → 'a11y gate: 119 snippet(s), 0 failure(s), 249 warning(s)'",
-      "python3 knowledge/_validate_descender_clip.py → 'DESCENDER-CLIP GATE PASS — every truncating label is descender-safe (135 file(s))'",
-      "python3 knowledge/_probe_registry/probe_meta_schema.py --check → see receipt",
-      "⛔ python3 knowledge/_validate_binds_resolve.py → 'no .cn-<slug> block in canon.css' — EXPECTED, declared above"
-    ],
-    "$declaredFailure": "⛔ `_validate_binds_resolve.py` check D FAILS for this file and this is DECLARED, not hidden: no `.cn-<slug>` block exists in canon/canon.css, so theme-cascade projection is OFF. Only the light and dark legs authored in the snippet have been seen — CONSOLE, LEGACY and SUPERCHARGE ARE UNPROVEN. Projecting the block is the conductor's, and is a precondition of any four-theme claim.",
-    "$driven": "Rendered and LOOKED AT in headless Chromium with the real HSBC cut (control probe: HSBC_MtUnivers_Latin 346.88 / 'Univers Next HSBC' 346.88 / 'Univers Next for HSBC' 346.88 vs DejaVu Sans 375.39 and a nonexistent face 301.07 — both aliases land on the target and neither lands on the fallback), light AND dark, at 1400 / 820 / 420 CSS px. Six screenshots per page, all read.",
-    "date": "2026-08-20",
-    "against": "knowledge/tokens/ via _validate_snippets.py (manifest var -> token path -> hex, both themes), plus _validate_binds_resolve.py for var resolution and canon-block projection",
-    "result": "PASS on the snippet gate (0 failures over 119 snippets) and on grid / type / a11y / descender. FAIL, DECLARED, on binds-resolve check D: no .cn-<slug> block exists in canon/canon.css, so Console, Legacy and Supercharge are UNPROVEN for this file. Four theme paths were NOT rendered."
+    "date": "2026-10-02",
+    "against": "knowledge/tokens/* via _validate_snippets.py + gen_snippet_tokens.py --check (MONO base) in the #314 cloud worktree",
+    "result": "PASS - the three page vars resolve in light and dark and both contrast pairs clear 4.5:1; canon.css carries the .cn-template-dashboard scope with the page's placement rules only (gen_canon_components.py regenerated and --check green).",
+    "$scope": "MONO base rendered in the cloud (fallback face, Chromium); the seat render with the real face is the reading of record. Console, Common and Supercharge are not rendered by this lane.",
+    "$deprecated": "No deprecated tokens bound."
   },
   "provenance": {
     "source": "gap-report",
@@ -141,19 +129,8 @@
   ],
   "$layer": "2 Template",
   "$layerNote": "⚠ THE BRIEF ASKS FOR A `layer` FIELD; THE SCHEMA FORBIDS IT, AND THE SCHEMA WINS. meta.schema.json allows only `$`-prefixed additional root keys, so the itinerary's layer value is carried as `$layer`. Declared rather than smuggled: if Dave wants a first-class `layer` field for the Layer-2 artefact class, that is a SCHEMA change and is his, not a worker lane's.",
-  "$composes": [
-    "component:kpi-tile",
-    "component:stat-card",
-    "component:chart-bar",
-    "component:data-grid",
-    "component:summary",
-    "component:layout-utilities",
-    "component:breadcrumbs",
-    "component:headers",
-    "component:button",
-    "component:view-options",
-    "component:status-indicator"
-  ],
+  "$composes": ["component:app-shell-top-nav", "component:layout-utilities", "component:page-header-lockup", "component:segmented-control", "component:status-indicator", "component:section-heading-lockup", "component:metric", "component:chart-bar", "component:summary", "component:links", "component:filter-toolbar-bar", "component:data-grid", "component:footer"],
+  "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies. FIX ROUND #314 TP: the recent records are Data-grid (s272-D84 \"recent-records grid\": sort headers, range read-out and pager are the grid's own); the Table/Cards view switch is the bar's own segmented control (s305-D60 4c-17); the four Metric tiles sit on Layout-utilities' .l-cols; the lede is page prose under the lock-up.",
   "$composesNote": "⚠ `relationships` is a CLOSED shape in meta.schema.json (livesInside · mustNotNeighbour · commonPatterns · triggeredBy) and has no seat for 'the components this organism is assembled from'. ⬛ THAT IS A REAL GAP FOR LAYER 2 and it is named, not worked around silently: composition is the defining edge of a template, and the graph cannot currently express it. The list is carried as `$composes` so it is readable and greppable but does not pretend to be a graph edge. Adding a `composes` edge type is a schema change and is Dave's.",
   "edges": {
     "renderedBy": [
@@ -196,5 +173,6 @@
         "$note": "A Layer-2 shell rendered INSIDE it; the shell wraps the template, never the other way round"
       }
     ]
-  }
+  },
+  "$render-verification": "#314 lane TP: rendered in cloud Chromium from file://, light and dark, 1280 wide, before and after; the committer re-renders at the seat with the real face."
 }

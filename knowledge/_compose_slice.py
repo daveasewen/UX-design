@@ -304,6 +304,12 @@ def load_graph(root=HERE):
         if slug.startswith("EXAMPLE-"):
             continue
         m = _load(f)
+        # #314 (Dave 14:55, call 7): a meta fenced as an EXAMPLE is a page a designer looks at, never a
+        # part a build starts from - "automated build need to ignore these, I don't want builds to
+        # trace pages." The door never sees it, so no seed and no ASK can name it. Same fence as the
+        # EXAMPLE- slug above, declared on the meta; knowledge/_validate_example_fence.py bites it.
+        if isinstance(m, dict) and m.get("fence") == "example":
+            continue
         if isinstance(m, dict) and m.get("name"):
             m["$slug"] = slug
             m["$path"] = os.path.relpath(f, os.path.dirname(root))
@@ -2175,6 +2181,13 @@ def selftest():
     s = build_slice(TASK_A, graph=g)
     ids = [c["id"] for c in s["components"]]
     prim = [c for c in s["components"] if not c.get("alternate")]
+    # — the example fence (#314, Dave 14:55 call 7: "I don't want builds to trace pages")
+    fenced_on_disk = [os.path.basename(f)[:-10] for f in glob.glob(os.path.join(HERE, "components", "*.meta.json"))
+                      if (_load(f) or {}).get("fence") == "example"]
+    bite("FENCE: every meta fenced as an example is ABSENT from the loaded graph (a build cannot seed from a page)",
+         bool(fenced_on_disk) and not any(x in g["metas"] for x in fenced_on_disk), fenced_on_disk[:4])
+    bite("FENCE: the seed names no fenced page among its components",
+         not any(c["id"].split(":", 1)[-1] in fenced_on_disk for c in s["components"]))
     # — the contract
     bite("CONTRACT: every out field is present on the seed",
          all(f in s for f in CONTRACT_FIELDS), [f for f in CONTRACT_FIELDS if f not in s])

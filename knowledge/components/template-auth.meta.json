@@ -1,6 +1,8 @@
 {
   "name": "Template — auth (log on / register / OTP)",
   "category": "template",
+  "fence": "example",
+  "$fence": "EXAMPLE, NOT A PART. Dave, 14:55 2026-10-02, call 7, verbatim: \"the page templates are only example or inspiration in the library for designers. automated build need to ignore these, I don't want builds to trace pages. However we probably need to create some standardised templates for some programs. They all need to be properly built. for now we have the prepped properly but we ignore them until we are working with programs to define them.\" So: this page is properly composed of parts (s313-D72) AND fenced — the compose door (_compose_slice.py load_graph) skips it, the generate-from-canon skill never starts from it, and _validate_example_fence.py refuses a build that reads or traces it.",
   "kind": "layout",
   "purpose": "The unauthenticated entry pages: log on, register, and one-time passcode. A quiet brand column beside a single narrow form column, collapsing to one column. It contributes page-scale layout and the brand placement; every control inside it is a gated component, borrowed.",
   "$provenance-note": "NEW at #210 (wave 5, lane C) against the Layer-2 P2 fan-out brief - itinerary row 112. PROPOSED, NOT RULED. No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no git operation.",
@@ -55,19 +57,11 @@
     }
   ],
   "tokens": {
-    "page": "background/default",
-    "brandPlate": "tertiary/background/default",
-    "rule": "divider/border/section",
-    "text": "text/default",
-    "muted": "text/secondary",
-    "disabled": "text/disabled",
-    "field": "the form/* set, via the borrowed Form-layout and Secure-entry regions",
-    "error": "rag/error + rag/error-tint, ONLY inside borrowed regions",
-    "success": "rag/success, ONLY inside the borrowed Secure-entry message region",
-    "buttons": "button/primary/* and button/quaternary/* - the Mono ladder",
-    "shape": "border-radius/control",
-    "motion": "component-type/button-family/press-travel + press-darken",
-    "$mono": "MONO ONLY. No colour value is invented. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
+    "divider": "divider/border/section - the page's own section rules",
+    "focus": "focus/ring - read only by the demo bar",
+    "layout": "layout/app/margin - the container's inline margin",
+    "$parts": "Every other colour, radius, size and face on the page belongs to a part and is bound in THAT part's #token-manifest; the page binds nothing for them (s307-D75: the rules live in the shared stylesheet, not on the page).",
+    "$mono": "MONO base rendered; the other themes reach the page through canon.css's theme cascade on each part's scope.",
     "$brandMarkIsNotTokened": "The mark is an ASSET REFERENCE, not a colour binding. It is never recoloured, tinted or filtered; the light and dark official files are swapped by display, so nothing in the token layer touches it."
   },
   "relationships": {
@@ -84,7 +78,8 @@
       "device enrolment"
     ]
   },
-  "$composes": "Form-layout (field groups, error summary, the Mono action ladder - class names KEPT), Secure-entry (the OTP cells with auto-advance, backspace, paste-distribute and the resend countdown), Button (the injected AUTO-PARTIAL press-physics block, with the `.full` rule for full-width controls).",
+  "$composes": ["component:layout-utilities", "component:page-header-lockup", "component:form-layout", "component:input-fields", "component:secure-entry", "component:button", "component:links"],
+  "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies. FIX ROUND #314 TP: the password reveal is a quaternary Button under the box, words only (s313-D49), with three lines of page wiring; the OTP Continue carries Button's own is-disabled state; the lede is page prose under the lock-up.",
   "accessibility": {
     "roles": "No invented roles. The error box is role=alert with tabindex=-1; the OTP cells are a role=group named by their label; the OTP message is role=status.",
     "keyboard": "Every control is a real focusable element. The reveal toggle returns focus to its field so typing continues uninterrupted. OTP cells auto-advance on input and step back on backspace from an empty cell.",
@@ -92,7 +87,7 @@
     "states": "aria-invalid per field; aria-pressed on the reveal toggle; the Continue button's disabled state tracks code completeness only.",
     "targets": "Every primary/secondary button is 44px tall and full width. The reveal toggle and every inline text link have a REAL 44px box, not an invisible expander (the #210 wizard lesson).",
     "autocomplete": "1.3.5 Identify Input Purpose, checked in a real browser: username, current-password, name, email, new-password, one-time-code. Every credential field also carries autocapitalize=none, autocorrect=off and spellcheck=false so a password manager and a soft keyboard both behave.",
-    "$noVisibilityGlyph": "MEASURED GAP, not an omission. Probe run at build: `ls knowledge/assets/icons/*/ | grep -iE \"eye|visib|hide|show|reveal|password\"` returns masthead-hide.svg and masthead-show.svg (arrows-and-rules - a MASTHEAD collapse control) and security-password.svg (a keyboard-with-dots). None of them means 'reveal what I typed'. The reveal control is therefore a TEXT toggle, which needs no glyph and announces its own state. An _ICON-GAPS.md entry may be owed; that file is the conductor's (the #209 Q14 precedent).",
+    "$noVisibilityGlyph": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. MEASURED GAP, not an omission. Probe run at build: `ls knowledge/assets/icons/*/ | grep -iE \"eye|visib|hide|show|reveal|password\"` returns masthead-hide.svg and masthead-show.svg (arrows-and-rules - a MASTHEAD collapse control) and security-password.svg (a keyboard-with-dots). None of them means 'reveal what I typed'. The reveal control is therefore a TEXT toggle, which needs no glyph and announces its own state. An _ICON-GAPS.md entry may be owed; that file is the conductor's (the #209 Q14 precedent).",
     "$noPasswordField": "Input-fields.reference.html contains no type=\"password\" field of any kind - the only masked inputs in the whole snippet corpus are Secure-entry's PIN cells. The password field here is the gated boxed-field anatomy with type=\"password\": composed, not drawn, and PROPOSED.",
     "$colourIsNeverAlone": "The error channel is border + 4px stroke + roundel + ink message text. The password requirements are plain ink list items, not a live tick/cross meter - a meter would need a RAG vocabulary this lane has no mandate to mint.",
     "relatedSC": [
@@ -118,14 +113,14 @@
     "Inventing an eye icon for the reveal toggle because the library has none. Use words.",
     "Omitting or guessing autocomplete. A wrong autocomplete token is worse than none: it teaches a password manager to fill the wrong field.",
     "Telling a person which of username or password was wrong. This specimen's messages are format messages ('Enter your username'), never outcome messages.",
-    "REVIEW Filling the brand column with invented imagery. It is deliberately quiet: the mark and one neutral line. Brand imagery is not this lane's to create."
+    "REVIEW Filling the brand column with invented imagery. It is deliberately quiet: the mark and one neutral line. Brand imagery is not this lane's to create.",
+    "Copying a part's rules onto the page. The page places parts (its own .cn-<slug> scope + the part's own markup) and never resizes or restyles them (s305-D57 rule 3a, s307-D75). A template that re-declares a Button ladder, a Summary row or a Data-grid toolbar forks the part the moment the part moves."
   ],
   "tokenValidation": {
-    "date": "2026-08-20",
-    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
-    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 5, lane C).",
-    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template.",
-    "$notGenerated": "canon.css carries NO .cn-template-auth scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's.",
+    "date": "2026-10-02",
+    "against": "knowledge/tokens/* via _validate_snippets.py + gen_snippet_tokens.py --check (MONO base) in the #314 cloud worktree",
+    "result": "PASS - the three page vars resolve in light and dark and both contrast pairs clear 4.5:1; canon.css carries the .cn-template-auth scope with the page's placement rules only (gen_canon_components.py regenerated and --check green).",
+    "$scope": "MONO base rendered in the cloud (fallback face, Chromium); the seat render with the real face is the reading of record. Console, Common and Supercharge are not rendered by this lane.",
     "$deprecated": "No deprecated tokens bound."
   },
   "provenance": {
@@ -134,7 +129,7 @@
     "code_path": "",
     "$note": "Wave-5 Layer-2 P2 fan-out brief, lane C, itinerary row 112. No Figma node."
   },
-  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file://, real HSBC face (canvas-width assertion against two controls), light AND dark at 1180 / 760 / 420px, screenshots LOOKED AT, zero horizontal overflow and zero failed network requests at every width. Driven: submitting log on empty BLOCKED with two summary entries; the reveal toggle flipped type password->text with aria-pressed false->true and the label Show->Hide; register rejected 'nope' as an email and a 5-character password with the borrowed messages; six OTP digits enabled Continue and produced the completeness message that states on its own face that the code is not checked. ⛔ ONE DEFECT WAS FOUND ONLY BY MEASURING, WITH EVERY GATE GREEN AND THE 420px SCREENSHOT LOOKING PLAUSIBLE: the two-panel grid NEVER COLLAPSED. `container-type` had been declared on .auth itself, and an element is a query container for its DESCENDANTS, never for itself, so the @container rule that collapses .auth could not fire. Computed grid-template-columns read '565px 565px' / '355px 355px' / '185px 185px' at 1180 / 760 / 420 - the whole log-on form crushed into 185px on a phone. Repaired by moving the container to an .auth-shell wrapper; re-measured '565px 565px' / '710px' / '370px', and the OTP cells now take Secure-entry's own 40x48 at 420.",
+  "$render-verification": "#314 lane TP: rendered in cloud Chromium from file:// (never set_content), light and dark, 1280 wide, before (HEAD 8d8e91da) and after; PNGs under notes/_lanes/314/TP/renders are NOT in the repo (lane files) - the committer re-renders at the seat with the real face. The #210 measurements that stood here (target sizes, collapse widths) predate the rebuild and are retired; nothing below them is claimed.",
   "$brandMark": {
     "$fence": "Dave #86: the Apollo crescent is an ANONYMITY mark ONLY and must NEVER be placed as a product brand. This template contains no crescent and creates no brand asset.",
     "asset": "knowledge/assets/logos/masterbrand-light-mono.svg and masterbrand-dark-mono.svg",

@@ -125,12 +125,13 @@
   body{margin:0; padding:2.25rem; background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
 /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-wrap{ max-width:460px; }   /* the showroom's column — not the part's width */
   .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
 /* ===== APOLLO-DEMO css END ===== */
   .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-4px; overflow:hidden;
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
-  .tl{--tl-w:460px; width:var(--tl-w); max-width:100%; container-type:inline-size;
+  .tl{--tl-w:100%; width:var(--tl-w); max-width:100%; container-type:inline-size;   /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part): the default FILLS its container (Dave 14:55 call 10: "the summary and the timeline fill its container"); the dial stays for a page that wants it narrower; the 460 that was the default is the showroom's wrap */
     background:var(--surface); border:1px solid var(--divider); border-radius:var(--border-radius-surface);
     padding:16px;}
 
@@ -205,6 +206,9 @@
 <!-- ===== APOLLO-DEMO specimen-heading START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Transaction history — status node + amount (the itinerary's named case)</h2>
 <!-- ===== APOLLO-DEMO specimen-heading END ===== -->
+<!-- ===== APOLLO-DEMO wrapper-open START (showroom harness — never copy) ===== -->
+  <div class="demo-wrap">
+<!-- ===== APOLLO-DEMO wrapper-open END ===== -->
   <section class="tl" aria-labelledby="tl1-h">
     <h2 id="tl1-h" class="sr-only">Transaction history</h2>
 
@@ -351,6 +355,10 @@
        non-colour carrier is checkable against real DOM, per s151-D1 clause 4. Every dot here is
        accompanied by its word, so the dot never carries meaning alone. The neutral-label-on-tint
        pairs ARE declared: they pass in both modes (8.21–14.46, measured #203). -->
+<!-- ===== APOLLO-DEMO wrapper-close START (showroom harness — never copy) ===== -->
+  </div>
+<!-- ===== APOLLO-DEMO wrapper-close END ===== -->
+
   <script type="application/json" id="token-manifest">
   {
     "component": "Timeline",

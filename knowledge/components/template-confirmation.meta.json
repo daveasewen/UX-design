@@ -2,6 +2,8 @@
   "name": "Template confirmation",
   "when": "position = end of an instruction AND order = message, then FACTS, then actions, then what-happens-next AND a reference is shown if one exists — beats the Confirmation component (roles.json feedback role) because a confirmation PAGE is also the RECEIPT — that reordering is the template's whole contribution; ends a flow that template-wizard began.",
   "category": "template",
+  "fence": "example",
+  "$fence": "EXAMPLE, NOT A PART. Dave, 14:55 2026-10-02, call 7, verbatim: \"the page templates are only example or inspiration in the library for designers. automated build need to ignore these, I don't want builds to trace pages. However we probably need to create some standardised templates for some programs. They all need to be properly built. for now we have the prepped properly but we ignore them until we are working with programs to define them.\" So: this page is properly composed of parts (s313-D72) AND fenced — the compose door (_compose_slice.py load_graph) skips it, the generate-from-canon skill never starts from it, and _validate_example_fence.py refuses a build that reads or traces it.",
   "kind": "layout",
   "purpose": "The page at the end of an instruction, in two states. Confirmation is a 380px column that ENDS a flow; a confirmation PAGE has to be the RECEIPT as well, so the ORDER changes and that order is the template's whole contribution: message column, then the FACTS, then the actions, then what happens next. Actions come after the facts because a person cannot decide what to do until they have read what was done.",
   "$provenance-note": "NEW at #210 (wave 6, lane B) against the Layer-2 P3 fan-out brief - itinerary row 114. PROPOSED, NOT RULED. Layer-2 rows have no ruled artefact form; this file ships in the library's grammar on the brief's PROPOSED convention (s182-D2, the Kpi-tile precedent). No registration was performed: no CATEGORIES entry, no MIGRATED_SNIPPETS entry, no component-types.json membership, no canon.css block, no _rulings.json line, no gen_kg_edges.py run, no git operation. Deleting this pair costs nothing because nothing points at it.",
@@ -49,17 +51,13 @@
     }
   ],
   "tokens": {
-    "page": "background/default",
-    "surface": "tertiary/background/default (receipt + next-steps panels)",
-    "text": "text/default",
-    "muted": "text/secondary (Confirmation's message line)",
-    "success": "rag/success - the SUCCESS variant's roundel only, carried WITH its driftAllow and its reason",
-    "chip": "rag/warning + rag/warning-tint, via Status-indicator form B - the PENDING variant's word",
-    "divider": "divider/border/subsection, via Summary's row rule",
-    "buttons": "the button/primary/*, button/tertiary/* and button/quaternary/* Mono ladder",
+    "divider": "divider/border/section - the page's own section rules",
+    "focus": "focus/ring - read only by the demo bar",
+    "layout": "layout/app/margin - the container's inline margin",
+    "$parts": "Every other colour, radius, size and face on the page belongs to a part and is bound in THAT part's #token-manifest; the page binds nothing for them (s307-D75: the rules live in the shared stylesheet, not on the page).",
+    "$mono": "MONO base rendered; the other themes reach the page through canon.css's theme cascade on each part's scope.",
     "$roundelPolicy": "--success in DARK is #FFFFFF and that is NOT drift: it is Confirmation's own RAG ROUNDEL POLICY (Dave, 2026-07-02 eve). The tick is a page-cutout, so a white shape gives a black tick at 21:1, where rag/success #00847F with a black cutout measured 2.77 and failed the >=4.5 mark leg. The driftAllow entry and its reason travel together, because a policy that travels without its reason becomes a bug.",
     "$noColouredMoney": "⛔ No monetary figure on either page is coloured. rag/success-ink and rag/error-ink are MONO ONLY (s155-D1 / s158-D2 / s158-D3).",
-    "$mono": "MONO ONLY. No colour value is invented anywhere in this template. Every hex in both theme blocks appears in the theme block of a source component. The two-red law (s151-D1) and the mono error-ink camp (s149-D1) are untouched.",
     "$noNewWidths": "s210-D3 discipline: the template asserts page-scale layout only. No molecule inside it receives a new fixed width."
   },
   "relationships": {
@@ -76,13 +74,14 @@
       "request submitted"
     ]
   },
-  "$composes": "Confirmation (.confirm, .success, .confirm__title / __msg / __actions and the entrance animation - its raw font declarations dropped and its own .confirm .btn ladder NOT carried, because this page uses the Button ATOM), Summary (the receipt rows and the emphasised total row), Status-indicator (the pending chip, form B via Document-row), Empty-state (.empty .glyph, re-selected as .glyph, for the pending anchor), Stat-card (every panel surface), Button (every action, with its injected press-physics partial), Layout-utilities (.l-container).",
+  "$composes": ["component:app-shell-top-nav", "component:footer", "component:layout-utilities", "component:confirmation", "component:status-indicator", "component:section-heading-lockup", "component:summary"],
+  "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies.",
   "accessibility": {
     "roles": "No invented roles. Each specimen is a <main> whose message column is role=\"group\" with aria-labelledby on the <h1>; each receipt is a real <dl> labelled by its panel heading; each next-steps list is an <ol>.",
     "keyboard": "Tab order follows source order: primary action, secondary action. Two stops per page, which is the whole page.",
     "announcements": "The pending chip is role=\"status\". The success page announces nothing beyond its heading - the person arrived here, so the state is the destination.",
     "states": "None beyond the two variants.",
-    "targets": "MEASURED at 1400px: 220x44, 232x44, 304x44, 197x44. Every action clears 44px in both directions.",
+    "targets": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. MEASURED at 1400px: 220x44, 232x44, 304x44, 197x44. Every action clears 44px in both directions.",
     "$colourIsNeverAlone": "The success roundel is aria-hidden and the HEADING carries the success (1.4.1). The pending chip carries its word and its dot is aria-hidden. The pending state also states its consequence in prose ('Nothing has left the account yet') rather than relying on the chip alone.",
     "$candidateSource": "⚠ Confirmation.reference.html is itself a CANDIDATE, not gated: its meta's provenance says 'REVIEW: no Figma node yet'. Borrowing it into a template does NOT promote it, and this file must not be cited as evidence that it is settled.",
     "relatedSC": [
@@ -102,14 +101,14 @@
     "Holding Confirmation's 380px at page scale. It broke 'Payment waiting for approval' after the word 'for'. The CONTAINER widens the column to 460px and asserts nothing about any molecule (s210-D3).",
     "Animating the pending entrance. The pop is a success device.",
     "Colouring the money. rag/*-ink is MONO ONLY and binding it here would rule on Dave's behalf.",
-    "Claiming irreversibility the product cannot honour. The success page says 'It cannot be recalled from here', which is a statement about THIS SURFACE and not about the payment scheme."
+    "Claiming irreversibility the product cannot honour. The success page says 'It cannot be recalled from here', which is a statement about THIS SURFACE and not about the payment scheme.",
+    "Copying a part's rules onto the page. The page places parts (its own .cn-<slug> scope + the part's own markup) and never resizes or restyles them (s305-D57 rule 3a, s307-D75). A template that re-declares a Button ladder, a Summary row or a Data-grid toolbar forks the part the moment the part moves."
   ],
   "tokenValidation": {
-    "date": "2026-08-20",
-    "against": "knowledge/tokens/semantic-colour.json via _validate_snippets.py (MONO base only)",
-    "result": "PASS - every declared var resolves in both light and dark and every declared contrast pair clears its threshold in both modes (run at #210, wave 6, lane B).",
-    "$scope": "MONO base only. Console, Legacy and Supercharge were NOT rendered by this lane and are UNPROVEN for this template. The four-theme cascade needs the canon.css projection below first, and [[four-themes-flexibility-is-the-requirement]] says test PER THEME - that test has NOT been run and is not claimed.",
-    "$notGenerated": "canon.css carries NO .cn-template-confirmation scope, so _validate_binds_resolve.py check D FAILS for this file. DECLARED, not hidden - the projection is the conductor's and is a precondition of any four-theme claim.",
+    "date": "2026-10-02",
+    "against": "knowledge/tokens/* via _validate_snippets.py + gen_snippet_tokens.py --check (MONO base) in the #314 cloud worktree",
+    "result": "PASS - the three page vars resolve in light and dark and both contrast pairs clear 4.5:1; canon.css carries the .cn-template-confirmation scope with the page's placement rules only (gen_canon_components.py regenerated and --check green).",
+    "$scope": "MONO base rendered in the cloud (fallback face, Chromium); the seat render with the real face is the reading of record. Console, Common and Supercharge are not rendered by this lane.",
     "$deprecated": "No deprecated tokens bound."
   },
   "provenance": {
@@ -118,7 +117,7 @@
     "code_path": "",
     "$note": "Wave-6 Layer-2 P3 fan-out (notes/_briefs/2026-08-20-210-wave6-layer2-p3-fanout-brief-v1.md), lane B, itinerary row 114. No Figma node."
   },
-  "$render-verification": "DRIVEN AT #210, NOT ASSERTED. Headless Chromium from file:// with the real HSBC cut (canvas-width assertion against TWO controls: target 346.88, both aliases 346.88, DejaVu 375.39, nonexistent face 301.07), light AND dark, at 1400 / 820 / 420 CSS px, screenshots LOOKED AT - including the dark render, where the roundel policy was confirmed working by eye: a WHITE roundel with a BLACK tick. Zero horizontal page overflow in all 6 runs. Collapse MEASURED: .confirm__actions flex-direction read row -> row -> column. TWO FINDINGS: the same invisible --muted dangle the sibling error template hit (Confirmation's .confirm__msg reads color:var(--muted); undeclared, the declaration is invalid at computed-value time and the text INHERITS text/default, which in Mono is the same hex as text/secondary - so nothing visual could ever have shown it), now declared and re-measured to zero; and the 380px column, widened to 460px after LOOKING at the dark render.",
+  "$render-verification": "#314 lane TP: rendered in cloud Chromium from file:// (never set_content), light and dark, 1280 wide, before (HEAD 8d8e91da) and after; PNGs under notes/_lanes/314/TP/renders are NOT in the repo (lane files) - the committer re-renders at the seat with the real face. The #210 measurements that stood here (target sizes, collapse widths) predate the rebuild and are retired; nothing below them is claimed.",
   "$edges-note": "EVERY node-id here was CHECKED AGAINST THE LIVE REGISTRIES BEFORE IT WAS WRITTEN. knowledge/components/_nodes-context.json and _nodes-pattern.json were read and every ref below already exists in them: this lane mints ZERO new context or pattern node-ids, which is the #210 wave-5 lane C discipline carried forward (that lane's first draft invented 6 of 8 patterns and 3 of 4 contexts). _validate_kg.py still FAILS because the metas themselves are new and gen_kg_edges.py must be re-run - a generated, shared file, and the conductor's.",
   "edges": {
     "renderedBy": [

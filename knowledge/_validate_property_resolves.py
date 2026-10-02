@@ -95,13 +95,17 @@ COMMENT_RE = re.compile(r"/\*.*?\*/", re.S)
 
 
 def css_of(path, text):
-    """Every chunk of CSS this document actually applies, plus what it links."""
-    chunks = []
+    """Every chunk of CSS this document actually applies, plus what it links.
+
+    Returns (own, linked_css, linked): `own` is the document's OWN CSS (its <style> blocks and
+    its inline style="" attributes), `linked_css` the text of every stylesheet it <link>s, and
+    `linked` the link records (relative paths, or MISSING:<href> for a 404)."""
+    own = []
     for m in STYLE_RE.finditer(text):
-        chunks.append(m.group(1))
+        own.append(m.group(1))
     for m in INLINE_RE.finditer(text):
-        chunks.append(m.group(1))
-    linked = []
+        own.append(m.group(1))
+    linked, linked_css = [], []
     for tag in LINK_RE.findall(text):
         href = HREF_RE.search(tag)
         if not href:
@@ -109,20 +113,32 @@ def css_of(path, text):
         target = os.path.normpath(os.path.join(os.path.dirname(path), href.group(1)))
         if os.path.isfile(target):
             with open(target, encoding="utf-8") as fh:
-                chunks.append(fh.read())
+                linked_css.append(fh.read())
             linked.append(os.path.relpath(target, REPO))
         else:
             # a <link> that 404s is its own defect — surface it, never swallow it
             linked.append("MISSING:" + href.group(1))
-    return chunks, linked
+    return own, linked_css, linked
 
 
 def scan(path):
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
-    chunks, linked = css_of(path, text)
+    own, linked_css, linked = css_of(path, text)
     declared, used = set(), {}
-    for chunk in chunks:
+    # A LINKED stylesheet contributes its DECLARATIONS to what this file can reach; its own
+    # var() USES are that stylesheet's business, gated where it lives (canon.css: _validate_compose
+    # check 1 VARS RESOLVE, which knows the per-instance scope vars such as `--sc` that are declared
+    # on markup by whichever page draws a chart series — the ds-010 provenance). Counting a linked
+    # sheet's uses against every page that links it would red every composed page for a property it
+    # never instantiates, and would make this gate's verdict depend on which sheet is linked rather
+    # than on what the page itself wrote. #314 lane TP, when the twelve page templates became
+    # composed pages that <link> canon.css (the first files in this glob to do so).
+    for chunk in linked_css:
+        clean = COMMENT_RE.sub(" ", chunk)
+        for m in DECL_RE.finditer(clean):
+            declared.add(m.group(1))
+    for chunk in own:
         clean = COMMENT_RE.sub(" ", chunk)
         for m in DECL_RE.finditer(clean):
             declared.add(m.group(1))
@@ -243,6 +259,30 @@ def selftest():
         print("  [%s] bite 4 — 404 stylesheet is caught, not swallowed: %d failure(s), "
               "expected ≥1" % ("PASS" if n >= 1 else "FAIL", n))
         ok &= (n >= 1)
+
+        # ── BITE 5: a linked sheet's own unresolved use is that sheet's, not the page's (#314 TP) ──
+        # The page links a sheet that declares nothing and uses `var(--only-the-sheet-uses-this)`:
+        # the page must NOT be failed for it. But a use the PAGE writes, resolved only by a
+        # declaration in the linked sheet, must still pass (the link is reachable CSS).
+        sheet = os.path.join(tmp, "linked.css")
+        with open(sheet, "w", encoding="utf-8") as fh:
+            fh.write(".x{fill:var(--only-the-sheet-uses-this);} :root{--from-the-sheet:#808080;}")
+        bite5 = os.path.join(tmp, "bite5.reference.html")
+        b5 = rebased.replace("</head>", '<link rel="stylesheet" href="%s">\n<style>.y{color:var(--from-the-sheet);}</style>\n</head>' % sheet, 1)
+        assert b5 != rebased, "bite 5 did not apply — the anchor moved, FIX THE BITE"
+        with open(bite5, "w", encoding="utf-8") as fh:
+            fh.write(b5)
+        n = run([bite5], quiet=True)
+        print("  [%s] bite 5 — a linked sheet's own unresolved use is not the page's; a page use "
+              "resolved by the sheet passes: %d failure(s), expected 0" % ("PASS" if n == 0 else "FAIL", n))
+        ok &= (n == 0)
+        bite5b = os.path.join(tmp, "bite5b.reference.html")
+        with open(bite5b, "w", encoding="utf-8") as fh:
+            fh.write(b5.replace("var(--from-the-sheet)", "var(--from-nowhere)"))
+        n = run([bite5b], quiet=True)
+        print("  [%s] bite 5b — the page's own unresolved use still bites with a sheet linked: "
+              "%d failure(s), expected 1" % ("PASS" if n == 1 else "FAIL", n))
+        ok &= (n == 1)
 
         # ── BITE THE BITE: neuter the detector, the selftest must notice ──
         saved = globals()["USE_RE"]

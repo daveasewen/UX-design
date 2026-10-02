@@ -195,7 +195,7 @@
     clip:rect(0,0,0,0); white-space:nowrap; border:0;}
 
   /* ==== THE BENTO BOARD — 12 columns, spans declared per tile (meta span.cols 3..6) ========= */
-  .board{display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:16px; max-width:1040px;}
+  .board{display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:16px;}   /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part) F10: the board FILLS its container; the 1040 that capped it is the showroom's wrap below */
   .metric{grid-column:span 3;}
   .metric.wide{grid-column:span 4;}
   .metric.hero{grid-column:span 6;}
@@ -388,6 +388,7 @@
   }
 
 /* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  .demo-wrap{ max-width:1040px; }   /* the showroom's column — not the part's width */
   .demo-h{opacity:var(--alpha-60); margin:1.75rem 0 .7rem;}   /* demo chrome — not the component */
 /* ===== APOLLO-DEMO css END ===== */
 </style>
@@ -413,6 +414,9 @@
     <symbol id="metric-chev" viewBox="0 0 18 18"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.15234 17L12.1503 9L4.15234 1H5.84834L13.8483 9L5.84834 17H4.15234Z" fill="currentColor"/></symbol>
   </svg>
 
+<!-- ===== APOLLO-DEMO wrapper-open START (showroom harness — never copy) ===== -->
+  <div class="demo-wrap">
+<!-- ===== APOLLO-DEMO wrapper-open END ===== -->
   <!-- ===== APOLLO-DEMO section-heading START (showroom harness — never copy) ===== -->
   <h2 class="t-cm-caption demo-h">Default — span 3, 32px value, twelve-point spark</h2>
   <!-- ===== APOLLO-DEMO section-heading END ===== -->
@@ -709,6 +713,10 @@
        therefore NOT declared as a passing pair — the absence is DECLARED, not silent, and it is the
        flagged glyph-seat question above. The two INK pairs ARE declared, and #261 RAISES them from
        context "ui" to context "text": re-measured, they clear 4.5:1 in both modes. -->
+<!-- ===== APOLLO-DEMO wrapper-close START (showroom harness — never copy) ===== -->
+  </div>
+<!-- ===== APOLLO-DEMO wrapper-close END ===== -->
+
   <script type="application/json" id="token-manifest">
   {
     "component": "Metric",

@@ -218,7 +218,12 @@
   .ph{display:flex; flex-direction:column; gap:12px;}
   .ph-crumb{margin-bottom:2px;}
   .ph-row{display:flex; align-items:flex-start; justify-content:space-between; gap:16px 24px; flex-wrap:wrap;}
-  .ph-titleblock{display:flex; flex-direction:column; gap:4px; min-width:0;}
+  .ph-titleblock{display:flex; flex-direction:column; gap:4px; min-width:0; flex:1 1 0%;}   /* #314 TP2: the block takes the row's slack so a lede can wrap INSIDE it while the actions keep the right edge (the detail page's actions had dropped under a long meta line) */
+  /* THE LEDE (#314 TP2; Dave 14:55 call 10 on the detail page: "the top section need some layout changes" — the #210 pages drew
+     a body-size description under the title; the meta line is legal-size by its binding and is a STAMP, not a sentence).
+     Optional, body type, a reading measure; it sits under the title and above the meta line, so on a page with the
+     tab-strip foot the sentence still reads before the tabs. */
+  .ph-lede{margin:0; max-width:60ch;}
   .ph-titlerow{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
   .ph-title{margin:0;}
   .ph-meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
@@ -233,6 +238,7 @@
   .ph-outer{container-type:inline-size;}
   @container (max-width: 560px){
     .ph-row{flex-direction:column; align-items:stretch;}
+    .ph-titleblock{flex:0 0 auto;}   /* the row is a column now: the block is as tall as its words, no more (#314 TP2) */
     .ph-actions{justify-content:flex-end;}
   }
 
@@ -271,6 +277,7 @@
             <div class="ph-titleblock">
               <span class="eyebrow t-cm-caption">Payments</span>
               <h1 class="ph-title t-cm-heading">Standing orders</h1>
+              <p class="ph-lede t-ed-body">Every regular payment this account makes, with the next date each one goes out.</p>
             </div>
             <div class="ph-actions">
               <button class="btn tertiary" type="button">Export</button>

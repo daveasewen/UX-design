@@ -69,12 +69,18 @@
   *{box-sizing:border-box;}
   body{margin:0; padding:2.25rem; font-family:var(--font); background:var(--page); color:var(--text);
     -webkit-font-smoothing:antialiased; transition:background var(--ease), color var(--ease);}
-  h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}
+/* ===== APOLLO-DEMO css START (showroom harness — never copy) ===== */
+  h2{font-size:14px; opacity:var(--alpha-60); margin:1.75rem 0 .7rem; font-weight:500;}   /* the showroom's specimen headings — fenced #314 TP2 F1 so canon no longer greys every h2 in the part's scope */
+/* ===== APOLLO-DEMO css END ===== */
 
   /* the empty state — centred column inside whatever region is empty */
   .empty{ display:flex; flex-direction:column; align-items:center; text-align:center;
-    gap:12px; padding:48px 24px; max-width:480px; margin:0 auto;
-    border:1px dashed var(--line); border-radius:var(--border-radius-surface); }
+    gap:12px; padding:48px 24px; max-width:480px; margin:0 auto; }
+  /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part), Dave 14:55 calls 16 and 17 (empty, error): "doesnt need the border" / "better but it doesn't need the border".
+     The column is the DEFAULT: a quiet centred column with no surface - the region it sits in is already the box.
+     `.empty.bordered` keeps the dashed placeholder edge as a VARIANT for a region that has no edge of its own
+     (a wireframe, an empty bento cell), chosen by the page, never the default. */
+  .empty.bordered{ border:1px dashed var(--line); border-radius:var(--border-radius-surface); }
   .empty .glyph{ width:48px; height:48px; color:var(--text); opacity:var(--alpha-40); }
   .empty .glyph svg{ width:48px; height:48px; display:block; fill:currentColor; }
   .empty h3{ margin:0; }

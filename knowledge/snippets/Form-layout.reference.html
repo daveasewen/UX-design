@@ -199,7 +199,8 @@
   .fl-msg p{flex:1; min-width:0; color:var(--text); margin:0;}   /* message text stays INK — colour is never the only channel */
 
   /* two-column row — proximity-grouped pairs (sort code + account number); stacks narrow */
-  .fl-row{display:grid; grid-template-columns:1fr 1fr; gap:0 16px; align-items:start;}
+  .fl-row{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 16px; align-items:start;}   /* #314 TP2 (Dave 14:55 call 28: fix the findings at the part) F2: minmax(0,1fr) — an input's intrinsic width can no longer push the second track past the column */
+  .fl-row .fl-box input{min-width:0; width:100%;}
   @media (max-width:520px){ .fl-row{grid-template-columns:1fr;} }
 
   /* ---------- form-level error summary (ctkn-020) ---------- */
