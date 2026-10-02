@@ -105,7 +105,7 @@ Entry point: `notes/2026-07-26-memento-dream-pass-scope-v2.md` (three shapes: Co
 
 > ⚠ **CI AND THE FILL.** ⚠ Nothing inscribed: his forty answers sit in the export, row W-315dr; `_rulings.json` reads 974. ⚠ The publish of the review page cost the conductor about 82,000 in four minutes, the largest single step of the session. ⚠ CI: no red; the opener's read on `853d7f56` was GREEN, and the session's two commits wait for this wrap's push. ⚙ **FILL, a hand sum by `_wrap_facts.py`:** boot **136,801** (over the 135,000 ceiling by 1,801) · 160,000 at 21:29 · **300,000 at not crossed** · 320,000 at not crossed · **282,741 at his "wrap"** (23:00), under the 300,000 stop line · 291,254 at the launch of this seat. subs 1,150,046 (n=3).
 
-> ⛔★ **5b —** PLACEHOLDER-315W
+> ⛔★ **5b —** **(by addition, after the commit):** wrap commit **`009b6c12`** (`--wrap`, gate `253 in scope · 0 fail · 43 warn`) and **`139170cc`** (the seat's files); the pre-push check first: committed tree 88 pass, 0 FAIL; writer gates 167 pass, 0 FAIL; 40 tests; pushed `853d7f56..139170cc` at 22:38:30 UTC, carrying `40ae6e0e`, `bb20398c`. **CI on `139170cc`, run `37073575189`: GREEN, all three jobs.** `_CHAIN.md` 5,918 cl100k after the wrap's regen, under the 7,700 warn by 1,782. This addendum's CI is owed to #316.
 
 > **WHY/HOW: `_DECISION-HISTORY/2026-10-02-315-his-forty-answers-came-back-and-nothing-was-inscribed.md`. Handoff: `_HANDOFF-166-his-forty-answers-came-back-and-nothing-was-inscribed.md` — NEWER THAN `_CHAIN.md` AND OUTRANKS IT. His words: `notes/_lanes/315/DAVE-*.md`. Lane reports: `notes/_subreports/2026-10-02-315-*.md`. Wrap: `notes/_subreports/2026-10-02-315-W-wrap.md`.**
 

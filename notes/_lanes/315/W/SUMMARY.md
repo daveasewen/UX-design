@@ -9,6 +9,7 @@
 - Your second-look page went up as version 33 of the review artifact, and you answered it.
 - The whole library was read against 75 of your rulings: 13 breaks, 12 questions, 13 small things. The page is written but not yet on the artifact.
 - Three cold runs on a scratch v1.0.15 pack scored well, and the verdict is HOLD.
+- The wrap is committed and pushed (`009b6c12`, plus `139170cc` for the wrap seat's files). The full pre-push check ran on the wrap first and came back clean. CI is green on all three jobs.
 - Next chat: `Apollo - #316: his forty answers inscribed, and his nine changes as lanes`.
 
 ## Problems
