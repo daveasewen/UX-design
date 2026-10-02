@@ -424,6 +424,12 @@
       count();
     }
     document.querySelectorAll('.ti').forEach(wireTagsInput);
+    // input-modality (s313-D71): the keyboard ring shows for keyboard users only; a click or a tap
+    // marks the input as a pointer and the :root[data-modality="pointer"] rule above keeps it off.
+    { const root = document.documentElement;
+      addEventListener('keydown', e => { if (e.key === 'Tab') root.dataset.modality = 'keyboard'; });
+      addEventListener('mousedown', () => root.dataset.modality = 'pointer');
+      addEventListener('touchstart', () => root.dataset.modality = 'pointer', { passive:true }); }
   </script>
 </body>
 </html>

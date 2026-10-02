@@ -18,7 +18,8 @@ For every knowledge/snippets/*.reference.html:
      Bite-tested in _tests/test_gates.py. Advisory continues to sweep non-gated
      surfaces (_fitness-test) for the same class.
   5. FOCUS — there must be a :focus-visible rule, and no outline:none without a
-     visible replacement (box-shadow or a non-none outline).
+     visible replacement (box-shadow or a non-none outline). 5b (#314, s313-D71): no ring
+     (outline / box-shadow) on a bare :focus — that ring paints on a mouse click.
   6. TYPOGRAPHY — no italics (font-style or <i>/<em>), no text-shadow, no raw
      brand-red hex on the color property (red text arrives only via the
      rag/error role token or a CTA role). RULED STRAIGHT TO BLOCKING by Dave
@@ -345,8 +346,37 @@ def validate(path):
             or re.search(r'focus-visible[^{}]*\{[^}]*(transform|scaleX|border|background|opacity)', html))
     if bare and not repl:
         errors.append(f"{name}: outline:none with no visible focus replacement (2.4.7)")
+    # 5b. CLICK RING — s313-D71 (Dave, #313, 'The components too'), Dave 14:55 #314 call 1, verbatim:
+    # "we never have a focus state unless the user is using keybord controls". A ring (outline or
+    # box-shadow) on a bare `:focus` selector paints on a mouse click or a tap; the ring belongs on
+    # `:focus-visible`. `:focus` inside `:not(...)` and `outline:none` resets are not rings.
+    for sel, decl in _focus_ring_rules(html):
+        errors.append(f"{name}: CLICK RING `{sel.strip()[:90]}` draws a ring on a bare :focus, which "
+                      f"shows on a mouse click — put it on :focus-visible (s313-D71)")
 
     return errors, warnings
+
+
+def _focus_ring_rules(html):
+    """(selector, declarations) for every <style> rule whose selector carries a bare :focus (not
+    -visible / -within, not inside :not()) and whose declarations draw a ring: a non-none outline
+    or a non-none box-shadow."""
+    out = []
+    for css in re.findall(r'<style\b[^>]*>(.*?)</style>', html, re.S | re.I):
+        css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+        for sel, decl in re.findall(r'([^{}]+)\{([^{}]*)\}', css):
+            bare_sel = re.sub(r':not\([^()]*(?:\([^()]*\)[^()]*)*\)', '', sel)
+            if not re.search(r':focus(?![-\w])', bare_sel):
+                continue
+            ring = False
+            for prop, val in re.findall(r'(outline(?:-style|-width|-color)?|box-shadow)\s*:\s*([^;]+)', decl):
+                v = val.strip().lower()
+                if v in ('none', '0', '0px', 'transparent', 'initial', 'unset') or v.startswith('none'):
+                    continue
+                ring = True
+            if ring:
+                out.append((sel, decl))
+    return out
 
 
 snippets = sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))

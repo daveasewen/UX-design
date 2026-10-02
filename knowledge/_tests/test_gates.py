@@ -348,6 +348,14 @@ def mut_no_focus(k):
     write(p, html.replace(":focus-visible", ":focus-hidden"))
 
 
+def mut_click_ring(k):
+    # s313-D71 / Dave 14:55 #314 call 1 — a ring on a bare :focus paints on a mouse click.
+    def need(man, html):
+        return "<button" in html and "</style>" in html
+    p, html, man = first_snippet_with_manifest(k, need)
+    write(p, html.replace("</style>", "  .zz-planted:focus{outline:2px solid var(--focus);}\n</style>", 1))
+
+
 def mut_reduced_motion(k):
     def need(man, html):
         return ("prefers-reduced-motion" in html
@@ -567,6 +575,7 @@ CASES = [
     ("snippet gate bites on failing contrast",   "contrast", "_validate_snippets.py",     mut_bad_contrast,    "CONTRAST"),
     ("snippet gate bites on icon 4.5 dead-zone", "icon45",   "_validate_snippets.py",     mut_icon_dead_zone,  "icon-015"),
     ("snippet gate bites on missing focus",      "focus",    "_validate_snippets.py",     mut_no_focus,        ":focus-visible"),
+    ("snippet gate bites on a ring on bare :focus","clickring","_validate_snippets.py",   mut_click_ring,      "CLICK RING"),
     ("snippet gate bites on uppercase CSS",      "caps-css", "_validate_snippets.py",     mut_allcaps_css,     "ALL-CAPS text-transform"),
     ("snippet gate bites on ALL-CAPS text run",  "caps-txt", "_validate_snippets.py",     mut_allcaps_text,    "ALL-CAPS text run"),
     ("snippet gate bites on italics",            "italic",   "_validate_snippets.py",     mut_italics,         "ITALICS"),
