@@ -43,6 +43,9 @@ screen cannot silently drift because it has no component CSS of its own.
    radius token is `0` there). `legacy` is the older key for `common` and still resolves
    (`s227-D8`), but new work emits `common`.
 2. `<link rel="stylesheet" href="../canon/canon.css">`.
+   And, once, `<script src="../canon/click-or-tab.js"></script>` — the one shared script that
+   tells a click from a Tab (`s315-D26`). canon.css hides the focus ring when `<html>` carries
+   `data-modality="pointer"`; this is what sets it. Without it a click draws the ring on every field.
 3. Drop in each component as **its scope class + the snippet's own markup**, e.g.
    `<div class="cn-button"><button class="btn primary full">…</button></div>` or
    `<div class="cn-list-items"><ul class="list"><li><button class="row">…</button></li></ul></div>`.

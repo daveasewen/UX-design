@@ -349,8 +349,10 @@ def _token_tier_map(g, root):
     for grp in g["semantic_colour"]:
         if not grp.startswith("$"):
             tiers[grp] = ("semantic", "tokens/semantic-colour.json")
-    for grp in g["component_types"]:
-        if not grp.startswith("$"):
+    for grp, gv in g["component_types"].items():
+        # #316 CT: a behaviour-only group (click-or-tab, s315-D26) carries no tokens and no rules —
+        # it declares "$notATokenGroup" and is not a token group.
+        if not grp.startswith("$") and not (isinstance(gv, dict) and gv.get("$notATokenGroup")):
             tiers.setdefault(grp, ("component-type", "component-types.json"))
     for fn in ("spacing.json", "layout.json", "typography.json", "elevation.json", "motion.json",
                "opacity.json", "icon-scale.json"):

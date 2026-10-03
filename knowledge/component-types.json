@@ -956,6 +956,180 @@
           "Table": "DEMO-HARNESS CHROME, and a different construction. Table's `.seg` is the snippet's own headerType variant switcher — the file labels it \"demo controls\" — built the pre-atom way: inter-segment `border-left` dividers, no sliding `.ind`, active state by background and `disabled`. The atom's construction explicitly abandoned the divider (\"NO inter-segment divider — one border frames the whole track\"), and injecting a thumb radius into a control with no thumb, plus a button radius onto divider-separated segments, would round interior corners against their dividers. FOUND BY THIS SWEEP AT s229 (the fifth instance the brief asked for) and reported, NOT fixed: it renders square in every theme, which is a real if minor gap, and it is Dave's call whether demo chrome follows the theme at all."
         }
       }
+    },
+    "click-or-tab": {
+      "$notATokenGroup": "A behaviour-only group: one shared script, no tokens, no CSS rules. _compose_slice._token_tier_map skips it, so the graph mints no token:click-or-tab node.",
+      "$description": "ONE SHARED SCRIPT FOR CLICK OR TAB (s315-D26, Dave by click 2026-10-02 22:32 BST: 'Yes, one shared script'; built #316 lane CT). The rule it serves: the focus ring never shows unless the user is on the keyboard (s313-D71, s314-D1). canon.css hides the ring under :root[data-modality=\"pointer\"]; this behaviour is what sets that flag. Until #316 the four-line script lived as a hand copy inside 17 part snippets and nowhere else, so a page built from parts (the twelve templates, every composed page) carried canon's pointer rules but nothing that set the flag, and a click drew the ring (#315 lane LA, call 1). Now: ONE source, knowledge/canon/click-or-tab.js; members carry it between AUTO-BEHAVIOUR click-or-tab markers; a composed page links it once beside canon.css (generate-from-canon step 5). The script guards itself (window.__clickOrTab), so a page that carries several copies runs it once. $noHandCopies refuses a hand-written flag setter anywhere in knowledge/snippets/ outside these markers; $membersIfCss refuses a snippet whose live CSS reads the flag but which is not a member (it would ship canon's rule with nothing to fire it).",
+      "$noHandCopies": [
+        "\\.dataset\\.modality\\s*=",
+        "setAttribute\\(\\s*['\"]data-modality['\"]"
+      ],
+      "$membersIfCss": "data-modality",
+      "$members": {
+        "Amount-input": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Calendar": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Combobox": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Data-grid": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Date-picker": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Date-range-picker": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "File-upload": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Filter-toolbar-bar": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Form-layout": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Input-fields": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Multi-select": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Secure-entry": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Stepper": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Tags-input": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-auth": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-confirmation": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-create-edit": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-dashboard": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-dashboard-bento": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-detail": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-empty": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-error": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-list-index": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-report": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-settings": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Template-wizard": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Textarea": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Time-picker": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Tree": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        },
+        "Video-player": {
+          "consumes": [
+            "click-or-tab"
+          ]
+        }
+      },
+      "$behaviour": {
+        "click-or-tab": {
+          "source": "canon/click-or-tab.js",
+          "requires": {
+            "vars": [],
+            "matchValues": [],
+            "declarations": []
+          },
+          "$manifestBinds": {},
+          "$resize": "none",
+          "$description": "Tab marks <html data-modality=\"keyboard\">; a mouse press, pen or touch marks it \"pointer\". Window listeners in the capture phase. No resize listener: nothing reflows ($resize none, read by _validate_behaviour.py)."
+        }
+      }
     }
   }
 }

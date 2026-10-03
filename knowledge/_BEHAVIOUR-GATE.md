@@ -21,7 +21,39 @@ Per source ≤16KB (legibility) · per member page ≤34KB (page weight) · no p
 - **dataviz/dv-render-bullet** — `knowledge/canon/dv-render-bullet.js` · **4443 code-only bytes** (4.3 KB of 16 KB) · 10582 raw, 6139 comment/blank · 18 member(s)
 - **dataviz/dv-render-candlestick** — `knowledge/canon/dv-render-candlestick.js` · **4872 code-only bytes** (4.8 KB of 16 KB) · 10765 raw, 5893 comment/blank · 18 member(s)
 - **dataviz/dv-render-butterfly** — `knowledge/canon/dv-render-butterfly.js` · **4711 code-only bytes** (4.6 KB of 16 KB) · 10795 raw, 6084 comment/blank · 18 member(s)
+- **click-or-tab/click-or-tab** — `knowledge/canon/click-or-tab.js` · **493 code-only bytes** (0.5 KB of 16 KB) · 1892 raw, 1399 comment/blank · 30 member(s)
 
+- **click-or-tab — page budget (worst member):** 493 code-only bytes (0.5 KB of 34 KB, 1%) across 1 source(s)
+    - `Amount-input` — 493 bytes · consumes click-or-tab
+    - `Calendar` — 493 bytes · consumes click-or-tab
+    - `Combobox` — 493 bytes · consumes click-or-tab
+    - `Data-grid` — 493 bytes · consumes click-or-tab
+    - `Date-picker` — 493 bytes · consumes click-or-tab
+    - `Date-range-picker` — 493 bytes · consumes click-or-tab
+    - `File-upload` — 493 bytes · consumes click-or-tab
+    - `Filter-toolbar-bar` — 493 bytes · consumes click-or-tab
+    - `Form-layout` — 493 bytes · consumes click-or-tab
+    - `Input-fields` — 493 bytes · consumes click-or-tab
+    - `Multi-select` — 493 bytes · consumes click-or-tab
+    - `Secure-entry` — 493 bytes · consumes click-or-tab
+    - `Stepper` — 493 bytes · consumes click-or-tab
+    - `Tags-input` — 493 bytes · consumes click-or-tab
+    - `Template-auth` — 493 bytes · consumes click-or-tab
+    - `Template-confirmation` — 493 bytes · consumes click-or-tab
+    - `Template-create-edit` — 493 bytes · consumes click-or-tab
+    - `Template-dashboard` — 493 bytes · consumes click-or-tab
+    - `Template-dashboard-bento` — 493 bytes · consumes click-or-tab
+    - `Template-detail` — 493 bytes · consumes click-or-tab
+    - `Template-empty` — 493 bytes · consumes click-or-tab
+    - `Template-error` — 493 bytes · consumes click-or-tab
+    - `Template-list-index` — 493 bytes · consumes click-or-tab
+    - `Template-report` — 493 bytes · consumes click-or-tab
+    - `Template-settings` — 493 bytes · consumes click-or-tab
+    - `Template-wizard` — 493 bytes · consumes click-or-tab
+    - `Textarea` — 493 bytes · consumes click-or-tab
+    - `Time-picker` — 493 bytes · consumes click-or-tab
+    - `Tree` — 493 bytes · consumes click-or-tab
+    - `Video-player` — 493 bytes · consumes click-or-tab
 - **dataviz — page budget (worst member):** 34809 code-only bytes (34.0 KB of 34 KB, 100%) across 17 source(s)
     - shared, priced ONCE PER PAGE (s260-D1, A4): dv-render — 11056 code-only bytes, NOT charged to member figures
     - `Chart-combo` — 34809 bytes · consumes dv-behaviour, dv-legend, dv-render, dv-render-bar, dv-render-line, dv-render-combo

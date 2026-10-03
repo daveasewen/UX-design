@@ -201,7 +201,7 @@ def check_source(js, label):
     return fails, n, code
 
 
-def check_group(sources, label, names=None, consumes=None, shared=()):
+def check_group(sources, label, names=None, consumes=None, shared=(), resize=1):
     """PAGE-LEVEL checks across every source a member page loads together.
 
     Both of these were per-SOURCE until 2026-07-26 and were wrong the moment a group carried
@@ -247,8 +247,11 @@ def check_group(sources, label, names=None, consumes=None, shared=()):
         fails.append(f"{label}: shared names {sorted(shared - set(names or []))} are not behaviours of this group")
     js = "\n".join(sources)
     r = len(RESIZE_RE.findall(js))
-    if r != 1:
-        fails.append(f"{label}: {r} window resize listeners across the group — exactly ONE, rAF-debounced (ADR-0015)")
+    # #316 CT: `resize` is 1 unless EVERY source of the group declares "$resize": "none" (nothing to
+    # reflow — the click-or-tab group). A group that declares none and carries one still refuses.
+    if r != resize:
+        fails.append(f"{label}: {r} window resize listeners across the group — exactly {resize}"
+                     + (", rAF-debounced (ADR-0015)" if resize else " (every source declares $resize none)"))
     if r and ("requestAnimationFrame" not in js or "cancelAnimationFrame" not in js):
         fails.append(f"{label}: resize listener is not rAF-debounced (requestAnimationFrame + cancelAnimationFrame expected)")
     return fails, worst, per_member
@@ -269,8 +272,12 @@ _AUTO_BLOCK_RE = re.compile(r"<!-- ===== AUTO-BEHAVIOUR (\S+) START[^\n]*?===== 
                             r"<!-- ===== AUTO-BEHAVIOUR \1 END ===== -->", re.S)
 
 
-def check_consumes(html, want, label):
-    carried = {n for n, body in _AUTO_BLOCK_RE.findall(html) if body.strip()}
+def check_consumes(html, want, label, group_names=None):
+    # #316 CT: a snippet may belong to TWO groups (Template-dashboard is a dataviz member and a
+    # click-or-tab member). Only THIS group's behaviours are compared, else each group would read
+    # the other's blocks as an undeclared charge.
+    carried = {n for n, body in _AUTO_BLOCK_RE.findall(html) if body.strip()
+               and (group_names is None or n in group_names)}
     want = set(want)
     fails = []
     if carried - want:
@@ -310,8 +317,10 @@ def run():
             rows.append((f"{gname}/{bname}", beh["source"], n, code, len(members)))
         if srcs:
             shared = [b for b, beh in behs.items() if isinstance(beh, dict) and beh.get("shared") is True]
+            no_resize = all(isinstance(b, dict) and b.get("$resize") == "none" for b in behs.values())
             f, worst, per_member = check_group(srcs, f"{gname} (page budget)", names,
-                                               consumes if members else None, shared)
+                                               consumes if members else None, shared,
+                                               0 if no_resize else 1)
             fails += f
             shared_bytes = sum(len(code_only(js).encode("utf-8")) for js, n in zip(srcs, names) if n in shared)
             totals[gname] = (worst, len(srcs), per_member, shared, shared_bytes)
@@ -320,7 +329,7 @@ def run():
             if os.path.exists(mp):
                 _html = open(mp).read()
                 fails += check_member(_html, f"{gname}: {m}")
-                fails += check_consumes(_html, consumes.get(m) or list(behs), f"{gname}: {m}")
+                fails += check_consumes(_html, consumes.get(m) or list(behs), f"{gname}: {m}", set(behs))
     return fails, rows, totals
 
 
@@ -498,6 +507,17 @@ def selftest():
         fails.append("consumes cross-check: an OVER-declaring member was not caught")
     if check_consumes(_blk("a") + _blk("b", body="  "), ["a"], "T"):
         fails.append("consumes cross-check: an EMPTY pre-landed marker pair was counted as carried")
+    # #316 CT: a member of two groups — the other group's block is not this group's charge, but an
+    # undeclared block of THIS group still refuses.
+    if check_consumes(_blk("a") + _blk("z"), ["a"], "T", {"a", "b"}):
+        fails.append("check_consumes charged another group's block to this group (two-group member)")
+    if not any("under-charges" in x for x in check_consumes(_blk("a") + _blk("b"), ["a"], "T", {"a", "b"})):
+        fails.append("check_consumes scoped to the group missed an undeclared block of the group")
+    # #316 CT: a group whose sources all declare $resize none owes ZERO resize listeners — and one refuses.
+    if any("resize" in x for x in check_group(["var x=1;"], "T", resize=0)[0]):
+        fails.append("a $resize-none group with zero resize listeners was refused")
+    if not any("resize" in x for x in check_group([ok_src], "T", resize=0)[0]):
+        fails.append("a $resize-none group carrying a resize listener was not caught")
     live, _, _ = run()
     if live:
         fails.append("LIVE registry failing: %s" % "; ".join(live))

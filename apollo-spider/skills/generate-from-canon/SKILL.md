@@ -305,7 +305,10 @@ bento, logos, photography).
    their relationships, the time series, the currencies, enough rows to sort and page. List the
    behaviours it must support — which filter drives which panel — then build the markup to render
    it.
-5. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`. **The `<html>`
+5. **Compose.** Link `knowledge/canon/canon.css` and `knowledge/canon/type.css`, and load
+   `knowledge/canon/click-or-tab.js` **once**, as a `<script src>` in the head — the one shared script
+   that tells a click from a Tab, so canon's focus ring shows for the keyboard only (`s315-D26`); a
+   part that carries its own copy runs once beside it. **The `<html>`
    element** — not `<body>`, and never the same element that carries a `.cn-*` scope class — gets
    `class="canon"` plus **two** attributes — the theme and the mode: `data-apollo-theme="common|console|supercharge"`
    **and** `data-theme="light"` or `data-theme="dark"`. They are different dials and `canon.css`

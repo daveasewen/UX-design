@@ -609,6 +609,42 @@ def check_scan(gname, g, hits=None):
     return fails
 
 # ------------------------------------------------------------------ main pass
+# ------------------------------------------------------------------ one source, no hand copies (s315-D26)
+# #316 lane CT. The click-or-Tab script lived as a HAND COPY in 17 part snippets and in no page built
+# from parts, so canon's pointer rules never fired on a template (#315 LA call 1). A group may now carry
+#   "$noHandCopies": [regex, ...]   — a match in ANY knowledge/snippets/*.reference.html OUTSIDE an
+#                                     AUTO-BEHAVIOUR block refuses: the behaviour has one source.
+#   "$membersIfCss": "<substring>"   — a snippet whose LIVE CSS (comments stripped) carries it must be a
+#                                     member: it ships a rule that reads the flag, so it must carry the
+#                                     script that sets it.
+ANY_BEHAVIOUR_RE = re.compile(r'<!-- ===== AUTO-BEHAVIOUR (\S+) START[^\n]*===== -->.*?'
+                              r'<!-- ===== AUTO-BEHAVIOUR \1 END ===== -->', re.S)
+
+def hand_copy_fails(gname, g, files=None):
+    pats = [re.compile(x) for x in (g.get("$noHandCopies") or [])]
+    css_key = g.get("$membersIfCss")
+    if not pats and not css_key:
+        return []
+    members = set(m for m in (g.get("$members") or {}) if not m.startswith("$"))
+    fails = []
+    if files is None:
+        files = {os.path.basename(p)[:-len(".reference.html")]: open(p).read()
+                 for p in sorted(glob.glob(os.path.join(SNIP, "*.reference.html")))}
+    for name, html in sorted(files.items()):
+        outside = ANY_BEHAVIOUR_RE.sub("", html)
+        for rx in pats:
+            if rx.search(outside):
+                fails.append(f"{gname}: {name} carries a hand-written copy ({rx.pattern}) outside the "
+                             f"AUTO-BEHAVIOUR markers — the one source is the group's $behaviour; delete "
+                             f"the copy and join the group (s315-D26)")
+                break
+        if css_key and name not in members:
+            css = "\n".join(CSS_COMMENT_RE.sub("", s) for s in STYLE_RE.findall(html))
+            if css_key in css:
+                fails.append(f"{gname}: {name}'s CSS reads {css_key!r} but it is not a member — it ships "
+                             f"a rule nothing on its page fires; add it to $members (s315-D26)")
+    return fails
+
 def run(write):
     reg = load_registry()
     fails, out_of_sync, injected = [], [], 0
@@ -616,6 +652,7 @@ def run(write):
     for gname, g in groups(reg).items():
         members = g.get("$members", {})
         fails += check_scan(gname, g)          # #229 — membership completeness, before injection
+        fails += hand_copy_fails(gname, g)     # s315-D26 — one source, no hand copies
         for pname, partial in (g.get("$partials") or {}).items():
             source = partial["source"]
             root_sel = partial["rootSelector"]
@@ -1224,6 +1261,20 @@ def selftest():
             fails.append("the #behaviour-manifest block was counted as an executable inline script")
     finally:
         VR.ROOT = _saved_root
+    # 5c. s315-D26 (#316 CT): a hand copy outside the markers refuses; inside them it is the generated
+    # payload and passes; a non-member whose CSS reads the flag refuses.
+    _g = {"$noHandCopies": [r"\.dataset\.modality\s*="], "$membersIfCss": "data-modality",
+          "$members": {"In": {"consumes": ["b"]}}}
+    _inside = ("<!-- ===== AUTO-BEHAVIOUR b START (g) ===== --><script>r.dataset.modality = 'x';</script>"
+               "<!-- ===== AUTO-BEHAVIOUR b END ===== -->")
+    if hand_copy_fails("g", _g, {"In": "<style>:root[data-modality] a{}</style>" + _inside}):
+        fails.append("hand-copy gate refused the generated payload inside its markers")
+    if not hand_copy_fails("g", _g, {"In": "<script>root.dataset.modality = 'pointer';</script>"}):
+        fails.append("hand-copy gate missed a hand-written flag setter (no teeth)")
+    if not hand_copy_fails("g", _g, {"Out": "<style>:root[data-modality=\"pointer\"] a{outline:none}</style>"}):
+        fails.append("membership arm missed a non-member whose CSS reads the flag (no teeth)")
+    if hand_copy_fails("g", _g, {"Out": "<style>/* data-modality */ a{}</style>"}):
+        fails.append("membership arm read a CSS comment as a live rule")
     # 6. registry caches: live registry must pass; a poisoned cache must fail
     reg = load_registry()
     live = check_caches(reg)
