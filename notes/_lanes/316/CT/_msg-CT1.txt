@@ -1,0 +1,19 @@
+one shared click-or-Tab script every page built from parts loads once (s315-D26)
+
+Dave's call 26 of the #315 second look, by click: "Yes, one shared script". #315 lane LA's top break: a click drew the focus ring on pages built from parts, because the four-line script that tells a click from a Tab lived only as a hand copy inside 17 part snippets, so the templates carried canon's pointer rules with nothing to fire them.
+
+- knowledge/canon/click-or-tab.js is the one source (guarded to run once per page; window listeners in the capture phase; pointerdown as well as mousedown, so the video seek bar, which cancels pointerdown, is seen).
+- component-types.json: new behaviour-only group "click-or-tab", 30 members (the 17 parts that carried the copy, all 12 templates, the filter bar and the video player). gen_component_partials.py injects it between AUTO-BEHAVIOUR click-or-tab markers; the 17 hand copies are deleted.
+- New gate arms in gen_component_partials.py --check ($noHandCopies, $membersIfCss): a hand-written flag setter outside the markers refuses, and a snippet whose CSS reads data-modality without being a member refuses. Selftest bites added.
+- _validate_behaviour.py: a member of two groups is charged only its own group's blocks; a group whose sources declare $resize none owes zero resize listeners. Selftest bites added; _BEHAVIOUR-GATE.md refreshed.
+- _compose_slice.py: a group marked $notATokenGroup is not a token group (no token:click-or-tab node).
+- Filter-toolbar-bar (chip remove) and Video-player (seek bar) get the pointer rule the fields have.
+- generate-from-canon step 5 and the compose runbook: a composed page loads click-or-tab.js once beside canon.css; the international banking dashboard now does.
+- Showroom pages regenerated for the 29 members in this commit.
+
+Left for lane PR's commit on top (shared files, by agreement on the board): Template-confirmation.reference.html (its click-or-tab block), showroom/template-confirmation.html, and canon.css (the two new pointer rules). Until that lands, gen_component_partials --check and gen_canon_components --check are red at this sha.
+
+Proof (notes/_lanes/316/CT/): proof-before.json / proof-after.json, Playwright on the seat shell; five templates, the composed dashboard and both parts: a click draws no ring, Tab does, after; before, the five templates and the seek bar drew it on click. LA's click sweep re-run on all 30 members: 0 click rings outside the bento chart's selected-segment stroke (not a focus ring).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_019FSey36xkmjjmmxV8tx3kt
