@@ -17,7 +17,6 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
     Layout-utilities        .cn-layout-utilities        .l-container / .l-stack  (the frame)
     Confirmation            .cn-confirmation            .confirm: the roundel, the title, the message
                                                         and ITS OWN two actions (.confirm__actions)
-    Status-indicator        .cn-status-indicator        the pending chip (variant B)
     Section-heading-lockup  .cn-section-heading-lockup  "What was sent" / "What happens next"
     Summary                 .cn-summary                 the receipt rows and the emphasised total
   The page's own <style> is PLACEMENT ONLY (.tpl-*): the column's width on the container, the order
@@ -29,7 +28,11 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
     under the column.
   - The two actions are Confirmation's own (primary + ghost), inside its column, so the entrance
     sequence stays whole. Before, the page drew a second Button ladder under the receipt.
-  - Variant B's pending anchor is Confirmation's column without the success roundel: the state is
+  - #316 lane PR (s315-D7 + s315-D33): variant B carries Confirmation's PENDING roundel - amber in
+    both modes, the clock hands only, no ring - and the Status-indicator chip is DROPPED (Dave, call
+    33, verbatim: "i've metioned this correction on a previous comment", pointing at call 7). The
+    lines below are the #314 record, kept as history:
+  - (#314) Variant B's pending anchor is Confirmation's column without the success roundel: the state is
     carried by the Status-indicator chip and the words, not by a glyph the page lifted from
     Empty-state. (Confirmation draws one roundel, the success one; a pending roundel would be a
     new drawing and is not the page's to make.)
@@ -256,10 +259,9 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
       <div class="tpl-confirm">
         <div class="cn-confirmation">
           <div class="confirm" role="group" data-carries="symbol label" aria-labelledby="cf-b-title">
-            <svg class="pending is-warning" viewBox="0 0 18 18" aria-hidden="true"><circle class="disc" cx="9" cy="9" r="9"/><path style="fill:var(--mark)" fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.6 3H8.4V9.6H13V8.4H9.6V3Z"/></svg>
+            <svg class="pending is-warning" viewBox="0 0 18 18" aria-hidden="true" data-bespoke="s315-D7: the clock HANDS of media/time.svg (its third subpath, byte-lifted), the ring dropped on Dave's word, call 7"><circle class="disc" cx="9" cy="9" r="9"/><path style="fill:var(--mark)" d="M9.6 3H8.4V9.6H13V8.4H9.6V3Z"/></svg>
             <h1 class="confirm__title" id="cf-b-title">Payment waiting for approval</h1>
             <p class="confirm__msg">Nothing has left the account yet. This payment needs one more approver before it is sent.</p>
-            <span class="cn-status-indicator"><span class="chip warn" role="status"><span class="dot" aria-hidden="true"></span>Awaiting a second approver</span></span>
             <div class="confirm__body">
         <section class="tpl-section" aria-labelledby="cf-b-sum">
           <div class="cn-section-heading-lockup">
@@ -356,7 +358,7 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
     }
   ],
   "icons": {
-    "success, pending (time)": "via Confirmation (its own roundel paths)",
+    "success, pending (clock hands only, s315-D7)": "via Confirmation (its own roundel paths)",
     "search, account": "via App-shell-top-nav (the masthead)"
   },
   "composes": [
@@ -364,7 +366,6 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
     "Footer",
     "Layout-utilities",
     "Confirmation",
-    "Status-indicator",
     "Section-heading-lockup",
     "Summary"
   ],
@@ -394,5 +395,41 @@ TEMPLATE — CONFIRMATION (success · pending). Layer 2, itinerary row 112.
     reportWidth();
   </script>
 <!-- ===== APOLLO-DEMO script END ===== -->
+  <!-- ===== AUTO-BEHAVIOUR click-or-tab START (click-or-tab) ===== -->
+<script>
+/* INJECTED from knowledge/canon/click-or-tab.js (behaviour "click-or-tab", group click-or-tab —
+   registry knowledge/component-types.json, ADR-0015). DO NOT hand-edit between the
+   AUTO-BEHAVIOUR markers: edit the source and regenerate:
+   python3 knowledge/gen_component_partials.py */
+/* click-or-tab — tells a click from a Tab for the whole page (s315-D26, Dave by click
+   2026-10-02: "Yes, one shared script"; the rule it serves is s313-D71 / s314-D1 — the focus
+   ring never shows unless the user is on the keyboard).
+
+   ONE source, hand-authored HERE. Every page built from parts loads it once:
+     · a composed page links it once, beside canon.css, as a script element whose src ends
+       knowledge/canon/click-or-tab.js (written in the head, before any part);
+     · a snippet carries it between AUTO-BEHAVIOUR click-or-tab markers, injected by
+       knowledge/gen_component_partials.py (registry: knowledge/component-types.json, group
+       "click-or-tab"). Edit HERE and regenerate — never between a snippet's markers.
+   A hand-written copy anywhere in knowledge/snippets/ is refused by that generator's --check.
+
+   What it does: Tab marks the page keyboard; a mouse press, a pen or a touch marks it pointer,
+   on <html data-modality>. canon.css hides the ring under :root[data-modality="pointer"], so a
+   click never draws it and Tab always does. Listeners sit on window in the CAPTURE phase, so
+   the flag is set before the browser moves focus, and a part that stops propagation or cancels
+   pointerdown (the video seek bar does — which suppresses the mousedown) cannot hide the press.
+   Runs once per page however many copies the page carries. */
+(function () {
+  'use strict';
+  if (window.__clickOrTab) { return; } window.__clickOrTab = true;
+  var root = document.documentElement;
+  function pointer() { root.dataset.modality = 'pointer'; }
+  addEventListener('keydown', function (e) { if (e.key === 'Tab') { root.dataset.modality = 'keyboard'; } }, true);
+  addEventListener('pointerdown', pointer, true);
+  addEventListener('mousedown', pointer, true);
+  addEventListener('touchstart', pointer, { capture: true, passive: true });
+}());
+</script>
+  <!-- ===== AUTO-BEHAVIOUR click-or-tab END ===== -->
 </body>
 </html>

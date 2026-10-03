@@ -2,7 +2,7 @@
 
 *GATE (build-failing as of 2026-06-24). Each inline `<svg>` path is matched to the library. **library** = byte-matches a real glyph · **bespoke** = inside `<svg data-bespoke="reason">`, a deliberately custom shape (control glyph / animated / focus mark), verified · **UNKNOWN** = neither (possibly invented → use the library SVG, or mark it `data-bespoke`). Shape-only icons (`<circle>`/`<rect>`/`<ellipse>`/`<polygon>` with no `<path>`, e.g. a 3-dot kebab) are now flagged too.*
 
-**0 UNKNOWN path(s)** across 137 snippet(s) (102 verified-bespoke). Library glyphs indexed: 758.
+**0 UNKNOWN path(s)** across 137 snippet(s) (104 verified-bespoke). Library glyphs indexed: 758.
 
 | # | Snippet | paths | library | bespoke | UNKNOWN | declares | status |
 |---|---------|------:|--------:|--------:|--------:|:--------:|--------|
@@ -50,7 +50,7 @@
 | 42 | Chart-stacked-area | 3 | 3 | 0 | 0 | — | ✅ verified |
 | 43 | Combobox | 15 | 4 | 11 | 0 | yes | ✅ verified · 11 bespoke |
 | 44 | Command-palette | 6 | 6 | 0 | 0 | — | ✅ verified |
-| 45 | Confirmation | 2 | 2 | 0 | 0 | yes | ✅ verified |
+| 45 | Confirmation | 2 | 1 | 1 | 0 | yes | ✅ verified · 1 bespoke |
 | 46 | Countdown-timer | 0 | 0 | 0 | 0 | — | — no inline svg paths |
 | 47 | Data-grid | 15 | 11 | 4 | 0 | yes | ✅ verified · 4 bespoke |
 | 48 | Date-picker | 11 | 11 | 0 | 0 | yes | ✅ verified |
@@ -122,7 +122,7 @@
 | 114 | Tags-input | 4 | 4 | 0 | 0 | yes | ✅ verified |
 | 115 | Tags | 1 | 1 | 0 | 0 | yes | ✅ verified |
 | 116 | Template-auth | 6 | 6 | 0 | 0 | yes | ✅ verified |
-| 117 | Template-confirmation | 4 | 4 | 0 | 0 | yes | ✅ verified |
+| 117 | Template-confirmation | 4 | 3 | 1 | 0 | yes | ✅ verified · 1 bespoke |
 | 118 | Template-create-edit | 11 | 11 | 0 | 0 | yes | ✅ verified |
 | 119 | Template-dashboard-bento | 7 | 7 | 0 | 0 | yes | ✅ verified |
 | 120 | Template-dashboard | 19 | 19 | 0 | 0 | yes | ✅ verified |

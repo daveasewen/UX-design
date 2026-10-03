@@ -53,7 +53,7 @@
     --pending:#E0A61F;   /* rag/warning — the PENDING roundel (#314 TP2, Dave 14:55 call 15: "We should have an amber pending roundel") */
     /* shape — semantic radius tier (ADR-0010): buttons=control */
     --border-radius-control:0; }
-  [data-theme="dark"]{ --press-travel:2; --press-darken:0.94; --success:#FFFFFF; --pending:#FFFFFF; --text:#E1E1E1; --muted:#E1E1E1; --page:#1A1A1A;
+  [data-theme="dark"]{ --press-travel:2; --press-darken:0.94; --success:#FFFFFF; --pending:#E0A61F; --text:#E1E1E1; --muted:#E1E1E1; --page:#1A1A1A;
     --pri:#FAFAFA; --pri-hover:#B2B2B2; --on-pri:#333333; --ghost-hover:#232323;
     --border-radius-control:0; }
     /* --success dark = WHITE (driftAllow, not rag/success): RAG ROUNDEL POLICY (Dave 2026-07-02
@@ -73,10 +73,14 @@
   .confirm .success{ width:56px; height:56px; fill:var(--success); }   /* success-solid glyph; tick is a cutout showing the page behind — light: white tick on green (4.56 ✓); dark: shape flips WHITE so the cutout reads as a BLACK tick (roundel policy) */
   .confirm__title{ font:400 24px/1.2 var(--font); color:var(--text); margin:0; }
   .confirm__msg{ font:400 16px/1.5 var(--font); color:var(--muted); margin:0; }
-  /* THE PENDING KIND (#314 TP2; Dave 14:55 2026-10-02 call 15, verbatim: "We should have an amber pending roundel"):
-     the same 56px roundel, filled rag/warning, with the library's time glyph (media/time.svg) drawn as the MARK on top
-     (--mark via the AUTO-TOKENS marks set: s122-D2 mono mark on #E0A61F, 7.99:1). Dark: the roundel goes WHITE with a
-     black mark, the same policy as .success. The outcome is carried by the HEADING, the glyph is aria-hidden. */
+  /* THE PENDING KIND (#314 TP2; Dave 14:55 2026-10-02 call 15, verbatim: "We should have an amber pending roundel"),
+     REDRAWN #316 lane PR on s315-D7 (Dave 22:32 2026-10-02 call 7, verbatim: "the amber should be amber in both and it
+     should be the same icon as we have for the amber notifications. I actually like the clock icon but it shouldn't have
+     the circle. not for later, lets create a new roundel for pending with the clock hand only on the amber roundel.").
+     Built the way the amber notification glyph is built (status-icons/warning.svg: an r=9 disc, the mark on top): the
+     disc is rag/warning in BOTH modes (it no longer goes white in dark), and the mark is the CLOCK HANDS ONLY - the third
+     subpath of media/time.svg, byte-lifted, with the ring dropped. --mark via the AUTO-TOKENS marks set (s122-D2 mono
+     mark on #E0A61F, 7.99:1, both modes). The outcome is carried by the HEADING, the glyph is aria-hidden. */
   .confirm .pending{ width:56px; height:56px; }
   .confirm .pending .disc{ fill:var(--pending); }
   /* THE BODY SLOT (#314 TP2; Dave, call 15: "I think I prefer the actions after the summary. Think about how a human
@@ -150,7 +154,7 @@
   <p class="demo-h">pending — the flow is accepted and waits on someone else (#314 TP2, Dave 14:55 call 15)</p>
   <!-- ===== APOLLO-DEMO specimen-label END ===== -->
   <div class="confirm" role="group" data-carries="symbol label" aria-labelledby="cf-title-2">
-    <svg class="pending is-warning" viewBox="0 0 18 18" aria-hidden="true"><circle class="disc" cx="9" cy="9" r="9"/><path style="fill:var(--mark)" fill-rule="evenodd" clip-rule="evenodd" d="M9 0C4.03 0 0 4.029 0 9C0 13.971 4.03 18 9 18C13.97 18 18 13.971 18 9C18 4.029 13.97 0 9 0ZM9 16.8C4.699 16.8 1.2 13.301 1.2 9C1.2 4.699 4.699 1.2 9 1.2C13.301 1.2 16.8 4.699 16.8 9C16.8 13.301 13.301 16.8 9 16.8ZM9.6 3H8.4V9.6H13V8.4H9.6V3Z"/></svg>
+    <svg class="pending is-warning" viewBox="0 0 18 18" aria-hidden="true" data-bespoke="s315-D7: the clock HANDS of media/time.svg (its third subpath, byte-lifted), the ring dropped on Dave's word, call 7"><circle class="disc" cx="9" cy="9" r="9"/><path style="fill:var(--mark)" d="M9.6 3H8.4V9.6H13V8.4H9.6V3Z"/></svg>
     <h2 class="confirm__title" id="cf-title-2">Payment waiting for approval</h2>
     <p class="confirm__msg">Nothing has left the account yet. One more approver is needed before it is sent.</p>
     <div class="confirm__body"><!-- the page's parts: a Summary of what is waiting, the next steps --></div>
@@ -173,7 +177,7 @@
     "component": "Confirmation",
     "type": "organism",
     "reuses": ["Button (primary + ghost)"],
-    "icons": { "$source": "assets/icons/ (HSBC library) — byte-lifted", "time": "media/time.svg (the pending mark)" },
+    "icons": { "$source": "assets/icons/ (HSBC library) — byte-lifted", "time": "media/time.svg (the pending mark: its HANDS subpath only, the ring dropped - s315-D7)" },
     "vars": {
       "--success": "rag/success",
       "--pending": "rag/warning",
@@ -188,7 +192,7 @@
       "--ghost-hover": "tertiary/background/hover",
       "--border-radius-control": "border-radius/control"
     },
-    "driftAllow": { "--success": ["dark"], "--pending": ["dark"], "$reason": "RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success." },
+    "driftAllow": { "--success": ["dark"], "$pendingLeftThePolicy": "s315-D7 (#316 lane PR): --pending is rag/warning in BOTH modes now, so it is no longer a drift; Dave, call 7, verbatim: 'the amber should be amber in both'.", "$reason": "RAG ROUNDEL POLICY (Dave 2026-07-02 eve): dark roundels are WHITE with a BLACK mark — icon shape + label carry meaning. The glyph's tick is a page-cutout, so white shape + black page = 21:1 (rag/success #00847F with a black cutout was 2.77, failing the >=4.5 mark leg). Light keeps rag/success." },
     "contrastPairs": [
       { "fg": "text/default", "bg": "background/default", "context": "text" },
       { "fg": "text/secondary", "bg": "background/default", "context": "text" },

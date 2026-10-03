@@ -19,7 +19,7 @@
         "pending"
       ],
       "default": "success",
-      "$note": "SUCCESS keeps Confirmation's rag/success roundel and its entrance animation. PENDING takes NO success device - see antiPatterns."
+      "$note": "SUCCESS keeps Confirmation's rag/success roundel and its entrance animation. PENDING takes Confirmation's PENDING roundel (amber in both modes, the clock hands only, no ring; s315-D7) and NO entrance pop - see antiPatterns."
     },
     {
       "name": "nextSteps",
@@ -47,7 +47,7 @@
     },
     {
       "name": "pending",
-      "use": "Accepted but NOT finished. No roundel, no green, no entrance pop: a decorative glyph at alpha/40 and a Status-indicator chip carrying the meaning in a word, plus the expiry stated plainly."
+      "use": "Accepted but NOT finished. Confirmation's pending roundel (rag/warning in BOTH modes, the clock hands only, no ring), no green, no entrance pop; the HEADING carries the state in words and the message states the consequence plainly. The Status-indicator chip is DROPPED (#316 lane PR, s315-D7 read with s315-D33: Dave, call 7, verbatim: \"lets create a new roundel for pending with the clock hand only on the amber roundel\"; call 33, verbatim: \"i've metioned this correction on a previous comment\")."
     }
   ],
   "tokens": {
@@ -74,15 +74,15 @@
       "request submitted"
     ]
   },
-  "$composes": ["component:app-shell-top-nav", "component:footer", "component:layout-utilities", "component:confirmation", "component:status-indicator", "component:section-heading-lockup", "component:summary"],
+  "$composes": ["component:app-shell-top-nav", "component:footer", "component:layout-utilities", "component:confirmation", "component:section-heading-lockup", "component:summary"],
   "$composes-note": "REBUILT #314 lane TP (s313-D72, Dave's comment verbatim: \"We need to regenerate the templates too BTW, everything in the library should be a valid 'element' of the design system\"). The template is a composed PAGE: its snippet links canon/canon.css and places each part above as its own .cn-<slug> scope with the part's own markup; the page's <style> carries placement rules only (s305-D57 rule 3a; s307-D75). Before #314 it carried copies of the parts' rules and canon.css projected that second copy under its own scope. The #210 prose that stood here (which classes were copied, declaration for declaration) is retired with the copies.",
   "accessibility": {
     "roles": "No invented roles. Each specimen is a <main> whose message column is role=\"group\" with aria-labelledby on the <h1>; each receipt is a real <dl> labelled by its panel heading; each next-steps list is an <ol>.",
     "keyboard": "Tab order follows source order: primary action, secondary action. Two stops per page, which is the whole page.",
-    "announcements": "The pending chip is role=\"status\". The success page announces nothing beyond its heading - the person arrived here, so the state is the destination.",
+    "announcements": "Neither page announces beyond its heading - the person arrived here, so the state is the destination. (Until #316 the pending page carried a role=\"status\" chip; it was dropped with the chip, s315-D7/D33.)",
     "states": "None beyond the two variants.",
     "targets": "⚠ MEASURED ON THE #210 BUILD, before the #314 rebuild as a composed page; not re-measured at #314. MEASURED at 1400px: 220x44, 232x44, 304x44, 197x44. Every action clears 44px in both directions.",
-    "$colourIsNeverAlone": "The success roundel is aria-hidden and the HEADING carries the success (1.4.1). The pending chip carries its word and its dot is aria-hidden. The pending state also states its consequence in prose ('Nothing has left the account yet') rather than relying on the chip alone.",
+    "$colourIsNeverAlone": "The success roundel is aria-hidden and the HEADING carries the success (1.4.1). The pending roundel is aria-hidden too and the HEADING carries the pending state ('Payment waiting for approval'); the message states its consequence in prose ('Nothing has left the account yet').",
     "$candidateSource": "⚠ Confirmation.reference.html is itself a CANDIDATE, not gated: its meta's provenance says 'REVIEW: no Figma node yet'. Borrowing it into a template does NOT promote it, and this file must not be cited as evidence that it is settled.",
     "relatedSC": [
       "1.3.1",
@@ -96,7 +96,7 @@
     ]
   },
   "antiPatterns": [
-    "Giving the PENDING variant a success device. Confirmation's roundel is built for a TICK: the mark is a page-cutout and the whole dark policy exists so that cutout stays legible. There is no ruled roundel for 'accepted but not finished', and minting one would be a decision inside the RAG policy's own neighbourhood.",
+    "Giving the PENDING variant a SUCCESS device - the green roundel, the tick or the entrance pop. Pending has its own roundel since #316 (s315-D7: amber in both modes, the clock hands only); the success roundel stays for success alone.",
     "Putting the actions before the facts. A person cannot decide what to do until they have read what was done.",
     "Holding Confirmation's 380px at page scale. It broke 'Payment waiting for approval' after the word 'for'. The CONTAINER widens the column to 460px and asserts nothing about any molecule (s210-D3).",
     "Animating the pending entrance. The pop is a success device.",

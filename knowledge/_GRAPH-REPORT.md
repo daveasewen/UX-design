@@ -2,7 +2,7 @@
 
 > Generated derived view over `knowledge/` (Graphify-inspired; no external dependency). Regenerate after editing component metas or tokens: `python3 knowledge/tokens/_build_blast_radius.py`. Authored canon stays the source of truth; this is a generated dashboard.
 
-**Totals:** 142 components · 1048 tokens defined · 138 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
+**Totals:** 142 components · 1051 tokens defined · 141 tokens referenced by components · compliance: 38 rules x 134 components (38 SCs).
 
 ## God-nodes — highest token blast radius
 
@@ -49,15 +49,15 @@ Change one of these and the listed number of components is affected. Use before 
 | `typography/` | 13 |
 | `surface/` | 13 |
 | `overlay/` | 10 |
+| `color/` | 8 |
 | `scale/` | 7 |
 | `padding/` | 7 |
-| `color/` | 7 |
 | `progress/` | 6 |
 | `scrollbar/` | 4 |
-| `alpha/` | 4 |
 | `table/` | 3 |
 | `blur/` | 3 |
 | `button/` | 3 |
+| `alpha/` | 3 |
 | `step/` | 3 |
 | `image/` | 2 |
 | `border-width/` | 2 |
@@ -96,17 +96,17 @@ Components whose `tokens` block still references a `(depricate)` token (count = 
 
 ## Orphans — defined tokens not referenced by any component meta
 
-910 of 1048 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
+910 of 1051 defined tokens are unreferenced at the component layer. **Expected** for primitives and scale steps (consumed via semantic aliases, not bound directly); worth scanning the *semantic* groups for genuinely-dead tokens. By group:
 
 | Group | Unreferenced |
 |---|---|
-| `color/` | 245 |
+| `color/` | 243 |
 | `data-vis/` | 90 |
 | `button/` | 63 |
 | `rag/` | 61 |
 | `data/` | 48 |
 | `typography/` | 42 |
-| `surface/` | 35 |
+| `surface/` | 37 |
 | `gap/` | 27 |
 | `tabs/` | 26 |
 | `alpha/` | 20 |
